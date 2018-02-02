@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 /** A pool of objects that can be reused to avoid allocation.
  * @see Pools
- * @author Nathan Sweet & Carter Gale*/
+ * @author Nathan Sweet */
 abstract public class Pool<T> {
 	/** The maximum number of objects that will be pooled. */
 	public final int max;
@@ -48,18 +48,9 @@ abstract public class Pool<T> {
 	/** Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
 	 * {@link #free(Object) freed}). */
 	public T obtain () {
-                if (freeObjects.size == 0) {
-                        return newObject();
-                } else {
-                        T object = freeObjects.pop();
-                        onObtain(object);
-                        return object;
-                }
+		return freeObjects.size == 0 ? newObject() : freeObjects.pop();
 	}
-	
-	/** Called when an object is retrieved from the pool using {@link #obtain()} */
-	protected void onObtain (T object){ }
-	
+
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
 	 * {@link #max} free objects, the specified object is reset but not added to the pool. */
 	public void free (T object) {
@@ -67,13 +58,9 @@ abstract public class Pool<T> {
 		if (freeObjects.size < max) {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
-			onFree(object);
 		}
 		reset(object);
 	}
-	
-	/** Called when an object is freed to the pool using {@link #free(Object)}} or {@link #freeAll(Array)} */
-	protected void onFree (T object){ }
 
 	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
 	 * {@link Poolable#reset()} if the object is {@link Poolable}. */
@@ -91,7 +78,6 @@ abstract public class Pool<T> {
 			T object = objects.get(i);
 			if (object == null) continue;
 			if (freeObjects.size < max) freeObjects.add(object);
-			onFree(object);
 			reset(object);
 		}
 		peak = Math.max(peak, freeObjects.size);
