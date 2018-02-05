@@ -43,7 +43,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <android.version>4.4</android.version>
+    <android.version>7.1</android.version>
     <gwt.version>2.8.0</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
     <lwjgl3.version>3.1.3</lwjgl3.version>
