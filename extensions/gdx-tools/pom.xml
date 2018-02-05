@@ -12,10 +12,6 @@
   <packaging>jar</packaging>
   <name>libGDX Tools</name>
 
-  <properties>
-    <particleClass>com.badlogic.gdx.tools.particleeditor.ParticleEditor</particleClass>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -34,21 +30,6 @@
       <artifactId>gdx-freetype</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>gdx-freetype-platform</artifactId>
-      <version>${project.version}</version>
-      <classifier>natives-desktop</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>com.badlogicgames.gdx</groupId>
-      <artifactId>gdx-platform</artifactId>
-      <version>${project.version}</version>
-      <classifier>natives-desktop</classifier>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -60,59 +41,6 @@
     </resources>
 
     <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase> <!-- bind to the packaging phase -->
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- the assembly plugin insists on generating a separate artifact, but we want our main
-           artifact to have all the bits included; so we sneakily copy the assembled artifact over
-           the main artifact after the assembly plugin has run -->
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>replace-main-artifact</id>
-            <phase>integration-test</phase>
-            <configuration>
-              <target>
-                <property name="root" value="${project.artifactId}-${project.version}" />
-                <copy file="${project.build.directory}/${root}-distribution.jar" tofile="${project.build.directory}/${root}.jar" />
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- unpack natives when running particle editor -->
-      <plugin>
-        <groupId>com.googlecode.mavennatives</groupId>
-        <artifactId>maven-nativedependencies-plugin</artifactId>
-        <version>0.0.6</version>
-        <executions>
-          <execution>
-            <id>unpacknatives</id>
-            <phase>test-compile</phase>
-            <goals><goal>copy</goal></goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
@@ -128,34 +56,4 @@
         </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <!-- allows one to run the particle editor via: mvn test -Pparticles -->
-    <profile>
-      <id>particles</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-                <phase>test</phase>
-                <configuration>
-                  <target>
-                    <java fork="true" classname="${particleClass}" classpathref="maven.test.classpath">
-                      <sysproperty key="java.library.path" value="target/natives" />
-                    </java>
-                  </target>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
