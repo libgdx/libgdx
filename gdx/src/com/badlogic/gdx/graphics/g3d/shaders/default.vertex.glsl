@@ -1,4 +1,4 @@
-#if defined(diffuseTextureFlag) || defined(specularTextureFlag)
+#if defined(diffuseTextureFlag) || defined(specularTextureFlag) || defined(emissiveTextureFlag)
 #define textureFlag
 #endif
 

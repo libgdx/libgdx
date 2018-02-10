@@ -75,6 +75,7 @@ public class MaterialEmissiveTest extends GdxTest {
 		ModelBuilder builder = new ModelBuilder();
 		model = builder.createBox(1, 1, 1, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		model.manageDisposable(diffuseTexture);
+		model.manageDisposable(emissiveTexture);
 		modelInstance = new ModelInstance(model);
 		modelInstance.transform.rotate(Vector3.X, 45);
 
