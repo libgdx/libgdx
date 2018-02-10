@@ -20,18 +20,18 @@
             <property name="module.name" value="dynamics" />
         </ant>
     </target>
-
-    <target name="inversedynamics" depends="dynamics">
-        <echo message="Generating extras wrapper" level="info" />
-        <ant antfile="module.xml">
-            <property name="module.name" value="inversedynamics" />
-        </ant>
-    </target>
     
     <target name="softbody" depends="dynamics">
         <echo message="Generating softbody wrapper" level="info" />
         <ant antfile="module.xml">
             <property name="module.name" value="softbody" />
+        </ant>
+    </target>
+    
+    <target name="inversedynamics" depends="softbody">
+        <echo message="Generating extras wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="inversedynamics" />
         </ant>
     </target>
     

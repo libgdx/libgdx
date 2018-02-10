@@ -15,7 +15,6 @@ SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSolverConstraint_t, com.badlogi
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btTypedConstraint_p_t, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_float_p_t, com.badlogic.gdx.physics.bullet.dynamics)
-SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_int_t, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(SWIGTYPE_p_btMatrixXT_float_t, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(SWIGTYPE_p_btVectorXT_float_t, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void, com.badlogic.gdx.physics.bullet.dynamics)

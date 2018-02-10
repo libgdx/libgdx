@@ -16,7 +16,6 @@ SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__ePSolver____t, com.ba
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__eVSolver____t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSparseSdfT_3_t__Cell_p_t, com.badlogic.gdx.physics.bullet.softbody)
-SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_int_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btSoftBody__eFeature___, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_f_p_btSoftBody_float_float__void, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_float, com.badlogic.gdx.physics.bullet.softbody)
