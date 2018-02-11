@@ -306,7 +306,9 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	}
 	
 	private boolean isController(InputDevice device) {
-		return (device.getSources() & InputDevice.SOURCE_JOYSTICK) != 0;
+		return ((device.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) == InputDevice.SOURCE_CLASS_JOYSTICK)
+				&& (((device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+				|| (device.getKeyboardType() != InputDevice.KEYBOARD_TYPE_ALPHABETIC));
 	}
 
 	@Override
