@@ -34,7 +34,7 @@ versions.appleExtension = "1.4"
 versions.androidPlugin = "2.3.2"
 versions.androidSdk = 25
 versions.androidBuildTools = "25.0.3"
-versions.androidSupport = "+"
+versions.androidSupport = "25.+"
 versions.javaparser = "2.3.0"
 
 libraries.lwjgl = [
