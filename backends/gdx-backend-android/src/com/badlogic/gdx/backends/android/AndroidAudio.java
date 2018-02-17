@@ -55,7 +55,7 @@ public final class AndroidAudio implements Audio {
 						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
 						.build();
 				soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
-			}else {
+			} else {
 				soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);// srcQuality: the sample-rate converter quality. Currently has no effect. Use 0 for the default.
 			}
 			manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
