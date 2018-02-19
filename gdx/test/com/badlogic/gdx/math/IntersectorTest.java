@@ -121,11 +121,11 @@ public class IntersectorTest {
 		// Segment doesn't intersect
 		intersects = Intersector.intersectSegmentCircle(new Vector2(0f, 6f), new Vector2(0.5f, 2f), new Circle(5f, 5f, 4f), null);
 		assertFalse(intersects);
-        // Segment is parallel to Y axis left of circle's center
-        Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
-        intersects = Intersector.intersectSegmentCircle(new Vector2(1.5f, 6f), new Vector2(1.5f, 3f), new Circle(5f, 5f, 4f), mtv);
-        assertTrue(intersects);
-        assertTrue(mtv.normal.equals(new Vector2(-1f, 0)));
-        assertTrue(mtv.depth == 0.5f);
+		// Segment is parallel to Y axis left of circle's center
+		Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
+		intersects = Intersector.intersectSegmentCircle(new Vector2(1.5f, 6f), new Vector2(1.5f, 3f), new Circle(5f, 5f, 4f), mtv);
+		assertTrue(intersects);
+		assertTrue(mtv.normal.equals(new Vector2(-1f, 0)));
+		assertTrue(mtv.depth == 0.5f);
 	}
 }
