@@ -1,12 +1,12 @@
 
 package com.badlogic.gdx.math;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
 import org.junit.Test;
 
-import com.badlogic.gdx.math.Intersector.SplitTriangle;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class IntersectorTest {
 
@@ -105,5 +105,27 @@ public class IntersectorTest {
 				|| (triangleEquals(base, 0, 3, secondWay[1]) && triangleEquals(base, 9, 3, secondWay[0]));
 			assertTrue("Either first or second way must be right (first: " + first + ", second: " + second + ")", first ^ second);
 		}
+	}
+
+	@Test
+	public void intersectSegmentCircle() {
+		// Segment intersects, both segment points outside circle
+		boolean intersects = Intersector.intersectSegmentCircle(new Vector2(0, 1f), new Vector2(12f, 3f), new Circle(5f, 5f, 4f), null);
+		assertTrue(intersects);
+		// Segment intersects, only one of the points inside circle (and is aligned with center)
+		intersects = Intersector.intersectSegmentCircle(new Vector2(0, 5f), new Vector2(2f, 5f), new Circle(5f, 5f, 4f), null);
+		assertTrue(intersects);
+		// Segment intersects, no points outside circle
+		intersects = Intersector.intersectSegmentCircle(new Vector2(5.5f, 6f), new Vector2(7f, 5.5f), new Circle(5f, 5f, 4f), null);
+		assertTrue(intersects);
+		// Segment doesn't intersect
+		intersects = Intersector.intersectSegmentCircle(new Vector2(0f, 6f), new Vector2(0.5f, 2f), new Circle(5f, 5f, 4f), null);
+		assertFalse(intersects);
+        // Segment is parallel to Y axis left of circle's center
+        Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
+        intersects = Intersector.intersectSegmentCircle(new Vector2(1.5f, 6f), new Vector2(1.5f, 3f), new Circle(5f, 5f, 4f), mtv);
+        assertTrue(intersects);
+        assertTrue(mtv.normal.equals(new Vector2(-1f, 0)));
+        assertTrue(mtv.depth == 0.5f);
 	}
 }
