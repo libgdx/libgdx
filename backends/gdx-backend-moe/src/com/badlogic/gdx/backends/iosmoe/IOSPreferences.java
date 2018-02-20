@@ -184,14 +184,18 @@ public class IOSPreferences implements Preferences {
 	}
 
 	@Override
-	public void flush () {
+	public boolean flush () {
+		final boolean[] success = {false};
 		ObjCRuntime.autoreleasepool(new Runnable() {
 			@Override
 			public void run() {
-				if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
+				if (nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
+					success[0] = true;
+				} else {
 					Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
 				}
 			}
 		});
+		return success[0];
 	}
 }

@@ -148,15 +148,14 @@ public class AndroidPreferences implements Preferences {
 	}
 
 	@Override
-	public void flush () {
+	public boolean flush () {
+		boolean success = false;
 		if (editor != null) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-    				editor.apply();
-			} else {
-				editor.commit();
-			}
+			// Avoid editor.apply(), which only starts an asynchronous write.
+			success = editor.commit();
 			editor = null;
 		}
+		return success;
 	}
 
 	@Override
