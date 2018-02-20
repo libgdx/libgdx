@@ -268,6 +268,13 @@ public class Lwjgl3Window implements Disposable {
 	}
 	
 	/**
+	 * Brings the window to front and sets input focus. The window should already be visible and not iconified.
+	 */
+	public void focusWindow() {
+		GLFW.glfwFocusWindow(windowHandle);
+	}
+	
+	/**
 	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
 	 * @param image One or more images. The one closest to the system's desired size will be scaled. Good sizes include
 	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
