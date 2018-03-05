@@ -3,6 +3,8 @@
 - Update to Lwjgl 3.1.4
 - Update android level we build against to 7.1 (API 25)
 - API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
+- API addition: Tree indentation can be customized.
+- Fixed GlyphLayout not respecting BitmapFontData#down.
 
 [1.9.8]
 - Add iPhoneX images
