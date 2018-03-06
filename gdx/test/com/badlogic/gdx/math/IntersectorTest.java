@@ -109,23 +109,34 @@ public class IntersectorTest {
 
 	@Test
 	public void intersectSegmentCircle() {
+		Circle circle = new Circle(5f, 5f, 4f);
 		// Segment intersects, both segment points outside circle
-		boolean intersects = Intersector.intersectSegmentCircle(new Vector2(0, 1f), new Vector2(12f, 3f), new Circle(5f, 5f, 4f), null);
+		boolean intersects = Intersector.intersectSegmentCircle(new Vector2(0, 1f), new Vector2(12f, 3f), circle, null);
 		assertTrue(intersects);
 		// Segment intersects, only one of the points inside circle (and is aligned with center)
-		intersects = Intersector.intersectSegmentCircle(new Vector2(0, 5f), new Vector2(2f, 5f), new Circle(5f, 5f, 4f), null);
+		intersects = Intersector.intersectSegmentCircle(new Vector2(0, 5f), new Vector2(2f, 5f), circle, null);
 		assertTrue(intersects);
 		// Segment intersects, no points outside circle
-		intersects = Intersector.intersectSegmentCircle(new Vector2(5.5f, 6f), new Vector2(7f, 5.5f), new Circle(5f, 5f, 4f), null);
+		intersects = Intersector.intersectSegmentCircle(new Vector2(5.5f, 6f), new Vector2(7f, 5.5f), circle, null);
 		assertTrue(intersects);
 		// Segment doesn't intersect
-		intersects = Intersector.intersectSegmentCircle(new Vector2(0f, 6f), new Vector2(0.5f, 2f), new Circle(5f, 5f, 4f), null);
+		intersects = Intersector.intersectSegmentCircle(new Vector2(0f, 6f), new Vector2(0.5f, 2f), circle, null);
 		assertFalse(intersects);
 		// Segment is parallel to Y axis left of circle's center
 		Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
-		intersects = Intersector.intersectSegmentCircle(new Vector2(1.5f, 6f), new Vector2(1.5f, 3f), new Circle(5f, 5f, 4f), mtv);
+		intersects = Intersector.intersectSegmentCircle(new Vector2(1.5f, 6f), new Vector2(1.5f, 3f), circle, mtv);
 		assertTrue(intersects);
 		assertTrue(mtv.normal.equals(new Vector2(-1f, 0)));
 		assertTrue(mtv.depth == 0.5f);
+		// Segment contains circle center point
+		intersects = Intersector.intersectSegmentCircle(new Vector2(4f, 5f), new Vector2(6f, 5f), circle, mtv);
+		assertTrue(intersects);
+		assertTrue(mtv.normal.equals(new Vector2(0, 1f)) || mtv.normal.equals(new Vector2(0f, -1f)));
+		assertTrue(mtv.depth == 4f);
+		// Segment contains circle center point which is the same as the end point
+		intersects = Intersector.intersectSegmentCircle(new Vector2(4f, 5f), new Vector2(5f, 5f), circle, mtv);
+		assertTrue(intersects);
+		assertTrue(mtv.normal.equals(new Vector2(0, 1f)) || mtv.normal.equals(new Vector2(0f, -1f)));
+		assertTrue(mtv.depth == 4f);
 	}
 }

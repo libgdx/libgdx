@@ -301,8 +301,19 @@ public final class Intersector {
         v2a.set(v2c.x - circle.x, v2c.y - circle.y);
 
         if (mtv != null) {
-            mtv.normal.set(v2a).nor();
-            mtv.depth = circle.radius - v2a.len();
+			// Handle special case of segment containing circle center
+			if (v2a.equals(Vector2.Zero)) {
+				v2d.set(end.y - circle.y, circle.x - end.x);
+				// Handle special case of segment end point being circle center
+				if (v2d.equals(Vector2.Zero)) {
+					v2d.set(start.y - circle.y, circle.x - start.x );
+				}
+				mtv.normal.set(v2d).nor();
+				mtv.depth = circle.radius;
+			} else {
+				mtv.normal.set(v2a).nor();
+				mtv.depth = circle.radius - v2a.len();
+			}
         }
 
         return v2a.len2() <= circle.radius * circle.radius;
