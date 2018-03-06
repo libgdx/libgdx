@@ -303,11 +303,7 @@ public final class Intersector {
         if (mtv != null) {
 			// Handle special case of segment containing circle center
 			if (v2a.equals(Vector2.Zero)) {
-				v2d.set(end.y - circle.y, circle.x - end.x);
-				// Handle special case of segment end point being circle center
-				if (v2d.equals(Vector2.Zero)) {
-					v2d.set(start.y - circle.y, circle.x - start.x );
-				}
+				v2d.set(end.y - start.y, start.x - end.x);
 				mtv.normal.set(v2d).nor();
 				mtv.depth = circle.radius;
 			} else {
