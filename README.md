@@ -70,7 +70,7 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 
 <tr>
 <td style="text-align: center;"><a href="http://bit.ly/jetblog"><img src="http://libgdx.badlogicgames.com/img/excelsior.png" alt="Excelsior JET"></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a></td>
+<td style="text-align: center;"><a href="http://bit.ly/1jPafEE"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a></td>
 </tr>
 </table>
 
