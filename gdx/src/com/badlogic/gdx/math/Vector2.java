@@ -362,6 +362,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotate (float degrees) {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param degrees the angle in degrees
+	 * @param reference center Vector2
+	 */
+	public Vector2 rotateAround (Vector2 reference,float degrees) {
+		return this.sub(reference).rotate(degrees).add(reference);
+	}
+	
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param radians the angle in radians */
@@ -376,6 +384,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = newY;
 
 		return this;
+	}
+	
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians
+	 * @param reference center Vector2
+	 */
+	public Vector2 rotateAroundRad (Vector2 reference,float radians) {
+		return this.sub(reference).rotateRad(radians).add(reference);
 	}
 
 	/** Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is counter-clockwise and < 0 is clockwise. */
