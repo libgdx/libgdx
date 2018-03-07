@@ -399,6 +399,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph missingGlyph = createGlyph('\0', data, parameter, stroker, baseLine, packer);
 		if (missingGlyph != null && missingGlyph.width != 0 && missingGlyph.height != 0) {
 			data.setGlyph('\0', missingGlyph);
+			data.missingGlyph = missingGlyph;
 			if (incremental) data.glyphs.add(missingGlyph);
 		}
 
