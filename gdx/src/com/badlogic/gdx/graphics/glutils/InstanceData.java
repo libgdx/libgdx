@@ -40,19 +40,19 @@ public interface InstanceData extends Disposable {
 	 * specified at construction time via {@link VertexAttributes}.
 	 * <p>
 	 * This can be called in between calls to bind and unbind. The vertex data will be updated instantly.
-	 * @param vertices the vertex data
+	 * @param data the instacne data
 	 * @param offset the offset to start copying the data from
 	 * @param count the number of floats to copy */
-	public void setVertices(float[] vertices, int offset, int count);
+	public void setInstanceData(float[] data, int offset, int count);
 
 	/** Update (a portion of) the vertices. Does not resize the backing buffer.
-	 * @param vertices the vertex data
+	 * @param data the vertex data
 	 * @param sourceOffset the offset to start copying the data from
 	 * @param count the number of floats to copy */
-	public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count);
+	public void updateInstanceData(int targetOffset, float[] data, int sourceOffset, int count);
 
 	/** Returns the underlying FloatBuffer and marks it as dirty, causing the buffer contents to be uploaded on the next call to
-	 * bind. If you need immediate uploading use {@link #setVertices(float[], int, int)}; Any modifications made to the Buffer
+	 * bind. If you need immediate uploading use {@link #setInstanceData(float[], int, int)}; Any modifications made to the Buffer
 	 * *after* the call to bind will not automatically be uploaded.
 	 * @return the underlying FloatBuffer holding the vertex data. */
 	public FloatBuffer getBuffer();

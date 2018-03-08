@@ -93,39 +93,39 @@ public class InstanceBufferObject implements InstanceData {
     }
 
     @Override
-    public void setVertices (float[] vertices, int offset, int count) {
+    public void setInstanceData (float[] data, int offset, int count) {
         isDirty = true;
-        BufferUtils.copy(vertices, byteBuffer, count, offset);
+        BufferUtils.copy(data, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
         bufferChanged();
     }
 
-    public void setVertices (FloatBuffer vertices, int count) {
+    public void setInstanceData (FloatBuffer data, int count) {
         isDirty = true;
-        BufferUtils.copy(vertices, byteBuffer, count);
+        BufferUtils.copy(data, byteBuffer, count);
         buffer.position(0);
         buffer.limit(count);
         bufferChanged();
     }
 
     @Override
-    public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
+    public void updateInstanceData (int targetOffset, float[] data, int sourceOffset, int count) {
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+        BufferUtils.copy(data, sourceOffset, count, byteBuffer);
         byteBuffer.position(pos);
         buffer.position(0);
         bufferChanged();
     }
 
-    public void updateVertices (int targetOffset, FloatBuffer vertices, int sourceOffset, int count) {
+    public void updateInstanceData (int targetOffset, FloatBuffer data, int sourceOffset, int count) {
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        vertices.position(sourceOffset * 4);
-        BufferUtils.copy(vertices, byteBuffer, count);
+        data.position(sourceOffset * 4);
+        BufferUtils.copy(data, byteBuffer, count);
         byteBuffer.position(pos);
         buffer.position(0);
         bufferChanged();
