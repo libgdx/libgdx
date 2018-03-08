@@ -15,7 +15,7 @@ import java.nio.FloatBuffer;
  *  Sets the glVertexAttribDivisor for every {@link VertexAttribute} automatically.
  *  @author mrdlink
  */
-public class InstanceBufferObjectSubData implements VertexData {
+public class InstanceBufferObjectSubData implements InstanceData {
 
     final VertexAttributes attributes;
     final FloatBuffer buffer;
@@ -72,7 +72,7 @@ public class InstanceBufferObjectSubData implements VertexData {
      * @return number of instances in this buffer
      */
     @Override
-    public int getNumVertices () {
+    public int getNumInstances () {
         return buffer.limit() * 4 / attributes.vertexSize;
     }
 
@@ -81,14 +81,6 @@ public class InstanceBufferObjectSubData implements VertexData {
      * @return maximum number of instances in this buffer
      */
     @Override
-    public int getNumMaxVertices () {
-        return byteBuffer.capacity() / attributes.vertexSize;
-    }
-
-    public int getNumInstances () {
-        return buffer.limit() * 4 / attributes.vertexSize;
-    }
-
     public int getNumMaxInstances () {
         return byteBuffer.capacity() / attributes.vertexSize;
     }
