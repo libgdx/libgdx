@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.sun.prism.impl.VertexBuffer;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
