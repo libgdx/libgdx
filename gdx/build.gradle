@@ -29,6 +29,7 @@ compileJava {
 }
 
 dependencies {
+    compileOnly "org.joml:joml:1.9.8"
     compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
 }
