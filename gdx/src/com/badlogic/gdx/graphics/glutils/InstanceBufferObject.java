@@ -101,6 +101,7 @@ public class InstanceBufferObject implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void setInstanceData (FloatBuffer data, int count) {
         isDirty = true;
         BufferUtils.copy(data, byteBuffer, count);
@@ -120,6 +121,7 @@ public class InstanceBufferObject implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void updateInstanceData (int targetOffset, FloatBuffer data, int sourceOffset, int count) {
         isDirty = true;
         final int pos = byteBuffer.position();

@@ -117,6 +117,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void setInstanceData (FloatBuffer data, int count) {
         isDirty = true;
         if (isDirect) {
@@ -148,6 +149,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void updateInstanceData (int targetOffset, FloatBuffer data, int sourceOffset, int count) {
         isDirty = true;
         if (isDirect) {
