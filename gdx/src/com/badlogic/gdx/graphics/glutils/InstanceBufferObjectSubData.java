@@ -189,22 +189,24 @@ public class InstanceBufferObjectSubData implements InstanceData {
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = shader.getAttributeLocation(attribute.alias);
                 if (location < 0) continue;
-                shader.enableVertexAttribute(location);
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-                        attribute.offset);
-                Gdx.gl30.glVertexAttribDivisor(location, 1);
+                shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+                        attributes.vertexSize, attribute.offset);
+                Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
             }
         } else {
             for (int i = 0; i < numAttributes; i++) {
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
                 if (location < 0) continue;
-                shader.enableVertexAttribute(location);
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-                        attribute.offset);
-                Gdx.gl30.glVertexAttribDivisor(location, 1);
+                shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+                        attributes.vertexSize, attribute.offset);
+                Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
             }
         }
         isBound = true;
