@@ -208,12 +208,19 @@ public class InstanceBufferObject implements InstanceData {
         final int numAttributes = attributes.size();
         if (locations == null) {
             for (int i = 0; i < numAttributes; i++) {
-                shader.disableVertexAttribute(attributes.get(i).alias);
+                final VertexAttribute attribute = attributes.get(i);
+                final int location = shader.getAttributeLocation(attribute.alias);
+                if (location < 0) continue;
+                int unitOffset = + attribute.unit;
+                shader.disableVertexAttribute(location + unitOffset);
             }
         } else {
             for (int i = 0; i < numAttributes; i++) {
+                final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
-                if (location >= 0) shader.disableVertexAttribute(location);
+                if (location < 0) continue;
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
             }
         }
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
