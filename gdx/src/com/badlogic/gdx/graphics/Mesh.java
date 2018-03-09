@@ -200,9 +200,9 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
+	/** Sets the instance data of this Mesh. The attributes are assumed to be given in float format.
 	 *
-	 * @param instanceData the vertices.
+	 * @param instanceData the instance data.
 	 * @param offset the offset into the vertices array
 	 * @param count the number of floats to use
 	 * @return the mesh for invocation chaining. */
@@ -215,9 +215,9 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
+	/** Sets the instance data of this Mesh. The attributes are assumed to be given in float format.
 	 *
-	 * @param instanceData the vertices.
+	 * @param instanceData the instance data.
 	 * @return the mesh for invocation chaining. */
 	public Mesh setInstanceData (float[] instanceData) {
 		if(instances != null)
@@ -228,9 +228,9 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
+	/** Sets the instance data of this Mesh. The attributes are assumed to be given in float format.
 	 *
-	 * @param instanceData the vertices.
+	 * @param instanceData the instance data.
 	 * @param count the number of floats to use
 	 * @return the mesh for invocation chaining. */
 	public Mesh setInstanceData (FloatBuffer instanceData, int count) {
@@ -242,9 +242,9 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
+	/** Sets the instance data of this Mesh. The attributes are assumed to be given in float format.
 	 *
-	 * @param instanceData the vertices.
+	 * @param instanceData the instance data.
 	 * @return the mesh for invocation chaining. */
 	public Mesh setInstanceData (FloatBuffer instanceData) {
 		if(instances != null)
@@ -255,16 +255,16 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	/** Update (a portion of) the instance data. Does not resize the backing buffer.
 	 * @param targetOffset the offset in number of floats of the mesh part.
-	 * @param source the vertex data to update the mesh part with */
+	 * @param source the instance data to update the mesh part with */
 	public Mesh updateInstanceData (int targetOffset, float[] source) {
 		return updateInstanceData(targetOffset, source, 0, source.length);
 	}
 
-	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	/** Update (a portion of) the instance data. Does not resize the backing buffer.
 	 * @param targetOffset the offset in number of floats of the mesh part.
-	 * @param source the vertex data to update the mesh part with
+	 * @param source the instance data to update the mesh part with
 	 * @param sourceOffset the offset in number of floats within the source array
 	 * @param count the number of floats to update */
 	public Mesh updateInstanceData (int targetOffset, float[] source, int sourceOffset, int count) {
@@ -272,16 +272,16 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	/** Update (a portion of) the instance data. Does not resize the backing buffer.
 	 * @param targetOffset the offset in number of floats of the mesh part.
-	 * @param source the vertex data to update the mesh part with */
+	 * @param source the instance data to update the mesh part with */
 	public Mesh updateInstanceData (int targetOffset, FloatBuffer source) {
 		return updateInstanceData(targetOffset, source, 0, source.limit());
 	}
 
-	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	/** Update (a portion of) the instance data. Does not resize the backing buffer.
 	 * @param targetOffset the offset in number of floats of the mesh part.
-	 * @param source the vertex data to update the mesh part with
+	 * @param source the instance data to update the mesh part with
 	 * @param sourceOffset the offset in number of floats within the source array
 	 * @param count the number of floats to update */
 	public Mesh updateInstanceData (int targetOffset, FloatBuffer source, int sourceOffset, int count) {
