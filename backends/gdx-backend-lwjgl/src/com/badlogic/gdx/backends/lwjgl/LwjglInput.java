@@ -263,6 +263,11 @@ final public class LwjglInput implements Input {
 			return getY();
 	}
 
+	@Override
+	public int getMaxPointers() {
+		return 1;
+	}
+
 	public boolean isTouched (int pointer) {
 		if (pointer > 0)
 			return false;

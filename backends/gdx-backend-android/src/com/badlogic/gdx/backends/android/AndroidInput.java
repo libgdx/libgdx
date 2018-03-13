@@ -290,6 +290,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	}
 
+	@Override
+	public int getMaxPointers() {
+		return NUM_TOUCHES;
+	}
+
 	public boolean isTouched (int pointer) {
 		synchronized (this) {
 			return touched[pointer];

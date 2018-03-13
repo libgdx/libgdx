@@ -106,6 +106,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers() {
+		return 0;
+	}
+
+	@Override
 	public boolean isTouched(int pointer) {
 		return false;
 	}

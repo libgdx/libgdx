@@ -623,6 +623,15 @@ public interface Input {
 	/** @return whether a new touch down event just occurred. */
 	public boolean justTouched ();
 
+	/**
+	 * Returns the maximum amount of pointers. For every {@code n >= getMaxPointers()},
+	 * {@code isTouched(n)} will return {@code false}.
+	 *
+	 * @return
+	 */
+	public int getMaxPointers ();
+
+
 	/** Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on

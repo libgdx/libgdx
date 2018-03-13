@@ -232,6 +232,11 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 
 	@Override
+	public int getMaxPointers() {
+		return 1;
+	}
+
+	@Override
 	public boolean isTouched() {
 		return GLFW.glfwGetMouseButton(window.getWindowHandle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS ||
 				GLFW.glfwGetMouseButton(window.getWindowHandle(), GLFW.GLFW_MOUSE_BUTTON_2) == GLFW.GLFW_PRESS ||

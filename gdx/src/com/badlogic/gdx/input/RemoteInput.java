@@ -185,6 +185,8 @@ public class RemoteInput implements Runnable, Input {
 		}
 	}
 
+	private static final int MAX_TOUCHES = 20;
+
 	public static int DEFAULT_PORT = 8190;
 	private ServerSocket serverSocket;
 	private float[] accel = new float[3];
@@ -199,11 +201,11 @@ public class RemoteInput implements Runnable, Input {
 	boolean[] keys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
-	int[] deltaX = new int[20];
-	int[] deltaY = new int[20];
-	int[] touchX = new int[20];
-	int[] touchY = new int[20];
-	boolean isTouched[] = new boolean[20];
+	int[] deltaX = new int[MAX_TOUCHES];
+	int[] deltaY = new int[MAX_TOUCHES];
+	int[] touchX = new int[MAX_TOUCHES];
+	int[] touchY = new int[MAX_TOUCHES];
+	boolean isTouched[] = new boolean[MAX_TOUCHES];
 	boolean justTouched = false;
 	InputProcessor processor = null;
 	private final int port;
@@ -389,6 +391,11 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public boolean justTouched () {
 		return justTouched;
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
 	}
 
 	@Override

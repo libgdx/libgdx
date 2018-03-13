@@ -160,6 +160,11 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers() {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public boolean isTouched (int pointer) {
 		return touched[pointer];
 	}

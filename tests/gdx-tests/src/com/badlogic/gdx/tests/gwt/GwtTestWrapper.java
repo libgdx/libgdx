@@ -319,6 +319,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public int getMaxPointers() {
+			return input.getMaxPointers();
+		}
+
+		@Override
 		public boolean isTouched (int pointer) {
 			return input.isTouched(pointer);
 		}

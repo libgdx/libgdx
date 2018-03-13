@@ -281,6 +281,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers() {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public boolean isTouched (int pointer) {
 		return touchDown[pointer] != null;
 	}
