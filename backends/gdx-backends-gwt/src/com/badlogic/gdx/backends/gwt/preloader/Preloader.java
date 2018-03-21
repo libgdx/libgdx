@@ -31,6 +31,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 
@@ -46,9 +47,12 @@ public class Preloader {
 
 	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
-	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
+	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
+
+        // Collection of all filenames scanned
+        private ObjectSet<String> allFiles = new ObjectSet<String>();
 
 	public static class Asset {
 		public Asset (String url, AssetType type, long size, String mimeType) {
@@ -181,7 +185,7 @@ public class Preloader {
 								binaries.put(asset.url, (Blob) result);
 								break;
 							case Audio:
-								audio.put(asset.url, null);
+								audio.put(asset.url, (Blob) result);
 								break;
 							case Directory:
 								directories.put(asset.url, null);
@@ -191,6 +195,7 @@ public class Preloader {
 							callback.update(state);
 						}
 					});
+                                        allFiles.add(asset.url);
 				}
 				callback.update(state);
 			}
@@ -212,7 +217,7 @@ public class Preloader {
 			return binaries.get(url).read();
 		}
 		if (audio.containsKey(url)) {
-			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
+			return audio.get(url).read();
 		}
 		return null;
 	}
@@ -244,10 +249,10 @@ public class Preloader {
 	private boolean isChild(String path, String url) {
 		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
 	}
-
+        
 	public FileHandle[] list (String url) {
 		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
+		for (String path : allFiles) {
 			if (isChild(path, url)) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
@@ -259,7 +264,7 @@ public class Preloader {
 
 	public FileHandle[] list (String url, FileFilter filter) {
 		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
+		for (String path : allFiles) {
 			if (isChild(path, url) && filter.accept(new File(path))) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
@@ -271,7 +276,7 @@ public class Preloader {
 
 	public FileHandle[] list (String url, FilenameFilter filter) {
 		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
+		for (String path : allFiles) {
 			if (isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1))) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
@@ -283,7 +288,7 @@ public class Preloader {
 
 	public FileHandle[] list (String url, String suffix) {
 		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
+		for (String path : allFiles) {
 			if (isChild(path, url) && path.endsWith(suffix)) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
@@ -308,7 +313,7 @@ public class Preloader {
 			return binaries.get(url).length();
 		}
 		if (audio.containsKey(url)) {
-			return 1; // FIXME sensible?
+			return audio.get(url).length();
 		}
 		return 0;
 	}
