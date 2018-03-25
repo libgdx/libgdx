@@ -175,7 +175,7 @@ public class NetJavaImpl {
 							// we probably need to use the content as stream here instead of using it as a string.
 							String contentAsString = httpRequest.getContent();
 							if (contentAsString != null) {
-								OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+								OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF8");
 								try {
 									writer.write(contentAsString);
 								} finally {
