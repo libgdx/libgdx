@@ -837,7 +837,7 @@ public class Stage extends InputAdapter implements Disposable {
 		int x1 = x0 + viewport.getScreenWidth();
 		int y0 = viewport.getScreenY();
 		int y1 = y0 + viewport.getScreenHeight();
-		screenY = Gdx.graphics.getHeight() - screenY;
+		screenY = Gdx.graphics.getHeight() - 1 - screenY;
 		return screenX >= x0 && screenX < x1 && screenY >= y0 && screenY < y1;
 	}
 

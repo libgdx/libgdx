@@ -45,10 +45,12 @@ public class BulletBuild {
 		// Disable profiling (it's on by default). If you change this, you
 		// must regenerate the SWIG wrappers with the changed value.
 		cppFlags += " -DBT_NO_PROFILE";
+		//Bullet 2 compatibility with inverse dynamics
+		cppFlags += " -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2";
 
 		// generate build scripts
 		String[] excludes = {"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"};
-		String[] headers = {"src/bullet/", "src/custom/", "src/extras/Serialize/"};
+		String[] headers = {"src/bullet/", "src/custom/", "src/extras/Serialize/", "src/extras/"};
 
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
@@ -97,6 +99,7 @@ public class BulletBuild {
 		ios.cExcludes = ios.cppExcludes = excludes;
 		ios.headerDirs = headers;
 		ios.cppFlags += cppFlags;
+		ios.cppFlags += " -stdlib=libc++";
 
 		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, mac64, android, ios);
 		new FileHandle(new File("jni/Application.mk")).writeString("\nAPP_STL := stlport_static\n", true);

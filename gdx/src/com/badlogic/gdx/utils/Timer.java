@@ -24,8 +24,6 @@ import com.badlogic.gdx.LifecycleListener;
 /** Executes tasks in the future on the main loop thread.
  * @author Nathan Sweet */
 public class Timer {
-	static private final int CANCELLED = -1, FOREVER = -2;
-
 	// TimerThread access is synchronized using threadLock.
 	// Timer access is synchronized using the Timer instance.
 	// Task access is synchronized using the Task instance.
@@ -53,7 +51,7 @@ public class Timer {
 		}
 	}
 
-	private final Array<Task> tasks = new Array(false, 8);
+	final Array<Task> tasks = new Array(false, 8);
 
 	public Timer () {
 		start();
@@ -71,20 +69,21 @@ public class Timer {
 
 	/** Schedules a task to occur once after the specified delay and then repeatedly at the specified interval until cancelled. */
 	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds) {
-		return scheduleTask(task, delaySeconds, intervalSeconds, FOREVER);
+		return scheduleTask(task, delaySeconds, intervalSeconds, -1);
 	}
 
-	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified
-	 * interval. */
+	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval.
+	 * @param repeatCount If negative, the task will repeat forever. */
 	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		synchronized (task) {
-			if (task.repeatCount != CANCELLED) throw new IllegalArgumentException("The same task may not be scheduled twice.");
-			task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
-			task.intervalMillis = (long)(intervalSeconds * 1000);
-			task.repeatCount = repeatCount;
-		}
 		synchronized (this) {
-			tasks.add(task);
+			synchronized (task) {
+				if (task.timer != null) throw new IllegalArgumentException("The same task may not be scheduled twice.");
+				task.timer = this;
+				task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
+				task.intervalMillis = (long)(intervalSeconds * 1000);
+				task.repeatCount = repeatCount;
+				tasks.add(task);
+			}
 		}
 		synchronized (threadLock) {
 			threadLock.notifyAll();
@@ -112,8 +111,13 @@ public class Timer {
 
 	/** Cancels all tasks. */
 	public synchronized void clear () {
-		for (int i = 0, n = tasks.size; i < n; i++)
-			tasks.get(i).cancel();
+		for (int i = 0, n = tasks.size; i < n; i++) {
+			Task task = tasks.get(i);
+			synchronized (task) {
+				task.executeTimeMillis = 0;
+				task.timer = null;
+			}
+		}
 		tasks.clear();
 	}
 
@@ -131,11 +135,8 @@ public class Timer {
 					waitMillis = Math.min(waitMillis, task.executeTimeMillis - timeMillis);
 					continue;
 				}
-				if (task.repeatCount != CANCELLED) {
-					if (task.repeatCount == 0) task.repeatCount = CANCELLED;
-					task.app.postRunnable(task);
-				}
-				if (task.repeatCount == CANCELLED) {
+				if (task.repeatCount == 0) {
+					task.timer = null;
 					tasks.removeIndex(i);
 					i--;
 					n--;
@@ -144,6 +145,7 @@ public class Timer {
 					waitMillis = Math.min(waitMillis, task.intervalMillis);
 					if (task.repeatCount > 0) task.repeatCount--;
 				}
+				task.app.postRunnable(task);
 			}
 		}
 		return waitMillis;
@@ -188,7 +190,8 @@ public class Timer {
 	static abstract public class Task implements Runnable {
 		final Application app;
 		long executeTimeMillis, intervalMillis;
-		int repeatCount = CANCELLED;
+		int repeatCount;
+		volatile Timer timer;
 
 		public Task () {
 			app = Gdx.app; // Store which app to postRunnable (eg for multiple LwjglAWTCanvas).
@@ -200,9 +203,22 @@ public class Timer {
 		abstract public void run ();
 
 		/** Cancels the task. It will not be executed until it is scheduled again. This method can be called at any time. */
-		public synchronized void cancel () {
-			executeTimeMillis = 0;
-			repeatCount = CANCELLED;
+		public void cancel () {
+			Timer timer = this.timer;
+			if (timer != null) {
+				synchronized (timer) {
+					synchronized (this) {
+						executeTimeMillis = 0;
+						this.timer = null;
+						timer.tasks.removeValue(this, true);
+					}
+				}
+			} else {
+				synchronized (this) {
+					executeTimeMillis = 0;
+					this.timer = null;
+				}
+			}
 		}
 
 		/** Returns true if this task is scheduled to be executed in the future by a timer. The execution time may be reached at any
@@ -214,9 +230,9 @@ public class Timer {
 		 * 	if (!task.isScheduled()) { ... }
 		 * }
 		 * </pre>
-		*/
-		public synchronized boolean isScheduled () {
-			return repeatCount != CANCELLED;
+		 */
+		public boolean isScheduled () {
+			return timer != null;
 		}
 
 		/** Returns the time in milliseconds when this task will be executed next. */

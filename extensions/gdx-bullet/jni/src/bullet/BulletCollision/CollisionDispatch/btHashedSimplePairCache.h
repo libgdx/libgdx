@@ -123,9 +123,9 @@ private:
 
 	
 	
-	SIMD_FORCE_INLINE	unsigned int getHash(unsigned int indexA, unsigned int indexB)
+	SIMD_FORCE_INLINE unsigned int getHash(unsigned int indexA, unsigned int indexB)
 	{
-		int key = static_cast<int>(((unsigned int)indexA) | (((unsigned int)indexB) <<16));
+		unsigned int key = indexA | (indexB << 16);
 		// Thomas Wang's hash
 
 		key += ~(key << 15);
@@ -134,7 +134,7 @@ private:
 		key ^=  (key >> 6);
 		key += ~(key << 11);
 		key ^=  (key >> 16);
-		return static_cast<unsigned int>(key);
+		return key;
 	}
 	
 

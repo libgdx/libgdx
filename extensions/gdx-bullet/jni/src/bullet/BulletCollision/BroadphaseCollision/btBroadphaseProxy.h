@@ -101,10 +101,10 @@ BT_DECLARE_ALIGNED_ALLOCATOR();
 
 	//Usually the client btCollisionObject or Rigidbody class
 	void*	m_clientObject;
-	short int m_collisionFilterGroup;
-	short int m_collisionFilterMask;
-	void*	m_multiSapParentProxy;		
-	int			m_uniqueId;//m_uniqueId is introduced for paircache. could get rid of this, by calculating the address offset etc.
+	int		m_collisionFilterGroup;
+	int		m_collisionFilterMask;
+
+	int		m_uniqueId;//m_uniqueId is introduced for paircache. could get rid of this, by calculating the address offset etc.
 
 	btVector3	m_aabbMin;
 	btVector3	m_aabbMax;
@@ -115,18 +115,17 @@ BT_DECLARE_ALIGNED_ALLOCATOR();
 	}
 
 	//used for memory pools
-	btBroadphaseProxy() :m_clientObject(0),m_multiSapParentProxy(0)
+	btBroadphaseProxy() :m_clientObject(0)
 	{
 	}
 
-	btBroadphaseProxy(const btVector3& aabbMin,const btVector3& aabbMax,void* userPtr,short int collisionFilterGroup, short int collisionFilterMask,void* multiSapParentProxy=0)
+	btBroadphaseProxy(const btVector3& aabbMin,const btVector3& aabbMax,void* userPtr, int collisionFilterGroup,  int collisionFilterMask)
 		:m_clientObject(userPtr),
 		m_collisionFilterGroup(collisionFilterGroup),
 		m_collisionFilterMask(collisionFilterMask),
 		m_aabbMin(aabbMin),
 		m_aabbMax(aabbMax)
 	{
-		m_multiSapParentProxy = multiSapParentProxy;
 	}
 
 	

@@ -1,3 +1,4 @@
+
 %module btSoftBody
 
 %template(btSparseSdf3) btSparseSdf<3>;
@@ -18,6 +19,22 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 %{
 #include <BulletSoftBody/btSoftBody.h>
 %}
+
+%immutable btSoftBody::Note::m_text;
+
+%rename(upcastConstBtCollisionObject) btSoftBody::upcast(btCollisionObject const *);
+
+%rename(EnumFlagType) btSoftBody::eAeroModel::_;
+%rename(EnumFlagType) btSoftBody::eVSolver::_;
+%rename(EnumFlagType) btSoftBody::ePSolver::_;
+%rename(EnumFlagType) btSoftBody::eSolverPresets::_;
+%rename(EnumFlagType) btSoftBody::eFeature::_;
+%rename(EnumFlagType) btSoftBody::fCollision::_;
+%rename(EnumFlagType) btSoftBody::fMaterial::_;
+%rename(EnumFlagType) btSoftBody::Joint::eType::_;
+
+%rename(getSolverV) btSoftBody::getSolver(btSoftBody::eVSolver::_);
+%rename(getSolverP) btSoftBody::getSolver(btSoftBody::ePSolver::_);
 
 %ignore btSoftBody::getWorldInfo;
 %ignore btSoftBody::getRestLengthScale;

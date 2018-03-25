@@ -586,8 +586,16 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file. */
 	public void moveTo (FileHandle dest) {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot move a classpath file: " + file);
-		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		switch (type) {
+		case Classpath:
+			throw new GdxRuntimeException("Cannot move a classpath file: " + file);
+		case Internal:
+			throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		case Absolute:
+		case External:
+			// Try rename for efficiency and to change case on case-insensitive file systems.
+			if (file().renameTo(dest.file())) return;
+		}
 		copyTo(dest);
 		delete();
 		if (exists() && isDirectory()) deleteDirectory();

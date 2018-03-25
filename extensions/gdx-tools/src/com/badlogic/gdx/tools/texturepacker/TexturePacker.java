@@ -18,6 +18,7 @@ package com.badlogic.gdx.tools.texturepacker;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -114,6 +115,10 @@ public class TexturePacker {
 
 			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
+
+			if (settings.scaleResampling != null && settings.scaleResampling.length > i && settings.scaleResampling[i] != null)
+				imageProcessor.setResampling(settings.scaleResampling[i]);
+
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
@@ -602,6 +607,7 @@ public class TexturePacker {
 		public boolean grid;
 		public float[] scale = {1};
 		public String[] scaleSuffix = {""};
+		public Resampling[] scaleResampling = {Resampling.bicubic};
 		public String atlasExtension = ".atlas";
 
 		public Settings () {
@@ -651,6 +657,7 @@ public class TexturePacker {
 			grid = settings.grid;
 			scale = Arrays.copyOf(settings.scale, settings.scale.length);
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
+			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
 			atlasExtension = settings.atlasExtension;
 		}
 
@@ -667,6 +674,18 @@ public class TexturePacker {
 				}
 			}
 			return packFileName;
+		}
+	}
+
+	static public enum Resampling {
+		nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR), //
+		bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR), //
+		bicubic(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+		final Object value;
+
+		Resampling (Object value) {
+			this.value = value;
 		}
 	}
 

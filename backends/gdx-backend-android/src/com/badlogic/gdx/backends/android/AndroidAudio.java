@@ -16,17 +16,14 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Build;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files.FileType;
@@ -36,6 +33,11 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /** An implementation of the {@link Audio} interface for Android.
  * 
@@ -47,7 +49,15 @@ public final class AndroidAudio implements Audio {
 
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio) {
-			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				AudioAttributes audioAttrib = new AudioAttributes.Builder()
+						.setUsage(AudioAttributes.USAGE_GAME)
+						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+						.build();
+				soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
+			}else {
+				soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);// srcQuality: the sample-rate converter quality. Currently has no effect. Use 0 for the default.
+			}
 			manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 			if (context instanceof Activity) {
 				((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);

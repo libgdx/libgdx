@@ -48,7 +48,7 @@ public:
 
 	virtual void	getBoundingSphere(btVector3& center,btScalar& radius) const;
 
-	///getAngularMotionDisc returns the maximus radius needed for Conservative Advancement to handle time-of-impact with rotations.
+	///getAngularMotionDisc returns the maximum radius needed for Conservative Advancement to handle time-of-impact with rotations.
 	virtual btScalar	getAngularMotionDisc() const;
 
 	virtual btScalar	getContactBreakingThreshold(btScalar defaultContactThresholdFactor) const;

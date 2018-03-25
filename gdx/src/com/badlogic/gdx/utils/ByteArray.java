@@ -78,6 +78,33 @@ public class ByteArray {
 		items[size++] = value;
 	}
 
+	public void add (byte value1, byte value2) {
+		byte[] items = this.items;
+		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		size += 2;
+	}
+
+	public void add (byte value1, byte value2, byte value3) {
+		byte[] items = this.items;
+		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		size += 3;
+	}
+
+	public void add (byte value1, byte value2, byte value3, byte value4) {
+		byte[] items = this.items;
+		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		size += 4;
+	}
+
 	public void addAll (ByteArray array) {
 		addAll(array, 0, array.size);
 	}

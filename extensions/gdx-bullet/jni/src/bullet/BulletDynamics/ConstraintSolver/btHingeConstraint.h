@@ -314,7 +314,7 @@ public:
 	{ 
 		return m_enableAngularMotor; 
 	}
-	inline btScalar getMotorTargetVelosity() 
+	inline btScalar getMotorTargetVelocity() 
 	{ 
 		return m_motorTargetVelocity; 
 	}
@@ -487,6 +487,14 @@ SIMD_FORCE_INLINE	const char*	btHingeConstraint::serialize(void* dataBuffer, btS
 	hingeData->m_limitSoftness = float(m_limitSoftness);
 	hingeData->m_biasFactor = float(m_biasFactor);
 	hingeData->m_relaxationFactor = float(m_relaxationFactor);
+#endif
+
+	// Fill padding with zeros to appease msan.
+#ifdef BT_USE_DOUBLE_PRECISION
+	hingeData->m_padding1[0] = 0;
+	hingeData->m_padding1[1] = 0;
+	hingeData->m_padding1[2] = 0;
+	hingeData->m_padding1[3] = 0;
 #endif
 
 	return btHingeConstraintDataName;

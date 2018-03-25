@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.9.5-SNAPSHOT"/>
+	<property name="version" value="1.9.9-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -232,7 +232,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-android.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-7.1.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>

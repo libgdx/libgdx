@@ -60,8 +60,7 @@ protected:
 	btPoolAllocator*	m_collisionAlgorithmPool;
 	bool	m_ownsCollisionAlgorithmPool;
 
-	//default simplex/penetration depth solvers
-	btVoronoiSimplexSolver*	m_simplexSolver;
+	//default penetration depth solver
 	btConvexPenetrationDepthSolver*	m_pdSolver;
 	
 	//default CreationFunctions, filling the m_doubleDispatch table
@@ -102,13 +101,9 @@ public:
 	}
 
 
-	virtual	btVoronoiSimplexSolver*	getSimplexSolver()
-	{
-		return m_simplexSolver;
-	}
-
-
 	virtual btCollisionAlgorithmCreateFunc* getCollisionAlgorithmCreateFunc(int proxyType0,int proxyType1);
+
+	virtual btCollisionAlgorithmCreateFunc* getClosestPointsAlgorithmCreateFunc(int proxyType0, int proxyType1);
 
 	///Use this method to allow to generate multiple contact points between at once, between two objects using the generic convex-convex algorithm.
 	///By default, this feature is disabled for best performance.

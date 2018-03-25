@@ -4,6 +4,9 @@
 
 %module btRaycastVehicle
 
+%rename(getWheelInfoConst) btRaycastVehicle::getWheelInfo(int);
+%rename(getRigidBodyConst) btRaycastVehicle::getRigidBody() const;
+
 %{
 #include <BulletDynamics/Vehicle/btRaycastVehicle.h>
 %}

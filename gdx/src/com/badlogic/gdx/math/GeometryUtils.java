@@ -233,9 +233,13 @@ public final class GeometryUtils {
 	}
 
 	static public void ensureCCW (float[] polygon) {
-		if (!areVerticesClockwise(polygon, 0, polygon.length)) return;
-		int lastX = polygon.length - 2;
-		for (int i = 0, n = polygon.length / 2; i < n; i += 2) {
+		ensureCCW(polygon, 0, polygon.length);
+	}
+
+	static public void ensureCCW (float[] polygon, int offset, int count) {
+		if (!isClockwise(polygon, offset, count)) return;
+		int lastX = offset + count - 2;
+		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
 			float x = polygon[i];
 			float y = polygon[i + 1];
@@ -246,7 +250,7 @@ public final class GeometryUtils {
 		}
 	}
 
-	static private boolean areVerticesClockwise (float[] polygon, int offset, int count) {
+	static public boolean isClockwise (float[] polygon, int offset, int count) {
 		if (count <= 2) return false;
 		float area = 0, p1x, p1y, p2x, p2y;
 		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
@@ -256,10 +260,10 @@ public final class GeometryUtils {
 			p2y = polygon[i + 3];
 			area += p1x * p2y - p2x * p1y;
 		}
-		p1x = polygon[count - 2];
-		p1y = polygon[count - 1];
-		p2x = polygon[0];
-		p2y = polygon[1];
+		p1x = polygon[offset + count - 2];
+		p1y = polygon[offset + count - 1];
+		p2x = polygon[offset];
+		p2y = polygon[offset + 1];
 		return area + p1x * p2y - p2x * p1y < 0;
 	}
 }

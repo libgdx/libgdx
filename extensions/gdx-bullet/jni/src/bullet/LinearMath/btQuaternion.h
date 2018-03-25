@@ -141,11 +141,11 @@ public:
    * @param yaw Angle around Z
    * @param pitch Angle around Y
    * @param roll Angle around X */
-	void setEulerZYX(const btScalar& yaw, const btScalar& pitch, const btScalar& roll)
+	void setEulerZYX(const btScalar& yawZ, const btScalar& pitchY, const btScalar& rollX)
 	{
-		btScalar halfYaw = btScalar(yaw) * btScalar(0.5);  
-		btScalar halfPitch = btScalar(pitch) * btScalar(0.5);  
-		btScalar halfRoll = btScalar(roll) * btScalar(0.5);  
+		btScalar halfYaw = btScalar(yawZ) * btScalar(0.5);  
+		btScalar halfPitch = btScalar(pitchY) * btScalar(0.5);  
+		btScalar halfRoll = btScalar(rollX) * btScalar(0.5);  
 		btScalar cosYaw = btCos(halfYaw);
 		btScalar sinYaw = btSin(halfYaw);
 		btScalar cosPitch = btCos(halfPitch);
@@ -157,6 +157,28 @@ public:
                          cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw, //z
                          cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw); //formerly yzx
 	}
+
+	  /**@brief Get the euler angles from this quaternion
+	   * @param yaw Angle around Z
+	   * @param pitch Angle around Y
+	   * @param roll Angle around X */
+	void getEulerZYX(btScalar& yawZ, btScalar& pitchY, btScalar& rollX) const
+	{
+		btScalar squ;
+		btScalar sqx;
+		btScalar sqy;
+		btScalar sqz;
+		btScalar sarg;
+		sqx = m_floats[0] * m_floats[0];
+		sqy = m_floats[1] * m_floats[1];
+		sqz = m_floats[2] * m_floats[2];
+		squ = m_floats[3] * m_floats[3];
+		rollX = btAtan2(2 * (m_floats[1] * m_floats[2] + m_floats[3] * m_floats[0]), squ - sqx - sqy + sqz);
+		sarg = btScalar(-2.) * (m_floats[0] * m_floats[2] - m_floats[3] * m_floats[1]);
+		pitchY = sarg <= btScalar(-1.0) ? btScalar(-0.5) * SIMD_PI: (sarg >= btScalar(1.0) ? btScalar(0.5) * SIMD_PI : btAsin(sarg));
+		yawZ = btAtan2(2 * (m_floats[0] * m_floats[1] + m_floats[3] * m_floats[2]), squ + sqx - sqy - sqz);
+	}
+
   /**@brief Add two quaternions
    * @param q The quaternion to add to this one */
 	SIMD_FORCE_INLINE	btQuaternion& operator+=(const btQuaternion& q)
@@ -333,7 +355,15 @@ public:
 	{
 		return btSqrt(length2());
 	}
-
+	btQuaternion& safeNormalize()
+	{
+		btScalar l2 = length2();
+		if (l2>SIMD_EPSILON)
+		{
+			normalize();
+		}
+		return *this;
+	}
   /**@brief Normalize the quaternion 
    * Such that x^2 + y^2 + z^2 +w^2 = 1 */
 	btQuaternion& normalize() 

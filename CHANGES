@@ -1,4 +1,29 @@
+[1.9.9]
+- Update to Lwjgl 3.1.5! (Bad release)
+- Update to Lwjgl 3.1.4
+- Update android level we build against to 7.1 (API 25)
+- API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
+- Skin JSON files can now use the simple names of classes, i.e. "BitmapFont" rather than "com.badlogic.gdx.graphics.g2d.BitmapFont". Custom classes can be added by overriding Skin.getJsonLoader() and calling json.setClassTag().
+- Skin supports cascading styles in JSON. Use the "parent" property to tag another style by name to use its values as defaults. See https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/assets/data/uiskin.json for example.
+- SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
+- API addition: Tree indentation can be customized.
+- Fixed GlyphLayout not respecting BitmapFontData#down.
+
+[1.9.8]
+- Add iPhoneX images
+- Fix MacOS issue with GL_ARB_texture_float extension check
+- Fix AtlasTmxMapLoader tileset tile id offset
+- Bullet: updated to 2.87, see: http://bulletphysics.org/wordpress/?p=485
+- API Addition: Possibility to specify TexturePacker settings for resampling when scaling.
+- API Addition: Support for customizing render buffer attachments in GLFrameBuffers
+- API Change: Revert to constructors for GLFrameBuffers for easier customization
+
 [1.9.7]
+- Update to MobiVM(RoboVM) 2.3.3
+- Add iOS 11 support
+- Update to Lwjgl 3.1.3
+- Update to MOE 1.4.0
+- API Change: GLFrameBuffer has been refactored https://github.com/libgdx/libgdx/pull/4882. Create standard FrameBuffers with static methods. Customized FBOS with FrameBufferBuilder
 - API addition: Tiled group layer support 
 - Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
@@ -29,6 +54,7 @@
 - API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
 - Added support for 2d particles independant scale X and Y.
 - API Change: ParticleEmitter getScale, matchSize are now getScaleX/getScaleY, matchSizeX/matchSizeY. Added scaleSize(float scaleX, float scaleY)
+- API Change: Added iconDropped() callback to AndroidWallpaperListener.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
