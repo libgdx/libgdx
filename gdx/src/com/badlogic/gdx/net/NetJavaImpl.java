@@ -82,7 +82,7 @@ public class NetJavaImpl {
 			}
 
 			try {
-				return StreamUtils.copyStreamToString(input, connection.getContentLength());
+				return StreamUtils.copyStreamToString(input, connection.getContentLength(), "UTF8");
 			} catch (IOException e) {
 				return "";
 			} finally {
