@@ -405,7 +405,8 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, config.windowMaximized ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
-		
+		GLFW.glfwWindowHint(GLFW.GLFW_AUTO_ICONIFY, config.autoIconify ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+
 		if(sharedContextWindow == 0) {
 			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
 			GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
