@@ -771,7 +771,8 @@ public class Actor {
 		Pools.free(ScissorStack.popScissors());
 	}
 
-	/** Transforms the specified point in screen coordinates to the actor's local coordinate system. */
+	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.
+	 * @see Stage#screenToStageCoordinates(Vector2) */
 	public Vector2 screenToLocalCoordinates (Vector2 screenCoords) {
 		Stage stage = this.stage;
 		if (stage == null) return screenCoords;
@@ -785,8 +786,15 @@ public class Actor {
 		return stageCoords;
 	}
 
-	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates.
-	 * @see Stage#toScreenCoordinates(Vector2, com.badlogic.gdx.math.Matrix4) */
+	/** Transforms the specified point in the actor's coordinates to be in screen coordinates.
+	 * @see Stage#stageToScreenCoordinates(Vector2) */
+	public Vector2 localToScreenCoordinates (Vector2 localCoords) {
+		Stage stage = this.stage;
+		if (stage == null) return localCoords;
+		return stage.stageToScreenCoordinates(localToAscendantCoordinates(null, localCoords));
+	}
+
+	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. */
 	public Vector2 localToStageCoordinates (Vector2 localCoords) {
 		return localToAscendantCoordinates(null, localCoords);
 	}
