@@ -66,7 +66,7 @@ public class ScrollPane extends WidgetGroup {
 	boolean touchScrollH, touchScrollV;
 	final Vector2 lastPoint = new Vector2();
 	float areaWidth, areaHeight;
-	private boolean fadeScrollBars = true, smoothScrolling = true;
+	boolean fadeScrollBars = true, smoothScrolling = true, scrollBarTouch = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 	boolean cancelTouchFocus = true;
 
@@ -117,7 +117,7 @@ public class ScrollPane extends WidgetGroup {
 
 				if (fadeAlpha == 0) return false;
 
-				if (scrollX && hScrollBounds.contains(x, y)) {
+				if (scrollBarTouch && scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
 					resetFade();
 					if (hKnobBounds.contains(x, y)) {
@@ -130,7 +130,7 @@ public class ScrollPane extends WidgetGroup {
 					setScrollX(amountX + areaWidth * (x < hKnobBounds.x ? -1 : 1));
 					return true;
 				}
-				if (scrollY && vScrollBounds.contains(x, y)) {
+				if (scrollBarTouch && scrollY && vScrollBounds.contains(x, y)) {
 					event.stop();
 					resetFade();
 					if (vKnobBounds.contains(x, y)) {
@@ -984,6 +984,10 @@ public class ScrollPane extends WidgetGroup {
 		overscrollSpeedMax = speedMax;
 	}
 
+	public float getOverscrollDistance () {
+		return overscrollDistance;
+	}
+
 	/** Forces enabling scrollbars (for non-flick scroll) and overscrolling (for flick scroll) in a direction, even if the contents
 	 * do not exceed the bounds in that direction. */
 	public void setForceScroll (boolean x, boolean y) {
@@ -1026,6 +1030,11 @@ public class ScrollPane extends WidgetGroup {
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
+	}
+
+	/** When false, the scroll bars don't respond to touch or mouse events. Default is true. */
+	public void setScrollBarTouch (boolean scrollBarTouch) {
+		this.scrollBarTouch = scrollBarTouch;
 	}
 
 	public void setSmoothScrolling (boolean smoothScrolling) {
