@@ -521,23 +521,12 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
+		updateWidgetPosition();
 		widget.setSize(widgetWidth, widgetHeight);
 		if (widget instanceof Layout) ((Layout)widget).validate();
 	}
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		if (widget == null) return;
-
-		validate();
-
-		// Setup transform for this group.
-		applyTransform(batch, computeTransform());
-
-		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
-		if (scrollY)
-			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
-
+	private void updateWidgetPosition () {
 		// Calculate the widget's position depending on the scroll state and available widget area.
 		float y = widgetAreaBounds.y;
 		if (!scrollY)
@@ -564,6 +553,22 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		widget.setPosition(x, y);
+	}
+
+	@Override
+	public void draw (Batch batch, float parentAlpha) {
+		if (widget == null) return;
+
+		validate();
+
+		// Setup transform for this group.
+		applyTransform(batch, computeTransform());
+
+		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
+		if (scrollY)
+			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
+
+		updateWidgetPosition();
 
 		if (widget instanceof Cullable) {
 			widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
