@@ -25,8 +25,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A group that lays out its children top to bottom vertically, with optional wrapping. This can be easier than using
- * {@link Table} when actors need to be inserted into or removed from the middle of the group.
+/** A group that lays out its children top to bottom vertically, with optional wrapping. {@link #getChildren()} can be sorted to
+ * change the order of the actors (eg {@link Actor#setZIndex(int)}). This can be easier than using {@link Table} when actors need
+ * to be inserted into or removed from the middle of the group. {@link #invalidate()} must be called after changing the children
+ * order.
  * <p>
  * The preferred width is the largest preferred width of any child. The preferred height is the sum of the children's preferred
  * heights plus spacing. The preferred size is slightly different when {@link #wrap() wrap} is enabled. The min size is the

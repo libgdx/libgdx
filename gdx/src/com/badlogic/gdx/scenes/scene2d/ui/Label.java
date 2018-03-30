@@ -38,6 +38,7 @@ public class Label extends Widget {
 	private final GlyphLayout layout = new GlyphLayout();
 	private final Vector2 prefSize = new Vector2();
 	private final StringBuilder text = new StringBuilder();
+	private int intValue = Integer.MIN_VALUE;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private int lineAlign = Align.left;
@@ -88,6 +89,14 @@ public class Label extends Widget {
 		return style;
 	}
 
+	/** Sets the text to the specified integer value. If the text is already equivalent to the specified value, a string is not
+	 * allocated. */
+	public void setText (int value) {
+		if (this.intValue == value) return;
+		setText(value + "");
+		intValue = value;
+	}
+
 	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
 		if (newText == null) newText = "";
@@ -100,6 +109,7 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
+		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
 	}
 

@@ -1,4 +1,4 @@
-#if defined(diffuseTextureFlag) || defined(specularTextureFlag)
+#if defined(diffuseTextureFlag) || defined(specularTextureFlag) || defined(emissiveTextureFlag)
 #define textureFlag
 #endif
 
@@ -31,6 +31,11 @@ attribute vec2 a_texCoord0;
 #ifdef diffuseTextureFlag
 uniform vec4 u_diffuseUVTransform;
 varying vec2 v_diffuseUV;
+#endif
+
+#ifdef emissiveTextureFlag
+uniform vec4 u_emissiveUVTransform;
+varying vec2 v_emissiveUV;
 #endif
 
 #ifdef specularTextureFlag
@@ -189,6 +194,10 @@ void main() {
 		v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
 	#endif //diffuseTextureFlag
 	
+	#ifdef emissiveTextureFlag
+		v_emissiveUV = u_emissiveUVTransform.xy + a_texCoord0 * u_emissiveUVTransform.zw;
+	#endif //emissiveTextureFlag
+
 	#ifdef specularTextureFlag
 		v_specularUV = u_specularUVTransform.xy + a_texCoord0 * u_specularUVTransform.zw;
 	#endif //specularTextureFlag

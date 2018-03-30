@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -113,6 +112,20 @@ public class WidgetGroup extends Group implements Layout {
 		if (!needsLayout) return;
 		needsLayout = false;
 		layout();
+
+		// Widgets may call invalidateHierarchy during layout (eg, a wrapped label). The root-most widget group retries layout a
+		// reasonable number of times.
+		if (needsLayout) {
+			while (parent != null) {
+				if (parent instanceof WidgetGroup) return;
+				parent = parent.getParent();
+			}
+			for (int i = 0; i < 5; i++) {
+				needsLayout = false;
+				layout();
+				if (!needsLayout) break;
+			}
+		}
 	}
 
 	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
