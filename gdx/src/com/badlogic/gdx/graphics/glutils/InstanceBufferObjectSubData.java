@@ -117,6 +117,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void setInstanceData (FloatBuffer data, int count) {
         isDirty = true;
         if (isDirect) {
@@ -148,6 +149,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
         bufferChanged();
     }
 
+    @Override
     public void updateInstanceData (int targetOffset, FloatBuffer data, int sourceOffset, int count) {
         isDirty = true;
         if (isDirect) {
@@ -187,22 +189,24 @@ public class InstanceBufferObjectSubData implements InstanceData {
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = shader.getAttributeLocation(attribute.alias);
                 if (location < 0) continue;
-                shader.enableVertexAttribute(location);
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-                        attribute.offset);
-                Gdx.gl30.glVertexAttribDivisor(location, 1);
+                shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+                        attributes.vertexSize, attribute.offset);
+                Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
             }
         } else {
             for (int i = 0; i < numAttributes; i++) {
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
                 if (location < 0) continue;
-                shader.enableVertexAttribute(location);
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-                        attribute.offset);
-                Gdx.gl30.glVertexAttribDivisor(location, 1);
+                shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+                        attributes.vertexSize, attribute.offset);
+                Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
             }
         }
         isBound = true;
@@ -222,12 +226,19 @@ public class InstanceBufferObjectSubData implements InstanceData {
         final int numAttributes = attributes.size();
         if (locations == null) {
             for (int i = 0; i < numAttributes; i++) {
-                shader.disableVertexAttribute(attributes.get(i).alias);
+                final VertexAttribute attribute = attributes.get(i);
+                final int location = shader.getAttributeLocation(attribute.alias);
+                if (location < 0) continue;
+                int unitOffset = + attribute.unit;
+                shader.disableVertexAttribute(location + unitOffset);
             }
         } else {
             for (int i = 0; i < numAttributes; i++) {
+                final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
-                if (location >= 0) shader.disableVertexAttribute(location);
+                if (location < 0) continue;
+                int unitOffset = + attribute.unit;
+                shader.enableVertexAttribute(location + unitOffset);
             }
         }
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);

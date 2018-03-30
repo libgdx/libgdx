@@ -8,6 +8,8 @@
 - SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
 - API addition: Tree indentation can be customized.
 - Fixed GlyphLayout not respecting BitmapFontData#down.
+- Adds new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
+- Adds methods to enable instanced rendering and set per instance data in a Mesh.
 
 [1.9.8]
 - Add iPhoneX images
