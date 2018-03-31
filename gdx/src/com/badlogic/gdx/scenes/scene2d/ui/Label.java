@@ -93,7 +93,7 @@ public class Label extends Widget {
 	 * allocated. */
 	public void setText (int value) {
 		if (this.intValue == value) return;
-		setText(value + "");
+		setText(Integer.toString(value));
 		intValue = value;
 	}
 
