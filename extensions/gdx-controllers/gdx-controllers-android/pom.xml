@@ -33,7 +33,7 @@
 			<artifactId>android</artifactId>
 			<version>${android.version}</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/../../../backends/gdx-backend-android/libs/android-4.4.jar</systemPath>
+			<systemPath>${basedir}/../../../backends/gdx-backend-android/libs/android-7.1.jar</systemPath>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

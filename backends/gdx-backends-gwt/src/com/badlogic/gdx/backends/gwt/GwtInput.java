@@ -498,7 +498,7 @@ public class GwtInput implements Input {
 
 	private void handleEvent (NativeEvent e) {
 		if (e.getType().equals("mousedown")) {
-			if (!e.getEventTarget().equals(canvas) || touched[0]) {
+			if (!e.getEventTarget().equals(canvas) || pressedButtons.contains(getButton(e.getButton()))) {
 				float mouseX = getRelativeX(e, canvas);
 				float mouseY = getRelativeY(e, canvas);
 				if (mouseX < 0 || mouseX > Gdx.graphics.getWidth() || mouseY < 0 || mouseY > Gdx.graphics.getHeight()) {
@@ -545,7 +545,7 @@ public class GwtInput implements Input {
 		}
 
 		if (e.getType().equals("mouseup")) {
-			if (!touched[0]) return;
+			if (!pressedButtons.contains(getButton(e.getButton()))) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
 			this.touched[0] = pressedButtons.size > 0;
 			if (isCursorCatched()) {

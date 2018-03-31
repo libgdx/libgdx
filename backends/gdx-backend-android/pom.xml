@@ -24,7 +24,7 @@
       <artifactId>android</artifactId>
       <version>${android.version}</version>
       <scope>system</scope>
-      <systemPath>${basedir}/libs/android-4.4.jar</systemPath>
+      <systemPath>${basedir}/libs/android-7.1.jar</systemPath>
       <optional>true</optional>
     </dependency>
     

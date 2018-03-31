@@ -70,6 +70,18 @@ public final class ParticleSystem implements RenderableProvider {
 		for (ParticleEffect effect : effects) {
 			effect.update();
 			effect.draw();
+		}		
+	}
+
+	public void update (float deltaTime) {
+		for (ParticleEffect effect : effects) {
+			effect.update(deltaTime);
+		}
+	}
+	public void updateAndDraw(float deltaTime) {
+		for (ParticleEffect effect : effects) {
+			effect.update(deltaTime);
+			effect.draw();
 		}
 	}
 

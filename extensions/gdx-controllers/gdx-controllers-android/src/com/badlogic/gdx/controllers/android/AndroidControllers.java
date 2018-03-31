@@ -191,6 +191,9 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 
 	@Override
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
+		if (!keyEvent.isGamepadButton(keyCode)) {
+			return false;
+		}
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());
 		if(controller != null) {
 			if(controller.getButton(keyCode) && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
@@ -306,7 +309,9 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	}
 	
 	private boolean isController(InputDevice device) {
-		return (device.getSources() & InputDevice.SOURCE_JOYSTICK) != 0;
+		return ((device.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) == InputDevice.SOURCE_CLASS_JOYSTICK)
+				&& (((device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+				|| (device.getKeyboardType() != InputDevice.KEYBOARD_TYPE_ALPHABETIC));
 	}
 
 	@Override
