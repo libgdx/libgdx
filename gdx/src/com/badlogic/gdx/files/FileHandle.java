@@ -94,7 +94,7 @@ public class FileHandle {
 
 	public String extension () {
 		String name = file.getName();
-		int dotIndex = name.lastIndexOf('.');
+		int dotIndex = name.indexOf('.');
 		if (dotIndex == -1) return "";
 		return name.substring(dotIndex + 1);
 	}
@@ -102,7 +102,7 @@ public class FileHandle {
 	/** @return the name of the file, without parent paths or the extension. */
 	public String nameWithoutExtension () {
 		String name = file.getName();
-		int dotIndex = name.lastIndexOf('.');
+		int dotIndex = name.indexOf('.');
 		if (dotIndex == -1) return name;
 		return name.substring(0, dotIndex);
 	}
@@ -110,10 +110,8 @@ public class FileHandle {
 	/** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be
 	 *         returned as forward slashes. */
 	public String pathWithoutExtension () {
-		String path = file.getPath().replace('\\', '/');
-		int dotIndex = path.lastIndexOf('.');
-		if (dotIndex == -1) return path;
-		return path.substring(0, dotIndex);
+		File fileWithoutExtension = new File(file.getParent(), nameWithoutExtension());
+		return fileWithoutExtension.getPath().replace('\\', '/');
 	}
 
 	public FileType type () {
