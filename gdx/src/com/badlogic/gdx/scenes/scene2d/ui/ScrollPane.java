@@ -206,7 +206,8 @@ public class ScrollPane extends WidgetGroup {
 				if (super.handle(event)) {
 					if (((InputEvent)event).getType() == InputEvent.Type.touchDown) flingTimer = 0;
 					return true;
-				}
+				} else if (event instanceof InputEvent && ((InputEvent)event).isTouchFocusCancel()) //
+					cancel();
 				return false;
 			}
 		};
