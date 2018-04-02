@@ -16,17 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.HttpStatus;
-import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -37,14 +28,21 @@ import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GwtNet implements Net {
 
 	ObjectMap<HttpRequest, Request> requests;
 	ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	GwtApplicationConfiguration config;
 
 	private final class HttpClientResponse implements HttpResponse {
 
@@ -101,7 +99,8 @@ public class GwtNet implements Net {
 		}
 	}
 
-	public GwtNet () {
+	public GwtNet (GwtApplicationConfiguration aConfig) {
+		config = aConfig;
 		requests = new ObjectMap<HttpRequest, Request>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -204,7 +203,12 @@ public class GwtNet implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		Window.open(URI, "_blank", null);
+		if(config.openInNewTab) {
+			Window.open(URI, "_blank", null);
+		}
+		else{
+			Window.Location.assign(URI);
+		}
 		return true;
 	}
 }

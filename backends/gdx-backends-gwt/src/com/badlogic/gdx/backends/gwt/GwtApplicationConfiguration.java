@@ -56,6 +56,8 @@ public class GwtApplicationConfiguration {
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
 
+	public boolean openInNewTab = true;
+
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
 		this.height = height;
