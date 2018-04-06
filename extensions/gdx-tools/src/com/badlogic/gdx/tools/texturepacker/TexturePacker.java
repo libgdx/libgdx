@@ -566,7 +566,7 @@ public class TexturePacker {
 
 		@Override
 		public String toString () {
-			return name + "[" + x + "," + y + " " + width + "x" + height + "]";
+			return name + (index != -1 ? "_" + index : "") + "[" + x + "," + y + " " + width + "x" + height + "]";
 		}
 
 		static public String getAtlasName (String name, boolean flattenPaths) {
