@@ -764,7 +764,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
 		public boolean kerning = true;
-		/** The optional PixmapPacker to use */
+		/** The optional PixmapPacker to use for packing multiple fonts into a single texture.
+		 * @see FreeTypeFontParameter */
 		public PixmapPacker packer = null;
 		/** Whether to flip the font vertically */
 		public boolean flip = false;
