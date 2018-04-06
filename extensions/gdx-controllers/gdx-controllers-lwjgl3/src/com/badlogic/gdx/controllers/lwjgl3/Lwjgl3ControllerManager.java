@@ -15,12 +15,6 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 	final Array<ControllerListener> listeners = new Array<ControllerListener>();
 	
 	public Lwjgl3ControllerManager() {
-		for(int i = GLFW.GLFW_JOYSTICK_1; i < GLFW.GLFW_JOYSTICK_LAST; i++) {
-			if(GLFW.glfwJoystickPresent(i)) {
-				controllers.add(new Lwjgl3Controller(this, i));
-			}
-		}
-		
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run () {
