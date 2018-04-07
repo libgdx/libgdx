@@ -574,109 +574,6 @@ public class TexturePacker {
 		}
 	}
 
-	/** @author Nathan Sweet */
-	static public class Settings {
-		public boolean pot = true;
-		public int paddingX = 2, paddingY = 2;
-		public boolean edgePadding = true;
-		public boolean duplicatePadding = false;
-		public boolean rotation;
-		public int minWidth = 16, minHeight = 16;
-		public int maxWidth = 1024, maxHeight = 1024;
-		public boolean square = false;
-		public boolean stripWhitespaceX, stripWhitespaceY;
-		public int alphaThreshold;
-		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
-		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
-		public Format format = Format.RGBA8888;
-		public boolean alias = true;
-		public String outputFormat = "png";
-		public float jpegQuality = 0.9f;
-		public boolean ignoreBlankImages = true;
-		public boolean fast;
-		public boolean debug;
-		public boolean silent;
-		public boolean combineSubdirectories;
-		public boolean ignore;
-		public boolean flattenPaths;
-		public boolean premultiplyAlpha;
-		public boolean useIndexes = true;
-		public boolean bleed = true;
-		public int bleedIterations = 2;
-		public boolean limitMemory = true;
-		public boolean grid;
-		public float[] scale = {1};
-		public String[] scaleSuffix = {""};
-		public Resampling[] scaleResampling = {Resampling.bicubic};
-		public String atlasExtension = ".atlas";
-
-		public Settings () {
-		}
-
-		/** @see #set(Settings) */
-		public Settings (Settings settings) {
-			set(settings);
-		}
-
-		/** Copies values from another instance to the current one */
-		public void set (Settings settings) {
-			fast = settings.fast;
-			rotation = settings.rotation;
-			pot = settings.pot;
-			minWidth = settings.minWidth;
-			minHeight = settings.minHeight;
-			maxWidth = settings.maxWidth;
-			maxHeight = settings.maxHeight;
-			paddingX = settings.paddingX;
-			paddingY = settings.paddingY;
-			edgePadding = settings.edgePadding;
-			duplicatePadding = settings.duplicatePadding;
-			alphaThreshold = settings.alphaThreshold;
-			ignoreBlankImages = settings.ignoreBlankImages;
-			stripWhitespaceX = settings.stripWhitespaceX;
-			stripWhitespaceY = settings.stripWhitespaceY;
-			alias = settings.alias;
-			format = settings.format;
-			jpegQuality = settings.jpegQuality;
-			outputFormat = settings.outputFormat;
-			filterMin = settings.filterMin;
-			filterMag = settings.filterMag;
-			wrapX = settings.wrapX;
-			wrapY = settings.wrapY;
-			debug = settings.debug;
-			silent = settings.silent;
-			combineSubdirectories = settings.combineSubdirectories;
-			ignore = settings.ignore;
-			flattenPaths = settings.flattenPaths;
-			premultiplyAlpha = settings.premultiplyAlpha;
-			square = settings.square;
-			useIndexes = settings.useIndexes;
-			bleed = settings.bleed;
-			bleedIterations = settings.bleedIterations;
-			limitMemory = settings.limitMemory;
-			grid = settings.grid;
-			scale = Arrays.copyOf(settings.scale, settings.scale.length);
-			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
-			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
-			atlasExtension = settings.atlasExtension;
-		}
-
-		public String getScaledPackFileName (String packFileName, int scaleIndex) {
-			// Use suffix if not empty string.
-			if (scaleSuffix[scaleIndex].length() > 0)
-				packFileName += scaleSuffix[scaleIndex];
-			else {
-				// Otherwise if scale != 1 or multiple scales, use subdirectory.
-				float scaleValue = scale[scaleIndex];
-				if (scale.length != 1) {
-					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
-						+ "/" + packFileName;
-				}
-			}
-			return packFileName;
-		}
-	}
-
 	static public enum Resampling {
 		nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR), //
 		bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR), //
@@ -841,6 +738,109 @@ public class TexturePacker {
 		}
 
 		abstract public void progress (float progress);
+	}
+
+	/** @author Nathan Sweet */
+	static public class Settings {
+		public boolean pot = true;
+		public int paddingX = 2, paddingY = 2;
+		public boolean edgePadding = true;
+		public boolean duplicatePadding = false;
+		public boolean rotation;
+		public int minWidth = 16, minHeight = 16;
+		public int maxWidth = 1024, maxHeight = 1024;
+		public boolean square = false;
+		public boolean stripWhitespaceX, stripWhitespaceY;
+		public int alphaThreshold;
+		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
+		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
+		public Format format = Format.RGBA8888;
+		public boolean alias = true;
+		public String outputFormat = "png";
+		public float jpegQuality = 0.9f;
+		public boolean ignoreBlankImages = true;
+		public boolean fast;
+		public boolean debug;
+		public boolean silent;
+		public boolean combineSubdirectories;
+		public boolean ignore;
+		public boolean flattenPaths;
+		public boolean premultiplyAlpha;
+		public boolean useIndexes = true;
+		public boolean bleed = true;
+		public int bleedIterations = 2;
+		public boolean limitMemory = true;
+		public boolean grid;
+		public float[] scale = {1};
+		public String[] scaleSuffix = {""};
+		public Resampling[] scaleResampling = {Resampling.bicubic};
+		public String atlasExtension = ".atlas";
+
+		public Settings () {
+		}
+
+		/** @see #set(Settings) */
+		public Settings (Settings settings) {
+			set(settings);
+		}
+
+		/** Copies values from another instance to the current one */
+		public void set (Settings settings) {
+			fast = settings.fast;
+			rotation = settings.rotation;
+			pot = settings.pot;
+			minWidth = settings.minWidth;
+			minHeight = settings.minHeight;
+			maxWidth = settings.maxWidth;
+			maxHeight = settings.maxHeight;
+			paddingX = settings.paddingX;
+			paddingY = settings.paddingY;
+			edgePadding = settings.edgePadding;
+			duplicatePadding = settings.duplicatePadding;
+			alphaThreshold = settings.alphaThreshold;
+			ignoreBlankImages = settings.ignoreBlankImages;
+			stripWhitespaceX = settings.stripWhitespaceX;
+			stripWhitespaceY = settings.stripWhitespaceY;
+			alias = settings.alias;
+			format = settings.format;
+			jpegQuality = settings.jpegQuality;
+			outputFormat = settings.outputFormat;
+			filterMin = settings.filterMin;
+			filterMag = settings.filterMag;
+			wrapX = settings.wrapX;
+			wrapY = settings.wrapY;
+			debug = settings.debug;
+			silent = settings.silent;
+			combineSubdirectories = settings.combineSubdirectories;
+			ignore = settings.ignore;
+			flattenPaths = settings.flattenPaths;
+			premultiplyAlpha = settings.premultiplyAlpha;
+			square = settings.square;
+			useIndexes = settings.useIndexes;
+			bleed = settings.bleed;
+			bleedIterations = settings.bleedIterations;
+			limitMemory = settings.limitMemory;
+			grid = settings.grid;
+			scale = Arrays.copyOf(settings.scale, settings.scale.length);
+			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
+			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
+			atlasExtension = settings.atlasExtension;
+		}
+
+		public String getScaledPackFileName (String packFileName, int scaleIndex) {
+			// Use suffix if not empty string.
+			if (scaleSuffix[scaleIndex].length() > 0)
+				packFileName += scaleSuffix[scaleIndex];
+			else {
+				// Otherwise if scale != 1 or multiple scales, use subdirectory.
+				float scaleValue = scale[scaleIndex];
+				if (scale.length != 1) {
+					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
+						+ "/" + packFileName;
+				}
+			}
+			return packFileName;
+		}
 	}
 
 	static public void main (String[] args) throws Exception {
