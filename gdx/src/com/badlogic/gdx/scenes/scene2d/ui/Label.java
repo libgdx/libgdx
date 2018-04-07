@@ -90,11 +90,13 @@ public class Label extends Widget {
 	}
 
 	/** Sets the text to the specified integer value. If the text is already equivalent to the specified value, a string is not
-	 * allocated. */
-	public void setText (int value) {
-		if (this.intValue == value) return;
+	 * allocated.
+	 * @return true if the text was changed. */
+	public boolean setText (int value) {
+		if (this.intValue == value) return false;
 		setText(Integer.toString(value));
 		intValue = value;
+		return true;
 	}
 
 	/** @param newText May be null, "" will be used. */
