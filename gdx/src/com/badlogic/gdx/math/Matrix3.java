@@ -151,8 +151,8 @@ public class Matrix3 implements Serializable {
 	 * @param radians the angle in radians.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotationRad (float radians) {
-		float cos = (float)Math.cos(radians);
-		float sin = (float)Math.sin(radians);
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
 		float[] val = this.val;
 
 		val[M00] = cos;
@@ -455,8 +455,8 @@ public class Matrix3 implements Serializable {
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotateRad (float radians) {
 		if (radians == 0) return this;
-		float cos = (float)Math.cos(radians);
-		float sin = (float)Math.sin(radians);
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
 		float[] tmp = this.tmp;
 
 		tmp[M00] = cos;
@@ -533,11 +533,11 @@ public class Matrix3 implements Serializable {
 	}
 
 	public float getRotation () {
-		return MathUtils.radiansToDegrees * (float)Math.atan2(val[M10], val[M00]);
+		return MathUtils.radiansToDegrees * MathUtils.atan2(val[M10], val[M00]);
 	}
 
 	public float getRotationRad () {
-		return (float)Math.atan2(val[M10], val[M00]);
+		return MathUtils.atan2(val[M10], val[M00]);
 	}
 
 	/** Scale the matrix in the both the x and y components by the scalar value.

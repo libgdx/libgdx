@@ -319,7 +319,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
 	 *         (typically counter-clockwise) and between 0 and 360. */
 	public float angle () {
-		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
+		float angle = MathUtils.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
 	}
@@ -327,19 +327,19 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the positive y-axis
 	 *         (typically counter-clockwise.) between -180 and +180 */
 	public float angle (Vector2 reference) {
-		return (float)Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
+		return MathUtils.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
 	}
 
 	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise) */
 	public float angleRad () {
-		return (float)Math.atan2(y, x);
+		return MathUtils.atan2(y, x);
 	}
 
 	/** @return the angle in radians of this vector (point) relative to the given vector. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise.) */
 	public float angleRad (Vector2 reference) {
-		return (float)Math.atan2(crs(reference), dot(reference));
+		return MathUtils.atan2(crs(reference), dot(reference));
 	}
 
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
@@ -373,8 +373,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param radians the angle in radians */
 	public Vector2 rotateRad (float radians) {
-		float cos = (float)Math.cos(radians);
-		float sin = (float)Math.sin(radians);
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
 
 		float newX = this.x * cos - this.y * sin;
 		float newY = this.x * sin + this.y * cos;
