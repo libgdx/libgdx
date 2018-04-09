@@ -149,7 +149,7 @@ public final class Intersector {
 	private final static Vector2 s = new Vector2();
 	private final static Vector2 e = new Vector2();
 
-	/** Intersects two polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
+	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
 	 *
 	 * @param p1 The polygon that is being clipped
@@ -210,7 +210,7 @@ public final class Intersector {
 		} else {
 			return false;
 		}
-	}	
+	}
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
