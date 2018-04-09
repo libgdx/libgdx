@@ -114,7 +114,8 @@ public class FileProcessor {
 	 * @param outputRoot May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
 	public ArrayList<Entry> process (File inputFileOrDir, File outputRoot) throws Exception {
-		if (!inputFileOrDir.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFileOrDir.getAbsolutePath());
+		if (!inputFileOrDir.exists())
+			throw new IllegalArgumentException("Input file does not exist: " + inputFileOrDir.getAbsolutePath());
 		if (inputFileOrDir.isFile())
 			return process(new File[] {inputFileOrDir}, outputRoot);
 		else
@@ -226,7 +227,8 @@ public class FileProcessor {
 	protected void processFile (Entry entry) throws Exception {
 	}
 
-	/** Called for each input directory. The files will be {@link #setComparator(Comparator) sorted}. */
+	/** Called for each input directory. The files will be {@link #setComparator(Comparator) sorted}. The specified files list can
+	 * be modified to change which files are processed. */
 	protected void processDir (Entry entryDir, ArrayList<Entry> files) throws Exception {
 	}
 

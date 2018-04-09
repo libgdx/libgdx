@@ -66,7 +66,7 @@ public class ScrollPane extends WidgetGroup {
 	boolean touchScrollH, touchScrollV;
 	final Vector2 lastPoint = new Vector2();
 	float areaWidth, areaHeight;
-	private boolean fadeScrollBars = true, smoothScrolling = true;
+	boolean fadeScrollBars = true, smoothScrolling = true, scrollBarTouch = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 	boolean cancelTouchFocus = true;
 
@@ -117,7 +117,7 @@ public class ScrollPane extends WidgetGroup {
 
 				if (fadeAlpha == 0) return false;
 
-				if (scrollX && hScrollBounds.contains(x, y)) {
+				if (scrollBarTouch && scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
 					resetFade();
 					if (hKnobBounds.contains(x, y)) {
@@ -130,7 +130,7 @@ public class ScrollPane extends WidgetGroup {
 					setScrollX(amountX + areaWidth * (x < hKnobBounds.x ? -1 : 1));
 					return true;
 				}
-				if (scrollY && vScrollBounds.contains(x, y)) {
+				if (scrollBarTouch && scrollY && vScrollBounds.contains(x, y)) {
 					event.stop();
 					resetFade();
 					if (vKnobBounds.contains(x, y)) {
@@ -206,7 +206,8 @@ public class ScrollPane extends WidgetGroup {
 				if (super.handle(event)) {
 					if (((InputEvent)event).getType() == InputEvent.Type.touchDown) flingTimer = 0;
 					return true;
-				}
+				} else if (event instanceof InputEvent && ((InputEvent)event).isTouchFocusCancel()) //
+					cancel();
 				return false;
 			}
 		};
@@ -521,23 +522,12 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
+		updateWidgetPosition();
 		widget.setSize(widgetWidth, widgetHeight);
 		if (widget instanceof Layout) ((Layout)widget).validate();
 	}
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		if (widget == null) return;
-
-		validate();
-
-		// Setup transform for this group.
-		applyTransform(batch, computeTransform());
-
-		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
-		if (scrollY)
-			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
-
+	private void updateWidgetPosition () {
 		// Calculate the widget's position depending on the scroll state and available widget area.
 		float y = widgetAreaBounds.y;
 		if (!scrollY)
@@ -566,12 +556,28 @@ public class ScrollPane extends WidgetGroup {
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
-			widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
+			widgetCullingArea.x = widgetAreaBounds.x - x;
+			widgetCullingArea.y = widgetAreaBounds.y - y;
 			widgetCullingArea.width = widgetAreaBounds.width;
 			widgetCullingArea.height = widgetAreaBounds.height;
 			((Cullable)widget).setCullingArea(widgetCullingArea);
 		}
+	}
+
+	@Override
+	public void draw (Batch batch, float parentAlpha) {
+		if (widget == null) return;
+
+		validate();
+
+		// Setup transform for this group.
+		applyTransform(batch, computeTransform());
+
+		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
+		if (scrollY)
+			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
+
+		updateWidgetPosition();
 
 		// Draw the background ninepatch.
 		Color color = getColor();
@@ -984,6 +990,10 @@ public class ScrollPane extends WidgetGroup {
 		overscrollSpeedMax = speedMax;
 	}
 
+	public float getOverscrollDistance () {
+		return overscrollDistance;
+	}
+
 	/** Forces enabling scrollbars (for non-flick scroll) and overscrolling (for flick scroll) in a direction, even if the contents
 	 * do not exceed the bounds in that direction. */
 	public void setForceScroll (boolean x, boolean y) {
@@ -1026,6 +1036,11 @@ public class ScrollPane extends WidgetGroup {
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
+	}
+
+	/** When false, the scroll bars don't respond to touch or mouse events. Default is true. */
+	public void setScrollBarTouch (boolean scrollBarTouch) {
+		this.scrollBarTouch = scrollBarTouch;
 	}
 
 	public void setSmoothScrolling (boolean smoothScrolling) {

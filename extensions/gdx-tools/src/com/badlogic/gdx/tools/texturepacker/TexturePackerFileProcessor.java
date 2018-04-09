@@ -96,7 +96,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		return super.process(inputFile, outputRoot);
 	}
 
-	private void merge (Settings settings, File settingsFile) {
+	void merge (Settings settings, File settingsFile) {
 		try {
 			json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
 		} catch (Exception ex) {
@@ -145,7 +145,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		return super.process(files, outputRoot);
 	}
 
-	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
+	protected void processDir (final Entry inputDir, ArrayList<Entry> files) throws Exception {
 		if (ignoreDirs.contains(inputDir.inputFile)) return;
 
 		// Find first parent with settings, or use defaults.
@@ -162,9 +162,13 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		if (settings.ignore) return;
 
 		if (settings.combineSubdirectories) {
-			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
+			// Collect all files under subdirectories and ignore subdirectories without pack.json files.
 			files = new FileProcessor(this) {
 				protected void processDir (Entry entryDir, ArrayList<Entry> files) {
+					if (!entryDir.inputFile.equals(inputDir.inputFile) && new File(entryDir.inputFile, "pack.json").exists()) {
+						files.clear();
+						return;
+					}
 					ignoreDirs.add(entryDir.inputFile);
 				}
 

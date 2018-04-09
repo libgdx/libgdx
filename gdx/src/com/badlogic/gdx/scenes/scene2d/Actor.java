@@ -771,7 +771,8 @@ public class Actor {
 		Pools.free(ScissorStack.popScissors());
 	}
 
-	/** Transforms the specified point in screen coordinates to the actor's local coordinate system. */
+	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.
+	 * @see Stage#screenToStageCoordinates(Vector2) */
 	public Vector2 screenToLocalCoordinates (Vector2 screenCoords) {
 		Stage stage = this.stage;
 		if (stage == null) return screenCoords;
@@ -785,8 +786,45 @@ public class Actor {
 		return stageCoords;
 	}
 
-	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates.
-	 * @see Stage#toScreenCoordinates(Vector2, com.badlogic.gdx.math.Matrix4) */
+	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
+	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
+		final float rotation = this.rotation;
+		final float scaleX = this.scaleX;
+		final float scaleY = this.scaleY;
+		final float childX = x;
+		final float childY = y;
+		if (rotation == 0) {
+			if (scaleX == 1 && scaleY == 1) {
+				parentCoords.x -= childX;
+				parentCoords.y -= childY;
+			} else {
+				final float originX = this.originX;
+				final float originY = this.originY;
+				parentCoords.x = (parentCoords.x - childX - originX) / scaleX + originX;
+				parentCoords.y = (parentCoords.y - childY - originY) / scaleY + originY;
+			}
+		} else {
+			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
+			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
+			final float originX = this.originX;
+			final float originY = this.originY;
+			final float tox = parentCoords.x - childX - originX;
+			final float toy = parentCoords.y - childY - originY;
+			parentCoords.x = (tox * cos + toy * sin) / scaleX + originX;
+			parentCoords.y = (tox * -sin + toy * cos) / scaleY + originY;
+		}
+		return parentCoords;
+	}
+
+	/** Transforms the specified point in the actor's coordinates to be in screen coordinates.
+	 * @see Stage#stageToScreenCoordinates(Vector2) */
+	public Vector2 localToScreenCoordinates (Vector2 localCoords) {
+		Stage stage = this.stage;
+		if (stage == null) return localCoords;
+		return stage.stageToScreenCoordinates(localToAscendantCoordinates(null, localCoords));
+	}
+
+	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. */
 	public Vector2 localToStageCoordinates (Vector2 localCoords) {
 		return localToAscendantCoordinates(null, localCoords);
 	}
@@ -832,34 +870,10 @@ public class Actor {
 		return localCoords;
 	}
 
-	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
-	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
-		final float rotation = this.rotation;
-		final float scaleX = this.scaleX;
-		final float scaleY = this.scaleY;
-		final float childX = x;
-		final float childY = y;
-		if (rotation == 0) {
-			if (scaleX == 1 && scaleY == 1) {
-				parentCoords.x -= childX;
-				parentCoords.y -= childY;
-			} else {
-				final float originX = this.originX;
-				final float originY = this.originY;
-				parentCoords.x = (parentCoords.x - childX - originX) / scaleX + originX;
-				parentCoords.y = (parentCoords.y - childY - originY) / scaleY + originY;
-			}
-		} else {
-			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
-			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
-			final float originX = this.originX;
-			final float originY = this.originY;
-			final float tox = parentCoords.x - childX - originX;
-			final float toy = parentCoords.y - childY - originY;
-			parentCoords.x = (tox * cos + toy * sin) / scaleX + originX;
-			parentCoords.y = (tox * -sin + toy * cos) / scaleY + originY;
-		}
-		return parentCoords;
+	/** Converts coordinates for this actor to those of another actor, which can be anywhere in the stage. */
+	public Vector2 localToActorCoordinates (Actor actor, Vector2 localCoords) {
+		localToStageCoordinates(localCoords);
+		return actor.stageToLocalCoordinates(localCoords);
 	}
 
 	/** Draws this actor's debug lines if {@link #getDebug()} is true. */
