@@ -149,7 +149,7 @@ public final class Intersector {
 	private final static Vector2 s = new Vector2();
 	private final static Vector2 e = new Vector2();
 
-	/** Intersects two resulting polygons with the same winding and sets the overlap polygon resulting from the intersection.
+	/** Intersects two polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
 	 *
 	 * @param p1 The polygon that is being clipped
@@ -157,13 +157,13 @@ public final class Intersector {
 	 * @param overlap The intersection of the two polygons (optional)
 	 * @return Whether the two polygons intersect. */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
+			return false;
+		}
 		// reusable points to trace edges around polygon
 		floatArray2.clear();
 		floatArray.clear();
 		floatArray2.addAll(p1.getTransformedVertices());
-		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
-			return false;
-		}
 		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
 			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i + 1]);
 			// wrap around to beginning of array if index points to end;
@@ -202,12 +202,15 @@ public final class Intersector {
 			floatArray.clear();
 		}
 		if (!(floatArray2.size == 0)) {
-			overlap.setVertices(floatArray2.toArray());
+			if(overlap != null)
+			{
+				overlap.setVertices(floatArray2.toArray());
+			}
 			return true;
 		} else {
 			return false;
 		}
-	}
+	}	
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
