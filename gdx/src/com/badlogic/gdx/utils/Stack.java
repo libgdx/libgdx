@@ -14,7 +14,7 @@ public class Stack<T> {
     public Stack(int initialSize) {
         this.items = (T[])new Object[initialSize];
         this.size = initialSize;
-        this.top = 0;
+        this.top = -1;
     }
 
     public void push(T element) throws IndexOutOfBoundsException {
@@ -28,7 +28,7 @@ public class Stack<T> {
     }
 
     public T pop() throws IndexOutOfBoundsException {
-        if (top == 0) {
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException("Stack underflow");
         }
         T element = items[top];
@@ -45,7 +45,7 @@ public class Stack<T> {
     }
 
     public boolean isEmpty() {
-        return top == 0 && this.items[top] == null;
+        return top == -1;
     }
 
     public void clear() {
@@ -53,6 +53,7 @@ public class Stack<T> {
             for (int i = 0; i <= top; i++) {
                 this.items[i] = null;
             }
+            top = -1;
         }
     }
 
