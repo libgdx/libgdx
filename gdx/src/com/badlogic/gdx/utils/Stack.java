@@ -16,16 +16,27 @@
 
 package com.badlogic.gdx.utils;
 
+/**
+ * A lightweight, non-resizable, ordered array, with strict rules of reading and writing, implementing LIFO principle.
+ * Is supposed to replace a semantic excess of {@link com.badlogic.gdx.utils.Queue} Deque functionality with pure Stack data structure.
+ * Allows writing and reading to and from the beginning in O(1).
+ * Take care before using it, it is not resizable! Once defined, it holds the exact amount of values passed via {@link #Stack(int)} or 16, if no parameters were passed to constructor.
+ */
 public class Stack<T> {
 
+    /** Contains items inside this Stack */
     private T[] items;
+    /** Indicates the maximal capacity of the Stack. Is used instead of items.length for the sake of readability */
     private int size;
+    /** Points at the top of the stack. If -1, then the stack is empty */
     private int top;
 
+    /** Creates a Stack which can hold 16 values */
     public Stack() {
         this(16);
     }
 
+    /** Creates a Stack which can hold the specified number of values */
     @SuppressWarnings("unchecked")
     public Stack(int initialSize) {
         this.items = (T[])new Object[initialSize];
@@ -33,6 +44,10 @@ public class Stack<T> {
         this.top = -1;
     }
 
+    /**
+     * Puts an element on top of the stack.
+     * @throws IndexOutOfBoundsException if the stack cannot hold any more elements.
+     */
     public void push(T element) throws IndexOutOfBoundsException {
         /* `top + 2` because top is a pointer to an array cell.
          * Thus, `top + 1` to make it even with `size`, `top + 2` to check for additional space. */
@@ -43,6 +58,10 @@ public class Stack<T> {
         this.items[top] = element;
     }
 
+    /**
+     * Removes the top element of the stack and returns it.
+     * @throws IndexOutOfBoundsException if the stack is empty.
+     */
     public T pop() throws IndexOutOfBoundsException {
         if (isEmpty()) {
             throw new IndexOutOfBoundsException("Stack underflow");
@@ -53,9 +72,13 @@ public class Stack<T> {
         return element;
     }
 
-    public T peek() throws Exception {
+    /**
+     * Returns the top element of the stack without removing it.
+     * @throws IndexOutOfBoundsException if the stack is empty.
+     */
+    public T peek() throws IndexOutOfBoundsException {
         if (isEmpty()) {
-            throw new Exception("Stack is empty");
+            throw new IndexOutOfBoundsException("Stack is empty");
         }
         return this.items[top];
     }
@@ -64,6 +87,9 @@ public class Stack<T> {
         return top == -1;
     }
 
+    /**
+     * Replaces all values with nulls and sets `top` to -1
+     */
     public void clear() {
         if (!isEmpty()) {
             for (int i = 0; i <= top; i++) {
