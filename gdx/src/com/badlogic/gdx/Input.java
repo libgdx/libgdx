@@ -632,7 +632,7 @@ public interface Input {
 	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
 
-	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
+	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
 	 * constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */
