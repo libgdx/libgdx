@@ -66,7 +66,7 @@ public abstract class Interpolation {
 	static public final PowIn slowFast = pow2In;
 	/** Fast, then slow. */
 	static public final PowOut pow2Out = new PowOut(2);
-	static public final PowIn fastSlow = pow2In;
+	static public final PowOut fastSlow = pow2Out;
 	static public final Interpolation pow2InInverse = new Interpolation() {
 		public float apply (float a) {
 			return (float)Math.sqrt(a);
