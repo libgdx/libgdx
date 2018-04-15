@@ -39,6 +39,11 @@ public class MoveToAction extends TemporalAction {
 		alignment = Align.bottomLeft;
 	}
 
+	public void setStartPosition (float x, float y) {
+		startX = x;
+		startY = y;
+	}
+
 	public void setPosition (float x, float y) {
 		endX = x;
 		endY = y;
