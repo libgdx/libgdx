@@ -554,6 +554,14 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		widget.setPosition(x, y);
+
+		if (widget instanceof Cullable) {
+			widgetCullingArea.x = widgetAreaBounds.x - x;
+			widgetCullingArea.y = widgetAreaBounds.y - y;
+			widgetCullingArea.width = widgetAreaBounds.width;
+			widgetCullingArea.height = widgetAreaBounds.height;
+			((Cullable)widget).setCullingArea(widgetCullingArea);
+		}
 	}
 
 	@Override
@@ -570,14 +578,6 @@ public class ScrollPane extends WidgetGroup {
 			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
 
 		updateWidgetPosition();
-
-		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
-			widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
-			widgetCullingArea.width = widgetAreaBounds.width;
-			widgetCullingArea.height = widgetAreaBounds.height;
-			((Cullable)widget).setCullingArea(widgetCullingArea);
-		}
 
 		// Draw the background ninepatch.
 		Color color = getColor();
