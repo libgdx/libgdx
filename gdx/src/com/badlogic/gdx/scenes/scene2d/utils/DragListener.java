@@ -117,8 +117,16 @@ public class DragListener extends InputListener {
 		return dragStartX;
 	}
 
+	public void setDragStartX (float dragStartX) {
+		this.dragStartX = dragStartX;
+	}
+
 	public float getDragStartY () {
 		return dragStartY;
+	}
+
+	public void setDragStartY (float dragStartY) {
+		this.dragStartY = dragStartY;
 	}
 
 	public float getDragX () {
