@@ -565,7 +565,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		if (widget == null) return;
 
 		validate();
@@ -581,7 +581,7 @@ public class ScrollPane extends WidgetGroup {
 
 		// Draw the background ninepatch.
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a * a);
 		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
@@ -591,13 +591,13 @@ public class ScrollPane extends WidgetGroup {
 		// Enable scissors for widget area and draw the widget.
 		batch.flush();
 		if (ScissorStack.pushScissors(scissorBounds)) {
-			drawChildren(batch, parentAlpha);
+			drawChildren(batch, a);
 			batch.flush();
 			ScissorStack.popScissors();
 		}
 
 		// Render scrollbars and knobs on top if they will be visible
-		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
+		float alpha = color.a * a * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
 		if (alpha > 0f) {
 			batch.setColor(color.r, color.g, color.b, alpha);
 			if (scrollX && scrollY) {

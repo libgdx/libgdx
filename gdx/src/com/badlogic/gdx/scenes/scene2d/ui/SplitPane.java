@@ -242,11 +242,11 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 
 		Color color = getColor();
-		float alpha = color.a * parentAlpha;
+		float alpha = color.a * a;
 
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {

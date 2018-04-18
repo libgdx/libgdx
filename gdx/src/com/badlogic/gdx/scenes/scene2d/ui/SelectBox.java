@@ -201,7 +201,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 
 		Drawable background;
@@ -222,7 +222,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float x = getX(), y = getY();
 		float width = getWidth(), height = getHeight();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a * a);
 		if (background != null) background.draw(batch, x, y, width, height);
 
 		T selected = selection.first();
@@ -235,7 +235,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			} else {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * a);
 			drawItem(batch, font, selected, x, y, width);
 		}
 	}
