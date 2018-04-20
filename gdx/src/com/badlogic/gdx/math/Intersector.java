@@ -202,8 +202,7 @@ public final class Intersector {
 			floatArray.clear();
 		}
 		if (!(floatArray2.size == 0)) {
-			if(overlap != null)
-			{
+			if (overlap != null) {
 				overlap.setVertices(floatArray2.toArray());
 			}
 			return true;
