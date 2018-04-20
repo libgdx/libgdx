@@ -154,7 +154,7 @@ public final class Intersector {
 	 *
 	 * @param p1 The polygon that is being clipped
 	 * @param p2 The clip polygon
-	 * @param overlap The intersection of the two polygons (optional)
+	 * @param overlap The intersection of the two polygons (can be null, if an intersection polygon is not needed)
 	 * @return Whether the two polygons intersect. */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
 		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
