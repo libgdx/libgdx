@@ -38,6 +38,11 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 public class Controllers {
 	private static final String TAG = "Controllers";
 	static final ObjectMap<Application, ControllerManager> managers = new ObjectMap<Application, ControllerManager>();
+    /**
+     * The class name of a preferred {@link ControllerManager}. If this is null then an appropriate ControllerManager will
+     *  automatically be selected. This must be set before any controllers or managers are found.
+     */
+	public static String preferredManager = null;
 
 	/** Returns an array of connected {@link Controller} instances. This method should only be called on the rendering thread.
 	 * 
@@ -85,7 +90,9 @@ public class Controllers {
 		ApplicationType type = Gdx.app.getType();
 		ControllerManager manager = null;
 
-		if (type == ApplicationType.Android) {
+		if (preferredManager != null) {
+			className = preferredManager;
+		} else if (type == ApplicationType.Android) {
 			if (Gdx.app.getVersion() >= 12) {
 				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 			} else {
