@@ -220,7 +220,7 @@ public class GwtFileHandle extends FileHandle {
 	}
 
 	public ByteBuffer map (FileChannel.MapMode mode) {
-		throw new GdxRuntimeException("Cannot write to files in GWT backend");
+		throw new GdxRuntimeException("Cannot map files in GWT backend");
 	}
 
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
