@@ -8,6 +8,7 @@
 - SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
 - API addition: Tree indentation can be customized.
 - Fixed GlyphLayout not respecting BitmapFontData#down.
+- API Addition: Added FileHandle#map(), can be used to memory map a file
 
 [1.9.8]
 - Add iPhoneX images

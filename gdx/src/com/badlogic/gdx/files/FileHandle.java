@@ -32,6 +32,10 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -254,6 +258,28 @@ public class FileHandle {
 			StreamUtils.closeQuietly(input);
 		}
 		return position - offset;
+	}
+
+	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map () {
+		return map(MapMode.READ_ONLY);
+	}
+
+	/** Attempts to memory map this file. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map (FileChannel.MapMode mode) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + file);
+		FileInputStream input = null;
+		try {
+			input = new FileInputStream(file());
+			FileChannel fileChannel = input.getChannel();
+			return input.getChannel().map(mode, 0, file().length()).order(ByteOrder.nativeOrder());
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error memory mapping file: " + this, ex);
+		} finally {
+			StreamUtils.closeQuietly(input);
+		}
 	}
 
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
