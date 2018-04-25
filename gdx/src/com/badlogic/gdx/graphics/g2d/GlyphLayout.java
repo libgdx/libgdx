@@ -298,6 +298,17 @@ public class GlyphLayout implements Poolable {
 		while (widthIndex < wrapIndex)
 			first.width += first.xAdvances.get(widthIndex++);
 
+        // Remove whitespaces at the end of the line
+        int spaceIndex = wrapIndex - 1;
+        while (fontData.isWhitespace((char) first.glyphs.get(spaceIndex).id)) {
+            first.glyphs.removeIndex(spaceIndex);
+            final float removedXAdvance = first.xAdvances.removeIndex(spaceIndex);
+            first.width -= removedXAdvance;
+            spaceIndex--;
+            wrapIndex--;
+            widthIndex--;
+        }
+
 		// Reduce first run width by the wrapped glyphs that have contributed to the width.
 		while (widthIndex > wrapIndex + 1)
 			first.width -= first.xAdvances.get(--widthIndex);
