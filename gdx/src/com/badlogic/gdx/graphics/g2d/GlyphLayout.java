@@ -319,7 +319,7 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
 			xAdvances1.addAll(xAdvances2, 0, wrapIndex + 1);
 			xAdvances2.removeRange(1, wrapIndex); // Leave first entry to be overwritten by next line.
-			xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
+			xAdvances2.set(0, 0);
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 			// Equivalent to:
