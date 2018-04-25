@@ -194,7 +194,7 @@ public class Button extends Table implements Disableable {
 		return buttonGroup;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 
 		boolean isDisabled = isDisabled();
@@ -230,7 +230,7 @@ public class Button extends Table implements Disableable {
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(offsetX, offsetY);
-		super.draw(batch, parentAlpha);
+		super.draw(batch, a);
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(-offsetX, -offsetY);
 

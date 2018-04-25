@@ -154,11 +154,11 @@ public class Touchpad extends Widget {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 
 		Color c = getColor();
-		batch.setColor(c.r, c.g, c.b, c.a * parentAlpha);
+		batch.setColor(c.r, c.g, c.b, c.a * a);
 
 		float x = getX();
 		float y = getY();

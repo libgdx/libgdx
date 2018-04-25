@@ -16,15 +16,17 @@
 
 buildscript {
     dependencies {
-        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:${versions.gwtPlugin}"
-        classpath "org.akhikhl.gretty:gretty:2.0.0"
+        classpath "org.wisepersist:gwt-gradle-plugin:${versions.gwtPlugin}"
     }
 }
-apply plugin: "war"
-apply plugin: 'org.akhikhl.gretty'
-apply plugin: "gwt"
 
+apply plugin: 'war'
+apply plugin: 'gwt'
 
+import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+
+def HttpFileServer server = null
+def httpFilePort = 8080
 
 dependencies {
     compile project(":tests:gdx-tests")
@@ -41,36 +43,35 @@ gwt {
     src = files(file("src/")) // Needs to be in front of "modules" below.
     modules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
     devModules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
-    project.webAppDirName = 'webapp'
 
     compiler.strict = true
     compiler.disableCastChecking = true
 }
 
+task startHttpServer () {
+    dependsOn draftCompileGwt
 
-gretty {
-    webAppDirName = "war"
-    inplaceMode = "hard"
+    String output = project.buildDir.path + "/gwt/draftOut"
+
+    doLast {
+        copy {
+            from "webapp"
+            into output
+        }
+
+        copy {
+            from "war"
+            into output
+        }
+
+        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
+
+        println "Server started in directory " + server.getContentRoot() + ", http://localhost:" + server.getPort()
+    }
 }
 
-import org.akhikhl.gretty.AppBeforeIntegrationTestTask
-import org.akhikhl.gretty.AppAfterIntegrationTestTask
-
-draftWar {
-    from "war"
-}
-
-task myBeforeIntegration(type: AppBeforeIntegrationTestTask) {
-    dependsOn draftWar
-    resourceBase = draftWar.archivePath.toString()
-    integrationTestTask 'superDev'
-}
-
-task myAfterIntegration(type: AppAfterIntegrationTestTask) {
-    integrationTestTask 'superDev'
-}
-
-task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
+task superDev (type: GwtSuperDev) {
+    dependsOn startHttpServer
     doFirst {
         gwt.modules = gwt.devModules
     }

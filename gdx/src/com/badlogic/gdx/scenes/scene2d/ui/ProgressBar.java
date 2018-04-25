@@ -106,7 +106,7 @@ public class ProgressBar extends Widget implements Disableable {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		ProgressBarStyle style = this.style;
 		boolean disabled = this.disabled;
 		final Drawable knob = getKnobDrawable();
@@ -123,7 +123,7 @@ public class ProgressBar extends Widget implements Disableable {
 		float knobWidth = knob == null ? 0 : knob.getMinWidth();
 		float percent = getVisualPercent();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a * a);
 
 		if (vertical) {
 			float positionHeight = height;

@@ -50,6 +50,7 @@ public class SplitPane extends WidgetGroup {
 	private Rectangle firstWidgetBounds = new Rectangle();
 	private Rectangle secondWidgetBounds = new Rectangle();
 	Rectangle handleBounds = new Rectangle();
+	boolean cursorOverHandle;
 	private Rectangle tempScissors = new Rectangle();
 
 	Vector2 lastPoint = new Vector2();
@@ -122,6 +123,11 @@ public class SplitPane extends WidgetGroup {
 					lastPoint.set(x, y);
 				}
 				invalidate();
+			}
+
+			public boolean mouseMoved (InputEvent event, float x, float y) {
+				cursorOverHandle = handleBounds.contains(x, y);
+				return false;
 			}
 		});
 	}
@@ -236,11 +242,11 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	@Override
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 
 		Color color = getColor();
-		float alpha = color.a * parentAlpha;
+		float alpha = color.a * a;
 
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {
@@ -377,6 +383,10 @@ public class SplitPane extends WidgetGroup {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean isCursorOverHandle () {
+		return cursorOverHandle;
 	}
 
 	/** The style for a splitpane, see {@link SplitPane}.

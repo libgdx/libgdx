@@ -38,6 +38,7 @@ public class Label extends Widget {
 	private final GlyphLayout layout = new GlyphLayout();
 	private final Vector2 prefSize = new Vector2();
 	private final StringBuilder text = new StringBuilder();
+	private int intValue = Integer.MIN_VALUE;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private int lineAlign = Align.left;
@@ -88,6 +89,16 @@ public class Label extends Widget {
 		return style;
 	}
 
+	/** Sets the text to the specified integer value. If the text is already equivalent to the specified value, a string is not
+	 * allocated.
+	 * @return true if the text was changed. */
+	public boolean setText (int value) {
+		if (this.intValue == value) return false;
+		setText(Integer.toString(value));
+		intValue = value;
+		return true;
+	}
+
 	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
 		if (newText == null) newText = "";
@@ -100,6 +111,7 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
+		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
 	}
 
@@ -205,10 +217,10 @@ public class Label extends Widget {
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 		Color color = tempColor.set(getColor());
-		color.a *= parentAlpha;
+		color.a *= a;
 		if (style.background != null) {
 			batch.setColor(color.r, color.g, color.b, color.a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());

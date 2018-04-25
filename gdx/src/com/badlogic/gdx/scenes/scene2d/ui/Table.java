@@ -97,35 +97,35 @@ public class Table extends WidgetGroup {
 		return cell;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		validate();
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
-			drawBackground(batch, parentAlpha, 0, 0);
+			drawBackground(batch, a, 0, 0);
 			if (clip) {
 				batch.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
 				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
 					getHeight() - padBottom - padTop.get(this))) {
-					drawChildren(batch, parentAlpha);
+					drawChildren(batch, a);
 					batch.flush();
 					clipEnd();
 				}
 			} else
-				drawChildren(batch, parentAlpha);
+				drawChildren(batch, a);
 			resetTransform(batch);
 		} else {
-			drawBackground(batch, parentAlpha, getX(), getY());
-			super.draw(batch, parentAlpha);
+			drawBackground(batch, a, getX(), getY());
+			super.draw(batch, a);
 		}
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
 	 * drawable. */
-	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+	protected void drawBackground (Batch batch, float a, float x, float y) {
 		if (background == null) return;
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a * a);
 		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 

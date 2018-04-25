@@ -44,13 +44,6 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
         options.fork = true
         options.incremental = true
     }
-
-    idea {
-        module {
-            scopes.PROVIDED.minus += [configurations.compile]
-            scopes.COMPILE.plus += [configurations.compile]
-        }
-    }
 }
 
 task fetchNatives {

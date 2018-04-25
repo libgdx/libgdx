@@ -262,6 +262,12 @@ public class AssetManager implements Disposable {
 		return null;
 	}
 
+	/** @param assetDesc the AssetDescriptor of the asset
+	 * @return whether the asset is loaded */
+	public synchronized boolean isLoaded (AssetDescriptor assetDesc) {
+		return isLoaded(assetDesc.fileName);
+	}
+	
 	/** @param fileName the file name of the asset
 	 * @return whether the asset is loaded */
 	public synchronized boolean isLoaded (String fileName) {
@@ -406,6 +412,12 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
+	/** Blocks until the specified asset is loaded.
+	 * @param assetDesc the AssetDescriptor of the asset */
+	public void finishLoadingAsset (AssetDescriptor assetDesc) {
+		finishLoadingAsset(assetDesc.fileName);
+	}
+	
 	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
 	public void finishLoadingAsset (String fileName) {

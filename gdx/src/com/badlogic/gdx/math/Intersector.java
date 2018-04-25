@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -149,21 +148,20 @@ public final class Intersector {
 	private final static Vector2 s = new Vector2();
 	private final static Vector2 e = new Vector2();
 
-	/** Intersects two resulting polygons with the same winding and sets the overlap polygon resulting from the intersection.
+	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
-	 *
 	 * @param p1 The polygon that is being clipped
 	 * @param p2 The clip polygon
-	 * @param overlap The intersection of the two polygons (optional)
+	 * @param overlap The intersection of the two polygons (can be null, if an intersection polygon is not needed)
 	 * @return Whether the two polygons intersect. */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
+			return false;
+		}
 		// reusable points to trace edges around polygon
 		floatArray2.clear();
 		floatArray.clear();
 		floatArray2.addAll(p1.getTransformedVertices());
-		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
-			return false;
-		}
 		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
 			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i + 1]);
 			// wrap around to beginning of array if index points to end;
@@ -201,8 +199,13 @@ public final class Intersector {
 			floatArray2.addAll(floatArray);
 			floatArray.clear();
 		}
-		if (!(floatArray2.size == 0)) {
-			overlap.setVertices(floatArray2.toArray());
+		if (floatArray2.size != 0) {
+			if (overlap != null) {
+				if (overlap.getVertices().length == floatArray2.size)
+					System.arraycopy(floatArray2.items, 0, overlap.getVertices(), 0, floatArray2.size);
+				else
+					overlap.setVertices(floatArray2.toArray());
+			}
 			return true;
 		} else {
 			return false;
@@ -785,7 +788,6 @@ public final class Intersector {
 
 	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
 	 * area of overlap.
-	 * 
 	 * @return Whether the rectangles intersect */
 	static public boolean intersectRectangles (Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
 		if (rectangle1.overlaps(rectangle2)) {
@@ -912,7 +914,6 @@ public final class Intersector {
 	}
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap.
-	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @return Whether polygons overlap. */
@@ -922,7 +923,6 @@ public final class Intersector {
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum
 	 * Translation Vector indicating the minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
-	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
@@ -939,7 +939,6 @@ public final class Intersector {
 	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
 	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
 	 * collision with the polygon defined by verts2.
-	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).

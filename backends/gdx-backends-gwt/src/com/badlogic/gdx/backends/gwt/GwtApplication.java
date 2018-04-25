@@ -105,7 +105,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		setApplicationLogger(new GwtApplicationLogger(this.config.log));
 
-		addEventListeners();
 
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
@@ -170,6 +169,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					if(loadingListener != null)
 						loadingListener.beforeSetup();
 					setupLoop();
+					addEventListeners();
 					if(loadingListener != null)
 						loadingListener.afterSetup();
 				}
@@ -242,10 +242,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	void mainLoop() {
 		graphics.update();
 		if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
-			GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			lastWidth = graphics.getWidth();
 			lastHeight = graphics.getHeight();
 			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+			GwtApplication.this.listener.resize(lastWidth, lastHeight);
 		}
 		runnablesHelper.addAll(runnables);
 		runnables.clear();

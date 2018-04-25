@@ -104,7 +104,11 @@ public class ImageProcessor {
 			String crc = hash(rect.getImage(this));
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
-				if (!settings.silent) System.out.println(rect.name + " (alias of " + existing.name + ")");
+				if (!settings.silent) {
+					String rectName = rect.name + (rect.index != -1 ? "_" + rect.index : "");
+					String existingName = existing.name + (existing.index != -1 ? "_" + existing.index : "");
+					System.out.println(rectName + " (alias of " + existingName + ")");
+				}
 				existing.aliases.add(new Alias(rect));
 				return null;
 			}

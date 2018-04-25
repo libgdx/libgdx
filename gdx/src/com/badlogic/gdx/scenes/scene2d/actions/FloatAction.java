@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.math.Interpolation;
+
 /** An action that has a float, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class FloatAction extends TemporalAction {
@@ -30,6 +32,20 @@ public class FloatAction extends TemporalAction {
 
 	/** Creates a FloatAction that transitions from start to end. */
 	public FloatAction (float start, float end) {
+		this.start = start;
+		this.end = end;
+	}
+
+	/** Creates a FloatAction that transitions from start to end. */
+	public FloatAction (float start, float end, float duration) {
+		super(duration);
+		this.start = start;
+		this.end = end;
+	}
+
+	/** Creates a FloatAction that transitions from start to end. */
+	public FloatAction (float start, float end, float duration, Interpolation interpolation) {
+		super(duration, interpolation);
 		this.start = start;
 		this.end = end;
 	}

@@ -84,10 +84,15 @@ public class FreeTypeFontGenerator implements Disposable {
 	boolean bitmapped = false;
 	private int pixelWidth, pixelHeight;
 
+	/** {@link #FreeTypeFontGenerator(FileHandle, int)} */
+	public FreeTypeFontGenerator (FileHandle fontFile) {
+		this(fontFile, 0);
+	}
+	
 	/** Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
-	public FreeTypeFontGenerator (FileHandle fontFile) {
+	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
 		name = fontFile.pathWithoutExtension();
 		int fileSize = (int)fontFile.length();
 
@@ -113,7 +118,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			StreamUtils.closeQuietly(input);
 		}
 
-		face = library.newMemoryFace(buffer, 0);
+		face = library.newMemoryFace(buffer, faceIndex);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + fontFile);
 
 		if (checkForBitmapFont()) return;
@@ -399,6 +404,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph missingGlyph = createGlyph('\0', data, parameter, stroker, baseLine, packer);
 		if (missingGlyph != null && missingGlyph.width != 0 && missingGlyph.height != 0) {
 			data.setGlyph('\0', missingGlyph);
+			data.missingGlyph = missingGlyph;
 			if (incremental) data.glyphs.add(missingGlyph);
 		}
 
@@ -763,7 +769,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
 		public boolean kerning = true;
-		/** The optional PixmapPacker to use */
+		/** The optional PixmapPacker to use for packing multiple fonts into a single texture.
+		 * @see FreeTypeFontParameter */
 		public PixmapPacker packer = null;
 		/** Whether to flip the font vertically */
 		public boolean flip = false;
