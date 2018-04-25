@@ -30,27 +30,31 @@ public class Align {
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
 
-	static public final boolean isLeft(int align) {
-		return align == topLeft || align == left || align == bottomLeft;
-	}
+    static public final boolean isLeft(int align) {
+        return isAlign(left, align);
+    }
 
-	static public final boolean isCenterHorizontal(int align) {
-		return align == top || align == center || align == bottom;
-	}
+    static public final boolean isCenterHorizontal(int align) {
+        return !isAlign(left, align) && !isAlign(right, align);
+    }
 
-	static public final boolean isRight(int align) {
-		return align == topRight || align == right || align == bottomRight;
-	}
+    static public final boolean isRight(int align) {
+        return isAlign(right, align);
+    }
 
-	static public final boolean isTop(int align) {
-		return align == topLeft || align == top || align == topRight;
-	}
+    static public final boolean isTop(int align) {
+        return isAlign(top, align);
+    }
 
-	static public final boolean isCenterVertical(int align) {
-		return align == left || align == center || align == right;
-	}
+    static public final boolean isCenterVertical(int align) {
+        return !isAlign(top, align) && !isAlign(bottom, align);
+    }
 
-	static public final boolean isBottom(int align) {
-		return align == bottomLeft || align == bottom || align == bottomRight;
-	}
+    static public final boolean isBottom(int align) {
+        return isAlign(bottom, align);
+    }
+
+    static private final boolean isAlign(int expected, int actual) {
+        return (actual & expected) == expected;
+    }
 }
