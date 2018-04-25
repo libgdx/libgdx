@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,4 +29,28 @@ public class Align {
 	static public final int topRight = top | right;
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
+
+	static public final boolean isHorizontalLeft(int align) {
+		return align == topLeft || align == left || align == bottomLeft;
+	}
+
+	static public final boolean isHorizontalCenter(int align) {
+		return align == top || align == center || align == bottom;
+	}
+
+	static public final boolean isHorizontalRight(int align) {
+		return align == topRight || align == right || align == bottomRight;
+	}
+
+	static public final boolean isVerticalTop(int align) {
+		return align == topLeft || align == top || align == topRight;
+	}
+
+	static public final boolean isVerticalCenter(int align) {
+		return align == left || align == center || align == right;
+	}
+
+	static public final boolean isVerticalBottom(int align) {
+		return align == bottomLeft || align == bottom || align == bottomRight;
+	}
 }
