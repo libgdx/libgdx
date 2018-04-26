@@ -99,6 +99,16 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		return size;
 	}
 
+	/** Returns if the SortedIntList is empty */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** Returns if the SortedIntList has at least one element */
+	public boolean nonEmpty () {
+		return size > 0;
+	}
+
 	/** Returns an iterator to traverse the list.<br/>
 	 * Only one iterator can be active per list at any given time.
 	 * 

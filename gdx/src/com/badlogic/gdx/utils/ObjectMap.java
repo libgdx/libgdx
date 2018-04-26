@@ -377,6 +377,16 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			valueTable[index] = null;
 	}
 
+	/** Returns if the ObjectMap is empty */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** Returns if the ObjectMap has at least one element */
+	public boolean nonEmpty () {
+		return size > 0;
+	}
+
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {

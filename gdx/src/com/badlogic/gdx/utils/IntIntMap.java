@@ -411,6 +411,16 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		}
 	}
 
+	/** Returns if the IntIntMap is empty */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** Returns if the IntIntMap has at least one element */
+	public boolean nonEmpty () {
+		return size > 0;
+	}
+
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {

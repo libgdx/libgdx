@@ -265,6 +265,16 @@ public class FloatArray {
 		return items[0];
 	}
 
+	/** Returns if the FloatArray is empty */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** Returns if the FloatArray has at least one element */
+	public boolean nonEmpty () {
+		return size > 0;
+	}
+
 	public void clear () {
 		size = 0;
 	}

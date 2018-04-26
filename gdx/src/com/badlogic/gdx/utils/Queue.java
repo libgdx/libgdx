@@ -246,6 +246,16 @@ public class Queue<T> implements Iterable<T> {
 		return value;
 	}
 
+	/** Returns if the Queue is empty */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** Returns if the Queue has at least one element */
+	public boolean nonEmpty () {
+		return size > 0;
+	}
+
 	/** Returns the first (head) item in the queue (without removing it).
 	 * @see #addFirst(Object)
 	 * @see #removeFirst()
