@@ -595,9 +595,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 						default: preferredInputType = 0; break;
 						case NumberPad: preferredInputType = InputType.TYPE_CLASS_NUMBER; break;
 						case PhonePad: preferredInputType = InputType.TYPE_CLASS_PHONE; break;
-						case Email: preferredInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS; break;
-						case Password: preferredInputType = InputType.TYPE_TEXT_VARIATION_PASSWORD; break;
-						case URI: preferredInputType = InputType.TYPE_TEXT_VARIATION_URI; break;
+						case Email: preferredInputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS; break;
+						case Password: preferredInputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD; break;
+						case URI: preferredInputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI; break;
 					}
 
 					if(view instanceof GLSurfaceView20) {

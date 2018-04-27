@@ -673,7 +673,8 @@ public interface Input {
 
 	/** Sets the on-screen keyboard visible if available.
 	 * 
-	 * @param visible visible or not */
+	 * @param visible visible or not
+	 * @param type which type of keyboard we wish to display. Can be null when hiding */
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
 
 	/** Vibrates for the given amount of time. Note that you'll need the permission
