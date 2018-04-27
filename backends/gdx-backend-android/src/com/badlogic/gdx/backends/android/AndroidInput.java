@@ -29,10 +29,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.service.wallpaper.WallpaperService.Engine;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -49,6 +51,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -579,12 +583,28 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible (final boolean visible) {
+	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
+
+					int preferredInputType;
+					switch(type){
+						default: preferredInputType = 0; break;
+						case NumberPad: preferredInputType = InputType.TYPE_CLASS_NUMBER; break;
+						case PhonePad: preferredInputType = InputType.TYPE_CLASS_PHONE; break;
+						case Email: preferredInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS; break;
+						case Password: preferredInputType = InputType.TYPE_TEXT_VARIATION_PASSWORD; break;
+						case URI: preferredInputType = InputType.TYPE_TEXT_VARIATION_URI; break;
+					}
+
+					if(view instanceof GLSurfaceView20)
+						((GLSurfaceView20)view).preferredInputType = preferredInputType;
+					else if(view instanceof GLSurfaceView20API18)
+						((GLSurfaceView20API18)view).preferredInputType = preferredInputType;
+
 					view.setFocusable(true);
 					view.setFocusableInTouchMode(true);
 					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);

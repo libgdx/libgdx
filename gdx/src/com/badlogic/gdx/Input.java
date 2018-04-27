@@ -674,7 +674,7 @@ public interface Input {
 	/** Sets the on-screen keyboard visible if available.
 	 * 
 	 * @param visible visible or not */
-	public void setOnscreenKeyboardVisible (boolean visible);
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
 
 	/** Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
@@ -766,6 +766,10 @@ public interface Input {
 
 	public enum Orientation {
 		Landscape, Portrait
+	}
+
+	enum OnscreenKeyboardType {
+		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
 	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y

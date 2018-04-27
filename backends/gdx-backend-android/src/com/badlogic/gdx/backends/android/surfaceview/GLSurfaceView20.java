@@ -17,11 +17,15 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+
+import com.badlogic.gdx.Gdx;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -46,6 +50,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 	final ResolutionStrategy resolutionStrategy;
 	static int targetGLESVersion;
+	public int preferredInputType;
 
 	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
@@ -77,6 +82,9 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+
+			if(preferredInputType != 0)
+				outAttrs.inputType = preferredInputType;
 		}
 
 		BaseInputConnection connection = new BaseInputConnection(this, false) {

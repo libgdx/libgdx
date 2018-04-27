@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,7 +44,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		font.draw(batch, "input: " + text, 0, Gdx.graphics.getHeight());
 		batch.end();
 
-		if (Gdx.input.justTouched()) Gdx.input.setOnscreenKeyboardVisible(true);
+		if (Gdx.input.justTouched()) Gdx.input.setOnscreenKeyboardVisible(true, OnscreenKeyboardType.Default);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		if (character == '\b' && text.length() >= 1) {
 			text = text.substring(0, text.length() - 1);
 		} else if (character == '\n') {
-			Gdx.input.setOnscreenKeyboardVisible(false);
+			Gdx.input.setOnscreenKeyboardVisible(false, null);
 		} else {
 			text += character;
 		}

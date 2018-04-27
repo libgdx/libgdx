@@ -830,7 +830,7 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 	
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override

@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -69,7 +70,7 @@ public class SoftKeyboardTest extends GdxTest {
 
 		// bring up the keyboard if we touch the screen
 		if (Gdx.input.justTouched()) {
-			Gdx.input.setOnscreenKeyboardVisible(true);
+			Gdx.input.setOnscreenKeyboardVisible(true, OnscreenKeyboardType.Default);
 			textBuffer = new SimpleCharSequence();
 		}
 	}

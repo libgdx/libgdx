@@ -409,7 +409,7 @@ public class IOSInput implements Input {
 
 		@Override
 		public boolean shouldReturn (UITextField textField) {
-			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
+			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false, null);
 			app.input.inputProcessor.keyDown(Keys.ENTER);
 			app.input.inputProcessor.keyTyped((char)13);
 			Gdx.graphics.requestRendering();
@@ -418,9 +418,19 @@ public class IOSInput implements Input {
 	};
 
 	@Override
-	public void setOnscreenKeyboardVisible (boolean visible) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 		if (textfield == null) createDefaultTextField();
 		if (visible) {
+			UIKeyboardType preferredInputType;
+			switch(type){
+				default: preferredInputType = UIKeyboardType.Default; break;
+				case NumberPad: preferredInputType = UIKeyboardType.NumberPad; break;
+				case PhonePad: preferredInputType = UIKeyboardType.PhonePad; break;
+				case Email: preferredInputType = UIKeyboardType.EmailAddress; break;
+				case Password: preferredInputType = UIKeyboardType.Default; break; // no equivalent in UIKeyboardType?
+				case URI: preferredInputType = UIKeyboardType.URL; break;
+			}
+			textfield.setKeyboardType(preferredInputType);
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {

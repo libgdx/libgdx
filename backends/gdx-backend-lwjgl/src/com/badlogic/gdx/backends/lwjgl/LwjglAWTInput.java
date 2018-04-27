@@ -421,7 +421,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible (boolean visible) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 
 	}
 
