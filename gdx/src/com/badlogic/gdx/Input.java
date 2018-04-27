@@ -768,7 +768,7 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	enum OnscreenKeyboardType {
+	public enum OnscreenKeyboardType {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 

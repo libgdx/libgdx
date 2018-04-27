@@ -600,10 +600,18 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 						case URI: preferredInputType = InputType.TYPE_TEXT_VARIATION_URI; break;
 					}
 
-					if(view instanceof GLSurfaceView20)
-						((GLSurfaceView20)view).preferredInputType = preferredInputType;
-					else if(view instanceof GLSurfaceView20API18)
-						((GLSurfaceView20API18)view).preferredInputType = preferredInputType;
+					if(view instanceof GLSurfaceView20) {
+						if(((GLSurfaceView20)view).preferredInputType != preferredInputType) {
+							((GLSurfaceView20)view).preferredInputType = preferredInputType;
+							manager.restartInput(view);
+						}
+					}
+					else if(view instanceof GLSurfaceView20API18) {
+						if(((GLSurfaceView20API18)view).preferredInputType != preferredInputType) {
+							((GLSurfaceView20API18)view).preferredInputType = preferredInputType;
+							manager.restartInput(view);
+						}
+					}
 
 					view.setFocusable(true);
 					view.setFocusableInTouchMode(true);
