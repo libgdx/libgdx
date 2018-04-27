@@ -17,15 +17,11 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-
-import com.badlogic.gdx.Gdx;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import android.text.InputType;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
