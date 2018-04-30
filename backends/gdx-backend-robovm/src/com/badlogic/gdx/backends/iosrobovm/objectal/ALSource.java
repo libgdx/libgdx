@@ -38,6 +38,9 @@ public class ALSource extends NSObject {
 	@Property(selector = "sourceId")
 	public native int getSourceId ();
 
+	@Property(selector = "state")
+	public native int getState ();
+
 	@Method(selector = "stop")
 	public native void stop ();
 

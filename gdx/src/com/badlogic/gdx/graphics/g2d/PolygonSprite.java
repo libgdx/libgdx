@@ -333,12 +333,13 @@ public class PolygonSprite {
 		float[] regionVertices = region.vertices;
 		float[] textureCoords = region.textureCoords;
 
-		if (vertices == null || regionVertices.length != vertices.length) vertices = new float[(regionVertices.length / 2) * 5];
+		int verticesLength = (regionVertices.length / 2) * 5;
+		if (vertices == null || vertices.length != verticesLength) vertices = new float[verticesLength];
 
 		// Set the color and UVs in this sprite's vertices.
 		float floatColor = color.toFloatBits();
 		float[] vertices = this.vertices;
-		for (int i = 0, v = 2, n = regionVertices.length; i < n; i += 2, v += 5) {
+		for (int i = 0, v = 2; v < verticesLength; i += 2, v += 5) {
 			vertices[v] = floatColor;
 			vertices[v + 1] = textureCoords[i];
 			vertices[v + 2] = textureCoords[i + 1];

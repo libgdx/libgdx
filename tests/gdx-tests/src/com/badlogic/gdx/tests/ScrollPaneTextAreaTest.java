@@ -13,7 +13,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class TextAreaScrollTest  extends GdxTest {
+public class ScrollPaneTextAreaTest extends GdxTest {
 	Stage stage;
    TextArea textArea;
    ScrollPane scrollPane;

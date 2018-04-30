@@ -3,6 +3,12 @@
 - Update to Lwjgl 3.1.4
 - Update android level we build against to 7.1 (API 25)
 - API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
+- Skin JSON files can now use the simple names of classes, i.e. "BitmapFont" rather than "com.badlogic.gdx.graphics.g2d.BitmapFont". Custom classes can be added by overriding Skin.getJsonLoader() and calling json.setClassTag().
+- Skin supports cascading styles in JSON. Use the "parent" property to tag another style by name to use its values as defaults. See https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/assets/data/uiskin.json for example.
+- SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
+- API addition: Tree indentation can be customized.
+- Fixed GlyphLayout not respecting BitmapFontData#down.
+- API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
 
 [1.9.8]
 - Add iPhoneX images

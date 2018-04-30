@@ -99,7 +99,7 @@ public class ImageTextButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		updateImage();
 		Color fontColor;
 		if (isDisabled() && style.disabledFontColor != null)
@@ -113,7 +113,7 @@ public class ImageTextButton extends Button {
 		else
 			fontColor = style.fontColor;
 		if (fontColor != null) label.getStyle().fontColor = fontColor;
-		super.draw(batch, parentAlpha);
+		super.draw(batch, a);
 	}
 
 	public Image getImage () {

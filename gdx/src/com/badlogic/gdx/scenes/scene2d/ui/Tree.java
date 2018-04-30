@@ -40,7 +40,7 @@ public class Tree extends WidgetGroup {
 	final Array<Node> rootNodes = new Array();
 	final Selection<Node> selection;
 	float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
-	private float leftColumnWidth, prefWidth, prefHeight;
+	private float prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private Node foundNode;
 	Node overNode, rangeStart;
@@ -97,7 +97,7 @@ public class Tree extends WidgetGroup {
 					return;
 				}
 				if (node.children.size > 0 && (!selection.getMultiple() || !UIUtils.ctrl())) {
-					// Toggle expanded.
+					// Toggle expanded if left of icon.
 					float rowX = node.actor.getX();
 					if (node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
 					if (x < rowX) {
@@ -124,7 +124,9 @@ public class Tree extends WidgetGroup {
 
 	public void setStyle (TreeStyle style) {
 		this.style = style;
-		indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth()) + iconSpacingLeft;
+
+		// Reasonable default.
+		if (indentSpacing == 0) indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
 	}
 
 	public void add (Node node) {
@@ -171,19 +173,18 @@ public class Tree extends WidgetGroup {
 		prefWidth = style.plus.getMinWidth();
 		prefWidth = Math.max(prefWidth, style.minus.getMinWidth());
 		prefHeight = getHeight();
-		leftColumnWidth = 0;
-		computeSize(rootNodes, indentSpacing);
-		leftColumnWidth += iconSpacingLeft + padding;
-		prefWidth += leftColumnWidth + padding;
+		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
+		computeSize(rootNodes, indentSpacing, plusMinusWidth);
+		prefWidth += padding * 2;
 		prefHeight = getHeight() - prefHeight;
 	}
 
-	private void computeSize (Array<Node> nodes, float indent) {
+	private void computeSize (Array<Node> nodes, float indent, float plusMinusWidth) {
 		float ySpacing = this.ySpacing;
 		float spacing = iconSpacingLeft + iconSpacingRight;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			float rowWidth = indent + iconSpacingRight;
+			float rowWidth = indent + plusMinusWidth;
 			Actor actor = node.actor;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
@@ -200,74 +201,77 @@ public class Tree extends WidgetGroup {
 			}
 			prefWidth = Math.max(prefWidth, rowWidth);
 			prefHeight -= node.height + ySpacing;
-			if (node.expanded) computeSize(node.children, indent + indentSpacing);
+			if (node.expanded) computeSize(node.children, indent + indentSpacing, plusMinusWidth);
 		}
 	}
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacingRight, getHeight() - ySpacing / 2);
+		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
+		layout(rootNodes, padding, getHeight() - ySpacing / 2, plusMinusWidth);
 	}
 
-	private float layout (Array<Node> nodes, float indent, float y) {
+	private float layout (Array<Node> nodes, float indent, float y, float plusMinusWidth) {
 		float ySpacing = this.ySpacing;
+		float spacing = iconSpacingLeft + iconSpacingRight;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			float x = indent;
-			if (node.icon != null) x += node.icon.getMinWidth();
+			float x = indent + plusMinusWidth;
+			if (node.icon != null) x += spacing + node.icon.getMinWidth();
 			y -= node.getHeight();
 			node.actor.setPosition(x, y);
 			y -= ySpacing;
-			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
+			if (node.expanded) y = layout(node.children, indent + indentSpacing, y, plusMinusWidth);
 		}
 		return y;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
-		drawBackground(batch, parentAlpha);
+	public void draw (Batch batch, float a) {
+		drawBackground(batch, a);
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		draw(batch, rootNodes, leftColumnWidth);
-		super.draw(batch, parentAlpha); // Draw actors.
+		batch.setColor(color.r, color.g, color.b, color.a * a);
+		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
+		draw(batch, rootNodes, padding, plusMinusWidth);
+		super.draw(batch, a); // Draw actors.
 	}
 
 	/** Called to draw the background. Default implementation draws the style background drawable. */
-	protected void drawBackground (Batch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float a) {
 		if (style.background != null) {
 			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(color.r, color.g, color.b, color.a * a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
 	/** Draws selection, icons, and expand icons. */
-	private void draw (Batch batch, Array<Node> nodes, float indent) {
+	private void draw (Batch batch, Array<Node> nodes, float indent, float plusMinusWidth) {
 		Drawable plus = style.plus, minus = style.minus;
-		float x = getX(), y = getY();
+		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
+			float height = node.height;
 			Actor actor = node.actor;
 
 			if (selection.contains(node) && style.selection != null) {
-				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
+				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), height + ySpacing);
 			} else if (node == overNode && style.over != null) {
-				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
+				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), height + ySpacing);
 			}
 
 			if (node.icon != null) {
-				float iconY = actor.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
+				float iconY = y + actor.getY() + Math.round((height - node.icon.getMinHeight()) / 2);
 				batch.setColor(actor.getColor());
-				node.icon.draw(batch, x + node.actor.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
-					node.icon.getMinWidth(), node.icon.getMinHeight());
+				node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
 				batch.setColor(Color.WHITE);
 			}
 
 			if (node.children.size == 0) continue;
 
 			Drawable expandIcon = node.expanded ? minus : plus;
-			float iconY = actor.getY() + Math.round((node.height - expandIcon.getMinHeight()) / 2);
-			expandIcon.draw(batch, x + indent - iconSpacingLeft, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
-			if (node.expanded) draw(batch, node.children, indent + indentSpacing);
+			float iconY = y + actor.getY() + Math.round((height - expandIcon.getMinHeight()) / 2);
+			expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
+			if (node.expanded) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
 		}
 	}
 
@@ -337,6 +341,10 @@ public class Tree extends WidgetGroup {
 	/** Sets the amount of horizontal space between the nodes and the left/right edges of the tree. */
 	public void setPadding (float padding) {
 		this.padding = padding;
+	}
+
+	public void setIndentSpacing (float indentSpacing) {
+		this.indentSpacing = indentSpacing;
 	}
 
 	/** Returns the amount of horizontal space for indentation level. */

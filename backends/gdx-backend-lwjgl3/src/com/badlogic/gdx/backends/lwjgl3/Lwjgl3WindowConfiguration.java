@@ -32,6 +32,7 @@ public class Lwjgl3WindowConfiguration {
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	boolean windowMaximized = false;
+	boolean autoIconify = false;
 	FileType windowIconFileType;
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
@@ -52,6 +53,7 @@ public class Lwjgl3WindowConfiguration {
 		windowResizable = config.windowResizable;
 		windowDecorated = config.windowDecorated;
 		windowMaximized = config.windowMaximized;
+		autoIconify = config.autoIconify;
 		windowIconFileType = config.windowIconFileType;
 		if (config.windowIconPaths != null) 
 			windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
@@ -102,7 +104,15 @@ public class Lwjgl3WindowConfiguration {
 	public void setMaximized(boolean maximized) {
 		this.windowMaximized = maximized;
 	}
-	
+
+	/**
+	 * @param autoIconify whether the window should automatically iconify and restore previous video mode on input focus loss. (default false)
+	 *                    Does nothing in windowed mode.
+	 */
+	public void setAutoIconify (boolean autoIconify) {
+		this.autoIconify = autoIconify;
+	}
+
 	/**
 	 * Sets the position of the window in windowed mode on the
 	 * primary monitor. Default -1 for both coordinates for centered.

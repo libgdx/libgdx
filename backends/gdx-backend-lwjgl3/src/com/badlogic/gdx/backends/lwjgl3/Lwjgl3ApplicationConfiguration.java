@@ -86,6 +86,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		stencil = config.stencil;
 		samples = config.samples;
 		vSyncEnabled = config.vSyncEnabled;
+		idleFPS = config.idleFPS;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
 		hdpiMode = config.hdpiMode;

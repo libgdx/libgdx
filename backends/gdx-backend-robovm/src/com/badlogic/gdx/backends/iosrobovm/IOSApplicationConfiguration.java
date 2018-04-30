@@ -20,6 +20,7 @@ import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
 import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
 import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
+import org.robovm.apple.uikit.UIRectEdge;
 
 public class IOSApplicationConfiguration {
 	/** whether to enable screen dimming. */
@@ -100,4 +101,8 @@ public class IOSApplicationConfiguration {
 	
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
+
+	/** Edges where app gestures must be fired over system gestures.
+	 * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
+	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
 }

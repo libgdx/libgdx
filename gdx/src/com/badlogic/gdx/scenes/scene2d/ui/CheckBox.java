@@ -60,7 +60,7 @@ public class CheckBox extends TextButton {
 		return style;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float a) {
 		Drawable checkbox = null;
 		if (isDisabled()) {
 			if (isChecked && style.checkboxOnDisabled != null)
@@ -69,15 +69,16 @@ public class CheckBox extends TextButton {
 				checkbox = style.checkboxOffDisabled;
 		}
 		if (checkbox == null) {
+			boolean over = isOver() && !isDisabled();
 			if (isChecked && style.checkboxOn != null)
-				checkbox = style.checkboxOn;
-			else if (isOver() && style.checkboxOver != null && !isDisabled())
+				checkbox = over && style.checkboxOnOver != null ? style.checkboxOnOver : style.checkboxOn;
+			else if (over && style.checkboxOver != null)
 				checkbox = style.checkboxOver;
 			else
 				checkbox = style.checkboxOff;
 		}
 		image.setDrawable(checkbox);
-		super.draw(batch, parentAlpha);
+		super.draw(batch, a);
 	}
 
 	public Image getImage () {
@@ -93,7 +94,7 @@ public class CheckBox extends TextButton {
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
 		/** Optional. */
-		public Drawable checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
+		public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
 
 		public CheckBoxStyle () {
 		}

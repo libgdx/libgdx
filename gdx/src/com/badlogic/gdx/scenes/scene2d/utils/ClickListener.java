@@ -68,7 +68,6 @@ public class ClickListener extends InputListener {
 	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 		if (pointer != pressedPointer || cancelled) return;
 		pressed = isOver(event.getListenerActor(), x, y);
-		if (pressed && pointer == 0 && button != -1 && !Gdx.input.isButtonPressed(button)) pressed = false;
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
 			invalidateTapSquare();
@@ -165,7 +164,8 @@ public class ClickListener extends InputListener {
 		return tapSquareSize;
 	}
 
-	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps. */
+	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive
+	 *           taps. */
 	public void setTapCountInterval (float tapCountInterval) {
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
 	}

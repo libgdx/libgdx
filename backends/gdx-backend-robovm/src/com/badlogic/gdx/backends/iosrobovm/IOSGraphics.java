@@ -17,7 +17,18 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.utils.Array;
+
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
@@ -33,22 +44,12 @@ import org.robovm.apple.opengles.EAGLRenderingAPI;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIRectEdge;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
-import com.badlogic.gdx.utils.Array;
 
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
@@ -104,6 +105,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 				// assume portrait
 				return app.config.orientationPortrait;
 			}
+		}
+
+		@Override
+		public UIRectEdge preferredScreenEdgesDeferringSystemGestures() {
+			return app.config.screenEdgesDeferringSystemGestures;
 		}
 
 		@Override

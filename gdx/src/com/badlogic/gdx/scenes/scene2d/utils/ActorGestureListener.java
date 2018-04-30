@@ -107,7 +107,10 @@ public class ActorGestureListener implements EventListener {
 			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
-			if (event.isTouchFocusCancel()) return false;
+			if (event.isTouchFocusCancel()) {
+				detector.reset();
+				return false;
+			}
 			this.event = event;
 			actor = event.getListenerActor();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
@@ -132,8 +135,8 @@ public class ActorGestureListener implements EventListener {
 	public void tap (InputEvent event, float x, float y, int count, int button) {
 	}
 
-	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by time
-	 * passing, not by an InputEvent. */
+	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by
+	 * time passing, not by an InputEvent. */
 	public boolean longPress (Actor actor, float x, float y) {
 		return false;
 	}
