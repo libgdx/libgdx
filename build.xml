@@ -295,7 +295,7 @@
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
 		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true"
-		additionalparam="-Xdoclint:none">
+		additionalparam="-Xdoclint:none -encoding UTF-8">
 			<header><![CDATA[
 				libgdx API
 				<style>
