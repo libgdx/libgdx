@@ -209,6 +209,15 @@ public interface Input {
 		public static final int NUMPAD_7 = 151;
 		public static final int NUMPAD_8 = 152;
 		public static final int NUMPAD_9 = 153;
+		
+		public static final int NUMPAD_DIVIDE = 154;
+		public static final int NUMPAD_MULTIPLY = 155;
+		public static final int NUMPAD_SUBTRACT= 156;
+		public static final int NUMPAD_ADD = 157;
+		public static final int NUMPAD_DOT = 158;
+		public static final int NUMPAD_COMMA= 159;
+		public static final int NUMPAD_ENTER = 160;
+		public static final int NUMPAD_EQUALS = 161;
 
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;

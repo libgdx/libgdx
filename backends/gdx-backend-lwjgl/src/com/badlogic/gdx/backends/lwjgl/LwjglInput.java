@@ -368,27 +368,27 @@ final public class LwjglInput implements Input {
 		case Keyboard.KEY_GRAVE:
 			return Input.Keys.GRAVE;
 		case Keyboard.KEY_MULTIPLY:
-			return Input.Keys.STAR;
+			return Input.Keys.NUMPAD_MULTIPLY;
 		case Keyboard.KEY_NUMLOCK:
 			return Input.Keys.NUM;
 		case Keyboard.KEY_DECIMAL:
-			return Input.Keys.PERIOD;
+			return Input.Keys.NUMPAD_DOT;
 		case Keyboard.KEY_DIVIDE:
-			return Input.Keys.SLASH;
+			return Input.Keys.NUMPAD_DIVIDE;
 		case Keyboard.KEY_LMETA:
 			return Input.Keys.SYM;
 		case Keyboard.KEY_RMETA:
 			return Input.Keys.SYM;
 		case Keyboard.KEY_NUMPADEQUALS:
-			return Input.Keys.EQUALS;
+			return Input.Keys.NUMPAD_EQUALS;
 		case Keyboard.KEY_AT:
 			return Input.Keys.AT;
 		case Keyboard.KEY_EQUALS:
 			return Input.Keys.EQUALS;
 		case Keyboard.KEY_NUMPADCOMMA:
-			return Input.Keys.COMMA;
+			return Input.Keys.NUMPAD_COMMA;
 		case Keyboard.KEY_NUMPADENTER:
-			return Input.Keys.ENTER;
+			return Input.Keys.NUMPAD_ENTER;
 		case Keyboard.KEY_0:
 			return Input.Keys.NUM_0;
 		case Keyboard.KEY_1:
@@ -488,7 +488,7 @@ final public class LwjglInput implements Input {
 		case Keyboard.KEY_PERIOD:
 			return Input.Keys.PERIOD;
 		case Keyboard.KEY_ADD:
-			return Input.Keys.PLUS;
+			return Input.Keys.NUMPAD_ADD;
 		case Keyboard.KEY_SEMICOLON:
 			return Input.Keys.SEMICOLON;
 		case Keyboard.KEY_LSHIFT:
@@ -518,7 +518,7 @@ final public class LwjglInput implements Input {
 		case Keyboard.KEY_BACK:
 			return Input.Keys.DEL;
 		case Keyboard.KEY_SUBTRACT:
-			return Input.Keys.MINUS;
+			return Input.Keys.NUMPAD_SUBTRACT;
 		case Keyboard.KEY_APOSTROPHE:
 			return Input.Keys.APOSTROPHE;
 		case Keyboard.KEY_F1:
@@ -582,6 +582,7 @@ final public class LwjglInput implements Input {
 			return Keyboard.KEY_RBRACKET;
 		case Input.Keys.GRAVE:
 			return Keyboard.KEY_GRAVE;
+		case Input.Keys.NUMPAD_MULTIPLY:
 		case Input.Keys.STAR:
 			return Keyboard.KEY_MULTIPLY;
 		case Input.Keys.NUM:
@@ -699,6 +700,7 @@ final public class LwjglInput implements Input {
 		case Input.Keys.PERIOD:
 			return Keyboard.KEY_PERIOD;
 		case Input.Keys.PLUS:
+		case Input.Keys.NUMPAD_ADD:
 			return Keyboard.KEY_ADD;
 		case Input.Keys.SEMICOLON:
 			return Keyboard.KEY_SEMICOLON;
@@ -766,6 +768,18 @@ final public class LwjglInput implements Input {
 			return Keyboard.KEY_NUMPAD8;
 		case Input.Keys.NUMPAD_9:
 			return Keyboard.KEY_NUMPAD9;
+		case Input.Keys.NUMPAD_ENTER:
+			return Keyboard.KEY_NUMPADENTER;
+		case Input.Keys.NUMPAD_DOT:
+			return Keyboard.KEY_DECIMAL;
+		case Input.Keys.NUMPAD_COMMA:
+			return Keyboard.KEY_NUMPADCOMMA;
+		case Input.Keys.NUMPAD_SUBTRACT:
+			return Keyboard.KEY_SUBTRACT;
+		case Input.Keys.NUMPAD_DIVIDE:
+			return Keyboard.KEY_DIVIDE;
+		case Input.Keys.NUMPAD_EQUALS:
+			return Keyboard.NUMPAD_EQUALS;
 		default:
 			return Keyboard.KEY_NONE;
 		}
