@@ -1,6 +1,5 @@
 dist: trusty
 sudo: true
-language: java
 git:
   depth: 1
 branches:
