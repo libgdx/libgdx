@@ -38,6 +38,7 @@ before_install:
   - rm android-ndk-r16b-linux-x86_64.zip
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
   - export NDK_HOME=$HOME/android-ndk-r16b
+  - ls $NDK_HOME
 
 script:
   - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
