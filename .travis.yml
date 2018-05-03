@@ -13,7 +13,13 @@ language: java
 jdk: oraclejdk8
 
 before_install:
-  -
+  - sudo dpkg --add-architecture i386
+  - sudo apt-get -qq update
+  - sudo apt-get install -y ant
+  - sudo apt-get install -y gcc g++ gcc-multilib g++-multilib
+  - sudo apt-get install -y mingw-w64 lib32z1
+  - sudo apt-get install -y libx11-dev:i386
+  - sudo apt-get install -y make
 
 script:
   - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
