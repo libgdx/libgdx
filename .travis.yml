@@ -8,8 +8,6 @@ branches:
 cache:
   directories:
     - $HOME/.m2
-language: java
-jdk: oraclejdk8
 
 before_install:
   - sudo dpkg --add-architecture i386
