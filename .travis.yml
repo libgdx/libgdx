@@ -27,6 +27,7 @@ install:
 before_install:
   - sudo dpkg --add-architecture i386
   - sudo apt-get -qq update
+  - sudo apt-get install -y curl
   - sudo apt-get install -y ant
   - sudo apt-get install -y gcc g++ gcc-multilib g++-multilib
   - sudo apt-get install -y mingw-w64 lib32z1
@@ -34,7 +35,7 @@ before_install:
   - sudo apt-get install -y make
   - rm -fr $HOME/android-ndk-r16b
   - curl -L http://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip -O
-  - unzip -oq android-ndk-r16b-linux-x86_64.zip
+  - unzip android-ndk-r16b-linux-x86_64.zip
   - rm android-ndk-r16b-linux-x86_64.zip
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
   - export NDK_HOME=$HOME/android-ndk-r16b
