@@ -33,15 +33,13 @@ before_install:
   - sudo apt-get install -y mingw-w64 lib32z1
   - sudo apt-get install -y libx11-dev:i386
   - sudo apt-get install -y make
-  - cd $HOME
   - rm -fr $HOME/android-ndk-r16b
   - curl -L http://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip -O
-  - unzip -qo android-ndk-r16b-linux-x86_64.zip
+  - unzip -d $HOME -qo android-ndk-r16b-linux-x86_64.zip
   - rm android-ndk-r16b-linux-x86_64.zip
   - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
   - export NDK_HOME=$HOME/android-ndk-r16b
   - ls $NDK_HOME
-  - cd /home/travis/build/libgdx/libgdx
 
 script:
   - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
