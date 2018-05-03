@@ -35,7 +35,7 @@ before_install:
   - sudo apt-get install -y make
   - rm -fr $HOME/android-ndk-r16b
   - curl -L http://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip -O
-  - unzip android-ndk-r16b-linux-x86_64.zip
+  - unzip -qo android-ndk-r16b-linux-x86_64.zip
   - ls android-ndk-r16b
   - pwd
   - echo $HOME
