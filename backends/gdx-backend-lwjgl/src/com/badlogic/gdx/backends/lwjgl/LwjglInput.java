@@ -779,7 +779,7 @@ final public class LwjglInput implements Input {
 		case Input.Keys.NUMPAD_DIVIDE:
 			return Keyboard.KEY_DIVIDE;
 		case Input.Keys.NUMPAD_EQUALS:
-			return Keyboard.NUMPAD_EQUALS;
+			return Keyboard.KEY_NUMPADEQUALS;
 		default:
 			return Keyboard.KEY_NONE;
 		}
