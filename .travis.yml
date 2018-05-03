@@ -8,6 +8,12 @@ branches:
 cache:
   directories:
     - $HOME/.m2
+language: java
+jdk: oraclejdk8
+
+# Because Travis-CI is special and invokes gradle assemble by default. WTF.
+install:
+  - true
 
 before_install:
   - sudo dpkg --add-architecture i386
