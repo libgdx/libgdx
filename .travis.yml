@@ -1,0 +1,19 @@
+dist: trusty
+sudo: true
+language: java
+git:
+  depth: 1
+branches:
+  only:
+  - master
+cache:
+  directories:
+    - $HOME/.m2
+language: java
+jdk: oraclejdk8
+
+before_install:
+  -
+
+script:
+  - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
