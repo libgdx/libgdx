@@ -112,9 +112,9 @@ public class MaxRectsPacker implements Packer {
 		int minWidth = Integer.MAX_VALUE, minHeight = Integer.MAX_VALUE;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
 			Rect rect = inputRects.get(i);
-			minWidth = Math.min(minWidth, rect.width);
-			minHeight = Math.min(minHeight, rect.height);
-			float width = rect.width - paddingX, height = rect.height - paddingY;
+			int width = rect.width - paddingX, height = rect.height - paddingY;
+			minWidth = Math.min(minWidth, width);
+			minHeight = Math.min(minHeight, height);
 			if (settings.rotation) {
 				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
 					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
@@ -139,6 +139,9 @@ public class MaxRectsPacker implements Packer {
 		minHeight = Math.max(minHeight, settings.minHeight);
 
 		if (!settings.silent) System.out.print("Packing");
+
+		edgePaddingX -= settings.paddingX;
+		edgePaddingY -= settings.paddingY;
 
 		// Find the minimal page size that fits all rects.
 		Page bestResult = null;
