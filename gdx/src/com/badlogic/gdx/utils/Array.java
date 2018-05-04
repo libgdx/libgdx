@@ -339,6 +339,11 @@ public class Array<T> implements Iterable<T> {
 		return items[0];
 	}
 
+	/** Returns true if the array is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	public void clear () {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)

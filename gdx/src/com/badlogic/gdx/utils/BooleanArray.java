@@ -224,6 +224,11 @@ public class BooleanArray {
 		return items[0];
 	}
 
+	/** Returns true if the array is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	public void clear () {
 		size = 0;
 	}
