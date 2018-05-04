@@ -277,11 +277,6 @@ public class ShortArray {
 		return size == 0;
 	}
 
-	/** Returns true if the array has at least one item. */
-	public boolean hasItems () {
-		return size > 0;
-	}
-
 	public void clear () {
 		size = 0;
 	}

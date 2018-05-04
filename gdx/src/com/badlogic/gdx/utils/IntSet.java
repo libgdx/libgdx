@@ -329,11 +329,6 @@ public class IntSet {
 		return size == 0;
 	}
 
-	/** Returns true if the set has at least one item. */
-	public boolean hasItems () {
-		return size > 0;
-	}
-
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {

@@ -251,11 +251,6 @@ public class Queue<T> implements Iterable<T> {
 		return size == 0;
 	}
 
-	/** Returns true if the queue has at least one item. */
-	public boolean hasItems () {
-		return size > 0;
-	}
-
 	/** Returns the first (head) item in the queue (without removing it).
 	 * @see #addFirst(Object)
 	 * @see #removeFirst()

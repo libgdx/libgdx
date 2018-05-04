@@ -344,11 +344,6 @@ public class Array<T> implements Iterable<T> {
 		return size == 0;
 	}
 
-	/** Returns true if the array has at least one item. */
-	public boolean hasItems () {
-		return size > 0;
-	}
-
 	public void clear () {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)

@@ -312,11 +312,6 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return size == 0;
 	}
 
-	/** Returns true if the map has at least one item. */
-	public boolean hasItems () {
-		return size > 0;
-	}
-
 	/** Returns the last key. */
 	public K peekKey () {
 		return keys[size - 1];
