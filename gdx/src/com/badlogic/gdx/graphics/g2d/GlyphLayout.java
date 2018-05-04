@@ -146,52 +146,60 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(run);
 					else {
 						runs.add(run);
-
-						// Compute the run width, wrap if necessary, and position the run.
 						float[] xAdvances = run.xAdvances.items;
-						for (int i = 0, n = run.xAdvances.size; i < n; i++) {
-							float xAdvance = xAdvances[i];
-							x += xAdvance;
+						if (!wrap) {
+							// No wrap
+							float totalXAdvance = 0;
+							for (int i = 0, n = run.xAdvances.size; i < n; i++) {
+								totalXAdvance += xAdvances[i];
+							}
+							x += totalXAdvance;
+							run.width += totalXAdvance;
+						} else {
+							for (int i = 0, n = run.xAdvances.size; i < n; i++) {
+								float xAdvance = xAdvances[i];
+								x += xAdvance;
 
-							// Don't wrap if the glyph would fit with just its width (no xadvance or kerning).
-							if (wrap && x > targetWidth && i > 1
-								&& x - xAdvance + (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX
-									- 0.0001f > targetWidth) {
+								// Don't wrap if the glyph would fit with just its width (no xadvance or kerning).
+								if (x > targetWidth && i > 1
+										&& x - xAdvance + (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX
+										- 0.0001f > targetWidth) {
 
-								if (truncate != null) {
-									truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
-									x = run.x + run.width;
-									break outer;
-								}
+									if (truncate != null) {
+										truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
+										x = run.x + run.width;
+										break outer;
+									}
 
-								int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
-								if ((run.x == 0 && wrapIndex == 0) // Require at least one glyph per line.
-									|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
-									wrapIndex = i - 1;
-								}
-								GlyphRun next;
-								if (wrapIndex == 0) { // No wrap index, move entire run to next line.
-									next = run;
-									run.width = 0;
-									width = Math.max(width, run.x);
-								} else {
-									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
-									runs.add(next);
-									width = Math.max(width, run.x + run.width);
-								}
+									int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
+									if ((run.x == 0 && wrapIndex == 0) // Require at least one glyph per line.
+											|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
+										wrapIndex = i - 1;
+									}
+									GlyphRun next;
+									if (wrapIndex == 0) { // No wrap index, move entire run to next line.
+										next = run;
+										run.width = 0;
+										width = Math.max(width, run.x);
+									} else {
+										next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
+										runs.add(next);
+										width = Math.max(width, run.x + run.width);
+									}
 
-								// Start the loop over with the new run on the next line.
-								x = 0;
-								y += fontData.down;
-								lines++;
-								next.x = 0;
-								next.y = y;
-								i = -1;
-								n = next.xAdvances.size;
-								xAdvances = next.xAdvances.items;
-								run = next;
-							} else
-								run.width += xAdvance;
+									// Start the loop over with the new run on the next line.
+									x = 0;
+									y += fontData.down;
+									lines++;
+									next.x = 0;
+									next.y = y;
+									i = -1;
+									n = next.xAdvances.size;
+									xAdvances = next.xAdvances.items;
+									run = next;
+								} else
+									run.width += xAdvance;
+							}
 						}
 					}
 				}
