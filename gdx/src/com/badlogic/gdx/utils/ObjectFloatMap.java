@@ -376,13 +376,13 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** Returns if the ObjectFloatMap is empty */
+	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the ObjectFloatMap has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the map has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

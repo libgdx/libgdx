@@ -73,13 +73,13 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return (T)removed;
 	}
 
-	/** Returns if the BinaryHeap is empty */
+	/** Returns true if the heap is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the BinaryHeap has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the heap has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

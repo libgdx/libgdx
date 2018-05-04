@@ -413,13 +413,13 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		}
 	}
 
-	/** Returns if the IntFloatMap is empty */
+	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the IntFloatMap has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the map has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

@@ -365,13 +365,13 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 			valueTable[index] = null;
 	}
 
-	/** Returns if the IdentityMap is empty */
+	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the IdentityMap has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the map has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

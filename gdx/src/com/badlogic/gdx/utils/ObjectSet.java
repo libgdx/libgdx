@@ -307,13 +307,13 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
 	}
 
-	/** Returns if the ObjectSet is empty */
+	/** Returns true if the set is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the ObjectSet has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the set has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

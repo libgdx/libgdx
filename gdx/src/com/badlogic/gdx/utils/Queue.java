@@ -246,13 +246,13 @@ public class Queue<T> implements Iterable<T> {
 		return value;
 	}
 
-	/** Returns if the Queue is empty */
+	/** Returns true if the queue is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the Queue has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the queue has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 

@@ -377,13 +377,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			valueTable[index] = null;
 	}
 
-	/** Returns if the ObjectMap is empty */
+	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/** Returns if the ObjectMap has at least one element */
-	public boolean nonEmpty () {
+	/** Returns true if the map has at least one item. */
+	public boolean hasItems () {
 		return size > 0;
 	}
 
