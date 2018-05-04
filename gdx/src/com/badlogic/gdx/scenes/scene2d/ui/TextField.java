@@ -408,7 +408,7 @@ public class TextField extends Widget implements Disableable {
 		} else
 			displayText = newDisplayText;
 
-		layout.setText(font, displayText);
+		layout.setText(font, displayText.toString().replace('\r', ' ').replace('\n', ' '));
 		glyphPositions.clear();
 		float x = 0;
 		if (layout.runs.size > 0) {
