@@ -178,7 +178,12 @@ public class GlyphLayout implements Poolable {
 									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 									runs.add(next);
 
-									// Remove whitespace at the end of the run after wrap
+									// Remove whitespace at the front and end of the run after wrap
+									if(fontData.isWhitespace((char)run.glyphs.first().id)){
+										run.glyphs.removeIndex(0);
+										float removedXAdvance = run.xAdvances.removeIndex(1);
+										run.width -= removedXAdvance;
+									}
 									if(fontData.isWhitespace((char)run.glyphs.peek().id)){
 										run.glyphs.pop();
 										float removedXAdvance = run.xAdvances.pop();
