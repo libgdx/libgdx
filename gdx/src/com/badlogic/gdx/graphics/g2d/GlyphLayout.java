@@ -148,13 +148,11 @@ public class GlyphLayout implements Poolable {
 						runs.add(run);
 						float[] xAdvances = run.xAdvances.items;
 						if (!wrap) {
-							// No wrap
-							float totalXAdvance = 0;
-							for (int i = 0, n = run.xAdvances.size; i < n; i++) {
-								totalXAdvance += xAdvances[i];
-							}
-							x += totalXAdvance;
-							run.width += totalXAdvance;
+							float runWidth = 0;
+							for (int i = 0, n = run.xAdvances.size; i < n; i++)
+								runWidth += xAdvances[i];
+							x += runWidth;
+							run.width = runWidth;
 						} else {
 							for (int i = 0, n = run.xAdvances.size; i < n; i++) {
 								float xAdvance = xAdvances[i];
@@ -162,7 +160,7 @@ public class GlyphLayout implements Poolable {
 
 								// Don't wrap if the glyph would fit with just its width (no xadvance or kerning).
 								if (x > targetWidth && i > 1
-										&& x - xAdvance + (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX
+									&& x - xAdvance + (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX
 										- 0.0001f > targetWidth) {
 
 									if (truncate != null) {
@@ -173,7 +171,7 @@ public class GlyphLayout implements Poolable {
 
 									int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 									if ((run.x == 0 && wrapIndex == 0) // Require at least one glyph per line.
-											|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
+										|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
 										wrapIndex = i - 1;
 									}
 									GlyphRun next;
