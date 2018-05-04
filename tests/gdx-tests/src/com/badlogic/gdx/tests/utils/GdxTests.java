@@ -140,6 +140,7 @@ public class GdxTests {
 		GestureDetectorTest.class,
 		GLES30Test.class,
 		GLProfilerErrorTest.class,
+		GlyphLayoutWrapTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
 		GroupTest.class,

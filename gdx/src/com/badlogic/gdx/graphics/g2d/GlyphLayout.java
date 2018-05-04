@@ -175,15 +175,8 @@ public class GlyphLayout implements Poolable {
 									run.width = 0;
 									width = Math.max(width, run.x);
 								} else {
-									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
+									next = wrap(fontData, run, glyphRunPool, halign, wrapIndex, i);
 									runs.add(next);
-
-									// Remove whitespace at the end of the run after wrap
-									if(fontData.isWhitespace((char)run.glyphs.peek().id)){
-										run.glyphs.pop();
-										float removedXAdvance = run.xAdvances.pop();
-										run.width -= removedXAdvance;
-									}
 
 									width = Math.max(width, run.x + run.width);
 								}
@@ -297,7 +290,7 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.free(truncateRun);
 	}
 
-	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
+	private GlyphRun wrap(BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int halign, int wrapIndex, int widthIndex) {
 		GlyphRun second = glyphRunPool.obtain();
 		second.color.set(first.color);
 		int glyphCount = first.glyphs.size;
@@ -327,6 +320,34 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
 			xAdvances1.addAll(xAdvances2, 0, wrapIndex + 1);
 			xAdvances2.removeRange(1, wrapIndex); // Leave first entry to be overwritten by next line.
+
+			if (halign == Align.left) {
+				// Remove one whitespace at the front of second line
+				if (fontData.isWhitespace((char) glyphs2.first().id)) {
+					glyphs2.removeIndex(0);
+					float removedXAdvance = xAdvances2.removeIndex(1);
+					second.width -= removedXAdvance;
+				}
+			} else if (halign == Align.right) {
+                // Remove one whitespace at the end of first line
+                if (fontData.isWhitespace((char) glyphs1.peek().id)) {
+					glyphs1.pop();
+					float removedXAdvance = xAdvances1.pop();
+					first.width -= removedXAdvance;
+				}
+			} else if (halign == Align.center) {
+				// Remove one whitespace at the end of first line OR at the front of second line (remove max. one whitespace!)
+				if (fontData.isWhitespace((char) glyphs1.peek().id)) {
+					glyphs1.pop();
+					float removedXAdvance = xAdvances1.pop();
+					first.width -= removedXAdvance;
+				} else if (fontData.isWhitespace((char) glyphs2.first().id)) {
+					glyphs2.removeIndex(0);
+					float removedXAdvance = xAdvances2.removeIndex(1);
+					second.width -= removedXAdvance;
+				}
+			}
+
 			xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
