@@ -278,9 +278,9 @@ public class BitmapFont implements Disposable {
 		return data.lineHeight;
 	}
 
-	/** Returns the width of the space character. */
-	public float getSpaceWidth () {
-		return data.spaceWidth;
+	/** Returns the x-advance of the space character. */
+	public float getSpaceXadvance () {
+		return data.spaceXadvance;
 	}
 
 	/** Returns the x-height, which is the distance from the top of most lowercase characters to the baseline. */
@@ -460,7 +460,7 @@ public class BitmapFont implements Disposable {
 		public Glyph missingGlyph;
 
 		/** The width of the space character. */
-		public float spaceWidth;
+		public float spaceXadvance;
 		/** The x-height, which is the distance from the top of most lowercase characters to the baseline. */
 		public float xHeight = 1;
 
@@ -630,7 +630,7 @@ public class BitmapFont implements Disposable {
 					spaceGlyph.width = (int)(padLeft + spaceGlyph.xadvance + padRight);
 					spaceGlyph.xoffset = (int)-padLeft;
 				}
-				spaceWidth = spaceGlyph.width;
+				spaceXadvance = spaceGlyph.xadvance;
 
 				Glyph xGlyph = null;
 				for (char xChar : xChars) {
@@ -808,9 +808,9 @@ public class BitmapFont implements Disposable {
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
 			if (lastGlyph != null) {
-				float lastGlyphWidth = (!tightBounds || lastGlyph.fixedWidth) ? lastGlyph.xadvance
-					: lastGlyph.xoffset + lastGlyph.width - padRight;
-				xAdvances.add(lastGlyphWidth * scaleX);
+				float lastGlyphWidth = (!tightBounds || lastGlyph.fixedWidth) ? lastGlyph.xadvance * scaleX
+					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
+				xAdvances.add(lastGlyphWidth);
 			}
 		}
 
@@ -818,6 +818,7 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
+			if (isWhitespace((char)glyphs.get(i).id)) return i;
 			for (; i >= 1; i--)
 				if (!isWhitespace((char)glyphs.get(i).id)) break;
 			for (; i >= 1; i--) {
@@ -870,16 +871,16 @@ public class BitmapFont implements Disposable {
 			float x = scaleX / this.scaleX;
 			float y = scaleY / this.scaleY;
 			lineHeight *= y;
-			spaceWidth *= x;
+			spaceXadvance *= x;
 			xHeight *= y;
 			capHeight *= y;
 			ascent *= y;
 			descent *= y;
 			down *= y;
+			padLeft *= x;
+			padRight *= x;
 			padTop *= y;
-			padLeft *= y;
 			padBottom *= y;
-			padRight *= y;
 			this.scaleX = scaleX;
 			this.scaleY = scaleY;
 		}

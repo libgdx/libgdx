@@ -31,11 +31,16 @@ import com.badlogic.gdx.utils.Sort;
  * used to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker implements Packer {
-	private RectComparator rectComparator = new RectComparator();
-	private FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
-	private MaxRects maxRects = new MaxRects();
-	Settings settings;
-	private Sort sort = new Sort();
+	final Settings settings;
+	private final FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
+	private final MaxRects maxRects = new MaxRects();
+	private final Sort sort = new Sort();
+
+	private final Comparator<Rect> rectComparator = new Comparator<Rect>() {
+		public int compare (Rect o1, Rect o2) {
+			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
+		}
+	};
 
 	public MaxRectsPacker (Settings settings) {
 		this.settings = settings;
@@ -107,9 +112,9 @@ public class MaxRectsPacker implements Packer {
 		int minWidth = Integer.MAX_VALUE, minHeight = Integer.MAX_VALUE;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
 			Rect rect = inputRects.get(i);
-			minWidth = Math.min(minWidth, rect.width);
-			minHeight = Math.min(minHeight, rect.height);
-			float width = rect.width - paddingX, height = rect.height - paddingY;
+			int width = rect.width - paddingX, height = rect.height - paddingY;
+			minWidth = Math.min(minWidth, width);
+			minHeight = Math.min(minHeight, height);
 			if (settings.rotation) {
 				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
 					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
@@ -134,6 +139,9 @@ public class MaxRectsPacker implements Packer {
 		minHeight = Math.max(minHeight, settings.minHeight);
 
 		if (!settings.silent) System.out.print("Packing");
+
+		edgePaddingX -= settings.paddingX;
+		edgePaddingY -= settings.paddingY;
 
 		// Find the minimal page size that fits all rects.
 		Page bestResult = null;
@@ -225,14 +233,15 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static class BinarySearch {
-		int min, max, fuzziness, low, high, current;
-		boolean pot;
+		final boolean pot;
+		final int min, max, fuzziness;
+		int low, high, current;
 
 		public BinarySearch (int min, int max, int fuzziness, boolean pot) {
-			this.pot = pot;
-			this.fuzziness = pot ? 0 : fuzziness;
 			this.min = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2)) : min;
 			this.max = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2)) : max;
+			this.fuzziness = pot ? 0 : fuzziness;
+			this.pot = pot;
 		}
 
 		public int reset () {
@@ -259,8 +268,7 @@ public class MaxRectsPacker implements Packer {
 	 * @author Jukka Jyl�nki
 	 * @author Nathan Sweet */
 	class MaxRects {
-		private int binWidth;
-		private int binHeight;
+		private int binWidth, binHeight;
 		private final Array<Rect> usedRectangles = new Array();
 		private final Array<Rect> freeRectangles = new Array();
 
@@ -691,18 +699,6 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		private void pruneFreeList () {
-			/*
-			 * /// Would be nice to do something like this, to avoid a Theta(n^2) loop through each pair. /// But unfortunately it
-			 * doesn't quite cut it, since we also want to detect containment. /// Perhaps there's another way to do this faster than
-			 * Theta(n^2).
-			 * 
-			 * if (freeRectangles.size > 0) clb::sort::QuickSort(&freeRectangles[0], freeRectangles.size, NodeSortCmp);
-			 * 
-			 * for(int i = 0; i < freeRectangles.size-1; i++) if (freeRectangles[i].x == freeRectangles[i+1].x && freeRectangles[i].y
-			 * == freeRectangles[i+1].y && freeRectangles[i].width == freeRectangles[i+1].width && freeRectangles[i].height ==
-			 * freeRectangles[i+1].height) { freeRectangles.erase(freeRectangles.begin() + i); --i; }
-			 */
-
 			// Go through each pair and remove any rectangle that is redundant.
 			Array<Rect> freeRectangles = this.freeRectangles;
 			for (int i = 0, n = freeRectangles.size; i < n; i++)
@@ -729,21 +725,15 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static public enum FreeRectChoiceHeuristic {
-		// BSSF: Positions the rectangle against the short side of a free rectangle into which it fits the best.
+		/** BSSF: Positions the rectangle against the short side of a free rectangle into which it fits the best. */
 		BestShortSideFit,
-		// BLSF: Positions the rectangle against the long side of a free rectangle into which it fits the best.
+		/** BLSF: Positions the rectangle against the long side of a free rectangle into which it fits the best. */
 		BestLongSideFit,
-		// BAF: Positions the rectangle into the smallest free rect into which it fits.
+		/** BAF: Positions the rectangle into the smallest free rect into which it fits. */
 		BestAreaFit,
-		// BL: Does the Tetris placement.
+		/** BL: Does the Tetris placement. */
 		BottomLeftRule,
-		// CP: Choosest the placement where the rectangle touches other rects as much as possible.
+		/** CP: Choosest the placement where the rectangle touches other rects as much as possible. */
 		ContactPointRule
 	};
-
-	class RectComparator implements Comparator<Rect> {
-		public int compare (Rect o1, Rect o2) {
-			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
-		}
-	}
 }

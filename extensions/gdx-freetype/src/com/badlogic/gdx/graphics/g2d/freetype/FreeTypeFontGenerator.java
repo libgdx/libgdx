@@ -84,10 +84,15 @@ public class FreeTypeFontGenerator implements Disposable {
 	boolean bitmapped = false;
 	private int pixelWidth, pixelHeight;
 
+	/** {@link #FreeTypeFontGenerator(FileHandle, int)} */
+	public FreeTypeFontGenerator (FileHandle fontFile) {
+		this(fontFile, 0);
+	}
+	
 	/** Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
-	public FreeTypeFontGenerator (FileHandle fontFile) {
+	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
 		name = fontFile.pathWithoutExtension();
 		int fileSize = (int)fontFile.length();
 
@@ -113,7 +118,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			StreamUtils.closeQuietly(input);
 		}
 
-		face = library.newMemoryFace(buffer, 0);
+		face = library.newMemoryFace(buffer, faceIndex);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + fontFile);
 
 		if (checkForBitmapFont()) return;
@@ -331,9 +336,9 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine space width
 		if (loadChar(' ', flags) || loadChar('l', flags)) {
-			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
+			data.spaceXadvance = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
-			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
+			data.spaceXadvance = face.getMaxAdvanceWidth(); // Possibly very wrong.
 		}
 
 		// determine x-height
@@ -476,7 +481,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph spaceGlyph = data.getGlyph(' ');
 		if (spaceGlyph == null) {
 			spaceGlyph = new Glyph();
-			spaceGlyph.xadvance = (int)data.spaceWidth + parameter.spaceX;
+			spaceGlyph.xadvance = (int)data.spaceXadvance + parameter.spaceX;
 			spaceGlyph.id = (int)' ';
 			data.setGlyph(' ', spaceGlyph);
 		}
