@@ -29,6 +29,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	BitmapFont font;
 	String text;
 	SpriteBatch batch;
+	OnscreenKeyboardType type = OnscreenKeyboardType.Default;
 
 	public void create () {
 		batch = new SpriteBatch();
@@ -41,10 +42,13 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, "input: " + text, 0, Gdx.graphics.getHeight());
+		font.draw(batch, "input ["+type+"]: " + text, 0, Gdx.graphics.getHeight());
 		batch.end();
 
-		if (Gdx.input.justTouched()) Gdx.input.setOnscreenKeyboardVisible(true, OnscreenKeyboardType.Default);
+		if (Gdx.input.justTouched()) {
+			type = OnscreenKeyboardType.values()[(type.ordinal()+1) % OnscreenKeyboardType.values().length];
+			Gdx.input.setOnscreenKeyboardVisible(true, type);
+		}
 	}
 
 	@Override
