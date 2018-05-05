@@ -47,10 +47,10 @@ public class Align {
 	}
 
 	static public final boolean isCenterVertical (int align) {
-		return (align & Align.top) == 0 && (align & Align.bottom) == 0;
+		return (align & top) == 0 && (align & bottom) == 0;
 	}
 
 	static public final boolean isCenterHorizontal (int align) {
-		return (align & Align.left) == 0 && (align & Align.right) == 0;
+		return (align & left) == 0 && (align & right) == 0;
 	}
 }
