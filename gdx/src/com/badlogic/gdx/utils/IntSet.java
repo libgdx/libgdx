@@ -324,6 +324,11 @@ public class IntSet {
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
 	}
 
+	/** Returns true if the set is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {
