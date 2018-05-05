@@ -336,9 +336,9 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine space width
 		if (loadChar(' ', flags) || loadChar('l', flags)) {
-			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
+			data.spaceXadvance = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
-			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
+			data.spaceXadvance = face.getMaxAdvanceWidth(); // Possibly very wrong.
 		}
 
 		// determine x-height
@@ -481,7 +481,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph spaceGlyph = data.getGlyph(' ');
 		if (spaceGlyph == null) {
 			spaceGlyph = new Glyph();
-			spaceGlyph.xadvance = (int)data.spaceWidth + parameter.spaceX;
+			spaceGlyph.xadvance = (int)data.spaceXadvance + parameter.spaceX;
 			spaceGlyph.id = (int)' ';
 			data.setGlyph(' ', spaceGlyph);
 		}
