@@ -10,6 +10,7 @@
 - SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
 - API addition: Tree indentation can be customized.
 - Fixed GlyphLayout not respecting BitmapFontData#down.
+- API Change: Added OnscreenKeyboardType parameter to Input#setOnscreenKeyboardVisible
 - API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
 - API Change: BitmapFont#getSpaceWidth changed to BitmapFont#getSpaceXadvance.
 - Many GlyphLayout fixes.
