@@ -1,45 +1,23 @@
-dist: trusty
-sudo: true
+language: java
+jdk: oraclejdk8
 git:
   depth: 1
 branches:
   only:
   - master
-cache:
-  directories:
-    - $HOME/.m2
-language: android
-jdk: oraclejdk8
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-23.0.2
-    - android-23
-    - extra-google-m2repository
-    - extra-android-m2repository
+matrix:
+  include:
+    - env: OSX=10.11
+      os: osx
+      osx_image: osx10.11
+      rvm: system
 
-# Because Travis-CI is special and invokes gradle assemble by default. WTF.
+before_install:
+  - sudo apt-get install -y ant
+
 install:
   - true
 
-before_install:
-  - sudo dpkg --add-architecture i386
-  - sudo apt-get -qq update
-  - sudo apt-get install -y curl
-  - sudo apt-get install -y ant
-  - sudo apt-get install -y gcc g++ gcc-multilib g++-multilib
-  - sudo apt-get install -y mingw-w64 lib32z1
-  - sudo apt-get install -y libx11-dev:i386
-  - sudo apt-get install -y make
-  - rm -fr $HOME/android-ndk-r16b
-  - curl -L http://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip -O
-  - unzip -d $HOME -qo android-ndk-r16b-linux-x86_64.zip
-  - rm android-ndk-r16b-linux-x86_64.zip
-  - export ANDROID_NDK_HOME=$HOME/android-ndk-r16b
-  - export NDK_HOME=$HOME/android-ndk-r16b
-  - ls $NDK_HOME
-
 script:
-  - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
+  - ant -f build-mac-ios.xml -v
