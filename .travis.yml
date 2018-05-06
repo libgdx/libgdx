@@ -6,13 +6,7 @@ git:
 branches:
   only:
   - master
-
-matrix:
-  include:
-    - env: OSX=10.11
-      os: osx
-      osx_image: osx10.11
-      rvm: system
+os: osx
 
 before_install:
   - brew install ant
