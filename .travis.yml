@@ -1,5 +1,6 @@
 language: java
 jdk: oraclejdk8
+sudo: true
 git:
   depth: 1
 branches:
@@ -14,7 +15,7 @@ matrix:
       rvm: system
 
 before_install:
-  - sudo apt-get install -y ant
+  - brew install ant
 
 install:
   - true
