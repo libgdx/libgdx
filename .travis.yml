@@ -42,4 +42,4 @@ before_install:
   - ls $NDK_HOME
 
 script:
-  - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -v
+  - ant -f build.xml -Dbuild-natives=true -Dversion=nightly -quiet
