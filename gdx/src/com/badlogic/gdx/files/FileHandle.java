@@ -92,6 +92,7 @@ public class FileHandle {
 		return file.getName();
 	}
 
+	/** Returns the file extension (without the dot) or an empty string if the file name doesn't contain a dot. */
 	public String extension () {
 		String name = file.getName();
 		int dotIndex = name.lastIndexOf('.');

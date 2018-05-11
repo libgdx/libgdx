@@ -495,8 +495,8 @@ public class HorizontalGroup extends WidgetGroup {
 
 	/** Sets the alignment of widgets within each row of the horizontal group. Set to {@link Align#center}, {@link Align#top}, or
 	 * {@link Align#bottom}. */
-	public HorizontalGroup rowAlign (int row) {
-		this.rowAlign = row;
+	public HorizontalGroup rowAlign (int rowAlign) {
+		this.rowAlign = rowAlign;
 		return this;
 	}
 
