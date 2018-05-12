@@ -493,8 +493,9 @@ public class HorizontalGroup extends WidgetGroup {
 		return wrap;
 	}
 
-	/** Sets the alignment of widgets within each row of the horizontal group. Set to {@link Align#center}, {@link Align#top}, or
-	 * {@link Align#bottom}. */
+	/** Sets the horizontal alignment of each row of widgets when {@link #wrap() wrapping} is enabled and sets the vertical
+	 * alignment of widgets within each row. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
 	public HorizontalGroup rowAlign (int rowAlign) {
 		this.rowAlign = rowAlign;
 		return this;
@@ -513,10 +514,26 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
+	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of each row of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public HorizontalGroup rowLeft () {
+		rowAlign |= Align.left;
+		rowAlign &= ~Align.right;
+		return this;
+	}
+
 	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of widgets within each row. */
 	public HorizontalGroup rowBottom () {
 		rowAlign |= Align.bottom;
 		rowAlign &= ~Align.top;
+		return this;
+	}
+
+	/** Adds {@link Align#right} and clears {@link Align#left} for the alignment of each row of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public HorizontalGroup rowRight () {
+		rowAlign |= Align.right;
+		rowAlign &= ~Align.left;
 		return this;
 	}
 
