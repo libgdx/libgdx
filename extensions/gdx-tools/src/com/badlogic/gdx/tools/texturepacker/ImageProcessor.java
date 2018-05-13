@@ -101,7 +101,7 @@ public class ImageProcessor {
 		}
 
 		if (settings.alias) {
-			String crc = hash(rect.getImage(this));
+			String crc = hash(rect.getImage(this), settings.alphaThreshold < 0);
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				if (!settings.silent) {
@@ -429,7 +429,7 @@ public class ImageProcessor {
 		return 0;
 	}
 
-	static private String hash (BufferedImage image) {
+	static private String hash (BufferedImage image, boolean preserveTransparentColors) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
 
@@ -439,6 +439,15 @@ public class ImageProcessor {
 			if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
 				BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 				newImage.getGraphics().drawImage(image, 0, 0, null);
+				if (preserveTransparentColors){
+					for (int x = 0; x < width; x++){
+						for (int y = 0; y < height; y++){
+							int rgb = image.getRGB(x, y);
+							if ((rgb >>> 24) == 0x00)
+								newImage.setRGB(x, y, rgb);
+						}
+					}
+				}
 				image = newImage;
 			}
 
