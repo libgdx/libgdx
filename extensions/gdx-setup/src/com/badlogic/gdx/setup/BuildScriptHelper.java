@@ -36,6 +36,7 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
