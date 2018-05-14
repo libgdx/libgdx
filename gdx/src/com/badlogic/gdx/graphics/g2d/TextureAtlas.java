@@ -100,7 +100,7 @@ public class TextureAtlas implements Disposable {
 		final Array<Region> regions = new Array();
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read(), "UTF-8"), 64);
 			try {
 				Page pageImage = null;
 				while (true) {
