@@ -1096,7 +1096,7 @@ public class JsonValue implements Iterable<JsonValue> {
 			if (object.child == null)
 				writer.append("{}");
 			else {
-				boolean newLines = !isFlat(object) || object.size > 5;
+				boolean newLines = !isFlat(object) || object.size > 6;
 				writer.append(newLines ? "{\n" : "{ ");
 				int i = 0;
 				for (JsonValue child = object.child; child != null; child = child.next) {
