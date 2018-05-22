@@ -269,14 +269,13 @@ public class FileHandle {
 	/** Attempts to memory map this file. Android files must not be compressed.
 	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
 	public ByteBuffer map (FileChannel.MapMode mode) {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + file);
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
 		FileInputStream input = null;
 		try {
 			input = new FileInputStream(file());
-			FileChannel fileChannel = input.getChannel();
 			return input.getChannel().map(mode, 0, file().length()).order(ByteOrder.nativeOrder());
 		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error memory mapping file: " + this, ex);
+			throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
 		} finally {
 			StreamUtils.closeQuietly(input);
 		}

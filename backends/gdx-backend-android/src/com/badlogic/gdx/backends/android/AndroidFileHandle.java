@@ -95,7 +95,7 @@ public class AndroidFileHandle extends FileHandle {
 				input = new FileInputStream(fd.getFileDescriptor());
 				return input.getChannel().map(mode, startOffset, declaredLength).order(ByteOrder.nativeOrder());
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error memory mapping file: " + file + " (" + type + ")", ex);
+				throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
 			} finally {
 				StreamUtils.closeQuietly(input);
 			}
