@@ -29,11 +29,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
@@ -262,22 +263,25 @@ public class FileHandle {
 
 	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
 	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
-	public ByteBuffer map () {
+	public MappedByteBuffer map () {
 		return map(MapMode.READ_ONLY);
 	}
 
 	/** Attempts to memory map this file. Android files must not be compressed.
 	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
-	public ByteBuffer map (FileChannel.MapMode mode) {
+	public MappedByteBuffer map (FileChannel.MapMode mode) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
-		FileInputStream input = null;
+		RandomAccessFile raf = null;
 		try {
-			input = new FileInputStream(file());
-			return input.getChannel().map(mode, 0, file().length()).order(ByteOrder.nativeOrder());
+			raf = new RandomAccessFile(file, mode == MapMode.READ_ONLY ? "r" : "rw");
+			FileChannel fileChannel = raf.getChannel();
+			MappedByteBuffer map = fileChannel.map(mode, 0, file.length());
+			map.order(ByteOrder.nativeOrder());
+			return map;
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
 		} finally {
-			StreamUtils.closeQuietly(input);
+			StreamUtils.closeQuietly(raf);
 		}
 	}
 

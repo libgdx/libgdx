@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 import com.badlogic.gdx.Files.FileType;
@@ -219,7 +219,7 @@ public class GwtFileHandle extends FileHandle {
 		return position - offset;
 	}
 
-	public ByteBuffer map (FileChannel.MapMode mode) {
+	public MappedByteBuffer map (FileChannel.MapMode mode) {
 		throw new GdxRuntimeException("Cannot map files in GWT backend");
 	}
 

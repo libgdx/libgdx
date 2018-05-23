@@ -22,8 +22,8 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 import android.content.res.AssetFileDescriptor;
@@ -85,7 +85,7 @@ public class AndroidFileHandle extends FileHandle {
 		return super.read();
 	}
 
-	public ByteBuffer map (FileChannel.MapMode mode) {
+	public MappedByteBuffer map (FileChannel.MapMode mode) {
 		if (type == FileType.Internal) {
 			FileInputStream input = null;
 			try {
@@ -93,7 +93,9 @@ public class AndroidFileHandle extends FileHandle {
 				long startOffset = fd.getStartOffset();
 				long declaredLength = fd.getDeclaredLength();
 				input = new FileInputStream(fd.getFileDescriptor());
-				return input.getChannel().map(mode, startOffset, declaredLength).order(ByteOrder.nativeOrder());
+				MappedByteBuffer map = input.getChannel().map(mode, startOffset, declaredLength);
+				map.order(ByteOrder.nativeOrder());
+				return map;
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
 			} finally {
