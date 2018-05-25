@@ -51,7 +51,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return add(node);
 	}
 	
-		/** Returns if binary heap contains the provided node.
+	/** Returns if binary heap contains the provided node.
 	* @param node - may be null
 	* @param identity - if true, == is used. Otherwise, .equals is used
 	*/
