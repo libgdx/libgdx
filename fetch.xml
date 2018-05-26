@@ -154,11 +154,7 @@
         <get src="${domain}/extensions/gdx-freetype/x86_64/libgdx-freetype.so" dest="extensions/gdx-freetype/libs/x86_64"/>
         <get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="extensions/gdx-freetype/libs/ios32"/>
         <get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a.tvos" dest="extensions/gdx-freetype/libs/ios32"/>
-
-		<!-- jglfw -->
-		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
+        
 
         <!-- lwjgl 3 -->
         <antcall target="fetch-lwjgl3"/>
