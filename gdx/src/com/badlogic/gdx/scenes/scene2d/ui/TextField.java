@@ -515,7 +515,10 @@ public class TextField extends Widget implements Disableable {
 				Gdx.input.setOnscreenKeyboardVisible(false);
 				break;
 			}
-			if (stage.setKeyboardFocus(textField)) break;
+			if (stage.setKeyboardFocus(textField)) {
+				textField.selectAll();
+				break;
+			}
 			current = textField;
 			currentCoords.set(bestCoords);
 		}
