@@ -94,7 +94,7 @@ A few things we'd rather not like to see:
   * [Hungarian notation](http://en.wikipedia.org/wiki/Hungarian_notation)
   * Prefixes for fields or arguments
   * Curlies on new lines
-  * Conditional block bodies without curlies
+  * Conditional block bodies without curlies when the block spans more than one line
 
 If you modify an existing file, follow the style of the code in there.
 
