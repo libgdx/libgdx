@@ -762,8 +762,8 @@ public class BitmapFont implements Disposable {
 		}
 
 		/** Returns the glyph for the specified character, or null if no such glyph exists. Note that
-		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int, boolean)} should be be used to shape a string of characters into a
-		 * list of glyphs. */
+		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int, Glyph)} should be be used to shape a string of characters into a list
+		 * of glyphs. */
 		public Glyph getGlyph (char ch) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page != null) return page[ch & PAGE_SIZE - 1];
@@ -773,10 +773,8 @@ public class BitmapFont implements Disposable {
 		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
 		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
 		 *           square bracket.
-		 * @param tightBounds If true, the first {@link GlyphRun#xAdvances} entry is offset to prevent the first glyph from being
-		 *           drawn left of 0 and the last entry is offset to prevent the last glyph from being drawn right of the run
-		 *           width. */
-		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, boolean tightBounds) {
+		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
+		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
 			Glyph missingGlyph = this.missingGlyph;
@@ -787,7 +785,6 @@ public class BitmapFont implements Disposable {
 			glyphs.ensureCapacity(end - start);
 			xAdvances.ensureCapacity(end - start + 1);
 
-			Glyph lastGlyph = null;
 			while (start < end) {
 				char ch = str.charAt(start++);
 				Glyph glyph = getGlyph(ch);
@@ -798,8 +795,8 @@ public class BitmapFont implements Disposable {
 
 				glyphs.add(glyph);
 
-				if (lastGlyph == null) // First glyph.
-					xAdvances.add((!tightBounds || glyph.fixedWidth) ? 0 : -glyph.xoffset * scaleX - padLeft);
+				if (lastGlyph == null) // First glyph on line, adjust the position so it isn't drawn left of 0.
+					xAdvances.add(glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft);
 				else
 					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
@@ -808,7 +805,7 @@ public class BitmapFont implements Disposable {
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
 			if (lastGlyph != null) {
-				float lastGlyphWidth = (!tightBounds || lastGlyph.fixedWidth) ? lastGlyph.xadvance * scaleX
+				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
 				xAdvances.add(lastGlyphWidth);
 			}

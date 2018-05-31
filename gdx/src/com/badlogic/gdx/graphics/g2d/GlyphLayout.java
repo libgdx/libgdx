@@ -96,6 +96,7 @@ public class GlyphLayout implements Poolable {
 
 		float x = 0, y = 0, width = 0;
 		int lines = 0, blankLines = 0;
+		Glyph lastGlyph = null;
 
 		Array<Color> colorStack = this.colorStack;
 		Color nextColor = color;
@@ -107,7 +108,7 @@ public class GlyphLayout implements Poolable {
 		while (true) {
 			// Each run is delimited by newline or left square bracket.
 			int runEnd = -1;
-			boolean newline = false, colorRun = false;
+			boolean newline = false;
 			if (start == end) {
 				if (runStart == end) break; // End of string with no run to process, we're done.
 				runEnd = end; // End of string, process last run.
@@ -126,7 +127,6 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
-							colorRun = true;
 						} else if (length == -2) {
 							start++; // Skip first of "[[" escape sequence.
 							continue outer;
@@ -141,14 +141,20 @@ public class GlyphLayout implements Poolable {
 				if (runEnd != runStart) { // Eg, when a color tag is at text start or a line is "\n".
 					// Store the run that has ended.
 					GlyphRun run = glyphRunPool.obtain();
-					fontData.getGlyphs(run, str, runStart, runEnd, colorRun || runs.size == 0);
+					fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
 					if (run.glyphs.size == 0) {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
 					run.color.set(color);
+					if (lastGlyph != null) {
+						float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
+							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
+						x -= lastGlyphWidth;
+					}
 					run.x = x;
 					run.y = y;
+					if (newline || runEnd == end) adjustLastGlyph(fontData, run);
 					runs.add(run);
 
 					float[] xAdvances = run.xAdvances.items;
@@ -159,6 +165,7 @@ public class GlyphLayout implements Poolable {
 							runWidth += xAdvances[i];
 						x += runWidth;
 						run.width = runWidth;
+						lastGlyph = run.glyphs.peek();
 						break runEnded;
 					}
 
@@ -166,7 +173,10 @@ public class GlyphLayout implements Poolable {
 					int n = run.xAdvances.size;
 					x += xAdvances[0];
 					run.width = xAdvances[0];
-					if (n < 1) break runEnded;
+					if (n < 1) {
+						lastGlyph = run.glyphs.peek();
+						break runEnded;
+					}
 					x += xAdvances[1];
 					run.width += xAdvances[1];
 					for (int i = 2; i < n; i++) {
@@ -227,6 +237,7 @@ public class GlyphLayout implements Poolable {
 						next.y = y;
 						i = 1;
 						run = next;
+						lastGlyph = null;
 					}
 				}
 
@@ -241,6 +252,7 @@ public class GlyphLayout implements Poolable {
 					} else
 						lines++;
 					y += down;
+					lastGlyph = null;
 				}
 
 				runStart = start;
@@ -268,7 +280,7 @@ public class GlyphLayout implements Poolable {
 						runs.get(lineStart++).x += shift;
 					lineWidth = 0;
 				}
-				lineWidth += run.width;
+				lineWidth = Math.max(lineWidth, run.x + run.width);
 			}
 			float shift = targetWidth - lineWidth;
 			if (center) shift /= 2;
@@ -280,15 +292,19 @@ public class GlyphLayout implements Poolable {
 		this.height = fontData.capHeight - lines * fontData.down - blankLines * fontData.down * fontData.blankLineScale;
 	}
 
+	/** @param truncate May be empty string. */
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
 		Pool<GlyphRun> glyphRunPool) {
 
 		// Determine truncate string size.
 		GlyphRun truncateRun = glyphRunPool.obtain();
-		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), true);
+		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
 		float truncateWidth = 0;
-		for (int i = 1, n = truncateRun.xAdvances.size; i < n; i++)
-			truncateWidth += truncateRun.xAdvances.get(i);
+		if (truncateRun.xAdvances.size > 0) {
+			adjustLastGlyph(fontData, truncateRun);
+			for (int i = 1, n = truncateRun.xAdvances.size; i < n; i++) // Skip first for tight bounds.
+				truncateWidth += truncateRun.xAdvances.get(i);
+		}
 		targetWidth -= truncateWidth;
 
 		// Determine visible glyphs.

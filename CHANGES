@@ -12,6 +12,7 @@
 - API Change: BitmapFont#getSpaceWidth changed to BitmapFont#getSpaceXadvance.
 - Many GlyphLayout fixes.
 - API Addition: Added FileHandle#map(), can be used to memory map a file
+- API Change: BitmapFontData#getGlyphs changed for better glyph layout. See https://github.com/libgdx/libgdx/commit/a2467728d52d18f3eb29b00e6175d5fa47813425
 
 [1.9.8]
 - Add iPhoneX images

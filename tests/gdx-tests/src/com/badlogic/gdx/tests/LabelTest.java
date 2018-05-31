@@ -52,6 +52,9 @@ public class LabelTest extends GdxTest {
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
+		// skin.getFont("default-font").getData().getGlyph('T').xoffset = -20;
+		skin.getFont("default-font").getData().getGlyph('B').setKerning('B', -5);
+
 		Table table = new Table();
 		stage.addActor(table);
 		table.setPosition(200, 65);
@@ -75,6 +78,17 @@ public class LabelTest extends GdxTest {
 		label5.setWrap(true);
 		label5.setAlignment(Align.bottom | Align.right);
 		table.add(label5).minWidth(200 * scale).minHeight(110 * scale).fill();
+		table.row();
+
+		// The color markup text should match the uncolored text exactly.
+		Label label6 = new Label("AAA BBB CCC DDD EEE", skin);
+		table.add(label6).align(Align.left);
+		table.row();
+		Label label7 = new Label("AAA B[RED]B[]B CCC DDD EEE", skin);
+		table.add(label7).align(Align.left);
+		table.row();
+		Label label8 = new Label("[RED]AAA [BLUE]BBB [RED]CCC [BLUE]DDD [RED]EEE", skin);
+		table.add(label8).align(Align.left);
 
 		table.pack();
 	}
