@@ -145,8 +145,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
 
-		items.clear();
-		items.addAll(newItems);
+		if (newItems != items) {
+			items.clear();
+			items.addAll(newItems);
+		}
 		selection.validate();
 		selectBoxList.list.setItems(items);
 
