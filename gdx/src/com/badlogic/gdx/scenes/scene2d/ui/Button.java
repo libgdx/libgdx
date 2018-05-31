@@ -95,8 +95,7 @@ public class Button extends Table implements Disableable {
 			}
 		});
 		addListener(new FocusListener() {
-			@Override
-			public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 				Button.this.focused = focused;
 			}
 		});
@@ -176,26 +175,24 @@ public class Button extends Table implements Disableable {
 		this.style = style;
 
 		Drawable background = null;
-		if (isPressed() && !isDisabled()) {
+		if (isPressed() && !isDisabled())
 			background = style.down == null ? style.up : style.down;
-		} else {
-			if (isDisabled() && style.disabled != null) {
+		else {
+			if (isDisabled() && style.disabled != null)
 				background = style.disabled;
-			} else if (isChecked && style.checked != null) {
-				if (isOver() && style.checkedOver != null) {
+			else if (isChecked && style.checked != null) {
+				if (isOver() && style.checkedOver != null)
 					background = style.checkedOver;
-				} else if(focused && style.checkedFocused != null) {
+				else if (focused && style.checkedFocused != null)
 					background = style.checkedFocused;
-				}else {
+				else
 					background = style.checked;
-				}
-			} else if (isOver() && style.over != null) {
+			} else if (isOver() && style.over != null)
 				background = style.over;
-			} else if(focused && style.focused != null) {
+			else if (focused && style.focused != null)
 				background = style.focused;
-			}else {
+			else
 				background = style.up;
-			}
 		}
 		setBackground(background);
 	}
@@ -227,7 +224,7 @@ public class Button extends Table implements Disableable {
 		} else if (isChecked && style.checked != null) {
 			if (style.checkedOver != null && isOver) {
 				background = style.checkedOver;
-			} else if(style.checkedFocused != null && focused) {
+			} else if (style.checkedFocused != null && focused) {
 				background = style.checkedFocused;
 			} else {
 				background = style.checked;
@@ -236,7 +233,7 @@ public class Button extends Table implements Disableable {
 			background = style.over;
 		} else if (focused && style.focused != null) {
 			background = style.focused;
-		}else if (style.up != null) //
+		} else if (style.up != null) //
 		{
 			background = style.up;
 		}
