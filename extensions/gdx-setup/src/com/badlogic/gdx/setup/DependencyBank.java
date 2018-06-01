@@ -27,20 +27,21 @@ public class DependencyBank {
 	static String libgdxNightlyVersion = "1.9.9-SNAPSHOT";
 	static String roboVMVersion = "2.3.3";
 	static String moeVersion = "1.4.0";
-	static String buildToolsVersion = "25.0.3";
-	static String androidAPILevel = "25";
+	static String buildToolsVersion = "27.0.3";
+	static String androidAPILevel = "27";
 	static String gwtVersion = "2.8.0";
 
 	//Repositories
 	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
+	static String google = "google()";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:2.2.0";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.6";
+	static String androidPluginImport = "com.android.tools.build:gradle:3.1.0";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
 	

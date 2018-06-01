@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -49,6 +45,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
@@ -164,19 +165,18 @@ public class TexturePacker {
 			Page page = pages.get(p);
 
 			int width = page.width, height = page.height;
-			int paddingX = settings.paddingX;
-			int paddingY = settings.paddingY;
-			if (settings.duplicatePadding) {
-				paddingX /= 2;
-				paddingY /= 2;
-			}
-			width -= settings.paddingX;
-			height -= settings.paddingY;
+			int edgePadX = 0, edgePadY = 0;
 			if (settings.edgePadding) {
-				page.x = paddingX;
-				page.y = paddingY;
-				width += paddingX * 2;
-				height += paddingY * 2;
+				edgePadX = settings.paddingX;
+				edgePadY = settings.paddingY;
+				if (settings.duplicatePadding) {
+					edgePadX /= 2;
+					edgePadY /= 2;
+				}
+				page.x = edgePadX;
+				page.y = edgePadY;
+				width += edgePadX * 2;
+				height += edgePadY * 2;
 			}
 			if (settings.pot) {
 				width = MathUtils.nextPowerOfTwo(width);
@@ -206,7 +206,7 @@ public class TexturePacker {
 				BufferedImage image = rect.getImage(imageProcessor);
 				int iw = image.getWidth();
 				int ih = image.getHeight();
-				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
+				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - (rect.height - settings.paddingY);
 				if (settings.duplicatePadding) {
 					int amountX = settings.paddingX / 2;
 					int amountY = settings.paddingY / 2;
@@ -373,7 +373,7 @@ public class TexturePacker {
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
-		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
+		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
 
 		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 		if (rect.splits != null) {

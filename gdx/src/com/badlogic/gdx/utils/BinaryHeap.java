@@ -51,6 +51,20 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return add(node);
 	}
 
+	/** Returns if binary heap contains the provided node.
+	 * @param node May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
+	public boolean contains (T node, boolean identity) {
+		if (identity || node == null) {
+			for (Node n : nodes)
+				if (n == node) return true;
+		} else {
+			for (Node n : nodes)
+				if (n.equals(node)) return true;
+		}
+		return false;
+	}
+
 	public T peek () {
 		if (size == 0) throw new IllegalStateException("The heap is empty.");
 		return (T)nodes[0];
@@ -71,6 +85,11 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		nodes[size] = null;
 		if (size > 0 && index < size) down(index);
 		return (T)removed;
+	}
+
+	/** Returns true if the heap is empty. */
+	public boolean isEmpty () {
+		return size == 0;
 	}
 
 	public void clear () {

@@ -31,11 +31,16 @@ import com.badlogic.gdx.utils.Sort;
  * used to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker implements Packer {
-	private RectComparator rectComparator = new RectComparator();
-	private FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
-	private MaxRects maxRects = new MaxRects();
-	Settings settings;
-	private Sort sort = new Sort();
+	final Settings settings;
+	private final FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
+	private final MaxRects maxRects = new MaxRects();
+	private final Sort sort = new Sort();
+
+	private final Comparator<Rect> rectComparator = new Comparator<Rect>() {
+		public int compare (Rect o1, Rect o2) {
+			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
+		}
+	};
 
 	public MaxRectsPacker (Settings settings) {
 		this.settings = settings;
@@ -90,41 +95,40 @@ public class MaxRectsPacker implements Packer {
 	private Page packPage (ProgressListener progress, Array<Rect> inputRects) {
 		int paddingX = settings.paddingX, paddingY = settings.paddingY;
 		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
-		int edgePaddingX = 0, edgePaddingY = 0;
+		boolean edgePadX = false, edgePadY = false;
 		if (settings.edgePadding) {
-			if (settings.duplicatePadding) { // If duplicatePadding, edges get only half padding.
+			if (settings.duplicatePadding) {
 				maxWidth -= paddingX;
 				maxHeight -= paddingY;
 			} else {
 				maxWidth -= paddingX * 2;
 				maxHeight -= paddingY * 2;
-				edgePaddingX = paddingX;
-				edgePaddingY = paddingY;
 			}
+			edgePadX = paddingX > 0;
+			edgePadY = paddingY > 0;
 		}
 
 		// Find min size.
 		int minWidth = Integer.MAX_VALUE, minHeight = Integer.MAX_VALUE;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
 			Rect rect = inputRects.get(i);
-			minWidth = Math.min(minWidth, rect.width);
-			minHeight = Math.min(minHeight, rect.height);
-			float width = rect.width - paddingX, height = rect.height - paddingY;
+			int width = rect.width - paddingX, height = rect.height - paddingY;
+			minWidth = Math.min(minWidth, width);
+			minHeight = Math.min(minHeight, height);
 			if (settings.rotation) {
 				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
-					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
-						: "";
+					String paddingMessage = (edgePadX || edgePadY) ? (" and edge padding " + paddingX + "*2," + paddingY + "*2") : "";
 					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
 						+ paddingMessage + ": " + rect.name + "[" + width + "," + height + "]");
 				}
 			} else {
 				if (width > maxWidth) {
-					String paddingMessage = edgePaddingX > 0 ? (" and X edge padding " + paddingX) : "";
+					String paddingMessage = edgePadX ? (" and X edge padding " + paddingX + "*2") : "";
 					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
 						+ rect.name + "[" + width + "," + height + "]");
 				}
 				if (height > maxHeight && (!settings.rotation || width > maxHeight)) {
-					String paddingMessage = edgePaddingY > 0 ? (" and Y edge padding " + paddingY) : "";
+					String paddingMessage = edgePadY ? (" and Y edge padding " + paddingY + "*2") : "";
 					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
 						+ rect.name + "[" + width + "," + height + "]");
 				}
@@ -132,6 +136,19 @@ public class MaxRectsPacker implements Packer {
 		}
 		minWidth = Math.max(minWidth, settings.minWidth);
 		minHeight = Math.max(minHeight, settings.minHeight);
+
+		// BinarySearch uses the max size. Rects are packed with right and top padding, so the max size is increased to match.
+		// After packing the padding is subtracted from the page size.
+		int adjustX = paddingX, adjustY = paddingY;
+		if (settings.edgePadding) {
+			if (settings.duplicatePadding) {
+				adjustX -= paddingX;
+				adjustY -= paddingY;
+			} else {
+				adjustX -= paddingX * 2;
+				adjustY -= paddingY * 2;
+			}
+		}
 
 		if (!settings.silent) System.out.print("Packing");
 
@@ -143,7 +160,7 @@ public class MaxRectsPacker implements Packer {
 			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot);
 			int size = sizeSearch.reset(), i = 0;
 			while (size != -1) {
-				Page result = packAtSize(true, size - edgePaddingX, size - edgePaddingY, inputRects);
+				Page result = packAtSize(true, size + adjustX, size + adjustY, inputRects);
 				if (!settings.silent) {
 					if (++i % 70 == 0) System.out.println();
 					System.out.print(".");
@@ -153,10 +170,10 @@ public class MaxRectsPacker implements Packer {
 			}
 			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
-			if (bestResult == null) bestResult = packAtSize(false, maxSize - edgePaddingX, maxSize - edgePaddingY, inputRects);
+			if (bestResult == null) bestResult = packAtSize(false, maxSize + adjustX, maxSize + adjustY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
-			bestResult.width = Math.max(bestResult.width, bestResult.height);
-			bestResult.height = Math.max(bestResult.width, bestResult.height);
+			bestResult.width = Math.max(bestResult.width, bestResult.height) - paddingX;
+			bestResult.height = Math.max(bestResult.width, bestResult.height) - paddingY;
 			return bestResult;
 		} else {
 			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
@@ -166,7 +183,7 @@ public class MaxRectsPacker implements Packer {
 			while (true) {
 				Page bestWidthResult = null;
 				while (width != -1) {
-					Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
+					Page result = packAtSize(true, width + adjustX, height + adjustY, inputRects);
 					if (!settings.silent) {
 						if (++i % 70 == 0) System.out.println();
 						System.out.print(".");
@@ -184,8 +201,10 @@ public class MaxRectsPacker implements Packer {
 			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
 			if (bestResult == null)
-				bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
+				bestResult = packAtSize(false, settings.maxWidth + adjustX, settings.maxHeight + adjustY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
+			bestResult.width -= paddingX;
+			bestResult.height -= paddingY;
 			return bestResult;
 		}
 	}
@@ -225,14 +244,15 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static class BinarySearch {
-		int min, max, fuzziness, low, high, current;
-		boolean pot;
+		final boolean pot;
+		final int min, max, fuzziness;
+		int low, high, current;
 
 		public BinarySearch (int min, int max, int fuzziness, boolean pot) {
-			this.pot = pot;
-			this.fuzziness = pot ? 0 : fuzziness;
 			this.min = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2)) : min;
 			this.max = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2)) : max;
+			this.fuzziness = pot ? 0 : fuzziness;
+			this.pot = pot;
 		}
 
 		public int reset () {
@@ -259,8 +279,7 @@ public class MaxRectsPacker implements Packer {
 	 * @author Jukka Jyl�nki
 	 * @author Nathan Sweet */
 	class MaxRects {
-		private int binWidth;
-		private int binHeight;
+		private int binWidth, binHeight;
 		private final Array<Rect> usedRectangles = new Array();
 		private final Array<Rect> freeRectangles = new Array();
 
@@ -691,18 +710,6 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		private void pruneFreeList () {
-			/*
-			 * /// Would be nice to do something like this, to avoid a Theta(n^2) loop through each pair. /// But unfortunately it
-			 * doesn't quite cut it, since we also want to detect containment. /// Perhaps there's another way to do this faster than
-			 * Theta(n^2).
-			 * 
-			 * if (freeRectangles.size > 0) clb::sort::QuickSort(&freeRectangles[0], freeRectangles.size, NodeSortCmp);
-			 * 
-			 * for(int i = 0; i < freeRectangles.size-1; i++) if (freeRectangles[i].x == freeRectangles[i+1].x && freeRectangles[i].y
-			 * == freeRectangles[i+1].y && freeRectangles[i].width == freeRectangles[i+1].width && freeRectangles[i].height ==
-			 * freeRectangles[i+1].height) { freeRectangles.erase(freeRectangles.begin() + i); --i; }
-			 */
-
 			// Go through each pair and remove any rectangle that is redundant.
 			Array<Rect> freeRectangles = this.freeRectangles;
 			for (int i = 0, n = freeRectangles.size; i < n; i++)
@@ -729,21 +736,15 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static public enum FreeRectChoiceHeuristic {
-		// BSSF: Positions the rectangle against the short side of a free rectangle into which it fits the best.
+		/** BSSF: Positions the rectangle against the short side of a free rectangle into which it fits the best. */
 		BestShortSideFit,
-		// BLSF: Positions the rectangle against the long side of a free rectangle into which it fits the best.
+		/** BLSF: Positions the rectangle against the long side of a free rectangle into which it fits the best. */
 		BestLongSideFit,
-		// BAF: Positions the rectangle into the smallest free rect into which it fits.
+		/** BAF: Positions the rectangle into the smallest free rect into which it fits. */
 		BestAreaFit,
-		// BL: Does the Tetris placement.
+		/** BL: Does the Tetris placement. */
 		BottomLeftRule,
-		// CP: Choosest the placement where the rectangle touches other rects as much as possible.
+		/** CP: Choosest the placement where the rectangle touches other rects as much as possible. */
 		ContactPointRule
 	};
-
-	class RectComparator implements Comparator<Rect> {
-		public int compare (Rect o1, Rect o2) {
-			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
-		}
-	}
 }

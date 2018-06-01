@@ -1,0 +1,17 @@
+language: java
+sudo: true
+git:
+  depth: 1
+branches:
+  only:
+  - master
+os: osx
+
+before_install:
+  - brew install ant
+
+install:
+  - true
+
+script:
+  - ant -f build-mac-ios.xml -v

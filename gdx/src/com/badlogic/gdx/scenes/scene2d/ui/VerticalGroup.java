@@ -496,8 +496,9 @@ public class VerticalGroup extends WidgetGroup {
 		return wrap;
 	}
 
-	/** Sets the alignment of widgets within each column of the vertical group. Set to {@link Align#center}, {@link Align#left}, or
-	 * {@link Align#right}. */
+	/** Sets the vertical alignment of each column of widgets when {@link #wrap() wrapping} is enabled and sets the horizontal
+	 * alignment of widgets within each column. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
 	public VerticalGroup columnAlign (int columnAlign) {
 		this.columnAlign = columnAlign;
 		return this;
@@ -509,10 +510,26 @@ public class VerticalGroup extends WidgetGroup {
 		return this;
 	}
 
+	/** Adds {@link Align#top} and clears {@link Align#bottom} for the alignment of each column of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public VerticalGroup columnTop () {
+		columnAlign |= Align.top;
+		columnAlign &= ~Align.bottom;
+		return this;
+	}
+
 	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of widgets within each column. */
 	public VerticalGroup columnLeft () {
 		columnAlign |= Align.left;
 		columnAlign &= ~Align.right;
+		return this;
+	}
+
+	/** Adds {@link Align#bottom} and clears {@link Align#top} for the alignment of each column of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public VerticalGroup columnBottom () {
+		columnAlign |= Align.bottom;
+		columnAlign &= ~Align.top;
 		return this;
 	}
 

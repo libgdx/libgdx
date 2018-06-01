@@ -307,6 +307,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		values[size] = null;
 	}
 
+	/** Returns true if the map is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	/** Returns the last key. */
 	public K peekKey () {
 		return keys[size - 1];

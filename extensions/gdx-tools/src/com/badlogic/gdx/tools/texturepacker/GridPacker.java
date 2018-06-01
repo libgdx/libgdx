@@ -23,8 +23,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Collections;
-
 /** @author Nathan Sweet */
 public class GridPacker implements Packer {
 	private final Settings settings;
@@ -40,6 +38,21 @@ public class GridPacker implements Packer {
 	public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects) {
 		if (!settings.silent) System.out.print("Packing");
 
+		// Rects are packed with right and top padding, so the max size is increased to match. After packing the padding is
+		// subtracted from the page size.
+		int paddingX = settings.paddingX, paddingY = settings.paddingY;
+		int adjustX = paddingX, adjustY = paddingY;
+		if (settings.edgePadding) {
+			if (settings.duplicatePadding) {
+				adjustX -= paddingX;
+				adjustY -= paddingY;
+			} else {
+				adjustX -= paddingX * 2;
+				adjustY -= paddingY * 2;
+			}
+		}
+		int maxWidth = settings.maxWidth + adjustX, maxHeight = settings.maxHeight + adjustY;
+
 		int n = inputRects.size;
 		int cellWidth = 0, cellHeight = 0;
 		for (int i = 0; i < n; i++) {
@@ -47,29 +60,25 @@ public class GridPacker implements Packer {
 			cellWidth = Math.max(cellWidth, rect.width);
 			cellHeight = Math.max(cellHeight, rect.height);
 		}
-		cellWidth += settings.paddingX;
-		cellHeight += settings.paddingY;
+		cellWidth += paddingX;
+		cellHeight += paddingY;
 
 		inputRects.reverse();
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
 			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
-			Page result = packPage(inputRects, cellWidth, cellHeight);
-			pages.add(result);
+			Page page = packPage(inputRects, cellWidth, cellHeight, maxWidth, maxHeight);
+			page.width -= paddingX;
+			page.height -= paddingY;
+			pages.add(page);
 		}
 		return pages;
 	}
 
-	private Page packPage (Array<Rect> inputRects, int cellWidth, int cellHeight) {
+	private Page packPage (Array<Rect> inputRects, int cellWidth, int cellHeight, int maxWidth, int maxHeight) {
 		Page page = new Page();
 		page.outputRects = new Array();
-
-		int maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
-		if (settings.edgePadding) {
-			maxWidth -= settings.paddingX;
-			maxHeight -= settings.paddingY;
-		}
 
 		int n = inputRects.size;
 		int x = 0, y = 0;

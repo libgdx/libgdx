@@ -88,7 +88,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	public FreeTypeFontGenerator (FileHandle fontFile) {
 		this(fontFile, 0);
 	}
-	
+
 	/** Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
@@ -336,9 +336,9 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine space width
 		if (loadChar(' ', flags) || loadChar('l', flags)) {
-			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
+			data.spaceXadvance = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
-			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
+			data.spaceXadvance = face.getMaxAdvanceWidth(); // Possibly very wrong.
 		}
 
 		// determine x-height
@@ -481,7 +481,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph spaceGlyph = data.getGlyph(' ');
 		if (spaceGlyph == null) {
 			spaceGlyph = new Glyph();
-			spaceGlyph.xadvance = (int)data.spaceWidth + parameter.spaceX;
+			spaceGlyph.xadvance = (int)data.spaceXadvance + parameter.spaceX;
 			spaceGlyph.id = (int)' ';
 			data.setGlyph(' ', spaceGlyph);
 		}
@@ -573,6 +573,14 @@ public class FreeTypeFontGenerator implements Disposable {
 				for (int i = 0, n = parameter.renderCount - 1; i < n; i++)
 					mainPixmap.drawPixmap(mainPixmap, 0, 0);
 			}
+
+			if (parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0) {
+				Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
+					mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+				padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
+				mainPixmap.dispose();
+				mainPixmap = padPixmap;
+			}
 		}
 
 		GlyphMetrics metrics = slot.getMetrics();
@@ -581,7 +589,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		glyph.width = mainPixmap.getWidth();
 		glyph.height = mainPixmap.getHeight();
 		glyph.xoffset = mainGlyph.getLeft();
-		glyph.yoffset = parameter.flip ? -mainGlyph.getTop() + (int)baseLine : -(glyph.height - mainGlyph.getTop()) - (int)baseLine;
+		if (parameter.flip)
+			glyph.yoffset = -mainGlyph.getTop() + (int)baseLine;
+		else
+			glyph.yoffset = -(glyph.height - mainGlyph.getTop()) - (int)baseLine;
 		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
 
 		if (bitmapped) {
@@ -597,7 +608,6 @@ public class FreeTypeFontGenerator implements Disposable {
 					mainPixmap.drawPixel(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
 				}
 			}
-
 		}
 
 		Rectangle rect = packer.pack(mainPixmap);
@@ -691,9 +701,9 @@ public class FreeTypeFontGenerator implements Disposable {
 			return glyph;
 		}
 
-		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, boolean tightBounds) {
+		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
 			if (packer != null) packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
-			super.getGlyphs(run, str, start, end, tightBounds);
+			super.getGlyphs(run, str, start, end, lastGlyph);
 			if (dirty) {
 				dirty = false;
 				packer.updateTextureRegions(regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
@@ -763,8 +773,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		/** Shadow color; only used if shadowOffset > 0. If alpha component is 0, no shadow is drawn but characters are still offset
 		 * by shadowOffset. */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
-		/** Pixels to add to glyph spacing. Can be negative. */
+		/** Pixels to add to glyph spacing when text is rendered. Can be negative. */
 		public int spaceX, spaceY;
+		/** Pixels to add to the glyph in the texture. Can be negative. */
+		public int padTop, padLeft, padBottom, padRight;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */

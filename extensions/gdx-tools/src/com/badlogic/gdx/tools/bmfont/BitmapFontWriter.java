@@ -229,10 +229,10 @@ public class BitmapFontWriter {
 			Glyph g = glyphs.get(i);
 			boolean empty = g.width == 0 || g.height == 0;
 			buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-6s", g.id), true)).append("x=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.srcX - padLeft), true)).append("y=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.srcY - padRight), true)).append("width=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.width + padX), true)).append("height=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.height + padY), true)).append("xoffset=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.srcX), true)).append("y=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.srcY), true)).append("width=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.width), true)).append("height=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
 				.append(
 					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))

@@ -49,9 +49,30 @@ public class Texture extends GLTexture {
 	final static Map<Application, Array<Texture>> managedTextures = new HashMap<Application, Array<Texture>>();
 
 	public enum TextureFilter {
-		Nearest(GL20.GL_NEAREST), Linear(GL20.GL_LINEAR), MipMap(GL20.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
-			GL20.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST), MipMapNearestLinear(
-			GL20.GL_NEAREST_MIPMAP_LINEAR), MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
+		/** Fetch the nearest texel that best maps to the pixel on screen. */
+		Nearest(GL20.GL_NEAREST),
+
+		/** Fetch four nearest texels that best maps to the pixel on screen. */
+		Linear(GL20.GL_LINEAR),
+
+		/** @see TextureFilter#MipMapLinearLinear */
+		MipMap(GL20.GL_LINEAR_MIPMAP_LINEAR),
+
+		/** Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
+		 * nearest filter. */
+		MipMapNearestNearest(GL20.GL_NEAREST_MIPMAP_NEAREST),
+
+		/** Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
+		 * linear filter. */
+		MipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST),
+
+		/** Fetch the two best fitting images from the mip map chain and then sample the nearest texel from each of the two images,
+		 * combining them to the final output pixel. */
+		MipMapNearestLinear(GL20.GL_NEAREST_MIPMAP_LINEAR),
+
+		/** Fetch the two best fitting images from the mip map chain and then sample the four nearest texels from each of the two
+		 * images, combining them to the final output pixel. */
+		MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
 
 		final int glEnum;
 

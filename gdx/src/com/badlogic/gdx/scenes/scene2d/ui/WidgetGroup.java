@@ -154,12 +154,10 @@ public class WidgetGroup extends Group implements Layout {
 	public void pack () {
 		setSize(getPrefWidth(), getPrefHeight());
 		validate();
-		// Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
-		// calls invalidateHierarchy() in layout() if its pref height has changed.
-		if (needsLayout) {
-			setSize(getPrefWidth(), getPrefHeight());
-			validate();
-		}
+		// Validating the layout may change the pref size. Eg, a wrapped label doesn't know its pref height until it knows its
+		// width, so it calls invalidateHierarchy() in layout() if its pref height has changed.
+		setSize(getPrefWidth(), getPrefHeight());
+		validate();
 	}
 
 	public void setFillParent (boolean fillParent) {
