@@ -61,27 +61,27 @@ public class Xbox {
 
 	static {
 		if (SharedLibraryLoader.isWindows) {
-			A = -1;
-			B = -1;
-			X = -1;
-			Y = -1;
+			A = 0;
+			B = 1;
+			X = 2;
+			Y = 3;
 			GUIDE = -1;
-			L_BUMPER = -1;
-			R_BUMPER = -1;
-			BACK = -1;
-			START = -1;
+			L_BUMPER = 4;
+			R_BUMPER = 5;
+			BACK = 6;
+			START = 7;
 			DPAD_UP = -1;
 			DPAD_DOWN = -1;
 			DPAD_LEFT = -1;
 			DPAD_RIGHT = -1;
-			L_TRIGGER = -1;
-			R_TRIGGER = -1;
-			L_STICK_VERTICAL_AXIS = -1;
-			L_STICK_HORIZONTAL_AXIS = -1;
-			L_STICK = -1;
-			R_STICK_VERTICAL_AXIS = -1;
-			R_STICK_HORIZONTAL_AXIS = -1;
-			R_STICK = -1;
+			L_TRIGGER = 4;
+			R_TRIGGER = 5;
+			L_STICK_VERTICAL_AXIS = 1;
+			L_STICK_HORIZONTAL_AXIS = 0;
+			L_STICK = 8;
+			R_STICK_VERTICAL_AXIS = 3;
+			R_STICK_HORIZONTAL_AXIS = 2;
+			R_STICK = 9;
 		} else if (SharedLibraryLoader.isLinux) {
 			A = 0;
 			B = 1;
@@ -154,6 +154,6 @@ public class Xbox {
 	/** @return whether the {@link Controller} is an Xbox controller
 	 */
 	public static boolean isXboxController(Controller controller) {
-		return controller.getName().contains("Xbox");
+		return controller.getName().contains("Xbox") || controller.getName().contains("X-Box");
 	}
 }
