@@ -816,9 +816,9 @@ public class BitmapFont implements Disposable {
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
 			if (isWhitespace((char)glyphs.get(i).id)) return i;
-			for (; i >= 1; i--)
+			for (; i > 0; i--)
 				if (!isWhitespace((char)glyphs.get(i).id)) break;
-			for (; i >= 1; i--) {
+			for (; i > 0; i--) {
 				char ch = (char)glyphs.get(i).id;
 				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
