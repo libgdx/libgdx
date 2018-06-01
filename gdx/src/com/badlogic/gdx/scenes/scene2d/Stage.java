@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
@@ -86,6 +87,8 @@ public class Stage extends InputAdapter implements Disposable {
 	private Debug debugTableUnderMouse = Debug.none;
 	private final Color debugColor = new Color(0, 1, 0, 0.85f);
 
+	public Exception lastException;
+
 	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#stretch}. The stage will use its own {@link Batch}
 	 * which will be disposed when the stage is disposed. */
 	public Stage () {
@@ -126,9 +129,18 @@ public class Stage extends InputAdapter implements Disposable {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		try {
+			lastException = null;
 			root.draw(batch, 1);
+		} catch (Exception e) {
+			lastException = e;
+			throw new GdxRuntimeException(e);
 		} finally {
-			batch.end();
+			try {
+				batch.end();
+			} catch (IllegalStateException e) {
+				if (lastException == null)
+					throw e;
+			}
 		}
 
 		if (debug) drawDebug();
@@ -169,9 +181,18 @@ public class Stage extends InputAdapter implements Disposable {
 		debugShapes.setProjectionMatrix(viewport.getCamera().combined);
 		debugShapes.begin();
 		try {
+			lastException = null;
 			root.drawDebug(debugShapes);
+		} catch (Exception e) {
+			lastException = e;
+			throw new GdxRuntimeException(e);
 		} finally {
-			debugShapes.end();
+			try {
+				debugShapes.end();
+			} catch (IllegalStateException e) {
+				if (lastException == null)
+					throw e;
+			}
 		}
 	}
 
