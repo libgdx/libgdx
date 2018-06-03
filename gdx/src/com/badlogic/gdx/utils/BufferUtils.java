@@ -509,6 +509,12 @@ public final class BufferUtils {
 		allocatedUnsafe -= size;
 		freeMemory(buffer);
 	}
+	
+	public static boolean isUnsafeByteBuffer(ByteBuffer buffer) {
+		synchronized(unsafeBuffers) {
+			return unsafeBuffers.contains(buffer, true);
+		}
+	}
 
 	/** Allocates a new direct ByteBuffer from native heap memory using the native byte order. Needs to be disposed with
 	 * {@link #freeMemory(ByteBuffer)}.

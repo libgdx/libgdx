@@ -67,7 +67,8 @@ public class FreeType {
 		public void dispose () {
 			doneFreeType(address);
 			for(ByteBuffer buffer: fontData.values()) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
