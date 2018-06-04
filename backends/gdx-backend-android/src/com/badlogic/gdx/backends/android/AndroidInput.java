@@ -297,6 +297,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer)?1:0;
+	}
+
+	@Override
 	public synchronized boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyCount > 0;

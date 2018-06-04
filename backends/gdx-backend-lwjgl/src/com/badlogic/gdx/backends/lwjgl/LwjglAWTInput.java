@@ -310,6 +310,16 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			return false;
 	}
 
+	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer)?1:0;
+	}
+
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
