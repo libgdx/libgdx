@@ -166,6 +166,7 @@ public class Stage extends InputAdapter implements Disposable {
 		debugShapes.setProjectionMatrix(viewport.getCamera().combined);
 		debugShapes.begin();
 		root.drawDebug(debugShapes);
+		debugShapes.end();
 	}
 
 	/** Disables debug on all actors recursively except the specified actor and any children. */
