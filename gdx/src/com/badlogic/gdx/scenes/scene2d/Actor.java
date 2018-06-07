@@ -377,6 +377,21 @@ public class Actor {
 		this.visible = visible;
 	}
 
+	/**
+	 * Check if all parent actors are visible.
+	 * @return true is all parents as well as the actor itself are visible.
+	 */
+	public boolean isComponentHierarchyVisible(){
+		Actor currentParent=this;
+		while(currentParent.hasParent()){
+			if(!currentParent.isVisible()){
+				return false;
+			}
+			currentParent=currentParent.getParent();
+		}
+		return currentParent.isVisible();
+	}
+
 	/** Returns an application specific object for convenience, or null. */
 	public Object getUserObject () {
 		return userObject;
