@@ -632,17 +632,16 @@ public interface Input {
 	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
 
-	/**
-	 *
-	 * @return
-	 */
+	/** @return the pressure of the first pointer */
 	public float getPressure ();
 
-	/**
+	/** Returns the pressure of the given pointer, where 0 is untouched. On Android it should be
+	 * up to 1.0, but it can go above that slightly and its not consistent between devices. On iOS 1.0 is the normal touch
+	 * and significantly more of hard touch. Check relevant manufacturer documentation for details.
+	 * Check availability with {@link Input#isPeripheralAvailable(Peripheral)}. If not supported, returns 1.0 when touched.
 	 *
-	 * @param pointer
-	 * @return
-	 */
+	 * @param pointer the pointer id.
+	 * @return the pressure */
 	public float getPressure (int pointer);
 
 	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT

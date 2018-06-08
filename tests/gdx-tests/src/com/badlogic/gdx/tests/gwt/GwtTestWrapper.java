@@ -325,12 +325,12 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public float getPressure () {
-			return getPressure(0);
+			return input.getPressure();
 		}
 
 		@Override
 		public float getPressure (int pointer) {
-			return isTouched(pointer)?1:0;
+			return input.getPressure(pointer);
 		}
 
 		@Override
