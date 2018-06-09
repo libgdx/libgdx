@@ -1003,6 +1003,11 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
+	/** Sets length to 0. */
+	public void clear () {
+		length = 0;
+	}
+
 	/** Inserts the string representation of the specified {@code boolean} value at the specified {@code offset}. The
 	 * {@code boolean} value is converted to a string according to the rule defined by {@link String#valueOf(boolean)}.
 	 * 
