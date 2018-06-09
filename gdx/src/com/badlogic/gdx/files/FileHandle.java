@@ -33,8 +33,8 @@ import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
@@ -264,19 +264,19 @@ public class FileHandle {
 
 	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
 	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
-	public MappedByteBuffer map () {
+	public ByteBuffer map () {
 		return map(MapMode.READ_ONLY);
 	}
 
 	/** Attempts to memory map this file. Android files must not be compressed.
 	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
-	public MappedByteBuffer map (FileChannel.MapMode mode) {
+	public ByteBuffer map (FileChannel.MapMode mode) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(file, mode == MapMode.READ_ONLY ? "r" : "rw");
 			FileChannel fileChannel = raf.getChannel();
-			MappedByteBuffer map = fileChannel.map(mode, 0, file.length());
+			ByteBuffer map = fileChannel.map(mode, 0, file.length());
 			map.order(ByteOrder.nativeOrder());
 			return map;
 		} catch (Exception ex) {
