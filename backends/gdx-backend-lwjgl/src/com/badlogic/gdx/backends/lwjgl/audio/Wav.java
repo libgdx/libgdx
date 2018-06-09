@@ -157,10 +157,17 @@ public class Wav {
 
 		public int read (byte[] buffer) throws IOException {
 			if (dataRemaining == 0) return -1;
-			int length = Math.min(super.read(buffer), dataRemaining);
-			if (length == -1) return -1;
-			dataRemaining -= length;
-			return length;
+			int offset = 0;
+			do {
+				int length = Math.min(super.read(buffer, offset, buffer.length - offset), dataRemaining);
+				if (length == -1) {
+					if (offset > 0) return offset;
+					return -1;
+				}
+				offset += length;
+				dataRemaining -= length;
+			} while (offset < buffer.length);
+			return offset;
 		}
 	}
 }
