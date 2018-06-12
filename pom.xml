@@ -14,7 +14,7 @@
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
-  <url>http://libgdx.badlogicgames.com</url>
+  <url>https://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://github.com/libgdx/libgdx/issues</url>
   </issueManagement>

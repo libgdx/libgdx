@@ -13,7 +13,7 @@
     <name>libGDX Box2D Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-box2d</base.url>
+        <base.url>https://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-box2d</base.url>
     </properties>
     
     <dependencies>
