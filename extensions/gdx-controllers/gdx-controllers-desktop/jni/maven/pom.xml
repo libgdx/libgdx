@@ -13,7 +13,7 @@
     <name>libGDX Controllers Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-controllers/</base.url>
+        <base.url>https://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-controllers/</base.url>
     </properties>
     
     <dependencies>

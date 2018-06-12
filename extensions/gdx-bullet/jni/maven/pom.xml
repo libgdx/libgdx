@@ -13,7 +13,7 @@
     <name>libGDX Bullet Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
+        <base.url>https://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
     </properties>
     
     <build>

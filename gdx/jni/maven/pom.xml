@@ -13,7 +13,7 @@
     <name>libGDX Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist</base.url>
+        <base.url>https://libgdx.badlogicgames.com/nightlies/dist</base.url>
     </properties>
     
     <dependencies>
