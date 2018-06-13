@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -735,8 +736,10 @@ public class ScrollPane extends WidgetGroup {
 
 	public Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
-		if (scrollX && touchScrollH && hScrollBounds.contains(x, y)) return this;
-		if (scrollY && touchScrollV && vScrollBounds.contains(x, y)) return this;
+		if (touchable && getTouchable() == Touchable.enabled && isVisible()) {
+			if (scrollX && touchScrollH && hScrollBounds.contains(x, y)) return this;
+			if (scrollY && touchScrollV && vScrollBounds.contains(x, y)) return this;
+		}
 		return super.hit(x, y, touchable);
 	}
 

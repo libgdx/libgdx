@@ -13,6 +13,7 @@
 - Many GlyphLayout fixes.
 - API Addition: Added FileHandle#map(), can be used to memory map a file
 - API Change: BitmapFontData#getGlyphs changed for better glyph layout. See https://github.com/libgdx/libgdx/commit/9a7dfdff3c6374a5ebd2f33a819982aceb287dfa
+- API Change: Actor#hit is now responsible for returning null if invisible. #5264
 
 [1.9.8]
 - Add iPhoneX images
