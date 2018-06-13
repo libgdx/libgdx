@@ -310,9 +310,9 @@ public class Actor {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
 		while (true) {
-			if (parent == null) return false;
 			if (parent == actor) return true;
 			parent = parent.parent;
+			if (parent == null) return false;
 		}
 	}
 
@@ -320,9 +320,9 @@ public class Actor {
 	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		while (true) {
-			if (actor == null) return false;
 			if (actor == this) return true;
 			actor = actor.parent;
+			if (actor == null) return false;
 		}
 	}
 
@@ -333,7 +333,7 @@ public class Actor {
 		Actor actor = this;
 		do {
 			if (ClassReflection.isInstance(type, actor)) return (T)actor;
-			actor = actor.getParent();
+			actor = actor.parent;
 		} while (actor != null);
 		return null;
 	}
@@ -375,6 +375,16 @@ public class Actor {
 	/** If false, the actor will not be drawn and will not receive touch events. Default is true. */
 	public void setVisible (boolean visible) {
 		this.visible = visible;
+	}
+
+	/** Returns true if this actor and all ancestors are visible. */
+	public boolean ancestorsVisible () {
+		Actor actor = this;
+		do {
+			if (!actor.isVisible()) return false;
+			actor = actor.parent;
+		} while (actor != null);
+		return true;
 	}
 
 	/** Returns an application specific object for convenience, or null. */
@@ -862,11 +872,11 @@ public class Actor {
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
 	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
-		while (actor != null) {
+		do {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.parent;
 			if (actor == ascendant) break;
-		}
+		} while (actor != null);
 		return localCoords;
 	}
 
