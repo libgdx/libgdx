@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -513,7 +512,7 @@ public class TextField extends Widget implements Disableable {
 				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			}
 			if (textField == null) {
-				Gdx.input.setOnscreenKeyboardVisible(false, null);
+				Gdx.input.setOnscreenKeyboardVisible(false);
 				break;
 			}
 			if (stage.setKeyboardFocus(textField)) {
@@ -799,11 +798,11 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
-	 * {@link Input#setOnscreenKeyboardVisible(boolean, OnscreenKeyboardType)} as appropriate. Might overlap your actual rendering, so use with care!
+	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
 		public void show (boolean visible) {
-			Gdx.input.setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+			Gdx.input.setOnscreenKeyboardVisible(visible);
 		}
 	}
 

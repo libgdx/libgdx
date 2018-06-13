@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -165,7 +164,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 	@Override
 	public void create () {
-		Gdx.input.setOnscreenKeyboardVisible(true, OnscreenKeyboardType.Default);
+		Gdx.input.setOnscreenKeyboardVisible(true);
 		super.create();
 
 		glProfiler = new GLProfiler(Gdx.graphics);
@@ -295,7 +294,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 	@Override
 	public void dispose () {
-		Gdx.input.setOnscreenKeyboardVisible(false, null);
+		Gdx.input.setOnscreenKeyboardVisible(false);
 		glProfiler.disable();
 		visibleEntities.clear();
 		rng.setSeed(0);

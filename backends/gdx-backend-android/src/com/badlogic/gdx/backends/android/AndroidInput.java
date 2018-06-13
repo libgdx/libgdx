@@ -32,7 +32,6 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.service.wallpaper.WallpaperService.Engine;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -47,12 +46,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface for Android.
@@ -579,6 +575,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
 		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
 		return false;
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (final boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
 	}
 
 	@Override

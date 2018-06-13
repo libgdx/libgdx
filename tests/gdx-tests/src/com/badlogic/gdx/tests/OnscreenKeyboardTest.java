@@ -36,7 +36,6 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		font = new BitmapFont();
 		text = "";
 		Gdx.input.setInputProcessor(this);
-// Gdx.input.setOnscreenKeyboardVisible(true);
 	}
 
 	public void render () {
@@ -67,7 +66,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		if (character == '\b' && text.length() >= 1) {
 			text = text.substring(0, text.length() - 1);
 		} else if (character == '\n') {
-			Gdx.input.setOnscreenKeyboardVisible(false, null);
+			Gdx.input.setOnscreenKeyboardVisible(false);
 		} else {
 			text += character;
 		}

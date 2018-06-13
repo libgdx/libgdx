@@ -30,6 +30,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
@@ -409,13 +410,18 @@ public class IOSInput implements Input {
 
 		@Override
 		public boolean shouldReturn (UITextField textField) {
-			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false, null);
+			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
 			app.input.inputProcessor.keyDown(Keys.ENTER);
 			app.input.inputProcessor.keyTyped((char)13);
 			Gdx.graphics.requestRendering();
 			return false;
 		}
 	};
+
+	@Override
+	public void setOnscreenKeyboardVisible (boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {

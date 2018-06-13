@@ -828,7 +828,11 @@ public class Lwjgl3Input implements Input, Disposable {
 	public Orientation getNativeOrientation() {
 		return Orientation.Landscape;
 	}
-	
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible) {
+	}
+
 	@Override
 	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}

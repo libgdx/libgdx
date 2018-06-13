@@ -354,6 +354,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void setOnscreenKeyboardVisible (boolean visible) {
+			input.setOnscreenKeyboardVisible(visible);
+		}
+
+		@Override
 		public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 			input.setOnscreenKeyboardVisible(visible, type);
 		}
