@@ -532,7 +532,7 @@ public class TextField extends Widget implements Disableable {
 			if (actor instanceof TextField) {
 				if (actor == this) continue;
 				TextField textField = (TextField)actor;
-				if (textField.isDisabled() || !textField.focusTraversal) continue;
+				if (textField.isDisabled() || !textField.focusTraversal || !textField.ancestorsVisible()) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				boolean below = actorCoords.y != currentCoords.y && (actorCoords.y < currentCoords.y ^ up);
 				boolean right = actorCoords.y == currentCoords.y && (actorCoords.x > currentCoords.x ^ up);
