@@ -1056,18 +1056,18 @@ public class Json {
 	}
 
 	/** Each field on the <code>to</code> object is set to the value for the field with the same name on the <code>from</code>
-	 * object. The <code>from</code> object must have at least all the fields as the <code>to</code> object with the same name and
+	 * object. The <code>to</code> object must have at least all the fields of the <code>from</code> object with the same name and
 	 * type. */
 	public void copyFields (Object from, Object to) {
-		ObjectMap<String, FieldMetadata> fromFields = getFields(from.getClass());
-		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(to.getClass())) {
-			Field toField = entry.value.field;
-			FieldMetadata fromField = fromFields.get(entry.key);
-			if (fromField == null) throw new SerializationException("From object is missing field: " + toField.getName());
+		ObjectMap<String, FieldMetadata> toFields = getFields(from.getClass());
+		for (ObjectMap.Entry<String, FieldMetadata> entry: getFields(from.getClass())) {
+			FieldMetadata toField = toFields.get(entry.key);
+			Field fromField = entry.value.field;
+			if (toField == null) throw new SerializationException("To object is missing field" + entry.key);
 			try {
-				toField.set(to, fromField.field.get(from));
+				toField.field.set(to, fromField.get(from));
 			} catch (ReflectionException ex) {
-				throw new SerializationException("Error copying field: " + toField.getName(), ex);
+				throw new SerializationException("Error copying field: " + fromField.getName(), ex);
 			}
 		}
 	}
