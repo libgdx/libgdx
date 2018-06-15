@@ -109,6 +109,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	boolean[] touched = new boolean[NUM_TOUCHES];
 	int[] button = new int[NUM_TOUCHES];
 	int[] realId = new int[NUM_TOUCHES];
+	float[] pressure = new float[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private int keyCount = 0;
 	private boolean[] keys = new boolean[SUPPORTED_KEYS];
@@ -303,7 +304,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public float getPressure (int pointer) {
-		return isTouched(pointer)?1:0;
+		return pressure[pointer];
 	}
 
 	@Override
@@ -801,6 +802,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			return (Build.VERSION.SDK_INT >= 11 && vibrator != null) ? vibrator.hasVibrator() : vibrator != null;
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
+		if (peripheral == Peripheral.Pressure) return true;
 		return false;
 	}
 
