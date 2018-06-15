@@ -472,6 +472,10 @@ public class GwtInput implements Input {
 		return Math.round(yScaleRatio * touch.getRelativeY(target));
 	}
 
+	private static native JavaScriptObject getWindow () /*-{
+		return $wnd;
+	}-*/;
+
 	private void hookEvents () {
 		addEventListener(canvas, "mousedown", this, true);
 		addEventListener(Document.get(), "mousedown", this, true);
@@ -483,7 +487,7 @@ public class GwtInput implements Input {
 		addEventListener(Document.get(), "keydown", this, false);
 		addEventListener(Document.get(), "keyup", this, false);
 		addEventListener(Document.get(), "keypress", this, false);
-		addEventListener(Document.get(), "blur", this, false);
+		addEventListener(getWindow(), "blur", this, false);
 
 		addEventListener(canvas, "touchstart", this, true);
 		addEventListener(canvas, "touchmove", this, true);
@@ -576,7 +580,7 @@ public class GwtInput implements Input {
 		
 		if (hasFocus && !e.getType().equals("blur")) {
 			if (e.getType().equals("keydown")) {
-				// System.out.println("keydown");
+				// Gdx.app.log("GwtInput", "keydown");
 				int code = keyForCode(e.getKeyCode());
 				if (code == 67) {
 					e.preventDefault();
@@ -599,13 +603,13 @@ public class GwtInput implements Input {
 			}
 
 			if (e.getType().equals("keypress")) {
-				// System.out.println("keypress");
+				// Gdx.app.log("GwtInput", "keypress");
 				char c = (char)e.getCharCode();
 				if (processor != null) processor.keyTyped(c);
 			}
 
 			if (e.getType().equals("keyup")) {
-				// System.out.println("keyup");
+				// Gdx.app.log("GwtInput", "keyup");
 				int code = keyForCode(e.getKeyCode());
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
@@ -618,6 +622,7 @@ public class GwtInput implements Input {
 			}
 		}
 		else if (pressedKeyCount > 0) {
+			// Gdx.app.log("GwtInput", "unfocused");
 			IntSetIterator iterator = pressedKeySet.iterator();
 
 			while (iterator.hasNext) {
