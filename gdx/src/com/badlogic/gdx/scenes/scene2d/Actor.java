@@ -195,18 +195,19 @@ public class Actor {
 		return event.isCancelled();
 	}
 
-	/** Returns the deepest actor that contains the specified point and is {@link #getTouchable() touchable} and
-	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system
-	 * (0,0 is the bottom left of the actor and width,height is the upper right).
+	/** Returns the deepest {@link #isVisible() visible} (and optionally, {@link #getTouchable() touchable}) actor that contains
+	 * the specified point, or null if no actor was hit. The point is specified in the actor's local coordinate system (0,0 is the
+	 * bottom left of the actor and width,height is the upper right).
 	 * <p>
 	 * This method is used to delegate touchDown, mouse, and enter/exit events. If this method returns null, those events will not
 	 * occur on this Actor.
 	 * <p>
-	 * The default implementation returns this actor if the point is within this actor's bounds.
-	 * @param touchable If true, the hit detection will respect the {@link #setTouchable(Touchable) touchability}.
+	 * The default implementation returns this actor if the point is within this actor's bounds and this actor is visible.
+	 * @param touchable If true, hit detection will respect the {@link #setTouchable(Touchable) touchability}.
 	 * @see Touchable */
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && this.touchable != Touchable.enabled) return null;
+		if (!isVisible()) return null;
 		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
@@ -310,9 +311,9 @@ public class Actor {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
 		while (true) {
-			if (parent == null) return false;
 			if (parent == actor) return true;
 			parent = parent.parent;
+			if (parent == null) return false;
 		}
 	}
 
@@ -320,9 +321,9 @@ public class Actor {
 	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		while (true) {
-			if (actor == null) return false;
 			if (actor == this) return true;
 			actor = actor.parent;
+			if (actor == null) return false;
 		}
 	}
 
@@ -333,7 +334,7 @@ public class Actor {
 		Actor actor = this;
 		do {
 			if (ClassReflection.isInstance(type, actor)) return (T)actor;
-			actor = actor.getParent();
+			actor = actor.parent;
 		} while (actor != null);
 		return null;
 	}
@@ -375,6 +376,16 @@ public class Actor {
 	/** If false, the actor will not be drawn and will not receive touch events. Default is true. */
 	public void setVisible (boolean visible) {
 		this.visible = visible;
+	}
+
+	/** Returns true if this actor and all ancestors are visible. */
+	public boolean ancestorsVisible () {
+		Actor actor = this;
+		do {
+			if (!actor.isVisible()) return false;
+			actor = actor.parent;
+		} while (actor != null);
+		return true;
 	}
 
 	/** Returns an application specific object for convenience, or null. */
@@ -862,11 +873,11 @@ public class Actor {
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
 	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
-		while (actor != null) {
+		do {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.parent;
 			if (actor == ascendant) break;
-		}
+		} while (actor != null);
 		return localCoords;
 	}
 

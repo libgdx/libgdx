@@ -141,12 +141,12 @@ public class GlyphLayout implements Poolable {
 				if (runEnd != runStart) { // Eg, when a color tag is at text start or a line is "\n".
 					// Store the run that has ended.
 					GlyphRun run = glyphRunPool.obtain();
+					run.color.set(color);
 					fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
 					if (run.glyphs.size == 0) {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
-					run.color.set(color);
 					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
 						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
 							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
