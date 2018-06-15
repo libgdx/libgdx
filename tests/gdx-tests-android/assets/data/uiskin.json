@@ -14,7 +14,7 @@ ButtonStyle: {
 	toggle: { parent: default, checked: default-round-down }
 },
 TextButtonStyle: {
-	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white },
+	default: { parent: default, font: default-font, fontColor: white },
 	toggle: { parent: default, checked: default-round-down, downFontColor: red }
 },
 ScrollPaneStyle: {
@@ -40,8 +40,8 @@ ProgressBarStyle: {
 	default-vertical: { background: default-slider, knob: default-round-large }
 },
 SliderStyle: {
-	default-horizontal: { background: default-slider, knob: default-slider-knob },
-	default-vertical: { background: default-slider, knob: default-round-large }
+	default-horizontal: { parent: default-horizontal },
+	default-vertical: { parent: default-vertical }
 },
 LabelStyle: {
 	default: { font: default-font, fontColor: white }
