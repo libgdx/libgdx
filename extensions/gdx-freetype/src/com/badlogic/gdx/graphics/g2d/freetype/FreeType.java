@@ -90,7 +90,8 @@ public class FreeType {
 		public Face newMemoryFace(ByteBuffer buffer, int faceIndex) {
 			long face = newMemoryFace(address, buffer, buffer.remaining(), faceIndex);
 			if(face == 0) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 				throw new GdxRuntimeException("Couldn't load font, FreeType error code: " + getLastErrorCode());
 			}
 			else {
