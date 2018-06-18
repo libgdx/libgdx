@@ -67,7 +67,6 @@ public class MultitouchTest extends GdxTest {
 	}
 
 	@Override public void resize (int width, int height) {
-		Gdx.app.log("WElp", "Resize " + height + ", " + height);
 		viewport.update(width, height);
 	}
 
