@@ -140,7 +140,8 @@ public class FreeType {
 			ByteBuffer buffer = library.fontData.get(address);
 			if(buffer != null) {
 				library.fontData.remove(address);
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
