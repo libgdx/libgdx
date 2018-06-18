@@ -67,7 +67,8 @@ public class FreeType {
 		public void dispose () {
 			doneFreeType(address);
 			for(ByteBuffer buffer: fontData.values()) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
@@ -89,7 +90,8 @@ public class FreeType {
 		public Face newMemoryFace(ByteBuffer buffer, int faceIndex) {
 			long face = newMemoryFace(address, buffer, buffer.remaining(), faceIndex);
 			if(face == 0) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 				throw new GdxRuntimeException("Couldn't load font, FreeType error code: " + getLastErrorCode());
 			}
 			else {
@@ -139,7 +141,8 @@ public class FreeType {
 			ByteBuffer buffer = library.fontData.get(address);
 			if(buffer != null) {
 				library.fontData.remove(address);
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
