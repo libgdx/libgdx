@@ -693,6 +693,7 @@ public class BitmapFont implements Disposable {
 			float y2 = glyph.srcY + glyph.height;
 
 			// Shift glyph for left and top edge stripped whitespace. Clip glyph for right and bottom edge stripped whitespace.
+			// Note if the font region has padding, whitespace stripping must not be used.
 			if (offsetX > 0) {
 				x -= offsetX;
 				if (x < 0) {
@@ -710,6 +711,7 @@ public class BitmapFont implements Disposable {
 				y -= offsetY;
 				if (y < 0) {
 					glyph.height += y;
+					if (glyph.height < 0) glyph.height = 0;
 					y = 0;
 				}
 				y2 -= offsetY;
