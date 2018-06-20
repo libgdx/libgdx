@@ -153,6 +153,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
 	}
 
+	/** Set lastTiledMapRenderTime directly, this value might be overridden by calls of updateAnimationBaseTime() */
+	public static void setAnimationBaseTime (long millis) {
+		lastTiledMapRenderTime = millis;
+	}
+
 	/** Creates an animated tile with the given animation interval and frame tiles.
 	 * 
 	 * @param interval The interval between each individual frame tile.
