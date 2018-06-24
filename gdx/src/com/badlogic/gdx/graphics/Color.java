@@ -23,13 +23,16 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Color {
-	public static final Color CLEAR = new Color(0, 0, 0, 0);
-	public static final Color BLACK = new Color(0, 0, 0, 1);
-
-	public static final Color WHITE = new Color(0xffffffff);
+	public static final Color WHITE = new Color(1, 1, 1,1);
 	public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
 	public static final Color GRAY = new Color(0x7f7f7fff);
 	public static final Color DARK_GRAY = new Color(0x3f3f3fff);
+	public static final Color BLACK = new Color(0, 0, 0, 1);
+
+	/** Convenience for frequently used <code>WHITE.toFloatBits()</code> */
+	public static final float WHITE_FLOAT_BITS = WHITE.toFloatBits();
+
+	public static final Color CLEAR = new Color(0, 0, 0, 0);
 
 	public static final Color BLUE = new Color(0, 0, 1, 1);
 	public static final Color NAVY = new Color(0, 0, 0.5f, 1);

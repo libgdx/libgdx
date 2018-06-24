@@ -222,7 +222,7 @@ public class NinePatch {
 	}
 
 	private void load (TextureRegion[] patches) {
-		final float color = Color.WHITE.toFloatBits(); // placeholder color, overwritten at draw time
+		final float color = Color.WHITE_FLOAT_BITS; // placeholder color, overwritten at draw time
 
 		if (patches[BOTTOM_LEFT] != null) {
 			bottomLeft = add(patches[BOTTOM_LEFT], color, false, false);
