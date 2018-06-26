@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.utils.ObjectMap.Entries;
-
-/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead
- * for put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
- * unordered map. Keys can also be accessed and the order changed using {@link #orderedKeys()}.
+/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. Iteration over the
+ * {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an unordered map. Keys can also be
+ * accessed and the order changed using {@link #orderedKeys()}. There is some additional overhead for put and remove. When used
+ * for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly reduced by
+ * setting {@link Array#ordered} to false for {@link OrderedMap#orderedKeys()}.
  * @author Nathan Sweet */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;

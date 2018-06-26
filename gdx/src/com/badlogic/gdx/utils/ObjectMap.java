@@ -26,7 +26,10 @@ import com.badlogic.gdx.math.MathUtils;
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
- * next higher POT size.
+ * next higher POT size.<br>
+ * <br>
+ * Iteration can be very slow for a map with a large capacity. {@link #clear(int)} and {@link #shrink(int)} can be used to reduce
+ * the capacity. {@link OrderedMap} provides much faster iteration.
  * @author Nathan Sweet */
 public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
@@ -320,6 +323,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return defaultValue;
 	}
 
+	/** Returns the value associated with the key, or null. */
 	public V remove (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -392,7 +396,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		resize(maximumCapacity);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity, if they are larger. The reduction
+	 * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array. */
 	public void clear (int maximumCapacity) {
 		if (capacity <= maximumCapacity) {
 			clear();
@@ -402,6 +407,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		resize(maximumCapacity);
 	}
 
+	/** Clears the map, leaving the backing arrays at the current capacity. When the capacity is high and the population is low,
+	 * iteration can be unnecessarily slow. {@link #clear(int)} can be used to reduce the capacity. */
 	public void clear () {
 		if (size == 0) return;
 		K[] keyTable = this.keyTable;
