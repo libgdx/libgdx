@@ -285,7 +285,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.

@@ -96,10 +96,6 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Returns the old value associated with the specified key, or null. */
 	public V put (K key, V value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
-		return put_internal(key, value);
-	}
-
-	private V put_internal (K key, V value) {
 		K[] keyTable = this.keyTable;
 
 		// Check for existing keys.
@@ -277,7 +273,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put_internal(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.

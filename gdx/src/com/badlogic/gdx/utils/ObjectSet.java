@@ -254,7 +254,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			add(key);
+			addResize(key);
 			return;
 		}
 		// Store key in the stash.

@@ -280,7 +280,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.
