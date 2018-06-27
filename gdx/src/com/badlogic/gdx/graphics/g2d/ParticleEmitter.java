@@ -22,7 +22,6 @@ import java.io.Writer;
 import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -39,9 +38,9 @@ public class ParticleEmitter {
 	static private final int UPDATE_SPRITE = 1 << 7;
 	
 	private RangedNumericValue delayValue = new RangedNumericValue();
-	private ScaledNumericValue lifeOffsetValue = new ScaledNumericValue();
+	private IndependentScaledNumericValue lifeOffsetValue = new IndependentScaledNumericValue();
 	private RangedNumericValue durationValue = new RangedNumericValue();
-	private ScaledNumericValue lifeValue = new ScaledNumericValue();
+	private IndependentScaledNumericValue lifeValue = new IndependentScaledNumericValue();
 	private ScaledNumericValue emissionValue = new ScaledNumericValue();
 	private ScaledNumericValue xScaleValue = new ScaledNumericValue();
 	private ScaledNumericValue yScaleValue = new ScaledNumericValue();
@@ -361,13 +360,11 @@ public class ParticleEmitter {
 		emissionDiff = (int)emissionValue.newHighValue();
 		if (!emissionValue.isRelative()) emissionDiff -= emission;
 
-		life = (int)lifeValue.newLowValue();
-		lifeDiff = (int)lifeValue.newHighValue();
-		if (!lifeValue.isRelative()) lifeDiff -= life;
+		if (!lifeValue.independent)
+			generateLifeValues();
 
-		lifeOffset = lifeOffsetValue.active ? (int)lifeOffsetValue.newLowValue() : 0;
-		lifeOffsetDiff = (int)lifeOffsetValue.newHighValue();
-		if (!lifeOffsetValue.isRelative()) lifeOffsetDiff -= lifeOffset;
+		if (!lifeOffsetValue.independent)
+			generateLifeOffsetValues();
 
 		spawnWidth = spawnWidthValue.newLowValue();
 		spawnWidthDiff = spawnWidthValue.newHighValue();
@@ -419,6 +416,12 @@ public class ParticleEmitter {
 
 		float percent = durationTimer / (float)duration;
 		int updateFlags = this.updateFlags;
+
+		if (lifeValue.independent)
+			generateLifeValues();
+
+		if (lifeOffsetValue.independent)
+			generateLifeOffsetValues();
 
 		particle.currentLife = particle.life = life + (int)(lifeDiff * lifeValue.getScale(percent));
 
@@ -648,6 +651,20 @@ public class ParticleEmitter {
 		
 		return true;
 	}
+
+
+	private void generateLifeValues() {
+		life = (int) lifeValue.newLowValue();
+		lifeDiff = (int) lifeValue.newHighValue();
+		if (!lifeValue.isRelative()) lifeDiff -= life;
+	}
+
+	private void generateLifeOffsetValues() {
+		lifeOffset = lifeOffsetValue.active ? (int) lifeOffsetValue.newLowValue() : 0;
+		lifeOffsetDiff = (int) lifeOffsetValue.newHighValue();
+		if (!lifeOffsetValue.isRelative()) lifeOffsetDiff -= lifeOffset;
+	}
+
 
 	public void setPosition (float x, float y) {
 		if (attached) {
@@ -1484,6 +1501,54 @@ public class ParticleEmitter {
 			timeline = new float[value.timeline.length];
 			System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
 			relative = value.relative;
+		}
+	}
+
+	static public class IndependentScaledNumericValue extends ScaledNumericValue {
+
+		private boolean independent;
+
+		public boolean isIndependent() {
+			return independent;
+		}
+
+		public void setIndependent(boolean independent) {
+			this.independent = independent;
+		}
+
+
+		public void set (RangedNumericValue value){
+			if (value instanceof IndependentScaledNumericValue)
+				set((IndependentScaledNumericValue)value);
+			else
+				super.set(value);
+		}
+
+		public void set (ScaledNumericValue value){
+			super.set(value);
+			this.independent = independent;
+		}
+
+		public void save (Writer output) throws IOException {
+			super.save(output);
+			output.write("independent: " + independent + "\n");
+		}
+
+		public void load (BufferedReader reader) throws IOException {
+			super.load(reader);
+			// For backwards compatibility, independent property may not be defined
+			reader.mark(100);
+			String line = reader.readLine();
+			if (line == null) throw new IOException("Missing value: " + "independent");
+			if (line.contains("independent"))
+				independent = Boolean.parseBoolean(readString(line));
+			else
+				reader.reset();
+		}
+
+		public void load (IndependentScaledNumericValue value) {
+			super.load(value);
+			independent = value.independent;
 		}
 	}
 
