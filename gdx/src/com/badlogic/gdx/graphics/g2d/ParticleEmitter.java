@@ -360,13 +360,11 @@ public class ParticleEmitter {
 		emissionDiff = (int)emissionValue.newHighValue();
 		if (!emissionValue.isRelative()) emissionDiff -= emission;
 
-		if (!lifeValue.independent) {
+		if (!lifeValue.independent)
 			generateLifeValues();
-		}
 
-		if (!lifeOffsetValue.independent) {
+		if (!lifeOffsetValue.independent)
 			generateLifeOffsetValues();
-		}
 
 		spawnWidth = spawnWidthValue.newLowValue();
 		spawnWidthDiff = spawnWidthValue.newHighValue();
@@ -419,13 +417,11 @@ public class ParticleEmitter {
 		float percent = durationTimer / (float)duration;
 		int updateFlags = this.updateFlags;
 
-		if (lifeValue.independent) {
+		if (lifeValue.independent)
 			generateLifeValues();
-		}
 
-		if (lifeOffsetValue.independent) {
+		if (lifeOffsetValue.independent)
 			generateLifeOffsetValues();
-		}
 
 		particle.currentLife = particle.life = life + (int)(lifeDiff * lifeValue.getScale(percent));
 

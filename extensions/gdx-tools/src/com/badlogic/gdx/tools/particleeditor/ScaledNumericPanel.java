@@ -59,10 +59,8 @@ class ScaledNumericPanel extends EditorPanel {
 		highMaxSlider.setValue(value.getHighMax());
 		chart.setValues(value.getTimeline(), value.getScaling());
 		relativeCheckBox.setSelected(value.isRelative());
-		if (hasIndependent) {
+		if (hasIndependent)
 			independentCheckbox.setSelected(((ParticleEmitter.IndependentScaledNumericValue)value).isIndependent());
-		}
-
 		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				value.setLowMin((Float)lowMinSlider.getValue());
@@ -148,9 +146,8 @@ class ScaledNumericPanel extends EditorPanel {
 				layout.setConstraints(chart, chartConstraints);
 				layout.setConstraints(expandButton, expandButtonConstraints);
 				relativeCheckBox.setVisible(!expanded);
-				if (hasIndependent) {
+				if (hasIndependent)
 					independentCheckbox.setVisible(!expanded);
-				}
 				formPanel.setVisible(!expanded);
 				chart.revalidate();
 			}
