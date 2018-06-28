@@ -52,6 +52,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		Material material = new Material(TextureAttribute.createDiffuse(texture));
+		Material solidMaterial = new Material();
 
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.ColorPacked | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
@@ -86,6 +87,24 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.cylinder(2f, 4f, 3f, 15);
 		
+		modelBuilder.node().id = "capsule";
+		mpb = modelBuilder.part("capsule", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
+			| Usage.ColorPacked, material);
+		mpb.setUVRange(1f, 1f, 0f, 0f);
+		mpb.capsule(1.5f, 5f, 15);
+		
+		modelBuilder.node().id = "capsuleNoTexture";
+		mpb = modelBuilder.part("capsuleNoTexture", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal
+			| Usage.ColorPacked, solidMaterial);
+		mpb.setUVRange(1f, 1f, 0f, 0f);
+		mpb.capsule(1.5f, 5f, 15);
+		
+		modelBuilder.node().id = "transformedSphere";
+		mpb = modelBuilder.part("transformedSphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal
+			| Usage.ColorPacked, solidMaterial);
+		mpb.setUVRange(1f, 1f, 0f, 0f);
+		mpb.sphere(new Matrix4().translate(5, 0, 10).rotate(Vector3.Z, 45).scale(1, 2, 1), 1f, 1f, 1f, 12, 16);
+		
 		modelBuilder.node().id = "mesh";
 		mpb = modelBuilder.part("mesh", GL20.GL_TRIANGLES, mesh.getVertexAttributes(), material);
 		Matrix4 transform = new Matrix4();
@@ -108,6 +127,9 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		instances.add(new ModelInstance(model, new Matrix4().trn(5f, 0f, -5f), "sphere", true));
 		instances.add(new ModelInstance(model, new Matrix4().trn(-5f, 0f, 5f), "cone", true));
 		instances.add(new ModelInstance(model, new Matrix4().trn(5f, 0f, 5f), "cylinder", true));
+		instances.add(new ModelInstance(model, new Matrix4().trn(0f, 0f, 5f), "capsule", true));
+		instances.add(new ModelInstance(model, new Matrix4().trn(0f, 0f, 10f), "capsuleNoTexture", true));
+		instances.add(new ModelInstance(model, new Matrix4().trn(0f, 0f, 0f), "transformedSphere", true));
 	}
 
 	@Override
