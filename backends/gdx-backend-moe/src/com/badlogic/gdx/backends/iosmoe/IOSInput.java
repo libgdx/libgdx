@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import apple.foundation.NSProcessInfo;
-import apple.foundation.struct.NSOperatingSystemVersion;
 import apple.uikit.*;
 import apple.uikit.enums.*;
 import org.moe.natj.general.ann.NInt;
