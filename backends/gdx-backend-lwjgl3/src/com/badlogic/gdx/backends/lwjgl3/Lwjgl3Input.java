@@ -257,7 +257,7 @@ public class Lwjgl3Input implements Input, Disposable {
 
 	@Override
 	public float getPressure (int pointer) {
-		return isTouched(pointer)?1:0;
+		return isTouched(pointer) ? 1 : 0;
 	}
 
 	@Override

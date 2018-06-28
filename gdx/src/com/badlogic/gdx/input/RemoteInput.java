@@ -403,7 +403,7 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public float getPressure (int pointer) {
-		return isTouched(pointer)?1:0;
+		return isTouched(pointer) ? 1 : 0;
 	}
 
 	@Override

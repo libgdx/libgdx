@@ -317,7 +317,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 
 	@Override
 	public float getPressure (int pointer) {
-		return isTouched(pointer)?1:0;
+		return isTouched(pointer) ? 1 : 0;
 	}
 
 	void processEvents () {
