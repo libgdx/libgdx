@@ -28,6 +28,10 @@ public class StringWriter extends Writer {
 	public String toString () {
 		return out.toString();
 	}
+	
+	public StringBuilder getBuffer() {
+		return out;
+	}
 
 	public void flush () throws IOException {
 	}
