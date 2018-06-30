@@ -630,7 +630,7 @@ public final class Intersector {
 				tmp2.set(triangles[i + 3], triangles[i + 4], triangles[i + 5]),
 				tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
@@ -640,7 +640,7 @@ public final class Intersector {
 			}
 		}
 
-		if (hit == false)
+		if (!hit)
 			return false;
 		else {
 			if (intersection != null) intersection.set(best);
@@ -672,7 +672,7 @@ public final class Intersector {
 				tmp2.set(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]),
 				tmp3.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
@@ -682,7 +682,7 @@ public final class Intersector {
 			}
 		}
 
-		if (hit == false)
+		if (!hit)
 			return false;
 		else {
 			if (intersection != null) intersection.set(best);
@@ -705,7 +705,7 @@ public final class Intersector {
 		for (int i = 0; i < triangles.size() - 2; i += 3) {
 			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;

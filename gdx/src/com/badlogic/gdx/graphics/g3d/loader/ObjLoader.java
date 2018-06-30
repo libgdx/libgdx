@@ -340,7 +340,7 @@ class MtlLoader {
 		float shininess = 0.f;
 		String texFilename = null;
 
-		if (file == null || file.exists() == false) return;
+		if (file == null || !file.exists()) return;
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 		try {
