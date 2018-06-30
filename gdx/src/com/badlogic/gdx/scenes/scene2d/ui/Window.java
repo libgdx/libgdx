@@ -207,7 +207,7 @@ public class Window extends Table {
 		return style;
 	}
 
-	void keepWithinStage () {
+	public void keepWithinStage () {
 		if (!keepWithinStage) return;
 		Stage stage = getStage();
 		Camera camera = stage.getCamera();
