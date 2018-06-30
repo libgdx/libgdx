@@ -1528,7 +1528,7 @@ public class ParticleEmitter {
 
 		public void set (IndependentScaledNumericValue value) {
 			super.set(value);
-			value.independent = independent;
+			independent = value.independent;
 		}
 
 		public void save (Writer output) throws IOException {
