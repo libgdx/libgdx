@@ -112,11 +112,11 @@ public class Image extends Widget {
 			imageY = (int)(height / 2 - imageHeight / 2);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		float x = getX();
 		float y = getY();

@@ -71,8 +71,8 @@ public class Window extends Table {
 		titleLabel.setEllipsis(true);
 
 		titleTable = new Table() {
-			public void draw (Batch batch, float a) {
-				if (drawTitleTable) super.draw(batch, a);
+			public void draw (Batch batch, float parentAlpha) {
+				if (drawTitleTable) super.draw(batch, parentAlpha);
 			}
 		};
 		titleTable.add(titleLabel).expandX().fillX().minWidth(0);
@@ -234,7 +234,7 @@ public class Window extends Table {
 		}
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
 		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
@@ -243,20 +243,21 @@ public class Window extends Table {
 		if (style.stageBackground != null) {
 			stageToLocalCoordinates(tmpPosition.set(0, 0));
 			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, a, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+				getY() + tmpSize.y);
 		}
 
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 
-	protected void drawStageBackground (Batch batch, float a, float x, float y, float width, float height) {
+	protected void drawStageBackground (Batch batch, float parentAlpha, float x, float y, float width, float height) {
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		style.stageBackground.draw(batch, x, y, width, height);
 	}
 
-	protected void drawBackground (Batch batch, float a, float x, float y) {
-		super.drawBackground(batch, a, x, y);
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		super.drawBackground(batch, parentAlpha, x, y);
 
 		// Manually draw the title table before clipping is done.
 		titleTable.getColor().a = getColor().a;
@@ -264,7 +265,7 @@ public class Window extends Table {
 		titleTable.setSize(getWidth() - padLeft - getPadRight(), padTop);
 		titleTable.setPosition(padLeft, getHeight() - padTop);
 		drawTitleTable = true;
-		titleTable.draw(batch, a);
+		titleTable.draw(batch, parentAlpha);
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 

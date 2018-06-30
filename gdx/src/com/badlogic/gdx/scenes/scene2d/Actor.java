@@ -79,8 +79,9 @@ public class Actor {
 	 * method returns.
 	 * <p>
 	 * The default implementation does nothing.
-	 * @param a The parent alpha, to be multiplied with this actor's alpha, allowing the parent's alpha to affect all children. */
-	public void draw (Batch batch, float a) {
+	 * @param parentAlpha The parent alpha, to be multiplied with this actor's alpha, allowing the parent's alpha to affect all
+	 *           children. */
+	public void draw (Batch batch, float parentAlpha) {
 	}
 
 	/** Updates the actor based on time. Typically this is called each frame by {@link Stage#act(float)}.

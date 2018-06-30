@@ -304,7 +304,7 @@ public class TextField extends Widget implements Disableable {
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
 			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
@@ -318,7 +318,7 @@ public class TextField extends Widget implements Disableable {
 		float width = getWidth();
 		float height = getHeight();
 
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		float bgLeftWidth = 0, bgRightWidth = 0;
 		if (background != null) {
 			background.draw(batch, x, y, width, height);
@@ -338,15 +338,15 @@ public class TextField extends Widget implements Disableable {
 			if (!focused && messageText != null) {
 				if (style.messageFontColor != null) {
 					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
-						style.messageFontColor.a * color.a * a);
+						style.messageFontColor.a * color.a * parentAlpha);
 				} else
-					font.setColor(0.7f, 0.7f, 0.7f, color.a * a);
+					font.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
 					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
 			}
 		} else {
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * a);
+			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
 		}
 		if (!disabled && cursorOn && cursorPatch != null) {

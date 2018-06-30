@@ -147,7 +147,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	@Override
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		BitmapFont font = style.font;
@@ -156,7 +156,7 @@ public class List<T> extends Widget implements Cullable {
 		Color fontColorUnselected = style.fontColorUnselected;
 
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		float x = getX(), y = getY(), width = getWidth(), height = getHeight();
 		float itemY = height;
@@ -173,7 +173,7 @@ public class List<T> extends Widget implements Cullable {
 		float textOffsetX = selectedDrawable.getLeftWidth(), textWidth = width - textOffsetX - selectedDrawable.getRightWidth();
 		float textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
-		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * a);
+		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		for (int i = 0; i < items.size; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				T item = items.get(i);
@@ -182,12 +182,12 @@ public class List<T> extends Widget implements Cullable {
 					Drawable drawable = selectedDrawable;
 					if (touchDown == i && style.down != null) drawable = style.down;
 					drawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
-					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * a);
+					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY, textWidth);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
-						fontColorUnselected.a * a);
+						fontColorUnselected.a * parentAlpha);
 				}
 			} else if (itemY < cullingArea.y) {
 				break;

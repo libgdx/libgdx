@@ -87,9 +87,9 @@ public class ImageButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 
 	public Image getImage () {
