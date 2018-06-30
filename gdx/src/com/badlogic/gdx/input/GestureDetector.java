@@ -249,6 +249,7 @@ public class GestureDetector extends InputAdapter {
 		gestureStartTime = 0;
 		panning = false;
 		inTapSquare = false;
+		tracker.lastTime = 0;
 	}
 
 	private boolean isWithinTapSquare (float x, float y, float centerX, float centerY) {
@@ -397,8 +398,7 @@ public class GestureDetector extends InputAdapter {
 			lastTime = timeStamp;
 		}
 
-		public void update (float x, float y, long timeStamp) {
-			long currTime = timeStamp;
+		public void update (float x, float y, long currTime) {
 			deltaX = x - lastX;
 			deltaY = y - lastY;
 			lastX = x;
