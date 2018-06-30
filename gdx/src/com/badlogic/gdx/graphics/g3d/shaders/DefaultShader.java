@@ -733,7 +733,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof DefaultShader) ? equals((DefaultShader)obj) : false;
+		return (obj instanceof DefaultShader) && equals((DefaultShader) obj);
 	}
 
 	public boolean equals (DefaultShader obj) {

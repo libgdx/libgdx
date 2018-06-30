@@ -130,7 +130,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
 			root = xml.parse(tmxFile);
-			boolean generateMipMaps = (parameter != null ? parameter.generateMipMaps : false);
+			boolean generateMipMaps = (parameter != null && parameter.generateMipMaps);
 			TextureLoader.TextureParameter texParams = new TextureParameter();
 			texParams.genMipMaps = generateMipMaps;
 			if (parameter != null) {

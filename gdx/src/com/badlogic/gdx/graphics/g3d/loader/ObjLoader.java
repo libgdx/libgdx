@@ -97,7 +97,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 	@Override
 	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
-		return loadModelData(file, parameters == null ? false : parameters.flipV);
+		return loadModelData(file, parameters != null && parameters.flipV);
 	}
 
 	protected ModelData loadModelData (FileHandle file, boolean flipV) {
