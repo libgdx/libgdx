@@ -48,7 +48,7 @@ public class Window extends Table {
 	Label titleLabel;
 	Table titleTable;
 	boolean drawTitleTable;
-	
+
 	protected int edge;
 	protected boolean dragging;
 
@@ -210,6 +210,7 @@ public class Window extends Table {
 	public void keepWithinStage () {
 		if (!keepWithinStage) return;
 		Stage stage = getStage();
+		if (stage == null) return;
 		Camera camera = stage.getCamera();
 		if (camera instanceof OrthographicCamera) {
 			OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
@@ -242,8 +243,7 @@ public class Window extends Table {
 		if (style.stageBackground != null) {
 			stageToLocalCoordinates(tmpPosition.set(0, 0));
 			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, a, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
-				getY() + tmpSize.y);
+			drawStageBackground(batch, a, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
 		}
 
 		super.draw(batch, a);
