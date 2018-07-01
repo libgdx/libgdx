@@ -1001,7 +1001,7 @@ public class SpriteCache implements Disposable {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 

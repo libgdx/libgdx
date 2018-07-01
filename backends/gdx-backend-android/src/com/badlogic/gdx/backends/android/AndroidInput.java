@@ -407,7 +407,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				}
 			}
 
-			if (touchEvents.size() == 0) {
+			if (touchEvents.isEmpty()) {
 				for (int i = 0; i < deltaX.length; i++) {
 					deltaX[0] = 0;
 					deltaY[0] = 0;
@@ -692,7 +692,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	void registerSensorListeners () {
 		if (config.useAccelerometer) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
+			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) {
 				accelerometerAvailable = false;
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
@@ -705,7 +705,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() == 0) {
+			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty()) {
 				gyroscopeAvailable = false;
 			} else {
 				Sensor gyroscope = manager.getSensorList(Sensor.TYPE_GYROSCOPE).get(0);
@@ -720,7 +720,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (config.useRotationVectorSensor){
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			List<Sensor> rotationVectorSensors = manager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
-			if (rotationVectorSensors.size() > 0){
+			if (!rotationVectorSensors.isEmpty()){
 				rotationVectorListener = new SensorListener();
 				for (Sensor sensor : rotationVectorSensors){ // favor AOSP sensor
 					if (sensor.getVendor().equals("Google Inc.") && sensor.getVersion() == 3){

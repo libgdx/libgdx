@@ -160,7 +160,7 @@ public class SpriteBatch implements Batch {
 			+ "}";
 
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 
