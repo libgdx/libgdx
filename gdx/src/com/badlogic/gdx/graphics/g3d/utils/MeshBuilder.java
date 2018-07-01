@@ -377,7 +377,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setVertexTransform (Matrix4 transform) {
-		if (vertexTransformationEnabled = (transform != null)) {
+		vertexTransformationEnabled = transform != null;
+		if (vertexTransformationEnabled) {
 			positionTransform.set(transform);
 			normalTransform.set(transform).inv().transpose();
 		} else {

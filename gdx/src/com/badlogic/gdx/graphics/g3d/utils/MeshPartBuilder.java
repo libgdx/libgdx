@@ -212,10 +212,14 @@ public interface MeshPartBuilder {
 
 		public VertexInfo set (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 			reset();
-			if (hasPosition = pos != null) position.set(pos);
-			if (hasNormal = nor != null) normal.set(nor);
-			if (hasColor = col != null) color.set(col);
-			if (hasUV = uv != null) this.uv.set(uv);
+			hasPosition = pos != null;
+			if (hasPosition) position.set(pos);
+			hasNormal = nor != null;
+			if (hasNormal) normal.set(nor);
+			hasColor = col != null;
+			if (hasColor) color.set(col);
+			hasUV = uv != null;
+			if (hasUV) this.uv.set(uv);
 			return this;
 		}
 
@@ -239,7 +243,8 @@ public interface MeshPartBuilder {
 		}
 
 		public VertexInfo setPos (Vector3 pos) {
-			if (hasPosition = pos != null) position.set(pos);
+			hasPosition = pos != null;
+			if (hasPosition) position.set(pos);
 			return this;
 		}
 
@@ -250,7 +255,8 @@ public interface MeshPartBuilder {
 		}
 
 		public VertexInfo setNor (Vector3 nor) {
-			if (hasNormal = nor != null) normal.set(nor);
+			hasNormal = nor != null;
+			if (hasNormal) normal.set(nor);
 			return this;
 		}
 
@@ -261,7 +267,8 @@ public interface MeshPartBuilder {
 		}
 
 		public VertexInfo setCol (Color col) {
-			if (hasColor = col != null) color.set(col);
+			hasColor = col != null;
+			if (hasColor) color.set(col);
 			return this;
 		}
 
@@ -272,7 +279,8 @@ public interface MeshPartBuilder {
 		}
 
 		public VertexInfo setUV (Vector2 uv) {
-			if (hasUV = uv != null) this.uv.set(uv);
+			hasUV = uv != null;
+			if (hasUV) this.uv.set(uv);
 			return this;
 		}
 
