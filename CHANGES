@@ -17,6 +17,7 @@
 - API Addition: Added [Collection]#isEmpty() method to all 22 custom LibGDX-collections (e.g. Array, ObjectMap, ObjectSet, Queue, ...)
 - API Addition: StringBuilder#clear()
 - API Addition: Color#WHITE_FLOAT_BITS
+- Table layout fixed when expand is used and the layout width is less than the table's min width.
 
 [1.9.8]
 - Add iPhoneX images
