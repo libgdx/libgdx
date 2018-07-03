@@ -342,8 +342,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			if (cells.peek().endRow) return rowDefaults; // Row was already ended.
-			if (!implicitEndRow) endRow();
+			if (!implicitEndRow) {
+				if (cells.peek().endRow) return rowDefaults; // Row was already ended.
+				endRow();
+			}
 			invalidate();
 		}
 		implicitEndRow = false;
