@@ -10,9 +10,11 @@
    eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
   </data>
  </layer>
- <layer height="10" name="Tile Layer 2" width="20">
-  <data compression="zlib" encoding="base64">
-   eJzlzjkOggAQBVBqFLF2r13Q2r12wxvoDfQI3ACP7CuJ0ZDQEX/ymsnM5AfBfyWkQZOIFjHtiv86dOnRZ8CQUcld9mM+ZsKUGQlzFhX7LVmxZsOWHXtu3Au7+RefOXDkxJkLKVcePEv6vArqkDdo6gzB
-  </data>
- </layer>
+ <group name="testGroup">
+  <layer height="10" name="Tile Layer 2" width="20">
+   <data compression="zlib" encoding="base64">
+    eJzlzjkOggAQBVBqFLF2r13Q2r12wxvoDfQI3ACP7CuJ0ZDQEX/ymsnM5AfBfyWkQZOIFjHtiv86dOnRZ8CQUcld9mM+ZsKUGQlzFhX7LVmxZsOWHXtu3Au7+RefOXDkxJkLKVcePEv6vArqkDdo6gzB
+   </data>
+  </layer>
+ </group>
 </map>

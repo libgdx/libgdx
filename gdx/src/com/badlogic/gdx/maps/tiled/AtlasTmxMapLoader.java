@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -38,11 +41,11 @@ import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 /** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
- * 
+ *
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
  * in it indexed regions named after the tilesets used in the map. The indexes shall be local to the tileset (not the global id).
  * Strip whitespace and rotation should not be used when creating the atlas.
- * 
+ *
  * @author Justin Shapcott
  * @author Manuel Bua */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
@@ -252,18 +255,47 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
 			Element element = root.getChild(i);
-			String elementName = element.getName();
-			if (elementName.equals("properties")) {
-				loadProperties(map.getProperties(), element);
-			} else if (elementName.equals("tileset")) {
-				loadTileset(map, element, tmxFile, resolver);
-			} else if (elementName.equals("layer")) {
-				loadTileLayer(map, map.getLayers(), element);
-			} else if (elementName.equals("objectgroup")) {
-				loadObjectGroup(map, map.getLayers(), element);
-			}
+			loadLayer(map, map.getLayers(), element, tmxFile, resolver);
 		}
 		return map;
+	}
+
+    protected void loadLayer(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, AtlasResolver resolver) {
+        String elementName = element.getName();
+        if (elementName.equals("group")) {
+            loadTileGroup(map, parentLayers, element, tmxFile, resolver);
+        } else if (elementName.equals("properties")) {
+            loadProperties(map.getProperties(), element);
+        } else if (elementName.equals("tileset")) {
+            loadTileset(map, element, tmxFile, resolver);
+        } else if (elementName.equals("layer")) {
+            loadTileLayer(map, parentLayers, element);
+        } else if (elementName.equals("objectgroup")) {
+            loadObjectGroup(map, map.getLayers(), element);
+        }
+    }
+
+	protected void loadTileGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, AtlasResolver resolver) {
+		if (element.getName().equals("group")) {
+			MapGroupLayer groupLayer = new MapGroupLayer();
+			loadBasicLayerInfo(groupLayer, element);
+
+			Element properties = element.getChildByName("properties");
+			if (properties != null) {
+				loadProperties(groupLayer.getProperties(), properties);
+			}
+
+			for (int i = 0, j = element.getChildCount(); i < j; i++) {
+				Element child = element.getChild(i);
+				loadLayer(map, groupLayer.getLayers(), child, tmxFile, resolver);
+			}
+
+			for (MapLayer layer : groupLayer.getLayers()) {
+				layer.setParent(groupLayer);
+			}
+
+			parentLayers.add(groupLayer);
+		}
 	}
 
 	protected void loadTileset (TiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver) {
@@ -453,8 +485,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			for (AnimatedTiledMapTile tile : animatedTiles) {
 				tileset.putTile(tile.getId(), tile);
-			}			
-			
+			}
+
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);

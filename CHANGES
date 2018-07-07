@@ -18,6 +18,7 @@
 - API Addition: StringBuilder#clear()
 - API Addition: Color#WHITE_FLOAT_BITS
 - Table layout fixed when expand is used and the layout width is less than the table's min width.
+- AtlasTmxMapLoader: Supports group layers now
 
 [1.9.8]
 - Add iPhoneX images
