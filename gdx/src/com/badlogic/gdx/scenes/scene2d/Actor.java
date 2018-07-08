@@ -236,7 +236,7 @@ public class Actor {
 		return listeners.removeValue(listener, true);
 	}
 
-	public Array<EventListener> getListeners () {
+	public DelayedRemovalArray<EventListener> getListeners () {
 		return listeners;
 	}
 
@@ -253,7 +253,7 @@ public class Actor {
 		return captureListeners.removeValue(listener, true);
 	}
 
-	public Array<EventListener> getCaptureListeners () {
+	public DelayedRemovalArray<EventListener> getCaptureListeners () {
 		return captureListeners;
 	}
 
