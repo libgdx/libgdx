@@ -2,6 +2,7 @@
 *~
 .*.swp
 .DS_STORE
+desktop.ini
 robovm-build/
 project.xcworkspace/
 xcuserdata/
