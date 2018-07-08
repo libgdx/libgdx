@@ -17,19 +17,19 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 /** An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
-	private Array<InputProcessor> processors = new Array(4);
+	private DelayedRemovalArray<InputProcessor> processors = new DelayedRemovalArray(4);
 
 	public InputMultiplexer () {
 	}
 
 	public InputMultiplexer (InputProcessor... processors) {
-		for (int i = 0; i < processors.length; i++)
-			this.processors.add(processors[i]);
+		this.processors.addAll(processors);
 	}
 
 	public void addProcessor (int index, InputProcessor processor) {
@@ -59,61 +59,83 @@ public class InputMultiplexer implements InputProcessor {
 		processors.clear();
 	}
 
-	public void setProcessors (Array<InputProcessor> processors) {
-		this.processors = processors;
+	public void setProcessors (InputProcessor... processors) {
+		this.processors.clear();
+		this.processors.addAll(processors);
 	}
 
-	public Array<InputProcessor> getProcessors () {
+	public void setProcessors (Array<InputProcessor> processors) {
+		this.processors.clear();
+		this.processors.addAll(processors);
+	}
+
+	public DelayedRemovalArray<InputProcessor> getProcessors () {
 		return processors;
 	}
 
 	public boolean keyDown (int keycode) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyDown(keycode)) return true;
+		processors.end();
 		return false;
 	}
 
 	public boolean keyUp (int keycode) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyUp(keycode)) return true;
+		processors.end();
 		return false;
 	}
 
 	public boolean keyTyped (char character) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyTyped(character)) return true;
+		processors.end();
 		return false;
 	}
 
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
+		processors.end();
 		return false;
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
+		processors.end();
 		return false;
 	}
 
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
+		processors.end();
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved (int screenX, int screenY) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).mouseMoved(screenX, screenY)) return true;
+		processors.end();
 		return false;
 	}
 
 	@Override
 	public boolean scrolled (int amount) {
+		processors.begin();
 		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).scrolled(amount)) return true;
+		processors.end();
 		return false;
 	}
 }
