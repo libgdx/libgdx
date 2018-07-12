@@ -245,6 +245,7 @@ public class VerticalGroup extends WidgetGroup {
 				layout = (Layout)child;
 				width = layout.getPrefWidth();
 				height = layout.getPrefHeight();
+				if (height > groupHeight) height = Math.max(groupHeight, layout.getMinHeight());
 			} else {
 				width = child.getWidth();
 				height = child.getHeight();
@@ -475,9 +476,12 @@ public class VerticalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** If false, the widgets are arranged in a single column and the preferred height is the widget heights plus spacing. If true,
-	 * the widgets will wrap using the height of the vertical group. The preferred height of the group will be 0 as it is expected
-	 * that something external will set the height of the group. Default is false.
+	/** If false, the widgets are arranged in a single column and the preferred height is the widget heights plus spacing.
+	 * <p>
+	 * If true, the widgets will wrap using the height of the vertical group. The preferred height of the group will be 0 as it is
+	 * expected that something external will set the height of the group. Widgets are sized to their preferred height unless it is
+	 * larger than the group's height, in which case they are sized to the group's height but not less than their minimum height.
+	 * Default is false.
 	 * <p>
 	 * When wrap is enabled, the group's preferred width depends on the height of the group. In some cases the parent of the group
 	 * will need to layout twice: once to set the height of the group and a second time to adjust to the group's new preferred

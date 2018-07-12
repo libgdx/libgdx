@@ -19,6 +19,7 @@
 - API Addition: Color#WHITE_FLOAT_BITS
 - Table layout fixed when expand is used and the layout width is less than the table's min width.
 - InputMultiplexer#setProcessors(Array) now copies the items instead of using the specified array instance.
+- API Change: A wrapped HorizontalGroup or VerticalGroup will now size children down to their min size if the group is smaller than their pref size.
 
 [1.9.8]
 - Add iPhoneX images

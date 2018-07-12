@@ -243,6 +243,7 @@ public class HorizontalGroup extends WidgetGroup {
 			if (child instanceof Layout) {
 				layout = (Layout)child;
 				width = layout.getPrefWidth();
+				if (width > groupWidth) width = Math.max(groupWidth, layout.getMinWidth());
 				height = layout.getPrefHeight();
 			} else {
 				width = child.getWidth();
@@ -472,9 +473,12 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** If false, the widgets are arranged in a single row and the preferred width is the widget widths plus spacing. If true, the
-	 * widgets will wrap using the width of the horizontal group. The preferred width of the group will be 0 as it is expected that
-	 * something external will set the width of the group. Default is false.
+	/** If false, the widgets are arranged in a single row and the preferred width is the widget widths plus spacing.
+	 * <p>
+	 * If true, the widgets will wrap using the width of the horizontal group. The preferred width of the group will be 0 as it is
+	 * expected that something external will set the width of the group. Widgets are sized to their preferred width unless it is
+	 * larger than the group's width, in which case they are sized to the group's width but not less than their minimum width.
+	 * Default is false.
 	 * <p>
 	 * When wrap is enabled, the group's preferred height depends on the width of the group. In some cases the parent of the group
 	 * will need to layout twice: once to set the width of the group and a second time to adjust to the group's new preferred
