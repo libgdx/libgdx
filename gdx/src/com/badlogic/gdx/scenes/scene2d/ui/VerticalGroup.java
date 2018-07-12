@@ -83,6 +83,7 @@ public class VerticalGroup extends WidgetGroup {
 					Layout layout = (Layout)child;
 					width = layout.getPrefWidth();
 					height = layout.getPrefHeight();
+					if (wrap && height > groupHeight) height = Math.max(groupHeight, layout.getMinHeight());
 				} else {
 					width = child.getWidth();
 					height = child.getHeight();

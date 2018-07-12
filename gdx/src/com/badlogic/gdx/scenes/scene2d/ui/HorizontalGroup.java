@@ -82,6 +82,7 @@ public class HorizontalGroup extends WidgetGroup {
 				if (child instanceof Layout) {
 					Layout layout = (Layout)child;
 					width = layout.getPrefWidth();
+					if (wrap && width > groupWidth) width = Math.max(groupWidth, layout.getMinWidth());
 					height = layout.getPrefHeight();
 				} else {
 					width = child.getWidth();
