@@ -75,67 +75,89 @@ public class InputMultiplexer implements InputProcessor {
 
 	public boolean keyDown (int keycode) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyDown(keycode)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).keyDown(keycode)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean keyUp (int keycode) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyUp(keycode)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).keyUp(keycode)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean keyTyped (char character) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyTyped(character)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).keyTyped(character)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
-	@Override
 	public boolean mouseMoved (int screenX, int screenY) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).mouseMoved(screenX, screenY)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).mouseMoved(screenX, screenY)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
-	@Override
 	public boolean scrolled (int amount) {
 		processors.begin();
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).scrolled(amount)) return true;
-		processors.end();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (processors.get(i).scrolled(amount)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 }
