@@ -37,35 +37,35 @@ public class Container<T extends Actor> extends WidgetGroup {
 		setActor(actor);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
-			drawBackground(batch, a, 0, 0);
+			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
 				batch.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
 				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
 					getHeight() - padBottom - padTop.get(this))) {
-					drawChildren(batch, a);
+					drawChildren(batch, parentAlpha);
 					batch.flush();
 					clipEnd();
 				}
 			} else
-				drawChildren(batch, a);
+				drawChildren(batch, parentAlpha);
 			resetTransform(batch);
 		} else {
-			drawBackground(batch, a, getX(), getY());
-			super.draw(batch, a);
+			drawBackground(batch, parentAlpha, getX(), getY());
+			super.draw(batch, parentAlpha);
 		}
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
 	 * drawable. */
-	protected void drawBackground (Batch batch, float a, float x, float y) {
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
 		if (background == null) return;
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 

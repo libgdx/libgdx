@@ -82,7 +82,7 @@ public class SpriteCache implements Disposable {
 	private final Array<Texture> textures = new Array(8);
 	private final IntArray counts = new IntArray(8);
 
-	private float color = Color.WHITE.toFloatBits();
+	private float color = Color.WHITE_FLOAT_BITS;
 	private Color tempColor = new Color(1, 1, 1, 1);
 
 	private ShaderProgram customShader = null;
@@ -1001,7 +1001,7 @@ public class SpriteCache implements Disposable {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 

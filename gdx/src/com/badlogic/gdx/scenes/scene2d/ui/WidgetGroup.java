@@ -169,8 +169,8 @@ public class WidgetGroup extends Group implements Layout {
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
 	 * out. */
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 }

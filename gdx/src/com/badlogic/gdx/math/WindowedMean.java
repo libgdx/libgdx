@@ -66,7 +66,7 @@ public final class WindowedMean {
 	 * @return the mean */
 	public float getMean () {
 		if (hasEnoughData()) {
-			if (dirty == true) {
+			if (dirty) {
 				float mean = 0;
 				for (int i = 0; i < values.length; i++)
 					mean += values[i];

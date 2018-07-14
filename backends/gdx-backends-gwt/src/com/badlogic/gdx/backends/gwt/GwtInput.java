@@ -24,6 +24,7 @@ import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -46,6 +47,7 @@ public class GwtInput implements Input {
 	private int[] deltaY = new int[MAX_TOUCHES];
 	IntSet pressedButtons = new IntSet();
 	int pressedKeyCount = 0;
+	IntSet pressedKeySet = new IntSet();
 	boolean[] pressedKeys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
@@ -470,6 +472,10 @@ public class GwtInput implements Input {
 		return Math.round(yScaleRatio * touch.getRelativeY(target));
 	}
 
+	private static native JavaScriptObject getWindow () /*-{
+		return $wnd;
+	}-*/;
+
 	private void hookEvents () {
 		addEventListener(canvas, "mousedown", this, true);
 		addEventListener(Document.get(), "mousedown", this, true);
@@ -481,6 +487,7 @@ public class GwtInput implements Input {
 		addEventListener(Document.get(), "keydown", this, false);
 		addEventListener(Document.get(), "keyup", this, false);
 		addEventListener(Document.get(), "keypress", this, false);
+		addEventListener(getWindow(), "blur", this, false);
 
 		addEventListener(canvas, "touchstart", this, true);
 		addEventListener(canvas, "touchmove", this, true);
@@ -570,43 +577,65 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("keydown") && hasFocus) {
-			// System.out.println("keydown");
-			int code = keyForCode(e.getKeyCode());
-			if (code == 67) {
-				e.preventDefault();
-				if (processor != null) {
-					processor.keyDown(code);
-					processor.keyTyped('\b');
-				}
-			} else {
-				if (!pressedKeys[code]) {
-					pressedKeyCount++;
-					pressedKeys[code] = true;
-					keyJustPressed = true;
-					justPressedKeys[code] = true;
+		
+		if (hasFocus && !e.getType().equals("blur")) {
+			if (e.getType().equals("keydown")) {
+				// Gdx.app.log("GwtInput", "keydown");
+				int code = keyForCode(e.getKeyCode());
+				if (code == 67) {
+					e.preventDefault();
 					if (processor != null) {
 						processor.keyDown(code);
+						processor.keyTyped('\b');
+					}
+				} else {
+					if (!pressedKeys[code]) {
+						pressedKeySet.add(code);
+						pressedKeyCount++;
+						pressedKeys[code] = true;
+						keyJustPressed = true;
+						justPressedKeys[code] = true;
+						if (processor != null) {
+							processor.keyDown(code);
+						}
 					}
 				}
 			}
-		}
 
-		if (e.getType().equals("keypress") && hasFocus) {
-			// System.out.println("keypress");
-			char c = (char)e.getCharCode();
-			if (processor != null) processor.keyTyped(c);
-		}
-
-		if (e.getType().equals("keyup") && hasFocus) {
-			// System.out.println("keyup");
-			int code = keyForCode(e.getKeyCode());
-			if (pressedKeys[code]) {
-				pressedKeyCount--;
-				pressedKeys[code] = false;
+			if (e.getType().equals("keypress")) {
+				// Gdx.app.log("GwtInput", "keypress");
+				char c = (char)e.getCharCode();
+				if (processor != null) processor.keyTyped(c);
 			}
-			if (processor != null) {
-				processor.keyUp(code);
+
+			if (e.getType().equals("keyup")) {
+				// Gdx.app.log("GwtInput", "keyup");
+				int code = keyForCode(e.getKeyCode());
+				if (pressedKeys[code]) {
+					pressedKeySet.remove(code);
+					pressedKeyCount--;
+					pressedKeys[code] = false;
+				}
+				if (processor != null) {
+					processor.keyUp(code);
+				}
+			}
+		}
+		else if (pressedKeyCount > 0) {
+			// Gdx.app.log("GwtInput", "unfocused");
+			IntSetIterator iterator = pressedKeySet.iterator();
+
+			while (iterator.hasNext) {
+				int code = iterator.next();
+				
+				if (pressedKeys[code]) {
+					pressedKeySet.remove(code);
+					pressedKeyCount--;
+					pressedKeys[code] = false;
+				}
+				if (processor != null) {
+					processor.keyUp(code);
+				}
 			}
 		}
 

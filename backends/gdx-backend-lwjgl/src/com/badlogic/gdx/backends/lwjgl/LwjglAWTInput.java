@@ -380,7 +380,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 				}
 			}
 
-			if (touchEvents.size() == 0) {
+			if (touchEvents.isEmpty()) {
 				deltaX = 0;
 				deltaY = 0;
 			}

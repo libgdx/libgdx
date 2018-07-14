@@ -60,7 +60,7 @@ public class CheckBox extends TextButton {
 		return style;
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		Drawable checkbox = null;
 		if (isDisabled()) {
 			if (isChecked && style.checkboxOnDisabled != null)
@@ -78,7 +78,7 @@ public class CheckBox extends TextButton {
 				checkbox = style.checkboxOff;
 		}
 		image.setDrawable(checkbox);
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 
 	public Image getImage () {

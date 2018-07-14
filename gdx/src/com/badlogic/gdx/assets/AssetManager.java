@@ -426,6 +426,11 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/** Returns true when all assets are loaded. Can be called from any thread. */
+	public synchronized boolean isFinished () {
+		return loadQueue.size == 0 && tasks.size() == 0;
+	}
+
 	/** Blocks until all assets are loaded. */
 	public void finishLoading () {
 		log.debug("Waiting for loading to complete...");

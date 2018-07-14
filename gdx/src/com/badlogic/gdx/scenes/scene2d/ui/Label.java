@@ -217,10 +217,10 @@ public class Label extends Widget {
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		Color color = tempColor.set(getColor());
-		color.a *= a;
+		color.a *= parentAlpha;
 		if (style.background != null) {
 			batch.setColor(color.r, color.g, color.b, color.a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());

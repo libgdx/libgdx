@@ -97,7 +97,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 	@Override
 	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
-		return loadModelData(file, parameters == null ? false : parameters.flipV);
+		return loadModelData(file, parameters != null && parameters.flipV);
 	}
 
 	protected ModelData loadModelData (FileHandle file, boolean flipV) {
@@ -340,7 +340,7 @@ class MtlLoader {
 		float shininess = 0.f;
 		String texFilename = null;
 
-		if (file == null || file.exists() == false) return;
+		if (file == null || !file.exists()) return;
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 		try {
