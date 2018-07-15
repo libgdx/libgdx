@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -150,16 +150,16 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
 	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
 	public static void updateAnimationBaseTime () {
-		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
+        updateAnimationBaseTime(TimeUtils.millis());
 	}
 
-	/** Set lastTiledMapRenderTime directly, this value might be overridden by calls of updateAnimationBaseTime() */
-	public static void setAnimationBaseTime (long millis) {
-		lastTiledMapRenderTime = millis;
-	}
+    /** Update lastTiledMapRenderTime according to initialTimeOffset */
+    public static void updateAnimationBaseTime(long animationBaseTimeMillis) {
+        lastTiledMapRenderTime = animationBaseTimeMillis - initialTimeOffset;
+    }
 
 	/** Creates an animated tile with the given animation interval and frame tiles.
-	 * 
+	 *
 	 * @param interval The interval between each individual frame tile.
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
 	public AnimatedTiledMapTile (float interval, Array<StaticTiledMapTile> frameTiles) {
