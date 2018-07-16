@@ -28,8 +28,8 @@ public final class WindowedMean {
 	float mean = 0;
 	boolean dirty = true;
 
-	/** constructor, window_size specifies the number of samples we will continuously get the mean and variance from. the class will
-	 * only return meaning full values if at least window_size values have been added.
+	/** constructor, window_size specifies the number of samples we will continuously get the mean and variance from. the class
+	 * will only return meaning full values if at least window_size values have been added.
 	 * 
 	 * @param window_size size of the sample window */
 	public WindowedMean (int window_size) {
@@ -54,8 +54,7 @@ public final class WindowedMean {
 	 * 
 	 * @param value The value to add */
 	public void addValue (float value) {
-		if (added_values < values.length)
-			added_values++;
+		if (added_values < values.length) added_values++;
 		values[last_value++] = value;
 		if (last_value > values.length - 1) last_value = 0;
 		dirty = true;
@@ -101,7 +100,25 @@ public final class WindowedMean {
 
 		return (float)Math.sqrt(sum / values.length);
 	}
+
+	public float getLowest () {
+		float lowest = Float.MAX_VALUE;
+		for (int i = 0; i < values.length; i++)
+			lowest = Math.min(lowest, values[i]);
+		return lowest;
+	}
 	
+	public float getHighest () {
+		float lowest = Float.MIN_NORMAL;
+		for (int i = 0; i < values.length; i++)
+			lowest = Math.max(lowest, values[i]);
+		return lowest;
+	}
+
+	public int getValueCount () {
+		return added_values;
+	}
+
 	public int getWindowSize () {
 		return values.length;
 	}
