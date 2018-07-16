@@ -397,6 +397,16 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isButtonPressed (int button) {
 		if (button != Buttons.LEFT) return false;
 		for (int i = 0; i < isTouched.length; i++)

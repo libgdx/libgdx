@@ -324,6 +324,16 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public float getPressure () {
+			return input.getPressure();
+		}
+
+		@Override
+		public float getPressure (int pointer) {
+			return input.getPressure(pointer);
+		}
+
+		@Override
 		public boolean isButtonPressed (int button) {
 			return input.isButtonPressed(button);
 		}
