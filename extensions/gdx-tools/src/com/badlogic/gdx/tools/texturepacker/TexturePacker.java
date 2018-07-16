@@ -72,6 +72,13 @@ public class TexturePacker {
 				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
+		if (settings.multipleOfFour) {
+			if (settings.maxWidth % 4 != 0)
+				throw new RuntimeException("If mod4 is true, maxWidth must be evenly divisible by 4: " + settings.maxWidth);
+			if (settings.maxHeight % 4 != 0)
+				throw new RuntimeException("If mod4 is true, maxHeight must be evenly divisible by 4: " + settings.maxHeight);
+		}
+
 		if (settings.grid)
 			packer = new GridPacker(settings);
 		else
@@ -181,6 +188,10 @@ public class TexturePacker {
 			if (settings.pot) {
 				width = MathUtils.nextPowerOfTwo(width);
 				height = MathUtils.nextPowerOfTwo(height);
+			}
+			if (settings.multipleOfFour) {
+				width = width % 4 == 0 ? width : width + 4 - (width % 4);
+				height = height % 4 == 0 ? height : height + 4 - (height % 4);
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
@@ -373,7 +384,8 @@ public class TexturePacker {
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
-		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
+		writer
+			.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
 
 		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 		if (rect.splits != null) {
@@ -743,6 +755,7 @@ public class TexturePacker {
 	/** @author Nathan Sweet */
 	static public class Settings {
 		public boolean pot = true;
+		public boolean multipleOfFour;
 		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
 		public boolean duplicatePadding = false;
@@ -789,6 +802,7 @@ public class TexturePacker {
 			fast = settings.fast;
 			rotation = settings.rotation;
 			pot = settings.pot;
+			multipleOfFour = settings.multipleOfFour;
 			minWidth = settings.minWidth;
 			minHeight = settings.minHeight;
 			maxWidth = settings.maxWidth;
