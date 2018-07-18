@@ -42,6 +42,8 @@
 		value="com.badlogic.gdx.graphics.VertexAttribute" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.model" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.InputProcessor" />
 
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.Net" />
