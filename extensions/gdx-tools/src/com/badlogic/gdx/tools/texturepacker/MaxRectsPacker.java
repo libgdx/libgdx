@@ -245,12 +245,6 @@ public class MaxRectsPacker implements Packer {
 		return result1.occupancy > result2.occupancy ? result1 : result2;
 	}
 
-	static public void main (String[] args) throws Exception {
-		int a = 4;
-		System.out.println(a % 4);
-		System.out.println((a + (4 - (a % 4))));
-	}
-
 	static class BinarySearch {
 		final boolean pot, mod4;
 		final int min, max, fuzziness;
