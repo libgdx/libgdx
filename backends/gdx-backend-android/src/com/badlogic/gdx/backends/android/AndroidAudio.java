@@ -52,7 +52,7 @@ public final class AndroidAudio implements Audio {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				AudioAttributes audioAttrib = new AudioAttributes.Builder()
 						.setUsage(AudioAttributes.USAGE_GAME)
-						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+						.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
 						.build();
 				soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
 			}else {
