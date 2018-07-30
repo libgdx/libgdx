@@ -289,7 +289,7 @@ public class ProgressBar extends Widget implements Disableable {
 
 	/** Sets the range of this progress bar. The progress bar's current value is clamped to the range. */
 	public void setRange (float min, float max) {
-		if (min > max) throw new IllegalArgumentException("min must be <= max");
+		if (min > max) throw new IllegalArgumentException("min must be <= max: " + min + " <= " + max);
 		this.min = min;
 		this.max = max;
 		if (value < min)
