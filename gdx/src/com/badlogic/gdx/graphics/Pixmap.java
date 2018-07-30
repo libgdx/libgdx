@@ -318,6 +318,10 @@ public class Pixmap implements Disposable {
 		disposed = true;
 	}
 
+	public boolean isDisposed () {
+		return disposed;
+	}
+
 	/** Draws a pixel at the given location with the current color.
 	 * 
 	 * @param x the x-coordinate
