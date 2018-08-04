@@ -88,7 +88,7 @@ public class TextArea extends TextField {
 				int i = start;
 				for (; i < end; i++)
 					if (glyphPositions[i] > x) break;
-				if (glyphPositions[i] - x <= x - glyphPositions[i - 1]) return i;
+				if (i > 0 && glyphPositions[i] - x <= x - glyphPositions[i - 1]) return i;
 				return Math.max(0, i - 1);
 			}
 		} else {

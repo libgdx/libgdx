@@ -25,13 +25,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.PixmapPackerIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+
+import java.io.IOException;
 
 public class PixmapPackerTest extends GdxTest {
 
@@ -44,6 +49,11 @@ public class PixmapPackerTest extends GdxTest {
 	int pageToShow = 0;
 	Array<TextureRegion> textureRegions;
 
+	NinePatch ninePatch;
+	NinePatch officialPatch;
+
+	Skin skin;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -53,15 +63,20 @@ public class PixmapPackerTest extends GdxTest {
 		camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 		camera.update();
 
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
 		Pixmap pixmap1 = new Pixmap(Gdx.files.internal("data/badlogic.jpg"));
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
+		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
 
 		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false);
+		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
+			packer.pack("textfield-" + count + ".9", pixmap4);
 		}
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
@@ -73,11 +88,13 @@ public class PixmapPackerTest extends GdxTest {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
+			packer.pack("textfield-" + count + ".9", pixmap4);
 		}
 
 		pixmap1.dispose();
 		pixmap2.dispose();
 		pixmap3.dispose();
+		pixmap4.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		textureRegions = new Array<TextureRegion>();
@@ -95,6 +112,10 @@ public class PixmapPackerTest extends GdxTest {
 				return super.keyDown(keycode);
 			}
 		});
+
+		ninePatch = atlas.createPatch("textfield-1");
+		officialPatch = skin.getPatch("textfield");
+		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 	@Override
@@ -102,8 +123,11 @@ public class PixmapPackerTest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		int quarterSize = (int) (size/4f);
 		batch.begin();
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
+		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);
+		officialPatch.draw(batch, (int)(size * 0.25f + 20), 10, quarterSize, quarterSize);
 		batch.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
@@ -114,5 +138,6 @@ public class PixmapPackerTest extends GdxTest {
 	@Override
 	public void dispose () {
 		atlas.dispose();
+		skin.dispose();
 	}
 }

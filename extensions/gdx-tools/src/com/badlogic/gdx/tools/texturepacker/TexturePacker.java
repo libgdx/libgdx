@@ -708,33 +708,33 @@ public class TexturePacker {
 		private final FloatArray portions = new FloatArray(8);
 		volatile boolean cancel;
 
-		void reset () {
+		public void reset () {
 			scale = 1;
 			total = 0;
 			progress(total);
 		}
 
-		void start (float portion) {
+		public void start (float portion) {
 			if (portion == 0) throw new IllegalArgumentException("portion cannot be 0.");
 			portions.add(lastUpdate);
-			portions.add(portion * scale);
+			portions.add(scale * portion);
 			portions.add(scale);
 			scale *= portion;
 		}
 
 		/** Returns true if cancelled. */
-		boolean update (int current, int total) {
+		public boolean update (int current, int total) {
 			if (total == 0) throw new IllegalArgumentException("total cannot be 0.");
 			update(current / (float)total);
 			return isCancelled();
 		}
 
-		void update (float percent) {
+		public void update (float percent) {
 			lastUpdate = portions.get(portions.size - 3) + portions.get(portions.size - 2) * percent;
 			progress(lastUpdate);
 		}
 
-		void end () {
+		public void end () {
 			scale = portions.pop();
 			float portion = portions.pop();
 			lastUpdate = portions.pop() + portion;
