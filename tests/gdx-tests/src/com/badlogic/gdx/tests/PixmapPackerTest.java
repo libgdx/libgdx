@@ -116,15 +116,6 @@ public class PixmapPackerTest extends GdxTest {
 		ninePatch = atlas.createPatch("textfield-1");
 		officialPatch = skin.getPatch("textfield");
 		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-
-		PixmapPackerIO pixmapPackerIO = new PixmapPackerIO();
-		try {
-			PixmapPackerIO.SaveParameters saveParameters = new PixmapPackerIO.SaveParameters();
-			saveParameters.format = PixmapPackerIO.ImageFormat.PNG;
-			pixmapPackerIO.save(Gdx.files.local("test.png"), packer, saveParameters);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
