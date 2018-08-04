@@ -149,7 +149,21 @@ public class PixmapPacker implements Disposable {
 		if (name != null && getRect(name) != null)
 			throw new GdxRuntimeException("Pixmap has already been packed with name: " + name);
 
-		Rectangle rect = new Rectangle(0, 0, image.getWidth(), image.getHeight());
+		boolean isPatch = name != null && name.endsWith(".9");
+
+		PixmapPackerRectangle rect;
+		Pixmap pixmapToDispose = null;
+		if (isPatch) {
+			rect = new PixmapPackerRectangle(0, 0, image.getWidth() - 2, image.getHeight() - 2);
+			pixmapToDispose = new Pixmap(image.getWidth() - 2, image.getHeight() - 2, image.getFormat());
+			rect.splits = getSplits(image);
+			pixmapToDispose.drawPixmap(image, 0, 0, 1, 1, image.getWidth() - 1, image.getHeight() - 1);
+			image = pixmapToDispose;
+			name = name.split("\\.")[0];
+		} else {
+			rect = new PixmapPackerRectangle(0, 0, image.getWidth(), image.getHeight());
+		}
+
 		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight) {
 			if (name == null) throw new GdxRuntimeException("Page size too small for pixmap.");
 			throw new GdxRuntimeException("Page size too small for pixmap: " + name);
@@ -186,6 +200,10 @@ public class PixmapPacker implements Disposable {
 			page.image.drawPixmap(image, 0, imageHeight - 1, imageWidth, 1, rectX, rectY + rectHeight, rectWidth, 1);
 			page.image.drawPixmap(image, 0, 0, 1, imageHeight, rectX - 1, rectY, 1, rectHeight);
 			page.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, rectX + rectWidth, rectY, 1, rectHeight);
+		}
+
+		if (pixmapToDispose != null) {
+			pixmapToDispose.dispose();
 		}
 
 		return rect;
@@ -257,10 +275,17 @@ public class PixmapPacker implements Disposable {
 		for (Page page : pages) {
 			if (page.addedRects.size > 0) {
 				for (String name : page.addedRects) {
-					Rectangle rect = page.rects.get(name);
-					TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
-						(int)rect.height);
-					atlas.addRegion(name, region);
+					PixmapPackerRectangle rect = page.rects.get(name);
+					if (rect.splits != null) {
+						TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+						region.splits = rect.splits;
+						region.name = name;
+						region.index = -1;
+						atlas.getRegions().add(region);
+					} else {
+						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+						atlas.addRegion(name, region);
+					}
 				}
 				page.addedRects.clear();
 				atlas.getTextures().add(page.texture);
@@ -338,7 +363,7 @@ public class PixmapPacker implements Disposable {
 	 * @author Nathan Sweet
 	 * @author Rob Rendell */
 	static public class Page {
-		OrderedMap<String, Rectangle> rects = new OrderedMap();
+		OrderedMap<String, PixmapPackerRectangle> rects = new OrderedMap();
 		Pixmap image;
 		Texture texture;
 		final Array<String> addedRects = new Array();
@@ -356,7 +381,7 @@ public class PixmapPacker implements Disposable {
 			return image;
 		}
 
-		public OrderedMap<String, Rectangle> getRects () {
+		public OrderedMap<String, PixmapPackerRectangle> getRects () {
 			return rects;
 		}
 
@@ -594,6 +619,79 @@ public class PixmapPacker implements Disposable {
 	 * @see Page#Page(PixmapPacker packer) */
 	public void setTransparentColor (Color color) {
 		this.transparentColor.set(color);
+	}
+
+	private int[] getSplits (Pixmap raster) {
+
+		int startX = getSplitPoint(raster, 1, 0, true, true);
+		int endX = getSplitPoint(raster, startX, 0, false, true);
+		int startY = getSplitPoint(raster, 0, 1, true, false);
+		int endY = getSplitPoint(raster, 0, startY, false, false);
+
+		// Ensure pixels after the end are not invalid.
+		getSplitPoint(raster, endX + 1, 0, true, true);
+		getSplitPoint(raster, 0, endY + 1, true, false);
+
+		// No splits, or all splits.
+		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) return null;
+
+		// Subtraction here is because the coordinates were computed before the 1px border was stripped.
+		if (startX != 0) {
+			startX--;
+			endX = raster.getWidth() - 2 - (endX - 1);
+		} else {
+			// If no start point was ever found, we assume full stretch.
+			endX = raster.getWidth() - 2;
+		}
+		if (startY != 0) {
+			startY--;
+			endY = raster.getHeight() - 2 - (endY - 1);
+		} else {
+			// If no start point was ever found, we assume full stretch.
+			endY = raster.getHeight() - 2;
+		}
+
+		return new int[] {startX, endX, startY, endY};
+	}
+
+	private static Color c = new Color();
+	private int getSplitPoint (Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis) {
+		int[] rgba = new int[4];
+
+		int next = xAxis ? startX : startY;
+		int end = xAxis ? raster.getWidth() : raster.getHeight();
+		int breakA = startPoint ? 255 : 0;
+
+		int x = startX;
+		int y = startY;
+		while (next != end) {
+			if (xAxis)
+				x = next;
+			else
+				y = next;
+
+			int colint = raster.getPixel(x, y);
+			c.set(colint);
+			rgba[0] = (int)(c.r * 255);
+			rgba[1] = (int)(c.g * 255);
+			rgba[2] = (int)(c.b * 255);
+			rgba[3] = (int)(c.a * 255);
+			if (rgba[3] == breakA) return next;
+
+			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) System.out.println(x +"  " +  y + " " + rgba + " ");
+
+			next++;
+		}
+
+		return 0;
+	}
+
+	public static class PixmapPackerRectangle extends Rectangle {
+		private int[] splits;
+
+		PixmapPackerRectangle (int x, int y, int width, int height) {
+			super(x, y, width, height);
+		}
 	}
 
 }
