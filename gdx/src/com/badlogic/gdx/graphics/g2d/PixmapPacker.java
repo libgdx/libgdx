@@ -567,7 +567,7 @@ public class PixmapPacker implements Disposable {
 					if (row.x + rectWidth < pageWidth) {
 						row.height = Math.max(row.height, rectHeight);
 						bestRow = row;
-					} else {
+					} else if (row.y + row.height + rectHeight < pageHeight) {
 						// Fit in new row.
 						bestRow = new Row();
 						bestRow.y = row.y + row.height;
