@@ -121,13 +121,16 @@ public class TexturePacker {
 		for (int i = 0; i < n; i++) {
 			progress.start(1f / n);
 
-			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
 
 			if (settings.scaleResampling != null && settings.scaleResampling.length > i && settings.scaleResampling[i] != null)
 				imageProcessor.setResampling(settings.scaleResampling[i]);
 
-			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
+			progress.start(0.35f);
+			progress.count = 0;
+			progress.total = inputImages.size;
+			progress.setMessage("Reading input images");
+			for (int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
 					imageProcessor.addImage(inputImage.file);
@@ -138,10 +141,16 @@ public class TexturePacker {
 			progress.end();
 
 			progress.start(0.19f);
+			progress.count = 0;
+			progress.total = imageProcessor.getImages().size;
+			progress.setMessage("Packing input images");
 			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
 			progress.end();
 
 			progress.start(0.45f);
+			progress.count = 0;
+			progress.total = pages.size;
+			progress.setMessage("Writing atlas page images");
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
 			writeImages(outputDir, scaledPackFileName, pages);
 			progress.end();
@@ -317,6 +326,7 @@ public class TexturePacker {
 			}
 
 			if (progress.update(p + 1, pn)) return;
+			progress.count++;
 		}
 	}
 
@@ -693,7 +703,6 @@ public class TexturePacker {
 	static public interface Packer {
 		public Array<Page> pack (Array<Rect> inputRects);
 
-		/** @param progress May be null. */
 		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
 	}
 
@@ -704,14 +713,21 @@ public class TexturePacker {
 	}
 
 	static public abstract class ProgressListener {
-		private float total, scale = 1, lastUpdate;
+		private float scale = 1, lastUpdate;
 		private final FloatArray portions = new FloatArray(8);
 		volatile boolean cancel;
+		private String message = "";
+		int count, total;
 
 		public void reset () {
 			scale = 1;
+			message = "";
+			count = 0;
 			total = 0;
-			progress(total);
+			progress(0);
+		}
+
+		public void set (String message) {
 		}
 
 		public void start (float portion) {
@@ -722,10 +738,14 @@ public class TexturePacker {
 			scale *= portion;
 		}
 
+		public void setMessage (String message) {
+			this.message = message;
+			progress(lastUpdate);
+		}
+
 		/** Returns true if cancelled. */
-		public boolean update (int current, int total) {
-			if (total == 0) throw new IllegalArgumentException("total cannot be 0.");
-			update(current / (float)total);
+		public boolean update (int count, int total) {
+			update(total == 0 ? 0 : count / (float)total);
 			return isCancelled();
 		}
 
@@ -747,6 +767,18 @@ public class TexturePacker {
 
 		public boolean isCancelled () {
 			return cancel;
+		}
+
+		public String getMessage () {
+			return message;
+		}
+
+		public int getCount () {
+			return count;
+		}
+
+		public int getTotal () {
+			return total;
 		}
 
 		abstract public void progress (float progress);
