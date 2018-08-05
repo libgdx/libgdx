@@ -687,7 +687,7 @@ public class PixmapPacker implements Disposable {
 	}
 
 	public static class PixmapPackerRectangle extends Rectangle {
-		private int[] splits;
+		int[] splits;
 
 		PixmapPackerRectangle (int x, int y, int width, int height) {
 			super(x, y, width, height);
