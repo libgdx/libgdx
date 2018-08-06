@@ -56,7 +56,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Stefan Bachmann
  * @author Nathan Sweet */
-public class PolygonSpriteBatch implements PolyBatch {
+public class PolygonSpriteBatch implements PolygonBatch {
 	private Mesh mesh;
 
 	private final float[] vertices;

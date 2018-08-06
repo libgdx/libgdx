@@ -18,13 +18,13 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Texture;
 
-/** A PolyBatch is an extension of the Batch interface that provides additional render methods specifically for rendering
+/** A PolygonBatch is an extension of the Batch interface that provides additional render methods specifically for rendering
  * polygons
  *
  * <p>
  * @author mzechner
  * @author Nathan Sweet */
-public interface PolyBatch extends Batch {
+public interface PolygonBatch extends Batch {
 
 	/** Draws a polygon region with the bottom left corner at x,y having the width and height of the region. */
 	void draw (PolygonRegion region, float x, float y);
