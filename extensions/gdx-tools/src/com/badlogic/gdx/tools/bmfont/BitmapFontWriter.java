@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * The font file format is from the AngelCodeFont BMFont tool.
  * <p>
- * Output is nearly identical to the FreeType settting in the Hiero tool (com.badlogic.gdx.tools.hiero.Hiero). BitmapFontWriter gives more flexibility, eg
+ * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}. BitmapFontWriter gives more flexibility, eg
  * borders and shadows can be used. Hiero is able to avoid outputting the same glyph image more than once if multiple character
  * codes have the exact same glyph.
  * @author mattdesl AKA davedes */
