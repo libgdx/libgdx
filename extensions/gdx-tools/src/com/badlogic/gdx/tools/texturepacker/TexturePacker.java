@@ -129,7 +129,7 @@ public class TexturePacker {
 			progress.start(0.35f);
 			progress.count = 0;
 			progress.total = inputImages.size;
-			progress.setMessage("Reading input images");
+			progress.setMessage("Processing images");
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
@@ -143,14 +143,14 @@ public class TexturePacker {
 			progress.start(0.19f);
 			progress.count = 0;
 			progress.total = imageProcessor.getImages().size;
-			progress.setMessage("Packing input images");
+			progress.setMessage("Packing images");
 			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
 			progress.end();
 
 			progress.start(0.45f);
 			progress.count = 0;
 			progress.total = pages.size;
-			progress.setMessage("Writing atlas page images");
+			progress.setMessage("Writing atlas pages");
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
 			writeImages(outputDir, scaledPackFileName, pages);
 			progress.end();
@@ -738,11 +738,6 @@ public class TexturePacker {
 			scale *= portion;
 		}
 
-		public void setMessage (String message) {
-			this.message = message;
-			progress(lastUpdate);
-		}
-
 		/** Returns true if cancelled. */
 		public boolean update (int count, int total) {
 			update(total == 0 ? 0 : count / (float)total);
@@ -769,12 +764,25 @@ public class TexturePacker {
 			return cancel;
 		}
 
+		public void setMessage (String message) {
+			this.message = message;
+			progress(lastUpdate);
+		}
+
 		public String getMessage () {
 			return message;
 		}
 
+		public void setCount (int count) {
+			this.count = count;
+		}
+
 		public int getCount () {
 			return count;
+		}
+
+		public void setTotal (int total) {
+			this.total = total;
 		}
 
 		public int getTotal () {
