@@ -20,6 +20,8 @@ import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.geom.AffineTransform;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +66,7 @@ public class LwjglCanvas implements Application {
 	int logLevel = LOG_INFO;
 	ApplicationLogger applicationLogger;
 	Cursor cursor;
+	float scaleX, scaleY;
 
 	public LwjglCanvas (ApplicationListener listener) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -82,6 +85,11 @@ public class LwjglCanvas implements Application {
 
 			public final void addNotify () {
 				super.addNotify();
+
+				AffineTransform transform = getGraphicsConfiguration().getDefaultTransform();
+				scaleX = (float)transform.getScaleX();
+				scaleY = (float)transform.getScaleY();
+
 				if (SharedLibraryLoader.isMac) {
 					EventQueue.invokeLater(new Runnable() {
 						public void run () {
@@ -99,6 +107,14 @@ public class LwjglCanvas implements Application {
 
 			public Dimension getMinimumSize () {
 				return minSize;
+			}
+
+			public int getWidth () {
+				return Math.round(super.getWidth() * scaleX);
+			}
+
+			public int getHeight () {
+				return Math.round(super.getHeight() * scaleY);
 			}
 		};
 		canvas.setSize(1, 1);
