@@ -18,6 +18,7 @@ package com.badlogic.gdx.tools.texturepacker;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -219,7 +220,13 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		});
 
 		// Pack.
-		if (!settings.silent) System.out.println(inputDir.inputFile.getName());
+		if (!settings.silent) {
+			try {
+				System.out.println(inputDir.inputFile.getCanonicalPath());
+			} catch (IOException ignored) {
+				System.out.println(inputDir.inputFile.getAbsolutePath());
+			}
+		}
 		TexturePacker packer = newTexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);
