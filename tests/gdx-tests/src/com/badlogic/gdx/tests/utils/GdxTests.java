@@ -166,6 +166,7 @@ public class GdxTests {
 		MaterialTest.class,
 		MaterialEmissiveTest.class,
 		MatrixJNITest.class,
+		MaximizeAndMinimizeScreenTest.class,
 		MeshBuilderTest.class,
 		MeshShaderTest.class,
 		MipMapTest.class,
