@@ -53,16 +53,15 @@ import java.awt.image.BufferedImage;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
+	String rootPath;
 	private final Settings settings;
 	private final Packer packer;
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
-	private File rootDir;
 	private ProgressListener progress;
 
-	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
+	/** @param rootDir See {@link #setRootDir(File)}. */
 	public TexturePacker (File rootDir, Settings settings) {
-		this.rootDir = rootDir;
 		this.settings = settings;
 
 		if (settings.pot) {
@@ -83,16 +82,29 @@ public class TexturePacker {
 			packer = new GridPacker(settings);
 		else
 			packer = new MaxRectsPacker(settings);
-		imageProcessor = new ImageProcessor(rootDir, settings);
+
+		imageProcessor = new ImageProcessor(settings);
+		setRootDir(rootDir);
 	}
 
 	public TexturePacker (Settings settings) {
 		this(null, settings);
 	}
 
+	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
+	public void setRootDir (File rootDir) {
+		if (rootDir == null) {
+			rootPath = null;
+			return;
+		}
+		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+		if (!rootPath.endsWith("/")) rootPath += "/";
+	}
+
 	public void addImage (File file) {
 		InputImage inputImage = new InputImage();
 		inputImage.file = file;
+		inputImage.rootPath = rootPath;
 		inputImages.add(inputImage);
 	}
 
@@ -133,7 +145,7 @@ public class TexturePacker {
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
-					imageProcessor.addImage(inputImage.file);
+					imageProcessor.addImage(inputImage.file, inputImage.rootPath);
 				else
 					imageProcessor.addImage(inputImage.image, inputImage.name);
 				if (progress.update(ii + 1, nn)) return;
@@ -632,12 +644,6 @@ public class TexturePacker {
 					return packer;
 				}
 			};
-			// Sort input files by name to avoid platform-dependent atlas output changes.
-			processor.setComparator(new Comparator<File>() {
-				public int compare (File file1, File file2) {
-					return file1.getName().compareTo(file2.getName());
-				}
-			});
 			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing images.", ex);
@@ -708,7 +714,7 @@ public class TexturePacker {
 
 	static final class InputImage {
 		File file;
-		String name;
+		String rootPath, name;
 		BufferedImage image;
 	}
 
