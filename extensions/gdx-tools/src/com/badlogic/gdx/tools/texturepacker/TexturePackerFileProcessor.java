@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.ProgressListener;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
@@ -35,18 +36,23 @@ import com.badlogic.gdx.utils.ObjectMap;
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
 	private final Settings defaultSettings;
+	private final ProgressListener progress;
 	private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
 	private Json json = new Json();
 	private String packFileName;
 	private File root;
 	ArrayList<File> ignoreDirs = new ArrayList();
+	boolean countOnly;
+	int packCount;
 
 	public TexturePackerFileProcessor () {
-		this(new Settings(), "pack.atlas");
+		this(new Settings(), "pack.atlas", null);
 	}
 
-	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName) {
+	/** @param progress May be null. */
+	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName, ProgressListener progress) {
 		this.defaultSettings = defaultSettings;
+		this.progress = progress;
 
 		if (packFileName.toLowerCase().endsWith(defaultSettings.atlasExtension.toLowerCase()))
 			packFileName = packFileName.substring(0, packFileName.length() - defaultSettings.atlasExtension.length());
@@ -100,8 +106,16 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			dirToSettings.put(settingsFile.getParentFile(), settings);
 		}
 
+		// Count the number of texture packer invocations.
+		countOnly = true;
+		super.process(inputFile, outputRoot);
+		countOnly = false;
+
 		// Do actual processing.
-		return super.process(inputFile, outputRoot);
+		if (progress != null) progress.start(1);
+		ArrayList<Entry> result = super.process(inputFile, outputRoot);
+		if (progress != null) progress.end();
+		return result;
 	}
 
 	void merge (Settings settings, File settingsFile) {
@@ -114,7 +128,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
-		if (outputRoot.exists()) deleteOutput(outputRoot);
+		if (countOnly && outputRoot.exists()) deleteOutput(outputRoot);
 		return super.process(files, outputRoot);
 	}
 
@@ -190,6 +204,11 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 		if (files.isEmpty()) return;
 
+		if (countOnly) {
+			packCount++;
+			return;
+		}
+
 		// Sort by name using numeric suffix, then alpha.
 		Collections.sort(files, new Comparator<Entry>() {
 			final Pattern digitSuffix = Pattern.compile("(.*?)(\\d+)$");
@@ -236,10 +255,27 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				System.out.println(inputDir.inputFile.getAbsolutePath());
 			}
 		}
+		if (progress != null) {
+			progress.start(1f / packCount);
+			String inputPath = null;
+			try {
+				String rootPath = root.getCanonicalPath();
+				inputPath = inputDir.inputFile.getCanonicalPath();
+				if (inputPath.startsWith(rootPath)) {
+					rootPath = rootPath.replace('\\', '/');
+					inputPath = inputPath.substring(rootPath.length()).replace('\\', '/');
+					if (inputPath.startsWith("/")) inputPath = inputPath.substring(1);
+				}
+			} catch (IOException ignored) {
+			}
+			if (inputPath == null || inputPath.length() == 0) inputPath = inputDir.inputFile.getName();
+			progress.setMessage(inputPath);
+		}
 		TexturePacker packer = newTexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);
 		pack(packer, inputDir);
+		if (progress != null) progress.end();
 	}
 
 	protected void pack (TexturePacker packer, Entry inputDir) {
@@ -247,6 +283,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	}
 
 	protected TexturePacker newTexturePacker (File root, Settings settings) {
-		return new TexturePacker(root, settings);
+		TexturePacker packer = new TexturePacker(root, settings);
+		packer.setProgressListener(progress);
+		return packer;
 	}
 }

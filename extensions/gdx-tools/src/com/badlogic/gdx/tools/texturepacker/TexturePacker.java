@@ -126,7 +126,6 @@ public class TexturePacker {
 				}
 			};
 		}
-		progress.reset();
 
 		progress.start(1);
 		int n = settings.scale.length;
@@ -141,7 +140,6 @@ public class TexturePacker {
 			progress.start(0.35f);
 			progress.count = 0;
 			progress.total = inputImages.size;
-			progress.setMessage("Processing images");
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
@@ -155,14 +153,12 @@ public class TexturePacker {
 			progress.start(0.19f);
 			progress.count = 0;
 			progress.total = imageProcessor.getImages().size;
-			progress.setMessage("Packing images");
 			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
 			progress.end();
 
 			progress.start(0.45f);
 			progress.count = 0;
 			progress.total = pages.size;
-			progress.setMessage("Writing atlas pages");
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
 			writeImages(outputDir, scaledPackFileName, pages);
 			progress.end();
@@ -445,6 +441,7 @@ public class TexturePacker {
 		}
 	}
 
+	/** @param progressListener May be null. */
 	public void setProgressListener (ProgressListener progressListener) {
 		this.progress = progressListener;
 	}
@@ -637,13 +634,7 @@ public class TexturePacker {
 	static public void process (Settings settings, String input, String output, String packFileName,
 		final ProgressListener progress) {
 		try {
-			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName) {
-				protected TexturePacker newTexturePacker (File root, Settings settings) {
-					TexturePacker packer = super.newTexturePacker(root, settings);
-					packer.setProgressListener(progress);
-					return packer;
-				}
-			};
+			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
 			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing images.", ex);
