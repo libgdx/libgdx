@@ -45,6 +45,11 @@ your environment? What steps will reproduce the issue? What browser(s) and OS
 experience the problem? What would you expect to be the outcome? All these
 details will help people to fix any potential bugs.
 
+If you have found a bug and want to fix it yourself immediately, great!
+Create a [pull request](#pull-requests) with your proposed correction and
+a description of the problem you are fixing. Please do **not** create a separate
+issue for the bug report, the pull request is enough.
+
 See [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help) for more information and an example.
 
 
