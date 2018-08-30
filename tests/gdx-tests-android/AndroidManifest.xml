@@ -70,7 +70,8 @@
 		<service android:name=".Daydream"
 		     android:label="@string/app_name"
 		     android:icon="@drawable/icon"
-		     android:exported="true">
+		     android:exported="true"
+			android:permission="com.badlogic.gdx.tests.TestPermission">
 		     <intent-filter>
 		         <action android:name="android.service.dreams.DreamService" />
 		         <category android:name="android.intent.category.DEFAULT" />
