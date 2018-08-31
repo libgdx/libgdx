@@ -444,6 +444,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (!(obj instanceof ObjectSet)) return false;
 		ObjectSet other = (ObjectSet)obj;
 		if (other.size != size) return false;
+		T[] keyTable = this.keyTable; 
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null && !other.contains(keyTable[i])) return false;
 		return true;
