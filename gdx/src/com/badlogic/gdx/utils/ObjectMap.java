@@ -159,9 +159,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return null;
 	}
 
-	public void putAll (ObjectMap<K, V> map) {
+	public void putAll (ObjectMap<? extends K, ? extends V> map) {
 		ensureCapacity(map.size);
-		for (Entry<K, V> entry : map)
+		for (Entry<? extends K, ? extends V> entry : map)
 			put(entry.key, entry.value);
 	}
 
@@ -551,13 +551,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (key != null) {
 				V value = valueTable[i];
 				if (value == null) {
-					if (!other.containsKey(key) || other.get(key) != null) {
-						return false;
-					}
+					if (!other.containsKey(key) || other.get(key) != null) return false;
 				} else {
-					if (!value.equals(other.get(key))) {
-						return false;
-					}
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
 		}
