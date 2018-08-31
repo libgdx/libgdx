@@ -150,8 +150,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		push(key, value, index1, key1, index2, key2, index3, key3);
 	}
 
-	public void putAll (ObjectFloatMap<K> map) {
-		for (Entry<K> entry : map.entries())
+	public void putAll (ObjectFloatMap<? extends K> map) {
+		for (Entry<? extends K> entry : map.entries())
 			put(entry.key, entry.value);
 	}
 

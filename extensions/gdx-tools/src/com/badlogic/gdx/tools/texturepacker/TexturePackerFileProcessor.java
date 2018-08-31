@@ -193,7 +193,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 						files.clear();
 						return;
 					}
-					ignoreDirs.add(entryDir.inputFile);
+					if (!countOnly) ignoreDirs.add(entryDir.inputFile);
 				}
 
 				protected void processFile (Entry entry) {
