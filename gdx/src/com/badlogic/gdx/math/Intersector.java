@@ -803,7 +803,6 @@ public final class Intersector {
 
 	/** Determines whether the given rectangle and segment intersect and, if they do, sets the supplied {@code intersection}
 	 * rectangle to the area of overlap.
-	 *
 	 * @param startX x-coordinate start of line segment
 	 * @param startY y-coordinate start of line segment
 	 * @param endX y-coordinate end of line segment
@@ -815,18 +814,17 @@ public final class Intersector {
 		float rectangleEndX = rectangle.x + rectangle.width;
 		float rectangleEndY = rectangle.y + rectangle.height;
 
-		if (Intersector.intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY,
-			intersection)) return true;
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, intersection))
+			return true;
 
-		if (Intersector.intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y,
-			intersection)) return true;
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, intersection))
+			return true;
 
-		if (Intersector.intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY,
-			intersection)) return true;
+		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, intersection))
+			return true;
 
-		return Intersector.intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY,
+		return intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY,
 			intersection);
-
 	}
 
 	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle, Vector2 intersection) {
