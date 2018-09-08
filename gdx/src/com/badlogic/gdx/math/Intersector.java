@@ -823,8 +823,10 @@ public final class Intersector {
 		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, intersection))
 			return true;
 
-		return intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY,
-			intersection);
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY,intersection))
+			return true;
+
+		return rectangle.contains(startX, startY);
 	}
 
 	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle, Vector2 intersection) {
