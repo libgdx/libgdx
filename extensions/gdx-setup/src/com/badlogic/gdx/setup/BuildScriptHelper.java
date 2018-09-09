@@ -86,7 +86,7 @@ public class BuildScriptHelper {
 		write(wr, "def output = \"\"");
 		write(wr, "new File(\"" + assetPath + "\").eachFileRecurse { file ->");
 		write(wr, "if (file.isFile() && file.name != \"assets.index\")");
-        write(wr, "output += (file.path.replace(\"" + assetPath +"\",\"\") + \"\\n\")");
+      write(wr, "output += (file.path.replace(\"" + assetPath +"\",\"\") + \"\\n\")");
 		write(wr, "}");
 		write(wr, "new File(\""+ assetPath +"/assets.index\").text = output");
 		write(wr, "}");
