@@ -827,6 +827,9 @@ public final class Intersector {
 		return rectangle.contains(startX, startY);
 	}
 
+	/**
+	 * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
+	 */
 	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle) {
 		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
 	}
