@@ -82,6 +82,18 @@ public class BuildScriptHelper {
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
 		write(wr, "}");
 		space(wr);
+		 /**
+		  * This task generates an index of internal files so you can can call FileHandle#list() on them. This is useful if you
+		  * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
+		  * in your code. This task can safely be deleted if you don't need it.
+		  */
+		write(wr, "/**");
+		write(wr, "* This task generates an index of internal files so you can can call FileHandle#list() on them. This is "
+			+ "useful if you ");
+		write(wr, "* were going to load all assets in a certain folder or of a certain type without having to load them "
+			+ "explicitly 1 by 1 ");
+		write(wr, "* in your code. This task can safely be deleted if you don't need it.");
+		write(wr, "*/");
 		write(wr, "task indexAssets(){");
 		write(wr, "def output = \"\"");
 		write(wr, "new File(\"" + assetPath + "\").eachFileRecurse { file ->");
