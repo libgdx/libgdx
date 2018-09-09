@@ -406,7 +406,7 @@ public class FileHandle {
 	  * directory. On the desktop, an {@link FileType#Internal} file handle to a directory on the classpath will result in a zero
 	  * length array unless there is an index named "assets.index" inside the root of the assets directory. The index should should
 	  * be generated/updated at compile time, and contain the relative paths of every file in your assets folder, not including
-	  * directories. Every path should be separated by a new line character.
+	  * directories. Every path should be separated by a new line character. The paths should not lead with a forward slash.
 	  *
 	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	  */
