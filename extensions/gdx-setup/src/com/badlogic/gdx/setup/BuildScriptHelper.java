@@ -59,7 +59,7 @@ public class BuildScriptHelper {
 		space(wr);
 	}
 
-	public static void addAllProjects(BufferedWriter wr) throws IOException {
+	public static void addAllProjects(BufferedWriter wr, String assetPath) throws IOException {
 		write(wr, "allprojects {");
 		write(wr, "apply plugin: \"eclipse\"");
 		write(wr, "apply plugin: \"idea\"");
@@ -80,6 +80,15 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.google);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
+		write(wr, "}");
+		space(wr);
+		write(wr, "task indexAssets(){");
+		write(wr, "def output = \"\"");
+		write(wr, "new File(\"" + assetPath + "\").eachFileRecurse { file ->");
+		write(wr, "if (file.isFile() && file.name != \"assets.index\")");
+        write(wr, "output += (file.path.replace(\"" + assetPath +"\",\"\") + \"\\n\")");
+		write(wr, "}");
+		write(wr, "new File(\""+ assetPath +"/assets.index\").text = output");
 		write(wr, "}");
 		write(wr, "}");
 	}
