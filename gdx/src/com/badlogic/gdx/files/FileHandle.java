@@ -414,7 +414,7 @@ public class FileHandle {
 		  if (type == FileType.Internal) {
 				if (!Gdx.files.internal("assets.index").exists())
 					 //How is this supposed to be done? Is there a framework level logging system to log a warning?
-					 System.out.println("Asset index not found, please update your gradle configuration "
+					 Gdx.app.log("WARNING: ","Asset index not found, please update your gradle configuration "
 						 + "according to: https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e");
 				else {
 					 String[] filePaths = Gdx.files.internal("assets.index").readString().split("\n");
