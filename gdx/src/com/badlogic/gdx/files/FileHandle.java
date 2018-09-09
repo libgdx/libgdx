@@ -16,33 +16,17 @@
 
 package com.badlogic.gdx.files;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -416,15 +400,20 @@ public class FileHandle {
 		}
 	}
 
-	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
-	 * array.
-	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 /**
+	  * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
+	  * directory. An {@link FileType#Internal} handle to a directory on the classpath will search for
+	  * an asset.index file in the * root of the asset path. This index should be generated at compile time by a gradle task.
+	  * See for reference: * https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e
+	  *
+	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	  */
 	public FileHandle[] list () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		if (type == FileType.Internal){
 			if(!Gdx.files.internal("assets.index").exists())
-				throw new GdxRuntimeException("Asset index not found, please update your gradle configuration " +
+				 //How is this supposed to be done? Is there a framework level logging system to log a warning?
+				System.out.println("Asset index not found, please update your gradle configuration " +
 						"according to: https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e");
 			else {
 			    String[] filePaths = Gdx.files.internal("assets.index").readString().split("\n");
@@ -443,11 +432,14 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
-	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
-	 * classpath will return a zero length array.
-	 * @param filter the {@link FileFilter} to filter files
-	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 /**
+	  * Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	  * handle represents a file and not a directory. An {@link FileType#Internal} handle to a directory on the classpath will
+	  * search for an asset.index file in the root of the asset path. This index should be generated at compile time by a gradle task.
+	  * See for reference: * https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e
+	  *
+	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	  */
 	public FileHandle[] list (FileFilter filter) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		File file = file();
@@ -470,11 +462,14 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
-	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
-	 * classpath will return a zero length array.
-	 * @param filter the {@link FilenameFilter} to filter files
-	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 /**
+	  * Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	  * handle represents a file and not a directory. An {@link FileType#Internal} handle to a directory on the classpath will
+	  * search for an asset.index file in the root of the asset path. This index should be generated at compile time by a gradle task.
+	  * See for reference: * https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e
+	  *
+	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	  */
 	public FileHandle[] list (FilenameFilter filter) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		File file = file();
@@ -496,10 +491,14 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
-	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
-	 * will return a zero length array.
-	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 /**
+	  * Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
+	  * represents a file and not a directory. An {@link FileType#Internal} handle to a directory on the classpath will search for
+	  * an asset.index file in the * root of the asset path. This index should be generated at compile time by a gradle task.
+	  * See for reference: * https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e
+	  *
+	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	  */
 	public FileHandle[] list (String suffix) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		String[] relativePaths = file().list();
