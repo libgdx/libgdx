@@ -27,7 +27,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -418,12 +419,14 @@ public class FileHandle {
 					 Gdx.app.log("FileHandle","Asset index not found, listing content of internal directories will not be"
 						 + " possible. Check the documentation for more details.");
 				else {
-					 String[] filePaths = Gdx.files.internal("assets.index").readString().split("\n");
-					 FileHandle[] files = new FileHandle[filePaths.length];
-					 for (int i = 0; i < filePaths.length; i++) {
-						  files[i] = Gdx.files.internal(filePaths[i]);
+					 String[] internalFilePaths = Gdx.files.internal("assets.index").readString().split("\n");
+					 List<FileHandle> childrenList = new ArrayList<FileHandle>();
+					 for(String filepath : internalFilePaths){
+					 	 if(filepath.startsWith(this.path()))
+					 	 	 childrenList.add(Gdx.files.internal(filepath));
 					 }
-					 return files;
+					 FileHandle[] children = new FileHandle[childrenList.size()];
+					 return childrenList.toArray(children);
 				}
 		  }
 		  String[] relativePaths = file().list();
