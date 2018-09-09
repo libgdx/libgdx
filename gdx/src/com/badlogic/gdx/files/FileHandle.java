@@ -416,14 +416,14 @@ public class FileHandle {
 				throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
 		  if (type == FileType.Internal) {
 				if (!Gdx.files.internal("assets.index").exists())
-					 Gdx.app.log("FileHandle","Asset index not found, listing content of internal directories will not be"
+					 Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
 						 + " possible. Check the documentation for more details.");
 				else {
 					 String[] internalFilePaths = Gdx.files.internal("assets.index").readString().split("\n");
 					 List<FileHandle> childrenList = new ArrayList<FileHandle>();
-					 for(String filepath : internalFilePaths){
-					 	 if(filepath.startsWith(this.path()))
-					 	 	 childrenList.add(Gdx.files.internal(filepath));
+					 for (String filepath : internalFilePaths) {
+						  if (filepath.startsWith(this.path()))
+								childrenList.add(Gdx.files.internal(filepath));
 					 }
 					 FileHandle[] children = new FileHandle[childrenList.size()];
 					 return childrenList.toArray(children);
