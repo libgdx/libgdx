@@ -422,6 +422,19 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		if (type == FileType.Internal){
+			if(!Gdx.files.internal("assets.index").exists())
+				throw new GdxRuntimeException("Asset index not found, please update your gradle configuration " +
+						"according to: https://gist.github.com/abueide/e86ea0111025233fb6493dfbcc46501e");
+			else {
+			    String[] filePaths = Gdx.files.internal("assets.index").readString().split("\n");
+			    FileHandle[] files = new FileHandle[filePaths.length];
+			    for(int i = 0; i < filePaths.length; i++){
+			    	files[i] = Gdx.files.internal(filePaths[i]);
+				}
+				return files;
+			}
+		}
 		String[] relativePaths = file().list();
 		if (relativePaths == null) return new FileHandle[0];
 		FileHandle[] handles = new FileHandle[relativePaths.length];
