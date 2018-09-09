@@ -809,28 +809,27 @@ public final class Intersector {
 	 * @param endY y-coordinate end of line segment
 	 * @param rectangle rectangle that is being tested for collision
 	 * @return whether the rectangle intersects with the line segment */
-	public static boolean intersectSegmentRectangle (float startX, float startY, float endX, float endY, Rectangle rectangle,
-		Vector2 intersection) {
+	public static boolean intersectSegmentRectangle (float startX, float startY, float endX, float endY, Rectangle rectangle) {
 		float rectangleEndX = rectangle.x + rectangle.width;
 		float rectangleEndY = rectangle.y + rectangle.height;
 
-		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, intersection))
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, null))
 			return true;
 
-		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, intersection))
-			return true;
-
-		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, intersection))
-			return true;
-
-		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY,intersection))
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY, null))
 			return true;
 
 		return rectangle.contains(startX, startY);
 	}
 
-	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle, Vector2 intersection) {
-		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle, intersection);
+	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle) {
+		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
 	}
 
 	/** Check whether the given line segment and {@link Polygon} intersect.
