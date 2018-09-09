@@ -801,8 +801,7 @@ public final class Intersector {
 		return false;
 	}
 
-	/** Determines whether the given rectangle and segment intersect and, if they do, sets the supplied {@code intersection}
-	 * rectangle to the area of overlap.
+	/** Determines whether the given rectangle and segment intersect
 	 * @param startX x-coordinate start of line segment
 	 * @param startY y-coordinate start of line segment
 	 * @param endX y-coordinate end of line segment
