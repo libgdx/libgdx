@@ -410,7 +410,7 @@ public class FileHandle {
 	  * Asset Index Specification:
 	  * 	1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
 	  *   2. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
-	  *   3. The index should contain the path of every directory (recursively). It MUST end with a forward slash ( / ) in order to distinguish files and directories
+	  *   3. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
 	  *   4. Each path entry should be relative to your asset directory*
 	  *   5. Each path entry should be separated by new line characters ( \n )
 	  *	* The asset directory is normally either android/assets or core/assets depending if you have an android module.
