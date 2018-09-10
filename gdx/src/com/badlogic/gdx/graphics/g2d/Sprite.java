@@ -135,6 +135,10 @@ public class Sprite extends TextureRegion {
 		this.height = height;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float x2 = x + width;
 		float y2 = y + height;
@@ -150,8 +154,6 @@ public class Sprite extends TextureRegion {
 
 		vertices[X4] = x2;
 		vertices[Y4] = y;
-
-		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
 	/** Sets the size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale are changed,
@@ -162,6 +164,10 @@ public class Sprite extends TextureRegion {
 		this.height = height;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float x2 = x + width;
 		float y2 = y + height;
@@ -177,15 +183,13 @@ public class Sprite extends TextureRegion {
 
 		vertices[X4] = x2;
 		vertices[Y4] = y;
-
-		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
 	/** Sets the position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
 	public void setPosition (float x, float y) {
-		translate(x - this.x, y - this.y);
+		setBounds(x, y, width, height);
 	}
 
 	/** Sets the position where the sprite will be drawn, relative to its current origin.  */
@@ -206,17 +210,17 @@ public class Sprite extends TextureRegion {
 	public void setY (float y) {
 		translateY(y - this.y);
 	}
-	
+
 	/** Sets the x position so that it is centered on the given x parameter */
 	public void setCenterX(float x){
 		setX(x - width / 2);
 	}
-	
+
 	/** Sets the y position so that it is centered on the given y parameter */
 	public void setCenterY(float y){
 		setY(y - height / 2);
 	}
-	
+
 	/** Sets the position so that the sprite is centered on (x, y) */
 	public void setCenter(float x, float y){
 		setCenterX(x);
@@ -482,7 +486,7 @@ public class Sprite extends TextureRegion {
 	/** Returns the bounding axis aligned {@link Rectangle} that bounds this sprite. The rectangles x and y coordinates describe its
 	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be
 	 * recomputed.
-	 * 
+	 *
 	 * @return the bounding Rectangle */
 	public Rectangle getBoundingRectangle () {
 		final float[] vertices = getVertices();
