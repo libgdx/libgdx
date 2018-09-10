@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,11 +32,11 @@ import java.util.List;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
- * 
+ *
  * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk
  * or are found via the classpath), the methods for extracting a {@link #path()} or {@link #file()} may not be appropriate for all
  * types. Use the Reader or Stream methods here to hide these dependencies from your platform independent code.
- * 
+ *
  * @author mzechner
  * @author Nathan Sweet */
 public class FileHandle {
@@ -405,10 +405,15 @@ public class FileHandle {
 	 /**
 	  * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
 	  * directory. On the desktop, an {@link FileType#Internal} file handle to a directory on the classpath will result in a zero
-	  * length array unless there is an index named "assets.index" inside the root of the assets directory. The index should should
-	  * be generated/updated at compile time, and contain the relative paths of every file in your assets folder, not including
-	  * directories. Every path should be separated by a new line character. The paths should not lead with a forward slash.
+	  * length array unless you are using an asset index as shown below.
 	  *
+	  * Asset Index Specification:
+	  * 	1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
+	  *   2. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
+	  *   3. The index should contain the path of every directory (recursively). It MUST end with a forward slash ( / ) in order to distinguish files and directories
+	  *   4. Each path entry should be relative to your asset directory*
+	  *   5. Each path entry should be separated by new line characters ( \n )
+	  *	* The asset directory is normally either android/assets or core/assets depending if you have an android module.
 	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	  */
 	 public FileHandle[] list () {
@@ -419,14 +424,18 @@ public class FileHandle {
 					 Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
 						 + " possible. Check the documentation for more details.");
 				else {
-					 String[] internalFilePaths = Gdx.files.internal("assets.index").readString().split("\n");
 					 List<FileHandle> childrenList = new ArrayList<FileHandle>();
-					 for (String filepath : internalFilePaths) {
-						  if (filepath.startsWith(this.path()))
+					 for (String filepath : assetIndex()) {
+						  //the depth check counts the difference of forward slashes so we can grab only files inside the directory without fully recursing
+						  int depth = filepath.length() - filepath.replace("/", "").length();
+						  //We have to reduce the count by 1 if it is a directory, because they have an extra forward slash
+						  if (filepath.endsWith("/"))
+								depth = depth - 1;
+						  if (filepath.startsWith(this.path()) && depth == 1)
 								childrenList.add(Gdx.files.internal(filepath));
 					 }
-					 FileHandle[] children = new FileHandle[childrenList.size()];
-					 return childrenList.toArray(children);
+					 FileHandle[] childrenArray = new FileHandle[childrenList.size()];
+					 return childrenList.toArray(childrenArray);
 				}
 		  }
 		  String[] relativePaths = file().list();
@@ -519,12 +528,23 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an
-	 * {@link FileType#Internal} handle to an empty directory will return false. On the desktop, an {@link FileType#Internal}
-	 * handle to a directory on the classpath will return false. */
+	 /**
+	  * Returns true if this file is a directory. Always returns false for classpath files. On Android, an
+	  * {@link FileType#Internal} handle to an empty directory will return false unless you are using an asset index. On desktop,
+	  * an {@link FileType#Internal} handle will always return false unless you are using an asset index.
+	  *
+	  * See {@link #list()} documentation for more information about using an Asset Index
+	  */
 	public boolean isDirectory () {
-		if (type == FileType.Classpath) return false;
-		return file().isDirectory();
+		 if (type == FileType.Classpath)
+			  return false;
+		 if (type == FileType.Internal) {
+			  for (String indexpath : assetIndex()) {
+					if (indexpath == path() + "/")
+						 return true;
+			  }
+		 }
+		 return file().isDirectory();
 	}
 
 	/** Returns a handle to the child with the specified name. */
@@ -745,5 +765,9 @@ public class FileHandle {
 			else
 				copyFile(srcFile, destFile);
 		}
+	}
+
+	static private String[] assetIndex(){
+		 return Gdx.files.internal("assets.index").readString().replace('\\', '/').split("\n");
 	}
 }
