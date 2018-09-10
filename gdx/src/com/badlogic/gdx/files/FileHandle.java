@@ -540,7 +540,8 @@ public class FileHandle {
 			  return false;
 		 if (type == FileType.Internal) {
 			  for (String indexpath : assetIndex()) {
-					if (indexpath == path() + "/")
+			  	 String testPath = path() + "/";
+					if (testPath.equals(indexpath))
 						 return true;
 			  }
 		 }
