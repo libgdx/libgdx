@@ -435,9 +435,12 @@ public class FileHandle {
 								childrenList.add(Gdx.files.internal(filepath));
 					 }
 					 FileHandle[] childrenArray = new FileHandle[childrenList.size()];
-					 return childrenList.toArray(childrenArray);
+					 childrenArray = childrenList.toArray(childrenArray);
+					 if(childrenArray.length != 0)
+					 	 return childrenArray;
 				}
 		  }
+
 		  String[] relativePaths = file().list();
 		  if (relativePaths == null)
 				return new FileHandle[0];
