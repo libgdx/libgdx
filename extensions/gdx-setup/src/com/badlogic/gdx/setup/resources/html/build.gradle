@@ -76,7 +76,7 @@ task addSource {
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 
