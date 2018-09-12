@@ -103,7 +103,7 @@ public class BuildScriptHelper {
       write(wr, "output += \"\\n\"");
 		write(wr, "}");
 		write(wr, "}");
-		write(wr, "new File(\""+ assetPath +"/assets.index\").text = output");
+		write(wr, "new File(\""+ assetPath +"/assets.index\").setText(output, \"UTF-8\")");
 		write(wr, "}");
 		write(wr, "}");
 	}

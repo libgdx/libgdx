@@ -409,10 +409,11 @@ public class FileHandle {
 	  *
 	  * Asset Index Specification:
 	  * 	1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
-	  *   2. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
-	  *   3. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
-	  *   4. Each path entry should be relative to your asset directory*
-	  *   5. Each path entry should be separated by new line characters ( \n )
+	  * 	2. The index should be UTF-8 encoded.
+	  *   3. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
+	  *   4. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
+	  *   5. Each path entry should be relative to your asset directory*
+	  *   6. Each path entry should be separated by new line characters ( \n )
 	  *	* The asset directory is normally either android/assets or core/assets depending if you have an android module.
 	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	  */
@@ -772,6 +773,6 @@ public class FileHandle {
 	}
 
 	static private String[] assetIndex(){
-		 return Gdx.files.internal("assets.index").readString().replace('\\', '/').split("\n");
+		 return Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
 	}
 }
