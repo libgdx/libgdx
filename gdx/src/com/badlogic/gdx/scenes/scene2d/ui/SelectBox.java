@@ -377,7 +377,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 				}
 
 				public boolean mouseMoved (InputEvent event, float x, float y) {
-					list.setSelectedIndex(Math.min(selectBox.items.size - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
+					int index = list.getItemIndexAt(y);
+					if (index != -1) list.setSelectedIndex(index);
 					return true;
 				}
 			});
