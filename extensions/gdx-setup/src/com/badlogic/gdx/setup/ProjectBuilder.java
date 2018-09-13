@@ -79,10 +79,11 @@ public class ProjectBuilder {
 			BufferedWriter buildBw = new BufferedWriter(buildWriter);
 
 			BuildScriptHelper.addBuildScript(language, modules, buildBw);
-			BuildScriptHelper.addAllProjects(buildBw, this.modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets");
+			BuildScriptHelper.addAllProjects(buildBw);
 			for (ProjectType module : modules) {
 				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
+			BuildScriptHelper.addAssetIndexTask(this.modules.contains(ProjectType.ANDROID) ? "android/assets/" : "core/assets/", buildBw);
 
 			//Add task here for now
 			buildBw.write("\n");

@@ -59,54 +59,31 @@ public class BuildScriptHelper {
 		space(wr);
 	}
 
-	public static void addAllProjects(BufferedWriter wr, String assetPath) throws IOException {
-		write(wr, "allprojects {");
-		write(wr, "apply plugin: \"eclipse\"");
-		write(wr, "apply plugin: \"idea\"");
-		space(wr);
-		write(wr, "version = '1.0'");
-		write(wr, "ext {");
-		write(wr, "appName = \"%APP_NAME%\"");
-		write(wr, "gdxVersion = '" + DependencyBank.libgdxVersion + "'");
-		write(wr, "roboVMVersion = '" + DependencyBank.roboVMVersion + "'");
-		write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");
-		write(wr, "ashleyVersion = '" + DependencyBank.ashleyVersion + "'");
-		write(wr, "aiVersion = '" + DependencyBank.aiVersion + "'");
-		write(wr, "}");
-		space(wr);
-		write(wr, "repositories {");
-		write(wr, DependencyBank.mavenLocal);
-		write(wr, DependencyBank.mavenCentral);
-		write(wr, DependencyBank.google);
-		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
-		write(wr, "}");
-		space(wr);
-		 /**
-		  * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
-		  * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
-		  * in your code. This task can safely be deleted if you don't need it.
-		  */
-		write(wr, "/**");
-		write(wr, "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
-			+ "useful if you ");
-		write(wr, "* were going to load all assets in a certain folder or of a certain type without having to load them "
-			+ "explicitly 1 by 1 ");
-		write(wr, "* in your code. This task can safely be deleted if you don't need it.");
-		write(wr, "*/");
-		write(wr, "task indexAssets(){");
-		write(wr, "def output = \"\"");
-		write(wr, "new File(\"" + assetPath + "\").eachFileRecurse { file ->");
-		write(wr, "if (file.name != \"assets.index\") {");
-      write(wr, "output += (file.path.replace(\"" + assetPath +"/\",\"\"))");
-      write(wr, "if(file.isDirectory()) output += \"/\"");
-      write(wr, "output += \"\\n\"");
-		write(wr, "}");
-		write(wr, "}");
-		write(wr, "new File(\""+ assetPath +"/assets.index\").setText(output, \"UTF-8\")");
-		write(wr, "}");
-		write(wr, "}");
-	}
+	public static void addAllProjects(BufferedWriter wr) throws IOException {
+		 write(wr, "allprojects {");
+		 write(wr, "apply plugin: \"eclipse\"");
+		 write(wr, "apply plugin: \"idea\"");
+		 space(wr);
+		 write(wr, "version = '1.0'");
+		 write(wr, "ext {");
+		 write(wr, "appName = \"%APP_NAME%\"");
+		 write(wr, "gdxVersion = '" + DependencyBank.libgdxVersion + "'");
+		 write(wr, "roboVMVersion = '" + DependencyBank.roboVMVersion + "'");
+		 write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");
+		 write(wr, "ashleyVersion = '" + DependencyBank.ashleyVersion + "'");
+		 write(wr, "aiVersion = '" + DependencyBank.aiVersion + "'");
+		 write(wr, "}");
+		 space(wr);
+		 write(wr, "repositories {");
+		 write(wr, DependencyBank.mavenLocal);
+		 write(wr, DependencyBank.mavenCentral);
+		 write(wr, DependencyBank.google);
+		 write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
+		 write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
+		 write(wr, "}");
+		 write(wr, "}");
+
+}
 
 	public static void addProject(Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
 		space(wr);
@@ -119,6 +96,35 @@ public class BuildScriptHelper {
 		space(wr);
 		addDependencies(language, project, dependencies, wr);
 		write(wr, "}");
+	}
+
+	public static void addAssetIndexTask(String assetsDir, BufferedWriter wr) throws IOException {
+		 /**
+			  * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
+			  * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
+			  * in your code. This task can safely be deleted if you don't need it.
+			  */
+			 write(wr,"/**");
+			 write(wr,
+				 "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
+					 + "useful if you ");
+			 write(wr,"* were going to load all assets in a certain folder or of a certain type without having to load them "
+				 + "explicitly 1 by 1 ");
+			 write(wr,"* in your code. This task can safely be deleted if you don't need it.");
+			 write(wr,"*/");
+
+			 write(wr,"task indexassets() {");
+			 write(wr,"def assetsDir = \"" + assetsDir + "\"");
+			 write(wr,"def output = \"\"");
+			 write(wr,"project.file(assetsDir).eachFileRecurse { file ->");
+			 write(wr,"if (file.name != \"assets.index\") {");
+			 write(wr,"output += (file.path.replace(assetsDir, \"\"))");
+			 write(wr,"if (file.isDirectory()) output += \"/\"");
+			 write(wr,"output += \"\\n\"");
+			 write(wr,"}");
+			 write(wr,"}");
+			 write(wr,"project.file(assetsDir + \"assets.index\").setText(output, \"UTF-8\")");
+			 write(wr,"}");
 	}
 
 	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
