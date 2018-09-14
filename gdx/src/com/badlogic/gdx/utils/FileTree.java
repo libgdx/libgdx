@@ -1,5 +1,6 @@
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.util.ArrayList;
@@ -7,6 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileTree {
+	/**
+	 * FileTree is a tree representing a directory structure. It is used to emulate some file system calls for internally
+	 * packaged files. The index that the tree is populated with is created at compile time. See {@link FileHandle#list()} for
+	 * the index specification.
+	 */
 
 	public final String path;
 	public final int depth;
@@ -19,18 +25,31 @@ public class FileTree {
 	public FileTree (String path, FileTree[] children) {
 		this.path = path;
 		//Calculates directory depth by how many forward slashes there are. Subtract one from dir
-		if (isDirectory())
-			this.depth = this.path.length() - this.path.replace("/", "").length() - 1;
-		else
-			this.depth = this.path.length() - this.path.replace("/", "").length();
 		this.children.addAll(Arrays.asList(children));
+
+
+		//If this is the root directory, then depth = 0
+		if (path.isEmpty() || path.equals("/")) {
+			depth = 0;
+		} else if (isDirectory())
+			this.depth = this.path.length() - this.path.replace("/", "").length();
+		else
+			this.depth = this.path.length() - this.path.replace("/", "").length() + 1;
 	}
 
 	/**
-	 *	Builds out the current FileTree given a String[] of file paths conforming to the Asset Index specification which can be
-	 *	in {@link FileHandle#list()}
+	 * Builds out the current FileTree given a String[] of file paths conforming to the Asset Index specification which can be
+	 * in {@link FileHandle#list()}
 	 */
 	public void load (String[] filePaths) {
+		//Return if filePaths is null, and warn user.
+		if (filePaths == null) {
+			Gdx.app.log("FileTree", "Failed to load FileTree, String[] was null.");
+			return;
+		}
+		//Return if asset index is empty
+		if (filePaths.length == 0)
+			return;
 		FileTree[] fileTrees = new FileTree[filePaths.length];
 		for (int i = 0; i < fileTrees.length; i++) {
 			fileTrees[i] = new FileTree(filePaths[i]);
@@ -53,7 +72,7 @@ public class FileTree {
 	 * Checks if this file tree is a directory.
 	 */
 	public boolean isDirectory () {
-		return path.endsWith("/");
+		return path.endsWith("/") || path.isEmpty();
 	}
 
 	/**
@@ -76,6 +95,9 @@ public class FileTree {
 	 */
 	public FileTree find (String somePath) {
 		String[] splitPath = somePath.split("/");
+		//Return this file tree if the input is "/" or "". Reserves "." for listing the classpath instead of assets.
+		if (splitPath.length == 0 || somePath.isEmpty())
+			return this;
 		//Check if we're at the right depth to search for the file or directory. Otherwise, call find on next node.
 		if (splitPath.length - 1 == this.depth) {
 			for (FileTree fileTree : getChildren()) {
@@ -95,6 +117,9 @@ public class FileTree {
 		return null;
 	}
 
+	/**
+	 * Returns the children of this node after it is converted to a {@link FileHandle} array.
+	 */
 	public FileHandle[] list () {
 		FileHandle[] fileHandles = new FileHandle[getChildren().length];
 		for (int i = 0; i < fileHandles.length; i++) {

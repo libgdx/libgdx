@@ -44,8 +44,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -70,7 +68,6 @@ public class FileHandle {
 	public FileHandle (String fileName) {
 		this.file = new File(fileName);
 		this.type = FileType.Absolute;
-		loadAssetIndex();
 	}
 
 	/** Creates a new absolute FileHandle for the {@link File}. Use this for tools on the desktop that don't need any of the
@@ -79,19 +76,16 @@ public class FileHandle {
 	public FileHandle (File file) {
 		this.file = file;
 		this.type = FileType.Absolute;
-		loadAssetIndex();
 	}
 
 	protected FileHandle (String fileName, FileType type) {
 		this.type = type;
 		file = new File(fileName);
-		loadAssetIndex();
 	}
 
 	protected FileHandle (File file, FileType type) {
 		this.file = file;
 		this.type = type;
-		loadAssetIndex();
 	}
 
 	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
@@ -428,7 +422,7 @@ public class FileHandle {
 	 * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
 	 * directory. On the desktop, an {@link FileType#Internal} file handle to a directory on the classpath will result in a zero
 	 * length array unless you are using an asset index as shown below.
-	 *
+	 * <p>
 	 * Asset Index Specification:
 	 * 1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
 	 * 2. The index should be UTF-8 encoded.
@@ -436,31 +430,33 @@ public class FileHandle {
 	 * 4. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
 	 * 5. Each path entry should be relative to your asset directory *
 	 * 6. Each path entry should be separated by new line characters ( \n )
-	 *    * The asset directory is normally either android/assets or core/assets depending on if you have an android module.
+	 * * The asset directory is normally either android/assets or core/assets depending on if you have an android module.
 	 *
 	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	 */
-	 public FileHandle[] list () {
-		  if (type == FileType.Classpath)
-				throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
-		  if (type == FileType.Internal) {
-				if (!Gdx.files.internal("assets.index").exists())
-					 Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
-						 + " possible. Check the documentation for more details.");
-				else {
-					FileTree thisFile = internalFileTree.find(this.path());
-					if(thisFile != null)
-						return thisFile.list();
-				}
-		  }
-		  String[] relativePaths = file().list();
-		  if (relativePaths == null)
-				return new FileHandle[0];
-		  FileHandle[] handles = new FileHandle[relativePaths.length];
-		  for (int i = 0, n = relativePaths.length; i < n; i++)
-				handles[i] = child(relativePaths[i]);
-		  return handles;
-	 }
+	public FileHandle[] list () {
+		if (type == FileType.Classpath)
+			throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		if (type == FileType.Internal) {
+			if (!Gdx.files.internal("assets.index").exists())
+				Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
+					+ " possible. Check the documentation for more details.");
+			else {
+				if (internalFileTree.getChildren().length == 0)
+					loadAssetIndex();
+				FileTree thisFile = internalFileTree.find(this.path());
+				if (thisFile != null)
+					return thisFile.list();
+			}
+		}
+		String[] relativePaths = file().list();
+		if (relativePaths == null)
+			return new FileHandle[0];
+		FileHandle[] handles = new FileHandle[relativePaths.length];
+		for (int i = 0, n = relativePaths.length; i < n; i++)
+			handles[i] = child(relativePaths[i]);
+		return handles;
+	}
 
 	 /**
 	  * Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -543,20 +539,20 @@ public class FileHandle {
 		return handles;
 	}
 
-	 /**
-	  * Returns true if this file is a directory. Always returns false for classpath files. On Android, an
-	  * {@link FileType#Internal} handle to an empty directory will return false unless you are using an asset index. On desktop,
-	  * an {@link FileType#Internal} handle will always return false unless you are using an asset index.
-	  *
-	  * See {@link #list()} documentation for more information about using an Asset Index
-	  */
+	/**
+	 * Returns true if this file is a directory. Always returns false for classpath files. On Android, an
+	 * {@link FileType#Internal} handle to an empty directory will return false unless you are using an asset index. On desktop,
+	 * an {@link FileType#Internal} handle will always return false unless you are using an asset index.
+	 * <p>
+	 * See {@link #list()} documentation for more information about using an Asset Index
+	 */
 	public boolean isDirectory () {
-		 if (type == FileType.Classpath)
-			  return false;
-		 if (type == FileType.Internal) {
-		 	FileTree thisFile = internalFileTree.find(this.path());
-		 }
-		 return file().isDirectory();
+		if (type == FileType.Classpath)
+			return false;
+		if (type == FileType.Internal) {
+			internalFileTree.find(this.path()).isDirectory();
+		}
+		return file().isDirectory();
 	}
 
 	/** Returns a handle to the child with the specified name. */
@@ -717,7 +713,7 @@ public class FileHandle {
 		return file.getPath().replace('\\', '/');
 	}
 
-	public static void loadAssetIndex(){
+	public static void loadAssetIndex () {
 		String[] assetIndex = Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
 		internalFileTree.load(assetIndex);
 	}

@@ -98,12 +98,13 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
+	/**
+	 * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
+	 * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
+	 * in your code. This task can safely be deleted if you don't need it.
+	 */
 	public static void addAssetIndexTask (String assetsDir, BufferedWriter wr) throws IOException {
-		/**
-		 * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
-		 * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
-		 * in your code. This task can safely be deleted if you don't need it.
-		 */
+
 		write(wr, "/**");
 		write(wr, "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
 			+ "useful if you ");
