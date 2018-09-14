@@ -98,33 +98,32 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	public static void addAssetIndexTask(String assetsDir, BufferedWriter wr) throws IOException {
-		 /**
-			  * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
-			  * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
-			  * in your code. This task can safely be deleted if you don't need it.
-			  */
-			 write(wr,"/**");
-			 write(wr,
-				 "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
-					 + "useful if you ");
-			 write(wr,"* were going to load all assets in a certain folder or of a certain type without having to load them "
-				 + "explicitly 1 by 1 ");
-			 write(wr,"* in your code. This task can safely be deleted if you don't need it.");
-			 write(wr,"*/");
+	public static void addAssetIndexTask (String assetsDir, BufferedWriter wr) throws IOException {
+		/**
+		 * This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is useful if you
+		 * were going to load all assets in a certain folder or of a certain type without having to load them explicitly 1 by 1
+		 * in your code. This task can safely be deleted if you don't need it.
+		 */
+		write(wr, "/**");
+		write(wr, "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
+			+ "useful if you ");
+		write(wr, "* were going to load all assets in a certain folder or of a certain type without having to load them "
+			+ "explicitly 1 by 1 ");
+		write(wr, "* in your code. This task can safely be deleted if you don't need it.");
+		write(wr, "*/");
 
-			 write(wr,"task indexassets() {");
-			 write(wr,"def assetsDir = \"" + assetsDir + "\"");
-			 write(wr,"def output = \"\"");
-			 write(wr,"project.file(assetsDir).eachFileRecurse { file ->");
-			 write(wr,"if (file.name != \"assets.index\") {");
-			 write(wr,"output += (file.path.replace(assetsDir, \"\"))");
-			 write(wr,"if (file.isDirectory()) output += \"/\"");
-			 write(wr,"output += \"\\n\"");
-			 write(wr,"}");
-			 write(wr,"}");
-			 write(wr,"project.file(assetsDir + \"assets.index\").setText(output, \"UTF-8\")");
-			 write(wr,"}");
+		write(wr, "task indexassets() {");
+		write(wr, "def assetsDir = \"" + assetsDir + "\"");
+		write(wr, "def output = \"\"");
+		write(wr, "project.file(assetsDir).eachFileRecurse { file ->");
+		write(wr, "if (file.name != \"assets.index\") {");
+		write(wr, "output += (file.path.replace(assetsDir, \"\"))");
+		write(wr, "if (file.isDirectory()) output += \"/\"");
+		write(wr, "output += \"\\n\"");
+		write(wr, "}");
+		write(wr, "}");
+		write(wr, "project.file(assetsDir + \"assets.index\").setText(output, \"UTF-8\")");
+		write(wr, "}");
 	}
 
 	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {

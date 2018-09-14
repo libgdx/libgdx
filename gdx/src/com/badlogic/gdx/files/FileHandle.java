@@ -19,10 +19,27 @@ package com.badlogic.gdx.files;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.FileTree;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -42,6 +59,7 @@ import java.util.List;
 public class FileHandle {
 	protected File file;
 	protected FileType type;
+	protected static FileTree internalFileTree = new FileTree("");
 
 	protected FileHandle () {
 	}
@@ -52,6 +70,7 @@ public class FileHandle {
 	public FileHandle (String fileName) {
 		this.file = new File(fileName);
 		this.type = FileType.Absolute;
+		loadAssetIndex();
 	}
 
 	/** Creates a new absolute FileHandle for the {@link File}. Use this for tools on the desktop that don't need any of the
@@ -60,16 +79,19 @@ public class FileHandle {
 	public FileHandle (File file) {
 		this.file = file;
 		this.type = FileType.Absolute;
+		loadAssetIndex();
 	}
 
 	protected FileHandle (String fileName, FileType type) {
 		this.type = type;
 		file = new File(fileName);
+		loadAssetIndex();
 	}
 
 	protected FileHandle (File file, FileType type) {
 		this.file = file;
 		this.type = type;
+		loadAssetIndex();
 	}
 
 	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
@@ -402,21 +424,22 @@ public class FileHandle {
 		}
 	}
 
-	 /**
-	  * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	  * directory. On the desktop, an {@link FileType#Internal} file handle to a directory on the classpath will result in a zero
-	  * length array unless you are using an asset index as shown below.
-	  *
-	  * Asset Index Specification:
-	  * 	1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
-	  * 	2. The index should be UTF-8 encoded.
-	  *   3. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
-	  *   4. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
-	  *   5. Each path entry should be relative to your asset directory*
-	  *   6. Each path entry should be separated by new line characters ( \n )
-	  *	* The asset directory is normally either android/assets or core/assets depending if you have an android module.
-	  * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
-	  */
+	/**
+	 * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
+	 * directory. On the desktop, an {@link FileType#Internal} file handle to a directory on the classpath will result in a zero
+	 * length array unless you are using an asset index as shown below.
+	 *
+	 * Asset Index Specification:
+	 * 1. The index should be stored in a file named "assets.index" located in the root of your assets directory*
+	 * 2. The index should be UTF-8 encoded.
+	 * 3. The index should contain the path of every file in the assets directory (recursively) without any leading or trailing slashes
+	 * 4. The index should contain the path of every directory (recursively). It MUST end with a slash in order to distinguish files and directories
+	 * 5. Each path entry should be relative to your asset directory *
+	 * 6. Each path entry should be separated by new line characters ( \n )
+	 *    * The asset directory is normally either android/assets or core/assets depending on if you have an android module.
+	 *
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	 */
 	 public FileHandle[] list () {
 		  if (type == FileType.Classpath)
 				throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
@@ -425,23 +448,11 @@ public class FileHandle {
 					 Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
 						 + " possible. Check the documentation for more details.");
 				else {
-					 List<FileHandle> childrenList = new ArrayList<FileHandle>();
-					 for (String filepath : assetIndex()) {
-						  //the depth check counts the difference of forward slashes so we can grab only files inside the directory without fully recursing
-						  int depth = filepath.length() - filepath.replace("/", "").length();
-						  //We have to reduce the count by 1 if it is a directory, because they have an extra forward slash
-						  if (filepath.endsWith("/"))
-								depth = depth - 1;
-						  if (filepath.startsWith(this.path()) && depth == 1)
-								childrenList.add(Gdx.files.internal(filepath));
-					 }
-					 FileHandle[] childrenArray = new FileHandle[childrenList.size()];
-					 childrenArray = childrenList.toArray(childrenArray);
-					 if(childrenArray.length != 0)
-					 	 return childrenArray;
+					FileTree thisFile = internalFileTree.find(this.path());
+					if(thisFile != null)
+						return thisFile.list();
 				}
 		  }
-
 		  String[] relativePaths = file().list();
 		  if (relativePaths == null)
 				return new FileHandle[0];
@@ -543,11 +554,7 @@ public class FileHandle {
 		 if (type == FileType.Classpath)
 			  return false;
 		 if (type == FileType.Internal) {
-			  for (String indexpath : assetIndex()) {
-			  	 String testPath = path() + "/";
-					if (testPath.equals(indexpath))
-						 return true;
-			  }
+		 	FileTree thisFile = internalFileTree.find(this.path());
 		 }
 		 return file().isDirectory();
 	}
@@ -710,6 +717,11 @@ public class FileHandle {
 		return file.getPath().replace('\\', '/');
 	}
 
+	public static void loadAssetIndex(){
+		String[] assetIndex = Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
+		internalFileTree.load(assetIndex);
+	}
+
 	static public FileHandle tempFile (String prefix) {
 		try {
 			return new FileHandle(File.createTempFile(prefix, null));
@@ -770,9 +782,5 @@ public class FileHandle {
 			else
 				copyFile(srcFile, destFile);
 		}
-	}
-
-	static private String[] assetIndex(){
-		 return Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
 	}
 }

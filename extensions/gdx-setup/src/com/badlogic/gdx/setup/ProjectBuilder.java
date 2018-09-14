@@ -83,7 +83,8 @@ public class ProjectBuilder {
 			for (ProjectType module : modules) {
 				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
-			BuildScriptHelper.addAssetIndexTask(this.modules.contains(ProjectType.ANDROID) ? "android/assets/" : "core/assets/", buildBw);
+			BuildScriptHelper
+				.addAssetIndexTask(modules.contains(ProjectType.ANDROID)?"android/assets/":"core/assets/", buildBw);
 
 			//Add task here for now
 			buildBw.write("\n");
