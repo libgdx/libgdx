@@ -57,11 +57,11 @@ public class PixmapIO {
 
 	/** Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
 	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
-	static public void writePNG (FileHandle file, Pixmap pixmap) {
+	static public void writePNG (FileHandle file, Pixmap pixmap, boolean flipY) {
 		try {
 			PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
 			try {
-				writer.setFlipY(false);
+				writer.setFlipY(flipY);
 				writer.write(file, pixmap);
 			} finally {
 				writer.dispose();
@@ -69,6 +69,10 @@ public class PixmapIO {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
+	}
+
+	static public void writePNG (FileHandle file, Pixmap pixmap) {
+		writePNG(file, pixmap, false);
 	}
 
 	/** @author mzechner */
