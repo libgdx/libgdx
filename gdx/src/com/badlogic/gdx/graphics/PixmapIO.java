@@ -55,8 +55,9 @@ public class PixmapIO {
 		return CIM.read(file);
 	}
 
-	/** Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
-	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
+	/** Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level
+	 *  and to write out multiple PNGs with minimal allocation.
+	 *  @param flipY flips the Pixmap vertically if true */
 	static public void writePNG (FileHandle file, Pixmap pixmap, boolean flipY) {
 		try {
 			PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
@@ -71,6 +72,8 @@ public class PixmapIO {
 		}
 	}
 
+	/** Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
+	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
 	static public void writePNG (FileHandle file, Pixmap pixmap) {
 		writePNG(file, pixmap, false);
 	}
