@@ -1,4 +1,5 @@
 [1.9.9]
+- API Change: Added 2D Particle Editor "Independent" flags. GWT users MUST recreate particle effect files using the latest version of the 2D Particle Editor tool.
 - API Addition: Add support for 9 patch packing in PixmapPacker
 - API Addition: Pressure support for ios/android. https://github.com/libgdx/libgdx/pull/5270
 - Update to Lwjgl 3.1.5! (Bad release)
