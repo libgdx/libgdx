@@ -16,16 +16,16 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -1111,9 +1111,15 @@ public class ParticleEmitter {
 			emissionValue.load(reader);
 			reader.readLine();
 			lifeValue.load(reader);
-			reader.readLine();
+			// to ensure backward compatibility if independent paramater not defined
+			if(lifeValue.isIndependentDefined()) {
+				reader.readLine();
+			}
 			lifeOffsetValue.load(reader);
-			reader.readLine();
+			// to ensure backward compatibility if independent paramater not defined
+			if(lifeOffsetValue.isIndependentDefined) {
+				reader.readLine();
+			}
 			xOffsetValue.load(reader);
 			reader.readLine();
 			yOffsetValue.load(reader);
@@ -1503,12 +1509,18 @@ public class ParticleEmitter {
 
 	static public class IndependentScaledNumericValue extends ScaledNumericValue {
 		boolean independent;
+		boolean isIndependentDefined;
 
 		public boolean isIndependent () {
 			return independent;
 		}
 
+		public boolean isIndependentDefined () {
+			return isIndependentDefined;
+		}
+
 		public void setIndependent (boolean independent) {
+			this.isIndependentDefined = true;
 			this.independent = independent;
 		}
 
@@ -1529,6 +1541,7 @@ public class ParticleEmitter {
 		public void set (IndependentScaledNumericValue value) {
 			super.set(value);
 			independent = value.independent;
+			isIndependentDefined = value.isIndependentDefined;
 		}
 
 		public void save (Writer output) throws IOException {
@@ -1539,18 +1552,17 @@ public class ParticleEmitter {
 		public void load (BufferedReader reader) throws IOException {
 			super.load(reader);
 			// For backwards compatibility, independent property may not be defined
-			reader.mark(100);
 			String line = reader.readLine();
 			if (line == null) throw new IOException("Missing value: " + "independent");
-			if (line.contains("independent"))
-				independent = Boolean.parseBoolean(readString(line));
-			else
-				reader.reset();
+			if (line.contains("independent")) {
+				this.setIndependent(Boolean.parseBoolean(readString(line)));
+			}
 		}
 
 		public void load (IndependentScaledNumericValue value) {
 			super.load(value);
 			independent = value.independent;
+			isIndependentDefined = value.isIndependentDefined;
 		}
 	}
 
