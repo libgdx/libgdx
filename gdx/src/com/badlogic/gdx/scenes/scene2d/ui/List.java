@@ -79,12 +79,12 @@ public class List<T> extends Widget implements Cullable {
 			}
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0 || button != 0) return false;
-				if (selection.isDisabled()) return false;
+				if (pointer != 0 || button != 0) return true;
+				if (selection.isDisabled()) return true;
 				getStage().setKeyboardFocus(List.this);
-				if (items.size == 0) return false;
+				if (items.size == 0) return true;
 				int index = getItemIndexAt(y);
-				if (index == -1) return false;
+				if (index == -1) return true;
 				selection.choose(items.get(index));
 				touchDown = index;
 				return true;
@@ -93,6 +93,10 @@ public class List<T> extends Widget implements Cullable {
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return;
 				touchDown = -1;
+			}
+
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				overIndex = getItemIndexAt(y);
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -226,7 +230,8 @@ public class List<T> extends Widget implements Cullable {
 		return selected.size == 0 ? -1 : items.indexOf(selected.first(), false);
 	}
 
-	/** Sets the selection to only the selected index. */
+	/** Sets the selection to only the selected index.
+	 * @param index -1 to clear the selection. */
 	public void setSelectedIndex (int index) {
 		if (index < -1 || index >= items.size)
 			throw new IllegalArgumentException("index must be >= -1 and < " + items.size + ": " + index);
