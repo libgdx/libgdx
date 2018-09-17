@@ -55,9 +55,9 @@ import java.nio.channels.FileChannel.MapMode;
  * @author mzechner
  * @author Nathan Sweet */
 public class FileHandle {
+	protected static FileTree rootFileTree = new FileTree("/");
 	protected File file;
 	protected FileType type;
-	protected static FileTree internalFileTree = new FileTree("");
 
 	protected FileHandle () {
 	}
@@ -442,9 +442,9 @@ public class FileHandle {
 				Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
 					+ " possible. Check the documentation for more details.");
 			else {
-				if (internalFileTree.getChildren().length == 0)
+				if (rootFileTree.getChildren().length == 0)
 					loadAssetIndex();
-				FileTree thisFile = internalFileTree.find(this.path());
+				FileTree thisFile = rootFileTree.find(this.path());
 				if (thisFile != null)
 					return thisFile.list();
 			}
@@ -550,7 +550,9 @@ public class FileHandle {
 		if (type == FileType.Classpath)
 			return false;
 		if (type == FileType.Internal) {
-			internalFileTree.find(this.path()).isDirectory();
+			FileTree fileTree = rootFileTree.find(this.path());
+			if(fileTree != null)
+				return fileTree.isDirectory();
 		}
 		return file().isDirectory();
 	}
@@ -715,7 +717,7 @@ public class FileHandle {
 
 	public static void loadAssetIndex () {
 		String[] assetIndex = Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
-		internalFileTree.load(assetIndex);
+		rootFileTree.load(assetIndex);
 	}
 
 	static public FileHandle tempFile (String prefix) {
