@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
