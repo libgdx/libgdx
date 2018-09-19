@@ -31,6 +31,7 @@ timelineCount: 3
 timeline0: 0.0
 timeline1: 0.66
 timeline2: 1.0
+independent: true
 - Life Offset - 
 active: false
 - X Offset - 
