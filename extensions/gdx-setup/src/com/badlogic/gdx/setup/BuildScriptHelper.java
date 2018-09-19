@@ -103,7 +103,6 @@ public class BuildScriptHelper {
 	 * in your code. This task can safely be deleted if you don't need it.
 	 */
 	public static void addAssetIndexTask (String assetsDir, BufferedWriter wr) throws IOException {
-
 		write(wr, "/**");
 		write(wr, "* This task generates an index of internal asset files so you can can call FileHandle#list() on them. This is "
 			+ "useful if you ");
@@ -112,17 +111,17 @@ public class BuildScriptHelper {
 		write(wr, "* in your code. This task can safely be deleted if you don't need it.");
 		write(wr, "*/");
 
-		write(wr, "task indexassets() {");
+		write(wr, "task indexAssets() {");
 		write(wr, "def assetsDir = \"" + assetsDir + "\"");
-		write(wr, "def output = \"\"");
+		write(wr, "def output = new StringBuilder()");
 		write(wr, "project.file(assetsDir).eachFileRecurse { file ->");
 		write(wr, "if (file.name != \"assets.index\") {");
-		write(wr, "output += (file.path.replace(assetsDir, \"\"))");
-		write(wr, "if (file.isDirectory()) output += \"/\"");
-		write(wr, "output += \"\\n\"");
+		write(wr, "output.append(file.path.split(assetsDir)[1])");
+		write(wr, "if (file.isDirectory()) output.append(\"/\")");
+		write(wr, "output.append(\"\\n\")");
 		write(wr, "}");
 		write(wr, "}");
-		write(wr, "project.file(assetsDir + \"assets.index\").setText(output, \"UTF-8\")");
+		write(wr, "project.file(assetsDir + \"assets.index\").setText(output.toString(), \"UTF-8\")");
 		write(wr, "}");
 	}
 
