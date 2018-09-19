@@ -19,8 +19,9 @@ package com.badlogic.gdx.files;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.FileTree;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
@@ -44,6 +45,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -55,7 +58,7 @@ import java.nio.channels.FileChannel.MapMode;
  * @author mzechner
  * @author Nathan Sweet */
 public class FileHandle {
-	protected static FileTree rootFileTree = new FileTree("/");
+	protected static ObjectMap<String, Array<String>> assetIndex = new ObjectMap<String, Array<String>>();
 	protected File file;
 	protected FileType type;
 
@@ -442,11 +445,18 @@ public class FileHandle {
 				Gdx.app.log("FileHandle", "Asset index not found, listing content of internal directories will not be"
 					+ " possible. Check the documentation for more details.");
 			else {
-				if (rootFileTree.getChildren().length == 0)
+				if (assetIndex.size == 0)
 					loadAssetIndex();
-				FileTree thisFile = rootFileTree.find(this.path());
-				if (thisFile != null)
-					return thisFile.list();
+				if (isDirectory()) {
+					Array<String> children = assetIndex.get(path());
+					if (children != null) {
+						FileHandle[] handles = new FileHandle[children.size];
+						for (int i = 0; i < handles.length; i++) {
+							handles[i] = new FileHandle(children.get(i));
+						}
+						return handles;
+					}
+				}
 			}
 		}
 		String[] relativePaths = file().list();
@@ -550,9 +560,10 @@ public class FileHandle {
 		if (type == FileType.Classpath)
 			return false;
 		if (type == FileType.Internal) {
-			FileTree fileTree = rootFileTree.find(this.path());
-			if(fileTree != null)
-				return fileTree.isDirectory();
+			if (assetIndex.size == 0)
+				loadAssetIndex();
+			if (assetIndex.get(path()) != null)
+				return true;
 		}
 		return file().isDirectory();
 	}
@@ -716,8 +727,37 @@ public class FileHandle {
 	}
 
 	public static void loadAssetIndex () {
-		String[] assetIndex = Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
-		rootFileTree.load(assetIndex);
+		String[] indexEntries = Gdx.files.internal("assets.index").readString("UTF-8").replace('\\', '/').split("\n");
+		int[] entryDepths = new int[indexEntries.length];
+		//Initializes an array of entry depths. The depth of indexEntries[i] is entryDepths[i]
+		for (int i = 0; i < indexEntries.length; i++) {
+			entryDepths[i] = indexEntries[i].length() - indexEntries[i].replace("/", "").length();
+			//Root is depth 0, its contents are depth 1 so add one depth for files (they don't end with a forward slash)
+			if (!indexEntries[i].endsWith("/"))
+				entryDepths[i]++;
+		}
+		List<String> rootChildren = new ArrayList<String>();
+		for(int i = 0; i < indexEntries.length; i++){
+				//Check if the current entry is a root child (depth = 1), and add it to the list.
+				if(entryDepths[i] == 1){
+					rootChildren.add(indexEntries[i]);
+				}
+				//Otherwise check if it is a directory. If it is find its children (entries with depth entryDepths[i] + 1)
+				else if(indexEntries[i].endsWith("/")){
+					List<String> children = new ArrayList<String>();
+					//Finds all the children of the indexEntries[i] by checking depths and iterating over the list again.
+					for(int j = 0; j < indexEntries.length && entryDepths[j] == entryDepths[i] + 1; j++){
+						children.add(indexEntries[j]);
+					}
+					String[] temp = new String[children.size()];
+					//the substring is to remove the trailing / since we don't need it anymore to tell if its a directory.
+					assetIndex.put(indexEntries[i].substring(0, indexEntries[i].length() - 1), new Array(children.toArray(temp)));
+				}
+		}
+		//Reference the root of the asset directory with "" or "/"
+		String[] temp = new String[rootChildren.size()];
+		assetIndex.put("", new Array(rootChildren.toArray(temp)));
+		assetIndex.put("/", new Array(rootChildren.toArray(temp)));
 	}
 
 	static public FileHandle tempFile (String prefix) {
