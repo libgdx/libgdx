@@ -737,22 +737,22 @@ public class FileHandle {
 				entryDepths[i]++;
 		}
 		List<String> rootChildren = new ArrayList<String>();
-		for(int i = 0; i < indexEntries.length; i++){
-				//Check if the current entry is a root child (depth = 1), and add it to the list.
-				if(entryDepths[i] == 1){
-					rootChildren.add(indexEntries[i]);
+		for (int i = 0; i < indexEntries.length; i++) {
+			//Check if the current entry is a root child (depth = 1), and add it to the list.
+			if (entryDepths[i] == 1) {
+				rootChildren.add(indexEntries[i]);
+			}
+			//Otherwise check if it is a directory. If it is find its children (entries with depth entryDepths[i] + 1)
+			else if (indexEntries[i].endsWith("/")) {
+				List<String> children = new ArrayList<String>();
+				//Finds all the children of the indexEntries[i] by checking depths and iterating over the list again.
+				for (int j = 0; j < indexEntries.length && entryDepths[j] == entryDepths[i] + 1; j++) {
+					children.add(indexEntries[j]);
 				}
-				//Otherwise check if it is a directory. If it is find its children (entries with depth entryDepths[i] + 1)
-				else if(indexEntries[i].endsWith("/")){
-					List<String> children = new ArrayList<String>();
-					//Finds all the children of the indexEntries[i] by checking depths and iterating over the list again.
-					for(int j = 0; j < indexEntries.length && entryDepths[j] == entryDepths[i] + 1; j++){
-						children.add(indexEntries[j]);
-					}
-					String[] temp = new String[children.size()];
-					//the substring is to remove the trailing / since we don't need it anymore to tell if its a directory.
-					assetIndex.put(indexEntries[i].substring(0, indexEntries[i].length() - 1), new Array(children.toArray(temp)));
-				}
+				String[] temp = new String[children.size()];
+				//the substring is to remove the trailing / since we don't need it anymore to tell if its a directory.
+				assetIndex.put(indexEntries[i].substring(0, indexEntries[i].length() - 1), new Array(children.toArray(temp)));
+			}
 		}
 		//Reference the root of the asset directory with "" or "/"
 		String[] temp = new String[rootChildren.size()];
