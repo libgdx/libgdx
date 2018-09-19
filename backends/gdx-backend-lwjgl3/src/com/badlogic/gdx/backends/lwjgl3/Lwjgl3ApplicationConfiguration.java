@@ -52,7 +52,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int depth = 16, stencil = 0;
 	int samples = 0;
 
-	boolean vSyncEnabled = true;
 	int idleFPS = 60;
 
 	String preferencesDirectory = ".prefs/";
@@ -85,7 +84,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		depth = config.depth;
 		stencil = config.stencil;
 		samples = config.samples;
-		vSyncEnabled = config.vSyncEnabled;
 		idleFPS = config.idleFPS;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
@@ -181,15 +179,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/**
-	 * Sets whether to use vsync. This setting can be changed anytime at runtime
-	 * via {@link Graphics#setVSync(boolean)}.
-	 */
-	public void useVsync(boolean vsync) {
-		this.vSyncEnabled = vsync;
-	}
-	
-	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive. 
+	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive.
 	 * Default is 60. */
 	public void setIdleFPS (int fps) {
 		this.idleFPS = fps;
