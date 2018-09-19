@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
@@ -157,6 +158,7 @@ public class PixmapPacker implements Disposable {
 			rect = new PixmapPackerRectangle(0, 0, image.getWidth() - 2, image.getHeight() - 2);
 			pixmapToDispose = new Pixmap(image.getWidth() - 2, image.getHeight() - 2, image.getFormat());
 			rect.splits = getSplits(image);
+			rect.pads = getPads(image, rect.splits);
 			pixmapToDispose.drawPixmap(image, 0, 0, 1, 1, image.getWidth() - 1, image.getHeight() - 1);
 			image = pixmapToDispose;
 			name = name.split("\\.")[0];
@@ -279,6 +281,7 @@ public class PixmapPacker implements Disposable {
 					if (rect.splits != null) {
 						TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 						region.splits = rect.splits;
+						region.pads = rect.pads;
 						region.name = name;
 						region.index = -1;
 						atlas.getRegions().add(region);
@@ -654,6 +657,64 @@ public class PixmapPacker implements Disposable {
 		return new int[] {startX, endX, startY, endY};
 	}
 
+	private int[] getPads (Pixmap raster, int[] splits) {
+
+		int bottom = raster.getHeight() - 1;
+		int right = raster.getWidth() - 1;
+
+		int startX = getSplitPoint(raster, 1, bottom, true, true);
+		int startY = getSplitPoint(raster, right, 1, true, false);
+
+		// No need to hunt for the end if a start was never found.
+		int endX = 0;
+		int endY = 0;
+		if (startX != 0) endX = getSplitPoint(raster, startX + 1, bottom, false, true);
+		if (startY != 0) endY = getSplitPoint(raster, right, startY + 1, false, false);
+
+		// Ensure pixels after the end are not invalid.
+		getSplitPoint(raster, endX + 1, bottom, true, true);
+		getSplitPoint(raster, right, endY + 1, true, false);
+
+		// No pads.
+		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) {
+			return null;
+		}
+
+		// -2 here is because the coordinates were computed before the 1px border was stripped.
+		if (startX == 0 && endX == 0) {
+			startX = -1;
+			endX = -1;
+		} else {
+			if (startX > 0) {
+				startX--;
+				endX = raster.getWidth() - 2 - (endX - 1);
+			} else {
+				// If no start point was ever found, we assume full stretch.
+				endX = raster.getWidth() - 2;
+			}
+		}
+		if (startY == 0 && endY == 0) {
+			startY = -1;
+			endY = -1;
+		} else {
+			if (startY > 0) {
+				startY--;
+				endY = raster.getHeight() - 2 - (endY - 1);
+			} else {
+				// If no start point was ever found, we assume full stretch.
+				endY = raster.getHeight() - 2;
+			}
+		}
+
+		int[] pads = new int[] {startX, endX, startY, endY};
+
+		if (splits != null && Arrays.equals(pads, splits)) {
+			return null;
+		}
+
+		return pads;
+	}
+
 	private static Color c = new Color();
 	private int getSplitPoint (Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
@@ -688,6 +749,7 @@ public class PixmapPacker implements Disposable {
 
 	public static class PixmapPackerRectangle extends Rectangle {
 		int[] splits;
+		int[] pads;
 
 		PixmapPackerRectangle (int x, int y, int width, int height) {
 			super(x, y, width, height);
