@@ -373,6 +373,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		if (index < lastIndex) {
 			keyTable[index] = keyTable[lastIndex];
 			valueTable[index] = valueTable[lastIndex];
+			keyTable[lastIndex] = null;
 		}
 	}
 
