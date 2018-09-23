@@ -307,7 +307,10 @@ public class ObjectSet<T> implements Iterable<T> {
 		// If the removed location was not last, move the last tuple to the removed location.
 		stashSize--;
 		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
+		if (index < lastIndex) {
+			keyTable[index] = keyTable[lastIndex];
+			keyTable[lastIndex] = null;
+		}
 	}
 
 	/** Returns true if the set is empty. */
