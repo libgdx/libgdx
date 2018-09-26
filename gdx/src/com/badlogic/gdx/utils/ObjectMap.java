@@ -375,7 +375,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			keyTable[lastIndex] = null;
 			valueTable[lastIndex] = null;
 		} else {
-			keyTable[lastIndex] = null;
+			keyTable[index] = null;
 			valueTable[index] = null;
 		}
 	}
