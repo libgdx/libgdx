@@ -372,9 +372,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (index < lastIndex) {
 			keyTable[index] = keyTable[lastIndex];
 			valueTable[index] = valueTable[lastIndex];
+			keyTable[lastIndex] = null;
 			valueTable[lastIndex] = null;
-		} else
+		} else {
+			keyTable[index] = null;
 			valueTable[index] = null;
+		}
 	}
 
 	/** Returns true if the map is empty. */

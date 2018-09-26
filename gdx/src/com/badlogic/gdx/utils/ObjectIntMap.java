@@ -373,6 +373,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		if (index < lastIndex) {
 			keyTable[index] = keyTable[lastIndex];
 			valueTable[index] = valueTable[lastIndex];
+			keyTable[lastIndex] = null;
 		}
 	}
 
