@@ -275,6 +275,7 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
+		color.set(tint);
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
@@ -292,6 +293,7 @@ public class Sprite extends TextureRegion {
 		intBits = intBits & 0x00FFFFFF;
 		// write new alpha
 		intBits = intBits | alphaBits;
+		color.set(intBits);
 		float color = NumberUtils.intToFloatColor(intBits);
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -301,6 +303,7 @@ public class Sprite extends TextureRegion {
 
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
 		float[] vertices = this.vertices;
@@ -310,14 +313,16 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
-	/** @see #setColor(Color)
+	/** Sets the color of this sprite, expanding the alpha from 0-254 to 0-255.
+	 * @see #setColor(Color)
 	 * @see Color#toFloatBits() */
-	public void setColor (float color) {
+	public void setPackedColor (float packedColor) {
+		Color.abgr8888ToColor(color, packedColor);
 		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		vertices[C1] = packedColor;
+		vertices[C2] = packedColor;
+		vertices[C3] = packedColor;
+		vertices[C4] = packedColor;
 	}
 
 	/** Sets the origin in relation to the sprite's position for scaling and rotation. */
@@ -567,15 +572,9 @@ public class Sprite extends TextureRegion {
 		return scaleY;
 	}
 
-	/** Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
-	 * {@link #setColor(float, float, float, float)} must be used. */
+	/** Returns the color of this sprite. If the returned instance is manipulated, {@link #setColor(Color)} must be called
+	 * afterward. */
 	public Color getColor () {
-		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
-		Color color = this.color;
-		color.r = (intBits & 0xff) / 255f;
-		color.g = ((intBits >>> 8) & 0xff) / 255f;
-		color.b = ((intBits >>> 16) & 0xff) / 255f;
-		color.a = ((intBits >>> 24) & 0xff) / 255f;
 		return color;
 	}
 

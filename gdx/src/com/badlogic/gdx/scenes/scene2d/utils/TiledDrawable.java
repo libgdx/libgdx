@@ -85,7 +85,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 			}
 		}
 
-		batch.setColor(batchColor);
+		batch.setPackedColor(batchColor);
 	}
 
 	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,

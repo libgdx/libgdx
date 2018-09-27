@@ -22,6 +22,10 @@
 - InputMultiplexer#setProcessors(Array) now copies the items instead of using the specified array instance.
 - API Change: A wrapped HorizontalGroup or VerticalGroup will now size children down to their min size if the group is smaller than their pref size.
 - LWJGL3: useVSync() is now a per-window setting. Any additional windows should disable vsync to avoid frames dropping to (refresh rate / # of windows).
+- Batch and sprite implementations and SpriteCache store Color separately from the float packed color, since converting to/from float is lossy.
+- API Change: NumberUtils floatToIntColor expands the alpha from 0-254 to 0-255, so 255 doesn't become 254 from conversion from int to float to int.
+- API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
+- API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
 
 [1.9.8]
 - Add iPhoneX images

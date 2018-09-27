@@ -50,7 +50,7 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 		sprite.draw(batch);
 
 		sprite.setColor(spriteColor);
-		batch.setColor(batchColor);
+		batch.setPackedColor(batchColor);
 	}
 
 	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
@@ -67,7 +67,7 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 		sprite.draw(batch);
 
 		sprite.setColor(spriteColor);
-		batch.setColor(batchColor);
+		batch.setPackedColor(batchColor);
 	}
 
 	public void setSprite (Sprite sprite) {
