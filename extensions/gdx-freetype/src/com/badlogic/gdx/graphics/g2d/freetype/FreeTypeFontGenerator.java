@@ -435,10 +435,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 
 			char c = characters[best];
-			Glyph glyph = createGlyph(c, data, parameter, stroker, baseLine, packer);
-			if (glyph != null) {
-				data.setGlyph(c, glyph);
-				if (incremental) data.glyphs.add(glyph);
+			if (!data.hasGlyph(c)) {
+				Glyph glyph = createGlyph(c, data, parameter, stroker, baseLine, packer);
+				if (glyph != null) {
+					data.setGlyph(c, glyph);
+					if (incremental) data.glyphs.add(glyph);
+				}
 			}
 
 			heightsCount--;
