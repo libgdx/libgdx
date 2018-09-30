@@ -80,8 +80,8 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	private ShaderProgram customShader;
 	private boolean ownsShader;
 
-	float color = Color.WHITE_FLOAT_BITS;
-	private Color tempColor = new Color(1, 1, 1, 1);
+	private final Color color = new Color(1, 1, 1, 1);
+	float colorPacked = Color.WHITE_FLOAT_BITS;
 
 	/** Number of render calls since the last {@link #begin()}. **/
 	public int renderCalls = 0;
@@ -182,34 +182,30 @@ public class PolygonSpriteBatch implements PolygonBatch {
 
 	@Override
 	public void setColor (Color tint) {
-		color = tint.toFloatBits();
+		color.set(tint);
+		colorPacked = tint.toFloatBits();
 	}
 
 	@Override
 	public void setColor (float r, float g, float b, float a) {
-		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = NumberUtils.intToFloatColor(intBits);
+		color.set(r, g, b, a);
+		colorPacked = color.toFloatBits();
 	}
 
 	@Override
-	public void setColor (float color) {
-		this.color = color;
+	public void setPackedColor (float packedColor) {
+		Color.abgr8888ToColor(color, packedColor);
+		colorPacked = packedColor;
 	}
 
 	@Override
 	public Color getColor () {
-		int intBits = NumberUtils.floatToIntColor(color);
-		Color color = this.tempColor;
-		color.r = (intBits & 0xff) / 255f;
-		color.g = ((intBits >>> 8) & 0xff) / 255f;
-		color.b = ((intBits >>> 16) & 0xff) / 255f;
-		color.a = ((intBits >>> 24) & 0xff) / 255f;
 		return color;
 	}
 
 	@Override
 	public float getPackedColor () {
-		return color;
+		return colorPacked;
 	}
 
 	@Override
@@ -237,7 +233,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		this.triangleIndex = triangleIndex;
 
 		final float[] vertices = this.vertices;
-		final float color = this.color;
+		final float color = this.colorPacked;
 		final float[] textureCoords = region.textureCoords;
 
 		for (int i = 0; i < regionVerticesLength; i += 2) {
@@ -276,7 +272,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		this.triangleIndex = triangleIndex;
 
 		final float[] vertices = this.vertices;
-		final float color = this.color;
+		final float color = this.colorPacked;
 		final float[] textureCoords = region.textureCoords;
 		final float sX = width / textureRegion.regionWidth;
 		final float sY = height / textureRegion.regionHeight;
@@ -318,7 +314,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		this.triangleIndex = triangleIndex;
 
 		final float[] vertices = this.vertices;
-		final float color = this.color;
+		final float color = this.colorPacked;
 		final float[] textureCoords = region.textureCoords;
 
 		final float worldOriginX = x + originX;
@@ -480,7 +476,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 			v2 = tmp;
 		}
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
@@ -550,7 +546,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 			v2 = tmp;
 		}
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -607,7 +603,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -660,7 +656,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -722,7 +718,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		final float u2 = 1;
 		final float v2 = 0;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -815,7 +811,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		final float u2 = region.u2;
 		final float v2 = region.v;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -946,7 +942,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		final float u2 = region.u2;
 		final float v2 = region.v;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
@@ -1093,7 +1089,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 			v4 = region.v2;
 		}
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = this.vertexIndex;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
@@ -1159,7 +1155,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		float u2 = region.u2;
 		float v2 = region.v;
 
-		float color = this.color;
+		float color = this.colorPacked;
 		int idx = vertexIndex;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
