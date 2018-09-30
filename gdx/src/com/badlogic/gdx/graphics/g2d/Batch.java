@@ -62,14 +62,16 @@ public interface Batch extends Disposable {
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a);
 
-	/** @see #setColor(Color)
-	 * @see Color#toFloatBits() */
-	public void setColor (float color);
-
-	/** @return the rendering color of this Batch. Manipulating the returned instance has no effect. */
+	/** @return the rendering color of this Batch. If the returned instance is manipulated, {@link #setColor(Color)} must be called
+	 *         afterward. */
 	public Color getColor ();
 
-	/** @return the rendering color of this Batch in vertex format
+	/** Sets the rendering color of this Batch, expanding the alpha from 0-254 to 0-255.
+	 * @see #setColor(Color)
+	 * @see Color#toFloatBits() */
+	public void setPackedColor (float packedColor);
+
+	/** @return the rendering color of this Batch in vertex format (alpha compressed to 0-254)
 	 * @see Color#toFloatBits() */
 	public float getPackedColor ();
 

@@ -363,6 +363,7 @@ public class Array<T> implements Iterable<T> {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public T[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -464,6 +465,7 @@ public class Array<T> implements Iterable<T> {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size <= newSize) return;
 		for (int i = newSize; i < size; i++)
 			items[i] = null;

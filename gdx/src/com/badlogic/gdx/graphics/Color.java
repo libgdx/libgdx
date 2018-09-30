@@ -308,9 +308,9 @@ public class Color {
 		return result;
 	}
 
-	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float.
-	 * @return the packed color as a 32-bit float
-	 * @see NumberUtils#intToFloatColor(int) */
+	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Alpha is compressed
+	 * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link NumberUtils#intToFloatColor(int)}).
+	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return NumberUtils.intToFloatColor(color);
@@ -319,8 +319,7 @@ public class Color {
 	/** Packs the color components into a 32-bit integer with the format ABGR.
 	 * @return the packed color as a 32-bit int. */
 	public int toIntBits () {
-		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return color;
+		return ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 	}
 
 	/** Returns the color encoded as hex string with the format RRGGBBAA. */
