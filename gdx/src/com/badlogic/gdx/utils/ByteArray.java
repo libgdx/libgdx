@@ -286,6 +286,7 @@ public class ByteArray {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public byte[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -294,6 +295,7 @@ public class ByteArray {
 	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public byte[] setSize (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (newSize > items.length) resize(Math.max(8, newSize));
 		size = newSize;
 		return items;

@@ -5,7 +5,7 @@
     <property name="robovm-version" value="2.3.3"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
-    <property name="lwjgl-version" value="3.1.5"/>
+    <property name="lwjgl-version" value="3.2.0"/>
 
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>

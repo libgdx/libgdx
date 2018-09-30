@@ -100,13 +100,13 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
 
 		ByteBuffer buffer = null;
-		
+
 		try {
 			buffer = fontFile.map();
 		} catch (GdxRuntimeException e) {
-			//Silently error, certain platforms do not support file mapping.
+			// Silently error, certain platforms do not support file mapping.
 		}
-		
+
 		if (buffer == null) {
 			InputStream input = fontFile.read();
 			try {
@@ -361,7 +361,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// determine cap height
 		for (char capChar : data.capChars) {
 			if (!loadChar(capChar, flags)) continue;
-			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
+			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight()) + Math.abs(parameter.shadowOffsetY);
 			break;
 		}
 		if (!bitmapped && data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
@@ -435,10 +435,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 
 			char c = characters[best];
-			Glyph glyph = createGlyph(c, data, parameter, stroker, baseLine, packer);
-			if (glyph != null) {
-				data.setGlyph(c, glyph);
-				if (incremental) data.glyphs.add(glyph);
+			if (!data.hasGlyph(c)) {
+				Glyph glyph = createGlyph(c, data, parameter, stroker, baseLine, packer);
+				if (glyph != null) {
+					data.setGlyph(c, glyph);
+					if (incremental) data.glyphs.add(glyph);
+				}
 			}
 
 			heightsCount--;
