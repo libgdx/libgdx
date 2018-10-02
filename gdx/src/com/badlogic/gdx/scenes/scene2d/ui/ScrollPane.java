@@ -114,13 +114,13 @@ public class ScrollPane extends WidgetGroup {
 				if (pointer == 0 && button != 0) return false;
 				getStage().setScrollFocus(ScrollPane.this);
 
-				if (!flickScroll) resetFade();
+				if (!flickScroll) setScrollbarsVisible(true);
 
 				if (fadeAlpha == 0) return false;
 
 				if (scrollBarTouch && scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
-					resetFade();
+					setScrollbarsVisible(true);
 					if (hKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = hKnobBounds.x;
@@ -133,7 +133,7 @@ public class ScrollPane extends WidgetGroup {
 				}
 				if (scrollBarTouch && scrollY && vScrollBounds.contains(x, y)) {
 					event.stop();
-					resetFade();
+					setScrollbarsVisible(true);
 					if (vKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = vKnobBounds.y;
@@ -176,14 +176,14 @@ public class ScrollPane extends WidgetGroup {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				if (!flickScroll) resetFade();
+				if (!flickScroll) setScrollbarsVisible(true);
 				return false;
 			}
 		});
 
 		flickScrollListener = new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				resetFade();
+				setScrollbarsVisible(true);
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
@@ -216,7 +216,7 @@ public class ScrollPane extends WidgetGroup {
 
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
-				resetFade();
+				setScrollbarsVisible(true);
 				if (scrollY)
 					setScrollY(amountY + getMouseWheelY() * amount);
 				else if (scrollX) //
@@ -228,9 +228,15 @@ public class ScrollPane extends WidgetGroup {
 		});
 	}
 
-	void resetFade () {
-		fadeAlpha = fadeAlphaSeconds;
-		fadeDelay = fadeDelaySeconds;
+	/** Shows or hides the scrollbars for when using {@link #setFadeScrollBars(boolean)}. */
+	public void setScrollbarsVisible (boolean visible) {
+		if (visible) {
+			fadeAlpha = fadeAlphaSeconds;
+			fadeDelay = fadeDelaySeconds;
+		} else {
+			fadeAlpha = 0;
+			fadeDelay = 0;
+		}
 	}
 
 	/** Cancels the stage's touch focus for all listeners except this scroll pane's flick scroll listener. This causes any widgets
@@ -282,7 +288,7 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (flingTimer > 0) {
-			resetFade();
+			setScrollbarsVisible(true);
 
 			float alpha = flingTimer / flingTime;
 			amountX -= velocityX * alpha * delta;
@@ -331,13 +337,13 @@ public class ScrollPane extends WidgetGroup {
 		if (!panning) {
 			if (overscrollX && scrollX) {
 				if (amountX < 0) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
 						* delta;
 					if (amountX > 0) scrollX(0);
 					animating = true;
 				} else if (amountX > maxX) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountX -= (overscrollSpeedMin
 						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX) / overscrollDistance) * delta;
 					if (amountX < maxX) scrollX(maxX);
@@ -346,13 +352,13 @@ public class ScrollPane extends WidgetGroup {
 			}
 			if (overscrollY && scrollY) {
 				if (amountY < 0) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
 						* delta;
 					if (amountY > 0) scrollY(0);
 					animating = true;
 				} else if (amountY > maxY) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountY -= (overscrollSpeedMin
 						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY) / overscrollDistance) * delta;
 					if (amountY < maxY) scrollY(maxY);
