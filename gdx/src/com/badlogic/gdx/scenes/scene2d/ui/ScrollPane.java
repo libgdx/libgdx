@@ -607,31 +607,37 @@ public class ScrollPane extends WidgetGroup {
 
 		// Render scrollbars and knobs on top if they will be visible
 		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
-		if (alpha > 0f) {
-			batch.setColor(color.r, color.g, color.b, alpha);
-			boolean x = scrollX && hKnobBounds.width > 0;
-			boolean y = scrollY && vKnobBounds.height > 0;
-			if (x && y) {
-				if (style.corner != null) {
-					style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
-						vScrollBounds.y);
-				}
-			}
-			if (x) {
-				if (style.hScroll != null)
-					style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
-				if (style.hScrollKnob != null)
-					style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
-			}
-			if (y) {
-				if (style.vScroll != null)
-					style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
-				if (style.vScrollKnob != null)
-					style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
-			}
-		}
+		drawScrollBars(batch, color.r, color.g, color.b, alpha);
 
 		resetTransform(batch);
+	}
+
+	/** Renders the scrollbars after the children have been drawn. If the scrollbars faded out, a is zero and rendering can be
+	 * skipped. */
+	protected void drawScrollBars (Batch batch, float r, float g, float b, float a) {
+		if (a <= 0) return;
+		batch.setColor(r, g, b, a);
+
+		boolean x = scrollX && hKnobBounds.width > 0;
+		boolean y = scrollY && vKnobBounds.height > 0;
+		if (x && y) {
+			if (style.corner != null) {
+				style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
+					vScrollBounds.y);
+			}
+		}
+		if (x) {
+			if (style.hScroll != null)
+				style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
+			if (style.hScrollKnob != null)
+				style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
+		}
+		if (y) {
+			if (style.vScroll != null)
+				style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
+			if (style.vScrollKnob != null)
+				style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
+		}
 	}
 
 	/** Generate fling gesture.
@@ -1053,6 +1059,10 @@ public class ScrollPane extends WidgetGroup {
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
+	}
+
+	public boolean getFadeScrollBars () {
+		return fadeScrollBars;
 	}
 
 	/** When false, the scroll bars don't respond to touch or mouse events. Default is true. */
