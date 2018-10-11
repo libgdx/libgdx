@@ -715,7 +715,7 @@ public class PixmapPacker implements Disposable {
 		return pads;
 	}
 
-	private static Color c = new Color();
+	private Color c = new Color();
 	private int getSplitPoint (Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
 
