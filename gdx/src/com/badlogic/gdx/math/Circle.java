@@ -186,6 +186,24 @@ public class Circle implements Serializable, Shape2D {
 		return distance < radiusSum * radiusSum;
 	}
 
+	/** Calculate distance between center points of two circles
+	 *
+	 * @param circle the other {@link Circle}
+	 * @return value of distance
+	 */
+	public float centerDistance (Circle circle) {
+		return Vector2.dst(x, y, circle.x, circle.y);
+	}
+
+	/** Calculate distance between center points of circle and rectangle
+	 *
+	 * @param rectangle target Rectangle {@link Rectangle}
+	 * @return value of distance
+	 */
+	public float centerDistance (Rectangle rectangle) {
+		return Vector2.dst(x, y, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+	}
+
 	/** Returns a {@link String} representation of this {@link Circle} of the form {@code x,y,radius}. */
 	@Override
 	public String toString () {

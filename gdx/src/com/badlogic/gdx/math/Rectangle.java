@@ -369,6 +369,25 @@ public class Rectangle implements Serializable, Shape2D {
 		return this;
 	}
 
+	/** Calculate distance between center points of rectangle and circle
+	 *
+	 * @param circle target Circle {@link Circle}
+	 * @return value of distance
+	 */
+	public float centerDistance (Circle circle) {
+		return Vector2.dst(x + width / 2, y + height / 2, circle.x, circle.y);
+	}
+
+	/** Calculate distance between center points of two rectangles
+	 *
+	 * @param rectangle the other {@link Rectangle}
+	 * @return value of distance
+	 */
+	public float centerDistance (Rectangle rectangle) {
+		return Vector2.dst(x + width / 2, y + height / 2,
+				rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+	}
+
 	/** Converts this {@code Rectangle} to a string in the format {@code [x,y,width,height]}.
 	 * @return a string representation of this object. */
 	public String toString () {
