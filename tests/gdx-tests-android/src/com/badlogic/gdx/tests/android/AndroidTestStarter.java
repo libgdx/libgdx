@@ -52,7 +52,7 @@ public class AndroidTestStarter extends ListActivity {
 		Editor editor = prefs.edit();
 		editor.putInt("index", listView.getFirstVisiblePosition());
 		editor.putInt("top", listView.getChildAt(0) == null ? 0 : listView.getChildAt(0).getTop());
-		editor.commit();
+		editor.apply();
 
 		Object o = this.getListAdapter().getItem(position);
 		String testName = o.toString();
