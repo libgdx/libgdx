@@ -14,4 +14,4 @@ install:
   - true
 
 script:
-  - ant -f build-mac-ios.xml -quiet
+  - ant -f build-mac-ios.xml

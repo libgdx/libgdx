@@ -95,6 +95,7 @@
 	<!-- graphics/g2d -->
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g2d/Batch.java"/>
+		<include name="graphics/g2d/PolygonBatch.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
