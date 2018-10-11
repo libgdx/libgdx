@@ -874,12 +874,12 @@ public class Table extends WidgetGroup {
 			}
 
 			// Collect uniform sizes.
-			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
+			if (c.uniformX && c.colspan == 1) {
 				float hpadding = c.computedPadLeft + c.computedPadRight;
 				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[column] - hpadding);
 				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[column] - hpadding);
 			}
-			if (c.uniformY == Boolean.TRUE) {
+			if (c.uniformY) {
 				float vpadding = c.computedPadTop + c.computedPadBottom;
 				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row] - vpadding);
 				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row] - vpadding);
@@ -890,12 +890,12 @@ public class Table extends WidgetGroup {
 		if (uniformPrefWidth > 0 || uniformPrefHeight > 0) {
 			for (int i = 0; i < cellCount; i++) {
 				Cell c = cells.get(i);
-				if (uniformPrefWidth > 0 && c.uniformX == Boolean.TRUE && c.colspan == 1) {
+				if (uniformPrefWidth > 0 && c.uniformX && c.colspan == 1) {
 					float hpadding = c.computedPadLeft + c.computedPadRight;
 					columnMinWidth[c.column] = uniformMinWidth + hpadding;
 					columnPrefWidth[c.column] = uniformPrefWidth + hpadding;
 				}
-				if (uniformPrefHeight > 0 && c.uniformY == Boolean.TRUE) {
+				if (uniformPrefHeight > 0 && c.uniformY) {
 					float vpadding = c.computedPadTop + c.computedPadBottom;
 					rowMinHeight[c.row] = uniformMinHeight + vpadding;
 					rowPrefHeight[c.row] = uniformPrefHeight + vpadding;

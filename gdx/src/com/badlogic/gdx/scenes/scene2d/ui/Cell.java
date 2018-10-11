@@ -28,7 +28,7 @@ public class Cell<T extends Actor> implements Poolable {
 	Integer align;
 	Integer expandX, expandY;
 	Integer colspan;
-	Boolean uniformX, uniformY;
+	boolean uniformX, uniformY;
 
 	Actor actor;
 	float actorX, actorY;
@@ -607,20 +607,20 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets uniformX and uniformY to true. */
 	public Cell<T> uniform () {
-		uniformX = Boolean.TRUE;
-		uniformY = Boolean.TRUE;
+		uniformX = true;
+		uniformY = true;
 		return this;
 	}
 
 	/** Sets uniformX to true. */
 	public Cell<T> uniformX () {
-		uniformX = Boolean.TRUE;
+		uniformX = true;
 		return this;
 	}
 
 	/** Sets uniformY to true. */
 	public Cell<T> uniformY () {
-		uniformY = Boolean.TRUE;
+		uniformY = true;
 		return this;
 	}
 
@@ -908,8 +908,8 @@ public class Cell<T extends Actor> implements Poolable {
 		expandX = null;
 		expandY = null;
 		colspan = null;
-		uniformX = null;
-		uniformY = null;
+		uniformX = false;
+		uniformY = false;
 	}
 
 	/** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */
@@ -971,8 +971,8 @@ public class Cell<T extends Actor> implements Poolable {
 		if (cell.expandX != null) expandX = cell.expandX;
 		if (cell.expandY != null) expandY = cell.expandY;
 		if (cell.colspan != null) colspan = cell.colspan;
-		if (cell.uniformX != null) uniformX = cell.uniformX;
-		if (cell.uniformY != null) uniformY = cell.uniformY;
+		uniformX = cell.uniformX;
+		uniformY = cell.uniformY;
 	}
 
 	public String toString () {
@@ -1005,8 +1005,8 @@ public class Cell<T extends Actor> implements Poolable {
 			defaults.expandX = zeroi;
 			defaults.expandY = zeroi;
 			defaults.colspan = onei;
-			defaults.uniformX = null;
-			defaults.uniformY = null;
+			defaults.uniformX = false;
+			defaults.uniformY = false;
 		}
 		return defaults;
 	}
