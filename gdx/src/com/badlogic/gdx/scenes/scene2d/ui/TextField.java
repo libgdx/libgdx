@@ -139,17 +139,6 @@ public class TextField extends Widget implements Disableable {
 
 	protected void initialize () {
 		addListener(inputListener = createInputListener());
-		addListener(new FocusListener() {
-			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
-				blinkTask.cancel();
-				cursorOn = focused;
-				if (focused)
-					Timer.schedule(blinkTask, blinkTime, blinkTime);
-				else
-					keyRepeatTask.cancel();
-				TextField.this.focused = focused;
-			}
-		});
 	}
 
 	protected InputListener createInputListener () {
@@ -305,6 +294,17 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		boolean focused = getStage() != null && getStage().getKeyboardFocus() == this;
+		if (focused != this.focused) {
+			this.focused = focused;
+			blinkTask.cancel();
+			cursorOn = focused;
+			if (focused)
+				Timer.schedule(blinkTask, blinkTime, blinkTime);
+			else
+				keyRepeatTask.cancel();
+		}
+
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
 			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);

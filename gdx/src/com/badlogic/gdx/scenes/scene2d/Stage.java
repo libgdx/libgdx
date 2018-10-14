@@ -621,13 +621,6 @@ public class Stage extends InputAdapter implements Disposable {
 				success = !event.isCancelled();
 				if (!success) keyboardFocus = oldKeyboardFocus;
 			}
-		} else {
-			event.reset();
-			event.setStage(this);
-			event.setType(FocusEvent.Type.keyboard);
-			event.setFocused(true);
-			event.setRelatedActor(actor);
-			oldKeyboardFocus.fire(event);
 		}
 		Pools.free(event);
 		return success;
