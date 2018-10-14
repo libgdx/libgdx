@@ -555,7 +555,7 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		if (peripheral == Peripheral.Compass) return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
 		return false;
 	}
