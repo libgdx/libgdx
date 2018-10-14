@@ -942,6 +942,7 @@ public class ScrollPane extends WidgetGroup {
 	public void setScrollingDisabled (boolean x, boolean y) {
 		disableX = x;
 		disableY = y;
+		invalidate();
 	}
 
 	public boolean isScrollingDisabledX () {
