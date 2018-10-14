@@ -51,6 +51,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int r = 8, g = 8, b = 8, a = 8;
 	int depth = 16, stencil = 0;
 	int samples = 0;
+	boolean transparentFramebuffer;
 
 	int idleFPS = 60;
 
@@ -84,6 +85,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		depth = config.depth;
 		stencil = config.stencil;
 		samples = config.samples;
+		transparentFramebuffer = config.transparentFramebuffer;
 		idleFPS = config.idleFPS;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
@@ -177,6 +179,16 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.depth = depth;
 		this.stencil = stencil;
 		this.samples = samples;
+	}
+
+	/**
+	 * Set transparent window hint
+	 * @deprecated Results may vary on different OS and GPUs. See https://github.com/glfw/glfw/issues/1237
+	 * @param transparentFramebuffer
+	 */
+	@Deprecated
+	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
+		this.transparentFramebuffer = transparentFramebuffer;
 	}
 
 	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive.
