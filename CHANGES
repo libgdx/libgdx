@@ -32,6 +32,7 @@
 - API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 - API Change: List now handles more key presses.
 - API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
+- API Addition: Added Collision class to Box2D for computing collision manifolds between shapes.
 
 [1.9.8]
 - Add iPhoneX images
