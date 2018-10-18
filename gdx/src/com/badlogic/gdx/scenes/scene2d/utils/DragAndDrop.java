@@ -71,10 +71,9 @@ public class DragAndDrop {
 
 				Stage stage = event.getStage();
 
-				Touchable dragActorTouchable = null;
 				if (dragActor != null) {
-					dragActorTouchable = dragActor.getTouchable();
-					dragActor.setTouchable(Touchable.disabled);
+					dragActor.remove(); // Remove so it cannot be hit (Touchable.disabled isn't enough).
+					dragActor = null;
 				}
 
 				// Find target.
@@ -100,18 +99,13 @@ public class DragAndDrop {
 				// Notify new target of drag.
 				if (newTarget != null) isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 
-				if (dragActor != null) dragActor.setTouchable(dragActorTouchable);
-
-				// Add/remove and position the drag actor.
+				// Add and position the drag actor.
 				Actor actor = null;
 				if (target != null) actor = isValidTarget ? payload.validDragActor : payload.invalidDragActor;
 				if (actor == null) actor = payload.dragActor;
+				dragActor = actor;
 				if (actor == null) return;
-				if (dragActor != actor) {
-					if (dragActor != null) dragActor.remove();
-					dragActor = actor;
-					stage.addActor(actor);
-				}
+				stage.addActor(actor);
 				float actorX = event.getStageX() - actor.getWidth() + dragActorX;
 				float actorY = event.getStageY() + dragActorY;
 				if (keepWithinStage) {
