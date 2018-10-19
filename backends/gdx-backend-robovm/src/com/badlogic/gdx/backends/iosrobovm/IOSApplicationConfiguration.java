@@ -99,6 +99,9 @@ public class IOSApplicationConfiguration {
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 	
+	/** whether the home indicator should be hidden or not **/
+	public boolean hideHomeIndicator = true;
+	
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
 

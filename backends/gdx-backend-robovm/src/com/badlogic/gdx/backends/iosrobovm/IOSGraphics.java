@@ -124,6 +124,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 				app.listener.resize(graphics.width, graphics.height);
 			}
 		}
+		
+		@Override
+		public boolean prefersHomeIndicatorAutoHidden() {
+			return app.config.hideHomeIndicator;
+		}
 
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
