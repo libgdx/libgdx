@@ -108,7 +108,6 @@ class IOSUIViewController extends GLKViewController {
 		return !app.config.statusBarVisible;
 	}
 	
-	@Override
 	public boolean prefersHomeIndicatorAutoHidden() {
 		return app.config.hideHomeIndicator;
 	}
