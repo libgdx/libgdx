@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d;
 
+/** Computes manifolds or overlap status for shapes. */
 public class Collision {
 	/*JNI
 #include <Box2D/Box2D.h>
@@ -79,9 +80,9 @@ public class Collision {
 	 * Compute the collision manifold between two polygons.
 	 * Note: The manifold is reused.
 	 */
-	public static Manifold collidePolygons (PolygonShape polygonA, Transform xfA, PolygonShape shapeB, Transform xfB) {
+	public static Manifold collidePolygons (PolygonShape polygonA, Transform xfA, PolygonShape polygonB, Transform xfB) {
 		Manifold m = new Manifold(manifoldAddr);
-		jniCollidePolygons(m.addr, polygonA.addr, xfA.vals, shapeB.addr, xfB.vals);
+		jniCollidePolygons(m.addr, polygonA.addr, xfA.vals, polygonB.addr, xfB.vals);
 		return m;
 	}
 
@@ -132,8 +133,8 @@ public class Collision {
 	/*
 	 * Determine if two generic shapes overlap.
 	 */
-	public static boolean testOverlap (Shape shapeA, int indexA, Shape shapeB, int indexB, Transform transformA, Transform transformB) {
-		return jniTestOverlap(shapeA.addr, indexA, shapeB.addr, indexB, transformA.vals, transformB.vals);
+	public static boolean testOverlap (Shape shapeA, int indexA, Shape shapeB, int indexB, Transform xfA, Transform xfB) {
+		return jniTestOverlap(shapeA.addr, indexA, shapeB.addr, indexB, xfA.vals, xfB.vals);
 	}
 
 	private static native boolean jniTestOverlap (long shapeA, int indexA, long shapeB, int indexB, float[] transform1, float[] transform2); /*
