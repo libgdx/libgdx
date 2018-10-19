@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
 
-import org.jbox2d.pooling.IWorldPool;
 import org.jbox2d.pooling.normal.DefaultWorldPool;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.common.Rot;
@@ -41,8 +40,7 @@ public class Collision {
 		return new org.jbox2d.common.Transform(p, rot);
 	}
 
-	/*
-	 * Compute the collision manifold between two circles.
+	/** Compute the collision manifold between two circles.
 	 * Note: The manifold is reused.
 	 */
 	public static Manifold collideCircles (CircleShape circleA, Transform xfA, CircleShape circleB, Transform xfB) {
@@ -54,8 +52,7 @@ public class Collision {
 		return m;
 	}
 
-	/*
-	 * Compute the collision manifold between a polygon and a circle.
+	/** Compute the collision manifold between a polygon and a circle.
 	 * Note: The manifold is reused.
 	 */
 	public static Manifold collidePolygonAndCircle (PolygonShape polygon, Transform xfA, CircleShape circle, Transform xfB) {
@@ -67,8 +64,7 @@ public class Collision {
 		return m;
 	}
 
-	/*
-	 * Compute the collision manifold between two polygons.
+	/** Compute the collision manifold between two polygons.
 	 * Note: The manifold is reused.
 	 */
 	public static Manifold collidePolygons (PolygonShape polygonA, Transform xfA, PolygonShape polygonB, Transform xfB) {
@@ -80,8 +76,7 @@ public class Collision {
 		return m;
 	}
 
-	/*
-	 * Compute the collision manifold between an edge and a circle.
+	/** Compute the collision manifold between an edge and a circle.
 	 * Note: The manifold is reused.
 	 */
 	public static Manifold collideEdgeAndCircle (EdgeShape edge, Transform xfA, CircleShape circle, Transform xfB) {
@@ -93,8 +88,7 @@ public class Collision {
 		return m;
 	}
 
-	/*
-	 * Compute the collision manifold between an edge and a polygon.
+	/** Compute the collision manifold between an edge and a polygon.
 	 * Note: The manifold is reused.
 	 */
 	public static Manifold collideEdgeAndPolygon (EdgeShape edge, Transform xfA, PolygonShape polygon, Transform xfB) {
@@ -106,8 +100,7 @@ public class Collision {
 		return m;
 	}
 
-	/*
-	 * Determine if two generic shapes overlap.
+	/** Determine if two generic shapes overlap.
 	 */
 	public static boolean testOverlap (Shape shapeA, int indexA, Shape shapeB, int indexB, Transform xfA, Transform xfB) {
 		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
