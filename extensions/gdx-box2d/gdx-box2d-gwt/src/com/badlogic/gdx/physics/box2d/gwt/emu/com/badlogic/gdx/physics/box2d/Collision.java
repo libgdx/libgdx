@@ -16,95 +16,75 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import com.badlogic.gdx.math.Vector2;
-
 import org.jbox2d.pooling.normal.DefaultWorldPool;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.common.Rot;
 
 /** Computes manifolds or overlap status for shapes. */
 public class Collision {
 	private static org.jbox2d.collision.Collision collision;
-	private static Manifold m = new Manifold();
+	private final static Manifold m = new Manifold();
+	private final static org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
+	private final static org.jbox2d.common.Transform bXfA = new org.jbox2d.common.Transform();
+	private final static org.jbox2d.common.Transform bXfB = new org.jbox2d.common.Transform();
+
 	static {
 		collision = new org.jbox2d.collision.Collision(new DefaultWorldPool(0, 0)); // only used for Distance
 	}
 
-	private static org.jbox2d.common.Transform toB2Transform(Transform t) {
-		Vec2 p = new Vec2();
-		p.x = t.vals[Transform.POS_X];
-		p.y = t.vals[Transform.POS_Y];
-		Rot rot = new Rot();
-		rot.c = t.vals[Transform.COS];
-		rot.s = t.vals[Transform.SIN];
-		return new org.jbox2d.common.Transform(p, rot);
+	private static void fillB2Transforms (Transform t1, Transform t2) {
+		bXfA.p.x = t1.vals[Transform.POS_X];
+		bXfA.p.y = t1.vals[Transform.POS_Y];
+		bXfA.q.c = t1.vals[Transform.COS];
+		bXfA.q.s = t1.vals[Transform.SIN];
+
+		bXfB.p.x = t2.vals[Transform.POS_X];
+		bXfB.p.y = t2.vals[Transform.POS_Y];
+		bXfB.q.c = t2.vals[Transform.COS];
+		bXfB.q.s = t2.vals[Transform.SIN];
 	}
 
 	/** Compute the collision manifold between two circles.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideCircles (CircleShape circleA, Transform xfA, CircleShape circleB, Transform xfB) {
-		org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		collision.collideCircles(bM, circleA.shape, bXfA, circleB.shape, bXfB);
-		m.manifold = bM;
 		return m;
 	}
 
 	/** Compute the collision manifold between a polygon and a circle.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collidePolygonAndCircle (PolygonShape polygon, Transform xfA, CircleShape circle, Transform xfB) {
-		org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		collision.collidePolygonAndCircle(bM, polygon.shape, bXfA, circle.shape, bXfB);
-		m.manifold = bM;
 		return m;
 	}
 
 	/** Compute the collision manifold between two polygons.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collidePolygons (PolygonShape polygonA, Transform xfA, PolygonShape polygonB, Transform xfB) {
-		org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		collision.collidePolygons(bM, polygonA.shape, bXfA, polygonB.shape, bXfB);
-		m.manifold = bM;
 		return m;
 	}
 
 	/** Compute the collision manifold between an edge and a circle.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideEdgeAndCircle (EdgeShape edge, Transform xfA, CircleShape circle, Transform xfB) {
-		org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		collision.collideEdgeAndCircle(bM, edge.shape, bXfA, circle.shape, bXfB);
-		m.manifold = bM;
 		return m;
 	}
 
 	/** Compute the collision manifold between an edge and a polygon.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideEdgeAndPolygon (EdgeShape edge, Transform xfA, PolygonShape polygon, Transform xfB) {
-		org.jbox2d.collision.Manifold bM = new org.jbox2d.collision.Manifold();
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		collision.collideEdgeAndPolygon(bM, edge.shape, bXfA, polygon.shape, bXfB);
-		m.manifold = bM;
 		return m;
 	}
 
-	/** Determine if two generic shapes overlap.
-	 */
+	/** Determine if two generic shapes overlap. */
 	public static boolean testOverlap (Shape shapeA, int indexA, Shape shapeB, int indexB, Transform xfA, Transform xfB) {
-		org.jbox2d.common.Transform bXfA = toB2Transform(xfA);
-		org.jbox2d.common.Transform bXfB = toB2Transform(xfB);
+		fillB2Transforms(xfA, xfB);
 		return collision.testOverlap(shapeA.shape, indexA, shapeB.shape, indexB, bXfA, bXfB);
 	}
 }

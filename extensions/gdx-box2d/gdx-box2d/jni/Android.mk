@@ -77,6 +77,7 @@ LOCAL_SRC_FILES := com.badlogic.gdx.physics.box2d.Shape.cpp\
 	Box2D/Collision/b2CollideEdge.cpp\
 	Box2D/Collision/b2Collision.cpp\
 	com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp\
+	com.badlogic.gdx.physics.box2d.Collision.cpp\
 	com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.WeldJoint.cpp
  

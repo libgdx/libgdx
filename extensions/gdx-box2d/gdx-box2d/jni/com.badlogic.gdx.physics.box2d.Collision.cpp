@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.physics.box2d.Collision.h>
 
-//@line:20
+//@line:22
 
 #include <Box2D/Box2D.h>
 
@@ -13,7 +13,7 @@
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCreateManifold(JNIEnv* env, jclass clazz) {
 
 
-//@line:33
+//@line:35
 
 		// NOTE: this leaks (if the class is initialized)
 		return (jlong)(new b2Manifold);
@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideC
 	float* transform2 = (float*)env->GetPrimitiveArrayCritical(obj_transform2, 0);
 
 
-//@line:52
+//@line:51
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);
@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideP
 	float* transform2 = (float*)env->GetPrimitiveArrayCritical(obj_transform2, 0);
 
 
-//@line:70
+//@line:66
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);
@@ -62,7 +62,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideP
 	float* transform2 = (float*)env->GetPrimitiveArrayCritical(obj_transform2, 0);
 
 
-//@line:88
+//@line:81
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);
@@ -80,7 +80,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideE
 	float* transform2 = (float*)env->GetPrimitiveArrayCritical(obj_transform2, 0);
 
 
-//@line:106
+//@line:96
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);
@@ -98,7 +98,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideE
 	float* transform2 = (float*)env->GetPrimitiveArrayCritical(obj_transform2, 0);
 
 
-//@line:124
+//@line:111
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);
@@ -114,7 +114,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Collision_jniCollideE
 static inline jboolean wrapped_Java_com_badlogic_gdx_physics_box2d_Collision_jniTestOverlap
 (JNIEnv* env, jclass clazz, jlong shapeA, jint indexA, jlong shapeB, jint indexB, jfloatArray obj_transform1, jfloatArray obj_transform2, float* transform1, float* transform2) {
 
-//@line:139
+//@line:124
 
 		b2Transform xfA, xfB;
 		fillTransform(xfA, transform1);

@@ -29,7 +29,7 @@ public class Collision {
 	}
 	 */
 
-	private static long manifoldAddr;
+	private final static Manifold tmp = new Manifold(0);
 
 	private native static long jniCreateManifold (); /*
 		// NOTE: this leaks (if the class is initialized)
@@ -37,16 +37,14 @@ public class Collision {
 	*/
 
 	static {
-		manifoldAddr = jniCreateManifold();
+		tmp.addr = jniCreateManifold();
 	}
 
 	/** Compute the collision manifold between two circles.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideCircles (CircleShape circleA, Transform xfA, CircleShape circleB, Transform xfB) {
-		Manifold m = new Manifold(manifoldAddr);
-		jniCollideCircles(m.addr, circleA.addr, xfA.vals, circleB.addr, xfB.vals);
-		return m;
+		jniCollideCircles(tmp.addr, circleA.addr, xfA.vals, circleB.addr, xfB.vals);
+		return tmp;
 	}
 
 	private native static void jniCollideCircles (long addr, long shapeA, float[] transform1, long shapeB, float[] transform2); /*
@@ -58,12 +56,10 @@ public class Collision {
 	*/
 
 	/** Compute the collision manifold between a polygon and a circle.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collidePolygonAndCircle (PolygonShape polygon, Transform xfA, CircleShape circle, Transform xfB) {
-		Manifold m = new Manifold(manifoldAddr);
-		jniCollidePolygonAndCircle(m.addr, polygon.addr, xfA.vals, circle.addr, xfB.vals);
-		return m;
+		jniCollidePolygonAndCircle(tmp.addr, polygon.addr, xfA.vals, circle.addr, xfB.vals);
+		return tmp;
 	}
 
 	private native static void jniCollidePolygonAndCircle (long addr, long shapeA, float[] transform1, long shapeB, float[] transform2); /*
@@ -75,12 +71,10 @@ public class Collision {
 	*/
 
 	/** Compute the collision manifold between two polygons.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collidePolygons (PolygonShape polygonA, Transform xfA, PolygonShape polygonB, Transform xfB) {
-		Manifold m = new Manifold(manifoldAddr);
-		jniCollidePolygons(m.addr, polygonA.addr, xfA.vals, polygonB.addr, xfB.vals);
-		return m;
+		jniCollidePolygons(tmp.addr, polygonA.addr, xfA.vals, polygonB.addr, xfB.vals);
+		return tmp;
 	}
 
 	private static native void jniCollidePolygons (long addr, long shapeA, float[] transform1, long shapeB, float[] transform2); /*
@@ -92,12 +86,10 @@ public class Collision {
 	*/
 
 	/** Compute the collision manifold between an edge and a circle.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideEdgeAndCircle (EdgeShape edge, Transform xfA, CircleShape circle, Transform xfB) {
-		Manifold m = new Manifold(manifoldAddr);
-		jniCollideEdgeAndCircle(m.addr, edge.addr, xfA.vals, circle.addr, xfB.vals);
-		return m;
+		jniCollideEdgeAndCircle(tmp.addr, edge.addr, xfA.vals, circle.addr, xfB.vals);
+		return tmp;
 	}
 
 	private native static void jniCollideEdgeAndCircle (long addr, long shapeA, float[] transform1, long shapeB, float[] transform2); /*
@@ -109,12 +101,10 @@ public class Collision {
 	*/
 
 	/** Compute the collision manifold between an edge and a polygon.
-	 * Note: The manifold is reused.
-	 */
+	 * Note: The manifold is reused. */
 	public static Manifold collideEdgeAndPolygon (EdgeShape edge, Transform xfA, PolygonShape polygon, Transform xfB) {
-		Manifold m = new Manifold(manifoldAddr);
-		jniCollideEdgeAndPolygon(m.addr, edge.addr, xfA.vals, polygon.addr, xfB.vals);
-		return m;
+		jniCollideEdgeAndPolygon(tmp.addr, edge.addr, xfA.vals, polygon.addr, xfB.vals);
+		return tmp;
 	}
 
 	private native static void jniCollideEdgeAndPolygon (long addr, long shapeA, float[] transform1, long shapeB, float[] transform2); /*
@@ -125,8 +115,7 @@ public class Collision {
 		b2CollideEdgeAndPolygon((b2Manifold*)addr, (b2EdgeShape*)shapeA, xfA, (b2PolygonShape*)shapeB, xfB);
 	*/
 
-	/** Determine if two generic shapes overlap.
-	 */
+	/** Determine if two generic shapes overlap. */
 	public static boolean testOverlap (Shape shapeA, int indexA, Shape shapeB, int indexB, Transform xfA, Transform xfB) {
 		return jniTestOverlap(shapeA.addr, indexA, shapeB.addr, indexB, xfA.vals, xfB.vals);
 	}
