@@ -74,6 +74,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		@Override
 		public void viewDidAppear (boolean animated) {
+			super.viewDidAppear(animated);
 			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 		}
 
