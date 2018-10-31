@@ -42,6 +42,7 @@ public class Lwjgl3Input implements Input, Disposable {
 	private boolean keyJustPressed;
 	private boolean[] justPressedKeys = new boolean[256];
 	private char lastCharacter;
+	private float scrollFrac;
 		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
 		@Override
@@ -83,7 +84,7 @@ public class Lwjgl3Input implements Input, Disposable {
 			eventQueue.keyTyped((char)codepoint);
 		}
 	};
-	private double scrollFrac = 0;
+
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
