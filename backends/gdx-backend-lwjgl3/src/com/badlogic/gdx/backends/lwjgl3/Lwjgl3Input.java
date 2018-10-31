@@ -83,12 +83,18 @@ public class Lwjgl3Input implements Input, Disposable {
 			eventQueue.keyTyped((char)codepoint);
 		}
 	};
-	
+	private double scrollFrac = 0;
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
-			eventQueue.scrolled((int)-Math.signum(scrollY));
+			scrollFrac += scrollY;
+			while (Math.abs(scrollFrac) > 1) {
+				int scrollAmount = (int)-Math.signum(scrollY);
+				eventQueue.scrolled(scrollAmount);
+				scrollFrac += scrollAmount;
+			}
+
 		}
 	};
 	
