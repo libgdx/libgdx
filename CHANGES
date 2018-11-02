@@ -27,6 +27,7 @@
 - API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
 - API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
 - API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
+- Fixed Input.isKeyJustPressed() not returning true on Android if a USB/Bluetooth key had just been pressed.
 
 [1.9.8]
 - Add iPhoneX images
