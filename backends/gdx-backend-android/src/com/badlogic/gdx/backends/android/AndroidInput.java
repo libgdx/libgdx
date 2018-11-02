@@ -352,12 +352,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
-			if (keyJustPressed) {
-				keyJustPressed = false;
-				for (int i = 0; i < justPressedKeys.length; i++) {
-					justPressedKeys[i] = false;
-				}
-			}
+			keyJustPressed = false;
 
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
@@ -368,9 +363,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
+						if(justPressedKeys[e.keyCode]) keyJustPressed = true;
 						processor.keyDown(e.keyCode);
-						keyJustPressed = true;
-						justPressedKeys[e.keyCode] = true;
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
@@ -533,6 +527,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				if (!keys[event.keyCode]) {
 					keyCount++;
 					keys[event.keyCode] = true;
+					justPressedKeys[event.keyCode] = true;
+				} else {
+					justPressedKeys[event.keyCode] = false;
 				}
 				break;
 			case android.view.KeyEvent.ACTION_UP:
@@ -565,6 +562,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					if (keys[e.getKeyCode()]) {
 						keyCount--;
 						keys[e.getKeyCode()] = false;
+						justPressedKeys[event.keyCode] = false;
 					}
 				}
 			}
