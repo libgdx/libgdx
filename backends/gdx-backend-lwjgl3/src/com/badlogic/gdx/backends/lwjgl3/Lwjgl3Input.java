@@ -89,13 +89,24 @@ public class Lwjgl3Input implements Input, Disposable {
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
+			//eventQueue.scrolled((int)(-scrollY*1024d));
+
+			if (scrollFrac > 0 && scrollY < 0 || scrollFrac < 0 && scrollY > 0) 
+				// Reset scrollFrac when changing direction.
+				// This triggers a scroll event as soon as the users changes the scroll direction
+				scrollFrac = 0;
+
+			if (scrollFrac == 0) {
+				// fire a scroll event as soon as the user moves the wheel
+				int scrollAmount = (int)-Math.signum(scrollY);
+				eventQueue.scrolled(scrollAmount);
+			}
 			scrollFrac += scrollY;
-			while (Math.abs(scrollFrac) > 1) {
+			while (Math.abs(scrollFrac) >= 1) {
 				int scrollAmount = (int)-Math.signum(scrollY);
 				eventQueue.scrolled(scrollAmount);
 				scrollFrac += scrollAmount;
 			}
-
 		}
 	};
 	
