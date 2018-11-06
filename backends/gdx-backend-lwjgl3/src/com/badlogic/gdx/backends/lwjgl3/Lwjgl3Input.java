@@ -92,7 +92,6 @@ public class Lwjgl3Input implements Input, Disposable {
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
-
 			if (scrollYRemainder > 0 && scrollY < 0 || scrollYRemainder < 0 && scrollY > 0 ||
 				TimeUtils.nanoTime() - lastScrollEventTime > pauseTime ) { 
 				// fire a scroll event immediately:
@@ -103,13 +102,14 @@ public class Lwjgl3Input implements Input, Disposable {
 				eventQueue.scrolled(scrollAmount);
 				lastScrollEventTime = TimeUtils.nanoTime();
 			}
-
-			scrollYRemainder += scrollY;
-			while (Math.abs(scrollYRemainder) >= 1) {
-				int scrollAmount = (int)-Math.signum(scrollY);
-				eventQueue.scrolled(scrollAmount);
-				lastScrollEventTime = TimeUtils.nanoTime();
-				scrollYRemainder += scrollAmount;
+			else {
+				scrollYRemainder += scrollY;
+				while (Math.abs(scrollYRemainder) >= 1) {
+					int scrollAmount = (int)-Math.signum(scrollY);
+					eventQueue.scrolled(scrollAmount);
+					lastScrollEventTime = TimeUtils.nanoTime();
+					scrollYRemainder += scrollAmount;
+				}
 			}
 		}
 	};
