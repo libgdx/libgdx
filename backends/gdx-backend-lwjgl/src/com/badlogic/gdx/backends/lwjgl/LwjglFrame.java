@@ -108,7 +108,7 @@ public class LwjglFrame extends JFrame {
 
 	public void reshape (int x, int y, int width, int height) {
 		super.reshape(x, y, width, height);
-		validate();
+		revalidate();
 	}
 
 	/** When true, <code>Runtime.getRuntime().halt(0);</code> is used when the JVM shuts down. This prevents Swing shutdown hooks
