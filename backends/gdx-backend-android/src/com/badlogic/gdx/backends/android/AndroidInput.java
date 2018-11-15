@@ -617,17 +617,20 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		vibrator.vibrate(milliseconds);
+		if (vibrator != null)
+			vibrator.vibrate(milliseconds);
 	}
 
 	@Override
 	public void vibrate (long[] pattern, int repeat) {
-		vibrator.vibrate(pattern, repeat);
+		if (vibrator != null)
+			vibrator.vibrate(pattern, repeat);
 	}
 
 	@Override
 	public void cancelVibrate () {
-		vibrator.cancel();
+		if (vibrator != null)
+			vibrator.cancel();
 	}
 
 	@Override
