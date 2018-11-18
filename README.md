@@ -33,7 +33,7 @@ You can follow the latest news about libGDX on the [blog](http://www.badlogicgam
 You can get help on our [forum](http://badlogicgames.com/forum/) and talk to other libGDX 
 users on our IRC channel #libgdx at irc.freenode.net.
 
-Another way of getting help or talking to other devs is the [libgdx discord](https://discord.gg/6pgDK9F).
+Another way of getting help or talking to other libGDX users is the [libgdx discord](https://discord.gg/6pgDK9F).
 
 ### Reporting Issues
 Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on GitHub to report issues. Make sure you read the 
