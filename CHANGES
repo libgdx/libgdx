@@ -10,7 +10,6 @@
 - SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
 - API addition: Tree indentation can be customized.
 - Fixed GlyphLayout not respecting BitmapFontData#down.
-- API Change: Added OnscreenKeyboardType parameter to Input#setOnscreenKeyboardVisible
 - API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
 - API Change: BitmapFont#getSpaceWidth changed to BitmapFont#getSpaceXadvance.
 - Many GlyphLayout fixes.
@@ -29,8 +28,6 @@
 - API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
 - API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
 - API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
-- API Addition: Added faceIndex parameter to #FreeTypeFontGenerator(FileHandle, int).
-- API Change: Added OnscreenKeyboardType parameter to Input#setOnscreenKeyboardVisible
 
 [1.9.8]
 - Add iPhoneX images
