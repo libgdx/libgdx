@@ -43,8 +43,6 @@ public class Lwjgl3Input implements Input, Disposable {
 	private boolean keyJustPressed;
 	private boolean[] justPressedKeys = new boolean[256];
 	private char lastCharacter;
-	private float scrollYRemainder;
-	private long lastScrollEventTime;
 		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
 		@Override
@@ -88,7 +86,9 @@ public class Lwjgl3Input implements Input, Disposable {
 	};
 	
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
-		long pauseTime = 250000000L; //250ms
+		private long pauseTime = 250000000L; //250ms
+		private float scrollYRemainder;
+		private long lastScrollEventTime;
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
