@@ -90,23 +90,23 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 	
 	void axisChanged (Lwjgl3Controller controller, int axisCode, float value) {
 		for(ControllerListener listener: listeners) {
-			listener.axisMoved(controller, axisCode, value);
+			if (listener.axisMoved(controller, axisCode, value)) break;
 		}
 	}
 	
 	void buttonChanged (Lwjgl3Controller controller, int buttonCode, boolean value) {
 		for(ControllerListener listener: listeners) {
 			if(value) {
-				listener.buttonDown(controller, buttonCode);
+				if (listener.buttonDown(controller, buttonCode)) break;
 			} else {
-				listener.buttonUp(controller, buttonCode);
+				if (listener.buttonUp(controller, buttonCode)) break;
 			}
 		}
 	}
 
 	void hatChanged (Lwjgl3Controller controller, int hatCode, PovDirection value) {
 		for(ControllerListener listener: listeners) {
-			listener.povMoved(controller, hatCode, value);
+			if (listener.povMoved(controller, hatCode, value)) break;
 		}
 	}
 
