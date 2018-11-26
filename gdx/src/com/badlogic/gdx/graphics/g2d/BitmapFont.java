@@ -154,6 +154,9 @@ public class BitmapFont implements Disposable {
 		this.integer = integer;
 
 		if (pageRegions == null || pageRegions.size == 0) {
+			if (data.imagePaths == null)
+				throw new IllegalArgumentException("If no regions are specified, the font data must have an images path.");
+
 			// Load each path.
 			int n = data.imagePaths.length;
 			regions = new Array(n);

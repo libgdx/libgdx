@@ -197,6 +197,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		generateData(parameter, data);
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
