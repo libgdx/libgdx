@@ -23,10 +23,10 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Lwjgl3Input implements Input, Disposable {
