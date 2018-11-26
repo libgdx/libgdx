@@ -1019,21 +1019,24 @@ public class TextField extends Widget implements Disableable {
 				if (add || remove) {
 					String oldText = text;
 					int oldCursor = cursor;
-					if (hasSelection)
-						cursor = delete(false);
-					else {
-						if (backspace && cursor > 0) {
-							text = text.substring(0, cursor - 1) + text.substring(cursor--);
-							renderOffset = 0;
-						}
-						if (delete && cursor < text.length()) {
-							text = text.substring(0, cursor) + text.substring(cursor + 1);
+					if (remove) {
+						if (hasSelection)
+							cursor = delete(false);
+						else {
+							if (backspace && cursor > 0) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor--);
+								renderOffset = 0;
+							}
+							if (delete && cursor < text.length()) {
+								text = text.substring(0, cursor) + text.substring(cursor + 1);
+							}
 						}
 					}
 					if (add && !remove) {
 						// Character may be added to the text.
 						if (!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						if (!withinMaxLength(text.length())) return true;
+						if (hasSelection) cursor = delete(false);
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
