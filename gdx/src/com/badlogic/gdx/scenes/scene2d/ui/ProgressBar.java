@@ -308,7 +308,7 @@ public class ProgressBar extends Widget implements Disableable {
 		if (vertical) {
 			final Drawable knob = getKnobDrawable();
 			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
+			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg == null ? 0 : bg.getMinWidth());
 		} else
 			return 140;
 	}
