@@ -33,6 +33,7 @@
 - API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
 - API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
 - API Addition: Added ObjectLongMap.
+- API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

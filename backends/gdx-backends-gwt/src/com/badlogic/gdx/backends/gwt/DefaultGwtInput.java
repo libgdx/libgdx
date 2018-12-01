@@ -715,7 +715,7 @@ public class DefaultGwtInput implements GwtInput {
 		}
 		if (e.getType().equals(getMouseWheelEvent())) {
 			if (processor != null) {
-				processor.scrolled((int)getMouseWheelVelocity(e));
+				processor.scrolled(0, (int)getMouseWheelVelocity(e));
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
