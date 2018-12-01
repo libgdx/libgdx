@@ -92,7 +92,7 @@ public class InputEventQueue implements InputProcessor {
 				localProcessor.mouseMoved(q[i++], q[i++]);
 				break;
 			case SCROLLED:
-				localProcessor.scrolled(q[i++]);
+				localProcessor.scrolled(q[i++] / 256f, q[i++] / 256f);
 				break;
 			default:
 				throw new RuntimeException();
@@ -133,7 +133,7 @@ public class InputEventQueue implements InputProcessor {
 				i += 2;
 				break;
 			case SCROLLED:
-				i++;
+				i += 2;
 				break;
 			default:
 				throw new RuntimeException();
@@ -218,10 +218,11 @@ public class InputEventQueue implements InputProcessor {
 		return false;
 	}
 
-	public synchronized boolean scrolled (int amount) {
+	public synchronized boolean scrolled(float amountX, float amountY) {
 		queue.add(SCROLLED);
 		queueTime();
-		queue.add(amount);
+		queue.add((int)(amountX * 256));
+		queue.add((int)(amountY * 256));
 		return false;
 	}
 

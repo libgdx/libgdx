@@ -214,13 +214,12 @@ public class ScrollPane extends WidgetGroup {
 		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
-			public boolean scrolled (InputEvent event, float x, float y, int amount) {
+			public boolean scrolled (InputEvent event, float x, float y, float scrollAmountX, float scrollAmountY) {
 				setScrollbarsVisible(true);
-				if (scrollY)
-					setScrollY(amountY + getMouseWheelY() * amount);
-				else if (scrollX) //
-					setScrollX(amountX + getMouseWheelX() * amount);
-				else
+				if (scrollY || scrollX) {
+					setScrollY(amountY + getMouseWheelY() * scrollAmountY);
+					setScrollX(amountX + getMouseWheelX() * scrollAmountX);
+				} else
 					return false;
 				return true;
 			}

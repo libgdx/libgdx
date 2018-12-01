@@ -76,7 +76,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		int type;
 		int x;
 		int y;
-		int scrollAmount;
+		int scrollAmountX;
+		int scrollAmountY;
 		int button;
 		int pointer;
 	}
@@ -412,7 +413,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
-						processor.scrolled(e.scrollAmount);
+						processor.scrolled(e.scrollAmountX, e.scrollAmountY);
 					}
 					usedTouchEvents.free(e);
 				}

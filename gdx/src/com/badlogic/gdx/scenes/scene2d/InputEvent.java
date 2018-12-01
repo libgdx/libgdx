@@ -24,8 +24,8 @@ import com.badlogic.gdx.utils.Null;
  * @see InputListener */
 public class InputEvent extends Event {
 	private Type type;
-	private float stageX, stageY;
-	private int pointer, button, keyCode, scrollAmount;
+	private float stageX, stageY, scrollAmountX, scrollAmountY;
+	private int pointer, button, keyCode;
 	private char character;
 	@Null private Actor relatedActor;
 
@@ -100,13 +100,21 @@ public class InputEvent extends Event {
 		this.character = character;
 	}
 
-	/** The amount the mouse was scrolled. Valid for: scrolled. */
-	public int getScrollAmount () {
-		return scrollAmount;
+	/** The amount the mouse was scrolled horizontally. Valid for: scrolled. */
+	public float getScrollAmountX () {
+		return scrollAmountX;
+	}
+	/** The amount the mouse was scrolled vertically. Valid for: scrolled. */
+	public float getScrollAmountY () {
+		return scrollAmountY;
 	}
 
-	public void setScrollAmount (int scrollAmount) {
-		this.scrollAmount = scrollAmount;
+	public void setScrollAmountX (float scrollAmount) {
+		this.scrollAmountX = scrollAmount;
+	}
+
+	public void setScrollAmountY (float scrollAmount) {
+		this.scrollAmountY = scrollAmount;
 	}
 
 	/** The actor related to the event. Valid for: enter and exit. For enter, this is the actor being exited, or null. For exit,
