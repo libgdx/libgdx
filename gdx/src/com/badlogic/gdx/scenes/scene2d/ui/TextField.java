@@ -303,7 +303,8 @@ public class TextField extends Widget implements Disableable {
 				Timer.schedule(blinkTask, blinkTime, blinkTime);
 			else
 				keyRepeatTask.cancel();
-		}
+		} else if (!focused) //
+			cursorOn = false;
 
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
@@ -336,12 +337,12 @@ public class TextField extends Widget implements Disableable {
 		float yOffset = font.isFlipped() ? -textHeight : 0;
 		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
+				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				if (style.messageFontColor != null) {
-					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
+					messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
 						style.messageFontColor.a * color.a * parentAlpha);
 				} else
-					font.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
-				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
+					messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
 				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
 					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
 			}
