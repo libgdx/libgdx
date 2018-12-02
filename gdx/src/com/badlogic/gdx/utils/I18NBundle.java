@@ -452,5 +452,17 @@ public class I18NBundle {
 	public String format (String key, Object... args) {
 		return formatter.format(get(key), args);
 	}
-
+	
+	/** Sets the value of all localized strings to String placeholder so hardcoded, unlocalized values can be easily spotted.
+	 *  The I18NBundle won't be able to reset values after calling debug and should only be using during testing.
+	 * 
+	 * @param placeholder */
+	public void debug(String placeholder) {
+		ObjectMap.Keys<String> keys = properties.keys();
+		if(keys == null) return;
+		
+		for(String s : keys) {
+		    properties.put(s, placeholder);
+		}	
+	}
 }
