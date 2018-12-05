@@ -134,6 +134,8 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void insert (int index, Node node) {
+		int existingIndex = rootNodes.indexOf(node, true);
+		if (existingIndex != -1 && existingIndex < index) index--;
 		remove(node);
 		node.parent = null;
 		rootNodes.insert(index, node);
