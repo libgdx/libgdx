@@ -5,6 +5,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:isGame="true"
+        android:appCategory="game"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme" >
         <activity
