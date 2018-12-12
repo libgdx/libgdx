@@ -48,6 +48,7 @@ public abstract class OpenALMusic implements Music {
 	private boolean isLooping, isPlaying;
 	private float volume = 1;
 	private float pan = 0;
+	private float playbackRate = 1;
 	private float renderedSeconds, maxSecondsPerBuffer;
 
 	protected final FileHandle file;
@@ -199,6 +200,17 @@ public abstract class OpenALMusic implements Music {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+	}
+
+	public void setPlaybackRate (float playbackRate) {
+		this.playbackRate = playbackRate;
+		if (audio.noDevice) return;
+		if (sourceID == -1) return;
+		// TODO
+	}
+
+	public float getPlaybackRate () {
+		return this.playbackRate;
 	}
 
 	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the

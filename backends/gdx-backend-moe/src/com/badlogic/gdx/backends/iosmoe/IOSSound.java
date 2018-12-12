@@ -128,6 +128,14 @@ public class IOSSound implements Sound {
 	}
 
 	@Override
+	public void setPlaybackRate (long soundId, float playbackRate) {
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) {
+		   // TODO
+		}
+	}
+
+	@Override
 	public void pause () {
 		ALSource source;
 		for (int i = 0; i < streamIds.size; i++) {

@@ -46,7 +46,7 @@ public class MusicTest extends GdxTest {
 	BitmapFont font;
 
 	Stage stage;
-	Slider slider;
+	Slider slider, playbackRate;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
 	TextButton btLoop;
@@ -70,6 +70,14 @@ public class MusicTest extends GdxTest {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				if (!sliderUpdating && slider.isDragging()) music.setPosition((slider.getValue() / 100f) * songDuration);
+			}
+		});
+		playbackRate = new Slider(0.5f,4, 0.1f, false, skin);
+		playbackRate.setPosition(400, 20);
+		playbackRate.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				music.setPlaybackRate(playbackRate.getValue());
 			}
 		});
 
@@ -101,6 +109,7 @@ public class MusicTest extends GdxTest {
 		stage.addActor(table);
 		
 		stage.addActor(slider);
+		stage.addActor(playbackRate);
 
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -126,6 +135,7 @@ public class MusicTest extends GdxTest {
 		}
 		music.setLooping(btLoop.isChecked());
 		music.play();
+		playbackRate.setValue(music.getPlaybackRate());
 	}
 
 	@Override

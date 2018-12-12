@@ -84,6 +84,13 @@ public interface Music extends Disposable {
 	/** Returns the playback position in seconds. */
 	public float getPosition ();
 
+	/** Sets the playback rate
+     * @param playbackRate rate: 1 => normal */
+	public void setPlaybackRate (float playbackRate);
+
+    /** @return the playback rate: 1 => normal */
+	public float getPlaybackRate ();
+
 	/** Needs to be called when the Music is no longer needed. */
 	public void dispose ();
 

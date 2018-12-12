@@ -117,7 +117,19 @@ public class GwtMusic implements Music, SMSoundCallback {
 		return sound.getPosition() / 1000f;
 	}
 
-	@Override
+   @Override
+   public void setPlaybackRate(float playbackRate) {
+	   if (playbackRate >= 0.5f && playbackRate <= 4.0f) {
+	      sound.setPlaybackRate(playbackRate);
+	   }
+   }
+
+   @Override
+	public float getPlaybackRate() {
+		return sound.getPlaybackRate();
+	}
+
+   @Override
 	public void dispose () {
 		sound.destruct();
 	}

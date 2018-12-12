@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import android.media.MediaPlayer;
 
+import android.os.Build;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
@@ -181,7 +182,19 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		return player.getCurrentPosition() / 1000f;
 	}
 
-	public float getDuration () {
+	@Override
+	public void setPlaybackRate (float playbackRate) {
+      if (player == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+      player.setPlaybackParams(player.getPlaybackParams().setSpeed(playbackRate));
+   }
+
+   @Override
+   public float getPlaybackRate () {
+		if (player == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return 1;
+      return player.getPlaybackParams().getSpeed();
+   }
+
+   public float getDuration () {
 		if (player == null) return 0.0f;
 		return player.getDuration() / 1000f;
 	}

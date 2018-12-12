@@ -58,6 +58,9 @@ public class SoundTest extends GdxTest {
 		final Slider pan = new Slider(-1f, 1f, 0.1f, false, skin);
 		pan.setValue(0);
 		final Label panValue = new Label("0.0", skin);
+		final Slider playbackRate = new Slider(0.5f, 4, 0.1f, false, skin);
+		playbackRate.setValue(1);
+		final Label playbackRateValue = new Label("1", skin);
 		table.setFillParent(true);
 
 		table.align(Align.center | Align.top);
@@ -77,6 +80,10 @@ public class SoundTest extends GdxTest {
 		table.add(new Label("Pan", skin));
 		table.add(pan);
 		table.add(panValue);
+		table.row();
+		table.add(new Label("PlaybackRate", skin));
+		table.add(playbackRate);
+		table.add(playbackRateValue);
 		ui.addActor(table);
 
 		play.addListener(new ClickListener() {
@@ -84,6 +91,7 @@ public class SoundTest extends GdxTest {
 				soundId = sound.play(volume.getValue());
 				sound.setPitch(soundId, pitch.getValue());
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
+				sound.setPlaybackRate(soundId, playbackRate.getValue());
 			}
 		});
 
@@ -108,6 +116,12 @@ public class SoundTest extends GdxTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
 				panValue.setText("" + pan.getValue());
+			}
+		});
+		playbackRate.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				sound.setPlaybackRate(soundId, playbackRate.getValue());
+				playbackRateValue.setText("" + playbackRate.getValue());
 			}
 		});
 		Gdx.input.setInputProcessor(ui);

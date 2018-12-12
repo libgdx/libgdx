@@ -157,6 +157,12 @@ public class OpenALSound implements Sound {
 	}
 
 	@Override
+	public void setPlaybackRate (long soundId, float playbackRate) {
+		if (audio.noDevice) return;
+		audio.setSoundPlaybackRate(soundId, playbackRate);
+	}
+
+	@Override
 	public long play (float volume, float pitch, float pan) {
 		long id = play();
 		setPitch(id, pitch);

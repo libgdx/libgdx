@@ -185,4 +185,11 @@ public class GwtSound implements Sound {
 			sounds[(int)soundId].setPan(pan, volume);
 		}
 	}
+
+	@Override
+	public void setPlaybackRate (long soundId, float playbackRate) {
+		if (soundId >= 0 && sounds[(int)soundId] != null) {
+			sounds[(int)soundId].setPlaybackRate(playbackRate);
+		}
+	}
 }

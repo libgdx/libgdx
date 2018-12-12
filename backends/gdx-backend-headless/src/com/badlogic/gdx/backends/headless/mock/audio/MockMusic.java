@@ -77,7 +77,17 @@ public class MockMusic implements Music {
 		return 0;
 	}
 
-	@Override
+   @Override
+   public void setPlaybackRate(float playbackRate) {
+
+   }
+
+   @Override
+   public float getPlaybackRate() {
+      return 1;
+   }
+
+   @Override
 	public void dispose() {
 
 	}

@@ -116,7 +116,15 @@ public class SMSound {
 	public native final int getPan () /*-{
 		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.pan;
 	}-*/;
-	
+
+	public native final void setPlaybackRate (float playbackRate) /*-{
+        this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPlaybackRate(playbackRate)
+	}-*/;
+
+    public native final float getPlaybackRate () /*-{
+        return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.playbackRate;
+    }-*/;
+
 	/** Numeric value indicating the current playing state of the sound.
 	 * 0 = stopped/uninitialised.
 	 * 1 = playing or buffering sound (play has been called, waiting for data etc.).

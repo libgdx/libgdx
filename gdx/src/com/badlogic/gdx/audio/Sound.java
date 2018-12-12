@@ -123,5 +123,10 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
-	public void setPan (long soundId, float pan, float volume);	
+	public void setPan (long soundId, float pan, float volume);
+
+	/** Sets the playback rate
+	 * @param soundId the sound id
+	 * @param playbackRate rate: 1 => normal */
+	public void setPlaybackRate (long soundId, float playbackRate);
 }

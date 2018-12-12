@@ -311,6 +311,12 @@ public class OpenALAudio implements Audio {
 		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 	}
 
+	public void setSoundPlaybackRate (long soundId, float playbackRate){
+		if (!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		// TODO
+	}
+
 	public void dispose () {
 		if (noDevice) return;
 		for (int i = 0, n = allSources.size; i < n; i++) {
