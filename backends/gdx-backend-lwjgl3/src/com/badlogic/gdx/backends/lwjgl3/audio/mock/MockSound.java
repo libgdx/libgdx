@@ -108,7 +108,7 @@ public class MockSound implements Sound {
 	}
 
 	@Override
-	public void setPlaybackRate (long soundId, float playbackRate) {
+	public void setPlaybackRate(long soundId, float playbackRate) {
 
 	}
 }

@@ -121,9 +121,9 @@ public class SMSound {
         this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPlaybackRate(playbackRate)
 	}-*/;
 
-    public native final float getPlaybackRate () /*-{
-        return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.playbackRate;
-    }-*/;
+	public native final float getPlaybackRate () /*-{
+		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.playbackRate;
+	}-*/;
 
 	/** Numeric value indicating the current playing state of the sound.
 	 * 0 = stopped/uninitialised.

@@ -103,13 +103,13 @@ public class IOSMusic implements Music {
 		// TODO
 	}
 
-   @Override
-   public float getPlaybackRate () {
-	   // TODO
-      return 1;
+	@Override
+	public float getPlaybackRate () {
+		// TODO
+		return 1;
 	}
 
-   @Override
+	@Override
 	public void dispose () {
 		track.clear();
 		ObjCRuntime.disposeObject(this);

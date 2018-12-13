@@ -97,18 +97,18 @@ public class IOSMusic implements Music {
 		return (float)(track.getCurrentTime());
 	}
 
-   @Override
-   public void setPlaybackRate (float playbackRate) {
-	   // TODO
-   }
-
-   @Override
-   public float getPlaybackRate () {
+	@Override
+	public void setPlaybackRate (float playbackRate) {
 		// TODO
-      return 1;
-   }
+	}
 
-   @Override
+	@Override
+	public float getPlaybackRate () {
+		// TODO
+		return 1;
+	}
+
+	@Override
 	public void dispose () {
 		track.clear();
 	}

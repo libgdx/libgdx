@@ -131,7 +131,7 @@ final class AndroidSound implements Sound {
 	@Override
 	public void setPlaybackRate (long soundId, float playbackRate) {
 		if (playbackRate >= 0.5f && playbackRate <= 2.0f) {
-		 	soundPool.setRate((int)soundId, playbackRate);
+			soundPool.setRate((int)soundId, playbackRate);
 		}
 	}
 

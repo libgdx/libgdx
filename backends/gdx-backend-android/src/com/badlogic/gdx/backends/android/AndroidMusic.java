@@ -184,17 +184,17 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public void setPlaybackRate (float playbackRate) {
-      if (player == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
-      player.setPlaybackParams(player.getPlaybackParams().setSpeed(playbackRate));
-   }
+		if (player == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+		player.setPlaybackParams(player.getPlaybackParams().setSpeed(playbackRate));
+	}
 
-   @Override
-   public float getPlaybackRate () {
+	@Override
+	public float getPlaybackRate () {
 		if (player == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return 1;
-      return player.getPlaybackParams().getSpeed();
-   }
+		return player.getPlaybackParams().getSpeed();
+	}
 
-   public float getDuration () {
+	public float getDuration () {
 		if (player == null) return 0.0f;
 		return player.getDuration() / 1000f;
 	}
