@@ -28,7 +28,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author sarkanyi */
 public class AndroidZipFileHandle extends AndroidFileHandle {
-	private AssetFileDescriptor assetFd;
+	private boolean hasAssetFd;
+	private long fdLength;
 	private ZipResourceFile expansionFile;
 	private String path;
 
@@ -45,7 +46,16 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	private void initialize() {
 		path = file.getPath().replace('\\', '/');
 		expansionFile = ((AndroidFiles) Gdx.files).getExpansionFile();
-		assetFd = expansionFile.getAssetFileDescriptor(getPath());
+		AssetFileDescriptor assetFd = expansionFile.getAssetFileDescriptor(getPath());
+		if (assetFd != null) {
+			hasAssetFd = true;
+			fdLength = assetFd.getLength();
+			try {
+				assetFd.close();
+			} catch (IOException e) {}
+		} else {
+			hasAssetFd = false;
+		}
 
 		// needed for listing entries and exists() of directories
 		if (isDirectory())
@@ -54,7 +64,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 
 	@Override
 	public AssetFileDescriptor getAssetFileDescriptor() throws IOException {
-		return assetFd;
+		return expansionFile.getAssetFileDescriptor(getPath());
 	}
 
 	private String getPath() {
@@ -166,16 +176,16 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 
 	@Override
 	public boolean isDirectory() {
-		return assetFd == null;
+		return !hasAssetFd;
 	}
 
 	@Override
 	public long length() {
-		return assetFd != null ? assetFd.getLength() : 0;
+		return hasAssetFd ? fdLength : 0;
 	}
 
 	@Override
 	public boolean exists() {
-		return assetFd != null || expansionFile.getEntriesAt(getPath()).length != 0;
+		return hasAssetFd || expansionFile.getEntriesAt(getPath()).length != 0;
 	}
 }

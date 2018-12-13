@@ -163,7 +163,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		createBoxes();
 
-		Array<Fixture> fixtures = new Array<>();
+		Array<Fixture> fixtures = new Array<Fixture>();
 		world.getFixtures(fixtures);
 
 		// You can savely ignore the rest of this method :)

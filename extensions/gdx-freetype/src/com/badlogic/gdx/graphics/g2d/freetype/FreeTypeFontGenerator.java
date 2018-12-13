@@ -93,7 +93,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
-		name = fontFile.pathWithoutExtension();
+		name = fontFile.nameWithoutExtension();
 		int fileSize = (int)fontFile.length();
 
 		library = FreeType.initFreeType();
@@ -197,6 +197,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		generateData(parameter, data);
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
@@ -316,6 +317,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
+		data.name = name + "-" + parameter.size;
 		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
@@ -410,18 +412,22 @@ public class FreeTypeFontGenerator implements Disposable {
 				parameter.borderStraight ? FreeType.FT_STROKER_LINEJOIN_MITER_FIXED : FreeType.FT_STROKER_LINEJOIN_ROUND, 0);
 		}
 
-		Glyph missingGlyph = createGlyph('\0', data, parameter, stroker, baseLine, packer);
-		if (missingGlyph != null && missingGlyph.width != 0 && missingGlyph.height != 0) {
-			data.setGlyph('\0', missingGlyph);
-			data.missingGlyph = missingGlyph;
-			if (incremental) data.glyphs.add(missingGlyph);
-		}
-
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
 		for (int i = 0, n = charactersLength; i < n; i++) {
-			int height = loadChar(characters[i], flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
+			char c = characters[i];
+
+			int height = loadChar(c, flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
 			heights[i] = height;
+
+			if (c == '\0') {
+				Glyph missingGlyph = createGlyph('\0', data, parameter, stroker, baseLine, packer);
+				if (missingGlyph != null && missingGlyph.width != 0 && missingGlyph.height != 0) {
+					data.setGlyph('\0', missingGlyph);
+					data.missingGlyph = missingGlyph;
+					if (incremental) data.glyphs.add(missingGlyph);
+				}
+			}
 		}
 		int heightsCount = heights.length;
 		while (heightsCount > 0) {
@@ -435,7 +441,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 
 			char c = characters[best];
-			if (!data.hasGlyph(c)) {
+			if (data.getGlyph(c) == null) {
 				Glyph glyph = createGlyph(c, data, parameter, stroker, baseLine, packer);
 				if (glyph != null) {
 					data.setGlyph(c, glyph);
@@ -473,10 +479,10 @@ public class FreeTypeFontGenerator implements Disposable {
 					if (second == null) continue;
 					int secondIndex = face.getCharIndex(secondChar);
 
-					int kerning = face.getKerning(firstIndex, secondIndex, 0);
+					int kerning = face.getKerning(firstIndex, secondIndex, 0); // FT_KERNING_DEFAULT (scaled then rounded).
 					if (kerning != 0) first.setKerning(secondChar, FreeType.toInt(kerning));
 
-					kerning = face.getKerning(secondIndex, firstIndex, 0);
+					kerning = face.getKerning(secondIndex, firstIndex, 0); // FT_KERNING_DEFAULT (scaled then rounded).
 					if (kerning != 0) second.setKerning(firstChar, FreeType.toInt(kerning));
 				}
 			}
@@ -636,6 +642,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		return glyph;
 	}
 
+	public String toString () {
+		return name;
+	}
+
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
 	@Override
 	public void dispose () {
@@ -788,7 +798,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int spaceX, spaceY;
 		/** Pixels to add to the glyph in the texture. Can be negative. */
 		public int padTop, padLeft, padBottom, padRight;
-		/** The characters the font should contain */
+		/** The characters the font should contain. If '\0' is not included then {@link BitmapFontData#missingGlyph} is not set. */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
 		public boolean kerning = true;

@@ -48,5 +48,10 @@ android {
 			jniLibs.srcDirs = ['libs']
 		}		
 	}
+
+	lintOptions {
+		// Since this is a test apk, it is fine to ignore the missing densities for the icon.
+		disable 'IconMissingDensityFolder'
+	}
 }
 

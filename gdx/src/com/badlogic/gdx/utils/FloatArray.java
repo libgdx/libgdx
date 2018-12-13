@@ -106,7 +106,7 @@ public class FloatArray {
 	}
 
 	public void addAll (FloatArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (FloatArray array, int offset, int length) {

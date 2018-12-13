@@ -102,28 +102,41 @@ public class PixmapPacker implements Disposable {
 	Format pageFormat;
 	int padding;
 	boolean duplicateBorder;
+	boolean stripWhitespaceX, stripWhitespaceY;
+	int alphaThreshold;
 	Color transparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
 
 	/** Uses {@link GuillotineStrategy}.
-	 * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, PackStrategy) */
+	 * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy) */
 	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder) {
-		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, new GuillotineStrategy());
+		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, new GuillotineStrategy());
+	}
+
+	/** Uses {@link GuillotineStrategy}.
+	 * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy) */
+	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, PackStrategy packStrategy) {
+		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, packStrategy);
 	}
 
 	/** Creates a new ImagePacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
 	 * <code>pageHeight</code> pixmaps using the specified strategy.
 	 * @param padding the number of blank pixels to insert between pixmaps.
 	 * @param duplicateBorder duplicate the border pixels of the inserted images to avoid seams when rendering with bi-linear
-	 *           filtering on. */
-	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder,
-		PackStrategy packStrategy) {
+	 *           filtering on.
+	 * @param stripWhitespaceX strip whitespace in x axis
+	 * @param stripWhitespaceY strip whitespace in y axis
+	 *           */
+	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, boolean stripWhitespaceX,
+		boolean stripWhitespaceY, PackStrategy packStrategy) {
 		this.pageWidth = pageWidth;
 		this.pageHeight = pageHeight;
 		this.pageFormat = pageFormat;
 		this.padding = padding;
 		this.duplicateBorder = duplicateBorder;
+		this.stripWhitespaceX = stripWhitespaceX;
+		this.stripWhitespaceY = stripWhitespaceY;
 		this.packStrategy = packStrategy;
 	}
 
@@ -163,7 +176,66 @@ public class PixmapPacker implements Disposable {
 			image = pixmapToDispose;
 			name = name.split("\\.")[0];
 		} else {
-			rect = new PixmapPackerRectangle(0, 0, image.getWidth(), image.getHeight());
+			if (stripWhitespaceX || stripWhitespaceY) {
+				int originalWidth = image.getWidth();
+				int originalHeight = image.getHeight();
+				//Strip whitespace, manipulate the pixmap and return corrected Rect
+				int top = 0;
+				int bottom = image.getHeight();
+				if (stripWhitespaceY) {
+					outer:
+					for (int y = 0; y < image.getHeight(); y++) {
+						for (int x = 0; x < image.getWidth(); x++) {
+							int pixel = image.getPixel(x, y);
+							int alpha = ((pixel & 0x000000ff));
+							if (alpha > alphaThreshold) break outer;
+						}
+						top++;
+					}
+					outer:
+					for (int y = image.getHeight(); --y >= top;) {
+						for (int x = 0; x < image.getWidth(); x++) {
+							int pixel = image.getPixel(x, y);
+							int alpha = ((pixel & 0x000000ff));
+							if (alpha > alphaThreshold) break outer;
+						}
+						bottom--;
+					}
+				}
+				int left = 0;
+				int right = image.getWidth();
+				if (stripWhitespaceX) {
+					outer:
+					for (int x = 0; x < image.getWidth(); x++) {
+						for (int y = top; y < bottom; y++) {
+							int pixel = image.getPixel(x, y);
+							int alpha = ((pixel & 0x000000ff));
+							if (alpha > alphaThreshold) break outer;
+						}
+						left++;
+					}
+					outer:
+					for (int x = image.getWidth(); --x >= left;) {
+						for (int y = top; y < bottom; y++) {
+							int pixel = image.getPixel(x, y);
+							int alpha = ((pixel & 0x000000ff));
+							if (alpha > alphaThreshold) break outer;
+						}
+						right--;
+					}
+				}
+
+				int newWidth = right - left;
+				int newHeight = bottom - top;
+
+				pixmapToDispose = new Pixmap(newWidth, newHeight, image.getFormat());
+				pixmapToDispose.drawPixmap(image, 0, 0, left, top, newWidth, newHeight);
+				image = pixmapToDispose;
+
+				rect = new PixmapPackerRectangle(0, 0, newWidth, newHeight, left, top, originalWidth, originalHeight);
+			} else {
+				rect = new PixmapPackerRectangle(0, 0, image.getWidth(), image.getHeight());
+			}
 		}
 
 		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight) {
@@ -278,17 +350,22 @@ public class PixmapPacker implements Disposable {
 			if (page.addedRects.size > 0) {
 				for (String name : page.addedRects) {
 					PixmapPackerRectangle rect = page.rects.get(name);
+					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+
 					if (rect.splits != null) {
-						TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 						region.splits = rect.splits;
 						region.pads = rect.pads;
-						region.name = name;
-						region.index = -1;
-						atlas.getRegions().add(region);
-					} else {
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
-						atlas.addRegion(name, region);
+
 					}
+
+					region.name = name;
+					region.index = -1;
+					region.offsetX = rect.offsetX;
+					region.offsetY = (int)(rect.originalHeight - rect.height - rect.offsetY);
+					region.originalWidth = rect.originalWidth;
+					region.originalHeight = rect.originalHeight;
+
+					atlas.getRegions().add(region);
 				}
 				page.addedRects.clear();
 				atlas.getTextures().add(page.texture);
@@ -715,7 +792,7 @@ public class PixmapPacker implements Disposable {
 		return pads;
 	}
 
-	private static Color c = new Color();
+	private Color c = new Color();
 	private int getSplitPoint (Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
 
@@ -750,9 +827,23 @@ public class PixmapPacker implements Disposable {
 	public static class PixmapPackerRectangle extends Rectangle {
 		int[] splits;
 		int[] pads;
+		int offsetX, offsetY;
+		int originalWidth, originalHeight;
 
 		PixmapPackerRectangle (int x, int y, int width, int height) {
 			super(x, y, width, height);
+			this.offsetX = 0;
+			this.offsetY = 0;
+			this.originalWidth = width;
+			this.originalHeight = height;
+		}
+
+		PixmapPackerRectangle (int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight) {
+			super(x, y, width, height);
+			this.offsetX = left;
+			this.offsetY = top;
+			this.originalWidth = originalWidth;
+			this.originalHeight = originalHeight;
 		}
 	}
 

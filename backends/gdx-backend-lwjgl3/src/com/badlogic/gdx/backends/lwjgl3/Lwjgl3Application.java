@@ -432,6 +432,10 @@ public class Lwjgl3Application implements Application {
 			}
 		}
 
+		if (config.transparentFramebuffer) {
+			GLFW.glfwWindowHint(GLFW.GLFW_TRANSPARENT_FRAMEBUFFER, GLFW.GLFW_TRUE);
+		}
+
 		if (config.debug) {
 			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
 		}

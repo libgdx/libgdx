@@ -106,7 +106,7 @@ public class CharArray {
 	}
 
 	public void addAll (CharArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (CharArray array, int offset, int length) {

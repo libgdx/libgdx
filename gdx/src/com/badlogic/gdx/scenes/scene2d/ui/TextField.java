@@ -139,17 +139,6 @@ public class TextField extends Widget implements Disableable {
 
 	protected void initialize () {
 		addListener(inputListener = createInputListener());
-		addListener(new FocusListener() {
-			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
-				blinkTask.cancel();
-				cursorOn = focused;
-				if (focused)
-					Timer.schedule(blinkTask, blinkTime, blinkTime);
-				else
-					keyRepeatTask.cancel();
-				TextField.this.focused = focused;
-			}
-		});
 	}
 
 	protected InputListener createInputListener () {
@@ -305,6 +294,18 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		boolean focused = getStage() != null && getStage().getKeyboardFocus() == this;
+		if (focused != this.focused) {
+			this.focused = focused;
+			blinkTask.cancel();
+			cursorOn = focused;
+			if (focused)
+				Timer.schedule(blinkTask, blinkTime, blinkTime);
+			else
+				keyRepeatTask.cancel();
+		} else if (!focused) //
+			cursorOn = false;
+
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
 			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
@@ -336,12 +337,12 @@ public class TextField extends Widget implements Disableable {
 		float yOffset = font.isFlipped() ? -textHeight : 0;
 		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
+				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				if (style.messageFontColor != null) {
-					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
+					messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
 						style.messageFontColor.a * color.a * parentAlpha);
 				} else
-					font.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
-				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
+					messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
 				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
 					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
 			}
@@ -1019,21 +1020,24 @@ public class TextField extends Widget implements Disableable {
 				if (add || remove) {
 					String oldText = text;
 					int oldCursor = cursor;
-					if (hasSelection)
-						cursor = delete(false);
-					else {
-						if (backspace && cursor > 0) {
-							text = text.substring(0, cursor - 1) + text.substring(cursor--);
-							renderOffset = 0;
-						}
-						if (delete && cursor < text.length()) {
-							text = text.substring(0, cursor) + text.substring(cursor + 1);
+					if (remove) {
+						if (hasSelection)
+							cursor = delete(false);
+						else {
+							if (backspace && cursor > 0) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor--);
+								renderOffset = 0;
+							}
+							if (delete && cursor < text.length()) {
+								text = text.substring(0, cursor) + text.substring(cursor + 1);
+							}
 						}
 					}
 					if (add && !remove) {
 						// Character may be added to the text.
 						if (!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						if (!withinMaxLength(text.length())) return true;
+						if (hasSelection) cursor = delete(false);
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}

@@ -24,18 +24,17 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
-import org.lwjgl.opengl.GL;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Graphics.Monitor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
@@ -51,6 +50,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int r = 8, g = 8, b = 8, a = 8;
 	int depth = 16, stencil = 0;
 	int samples = 0;
+	boolean transparentFramebuffer;
 
 	int idleFPS = 60;
 
@@ -84,6 +84,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		depth = config.depth;
 		stencil = config.stencil;
 		samples = config.samples;
+		transparentFramebuffer = config.transparentFramebuffer;
 		idleFPS = config.idleFPS;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
@@ -179,6 +180,16 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
+	/**
+	 * Set transparent window hint
+	 * @deprecated Results may vary on different OS and GPUs. See https://github.com/glfw/glfw/issues/1237
+	 * @param transparentFramebuffer
+	 */
+	@Deprecated
+	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
+		this.transparentFramebuffer = transparentFramebuffer;
+	}
+
 	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive.
 	 * Default is 60. */
 	public void setIdleFPS (int fps) {
@@ -202,9 +213,10 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 * lower resolution than the actual physical resolution. This setting allows
 	 * you to specify whether you want to work in logical or raw pixel units.
 	 * See {@link HdpiMode} for more information. Note that some OpenGL
-	 * functions like {@link GL#glViewport()} and {@link GL#glScissor()} require
-	 * raw pixel units. Use {@link HdpiUtils} to help with the conversion if
-	 * HdpiMode is set to {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
+	 * functions like {@link GL20#glViewport(int, int, int, int)} and
+	 * {@link GL20#glScissor(int, int, int, int)} require raw pixel units. Use
+	 * {@link HdpiUtils} to help with the conversion if HdpiMode is set to
+	 * {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
 	 */
 	public void setHdpiMode(HdpiMode mode) {
 		this.hdpiMode = mode;
@@ -305,24 +317,5 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		int virtualY = tmp2.get(0);
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
 		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
-	}
-
-	public static enum HdpiMode {
-		/**
-		 * mouse coordinates, {@link Graphics#getWidth()} and
-		 * {@link Graphics#getHeight()} will return logical coordinates
-		 * according to the system defined HDPI scaling. Rendering will be
-		 * performed to a backbuffer at raw resolution. Use {@link HdpiUtils}
-		 * when calling {@link GL20#glScissor} or {@link GL20#glViewport} which
-		 * expect raw coordinates.
-		 */
-		Logical,
-
-		/**
-		 * Mouse coordinates, {@link Graphics#getWidth()} and
-		 * {@link Graphics#getHeight()} will return raw pixel coordinates
-		 * irrespective of the system defined HDPI scaling.
-		 */
-		Pixels
 	}
 }

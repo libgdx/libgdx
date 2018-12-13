@@ -295,9 +295,9 @@ public class GwtInput implements Input {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return false;
 		if (peripheral == Peripheral.Compass) return false;
-		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
-		if (peripheral == Peripheral.OnscreenKeyboard) return false;
+		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.Vibrator) return false;
 		return false;
 	}
