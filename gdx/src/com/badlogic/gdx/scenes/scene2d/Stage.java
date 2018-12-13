@@ -703,6 +703,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link Group#childrenChanged()}. */
 	public void setRoot (Group root) {
 		this.root = root;
+		root.setStage(this);
 	}
 
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
