@@ -312,7 +312,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void setSoundPlaybackRate (long soundId, float playbackRate){
-        setSoundPitch(soundId, playbackRate);
+		setSoundPitch(soundId, playbackRate);
 	}
 
 	public void dispose () {

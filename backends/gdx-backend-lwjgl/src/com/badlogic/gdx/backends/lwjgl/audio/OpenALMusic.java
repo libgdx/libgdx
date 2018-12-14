@@ -206,7 +206,7 @@ public abstract class OpenALMusic implements Music {
 		this.playbackRate = playbackRate;
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-        alSourcef(sourceID, AL_PITCH, playbackRate);
+		alSourcef(sourceID, AL_PITCH, playbackRate);
 	}
 
 	public float getPlaybackRate () {
