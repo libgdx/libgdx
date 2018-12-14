@@ -85,10 +85,13 @@ public interface Music extends Disposable {
 	public float getPosition ();
 
 	/** Sets the playback rate
-	 * @param playbackRate rate: 1 => normal */
+	 * range: Android and Desktop 0.5 to 2, GWT 0.5 to 4
+	 * a rate of 1 play at normal speed, 2 at twice speed and 0.5 at half speed
+	 * Note: the pitch is affected on desktop
+	 * @param playbackRate new playback rate */
 	public void setPlaybackRate (float playbackRate);
 
-	/** @return the playback rate: 1 => normal */
+	/** @return the playback rate: 1 = normal rate */
 	public float getPlaybackRate ();
 
 	/** Needs to be called when the Music is no longer needed. */

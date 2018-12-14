@@ -126,7 +126,9 @@ public interface Sound extends Disposable {
 	public void setPan (long soundId, float pan, float volume);
 
 	/** Sets the playback rate
-	 * @param soundId the sound id
-	 * @param playbackRate rate: 1 => normal */
+	 * range: Android and Desktop 0.5 to 2, GWT 0.5 to 4
+	 * a rate of 1 play at normal speed, 2 at twice speed and 0.5 at half speed
+	 * Note: the pitch is affected on desktop and android
+	 * @param playbackRate new playback rate */
 	public void setPlaybackRate (long soundId, float playbackRate);
 }

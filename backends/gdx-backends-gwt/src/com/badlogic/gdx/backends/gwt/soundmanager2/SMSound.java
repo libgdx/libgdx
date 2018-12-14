@@ -118,7 +118,7 @@ public class SMSound {
 	}-*/;
 
 	public native final void setPlaybackRate (float playbackRate) /*-{
-        this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPlaybackRate(playbackRate)
+		this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPlaybackRate(playbackRate)
 	}-*/;
 
 	public native final float getPlaybackRate () /*-{
