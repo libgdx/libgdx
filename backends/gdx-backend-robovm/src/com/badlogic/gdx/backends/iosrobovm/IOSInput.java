@@ -540,6 +540,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey(int keycode, boolean catchKey) {
+
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.inputProcessor = processor;
 	}

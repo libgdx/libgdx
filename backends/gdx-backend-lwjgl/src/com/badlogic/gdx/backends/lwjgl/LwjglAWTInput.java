@@ -421,6 +421,11 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public void setCatchKey(int keycode, boolean catchKey) {
+
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 
 	}
