@@ -279,9 +279,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void setSoundPlaybackRate (long soundId, float playbackRate){
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		// TODO
+        setSoundPitch(soundId, playbackRate);
 	}
 
 	public void dispose () {
