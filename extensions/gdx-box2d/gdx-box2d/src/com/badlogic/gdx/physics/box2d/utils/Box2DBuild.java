@@ -11,13 +11,29 @@ import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 public class Box2DBuild {
 	public static void main(String[] args) throws Exception {
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+		win32.cppFlags += "-Werror=return-type";
+		
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
+		win64.cppFlags += "-Werror=return-type";
+		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
+		lin32.cppFlags += "-Werror=return-type";
+		
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
+		lin64.cppFlags += "-Werror=return-type";
+		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
+		android.cppFlags += "-Werror=return-type";
+		
 		BuildTarget mac32 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
+		mac32.cppFlags += "-Werror=return-type";
+		
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cppFlags += "-Werror=return-type";
+		
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
+		ios.cppFlags += "-Werror=return-type";
+		
 		new NativeCodeGenerator().generate("src", "bin" + File.pathSeparator + "../../../gdx/bin", "jni");
 		new AntScriptGenerator().generate(new BuildConfig("gdx-box2d"), win32, win64, lin32, lin64, mac32, mac64, android, ios);		
 	}

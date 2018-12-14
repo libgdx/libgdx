@@ -74,58 +74,58 @@ public class FreetypeBuild {
 		win32home.excludeFromMasterBuildFile = true;
 		win32home.headerDirs = headers;
 		win32home.cIncludes = sources;
-		win32home.cFlags += "  -DFT2_BUILD_LIBRARY";
-		win32home.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		win32home.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		win32home.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.headerDirs = headers;
 		win32.cIncludes = sources;
-		win32.cFlags += "  -DFT2_BUILD_LIBRARY";
-		win32.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		win32.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		win32.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.headerDirs = headers;
 		win64.cIncludes = sources;
-		win64.cFlags += "  -DFT2_BUILD_LIBRARY";
-		win64.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		win64.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		win64.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.headerDirs = headers;
 		lin32.cIncludes = sources;
-		lin32.cFlags += "  -DFT2_BUILD_LIBRARY";
-		lin32.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		lin32.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		lin32.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.headerDirs = headers;
 		lin64.cIncludes = sources;
-		lin64.cFlags += "  -DFT2_BUILD_LIBRARY";
-		lin64.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		lin64.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		lin64.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.headerDirs = headers;
 		mac.cIncludes = sources;
-		mac.cFlags += " -DFT2_BUILD_LIBRARY";
-		mac.cppFlags += " -DFT2_BUILD_LIBRARY";
+		mac.cFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
+		mac.cppFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
 		mac.linkerFlags += " -framework CoreServices -framework Carbon";
 		
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.headerDirs = headers;
 		mac64.cIncludes = sources;
-		mac64.cFlags += " -DFT2_BUILD_LIBRARY";
-		mac64.cppFlags += " -DFT2_BUILD_LIBRARY";
+		mac64.cFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
+		mac64.cppFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
 		mac64.linkerFlags += " -framework CoreServices -framework Carbon";
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.headerDirs = headers;
 		android.cIncludes = sources;
-		android.cFlags += "  -DFT2_BUILD_LIBRARY";
-		android.cppFlags += "  -DFT2_BUILD_LIBRARY";
+		android.cFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
+		android.cppFlags += "  -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.headerDirs = headers;
 		ios.cIncludes = sources;
-		ios.cFlags += " -DFT2_BUILD_LIBRARY";
-		ios.cppFlags += " -DFT2_BUILD_LIBRARY";
+		ios.cFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
+		ios.cppFlags += " -DFT2_BUILD_LIBRARY -Werror=return-type";
 
 		new NativeCodeGenerator().generate("src", "bin:../../gdx/bin", "jni");
 		new AntScriptGenerator()

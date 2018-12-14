@@ -46,37 +46,42 @@ public class DesktopControllersBuild {
 		win32home.headerDirs = includes;
 		win32home.cIncludes = new String[0];
 		win32home.libraries = "-ldinput8 -ldxguid";
+		win32home.cppFlags +="-Werror=return-type";
 
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.cppIncludes = windowsSrc;
 		win32.headerDirs = includes;
 		win32.libraries = "-ldinput8 -ldxguid";
+		win32.cppFlags +="-Werror=return-type";
 
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.cppIncludes = windowsSrc;
 		win64.headerDirs = includes;
 		win64.libraries = "-ldinput8 -ldxguid";
+		win64.cppFlags +="-Werror=return-type";
 
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cppIncludes = linuxSrc;
 		lin32.headerDirs = includes;
 		lin32.libraries = "-lX11";
+		lin32.cppFlags +="-Werror=return-type";
 
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cppIncludes = linuxSrc;
 		lin64.headerDirs = includes;
 		lin64.libraries = "-lX11";
+		lin64.cppFlags +="-Werror=return-type";
 
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppIncludes = mac64Src;
 		mac.headerDirs = includes;
-		mac.cppFlags += " -x objective-c++";
+		mac.cppFlags += " -x objective-c++ -Werror=return-type";
 		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.cppIncludes = mac64Src;
 		mac64.headerDirs = includes;
-		mac64.cppFlags += " -x objective-c++";
+		mac64.cppFlags += " -x objective-c++ -Werror=return-type";
 		mac64.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, mac64);

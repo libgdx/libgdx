@@ -47,6 +47,8 @@ public class BulletBuild {
 		cppFlags += " -DBT_NO_PROFILE";
 		//Bullet 2 compatibility with inverse dynamics
 		cppFlags += " -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2";
+		
+		cppFlags += "-Werror=return-type";
 
 		// generate build scripts
 		String[] excludes = {"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"};
