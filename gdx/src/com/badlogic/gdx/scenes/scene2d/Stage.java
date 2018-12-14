@@ -110,8 +110,7 @@ public class Stage extends InputAdapter implements Disposable {
 		this.viewport = viewport;
 		this.batch = batch;
 
-		root = new Group();
-		root.setStage(this);
+		setRoot(new Group());
 
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
