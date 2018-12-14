@@ -299,6 +299,11 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey(int keycode, boolean catchKey) {
+
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}

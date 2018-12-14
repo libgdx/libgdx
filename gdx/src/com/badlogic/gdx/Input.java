@@ -751,6 +751,18 @@ public interface Input {
 	/** @return whether the menu button is currently being caught */
 	public boolean isCatchMenuKey ();
 
+	/**
+	 * Sets whether the given key on Android should be caught. No effect on other platforms.
+	 * All keys that are not catched may handled by other apps or background processes. For example, media or volume
+	 * buttons are handled by background media players if present. If you use these keys to control your game, they
+	 * must be catched to prevent unintended behaviour.
+	 *
+	 * @param keycode  keycode to catch
+	 * @param catchKey whether to catch the given keycode
+	 * @return
+	 */
+	public void setCatchKey(int keycode, boolean catchKey);
+
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
 	 * 

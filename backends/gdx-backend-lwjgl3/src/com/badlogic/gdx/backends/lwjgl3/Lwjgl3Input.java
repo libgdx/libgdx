@@ -843,7 +843,12 @@ public class Lwjgl3Input implements Input, Disposable {
 	public boolean isCatchMenuKey() {
 		return false;
 	}
-	
+
+	@Override
+	public void setCatchKey(int keycode, boolean catchKey) {
+
+	}
+
 	@Override
 	public float getAccelerometerX() {
 		return 0;
