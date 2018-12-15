@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -90,8 +91,9 @@ public class Actor {
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
-		if (actions.size > 0) {
-			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
+		if (actions.size == 0) return;
+		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
+		try {
 			for (int i = 0; i < actions.size; i++) {
 				Action action = actions.get(i);
 				if (action.act(delta) && i < actions.size) {
@@ -104,6 +106,8 @@ public class Actor {
 					}
 				}
 			}
+		} catch (RuntimeException ex) {
+			throw new RuntimeException(toString(), ex);
 		}
 	}
 
@@ -177,21 +181,25 @@ public class Actor {
 		event.setCapture(capture);
 		if (event.getStage() == null) event.setStage(stage);
 
-		listeners.begin();
-		for (int i = 0, n = listeners.size; i < n; i++) {
-			EventListener listener = listeners.get(i);
-			if (listener.handle(event)) {
-				event.handle();
-				if (event instanceof InputEvent) {
-					InputEvent inputEvent = (InputEvent)event;
-					if (inputEvent.getType() == Type.touchDown) {
-						event.getStage().addTouchFocus(listener, this, inputEvent.getTarget(), inputEvent.getPointer(),
-							inputEvent.getButton());
+		try {
+			listeners.begin();
+			for (int i = 0, n = listeners.size; i < n; i++) {
+				EventListener listener = listeners.get(i);
+				if (listener.handle(event)) {
+					event.handle();
+					if (event instanceof InputEvent) {
+						InputEvent inputEvent = (InputEvent)event;
+						if (inputEvent.getType() == Type.touchDown) {
+							event.getStage().addTouchFocus(listener, this, inputEvent.getTarget(), inputEvent.getPointer(),
+								inputEvent.getButton());
+						}
 					}
 				}
 			}
+			listeners.end();
+		} catch (RuntimeException ex) {
+			throw new RuntimeException(toString(), ex);
 		}
-		listeners.end();
 
 		return event.isCancelled();
 	}
