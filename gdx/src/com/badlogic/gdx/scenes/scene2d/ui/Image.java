@@ -199,4 +199,13 @@ public class Image extends Widget {
 	public float getImageHeight () {
 		return imageHeight;
 	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "Image " : "") + className + ": " + drawable;
+	}
 }
