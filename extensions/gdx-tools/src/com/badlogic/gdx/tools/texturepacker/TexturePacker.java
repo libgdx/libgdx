@@ -83,12 +83,16 @@ public class TexturePacker {
 		else
 			packer = new MaxRectsPacker(settings);
 
-		imageProcessor = new ImageProcessor(settings);
+		imageProcessor = newImageProcessor(settings);
 		setRootDir(rootDir);
 	}
 
 	public TexturePacker (Settings settings) {
 		this(null, settings);
+	}
+
+	protected ImageProcessor newImageProcessor(Settings settings) {
+		return new ImageProcessor(settings);
 	}
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */

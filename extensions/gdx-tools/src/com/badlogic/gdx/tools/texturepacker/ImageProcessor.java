@@ -127,7 +127,7 @@ public class ImageProcessor {
 	}
 
 	/** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
-	Rect processImage (BufferedImage image, String name) {
+	protected Rect processImage (BufferedImage image, String name) {
 		if (scale <= 0) throw new IllegalArgumentException("scale cannot be <= 0: " + scale);
 
 		int width = image.getWidth(), height = image.getHeight();
