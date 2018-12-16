@@ -699,10 +699,13 @@ public class Stage extends InputAdapter implements Disposable {
 		return root;
 	}
 
-	/** Replaces the root group. Usually this is not necessary but a subclass may be desired in some cases, eg being notified of
+	/** Replaces the root group. This can be useful, for example, to subclass the root group to be notified by
 	 * {@link Group#childrenChanged()}. */
 	public void setRoot (Group root) {
+		if (root.parent != null) root.parent.removeActor(root, false);
 		this.root = root;
+		root.setParent(null);
+		root.setStage(this);
 	}
 
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
