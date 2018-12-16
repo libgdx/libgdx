@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /** <p>
@@ -558,7 +557,7 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, Geolocation, RotationVector, Pressure
 	}
 
 	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
@@ -578,7 +577,27 @@ public interface Input {
 
 	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
-	
+
+	/** Note that you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /></code> in your manifest file in order for this to work.
+	 * @return The latitude in degrees */
+	public float getGeolocationLatitude ();
+
+	/** Note that you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /></code> in your manifest file in order for this to work.
+	 * @return The longitude in degrees */
+	public float getGeolocationLongitude ();
+
+	/** Note that you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /></code> in your manifest file in order for this to work.
+	 * @return The altitude in meters */
+	public float getGeolocationAltitude ();
+
+	/** Note that you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /></code> in your manifest file in order for this to work.
+	 * @return The speed in meters/second */
+	public float getGeolocationSpeed ();
+
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();

@@ -16,6 +16,11 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import apple.corelocation.CLLocation;
+import apple.corelocation.CLLocationManager;
+import apple.corelocation.protocol.CLLocationManagerDelegate;
+import apple.foundation.NSArray;
+import apple.foundation.c.Foundation;
 import apple.uikit.*;
 import apple.uikit.enums.*;
 import org.moe.natj.general.ann.NInt;
@@ -68,12 +73,16 @@ public class IOSInput implements Input {
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
+	float[] geolocation = new float[4];
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
 	protected CMMotionManager motionManager;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
+
+	protected CLLocationManager locationManager;
+	boolean geolocationSupported;
 
 	IOSGLKView view;
 
@@ -94,6 +103,7 @@ public class IOSInput implements Input {
 			long forceTouchCapability = UIScreen.mainScreen().traitCollection().forceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
+		setupGeolocation();
 	}
 
 	private void setupCompass () {
@@ -131,6 +141,35 @@ public class IOSInput implements Input {
 		};
 
 		motionManager.startMagnetometerUpdatesToQueueWithHandler(NSOperationQueue.alloc().init(), handler);
+	}
+
+	protected void setupGeolocation () {
+		if (config.useGeolocation &&
+				CLLocationManager.locationServicesEnabled_static()) {
+			geolocationSupported = true;
+			locationManager = CLLocationManager.alloc().init();
+			CLLocationManagerDelegate handler = new CLLocationManagerDelegate() {
+				@Override
+				public void locationManagerDidChangeAuthorizationStatus(CLLocationManager manager, int status) {
+
+				}
+
+				@Override
+				public void locationManagerDidUpdateLocations(CLLocationManager manager, NSArray<? extends CLLocation> locations) {
+					CLLocation location = locations.lastObject();
+					geolocation[0] = (float) location.coordinate().latitude();
+					geolocation[1] = (float) location.coordinate().longitude();
+					geolocation[2] = (float) location.altitude();
+					geolocation[3] = (float) location.speed();
+				}
+			};
+			locationManager.setDelegate_unsafe(handler);
+			if (Foundation.NSFoundationVersionNumber() >= 8) {
+				locationManager.requestWhenInUseAuthorization();
+			}
+			locationManager.startUpdatingLocation();
+		} else
+			geolocationSupported = false;
 	}
 
 	private void updateAccelerometer (CMAccelerometerData data) {
@@ -650,6 +689,26 @@ public class IOSInput implements Input {
 	public float getGyroscopeZ () {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return geolocation[0];
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return geolocation[1];
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return geolocation[2];
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return geolocation[3];
 	}
 
 	public void setView (IOSGLKView view) {

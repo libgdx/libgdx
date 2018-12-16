@@ -44,6 +44,9 @@ public class AndroidApplicationConfiguration {
 	/** whether to use the gyroscope. default: false **/
 	public boolean useGyroscope = false;
 
+	/** whether to use the geolocation, default false **/
+	public boolean useGeolocation = false;
+
 	/** Whether to use the compass. The compass enables {@link Input#getRotationMatrix(float[])}, {@link Input#getAzimuth()},
 	 * {@link Input#getPitch()}, and {@link Input#getRoll()} if {@link #useAccelerometer} is also true.
 	 * <p>

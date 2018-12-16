@@ -27,6 +27,7 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+		config.useGeolocation = true;
 		return new IOSApplication(new BulletTestCollection(), config);
 	}
 

@@ -37,6 +37,7 @@ public class GdxTestActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		config.useRotationVectorSensor = true;
+		config.useGeolocation = true;
 		initialize(test, config);
 	}
 }

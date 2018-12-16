@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,28 +25,31 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
  * 
@@ -120,6 +119,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	protected final float[] accelerometerValues = new float[3];
 	public boolean gyroscopeAvailable = false;
 	protected final float[] gyroscopeValues = new float[3];
+	private LocationManager locationManager;
+	private Criteria criteria;
+	public boolean geolocationAvailable = false;
+	protected final float[] geolocationValues = new float[4];
 	private String text = null;
 	private TextInputListener textListener = null;
 	private Handler handle;
@@ -150,6 +153,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private SensorEventListener gyroscopeListener;
 	private SensorEventListener compassListener;
 	private SensorEventListener rotationVectorListener;
+	private LocationListener locationListener;
 
 	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
@@ -214,6 +218,26 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public float getGyroscopeZ () {
 		return gyroscopeValues[2];
+	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return geolocationValues[0];
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return geolocationValues[1];
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return geolocationValues[2];
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return geolocationValues[3];
 	}
 
 	@Override
@@ -760,6 +784,24 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 		} else
 			compassAvailable = false;
+
+		if (config.useGeolocation) {
+			if (locationManager == null) locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			if (criteria == null) {
+				criteria = new Criteria();
+				criteria.setPowerRequirement(Criteria.POWER_LOW);
+				criteria.setAltitudeRequired(true);
+				criteria.setSpeedRequired(true);
+			}
+			String provider = locationManager.getBestProvider(criteria, true);
+			geolocationAvailable = provider != null;
+			if (geolocationAvailable) {
+				locationListener = new LocationListener();
+				locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+			}
+		} else
+			geolocationAvailable = false;
+
 		Gdx.app.log("AndroidInput", "sensor listener setup");
 	}
 
@@ -783,6 +825,13 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 			manager = null;
 		}
+		if (locationManager != null) {
+			if (locationListener != null) {
+				locationManager.removeUpdates(locationListener);
+				locationListener = null;
+			}
+			locationManager = null;
+		}
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
 
@@ -803,6 +852,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;
+		if (peripheral == Peripheral.Geolocation) return  geolocationAvailable;
 		return false;
 	}
 
@@ -980,6 +1030,45 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					rotationVectorValues[2] = event.values[2];
 				}
 			}
+		}
+	}
+
+	private class LocationListener implements android.location.LocationListener {
+
+		@Override
+		public void onLocationChanged(Location location) {
+			geolocationValues[0] = (float) location.getLatitude();
+			geolocationValues[1] = (float) location.getLongitude();
+			geolocationValues[2] = (float) location.getAltitude();
+			geolocationValues[3] = location.getSpeed();
+		}
+
+		@Override
+		public void onStatusChanged(String s, int i, Bundle bundle) {
+			String provider = locationManager.getBestProvider(criteria, true);
+			if (!provider.equals(s)) {
+				locationListener = new LocationListener();
+				locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+				locationManager.removeUpdates(this);
+			}
+		}
+
+		@Override
+		public void onProviderEnabled(String s) {
+			String provider = locationManager.getBestProvider(criteria, true);
+			if (!provider.equals(s)) {
+				locationListener = new LocationListener();
+				locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+				locationManager.removeUpdates(this);
+			}
+		}
+
+		@Override
+		public void onProviderDisabled(String s) {
+			locationListener = new LocationListener();
+			locationManager.requestLocationUpdates(
+					locationManager.getBestProvider(criteria, true), 0, 0, locationListener);
+			locationManager.removeUpdates(this);
 		}
 	}
 }

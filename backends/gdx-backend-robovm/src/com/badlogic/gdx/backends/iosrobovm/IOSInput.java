@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.corelocation.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.Method;
@@ -90,6 +91,7 @@ public class IOSInput implements Input {
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
+	float[] geolocation = new float[4];
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
@@ -97,6 +99,10 @@ public class IOSInput implements Input {
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
+
+	CLLocationManager locationManager;
+	protected CLLocationManagerDelegate locationManagerDelegate;
+	boolean geolocationSupported;
 
 	public IOSInput (IOSApplication app) {
 		this.app = app;
@@ -115,6 +121,7 @@ public class IOSInput implements Input {
 			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
+		setupGeolocation();
 	}
 
 	protected void setupCompass () {
@@ -175,7 +182,107 @@ public class IOSInput implements Input {
 //		};
 //		motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
 //	}
-	
+
+	protected void setupGeolocation () {
+		if (config.useGeolocation &&
+				CLLocationManager.isLocationServicesEnabled() &&
+				CLLocationManager.getAuthorizationStatus() != CLAuthorizationStatus.Denied) {
+			geolocationSupported = true;
+			locationManager = new CLLocationManager();
+			locationManagerDelegate = new CLLocationManagerDelegate() {
+				@Override
+				public void didUpdateLocations(CLLocationManager clLocationManager, NSArray<CLLocation> nsArray) {
+					CLLocation location = nsArray.last();
+					geolocation[0] = (float) location.getCoordinate().getLatitude();
+					geolocation[1] = (float) location.getCoordinate().getLongitude();
+					geolocation[2] = (float) location.getAltitude();
+					geolocation[3] = (float) location.getSpeed();
+				}
+
+				@Override
+				public void didUpdateHeading(CLLocationManager clLocationManager, CLHeading clHeading) {
+
+				}
+
+				@Override
+				public boolean shouldDisplayHeadingCalibration(CLLocationManager clLocationManager) {
+					return false;
+				}
+
+				@Override
+				public void didDetermineState(CLLocationManager clLocationManager, CLRegionState clRegionState, CLRegion clRegion) {
+
+				}
+
+				@Override
+				public void didRangeBeacons(CLLocationManager clLocationManager, NSArray<CLBeacon> nsArray, CLBeaconRegion clBeaconRegion) {
+
+				}
+
+				@Override
+				public void rangingBeaconsDidFail(CLLocationManager clLocationManager, CLBeaconRegion clBeaconRegion, NSError nsError) {
+
+				}
+
+				@Override
+				public void didEnterRegion(CLLocationManager clLocationManager, CLRegion clRegion) {
+
+				}
+
+				@Override
+				public void didExitRegion(CLLocationManager clLocationManager, CLRegion clRegion) {
+
+				}
+
+				@Override
+				public void didFail(CLLocationManager clLocationManager, NSError nsError) {
+
+				}
+
+				@Override
+				public void monitoringDidFail(CLLocationManager clLocationManager, CLRegion clRegion, NSError nsError) {
+
+				}
+
+				@Override
+				public void didChangeAuthorizationStatus(CLLocationManager clLocationManager, CLAuthorizationStatus clAuthorizationStatus) {
+
+				}
+
+				@Override
+				public void didStartMonitoring(CLLocationManager clLocationManager, CLRegion clRegion) {
+
+				}
+
+				@Override
+				public void didPauseLocationUpdates(CLLocationManager clLocationManager) {
+
+				}
+
+				@Override
+				public void didResumeLocationUpdates(CLLocationManager clLocationManager) {
+
+				}
+
+				@Override
+				public void didFinishDeferredUpdates(CLLocationManager clLocationManager, NSError nsError) {
+
+				}
+
+				@Override
+				public void didVisit(CLLocationManager clLocationManager, CLVisit clVisit) {
+
+				}
+			};
+			locationManager.setDelegate(locationManagerDelegate);
+			if (Foundation.getMajorSystemVersion() >= 8) {
+				locationManager.requestWhenInUseAuthorization();
+			}
+			locationManager.startUpdatingLocation();
+		} else
+			geolocationSupported = false;
+	}
+
 //	private void updateAccelerometer (CMAccelerometerData data) {
 //		float x = (float) data.getAcceleration().x() * 10f;
 //		float y = (float) data.getAcceleration().y() * 10f;
@@ -557,6 +664,7 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
+		if (peripheral == Peripheral.Geolocation) return geolocationSupported;
 		return false;
 	}
 
@@ -763,5 +871,23 @@ public class IOSInput implements Input {
 		return 0;
 	}
 
+	@Override
+	public float getGeolocationLatitude() {
+		return geolocation[0];
+	}
 
+	@Override
+	public float getGeolocationLongitude() {
+		return geolocation[1];
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return geolocation[2];
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return geolocation[3];
+	}
 }

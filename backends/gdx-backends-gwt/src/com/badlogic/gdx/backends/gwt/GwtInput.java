@@ -19,22 +19,23 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.logging.client.ConsoleLogHandler;
+import com.google.gwt.geolocation.client.Geolocation;
+import com.google.gwt.geolocation.client.Position;
+import com.google.gwt.geolocation.client.PositionError;
 
 public class GwtInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -56,11 +57,40 @@ public class GwtInput implements Input {
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
 	final CanvasElement canvas;
+	GwtApplicationConfiguration config;
 	boolean hasFocus = true;
+	Geolocation geolocation;
+	boolean geolocationSupported;
+	float[] geolocationValues = new float[4];
 
-	public GwtInput (CanvasElement canvas) {
+	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
+		this.config = config;
 		hookEvents();
+		setupGeolocation();
+	}
+
+	protected void setupGeolocation () {
+		if (config.useGeolocation && Geolocation.isSupported()) {
+			geolocationSupported = true;
+			geolocation = Geolocation.getIfSupported();
+			geolocation.watchPosition(new Callback<Position, PositionError> () {
+
+				@Override
+				public void onFailure(PositionError positionError) {
+
+				}
+
+				@Override
+				public void onSuccess(Position position) {
+					geolocationValues[0] = (float) position.getCoordinates().getLatitude();
+					geolocationValues[1] = (float) position.getCoordinates().getLongitude();
+					geolocationValues[2] = position.getCoordinates().getAltitude().floatValue();
+					geolocationValues[3] = position.getCoordinates().getSpeed().floatValue();
+				}
+			}, new Geolocation.PositionOptions().setHighAccuracyEnabled(true));
+		} else
+			geolocationSupported = false;
 	}
 
 	void reset () {
@@ -104,6 +134,26 @@ public class GwtInput implements Input {
 	public float getGyroscopeZ () {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return geolocationValues[0];
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return geolocationValues[1];
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return geolocationValues[2];
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return geolocationValues[3];
 	}
 
 	@Override
@@ -299,6 +349,7 @@ public class GwtInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.Vibrator) return false;
+		if (peripheral == Peripheral.Geolocation) return geolocationSupported;
 		return false;
 	}
 

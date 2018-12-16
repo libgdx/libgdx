@@ -118,6 +118,26 @@ final public class LwjglInput implements Input {
 		return 0;
 	}
 
+	@Override
+	public float getGeolocationLatitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return 0;
+	}
+
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

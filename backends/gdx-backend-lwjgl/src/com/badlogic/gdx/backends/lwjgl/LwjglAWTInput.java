@@ -941,4 +941,24 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public float getGyroscopeZ () {
 		return 0;
 	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return 0;
+	}
 }

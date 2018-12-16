@@ -190,6 +190,7 @@ public class RemoteInput implements Runnable, Input {
 	private float[] accel = new float[3];
 	private float[] gyrate = new float[3];
 	private float[] compass = new float[3];
+	private float[] geo = new float[4];
 	private boolean multiTouch = false;
 	private float remoteWidth = 0;
 	private float remoteHeight = 0;
@@ -281,6 +282,12 @@ public class RemoteInput implements Runnable, Input {
 						gyrate[1] = in.readFloat();
 						gyrate[2] = in.readFloat();
 						break;
+					case RemoteSender.GEO:
+						geo[0] = in.readFloat();
+						geo[1] = in.readFloat();
+						geo[2] = in.readFloat();
+						geo[3] = in.readFloat();
+						break;
 					case RemoteSender.KEY_DOWN:
 						keyEvent = new KeyEvent();
 						keyEvent.keyCode = in.readInt();
@@ -359,6 +366,26 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public float getGyroscopeZ () {
 		return gyrate[2];
+	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return geo[0];
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return geo[1];
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return geo[2];
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return geo[3];
 	}
 
 	@Override

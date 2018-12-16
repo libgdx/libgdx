@@ -59,6 +59,9 @@ public class GwtApplicationConfiguration {
 	/* To prevent the page from being blocked you can redirect to the new page. However this will exit your game.  */
 	public boolean openURLInNewWindow = true;
 
+	/** whether to use the geolocation, default false **/
+	public boolean useGeolocation = false;
+
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
 		this.height = height;

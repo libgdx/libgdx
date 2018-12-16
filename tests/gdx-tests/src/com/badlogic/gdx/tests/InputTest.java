@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -39,6 +40,12 @@ public class InputTest extends GdxTest implements InputProcessor {
 				+ (Gdx.input.isButtonPressed(Buttons.RIGHT) ? "right" : "")
 				+ (Gdx.input.isButtonPressed(Buttons.BACK) ? "back" : "")
 				+ (Gdx.input.isButtonPressed(Buttons.FORWARD) ? "forward" : ""));
+			if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Geolocation)) {
+				Gdx.app.log("Input Test", " Altitude: " + Gdx.input.getGeolocationAltitude()
+						+ " Latitude: " + Gdx.input.getGeolocationLatitude()
+						+ " Longitude: " + Gdx.input.getGeolocationLongitude()
+						+ " Speed: " + Gdx.input.getGeolocationSpeed());
+			}
 		}
 
 		for (int i = 0; i < 10; i++) {

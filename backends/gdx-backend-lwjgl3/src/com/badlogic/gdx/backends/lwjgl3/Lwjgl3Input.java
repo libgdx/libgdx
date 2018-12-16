@@ -899,5 +899,25 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public float getGyroscopeZ() {
 		return 0;
-	}	
+	}
+
+	@Override
+	public float getGeolocationLatitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return 0;
+	}
 }

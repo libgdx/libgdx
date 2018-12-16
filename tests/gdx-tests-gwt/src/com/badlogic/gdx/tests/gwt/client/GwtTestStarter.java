@@ -26,6 +26,7 @@ public class GwtTestStarter extends GwtApplication {
 	public GwtApplicationConfiguration getConfig () {
 		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320);
 		//config.openURLInNewWindow = true;
+		config.useGeolocation = true;
 		return config;
 	}
 

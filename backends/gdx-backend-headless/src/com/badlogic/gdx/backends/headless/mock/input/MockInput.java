@@ -56,6 +56,26 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public float getGeolocationLatitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationLongitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationAltitude() {
+		return 0;
+	}
+
+	@Override
+	public float getGeolocationSpeed() {
+		return 0;
+	}
+
+	@Override
 	public int getX() {
 		return 0;
 	}
