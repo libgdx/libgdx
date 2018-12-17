@@ -363,7 +363,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list = new List<T>(selectBox.style.listStyle) {
 				@Override
-				protected String toString (T obj) {
+				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
 			};

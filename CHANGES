@@ -29,6 +29,7 @@
 - API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
 - API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
 - API Change: DragScrollListener no longer requires the touch/mouse cursor to be directly above/below the scroll pane.
+- API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 
 [1.9.8]
 - Add iPhoneX images

@@ -317,7 +317,7 @@ public class List<T> extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	protected String toString (T object) {
+	public String toString (T object) {
 		return object.toString();
 	}
 
