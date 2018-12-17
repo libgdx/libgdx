@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -42,7 +41,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * origin is relative to the position and is used for scale and rotation.
  * <p>
  * An actor has a list of in progress {@link Action actions} that are applied to the actor (often over time). These are generally
- * used to change the presentation of the actor (moving it, resizing it, etc). See {@link #act(float)}, {@link Action} and its
+ * used to change the presentation of the actor (moving it, resizing it, etc). See {@link #act(float)}, {@link Action}, and its
  * many subclasses.
  * <p>
  * An actor has two kinds of listeners associated with it: "capture" and regular. The listeners are notified of events the actor
@@ -395,6 +394,38 @@ public class Actor {
 			actor = actor.parent;
 		} while (actor != null);
 		return true;
+	}
+
+	/** Returns true if this actor is the {@link Stage#getKeyboardFocus() keyboard focus} actor. */
+	public boolean hasKeyboardFocus () {
+		Stage stage = getStage();
+		return stage != null && stage.getKeyboardFocus() == this;
+	}
+
+	/** Returns true if this actor is the {@link Stage#getScrollFocus() scroll focus} actor. */
+	public boolean hasScrollFocus () {
+		Stage stage = getStage();
+		return stage != null && stage.getScrollFocus() == this;
+	}
+
+	/** Returns true if this actor is a target actor for touch focus.
+	 * @see Stage#addTouchFocus(EventListener, Actor, Actor, int, int) */
+	public boolean isTouchFocusTarget () {
+		Stage stage = getStage();
+		if (stage == null) return false;
+		for (int i = 0, n = stage.touchFocuses.size; i < n; i++)
+			if (stage.touchFocuses.get(i).target == this) return true;
+		return false;
+	}
+
+	/** Returns true if this actor is a listener actor for touch focus.
+	 * @see Stage#addTouchFocus(EventListener, Actor, Actor, int, int) */
+	public boolean isTouchFocusListener () {
+		Stage stage = getStage();
+		if (stage == null) return false;
+		for (int i = 0, n = stage.touchFocuses.size; i < n; i++)
+			if (stage.touchFocuses.get(i).listenerActor == this) return true;
+		return false;
 	}
 
 	/** Returns an application specific object for convenience, or null. */
