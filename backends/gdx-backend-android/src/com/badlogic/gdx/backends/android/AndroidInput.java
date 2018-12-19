@@ -49,7 +49,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -129,7 +128,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
-	private IntArray catchedKeys = new IntArray();
+	private IntSet keysToCatch = new IntSet();
 	protected final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
@@ -186,9 +185,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			nativeOrientation = Orientation.Portrait;
 		}
 
-		// this is for backward compatibility: libGDX always catched the circle button, original comment:
+		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
-		catchedKeys.add(Keys.BUTTON_CIRCLE);
+		keysToCatch.add(Keys.BUTTON_CIRCLE);
 	}
 
 	@Override
@@ -587,7 +586,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			app.getGraphics().requestRendering();
 		}
 
-		return catchedKeys.contains(keyCode);
+		return keysToCatch.contains(keyCode);
 	}
 
 	@Override
@@ -614,25 +613,25 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public boolean isCatchBackKey() {
-		return catchedKeys.contains(Keys.BACK);
+		return keysToCatch.contains(Keys.BACK);
 	}
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 		setCatchKey(Keys.MENU, catchMenu);
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey () {
-		return catchedKeys.contains(Keys.MENU);
+		return keysToCatch.contains(Keys.MENU);
 	}
 
 	@Override
 	public void setCatchKey(int keycode, boolean catchKey) {
 		if (!catchKey)
-			catchedKeys.removeValue(keycode);
-		else if (catchKey && !catchedKeys.contains(keycode))
-			catchedKeys.add(keycode);
+			keysToCatch.remove(keycode);
+		else if (catchKey)
+			keysToCatch.add(keycode);
 	}
 
 	@Override

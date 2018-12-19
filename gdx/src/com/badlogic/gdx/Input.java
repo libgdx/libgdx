@@ -753,13 +753,12 @@ public interface Input {
 
 	/**
 	 * Sets whether the given key on Android should be caught. No effect on other platforms.
-	 * All keys that are not catched may handled by other apps or background processes. For example, media or volume
+	 * All keys that are not caught may be handled by other apps or background processes. For example, media or volume
 	 * buttons are handled by background media players if present. If you use these keys to control your game, they
 	 * must be catched to prevent unintended behaviour.
 	 *
 	 * @param keycode  keycode to catch
 	 * @param catchKey whether to catch the given keycode
-	 * @return
 	 */
 	public void setCatchKey(int keycode, boolean catchKey);
 

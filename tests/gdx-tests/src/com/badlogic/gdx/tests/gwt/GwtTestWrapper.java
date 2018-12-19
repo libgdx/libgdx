@@ -433,7 +433,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public void setCatchKey(int keycode, boolean catchKey) {
-
+			input.setCatchKey(keycode, catchKey);
 		}
 
 		@Override
