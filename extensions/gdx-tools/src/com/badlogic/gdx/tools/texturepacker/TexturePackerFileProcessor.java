@@ -287,4 +287,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		packer.setProgressListener(progress);
 		return packer;
 	}
+
+	public ProgressListener getProgressListener () {
+		return progress;
+	}
 }
