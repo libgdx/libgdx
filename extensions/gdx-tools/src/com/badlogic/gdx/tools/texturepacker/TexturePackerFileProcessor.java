@@ -250,9 +250,9 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		// Pack.
 		if (!settings.silent) {
 			try {
-				System.out.println(inputDir.inputFile.getCanonicalPath());
+				System.out.println("Reading: " + inputDir.inputFile.getCanonicalPath());
 			} catch (IOException ignored) {
-				System.out.println(inputDir.inputFile.getAbsolutePath());
+				System.out.println("Reading: " + inputDir.inputFile.getAbsolutePath());
 			}
 		}
 		if (progress != null) {
