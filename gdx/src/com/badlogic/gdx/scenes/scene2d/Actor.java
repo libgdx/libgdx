@@ -106,7 +106,8 @@ public class Actor {
 				}
 			}
 		} catch (RuntimeException ex) {
-			throw new RuntimeException(toString(), ex);
+			String context = toString();
+			throw new RuntimeException("Actor: " + context.substring(0, Math.min(context.length(), 128)), ex);
 		}
 	}
 
@@ -197,7 +198,8 @@ public class Actor {
 			}
 			listeners.end();
 		} catch (RuntimeException ex) {
-			throw new RuntimeException(toString(), ex);
+			String context = toString();
+			throw new RuntimeException("Actor: " + context.substring(0, Math.min(context.length(), 128)), ex);
 		}
 
 		return event.isCancelled();
