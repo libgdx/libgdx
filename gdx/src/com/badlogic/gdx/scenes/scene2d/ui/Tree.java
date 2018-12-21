@@ -176,7 +176,7 @@ public class Tree extends WidgetGroup {
 		prefWidth = Math.max(prefWidth, style.minus.getMinWidth());
 		prefHeight = getHeight();
 		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		computeSize(rootNodes, indentSpacing, plusMinusWidth);
+		computeSize(rootNodes, 0, plusMinusWidth);
 		prefWidth += padding * 2;
 		prefHeight = getHeight() - prefHeight;
 	}
