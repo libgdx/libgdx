@@ -167,6 +167,7 @@ public class Stage extends InputAdapter implements Disposable {
 		debugShapes.begin();
 		root.drawDebug(debugShapes);
 		debugShapes.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	/** Disables debug on all actors recursively except the specified actor and any children. */
