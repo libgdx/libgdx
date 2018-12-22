@@ -139,7 +139,7 @@ public class IntSet {
 	}
 
 	public void addAll (IntArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (IntArray array, int offset, int length) {

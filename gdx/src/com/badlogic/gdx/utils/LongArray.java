@@ -106,7 +106,7 @@ public class LongArray {
 	}
 
 	public void addAll (LongArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (LongArray array, int offset, int length) {

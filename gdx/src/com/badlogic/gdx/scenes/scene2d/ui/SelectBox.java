@@ -363,11 +363,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list = new List<T>(selectBox.style.listStyle) {
 				@Override
-				protected String toString (T obj) {
+				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
 			};
 			list.setTouchable(Touchable.disabled);
+			list.setTypeToSelect(true);
 			setActor(list);
 
 			list.addListener(new ClickListener() {
@@ -399,7 +400,15 @@ public class SelectBox<T> extends Widget implements Disableable {
 				}
 
 				public boolean keyDown (InputEvent event, int keycode) {
-					if (keycode == Keys.ESCAPE) hide();
+					switch (keycode) {
+					case Keys.ENTER:
+						selectBox.selection.choose(list.getSelected());
+						// Fall thru.
+					case Keys.ESCAPE:
+						hide();
+						event.stop();
+						return true;
+					}
 					return false;
 				}
 			};
@@ -408,9 +417,9 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public void show (Stage stage) {
 			if (list.isTouchable()) return;
 
-			stage.removeCaptureListener(hideListener);
-			stage.addCaptureListener(hideListener);
 			stage.addActor(this);
+			stage.addCaptureListener(hideListener);
+			stage.addListener(list.getKeyListener());
 
 			selectBox.localToStageCoordinates(screenPosition.set(0, 0));
 
@@ -466,6 +475,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			Stage stage = getStage();
 			if (stage != null) {
 				stage.removeCaptureListener(hideListener);
+				stage.removeListener(list.getKeyListener());
 				if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
 				Actor actor = stage.getScrollFocus();
 				if (actor == null || isAscendantOf(actor)) stage.setScrollFocus(previousScrollFocus);
@@ -484,6 +494,15 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public void act (float delta) {
 			super.act(delta);
 			toFront();
+		}
+
+		protected void setStage (Stage stage) {
+			Stage oldStage = getStage();
+			if (oldStage != null) {
+				oldStage.removeCaptureListener(hideListener);
+				oldStage.removeListener(list.getKeyListener());
+			}
+			super.setStage(stage);
 		}
 	}
 

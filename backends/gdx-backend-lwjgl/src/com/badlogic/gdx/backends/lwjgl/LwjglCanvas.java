@@ -238,7 +238,8 @@ public class LwjglCanvas implements Application {
 					if (lastWidth != width || lastHeight != height) {
 						lastWidth = width;
 						lastHeight = height;
-						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+						Display.setLocation(0, 0);
+						Gdx.gl.glViewport(0, 0, width, height);
 						resize(width, height);
 						listener.resize(width, height);
 						shouldRender = true;

@@ -129,7 +129,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void addAll (Array<? extends T> array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (Array<? extends T> array, int start, int count) {

@@ -71,8 +71,7 @@ public class GestureDetector extends InputAdapter {
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
-	 *           {@link GestureListener#fling(float, float, int)}
-	 * @param listener May be null if the listener will be set later. */
+	 *           {@link GestureListener#fling(float, float, int)} */
 	public GestureDetector (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
 		this(halfTapSquareSize, halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, listener);
@@ -86,10 +85,10 @@ public class GestureDetector extends InputAdapter {
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
-	 *           {@link GestureListener#fling(float, float, int)}
-	 * @param listener May be null if the listener will be set later. */
+	 *           {@link GestureListener#fling(float, float, int)} */
 	public GestureDetector (float halfTapRectangleWidth, float halfTapRectangleHeight, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		this.tapRectangleWidth = halfTapRectangleWidth;
 		this.tapRectangleHeight = halfTapRectangleHeight;
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);

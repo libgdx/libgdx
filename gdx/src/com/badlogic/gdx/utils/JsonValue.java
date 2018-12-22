@@ -599,49 +599,49 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Finds the child with the specified name and returns it as a float. Returns defaultValue if not found. */
 	public float getFloat (String name, float defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asFloat();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asFloat();
 	}
 
 	/** Finds the child with the specified name and returns it as a double. Returns defaultValue if not found. */
 	public double getDouble (String name, double defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asDouble();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asDouble();
 	}
 
 	/** Finds the child with the specified name and returns it as a long. Returns defaultValue if not found. */
 	public long getLong (String name, long defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asLong();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asLong();
 	}
 
 	/** Finds the child with the specified name and returns it as an int. Returns defaultValue if not found. */
 	public int getInt (String name, int defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asInt();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asInt();
 	}
 
 	/** Finds the child with the specified name and returns it as a boolean. Returns defaultValue if not found. */
 	public boolean getBoolean (String name, boolean defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asBoolean();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asBoolean();
 	}
 
 	/** Finds the child with the specified name and returns it as a byte. Returns defaultValue if not found. */
 	public byte getByte (String name, byte defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asByte();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asByte();
 	}
 
 	/** Finds the child with the specified name and returns it as a short. Returns defaultValue if not found. */
 	public short getShort (String name, short defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asShort();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asShort();
 	}
 
 	/** Finds the child with the specified name and returns it as a char. Returns defaultValue if not found. */
 	public char getChar (String name, char defaultValue) {
 		JsonValue child = get(name);
-		return (child == null || !child.isValue()) ? defaultValue : child.asChar();
+		return (child == null || !child.isValue() || child.isNull()) ? defaultValue : child.asChar();
 	}
 
 	/** Finds the child with the specified name and returns it as a string.

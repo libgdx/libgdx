@@ -1,4 +1,5 @@
 [1.9.9]
+- API Addition: Add support for stripping whitespace in PixmapPacker
 - API Addition: Add support for 9 patch packing in PixmapPacker
 - API Addition: Pressure support for ios/android. https://github.com/libgdx/libgdx/pull/5270
 - Update to Lwjgl 3.2.0
@@ -29,6 +30,10 @@
 - API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
 - API Change: Vector2 angle(Vector2) returns value in the [0, 360) range.
 - API Change: Vector2 angle(Vector2) and angleRad(Vector2) now correctly return counter-clockwise angles.
+- API Change: DragScrollListener no longer requires the touch/mouse cursor to be directly above/below the scroll pane.
+- API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
+- API Change: List now handles more key presses.
+- API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
 
 [1.9.8]
 - Add iPhoneX images
