@@ -30,7 +30,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"/>
-	<property name="g++-opts" value="-c -Wall -O2"/>
+	<property name="g++-opts" value="-c -Wall -O2 -stdlib=libc++"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
