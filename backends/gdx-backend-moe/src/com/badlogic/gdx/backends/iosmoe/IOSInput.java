@@ -163,7 +163,7 @@ public class IOSInput implements Input {
 					geolocation[3] = (float) location.speed();
 				}
 			};
-			locationManager.setDelegate_unsafe(handler);
+			locationManager.setDelegate(handler);
 			if (Foundation.NSFoundationVersionNumber() >= 8) {
 				locationManager.requestWhenInUseAuthorization();
 			}
