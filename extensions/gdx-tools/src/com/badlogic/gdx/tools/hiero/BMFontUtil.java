@@ -123,7 +123,7 @@ public class BMFontUtil {
 			IntIntMap glyphCodeToCodePoint = new IntIntMap();
 			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
 				Glyph glyph = (Glyph)iter.next();
-				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
+				glyphCodeToCodePoint.put(getGlyphCode(font, glyph.getCodePoint()), glyph.getCodePoint());
 			}
 
 			List kernings = new ArrayList(256);
