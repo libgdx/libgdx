@@ -531,6 +531,7 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
+		if (peripheral == Peripheral.Geolocation) return geolocationSupported;
 		return false;
 	}
 
