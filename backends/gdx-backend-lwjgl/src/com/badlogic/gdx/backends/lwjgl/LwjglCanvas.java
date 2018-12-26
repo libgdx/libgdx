@@ -284,7 +284,7 @@ public class LwjglCanvas implements Application {
 		if (executedRunnables.size == 0) return false;
 		do {
 			Runnable runnable = (Runnable)executedRunnables.pop();
-			Throwable stacktrace = postedRunnableStacktraces ? (Throwable)executedRunnables.pop() : null;
+			Throwable stacktrace = (Throwable)executedRunnables.pop();
 			try {
 				runnable.run();
 			} catch (Throwable ex) {
@@ -375,7 +375,7 @@ public class LwjglCanvas implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
-			if (postedRunnableStacktraces) runnables.add(new Throwable());
+			runnables.add(postedRunnableStacktraces ? new Throwable() : null);
 			graphics.requestRendering();
 		}
 	}
@@ -463,7 +463,7 @@ public class LwjglCanvas implements Application {
 	}
 
 	/** When true, {@link #postRunnable(Runnable)} keeps the stacktrace (which is an allocation) so it can be included if the
-	 * runnable later throws an exception. Set before any runnables are posted. Default is false. */
+	 * runnable later throws an exception. Default is false. */
 	public void setPostedRunnableStacktraces (boolean postedRunnableStacktraces) {
 		this.postedRunnableStacktraces = postedRunnableStacktraces;
 	}
