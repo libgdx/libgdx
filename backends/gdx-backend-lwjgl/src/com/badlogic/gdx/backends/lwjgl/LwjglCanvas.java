@@ -16,21 +16,17 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Canvas;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.geom.AffineTransform;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.ApplicationLogger;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -43,6 +39,12 @@ import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+
+import java.awt.Canvas;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.geom.AffineTransform;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses
  * {@link Display#setParent(Canvas)}, which is preferred over {@link AWTGLCanvas} but is limited to a single LwjglCanvas in an
@@ -59,14 +61,16 @@ public class LwjglCanvas implements Application {
 	LwjglNet net;
 	ApplicationListener listener;
 	Canvas canvas;
-	final Array<Runnable> runnables = new Array();
-	final Array<Runnable> executedRunnables = new Array();
-	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	final Array runnables = new Array();
+	final Array executedRunnables = new Array();
+	final Array<LifecycleListener> lifecycleListeners = new Array();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	ApplicationLogger applicationLogger;
 	Cursor cursor;
 	float scaleX, scaleY;
+	boolean postedRunnableStacktraces;
+	final Map<String, Preferences> preferences = new HashMap();
 
 	public LwjglCanvas (ApplicationListener listener) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -274,13 +278,22 @@ public class LwjglCanvas implements Application {
 	public boolean executeRunnables () {
 		synchronized (runnables) {
 			for (int i = runnables.size - 1; i >= 0; i--)
-				executedRunnables.addAll(runnables.get(i));
+				executedRunnables.add(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		do
-			executedRunnables.pop().run();
-		while (executedRunnables.size > 0);
+		do {
+			Runnable runnable = (Runnable)executedRunnables.pop();
+			Throwable stacktrace = postedRunnableStacktraces ? (Throwable)executedRunnables.pop() : null;
+			try {
+				runnable.run();
+			} catch (Throwable ex) {
+				if (stacktrace == null) throw new RuntimeException(ex);
+				StringWriter buffer = new StringWriter(1024);
+				stacktrace.printStackTrace(new PrintWriter(buffer));
+				throw new RuntimeException("Posted: " + buffer, ex);
+			}
+		} while (executedRunnables.size > 0);
 		return true;
 	}
 
@@ -342,8 +355,6 @@ public class LwjglCanvas implements Application {
 		return getJavaHeap();
 	}
 
-	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
-
 	@Override
 	public Preferences getPreferences (String name) {
 		if (preferences.containsKey(name)) {
@@ -364,7 +375,8 @@ public class LwjglCanvas implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
-			Gdx.graphics.requestRendering();
+			if (postedRunnableStacktraces) runnables.add(new Throwable());
+			graphics.requestRendering();
 		}
 	}
 
@@ -448,5 +460,11 @@ public class LwjglCanvas implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	/** When true, {@link #postRunnable(Runnable)} keeps the stacktrace (which is an allocation) so it can be included if the
+	 * runnable later throws an exception. Set before any runnables are posted. Default is false. */
+	public void setPostedRunnableStacktraces (boolean postedRunnableStacktraces) {
+		this.postedRunnableStacktraces = postedRunnableStacktraces;
 	}
 }
