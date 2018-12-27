@@ -87,6 +87,7 @@ import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.ReflectionCorrectnessTest;
 import com.badlogic.gdx.tests.ReflectionTest;
 import com.badlogic.gdx.tests.RotationTest;
+import com.badlogic.gdx.tests.Scene2dTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
 import com.badlogic.gdx.tests.SimpleDecalTest;
@@ -597,6 +598,10 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
+				return new GwtWindowModeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
 				return new I18NSimpleMessageTest();
 			}
 		}, new Instancer() {
@@ -692,11 +697,15 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new ReflectionCorrectnessTest();
 			}
-		},
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new Scene2dTest();
+			}
+
 // new Instancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
 // new Instancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
 // new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
-		new Instancer() {
+		},new Instancer() {
 			public GdxTest instance () {
 				return new ShadowMappingTest();
 			}
