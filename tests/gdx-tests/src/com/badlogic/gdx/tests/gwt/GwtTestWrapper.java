@@ -162,8 +162,8 @@ public class GwtTestWrapper extends GdxTest {
 			table.add(button).expandX().fillX();
 		}
 		container.row();
-		container.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE))).pad(5,
-			5, 5, 5);
+		container.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE))).pad(5, 5,
+			5, 5);
 
 		Gdx.input = new InputWrapper(Gdx.input) {
 			@Override
@@ -268,7 +268,7 @@ public class GwtTestWrapper extends GdxTest {
 			// TODO Auto-generated method stub
 			return input.getGyroscopeZ();
 		}
-		
+
 		@Override
 		public int getX () {
 			return input.getX();
@@ -405,7 +405,7 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public boolean isCatchBackKey() {
+		public boolean isCatchBackKey () {
 			return input.isCatchBackKey();
 		}
 
@@ -413,7 +413,7 @@ public class GwtTestWrapper extends GdxTest {
 		public void setCatchMenuKey (boolean catchMenu) {
 			input.setCatchMenuKey(catchMenu);
 		}
-		
+
 		@Override
 		public boolean isCatchMenuKey () {
 			return input.isCatchMenuKey();
@@ -645,7 +645,7 @@ public class GwtTestWrapper extends GdxTest {
 				return new LabelTest();
 			}
 		},
-// new Instancer() {public GdxTest instance(){return new MatrixJNITest();}}, // No purpose
+		// new Instancer() {public GdxTest instance(){return new MatrixJNITest();}}, // No purpose
 		new Instancer() {
 			public GdxTest instance () {
 				return new MeshShaderTest();
@@ -670,7 +670,8 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new OpenBrowserExample();
 			}
-//		}, new Instancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to the use of Thread
+// }, new Instancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to
+// the use of Thread
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new ParallaxTest();
@@ -684,7 +685,7 @@ public class GwtTestWrapper extends GdxTest {
 				return new PixelsPerInchTest();
 			}
 		},
-// new Instancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't work
+		// new Instancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't work
 		new Instancer() {
 			public GdxTest instance () {
 				return new ProjectiveTextureTest();
@@ -705,7 +706,7 @@ public class GwtTestWrapper extends GdxTest {
 // new Instancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
 // new Instancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
 // new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
-		},new Instancer() {
+		}, new Instancer() {
 			public GdxTest instance () {
 				return new ShadowMappingTest();
 			}
@@ -750,7 +751,7 @@ public class GwtTestWrapper extends GdxTest {
 				return new StageTest();
 			}
 		},
-// new Instancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
+		// new Instancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
 		new Instancer() {
 			public GdxTest instance () {
 				return new TableTest();
@@ -796,7 +797,7 @@ public class GwtTestWrapper extends GdxTest {
 				return new TimeUtilsTest();
 			}
 		}, new Instancer() {
-			public GdxTest instance() {
+			public GdxTest instance () {
 				return new GWTLossyPremultipliedAlphaTest();
 			}
 		}};

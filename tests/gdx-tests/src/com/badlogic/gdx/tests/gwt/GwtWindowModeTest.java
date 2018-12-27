@@ -26,50 +26,44 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GwtWindowModeTest extends GdxTest {
-	Stage stage;
-
-	private boolean windowState;
-	private TextButton tb;
-	private final String window_mode_txt = "click for Full screen Mode";
-	private final String fullscreen_mode_txt = "click for window Mode";
+	private Stage stage;
+	private boolean isWindowed;
+	private TextButton changeModeButton;
+	private final String windowedInstructions = "click for Full screen Mode";
+	private final String fullScreenInstructions = "click for window Mode";
 
 	public void create () {
 		stage = new Stage();
-		windowState = true;
+		isWindowed = true;
 		Gdx.input.setInputProcessor(stage);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		tb = new TextButton(window_mode_txt, skin);
-		tb.setSize(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
-		tb.setPosition(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
-		stage.addActor(tb);
+		changeModeButton = new TextButton(windowedInstructions, skin);
+		changeModeButton.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		changeModeButton.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+		stage.addActor(changeModeButton);
 
-		tb.addListener(new ClickListener(){
+		changeModeButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				if(windowState){
-					windowState = false;
-					tb.setText(fullscreen_mode_txt);
+				if (isWindowed) {
+					isWindowed = false;
+					changeModeButton.setText(fullScreenInstructions);
 					Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-				}
-				else{
-					windowState = true;
-					tb.setText(window_mode_txt);
-					Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+				} else {
+					isWindowed = true;
+					changeModeButton.setText(windowedInstructions);
+					Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 			}
 		});
-
-
 	}
 
 	public void render () {
-		// System.out.println(meow.getValue());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
 	}
 
 	public void resize (int width, int height) {
