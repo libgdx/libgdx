@@ -20,6 +20,8 @@
 - Table layout fixed when expand is used and the layout width is less than the table's min width.
 - InputMultiplexer#setProcessors(Array) now copies the items instead of using the specified array instance.
 - API Change: A wrapped HorizontalGroup or VerticalGroup will now size children down to their min size if the group is smaller than their pref size.
+- API Change: TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed. imageResolver/atlasResolver removed from method signatures, these are class variables now. AtlasTmxMapLoader supports group layers and image layers now
+
 
 [1.9.8]
 - Add iPhoneX images
