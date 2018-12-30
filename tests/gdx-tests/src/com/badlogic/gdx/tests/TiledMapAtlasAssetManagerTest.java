@@ -62,11 +62,6 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		AtlasTiledMapLoaderParameters params = new AtlasTiledMapLoaderParameters();
-		params.forceTextureFilters = true;
-		params.textureMinFilter = TextureFilter.Linear;
-		params.textureMagFilter = TextureFilter.Linear;
-
 		assetManager = new AssetManager();
 		assetManager.setErrorListener(new AssetErrorListener() {
 			@Override

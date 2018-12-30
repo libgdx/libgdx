@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,6 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.maps.tiled;
-
-import java.io.IOException;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -27,40 +25,40 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
+import java.io.IOException;
+
 /** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
- * 
+ *
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
  * in it indexed regions named after the tilesets used in the map. The indexes shall be local to the tileset (not the global id).
  * Strip whitespace and rotation should not be used when creating the atlas.
- * 
+ *
  * @author Justin Shapcott
  * @author Manuel Bua */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
 
 	public static class AtlasTiledMapLoaderParameters extends BaseTmxMapLoader.Parameters {
-		/** force texture filters? **/
-		public boolean forceTextureFilters = false;
+
 	}
 
 	protected Array<Texture> trackedTextures = new Array<Texture>();
+
+	protected AtlasResolver atlasResolver;
 
 	private interface AtlasResolver {
 
 		public TextureAtlas getAtlas (String name);
 
 		public static class DirectAtlasResolver implements AtlasResolver {
-
-			private final ObjectMap<String, TextureAtlas> atlases;
+			public final ObjectMap<String, TextureAtlas> atlases;
 
 			public DirectAtlasResolver (ObjectMap<String, TextureAtlas> atlases) {
 				this.atlases = atlases;
@@ -70,11 +68,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			public TextureAtlas getAtlas (String name) {
 				return atlases.get(name);
 			}
-
 		}
 
 		public static class AssetManagerAtlasResolver implements AtlasResolver {
-			private final AssetManager assetManager;
+			public final AssetManager assetManager;
 
 			public AssetManagerAtlasResolver (AssetManager assetManager) {
 				this.assetManager = assetManager;
@@ -143,8 +140,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			TextureAtlas atlas = new TextureAtlas(atlasFile);
 			atlases.put(atlasFile.path(), atlas);
 
-			AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
-			TiledMap map = loadMap(root, tmxFile, atlasResolver);
+			this.atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
+			TiledMap map = loadTilemap(root, tmxFile);
 			map.setOwnedResources(atlases.values().toArray());
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 			return map;
@@ -199,7 +196,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 
 		try {
-			map = loadMap(root, tmxFile, new AtlasResolver.AssetManagerAtlasResolver(manager));
+			this.atlasResolver = new AtlasResolver.AssetManagerAtlasResolver(manager);
+			map = loadTilemap(root, tmxFile);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
@@ -214,59 +212,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		return map;
 	}
 
-	protected TiledMap loadMap (Element root, FileHandle tmxFile, AtlasResolver resolver) {
-		TiledMap map = new TiledMap();
-
-		String mapOrientation = root.getAttribute("orientation", null);
-		int mapWidth = root.getIntAttribute("width", 0);
-		int mapHeight = root.getIntAttribute("height", 0);
-		int tileWidth = root.getIntAttribute("tilewidth", 0);
-		int tileHeight = root.getIntAttribute("tileheight", 0);
-		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
-
-		MapProperties mapProperties = map.getProperties();
-		if (mapOrientation != null) {
-			mapProperties.put("orientation", mapOrientation);
-		}
-		mapProperties.put("width", mapWidth);
-		mapProperties.put("height", mapHeight);
-		mapProperties.put("tilewidth", tileWidth);
-		mapProperties.put("tileheight", tileHeight);
-		if (mapBackgroundColor != null) {
-			mapProperties.put("backgroundcolor", mapBackgroundColor);
-		}
-
-		mapTileWidth = tileWidth;
-		mapTileHeight = tileHeight;
-		mapWidthInPixels = mapWidth * tileWidth;
-		mapHeightInPixels = mapHeight * tileHeight;
-
-		if (mapOrientation != null) {
-			if ("staggered".equals(mapOrientation)) {
-				if (mapHeight > 1) {
-					mapWidthInPixels += tileWidth / 2;
-					mapHeightInPixels = mapHeightInPixels / 2 + tileHeight / 2;
-				}
-			}
-		}
-
-		for (int i = 0, j = root.getChildCount(); i < j; i++) {
-			Element element = root.getChild(i);
-			String elementName = element.getName();
-			if (elementName.equals("properties")) {
-				loadProperties(map.getProperties(), element);
-			} else if (elementName.equals("tileset")) {
-				loadTileset(map, element, tmxFile, resolver);
-			} else if (elementName.equals("layer")) {
-				loadTileLayer(map, map.getLayers(), element);
-			} else if (elementName.equals("objectgroup")) {
-				loadObjectGroup(map, map.getLayers(), element);
-			}
-		}
-		return map;
-	}
-
-	protected void loadTileset (TiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver) {
+	@Override
+	protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
 			int firstgid = element.getIntAttribute("firstgid", 1);
@@ -334,7 +281,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			// get the TextureAtlas for this tileset
 			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
 			atlasHandle = resolve(atlasHandle.path());
-			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
+			TextureAtlas atlas = atlasResolver.getAtlas(atlasHandle.path());
 			String regionsName = name;
 
 			for (Texture texture : atlas.getTextures()) {
@@ -453,8 +400,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			for (AnimatedTiledMapTile tile : animatedTiles) {
 				tileset.putTile(tile.getId(), tile);
-			}			
-			
+			}
+
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);
@@ -463,4 +410,26 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 	}
 
+	@Override
+	protected TextureRegion getImage(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, String imagePath) {
+		if (atlasResolver instanceof AtlasResolver.DirectAtlasResolver) {
+			final AtlasResolver.DirectAtlasResolver directAtlasResolver = (AtlasResolver.DirectAtlasResolver) this.atlasResolver;
+			final ObjectMap.Values<TextureAtlas> atlasValues = directAtlasResolver.atlases.values();
+			for (TextureAtlas textureAtlas : atlasValues) {
+				final AtlasRegion atlasRegion = textureAtlas.findRegion(imagePath);
+				if (atlasRegion != null) {
+					return atlasRegion;
+				}
+			}
+			return null;
+		} else if (atlasResolver instanceof AtlasResolver.AssetManagerAtlasResolver) {
+			final TextureRegion textureRegion = ((AtlasResolver.AssetManagerAtlasResolver) atlasResolver).assetManager.get(imagePath, TextureRegion.class);
+			if (textureRegion != null) {
+				return textureRegion;
+			}
+			return null;
+		} else {
+			return null;
+		}
+	}
 }
