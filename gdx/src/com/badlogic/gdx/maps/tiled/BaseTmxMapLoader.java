@@ -66,7 +66,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	}
 
     /**
-     * Loads the map data, given the XML root element and an {@link ImageResolver} used to return the tileset Textures
+     * Loads the map data, given the XML root element
      *
      * @param root          the XML root element
      * @param tmxFile       the Filehandle of the tmx file
@@ -226,6 +226,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		}
 	}
 
+	/**
+	 * Load an image layer and add it to the parentLayers. The images are resolved by {@link #getImage(TiledMap, MapLayers, Element, FileHandle, String)}
+	 */
 	protected void loadImageLayer(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("imagelayer")) {
 			int x = 0;
@@ -266,6 +269,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		}
 	}
 
+	/**
+	 * Resolve and get image for {@link #loadImageLayer(TiledMap, MapLayers, Element, FileHandle)}
+	 */
 	protected abstract TextureRegion getImage(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, String imagePath);
 
 	protected void loadBasicLayerInfo (MapLayer layer, Element element) {

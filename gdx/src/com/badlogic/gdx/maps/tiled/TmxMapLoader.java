@@ -26,6 +26,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
@@ -107,7 +108,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			flipY = true;
 		}
 		try {
-			this.imageResolver = new ImageResolver.AssetManagerImageResolver(manager);
+			this.imageResolver = new AssetManagerImageResolver(manager);
 			map = loadTilemap(root, tmxFile);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
@@ -213,8 +214,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		return images;
 	}
 
-	/** Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile and
-	 * an {@link ImageResolver} used to retrieve the tileset Textures.
+	/** Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile
 	 *
 	 * <p>
 	 * Default tileset's property keys that are loaded by default are:
