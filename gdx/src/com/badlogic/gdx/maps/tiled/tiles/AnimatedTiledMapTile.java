@@ -28,7 +28,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 /** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile {
 
-	private static long lastTiledMapRenderTime = 0;
+	public static boolean autoUpdateAnimationBaseMillis = true;
+	private static long animationBaseMillis = 0;
 
 	private int id;
 
@@ -66,7 +67,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	public int getCurrentFrameIndex () {
-		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
+		int currentTime = (int)(animationBaseMillis % loopDuration);
 
 		for (int i = 0; i < animationIntervals.length; ++i) {
 			int animationInterval = animationIntervals[i];
@@ -147,16 +148,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		return objects;
 	}
 
-	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
-	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
-	public static void updateAnimationBaseTime () {
-        updateAnimationBaseTime(TimeUtils.millis());
+	/**
+	 * Function is called by BatchTiledMapRenderer.beginRender(), animationBaseMillis is used to keep all of the tiles
+	 * in lock-step animation and avoids having to call TimeUtils.millis() in getTextureRegion()
+	 * Will work until {@link #autoUpdateAnimationBaseMillis} is set to false
+	 */
+	public static void updateAnimationBaseTime() {
+		if (autoUpdateAnimationBaseMillis) {
+			setAnimationBaseTime(TimeUtils.millis() - initialTimeOffset);
+		}
 	}
 
-    /** Update lastTiledMapRenderTime according to initialTimeOffset */
-    public static void updateAnimationBaseTime(long animationBaseTimeMillis) {
-        lastTiledMapRenderTime = animationBaseTimeMillis - initialTimeOffset;
-    }
+	public static void setAnimationBaseTime(long animationBaseMilliseconds) {
+		animationBaseMillis = animationBaseMilliseconds;
+	}
 
 	/** Creates an animated tile with the given animation interval and frame tiles.
 	 *
