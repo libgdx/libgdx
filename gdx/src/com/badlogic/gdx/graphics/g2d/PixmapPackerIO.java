@@ -5,10 +5,8 @@ import java.io.Writer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
-import com.badlogic.gdx.math.Rectangle;
 
 /** Saves PixmapPackers to files.
  * @author jshapcott */
@@ -81,13 +79,20 @@ public class PixmapPackerIO {
 				writer.write("repeat: none" + "\n");
 				for (String name : page.rects.keys()) {
 					writer.write(name + "\n");
-					Rectangle rect = page.rects.get(name);
-					writer.write("rotate: false" + "\n");
-					writer.write("xy: " + (int) rect.x + "," + (int) rect.y + "\n");
-					writer.write("size: " + (int) rect.width + "," + (int) rect.height + "\n");
-					writer.write("orig: " + (int) rect.width + "," + (int) rect.height + "\n");
-					writer.write("offset: 0, 0" + "\n");
-					writer.write("index: -1" + "\n");
+					PixmapPacker.PixmapPackerRectangle rect = page.rects.get(name);
+					writer.write("  rotate: false" + "\n");
+					writer.write("  xy: " + (int) rect.x + "," + (int) rect.y + "\n");
+					writer.write("  size: " + (int) rect.width + "," + (int) rect.height + "\n");
+					if (rect.splits != null) {
+						writer.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+						if (rect.pads != null) {
+							writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+						}
+					}
+					writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+					writer.write("  offset: " + rect.offsetX + ", " + (int)(rect.originalHeight - rect.height - rect.offsetY) + "\n");
+
+					writer.write("  index: -1" + "\n");
 				}
 			}
 		}		

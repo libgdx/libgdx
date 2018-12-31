@@ -88,7 +88,7 @@ public class TextArea extends TextField {
 				int i = start;
 				for (; i < end; i++)
 					if (glyphPositions[i] > x) break;
-				if (glyphPositions[i] - x <= x - glyphPositions[i - 1]) return i;
+				if (i > 0 && glyphPositions[i] - x <= x - glyphPositions[i - 1]) return i;
 				return Math.max(0, i - 1);
 			}
 		} else {
@@ -395,8 +395,7 @@ public class TextArea extends TextField {
 		@Override
 		public boolean keyDown (InputEvent event, int keycode) {
 			boolean result = super.keyDown(event, keycode);
-			Stage stage = getStage();
-			if (stage != null && stage.getKeyboardFocus() == TextArea.this) {
+			if (hasKeyboardFocus()) {
 				boolean repeat = false;
 				boolean shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
 				if (keycode == Input.Keys.DOWN) {

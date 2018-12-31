@@ -19,24 +19,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.NSExtensions;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSRange;
-import org.robovm.apple.uikit.UIAlertView;
-import org.robovm.apple.uikit.UIAlertViewDelegate;
-import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
-import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIKeyboardType;
-import org.robovm.apple.uikit.UIReturnKeyType;
-import org.robovm.apple.uikit.UITextAutocapitalizationType;
-import org.robovm.apple.uikit.UITextAutocorrectionType;
-import org.robovm.apple.uikit.UITextField;
-import org.robovm.apple.uikit.UITextFieldDelegate;
-import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
-import org.robovm.apple.uikit.UITextSpellCheckingType;
-import org.robovm.apple.uikit.UITouch;
-import org.robovm.apple.uikit.UITouchPhase;
+import org.robovm.apple.foundation.*;
+import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.Method;
 import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
@@ -89,6 +73,8 @@ public class IOSInput implements Input {
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
+	float[] pressures = new float[MAX_TOUCHES];
+	boolean pressureSupported;
 	// we store the pointer to the UITouch struct here, or 0
 	long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
@@ -124,6 +110,11 @@ public class IOSInput implements Input {
 		setupCompass();
 		UIDevice device = UIDevice.getCurrentDevice();
 		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
+
+		if (app.getIosVersion() >= 9){
+			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
+		}
 	}
 
 	protected void setupCompass () {
@@ -327,6 +318,16 @@ public class IOSInput implements Input {
 	@Override
 	public boolean isTouched (int pointer) {
 		return touchDown[pointer] != 0;
+	}
+
+	@Override
+	public float getPressure () {
+		return pressures[0];
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return pressures[pointer];
 	}
 
 	@Override
@@ -554,7 +555,8 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		if (peripheral == Peripheral.Compass) return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.Pressure) return pressureSupported;
 		return false;
 	}
 
@@ -678,6 +680,12 @@ public class IOSInput implements Input {
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
+			// if its not supported, we will simply use 1.0f when touch is present
+			float pressure = 1.0f;
+			if (pressureSupported) {
+				pressure = (float)touch.getForce();
+			}
+
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
@@ -693,6 +701,7 @@ public class IOSInput implements Input {
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
 					deltaY[event.pointer] = 0;
+					pressures[event.pointer] = pressure;
 					numTouched++;
 				}
 
@@ -703,6 +712,7 @@ public class IOSInput implements Input {
 						deltaY[event.pointer] = event.y - touchY[event.pointer];
 						touchX[event.pointer] = event.x;
 						touchY[event.pointer] = event.y;
+						pressures[event.pointer] = pressure;
 					}
 				}
 
@@ -714,6 +724,7 @@ public class IOSInput implements Input {
 						touchY[event.pointer] = event.y;
 						deltaX[event.pointer] = 0;
 						deltaY[event.pointer] = 0;
+						pressures[event.pointer] = 0;
 						numTouched--;
 					}
 				}

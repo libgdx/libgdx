@@ -60,6 +60,10 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return super.remove(key);
 	}
 
+	public V removeIndex (int index) {
+		return super.remove(keys.removeIndex(index));
+	}
+
 	public void clear (int maximumCapacity) {
 		keys.clear();
 		super.clear(maximumCapacity);
@@ -206,7 +210,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			map.remove(keys.get(nextIndex - 1));
+			((OrderedMap)map).removeIndex(nextIndex - 1);
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}
@@ -237,7 +241,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			map.remove(keys.get(currentIndex));
+			((OrderedMap)map).removeIndex(currentIndex);
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}

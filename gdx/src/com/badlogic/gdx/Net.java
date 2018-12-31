@@ -97,6 +97,7 @@ public interface Net {
 	 * <li>POST</li>
 	 * <li>PUT</li>
 	 * <li>DELETE</li>
+	 * <li>PATCH</li>
 	 * </ul> */
 	public static interface HttpMethods {
 
@@ -104,6 +105,7 @@ public interface Net {
 		public static final String POST = "POST";
 		public static final String PUT = "PUT";
 		public static final String DELETE = "DELETE";
+		public static final String PATCH = "PATCH";
 
 	}
 

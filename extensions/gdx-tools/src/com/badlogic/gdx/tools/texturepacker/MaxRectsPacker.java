@@ -83,8 +83,10 @@ public class MaxRectsPacker implements Packer {
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
-			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
-			Page result = packPage(progress, inputRects);
+			progress.count = n - inputRects.size + 1;
+			if (progress.update(progress.count, n)) break;
+
+			Page result = packPage(inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
@@ -92,7 +94,7 @@ public class MaxRectsPacker implements Packer {
 
 	}
 
-	private Page packPage (ProgressListener progress, Array<Rect> inputRects) {
+	private Page packPage (Array<Rect> inputRects) {
 		int paddingX = settings.paddingX, paddingY = settings.paddingY;
 		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
 		boolean edgePadX = false, edgePadY = false;
@@ -157,7 +159,8 @@ public class MaxRectsPacker implements Packer {
 		if (settings.square) {
 			int minSize = Math.max(minWidth, minHeight);
 			int maxSize = Math.min(settings.maxWidth, settings.maxHeight);
-			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot);
+			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
 			int size = sizeSearch.reset(), i = 0;
 			while (size != -1) {
 				Page result = packAtSize(true, size + adjustX, size + adjustY, inputRects);
@@ -176,8 +179,10 @@ public class MaxRectsPacker implements Packer {
 			bestResult.height = Math.max(bestResult.width, bestResult.height) - paddingY;
 			return bestResult;
 		} else {
-			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
-			BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot);
+			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
+			BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
 			int width = widthSearch.reset(), i = 0;
 			int height = settings.square ? width : heightSearch.reset();
 			while (true) {
@@ -244,22 +249,33 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static class BinarySearch {
-		final boolean pot;
+		final boolean pot, mod4;
 		final int min, max, fuzziness;
 		int low, high, current;
 
-		public BinarySearch (int min, int max, int fuzziness, boolean pot) {
-			this.min = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2)) : min;
-			this.max = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2)) : max;
+		public BinarySearch (int min, int max, int fuzziness, boolean pot, boolean mod4) {
+			if (pot) {
+				this.min = (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2));
+				this.max = (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2));
+			} else if (mod4) {
+				this.min = min % 4 == 0 ? min : min + 4 - (min % 4);
+				this.max = max % 4 == 0 ? max : max + 4 - (max % 4);
+			} else {
+				this.min = min;
+				this.max = max;
+			}
 			this.fuzziness = pot ? 0 : fuzziness;
 			this.pot = pot;
+			this.mod4 = mod4;
 		}
 
 		public int reset () {
 			low = min;
 			high = max;
 			current = (low + high) >>> 1;
-			return pot ? (int)Math.pow(2, current) : current;
+			if (pot) return (int)Math.pow(2, current);
+			if (mod4) return current % 4 == 0 ? current : current + 4 - (current % 4);
+			return current;
 		}
 
 		public int next (boolean result) {
@@ -270,7 +286,9 @@ public class MaxRectsPacker implements Packer {
 				high = current - 1;
 			current = (low + high) >>> 1;
 			if (Math.abs(low - high) < fuzziness) return -1;
-			return pot ? (int)Math.pow(2, current) : current;
+			if (pot) return (int)Math.pow(2, current);
+			if (mod4) return current % 4 == 0 ? current : current + 4 - (current % 4);
+			return current;
 		}
 	}
 

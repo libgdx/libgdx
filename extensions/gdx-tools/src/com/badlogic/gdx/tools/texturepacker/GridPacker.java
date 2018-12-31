@@ -67,7 +67,9 @@ public class GridPacker implements Packer {
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
-			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
+			progress.count = n - inputRects.size + 1;
+			if (progress.update(progress.count, n)) break;
+
 			Page page = packPage(inputRects, cellWidth, cellHeight, maxWidth, maxHeight);
 			page.width -= paddingX;
 			page.height -= paddingY;

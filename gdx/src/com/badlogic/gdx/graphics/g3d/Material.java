@@ -70,7 +70,7 @@ public class Material extends Attributes {
 	}
 
 	/** Create a copy of this material */
-	public final Material copy () {
+	public Material copy () {
 		return new Material(this);
 	}
 	

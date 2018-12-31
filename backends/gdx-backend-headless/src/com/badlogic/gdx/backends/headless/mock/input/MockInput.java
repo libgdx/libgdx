@@ -111,6 +111,16 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return 0;
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return 0;
+	}
+
+	@Override
 	public boolean isButtonPressed(int button) {
 		return false;
 	}
