@@ -172,6 +172,16 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isKeyPressed (int key) {
 		if (key == Keys.ANY_KEY) {
 			return pressedKeyCount > 0;
@@ -285,9 +295,9 @@ public class GwtInput implements Input {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return false;
 		if (peripheral == Peripheral.Compass) return false;
-		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
-		if (peripheral == Peripheral.OnscreenKeyboard) return false;
+		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.Vibrator) return false;
 		return false;
 	}

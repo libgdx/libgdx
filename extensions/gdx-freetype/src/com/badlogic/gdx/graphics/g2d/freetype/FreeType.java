@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -29,6 +31,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class FreeType {
 	// @off
@@ -76,9 +79,34 @@ public class FreeType {
 			FT_Done_FreeType((FT_Library)library);
 		*/
 
-		public Face newFace(FileHandle font, int faceIndex) {
-			byte[] data = font.readBytes();
-			return newMemoryFace(data, data.length, faceIndex);
+		public Face newFace(FileHandle fontFile, int faceIndex) {
+			ByteBuffer buffer = null;
+			try {
+				buffer = fontFile.map();
+			} catch (GdxRuntimeException ignored) {
+				// OK to ignore, some platforms do not support file mapping.
+			}
+			if (buffer == null) {
+				InputStream input = fontFile.read();
+				try {
+					int fileSize = (int)fontFile.length();
+					if (fileSize == 0) {
+						// Copy to a byte[] to get the size, then copy to the buffer.
+						byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
+						buffer = BufferUtils.newUnsafeByteBuffer(data.length);
+						BufferUtils.copy(data, 0, buffer, data.length);
+					} else {
+						// Trust the specified file size.
+						buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
+						StreamUtils.copyStream(input, buffer);
+					}
+				} catch (IOException ex) {
+					throw new GdxRuntimeException(ex);
+				} finally {
+					StreamUtils.closeQuietly(input);
+				}
+			}
+			return newMemoryFace(buffer, faceIndex);
 		}
 
 		public Face newMemoryFace(byte[] data, int dataSize, int faceIndex) {
@@ -894,8 +922,10 @@ public class FreeType {
    public static Library initFreeType() {   	
    	new SharedLibraryLoader().load("gdx-freetype");
    	long address = initFreeTypeJni();
-   	if(address == 0) throw new GdxRuntimeException("Couldn't initialize FreeType library, FreeType error code: " + getLastErrorCode());
-   	else return new Library(address);
+   	if(address == 0)
+   		throw new GdxRuntimeException("Couldn't initialize FreeType library, FreeType error code: " + getLastErrorCode());
+   	else
+   		return new Library(address);
    }
    
 	private static native long initFreeTypeJni(); /*

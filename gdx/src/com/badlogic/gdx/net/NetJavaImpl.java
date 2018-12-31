@@ -150,7 +150,7 @@ public class NetJavaImpl {
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			// should be enabled to upload data.
-			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT);
+			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT) || method.equalsIgnoreCase(HttpMethods.PATCH);
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);

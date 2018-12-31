@@ -136,7 +136,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	public void addAll (Array<? extends T> array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (Array<? extends T> array, int offset, int length) {
@@ -307,7 +307,10 @@ public class ObjectSet<T> implements Iterable<T> {
 		// If the removed location was not last, move the last tuple to the removed location.
 		stashSize--;
 		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
+		if (index < lastIndex) {
+			keyTable[index] = keyTable[lastIndex];
+			keyTable[lastIndex] = null;
+		}
 	}
 
 	/** Returns true if the set is empty. */
@@ -394,6 +397,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
@@ -444,6 +448,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (!(obj instanceof ObjectSet)) return false;
 		ObjectSet other = (ObjectSet)obj;
 		if (other.size != size) return false;
+		T[] keyTable = this.keyTable; 
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null && !other.contains(keyTable[i])) return false;
 		return true;

@@ -137,14 +137,14 @@ public class TiledMapTileLayer extends MapLayer {
 			return this;
 		}
 
-		/** @return The rotation of this cell, in degrees. */
+		/** @return The rotation of this cell, in 90 degree increments. */
 		public int getRotation () {
 			return rotation;
 		}
 
-		/** Sets the rotation of this cell, in degrees.
+		/** Sets the rotation of this cell, in 90 degree increments.
 		 * 
-		 * @param rotation the rotation in degrees. 
+		 * @param rotation the rotation in 90 degree increments (see ints below). 
 		 * @return this, for method chaining */
 		public Cell setRotation (int rotation) {
 			this.rotation = rotation;

@@ -197,7 +197,7 @@ public class IOSApplication implements Application {
 		return new IOSInput(this);
 	}
 
-	private int getIosVersion () {
+	int getIosVersion () {
 		String systemVersion = UIDevice.currentDevice().systemVersion();
 		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
 		return version;

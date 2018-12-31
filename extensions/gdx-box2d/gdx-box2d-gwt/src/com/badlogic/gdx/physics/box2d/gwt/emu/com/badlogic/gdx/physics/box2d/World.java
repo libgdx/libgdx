@@ -316,6 +316,15 @@ public final class World implements Disposable {
 		}
 	}
 
+	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
+	public void getFixtures (Array<com.badlogic.gdx.physics.box2d.Fixture> fixtures) {
+		fixtures.clear();
+		fixtures.ensureCapacity(this.fixtures.size);
+		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
+			fixtures.add(iter.next());
+		}
+	}
+
 	/** @return all joints currently in the simulation */
 	public void getJoints (Array<Joint> joints) {
 		joints.clear();

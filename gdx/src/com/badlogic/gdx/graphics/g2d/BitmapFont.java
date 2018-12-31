@@ -154,6 +154,9 @@ public class BitmapFont implements Disposable {
 		this.integer = integer;
 
 		if (pageRegions == null || pageRegions.size == 0) {
+			if (data.imagePaths == null)
+				throw new IllegalArgumentException("If no regions are specified, the font data must have an images path.");
+
 			// Load each path.
 			int n = data.imagePaths.length;
 			regions = new Array(n);
@@ -382,8 +385,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public String toString () {
-		if (data.fontFile != null) return data.fontFile.nameWithoutExtension();
-		return super.toString();
+		return data.name != null ? data.name : super.toString();
 	}
 
 	/** Represents a single character in a font page. */
@@ -430,6 +432,8 @@ public class BitmapFont implements Disposable {
 
 	/** Backing data for a {@link BitmapFont}. */
 	static public class BitmapFontData {
+		/** The name of the font, or null. */
+		public String name;
 		/** An array of the image paths, for multiple texture pages. */
 		public String[] imagePaths;
 		public FileHandle fontFile;
@@ -483,6 +487,8 @@ public class BitmapFont implements Disposable {
 
 		public void load (FileHandle fontFile, boolean flip) {
 			if (imagePaths != null) throw new IllegalStateException("Already loaded.");
+
+			name = fontFile.nameWithoutExtension();
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 			try {
@@ -896,6 +902,10 @@ public class BitmapFont implements Disposable {
 		 * @throws IllegalArgumentException if the resulting scale is zero. */
 		public void scale (float amount) {
 			setScale(scaleX + amount, scaleY + amount);
+		}
+
+		public String toString () {
+			return name != null ? name : super.toString();
 		}
 	}
 }

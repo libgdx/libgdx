@@ -53,16 +53,15 @@ import java.awt.image.BufferedImage;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
+	String rootPath;
 	private final Settings settings;
 	private final Packer packer;
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
-	private File rootDir;
 	private ProgressListener progress;
 
-	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
+	/** @param rootDir See {@link #setRootDir(File)}. */
 	public TexturePacker (File rootDir, Settings settings) {
-		this.rootDir = rootDir;
 		this.settings = settings;
 
 		if (settings.pot) {
@@ -72,20 +71,44 @@ public class TexturePacker {
 				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
+		if (settings.multipleOfFour) {
+			if (settings.maxWidth % 4 != 0)
+				throw new RuntimeException("If mod4 is true, maxWidth must be evenly divisible by 4: " + settings.maxWidth);
+			if (settings.maxHeight % 4 != 0)
+				throw new RuntimeException("If mod4 is true, maxHeight must be evenly divisible by 4: " + settings.maxHeight);
+		}
+
 		if (settings.grid)
 			packer = new GridPacker(settings);
 		else
 			packer = new MaxRectsPacker(settings);
-		imageProcessor = new ImageProcessor(rootDir, settings);
+
+		imageProcessor = newImageProcessor(settings);
+		setRootDir(rootDir);
 	}
 
 	public TexturePacker (Settings settings) {
 		this(null, settings);
 	}
 
+	protected ImageProcessor newImageProcessor (Settings settings) {
+		return new ImageProcessor(settings);
+	}
+
+	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
+	public void setRootDir (File rootDir) {
+		if (rootDir == null) {
+			rootPath = null;
+			return;
+		}
+		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+		if (!rootPath.endsWith("/")) rootPath += "/";
+	}
+
 	public void addImage (File file) {
 		InputImage inputImage = new InputImage();
 		inputImage.file = file;
+		inputImage.rootPath = rootPath;
 		inputImages.add(inputImage);
 	}
 
@@ -107,23 +130,24 @@ public class TexturePacker {
 				}
 			};
 		}
-		progress.reset();
 
 		progress.start(1);
 		int n = settings.scale.length;
 		for (int i = 0; i < n; i++) {
 			progress.start(1f / n);
 
-			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
 
 			if (settings.scaleResampling != null && settings.scaleResampling.length > i && settings.scaleResampling[i] != null)
 				imageProcessor.setResampling(settings.scaleResampling[i]);
 
-			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
+			progress.start(0.35f);
+			progress.count = 0;
+			progress.total = inputImages.size;
+			for (int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
-					imageProcessor.addImage(inputImage.file);
+					imageProcessor.addImage(inputImage.file, inputImage.rootPath);
 				else
 					imageProcessor.addImage(inputImage.image, inputImage.name);
 				if (progress.update(ii + 1, nn)) return;
@@ -131,10 +155,14 @@ public class TexturePacker {
 			progress.end();
 
 			progress.start(0.19f);
+			progress.count = 0;
+			progress.total = imageProcessor.getImages().size;
 			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
 			progress.end();
 
 			progress.start(0.45f);
+			progress.count = 0;
+			progress.total = pages.size;
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
 			writeImages(outputDir, scaledPackFileName, pages);
 			progress.end();
@@ -181,6 +209,10 @@ public class TexturePacker {
 			if (settings.pot) {
 				width = MathUtils.nextPowerOfTwo(width);
 				height = MathUtils.nextPowerOfTwo(height);
+			}
+			if (settings.multipleOfFour) {
+				width = width % 4 == 0 ? width : width + 4 - (width % 4);
+				height = height % 4 == 0 ? height : height + 4 - (height % 4);
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
@@ -306,6 +338,7 @@ public class TexturePacker {
 			}
 
 			if (progress.update(p + 1, pn)) return;
+			progress.count++;
 		}
 	}
 
@@ -373,7 +406,8 @@ public class TexturePacker {
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
-		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
+		writer
+			.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
 
 		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 		if (rect.splits != null) {
@@ -411,6 +445,7 @@ public class TexturePacker {
 		}
 	}
 
+	/** @param progressListener May be null. */
 	public void setProgressListener (ProgressListener progressListener) {
 		this.progress = progressListener;
 	}
@@ -477,7 +512,7 @@ public class TexturePacker {
 		private File file;
 		int score1, score2;
 
-		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
+		public Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
 			image = new BufferedImage(source.getColorModel(),
 				source.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null),
 				source.getColorModel().isAlphaPremultiplied(), null);
@@ -603,19 +638,7 @@ public class TexturePacker {
 	static public void process (Settings settings, String input, String output, String packFileName,
 		final ProgressListener progress) {
 		try {
-			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName) {
-				protected TexturePacker newTexturePacker (File root, Settings settings) {
-					TexturePacker packer = super.newTexturePacker(root, settings);
-					packer.setProgressListener(progress);
-					return packer;
-				}
-			};
-			// Sort input files by name to avoid platform-dependent atlas output changes.
-			processor.setComparator(new Comparator<File>() {
-				public int compare (File file1, File file2) {
-					return file1.getName().compareTo(file2.getName());
-				}
-			});
+			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
 			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing images.", ex);
@@ -681,48 +704,53 @@ public class TexturePacker {
 	static public interface Packer {
 		public Array<Page> pack (Array<Rect> inputRects);
 
-		/** @param progress May be null. */
 		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
 	}
 
 	static final class InputImage {
 		File file;
-		String name;
+		String rootPath, name;
 		BufferedImage image;
 	}
 
 	static public abstract class ProgressListener {
-		private float total, scale = 1, lastUpdate;
+		private float scale = 1, lastUpdate;
 		private final FloatArray portions = new FloatArray(8);
 		volatile boolean cancel;
+		private String message = "";
+		int count, total;
 
-		void reset () {
+		public void reset () {
 			scale = 1;
+			message = "";
+			count = 0;
 			total = 0;
-			progress(total);
+			progress(0);
 		}
 
-		void start (float portion) {
+		public void set (String message) {
+		}
+
+		public void start (float portion) {
 			if (portion == 0) throw new IllegalArgumentException("portion cannot be 0.");
 			portions.add(lastUpdate);
-			portions.add(portion * scale);
+			portions.add(scale * portion);
 			portions.add(scale);
 			scale *= portion;
 		}
 
 		/** Returns true if cancelled. */
-		boolean update (int current, int total) {
-			if (total == 0) throw new IllegalArgumentException("total cannot be 0.");
-			update(current / (float)total);
+		public boolean update (int count, int total) {
+			update(total == 0 ? 0 : count / (float)total);
 			return isCancelled();
 		}
 
-		void update (float percent) {
+		public void update (float percent) {
 			lastUpdate = portions.get(portions.size - 3) + portions.get(portions.size - 2) * percent;
 			progress(lastUpdate);
 		}
 
-		void end () {
+		public void end () {
 			scale = portions.pop();
 			float portion = portions.pop();
 			lastUpdate = portions.pop() + portion;
@@ -737,12 +765,38 @@ public class TexturePacker {
 			return cancel;
 		}
 
+		public void setMessage (String message) {
+			this.message = message;
+			progress(lastUpdate);
+		}
+
+		public String getMessage () {
+			return message;
+		}
+
+		public void setCount (int count) {
+			this.count = count;
+		}
+
+		public int getCount () {
+			return count;
+		}
+
+		public void setTotal (int total) {
+			this.total = total;
+		}
+
+		public int getTotal () {
+			return total;
+		}
+
 		abstract public void progress (float progress);
 	}
 
 	/** @author Nathan Sweet */
 	static public class Settings {
 		public boolean pot = true;
+		public boolean multipleOfFour;
 		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
 		public boolean duplicatePadding = false;
@@ -789,6 +843,7 @@ public class TexturePacker {
 			fast = settings.fast;
 			rotation = settings.rotation;
 			pot = settings.pot;
+			multipleOfFour = settings.multipleOfFour;
 			minWidth = settings.minWidth;
 			minHeight = settings.minHeight;
 			maxWidth = settings.maxWidth;

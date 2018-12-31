@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extensions>
 	<extension>
+		<name>spine-libgdx</name>
+		<description>Spine Runtimes for loading and rendering 2D skeletal animation</description>
+		<package>com.esotericsoftware.spine</package>
+		<version>3.6.53.1</version>
+		<compatibility>1.9.6</compatibility>
+		<website>http://esotericsoftware.com/</website>
+		<gwtInherits></gwtInherits>
+		<projects>
+			<core>
+				<dependency>com.esotericsoftware.spine:spine-libgdx</dependency>
+			</core>
+			<desktop></desktop>
+			<android></android>
+			<ios></ios>
+			<ios-moe></ios-moe>
+			<html></html>
+		</projects>
+	</extension>
+	<extension>
 		<name>Overlap2D</name>
 		<description>Level and UI Editor Runtime</description>
 		<package>com.underwaterapps.overlap2druntime</package>

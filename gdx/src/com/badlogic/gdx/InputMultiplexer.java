@@ -17,13 +17,13 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
-	private DelayedRemovalArray<InputProcessor> processors = new DelayedRemovalArray(4);
+	private SnapshotArray<InputProcessor> processors = new SnapshotArray(4);
 
 	public InputMultiplexer () {
 	}
@@ -69,15 +69,15 @@ public class InputMultiplexer implements InputProcessor {
 		this.processors.addAll(processors);
 	}
 
-	public DelayedRemovalArray<InputProcessor> getProcessors () {
+	public SnapshotArray<InputProcessor> getProcessors () {
 		return processors;
 	}
 
 	public boolean keyDown (int keycode) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).keyDown(keycode)) return true;
+				if (((InputProcessor)items[i]).keyDown(keycode)) return true;
 		} finally {
 			processors.end();
 		}
@@ -85,10 +85,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean keyUp (int keycode) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).keyUp(keycode)) return true;
+				if (((InputProcessor)items[i]).keyUp(keycode)) return true;
 		} finally {
 			processors.end();
 		}
@@ -96,10 +96,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean keyTyped (char character) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).keyTyped(character)) return true;
+				if (((InputProcessor)items[i]).keyTyped(character)) return true;
 		} finally {
 			processors.end();
 		}
@@ -107,10 +107,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
+				if (((InputProcessor)items[i]).touchDown(screenX, screenY, pointer, button)) return true;
 		} finally {
 			processors.end();
 		}
@@ -118,10 +118,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
+				if (((InputProcessor)items[i]).touchUp(screenX, screenY, pointer, button)) return true;
 		} finally {
 			processors.end();
 		}
@@ -129,10 +129,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
+				if (((InputProcessor)items[i]).touchDragged(screenX, screenY, pointer)) return true;
 		} finally {
 			processors.end();
 		}
@@ -140,10 +140,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean mouseMoved (int screenX, int screenY) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).mouseMoved(screenX, screenY)) return true;
+				if (((InputProcessor)items[i]).mouseMoved(screenX, screenY)) return true;
 		} finally {
 			processors.end();
 		}
@@ -151,10 +151,10 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public boolean scrolled (int amount) {
-		processors.begin();
+		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (processors.get(i).scrolled(amount)) return true;
+				if (((InputProcessor)items[i]).scrolled(amount)) return true;
 		} finally {
 			processors.end();
 		}

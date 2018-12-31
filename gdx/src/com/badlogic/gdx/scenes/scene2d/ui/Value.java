@@ -23,6 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
  * number of value instances that need to be created and reduces verbosity in code that specifies values.
  * @author Nathan Sweet */
 abstract public class Value {
+	/** Calls {@link #get(Actor)} with null. */
+	public float get () {
+		return get(null);
+	}
+
 	/** @param context May be null. */
 	abstract public float get (Actor context);
 
@@ -40,6 +45,10 @@ abstract public class Value {
 
 		public float get (Actor context) {
 			return value;
+		}
+
+		public String toString () {
+			return Float.toString(value);
 		}
 	}
 

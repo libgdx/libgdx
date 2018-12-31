@@ -16,16 +16,16 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -135,6 +135,7 @@ public class ParticleEmitter {
 		premultipliedAlpha = emitter.premultipliedAlpha;
 		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 		spriteMode = emitter.spriteMode;
+		setPosition(emitter.getX(),emitter.getY());
 	}
 
 	private void initialize () {
@@ -532,7 +533,7 @@ public class ParticleEmitter {
 				float radius2 = radiusX * radiusX;
 				while (true) {
 					float px = MathUtils.random(width) - radiusX;
-					float py = MathUtils.random(height) - radiusY;
+					float py = MathUtils.random(width) - radiusX;
 					if (px * px + py * py <= radius2) {
 						x += px;
 						y += py / scaleY;

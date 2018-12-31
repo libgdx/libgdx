@@ -46,7 +46,11 @@ public enum IOSDevice {
 	IPHONE_8("iPhone10,4", 326),
     	IPHONE_8_PLUS("iPhone10,5", 401),
 	IPHONE_X("iPhone10,6", 458),
-	
+	IPHONE_XR("iPhone11,8", 326),
+	IPHONE_XS("iPhone11,2", 458),
+	IPHONE_XS_MAX("iPhone11,4", 458),
+	IPHONE_XS_MAX_2_NANO_SIM("iPhone11,6", 458),
+
 	IPOD_TOUCH_1G("iPod1,1", 163),
 	IPOD_TOUCH_2G("iPod2,1", 163),
 	IPOD_TOUCH_3G("iPod3,1", 163),
@@ -92,6 +96,8 @@ public enum IOSDevice {
 	IPAD_PRO_2_WIFI_CELLULAR("iPad7,2", 264),
 	IPAD_PRO_10_5_WIFI("iPad7,3", 264),
 	IPAD_PRO_10_5_WIFI_CELLULAR("iPad7,4", 264),
+	IPAD_6_WIFI("iPad7,5", 264),
+	IPAD_6_WIFI_CELLULAR("iPad7,6", 264),
 
 	SIMULATOR_32("i386", 264),
 	SIMULATOR_64("x86_64", 264);

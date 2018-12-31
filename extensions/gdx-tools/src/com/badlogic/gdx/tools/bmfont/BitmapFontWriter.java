@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
-import com.badlogic.gdx.tools.hiero.Hiero;
 import com.badlogic.gdx.utils.Array;
 
 /** A utility to output BitmapFontData to a FNT file. This can be useful for caching the result from TrueTypeFont, for faster load
@@ -30,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * The font file format is from the AngelCodeFont BMFont tool.
  * <p>
- * Output is nearly identical to the FreeType settting in the {@link Hiero} tool. BitmapFontWriter gives more flexibility, eg
+ * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}. BitmapFontWriter gives more flexibility, eg
  * borders and shadows can be used. Hiero is able to avoid outputting the same glyph image more than once if multiple character
  * codes have the exact same glyph.
  * @author mattdesl AKA davedes */
