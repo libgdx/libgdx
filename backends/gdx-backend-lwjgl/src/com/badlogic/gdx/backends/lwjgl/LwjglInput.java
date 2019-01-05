@@ -212,6 +212,8 @@ final public class LwjglInput implements Input {
 					}
 				});
 
+				dialog.setModal(true);
+				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
 				dialog.dispose();
 

@@ -94,42 +94,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
 		name = fontFile.nameWithoutExtension();
-		int fileSize = (int)fontFile.length();
-
 		library = FreeType.initFreeType();
-		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
-
-		ByteBuffer buffer = null;
-
-		try {
-			buffer = fontFile.map();
-		} catch (GdxRuntimeException e) {
-			// Silently error, certain platforms do not support file mapping.
-		}
-
-		if (buffer == null) {
-			InputStream input = fontFile.read();
-			try {
-				if (fileSize == 0) {
-					// Copy to a byte[] to get the file size, then copy to the buffer.
-					byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
-					buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-					BufferUtils.copy(data, 0, buffer, data.length);
-				} else {
-					// Trust the specified file size.
-					buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
-					StreamUtils.copyStream(input, buffer);
-				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException(ex);
-			} finally {
-				StreamUtils.closeQuietly(input);
-			}
-		}
-
-		face = library.newMemoryFace(buffer, faceIndex);
-		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + fontFile);
-
+		face = library.newFace(fontFile, faceIndex);
 		if (checkForBitmapFont()) return;
 		setPixelSizes(0, 15);
 	}
