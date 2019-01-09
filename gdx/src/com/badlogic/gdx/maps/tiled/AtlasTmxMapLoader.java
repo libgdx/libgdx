@@ -133,6 +133,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			}
 
 			FileHandle tmxFile = resolve(fileName);
+			this.tmxFile = tmxFile;
 			root = xml.parse(tmxFile);
 			ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
 			FileHandle atlasFile = loadAtlas(root, tmxFile);

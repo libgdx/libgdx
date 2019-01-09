@@ -77,6 +77,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
 			this.flipY = parameters.flipY;
 			FileHandle tmxFile = resolve(fileName);
+			this.tmxFile = tmxFile;
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			Array<FileHandle> textureFiles = loadTilesets(root, tmxFile);

@@ -1,3 +1,5 @@
+[1.9.10]
+- Added support for 'file' properties when loading Tiled maps.
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
 - API Addition: Add support for 9 patch packing in PixmapPacker

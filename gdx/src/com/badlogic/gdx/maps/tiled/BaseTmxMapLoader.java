@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.maps.tiled;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -67,6 +68,8 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected int mapTileHeight;
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
+
+	protected FileHandle tmxFile;
 
 	protected TiledMap map;
 
@@ -351,6 +354,8 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			String opaqueColor = value.substring(3);
 			String alpha = value.substring(1, 3);
 			return Color.valueOf(opaqueColor + alpha);
+		}else if(type.equals("file")){
+			return getRelativeFileHandle(tmxFile, value);
 		} else {
 			throw new GdxRuntimeException("Wrong type given for property " + name + ", given : " + type
 				+ ", supported : string, bool, int, float, color");
