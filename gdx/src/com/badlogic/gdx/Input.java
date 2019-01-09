@@ -597,6 +597,9 @@ public interface Input {
 	 * <code> <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /></code> in your manifest file in order for this to work.
 	 * @return The speed in meters/second */
 	public float getGeolocationSpeed ();
+	
+	/** @return The maximum number of pointers supported */
+	public int getMaxPointers ();
 
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */

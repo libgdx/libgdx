@@ -288,6 +288,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return NUM_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		synchronized (this) {
 			return touchX[0];
@@ -847,8 +852,13 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator)
-			return (Build.VERSION.SDK_INT >= 11 && vibrator != null) ? vibrator.hasVibrator() : vibrator != null;
+		if (peripheral == Peripheral.Vibrator) {
+			if (Build.VERSION.SDK_INT >= 11) {
+				return vibrator != null && vibrator.hasVibrator();
+			} else {
+				return vibrator != null;
+			}
+		}
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;

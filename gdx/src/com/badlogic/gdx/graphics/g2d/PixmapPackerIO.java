@@ -2,6 +2,8 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -11,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 /** Saves PixmapPackers to files.
  * @author jshapcott */
 public class PixmapPackerIO {
+
+	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
 	/** Image formats which can be used when saving a PixmapPacker. */
 	public static enum ImageFormat {
@@ -36,6 +40,7 @@ public class PixmapPackerIO {
 		public ImageFormat format = ImageFormat.PNG;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
+		public boolean useIndexes;
 	}
 
 	/** Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
@@ -78,7 +83,16 @@ public class PixmapPackerIO {
 				writer.write("filter: " + parameters.minFilter.name() + "," + parameters.magFilter.name() + "\n");
 				writer.write("repeat: none" + "\n");
 				for (String name : page.rects.keys()) {
-					writer.write(name + "\n");
+					int imageIndex = -1;
+					String imageName = name;
+					if (parameters.useIndexes) {
+						Matcher matcher = indexPattern.matcher(imageName);
+						if (matcher.matches()) {
+							imageName = matcher.group(1);
+							imageIndex = Integer.parseInt(matcher.group(2));
+						}
+					}
+					writer.write(imageName + "\n");
 					PixmapPacker.PixmapPackerRectangle rect = page.rects.get(name);
 					writer.write("  rotate: false" + "\n");
 					writer.write("  xy: " + (int) rect.x + "," + (int) rect.y + "\n");
@@ -92,7 +106,7 @@ public class PixmapPackerIO {
 					writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
 					writer.write("  offset: " + rect.offsetX + ", " + (int)(rect.originalHeight - rect.height - rect.offsetY) + "\n");
 
-					writer.write("  index: -1" + "\n");
+					writer.write("  index: " + imageIndex +"\n");
 				}
 			}
 		}		

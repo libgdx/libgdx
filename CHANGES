@@ -1,3 +1,6 @@
+[1.9.10]
+- API Addition: Input allows getting the maximum number of pointers supported by the backend
+
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
 - API Addition: Add support for 9 patch packing in PixmapPacker
