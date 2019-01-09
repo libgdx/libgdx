@@ -40,7 +40,7 @@ public class PixmapPackerIO {
 		public ImageFormat format = ImageFormat.PNG;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
-		public boolean useIndexes = true;
+		public boolean useIndexes;
 	}
 
 	/** Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
