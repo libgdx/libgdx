@@ -167,7 +167,7 @@ public class LwjglAWTCanvas implements Application {
 
 		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALAudio();
 		if (Gdx.files == null) files = new LwjglFiles();
-		if (Gdx.net == null) net = new LwjglNet();
+		if (Gdx.net == null) net = new LwjglNet(config);
 		input = new LwjglAWTInput(this);
 		setGlobals();
 	}
