@@ -388,6 +388,7 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public float getGeolocationSpeed() {
 		return geo[3];
+	}
 
 	public int getMaxPointers () {
 		return MAX_TOUCHES;

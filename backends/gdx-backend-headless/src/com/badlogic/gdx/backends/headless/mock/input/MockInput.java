@@ -72,6 +72,8 @@ public class MockInput implements Input {
 
 	@Override
 	public float getGeolocationSpeed() {
+		return 0;
+	}
 
 	public int getMaxPointers () {
 		return 0;

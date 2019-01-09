@@ -154,6 +154,7 @@ public class GwtInput implements Input {
 	@Override
 	public float getGeolocationSpeed() {
 		return geolocationValues[3];
+	}
 
 	public int getMaxPointers () {
 		return MAX_TOUCHES;

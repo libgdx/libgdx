@@ -216,6 +216,7 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public float getGeolocationSpeed() {
 			return input.getGeolocationSpeed();
+		}
 
 		public int getMaxPointers () {
 			return input.getMaxPointers();
@@ -576,7 +577,7 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance() {
 				return new GwtInputTest();
 			}
-		},new Instancer() {
+		}, new Instancer() {
 			public GdxTest instance () {
 				return new IntegerBitmapFontTest();
 			}
