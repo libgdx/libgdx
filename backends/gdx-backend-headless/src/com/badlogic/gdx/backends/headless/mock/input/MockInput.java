@@ -56,6 +56,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return 0;
+	}
+
+	@Override
 	public int getX() {
 		return 0;
 	}
