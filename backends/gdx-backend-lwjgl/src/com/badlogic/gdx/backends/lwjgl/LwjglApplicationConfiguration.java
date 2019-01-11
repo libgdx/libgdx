@@ -33,6 +33,9 @@ public class LwjglApplicationConfiguration {
 	 * natives are not needed. */
 	static public boolean disableAudio;
 
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
+
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;
 	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version is

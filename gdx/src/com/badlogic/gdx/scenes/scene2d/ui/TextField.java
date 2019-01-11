@@ -287,14 +287,13 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	private Drawable getBackgroundDrawable () {
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
-		boolean focused = getStage() != null && getStage().getKeyboardFocus() == this;
+		boolean focused = hasKeyboardFocus();
 		if (focused != this.focused) {
 			this.focused = focused;
 			blinkTask.cancel();
@@ -865,8 +864,7 @@ public class TextField extends Widget implements Disableable {
 			blinkTask.cancel();
 			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 
-			Stage stage = getStage();
-			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+			if (!hasKeyboardFocus()) return false;
 
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
@@ -1004,8 +1002,7 @@ public class TextField extends Widget implements Disableable {
 				if (character < 32) return false;
 			}
 
-			Stage stage = getStage();
-			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+			if (!hasKeyboardFocus()) return false;
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 

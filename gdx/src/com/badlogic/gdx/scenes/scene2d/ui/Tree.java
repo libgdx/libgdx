@@ -176,7 +176,7 @@ public class Tree extends WidgetGroup {
 		prefWidth = Math.max(prefWidth, style.minus.getMinWidth());
 		prefHeight = getHeight();
 		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		computeSize(rootNodes, indentSpacing, plusMinusWidth);
+		computeSize(rootNodes, 0, plusMinusWidth);
 		prefWidth += padding * 2;
 		prefHeight = getHeight() - prefHeight;
 	}
@@ -192,7 +192,6 @@ public class Tree extends WidgetGroup {
 				Layout layout = (Layout)actor;
 				rowWidth += layout.getPrefWidth();
 				node.height = layout.getPrefHeight();
-				layout.pack();
 			} else {
 				rowWidth += actor.getWidth();
 				node.height = actor.getHeight();
@@ -220,6 +219,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			float x = indent + plusMinusWidth;
 			if (node.icon != null) x += spacing + node.icon.getMinWidth();
+			if (node.actor instanceof Layout) ((Layout)node.actor).pack();
 			y -= node.getHeight();
 			node.actor.setPosition(x, y);
 			y -= ySpacing;

@@ -102,7 +102,7 @@ public class Lwjgl3Application implements Application {
 			this.audio = Gdx.audio = new MockAudio();
 		}
 		this.files = Gdx.files = new Lwjgl3Files();
-		this.net = Gdx.net = new Lwjgl3Net();
+		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
 
 		Lwjgl3Window window = createWindow(config, listener, 0);

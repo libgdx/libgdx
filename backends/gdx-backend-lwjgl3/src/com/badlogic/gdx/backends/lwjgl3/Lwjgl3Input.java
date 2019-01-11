@@ -214,6 +214,11 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return 1;
+	}
+
+	@Override
 	public int getX() {
 		return mouseX;
 	}

@@ -1,5 +1,8 @@
 [1.9.10]
+- API Addition: Input allows getting the maximum number of pointers supported by the backend
+- API Addition: Configuration option added to allow setting a max number of threads to use for net requests
 - API Addition: Set playback rate of music and sound
+- API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
@@ -31,6 +34,10 @@
 - API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
 - API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
 - API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
+- API Change: DragScrollListener no longer requires the touch/mouse cursor to be directly above/below the scroll pane.
+- API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
+- API Change: List now handles more key presses.
+- API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
 
 [1.9.8]
 - Add iPhoneX images

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /** <p>
@@ -579,6 +578,9 @@ public interface Input {
 	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
 	
+	/** @return The maximum number of pointers supported */
+	public int getMaxPointers ();
+
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();

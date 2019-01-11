@@ -138,7 +138,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		audio = new AndroidAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(this);
+		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
