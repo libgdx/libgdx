@@ -273,7 +273,6 @@ public class SettingsDialog extends JDialog {
 		}
 		if (eclipseBox.isSelected()) {
 			list.add("eclipse");
-			list.add("afterEclipseImport");
 		}
 		if (ideaBox.isSelected()) {
 			list.add("idea");
