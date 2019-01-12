@@ -158,14 +158,48 @@ public class BaseAnimationController {
 
 	private final static Transform tmpT = new Transform();
 
-	private final static <T> int getFirstKeyframeIndexAtTime (final Array<NodeKeyframe<T>> arr, final float time) {
-		final int n = arr.size - 1;
-		for (int i = 0; i < n; i++) {
-			if (time >= arr.get(i).keytime && time <= arr.get(i + 1).keytime) {
-				return i;
+	/** Find first key frame index just before a given time
+	 * @param arr Key frames ordered by time ascending
+	 * @param time Time to search
+	 * @return key frame index, 0 if time is out of key frames time range */
+	final static <T> int getFirstKeyframeIndexAtTime (final Array<NodeKeyframe<T>> arr, final float time) {
+		final int lastIndex = arr.size - 1;
+
+		// edges cases : time out of range always return first index
+		if (lastIndex < 0 || time < arr.get(0).keytime || time > arr.get(lastIndex).keytime) {
+			return 0;
+		}
+
+		// binary search
+		int minIndex = 0;
+		int maxIndex = lastIndex;
+
+		for (;;) {
+			final float minTime = arr.get(minIndex).keytime;
+			final float maxTime = arr.get(maxIndex).keytime;
+
+			if (time < minTime) {
+				return Math.max(0, minIndex - 1);
+			}
+			if (time > maxTime) {
+				return Math.min(lastIndex - 1, maxIndex);
+			}
+			if (minTime == maxTime) {
+				return minIndex;
+			}
+
+			// best guess index based on time range
+			float t = (time - minTime) / (maxTime - minTime);
+			int index = (int)(minIndex + t * (maxIndex - minIndex));
+
+			if (time < arr.get(index).keytime) {
+				maxIndex = index - 1;
+			} else if (time > arr.get(index).keytime) {
+				minIndex = index + 1;
+			} else {
+				return Math.min(lastIndex - 1, index);
 			}
 		}
-		return 0;
 	}
 
 	private final static Vector3 getTranslationAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {
