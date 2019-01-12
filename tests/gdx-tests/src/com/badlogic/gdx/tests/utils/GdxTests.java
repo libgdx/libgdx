@@ -111,6 +111,7 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		ClipboardTest.class,
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
