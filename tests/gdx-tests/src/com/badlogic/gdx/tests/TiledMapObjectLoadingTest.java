@@ -134,7 +134,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				Circle circle = ((CircleMapObject)mapObject).getCircle();
 				shapeRenderer.circle(circle.x, circle.y, circle.radius);
 				shapeRenderer.end();
-			}else if (mapObject instanceof RectangleMapObject) {
+			} else if (mapObject instanceof RectangleMapObject) {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 				Rectangle rectangle = ((RectangleMapObject)mapObject).getRectangle();
 				shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
