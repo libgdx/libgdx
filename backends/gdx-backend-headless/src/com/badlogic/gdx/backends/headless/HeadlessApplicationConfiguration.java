@@ -21,4 +21,7 @@ public class HeadlessApplicationConfiguration {
 	public float renderInterval = 1f / 60f;
 	/** Preferences directory for headless. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
 }

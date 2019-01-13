@@ -146,7 +146,7 @@ public class LwjglCanvas implements Application {
 		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
-		net = new LwjglNet();
+		net = new LwjglNet(config);
 		this.listener = listener;
 
 		Gdx.app = this;

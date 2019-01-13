@@ -39,6 +39,10 @@ import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	boolean disableAudio = false;
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	int maxNetThreads = Integer.MAX_VALUE;
+
 	int audioDeviceSimultaneousSources = 16;
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;

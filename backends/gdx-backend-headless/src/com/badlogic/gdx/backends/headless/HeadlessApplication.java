@@ -67,7 +67,7 @@ public class HeadlessApplication implements Application {
 		setApplicationLogger(new HeadlessApplicationLogger());
 		this.listener = listener;
 		this.files = new HeadlessFiles();
-		this.net = new HeadlessNet();
+		this.net = new HeadlessNet(config);
 		// the following elements are not applicable for headless applications
 		// they are only implemented as mock objects
 		this.graphics = new MockGraphics();
