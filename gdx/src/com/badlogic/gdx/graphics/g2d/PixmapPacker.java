@@ -18,6 +18,8 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -107,6 +109,8 @@ public class PixmapPacker implements Disposable {
 	Color transparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
+
+	static Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
 	/** Uses {@link GuillotineStrategy}.
 	 * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy) */
@@ -355,11 +359,18 @@ public class PixmapPacker implements Disposable {
 					if (rect.splits != null) {
 						region.splits = rect.splits;
 						region.pads = rect.pads;
-
 					}
 
-					region.name = name;
-					region.index = -1;
+					int imageIndex = -1;
+					String imageName = name;
+					Matcher matcher = indexPattern.matcher(imageName);
+					if (matcher.matches()) {
+						imageName = matcher.group(1);
+						imageIndex = Integer.parseInt(matcher.group(2));
+					}
+
+					region.name = imageName;
+					region.index = imageIndex;
 					region.offsetX = rect.offsetX;
 					region.offsetY = (int)(rect.originalHeight - rect.height - rect.offsetY);
 					region.originalWidth = rect.originalWidth;
