@@ -102,7 +102,7 @@ public class Lwjgl3Application implements Application {
 			this.audio = Gdx.audio = new MockAudio();
 		}
 		this.files = Gdx.files = new Lwjgl3Files();
-		this.net = Gdx.net = new Lwjgl3Net();
+		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
 
 		Lwjgl3Window window = createWindow(config, listener, 0);
@@ -430,6 +430,10 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 			}
+		}
+
+		if (config.transparentFramebuffer) {
+			GLFW.glfwWindowHint(GLFW.GLFW_TRANSPARENT_FRAMEBUFFER, GLFW.GLFW_TRUE);
 		}
 
 		if (config.debug) {

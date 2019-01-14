@@ -75,6 +75,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		@Override
 		public void viewDidAppear (boolean animated) {
+			super.viewDidAppear(animated);
 			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 		}
 
@@ -123,6 +124,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			if (graphics.created) {
 				app.listener.resize(graphics.width, graphics.height);
 			}
+		}
+		
+		@Override
+		public boolean prefersHomeIndicatorAutoHidden() {
+			return app.config.hideHomeIndicator;
 		}
 
 		@Callback

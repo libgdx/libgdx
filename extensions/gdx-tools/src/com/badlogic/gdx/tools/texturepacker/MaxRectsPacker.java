@@ -83,8 +83,10 @@ public class MaxRectsPacker implements Packer {
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
-			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
-			Page result = packPage(progress, inputRects);
+			progress.count = n - inputRects.size + 1;
+			if (progress.update(progress.count, n)) break;
+
+			Page result = packPage(inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
@@ -92,7 +94,7 @@ public class MaxRectsPacker implements Packer {
 
 	}
 
-	private Page packPage (ProgressListener progress, Array<Rect> inputRects) {
+	private Page packPage (Array<Rect> inputRects) {
 		int paddingX = settings.paddingX, paddingY = settings.paddingY;
 		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
 		boolean edgePadX = false, edgePadY = false;
@@ -157,7 +159,8 @@ public class MaxRectsPacker implements Packer {
 		if (settings.square) {
 			int minSize = Math.max(minWidth, minHeight);
 			int maxSize = Math.min(settings.maxWidth, settings.maxHeight);
-			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot, settings.multipleOfFour);
+			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
 			int size = sizeSearch.reset(), i = 0;
 			while (size != -1) {
 				Page result = packAtSize(true, size + adjustX, size + adjustY, inputRects);

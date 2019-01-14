@@ -23,11 +23,12 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Lwjgl3Input implements Input, Disposable {
 	private final Lwjgl3Window window;
@@ -86,10 +87,31 @@ public class Lwjgl3Input implements Input, Disposable {
 	};
 	
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
+		private long pauseTime = 250000000L; //250ms
+		private float scrollYRemainder;
+		private long lastScrollEventTime;
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
-			eventQueue.scrolled((int)-Math.signum(scrollY));
+			if (scrollYRemainder > 0 && scrollY < 0 || scrollYRemainder < 0 && scrollY > 0 ||
+				TimeUtils.nanoTime() - lastScrollEventTime > pauseTime ) { 
+				// fire a scroll event immediately:
+				//  - if the scroll direction changes; 
+				//  - if the user did not move the wheel for more than 250ms
+				scrollYRemainder = 0;
+				int scrollAmount = (int)-Math.signum(scrollY);
+				eventQueue.scrolled(scrollAmount);
+				lastScrollEventTime = TimeUtils.nanoTime();
+			}
+			else {
+				scrollYRemainder += scrollY;
+				while (Math.abs(scrollYRemainder) >= 1) {
+					int scrollAmount = (int)-Math.signum(scrollY);
+					eventQueue.scrolled(scrollAmount);
+					lastScrollEventTime = TimeUtils.nanoTime();
+					scrollYRemainder += scrollAmount;
+				}
+			}
 		}
 	};
 	
@@ -199,6 +221,11 @@ public class Lwjgl3Input implements Input, Disposable {
 		}	
 		deltaX = 0;
 		deltaY = 0;
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return 1;
 	}
 
 	@Override

@@ -94,7 +94,7 @@ public class LwjglApplication implements Application {
 		}
 		files = new LwjglFiles();
 		input = new LwjglInput();
-		net = new LwjglNet();
+		net = new LwjglNet(config);
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
 		this.preferencesFileType = config.preferencesFileType;

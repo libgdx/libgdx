@@ -106,7 +106,7 @@ public class CharArray {
 	}
 
 	public void addAll (CharArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (CharArray array, int offset, int length) {
@@ -286,6 +286,7 @@ public class CharArray {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public char[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -294,6 +295,7 @@ public class CharArray {
 	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public char[] setSize (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (newSize > items.length) resize(Math.max(8, newSize));
 		size = newSize;
 		return items;

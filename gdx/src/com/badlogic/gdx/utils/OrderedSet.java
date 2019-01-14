@@ -70,6 +70,12 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		return true;
 	}
 
+	public T removeIndex (int index) {
+		T key = items.removeIndex(index);
+		super.remove(key);
+		return key;
+	}
+
 	public void clear (int maximumCapacity) {
 		items.clear();
 		super.clear(maximumCapacity);
@@ -144,7 +150,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		public void remove () {
 			if (nextIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			nextIndex--;
-			set.remove(items.get(nextIndex));
+			((OrderedSet)set).removeIndex(nextIndex);
 		}
 	}
 }

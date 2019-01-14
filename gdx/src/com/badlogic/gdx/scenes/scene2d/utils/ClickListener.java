@@ -61,7 +61,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
-		visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
+		setVisualPressed(true);
 		return true;
 	}
 
@@ -149,6 +149,14 @@ public class ClickListener extends InputListener {
 		if (visualPressedTime > TimeUtils.millis()) return true;
 		visualPressedTime = 0;
 		return false;
+	}
+
+	/** If true, sets the visual pressed time to now. If false, clears the visual pressed time. */
+	public void setVisualPressed (boolean visualPressed) {
+		if (visualPressed)
+			visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
+		else
+			visualPressedTime = 0;
 	}
 
 	/** Returns true if the mouse or touch is over the actor or pressed and within the tap square. */
