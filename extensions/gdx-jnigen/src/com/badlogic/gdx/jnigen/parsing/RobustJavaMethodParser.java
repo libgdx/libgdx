@@ -22,7 +22,6 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.ModifierSet;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 
@@ -80,7 +79,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		otherTypes.put("Throwable", ArgumentType.Throwable);
 	}
 
-	Stack<TypeDeclaration> classStack = new Stack<TypeDeclaration>();
+	Stack<TypeDeclaration<?>> classStack = new Stack<TypeDeclaration<?>>();
 
 	@Override
 	public ArrayList<JavaSegment> parse (String classFile) throws Exception {
@@ -122,16 +121,16 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		}
 	}
 
-	private void getJavaMethods (ArrayList<JavaMethod> methods, TypeDeclaration type) {
+	private void getJavaMethods (ArrayList<JavaMethod> methods, TypeDeclaration<?> type) {
 		classStack.push(type);
 		if (type.getMembers() != null) {
-			for (BodyDeclaration member : type.getMembers()) {
-				if (member instanceof ClassOrInterfaceDeclaration || member instanceof EnumDeclaration) {
+			for (BodyDeclaration<?> member : type.getMembers()) {
+				if (member.isClassOrInterfaceDeclaration() || member.isEnumDeclaration()) {
 					getJavaMethods(methods, (TypeDeclaration)member);
 				} else {
 					if (member instanceof MethodDeclaration) {
 						MethodDeclaration method = (MethodDeclaration)member;
-						if (!ModifierSet.hasModifier(((MethodDeclaration)member).getModifiers(), ModifierSet.NATIVE)) continue;
+						if(method.isNative()) continue;
 						methods.add(createMethod(method));
 					}
 				}
@@ -141,19 +140,19 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 	}
 
 	private JavaMethod createMethod (MethodDeclaration method) {
-		String className = classStack.peek().getName();
-		String name = method.getName();
-		boolean isStatic = ModifierSet.hasModifier(method.getModifiers(), ModifierSet.STATIC);
+		String className = classStack.peek().getNameAsString();
+		String name = method.getNameAsString();
+		boolean isStatic = method.isStatic();
 		String returnType = method.getType().toString();
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
 
 		if (method.getParameters() != null) {
 			for (Parameter parameter : method.getParameters()) {
-				arguments.add(new Argument(getArgumentType(parameter), parameter.getId().getName()));
+				arguments.add(new Argument(getArgumentType(parameter), parameter.getNameAsString()));
 			}
 		}
 
-		return new JavaMethod(className, name, isStatic, returnType, null, arguments, method.getBeginLine(), method.getEndLine());
+		return new JavaMethod(className, name, isStatic, returnType, null, arguments, method.getBegin().get().line, method.getEnd().get().line);
 	}
 
 	private ArgumentType getArgumentType (Parameter parameter) {
