@@ -46,33 +46,4 @@ public class AnimationControllerTest {
 		
 		Assert.assertEquals(0, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 3f));
 	}
-	
-	@Test
-	public void testGetFirstKeyframeIndexAtTimeDuplicates(){
-		
-		Array<NodeKeyframe<String>> keyFrames = new Array<NodeKeyframe<String>>();
-		
-		keyFrames.add(new NodeKeyframe<String>(0f,  "1st"));
-		keyFrames.add(new NodeKeyframe<String>(10f,  "2nd"));
-		keyFrames.add(new NodeKeyframe<String>(10f,  "3rd"));
-		keyFrames.add(new NodeKeyframe<String>(100f, "4th"));
-		
-		Assert.assertEquals(0, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 9f));
-		Assert.assertEquals(1, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 10f));
-		Assert.assertEquals(2, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 11f));
-	}
-	
-
-	@Test
-	public void testGetFirstKeyframeIndexAtTimeEmptyRange(){
-		
-		Array<NodeKeyframe<String>> keyFrames = new Array<NodeKeyframe<String>>();
-		
-		keyFrames.add(new NodeKeyframe<String>(10f,  "1st"));
-		keyFrames.add(new NodeKeyframe<String>(10f,  "2nd"));
-		
-		Assert.assertEquals(0, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 9f));
-		Assert.assertEquals(0, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 10f));
-		Assert.assertEquals(0, BaseAnimationController.getFirstKeyframeIndexAtTime(keyFrames, 11f));
-	}
 }
