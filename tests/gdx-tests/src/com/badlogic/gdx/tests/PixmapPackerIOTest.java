@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
 
-public class PixmapPackerTest extends GdxTest {
+public class PixmapPackerIOTest extends GdxTest {
 
 	OrthographicCamera camera;
 	SpriteBatch batch;
@@ -47,8 +47,6 @@ public class PixmapPackerTest extends GdxTest {
 
 	NinePatch ninePatch;
 	NinePatch officialPatch;
-
-	Animation<TextureRegion> animation;
 
 	Skin skin;
 
@@ -93,9 +91,6 @@ public class PixmapPackerTest extends GdxTest {
 			packer.pack("badlogic-whitespace -" + count, pixmap5);
 		}
 
-		packer.pack("badlogic-anim_0", pixmap1);
-		packer.pack("badlogic-anim_1", pixmap5);
-
 		pixmap1.dispose();
 		pixmap2.dispose();
 		pixmap3.dispose();
@@ -103,15 +98,6 @@ public class PixmapPackerTest extends GdxTest {
 		pixmap5.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
-		// TETTINGER these lines crash
-//		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("badlogic-anim"), Animation.PlayMode.LOOP);
-//		Gdx.app.log("PixmapPackerTest", "animation size: " + animation.getKeyFrames().length);
-//		Gdx.app.log("PixmapPackerTest", "badlogic-anim size: " + atlas.findRegions("badlogic-anim").size);
-		for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
-			Gdx.app.log("PixmapPackerTest", "region name = " + region.name + " index = "+region.index);
-		}
-
-
 		textureRegions = new Array<TextureRegion>();
 		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmapPackerTest", "Number of updated textures: " + atlas.getTextures().size);
@@ -131,7 +117,49 @@ public class PixmapPackerTest extends GdxTest {
 		ninePatch = atlas.createPatch("textfield-1");
 		officialPatch = skin.getPatch("textfield");
 		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+		PixmapPackerIO pixmapPackerIO = new PixmapPackerIO();
+		try {
+			PixmapPackerIO.SaveParameters saveParameters = new PixmapPackerIO.SaveParameters();
+			saveParameters.format = PixmapPackerIO.ImageFormat.PNG;
+			pixmapPackerIO.save(Gdx.files.local("pixmapPackerTest.atlas"), packer, saveParameters);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		TextureAtlas loaded = new TextureAtlas(Gdx.files.local("pixmapPackerTest.atlas"));
+		for (int i = 0; i < loaded.getRegions().size; i++) {
+			final TextureAtlas.AtlasRegion atlasRegion = loaded.getRegions().get(i);
+			compare(atlas, atlasRegion);
+		}
 	}
+
+	private void compare (TextureAtlas original, TextureAtlas.AtlasRegion loaded) {
+		final TextureAtlas.AtlasRegion originalRegion = original.findRegion(loaded.name);
+		if (originalRegion == null) throw new GdxRuntimeException("No original AtlasRegion found");
+
+		if (originalRegion.index != loaded.index) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.offsetX != loaded.offsetX) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.offsetY != loaded.offsetY) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.packedWidth != loaded.packedWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.packedHeight != loaded.packedHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.originalWidth != loaded.originalWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.originalHeight != loaded.originalHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.rotate != loaded.rotate) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.splits != null && loaded.splits != null) {
+			for (int i = 0; i < originalRegion.splits.length; i++) {
+				if (originalRegion.splits[i] != loaded.splits[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+			}
+		} else {
+			if (originalRegion.splits != loaded.splits) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		}
+		if (originalRegion.pads != null && loaded.pads != null) {
+			for (int i = 0; i < originalRegion.pads.length; i++) {
+				if (originalRegion.pads[i] != loaded.pads[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+			}
+		} else {
+			if (originalRegion.pads != loaded.pads) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		}	}
 
 	@Override
 	public void render () {
@@ -143,8 +171,6 @@ public class PixmapPackerTest extends GdxTest {
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
 		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);
 		officialPatch.draw(batch, (int)(size * 0.25f + 20), 10, quarterSize, quarterSize);
-		// TETTINGER this line crashes
-//		batch.draw(animation.getKeyFrame(Gdx.graphics.getDeltaTime()), 50, 10, quarterSize, quarterSize);
 		batch.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
