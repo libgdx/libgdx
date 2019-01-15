@@ -52,6 +52,8 @@ public class PixmapPackerTest extends GdxTest {
 
 	Skin skin;
 
+	float stateTime = 0;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -95,6 +97,8 @@ public class PixmapPackerTest extends GdxTest {
 
 		packer.pack("badlogic-anim_0", pixmap1);
 		packer.pack("badlogic-anim_1", pixmap5);
+		packer.pack("badlogic-anim_2", pixmap1);
+		packer.pack("badlogic-anim_3", pixmap5);
 
 		pixmap1.dispose();
 		pixmap2.dispose();
@@ -103,14 +107,7 @@ public class PixmapPackerTest extends GdxTest {
 		pixmap5.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
-		// TETTINGER these lines crash
-//		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("badlogic-anim"), Animation.PlayMode.LOOP);
-//		Gdx.app.log("PixmapPackerTest", "animation size: " + animation.getKeyFrames().length);
-//		Gdx.app.log("PixmapPackerTest", "badlogic-anim size: " + atlas.findRegions("badlogic-anim").size);
-		for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
-			Gdx.app.log("PixmapPackerTest", "region name = " + region.name + " index = "+region.index);
-		}
-
+		animation = new Animation<TextureRegion>(0.33f, atlas.findRegions("badlogic-anim"), Animation.PlayMode.LOOP);
 
 		textureRegions = new Array<TextureRegion>();
 		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false);
@@ -131,6 +128,8 @@ public class PixmapPackerTest extends GdxTest {
 		ninePatch = atlas.createPatch("textfield-1");
 		officialPatch = skin.getPatch("textfield");
 		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+
 	}
 
 	@Override
@@ -143,13 +142,14 @@ public class PixmapPackerTest extends GdxTest {
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
 		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);
 		officialPatch.draw(batch, (int)(size * 0.25f + 20), 10, quarterSize, quarterSize);
-		// TETTINGER this line crashes
-//		batch.draw(animation.getKeyFrame(Gdx.graphics.getDeltaTime()), 50, 10, quarterSize, quarterSize);
+		batch.draw(animation.getKeyFrame(stateTime), 30 + (quarterSize * 2), 10, quarterSize, quarterSize);
 		batch.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(0, 0, size, size);
 		shapeRenderer.end();
+
+		stateTime += Gdx.graphics.getDeltaTime();
 	}
 
 	@Override
