@@ -708,6 +708,10 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
+				return new TiledMapObjectLoadingTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
 				return new UITest();
 			}
 		}, new Instancer() {
