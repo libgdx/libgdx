@@ -17,16 +17,16 @@
 package com.google.gwt.corp.compatibility;
 
 import com.google.gwt.typedarrays.client.Float32ArrayNative;
+import com.google.gwt.typedarrays.client.Float64ArrayNative;
 import com.google.gwt.typedarrays.client.Int32ArrayNative;
 import com.google.gwt.typedarrays.client.Int8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
+import com.google.gwt.typedarrays.shared.Float64Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
 import com.google.gwt.typedarrays.shared.Int8Array;
 
-public class Numbers {
-
-	static final double LN2 = Math.log(2);
-
+public final class Numbers {
+	
 	public static final int floatToIntBits (float f) {
 		wfa.set(0, f);
 		return wia.get(0);
@@ -69,9 +69,10 @@ public class Numbers {
 // return signBit | ((exponent + 127) << 23) | (significand & 0x007fffff);
 	}
 
-	static Int8Array wba = Int8ArrayNative.create(4);
-	static Int32Array wia = Int32ArrayNative.create(wba.buffer(), 0, 1);
-	static Float32Array wfa = Float32ArrayNative.create(wba.buffer(), 0, 1);
+	private static final Int8Array wba = Int8ArrayNative.create(8);
+	private static final Int32Array wia = Int32ArrayNative.create(wba.buffer(), 0, 2);
+	private static final Float32Array wfa = Float32ArrayNative.create(wba.buffer(), 0, 1);
+	private static final Float64Array wda = Float64ArrayNative.create(wba.buffer(), 0, 1);
 
 	public static final float intBitsToFloat (int i) {
 // wba.set(0, (byte) (i >> 24));
@@ -96,15 +97,19 @@ public class Numbers {
 // return (i & 0x80000000) == 0 ? result : -result;
 	}
 
-	public static final long doubleToLongBits (Double d) {
-		throw new RuntimeException("NYI");
+	public static final long doubleToLongBits (double d) {
+		wda.set(0, d);
+		return ((long)wia.get(1) << 32) | (wia.get(0) & 0xffffffffL);
 	}
 
 	public static final double longBitsToDouble (long l) {
-		throw new RuntimeException("NYI");
+		wia.set(1, (int)(l >>> 32));
+		wia.set(0, (int)(l & 0xffffffffL));
+		return wda.get(0);
 	}
 
-	public static long doubleToRawLongBits (double value) {
-		throw new RuntimeException("NYI: Numbers.doubleToRawLongBits");
+	public static final long doubleToRawLongBits (double d) {
+		wda.set(0, d);
+		return ((long)wia.get(1) << 32) | (wia.get(0) & 0xffffffffL);
 	}
 }
