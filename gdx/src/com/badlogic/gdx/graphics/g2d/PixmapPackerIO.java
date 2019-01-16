@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 
+import static com.badlogic.gdx.graphics.g2d.PixmapPacker.indexPattern;
+
 /** Saves PixmapPackers to files.
  * @author jshapcott */
 public class PixmapPackerIO {
-
-	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
 	/** Image formats which can be used when saving a PixmapPacker. */
 	public static enum ImageFormat {

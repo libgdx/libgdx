@@ -188,6 +188,7 @@ public class GdxTests {
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
+		PixmapPackerIOTest.class,
 		PixmapTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
