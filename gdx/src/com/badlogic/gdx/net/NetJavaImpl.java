@@ -24,6 +24,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -119,12 +125,26 @@ public class NetJavaImpl {
 		}
 	}
 
-	private final AsyncExecutor asyncExecutor;
+	private final ExecutorService executorService;
 	final ObjectMap<HttpRequest, HttpURLConnection> connections;
 	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
 
 	public NetJavaImpl () {
-		asyncExecutor = new AsyncExecutor(1);
+		this(Integer.MAX_VALUE);
+	}
+
+	public NetJavaImpl (int maxThreads) {
+		executorService = new ThreadPoolExecutor(0, maxThreads,
+				60L, TimeUnit.SECONDS,
+				new SynchronousQueue<Runnable>(),
+				new ThreadFactory() {
+					@Override
+					public Thread newThread(Runnable r) {
+						Thread thread = new Thread(r, "NetThread");
+						thread.setDaemon(true);
+						return thread;
+					}
+				});
 		connections = new ObjectMap<HttpRequest, HttpURLConnection>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -166,9 +186,9 @@ public class NetJavaImpl {
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
 
-			asyncExecutor.submit(new AsyncTask<Void>() {
+			executorService.submit(new Runnable() {
 				@Override
-				public Void call () throws Exception {
+				public void run() {
 					try {
 						// Set the content for POST and PUT (GET has the information embedded in the URL)
 						if (doingOutPut) {
@@ -215,8 +235,6 @@ public class NetJavaImpl {
 							removeFromConnectionsAndListeners(httpRequest);
 						}
 					}
-
-					return null;
 				}
 			});
 		} catch (Exception e) {

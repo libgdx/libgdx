@@ -21,6 +21,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.NinePatch" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.Color" />
@@ -45,6 +47,13 @@
 
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.Net" />
+
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapObject" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.objects" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.objects" />
 	
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.ParticleEffect" />
