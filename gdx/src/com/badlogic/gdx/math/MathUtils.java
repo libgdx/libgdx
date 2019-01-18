@@ -249,6 +249,27 @@ public final class MathUtils {
 		return fromValue + (toValue - fromValue) * progress;
 	}
 
+	/** Linearly normalizes value from a range. Range must not be empty. This is the inverse of {@link #lerp(float, float, float)}.
+	 * @param rangeStart Range start normalized to 0
+	 * @param rangeEnd Range end normalized to 1
+	 * @param value Value to normalize
+	 * @return Normalized value. Values outside of the range are not clamped to 0 and 1 */
+	static public float norm (float rangeStart, float rangeEnd, float value) {
+		return (value - rangeStart) / (rangeEnd - rangeStart);
+	}
+
+	/** Linearly map a value from one range to another. Input range must not be empty. This is the same as chaining
+	 * {@link #norm(float, float, float)} from input range and {@link #lerp(float, float, float)} to output range.
+	 * @param inRangeStart Input range start
+	 * @param inRangeEnd Input range end
+	 * @param outRangeStart Output range start
+	 * @param outRangeEnd Output range end
+	 * @param value Value to map
+	 * @return Mapped value. Values outside of the input range are not clamped to output range */
+	static public float map (float inRangeStart, float inRangeEnd, float outRangeStart, float outRangeEnd, float value) {
+		return outRangeStart + (value - inRangeStart) * (outRangeEnd - outRangeStart) / (inRangeEnd - inRangeStart);
+	}
+
 	/** Linearly interpolates between two angles in radians. Takes into account that angles wrap at two pi and always takes the
 	 * direction with the smallest delta angle.
 	 * 
