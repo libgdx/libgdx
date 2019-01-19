@@ -210,6 +210,11 @@ final public class LwjglInput implements Input {
 		});
 	}
 
+	@Override
+	public int getMaxPointers () {
+		return 1;
+	}
+
 	public int getX () {
 		return (int)(Mouse.getX() * Display.getPixelScaleFactor());
 	}

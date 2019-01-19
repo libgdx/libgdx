@@ -250,6 +250,11 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return 1;
+	}
+
+	@Override
 	public int getX () {
 		return touchX;
 	}
