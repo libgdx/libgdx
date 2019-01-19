@@ -32,7 +32,11 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.IOException;

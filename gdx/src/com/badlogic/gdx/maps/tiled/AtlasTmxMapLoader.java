@@ -46,7 +46,8 @@ import java.io.IOException;
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
 
 	public static class AtlasTiledMapLoaderParameters extends BaseTmxMapLoader.Parameters {
-
+		/** force texture filters? **/
+		public boolean forceTextureFilters = false;
 	}
 
 	protected Array<Texture> trackedTextures = new Array<Texture>();
@@ -68,6 +69,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			public TextureAtlas getAtlas (String name) {
 				return atlases.get(name);
 			}
+
 		}
 
 		public static class AssetManagerAtlasResolver implements AtlasResolver {
