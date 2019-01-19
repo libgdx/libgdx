@@ -113,7 +113,6 @@ import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
-import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -625,6 +624,10 @@ public class GwtTestWrapper extends GdxTest {
 				return new GroupFadeTest();
 			}
 		}, new Instancer() {
+			public GdxTest instance() {
+				return new GwtInputTest();
+			}
+		}, new Instancer() {
 			public GdxTest instance () {
 				return new GwtWindowModeTest();
 			}
@@ -647,10 +650,6 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance() {
 				return new InputTest();
-			}
-		}, new Instancer() {
-			public GdxTest instance() {
-				return new GwtInputTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
