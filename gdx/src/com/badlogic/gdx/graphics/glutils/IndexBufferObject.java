@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IndexBufferObject implements IndexData {
 	final ShortBuffer buffer;
 	final ByteBuffer byteBuffer;
-	final boolean bufferOwned;
+	final boolean ownsBuffer;
 	int bufferHandle;
 	final boolean isDirect;
 	boolean isDirty = true;
@@ -79,7 +79,7 @@ public class IndexBufferObject implements IndexData {
 		isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();
-		bufferOwned = true;
+		ownsBuffer = true;
 		buffer.flip();
 		byteBuffer.flip();
 		bufferHandle = Gdx.gl20.glGenBuffer();
@@ -93,7 +93,7 @@ public class IndexBufferObject implements IndexData {
 		isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();
-		bufferOwned = false;
+		ownsBuffer = false;
 		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 	}
@@ -207,7 +207,7 @@ public class IndexBufferObject implements IndexData {
 		Gdx.gl20.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
 
-		if (bufferOwned) {
+		if (ownsBuffer) {
 			BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 		}
 	}
