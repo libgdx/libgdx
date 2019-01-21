@@ -108,6 +108,7 @@ public class BitmapFontWriter {
 		/** Horizontal/vertical spacing that was applied to font */
 		public Spacing spacing = new Spacing();
 		public int outline = 0;
+		public int shadowOffsetY = 0;
 
 		public FontInfo () {
 		}
@@ -188,7 +189,7 @@ public class BitmapFontWriter {
 		// COMMON line
 		buf.append(xmlOpen).append("common lineHeight=").append(quote(lineHeight)).append(" base=").append(quote(base))
 			.append(" scaleW=").append(quote(scaleW)).append(" scaleH=").append(quote(scaleH)).append(" pages=").append(quote(pages))
-			.append(" packed=").append(quote(packed)).append(alphaChnlParams).append(xmlCloseSelf).append("\n");
+			.append(" packed=").append(quote(packed)).append(" shadowOffsetY=").append(quote(info.shadowOffsetY)).append(alphaChnlParams).append(xmlCloseSelf).append("\n");
 
 		if (xml) buf.append("\t<pages>\n");
 
@@ -234,7 +235,7 @@ public class BitmapFontWriter {
 				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
 				.append(
-					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
+					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop)) - info.shadowOffsetY), true))
 				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
 				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
 				.append("\n");

@@ -506,7 +506,7 @@ public class BitmapFont implements Disposable {
 
 				line = reader.readLine();
 				if (line == null) throw new GdxRuntimeException("Missing common header.");
-				String[] common = line.split(" ", 7); // At most we want the 6th element; i.e. "page=N"
+				String[] common = line.split(" ", 9); // At most we want the 6th element; i.e. "page=N"
 
 				// At least lineHeight and base are required.
 				if (common.length < 3) throw new GdxRuntimeException("Invalid common header.");
@@ -523,6 +523,11 @@ public class BitmapFont implements Disposable {
 						pageCount = Math.max(1, Integer.parseInt(common[5].substring(6)));
 					} catch (NumberFormatException ignored) { // Use one page.
 					}
+				}
+
+				int shadowOffsetY = 0;
+				if (common.length > 7 && common[7].startsWith("shadowOffsetY=")) {
+					shadowOffsetY = Integer.parseInt(common[7].substring(14));
 				}
 
 				imagePaths = new String[pageCount];
@@ -586,7 +591,7 @@ public class BitmapFont implements Disposable {
 					if (flip)
 						glyph.yoffset = Integer.parseInt(tokens.nextToken());
 					else
-						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
+						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken())) - shadowOffsetY;
 					tokens.nextToken();
 					glyph.xadvance = Integer.parseInt(tokens.nextToken());
 
@@ -599,7 +604,7 @@ public class BitmapFont implements Disposable {
 						}
 					}
 
-					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset, descent);
+					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset + shadowOffsetY, descent);
 				}
 				descent += padBottom;
 
@@ -644,7 +649,7 @@ public class BitmapFont implements Disposable {
 					if (xGlyph != null) break;
 				}
 				if (xGlyph == null) xGlyph = getFirstGlyph();
-				xHeight = xGlyph.height - padY;
+				xHeight = xGlyph.height - padY - shadowOffsetY;
 
 				Glyph capGlyph = null;
 				for (char capChar : capChars) {
