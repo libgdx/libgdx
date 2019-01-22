@@ -68,11 +68,11 @@ public class LwjglGraphics implements Graphics {
 	boolean usingGL30;
 
 	// deltaTime kalman filter related variables
-    private float kalmanEstimate = 1.0f/60.0f;
-    private float kalmanErrorCovariance = 1.0f;
-    private final float kalmanErrorRate = 0.2f; // 0.2: empirical value
-    private final float kalmanUpdateThreshold = 0.1f;
-    private final float getMagnitudeDifferenceEpsilon = 0.00001f;
+	private float kalmanEstimate = 1.0f/60.0f;
+	private float kalmanErrorCovariance = 1.0f;
+	private final float kalmanErrorRate = 0.2f; // 0.2: empirical value
+	private final float kalmanUpdateThreshold = 0.1f;
+	private final float getMagnitudeDifferenceEpsilon = 0.00001f;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -121,60 +121,60 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	public float getDeltaTime () {
-        return kalmanEstimate;
-    }
+		return kalmanEstimate;
+	}
 
-    private void resetDeltaSmoothingHistory() {
-        kalmanEstimate = 1.0f/60.0f;
-        kalmanErrorCovariance = 1.0f;
-    }
+	private void resetDeltaSmoothingHistory() {
+		kalmanEstimate = 1.0f/60.0f;
+		kalmanErrorCovariance = 1.0f;
+	}
 
-    // only for a > 0 && b > 0
-    private float getMagnitudeDifference(float a, float b) {
-        if (a < getMagnitudeDifferenceEpsilon || b < getMagnitudeDifferenceEpsilon) {
-            return a + b;
-        }
+	// only for a > 0 && b > 0
+	private float getMagnitudeDifference(float a, float b) {
+		if (a < getMagnitudeDifferenceEpsilon || b < getMagnitudeDifferenceEpsilon) {
+			return a + b;
+		}
 
-        if (a > b) {
-            return a / b;
-        }
-        else {
-            return b / a;
-        }
-    }
+		if (a > b) {
+			return a / b;
+		}
+		else {
+			return b / a;
+		}
+	}
 
-    private void updateKalmanRenderDelta() {
-        // The problem with this kalman filter is that it assumes most simplistic situation:
-        //   1. the actual delta (measured delta - noise) is constant (that is, not constantly increasing or something)
-        //   2. everything is linear
-        // We may need to implement Extended Kalman Filter but what is Jacobian, I suck at maths.
-        //
-        // Instead, this implementation will reset itself when difference in magnitude between
-        // old and new is greater than set value.
-        //
-        // It's not perfect but it works, much better than averaging.
+	private void updateKalmanRenderDelta() {
+		// The problem with this kalman filter is that it assumes most simplistic situation:
+		//   1. the actual delta (measured delta - noise) is constant (that is, not constantly increasing or something)
+		//   2. everything is linear
+		// We may need to implement Extended Kalman Filter but what is Jacobian, I suck at maths.
+		//
+		// Instead, this implementation will reset itself when difference in magnitude between
+		// old and new is greater than set value.
+		//
+		// It's not perfect but it works, much better than averaging.
 
-        if (getMagnitudeDifference(deltaTime, kalmanEstimate) >= 2.0) {
-            resetDeltaSmoothingHistory();
-        }
+		if (getMagnitudeDifference(deltaTime, kalmanEstimate) >= 2.0) {
+			resetDeltaSmoothingHistory();
+		}
 
-        // measurement value
-        float observation = deltaTime;
+		// measurement value
+		float observation = deltaTime;
 
-        if (observation <= kalmanUpdateThreshold) {
-            // time update
-            float priorEstimate = kalmanEstimate;
-            float priorError = kalmanErrorCovariance;
+		if (observation <= kalmanUpdateThreshold) {
+			// time update
+			float priorEstimate = kalmanEstimate;
+			float priorError = kalmanErrorCovariance;
 
-            // measurement update
-            float gain = priorError / (priorError + kalmanErrorRate);
-            float newEstimate = priorEstimate + gain * (observation - priorEstimate);
-            float newError = (1.0f - gain) * priorError;
+			// measurement update
+			float gain = priorError / (priorError + kalmanErrorRate);
+			float newEstimate = priorEstimate + gain * (observation - priorEstimate);
+			float newError = (1.0f - gain) * priorError;
 
-            kalmanEstimate = newEstimate;
-            kalmanErrorCovariance = newError;
-        }
-    }
+			kalmanEstimate = newEstimate;
+			kalmanErrorCovariance = newError;
+		}
+	}
 
 	public float getRawDeltaTime () {
 		return deltaTime;
