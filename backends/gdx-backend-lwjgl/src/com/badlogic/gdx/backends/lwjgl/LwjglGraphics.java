@@ -132,7 +132,7 @@ public class LwjglGraphics implements Graphics {
 	// only for a > 0 && b > 0
 	private float getMagnitudeDifference(float a, float b) {
 		if (a < getMagnitudeDifferenceEpsilon || b < getMagnitudeDifferenceEpsilon) {
-			return a + b;
+			return (a + b) / getMagnitudeDifferenceEpsilon;
 		}
 
 		if (a > b) {
