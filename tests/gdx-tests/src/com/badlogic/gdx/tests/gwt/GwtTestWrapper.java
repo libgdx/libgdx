@@ -465,7 +465,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public void setCursorPosition (int x, int y) {
-			setCursorPosition(x, y);
+			input.setCursorPosition(x, y);
 		}
 	}
 
