@@ -33,7 +33,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new LabelTest();
+		GdxTest test = new BitmapFontWriterTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
@@ -43,6 +43,6 @@ public class LwjglDebugStarter {
 		config.width = 1920;
 		config.height = 1080;
 //		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
-		new LwjglApplication(new BitmapFontWriterTest(), config);
+		new LwjglApplication(test, config);
 	}
 }
