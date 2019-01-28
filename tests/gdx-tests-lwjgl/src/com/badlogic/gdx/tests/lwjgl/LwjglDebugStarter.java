@@ -39,8 +39,10 @@ public class LwjglDebugStarter {
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;
-		config.height = 600;		
+		config.height = 600;
+		config.width = 1920;
+		config.height = 1080;
 //		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
-		new LwjglApplication(test, config);
+		new LwjglApplication(new BitmapFontWriterTest(), config);
 	}
 }

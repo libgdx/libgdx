@@ -46,7 +46,6 @@ public class BitmapFontWriterTest extends GdxTest {
 	public void create () {
 		BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
 		info.padding = new BitmapFontWriter.Padding(0, 0, 0, 0);
-		info.shadowOffsetY = 3;
 
 		FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		param.size = 13;
@@ -59,6 +58,8 @@ public class BitmapFontWriterTest extends GdxTest {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/unbom.ttf"));
 
 		generatedFont = generator.generateFont(param);
+
+		info.overrideMetrics(generatedFont.getData());
 
 		BitmapFontWriter.writeFont(generatedFont.getData(), new String[] {"bitmapWrittenFont.png"}, Gdx.files.local("bitmapWrittenFont.fnt"), info, 512, 512);
 		BitmapFontWriter.writePixmaps(param.packer.getPages(), Gdx.files.local(""), "bitmapWrittenFont");
@@ -105,6 +106,8 @@ public class BitmapFontWriterTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClearColor(1f, 0.5f, 0.5f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		renderer.setProjectionMatrix(renderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
 		spriteBatch.setProjectionMatrix(spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		spriteBatch.begin();
