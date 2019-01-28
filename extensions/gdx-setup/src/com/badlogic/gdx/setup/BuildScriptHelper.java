@@ -100,7 +100,7 @@ public class BuildScriptHelper {
 	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
-			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
 		}
 		for (Dependency dep : dependencyList) {
 			if (dep.getDependencies(project) == null) continue;
@@ -109,7 +109,7 @@ public class BuildScriptHelper {
 				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
-					write(wr, "compile \"" + moduleDependency + "\"");
+					write(wr, "implementation \"" + moduleDependency + "\"");
 				}
 			}
 		}
