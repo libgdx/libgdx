@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
-import com.badlogic.gdx.tools.hiero.Hiero;
 import com.badlogic.gdx.utils.Array;
 
 /** A utility to output BitmapFontData to a FNT file. This can be useful for caching the result from TrueTypeFont, for faster load
@@ -30,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * The font file format is from the AngelCodeFont BMFont tool.
  * <p>
- * Output is nearly identical to the FreeType settting in the {@link Hiero} tool. BitmapFontWriter gives more flexibility, eg
+ * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}. BitmapFontWriter gives more flexibility, eg
  * borders and shadows can be used. Hiero is able to avoid outputting the same glyph image more than once if multiple character
  * codes have the exact same glyph.
  * @author mattdesl AKA davedes */
@@ -83,7 +82,7 @@ public class BitmapFontWriter {
 		public int horizontal, vertical;
 	}
 
-	/** The font "info" line; everything except padding is ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
+	/** The font "info" line; everything except padding and override metrics are ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
 	 * clean and organized output. */
 	public static class FontInfo {
 		/** Face name */
@@ -110,6 +109,16 @@ public class BitmapFontWriter {
 		public Spacing spacing = new Spacing();
 		public int outline = 0;
 
+		/** Override metrics */
+		public boolean hasOverrideMetrics;
+		public float ascent;
+		public float descent;
+		public float down;
+		public float capHeight;
+		public float lineHeight;
+		public float spaceXAdvance;
+		public float xHeight;
+
 		public FontInfo () {
 		}
 
@@ -117,6 +126,18 @@ public class BitmapFontWriter {
 			this.face = face;
 			this.size = size;
 		}
+
+		public void overrideMetrics (BitmapFontData data) {
+			hasOverrideMetrics = true;
+			ascent = data.ascent;
+			descent = data.descent;
+			down = data.down;
+			capHeight = data.capHeight;
+			lineHeight = data.lineHeight;
+			spaceXAdvance = data.spaceXadvance;
+			xHeight = data.xHeight;
+		}
+
 	}
 
 	private static String quote (Object params) {
@@ -229,13 +250,12 @@ public class BitmapFontWriter {
 			Glyph g = glyphs.get(i);
 			boolean empty = g.width == 0 || g.height == 0;
 			buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-6s", g.id), true)).append("x=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.srcX - padLeft), true)).append("y=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.srcY - padRight), true)).append("width=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.width + padX), true)).append("height=")
-				.append(quote(String.format("%-5s", empty ? 0 : g.height + padY), true)).append("xoffset=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.srcX), true)).append("y=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.srcY), true)).append("width=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.width), true)).append("height=")
+				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
-				.append(
-					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
+				.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
 				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
 				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
 				.append("\n");
@@ -265,6 +285,26 @@ public class BitmapFontWriter {
 
 		if (xml) {
 			buf.append("\t</kernings>\n");
+		}
+
+		// Override metrics
+		if (info.hasOverrideMetrics) {
+			if (xml) buf.append("\t<metrics>\n");
+
+			buf.append(xmlTab).append(xmlOpen)
+					.append("metrics ascent=").append(quote(info.ascent, true))
+					.append(" descent=").append(quote(info.descent, true))
+					.append(" down=").append(quote(info.down, true))
+					.append(" capHeight=").append(quote(info.capHeight, true))
+					.append(" lineHeight=").append(quote(info.lineHeight, true))
+					.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true))
+					.append(" xHeight=").append(quote(info.xHeight, true))
+					.append(xmlCloseSelf).append("\n");
+
+			if (xml) buf.append("\t</metrics>\n");
+		}
+
+		if (xml) {
 			buf.append("</font>");
 		}
 

@@ -24,7 +24,7 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 
 
-void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, short group, short mask)
+void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
 {
 	m_multiBodies.push_back(body);
 
@@ -332,10 +332,10 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 				}
 			}
 
-			if (m_solverInfo->m_minimumSolverBatchSize<=1)
-			{
-				m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
-			} else
+			//if (m_solverInfo->m_minimumSolverBatchSize<=1)
+			//{
+			//	m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
+			//} else
 			{
 				
 				for (i=0;i<numBodies;i++)
@@ -384,7 +384,7 @@ btMultiBodyDynamicsWorld::btMultiBodyDynamicsWorld(btDispatcher* dispatcher,btBr
 	m_multiBodyConstraintSolver(constraintSolver)
 {
 	//split impulse is not yet supported for Featherstone hierarchies
-	getSolverInfo().m_splitImpulse = false;
+//	getSolverInfo().m_splitImpulse = false;
 	getSolverInfo().m_solverMode |=SOLVER_USE_2_FRICTION_DIRECTIONS;
 	m_solverMultiBodyIslandCallback = new MultiBodyInplaceSolverIslandCallback(constraintSolver,dispatcher);
 }
@@ -798,6 +798,8 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 {
 	BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
 
+	btDiscreteDynamicsWorld::debugDrawWorld();
+
 	bool drawConstraints = false;
 	if (getDebugDrawer())
 	{
@@ -867,7 +869,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 		}
 	}
 
-	btDiscreteDynamicsWorld::debugDrawWorld();
+	
 }
 
 
@@ -917,7 +919,7 @@ void btMultiBodyDynamicsWorld::clearMultiBodyConstraintForces()
 void btMultiBodyDynamicsWorld::clearMultiBodyForces()
 {
               {
-                BT_PROFILE("clearMultiBodyForces");
+               // BT_PROFILE("clearMultiBodyForces");
                 for (int i=0;i<this->m_multiBodies.size();i++)
                 {
                         btMultiBody* bod = m_multiBodies[i];

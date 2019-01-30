@@ -97,6 +97,7 @@ public interface Net {
 	 * <li>POST</li>
 	 * <li>PUT</li>
 	 * <li>DELETE</li>
+	 * <li>PATCH</li>
 	 * </ul> */
 	public static interface HttpMethods {
 
@@ -104,6 +105,7 @@ public interface Net {
 		public static final String POST = "POST";
 		public static final String PUT = "PUT";
 		public static final String DELETE = "DELETE";
+		public static final String PATCH = "PATCH";
 
 	}
 
@@ -205,7 +207,7 @@ public interface Net {
 		 * @param followRedirects whether to follow redirects.
 		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend. */
 		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
-			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
+			if (followRedirects || Gdx.app.getType() != ApplicationType.WebGL) {
 				this.followRedirects = followRedirects;
 			} else {
 				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");

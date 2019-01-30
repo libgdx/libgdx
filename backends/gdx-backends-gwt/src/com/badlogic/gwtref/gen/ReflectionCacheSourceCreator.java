@@ -49,7 +49,7 @@ public class ReflectionCacheSourceCreator {
 	final String simpleName;
 	final String packageName;
 	SourceWriter sw;
-	final StringBuffer source = new StringBuffer();
+	final StringBuilder source = new StringBuilder();
 	final List<JType> types = new ArrayList<JType>();
 	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
@@ -325,7 +325,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private String generateMethodStub (MethodStub stub) {
-		buffer.setLength(0);
+		sb.setLength(0);
 
 		if (stub.enclosingType == null) {
 			logger.log(Type.INFO, "method '" + stub.name + "' of invisible class is not invokable");
@@ -417,11 +417,11 @@ public class ReflectionCacheSourceCreator {
 			pbn("}");
 		}
 
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	private String generateSetterGetterStub (SetterGetterStub stub) {
-		buffer.setLength(0);
+		sb.setLength(0);
 		if (stub.enclosingType == null || stub.type == null) {
 			logger.log(Type.INFO, "field '" + stub.name + "' in class '" + stub.enclosingType + "' is not accessible as its type '"
 				+ stub.type + "' is not public");
@@ -458,7 +458,7 @@ public class ReflectionCacheSourceCreator {
 			pb("}-*/;");
 		}
 
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	private boolean isVisible (JType type) {
@@ -481,7 +481,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private String createTypeGenerator (JType t) {
-		buffer.setLength(0);
+		sb.setLength(0);
 		int id = nextTypeId++;
 		typeNames2typeIds.put(t.getErasedType().getQualifiedSourceName(), id);
 		JClassType c = t.isClass();
@@ -615,7 +615,7 @@ public class ReflectionCacheSourceCreator {
 
 		pb("return " + varName + ";");
 		pb("}");
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	private void parameterInitialization () {
@@ -858,11 +858,11 @@ public class ReflectionCacheSourceCreator {
 
 			if (!paramsOk) continue;
 
-			buffer.setLength(0);
+			sb.setLength(0);
 			pbn("return m" + stub.methodId + "(");
 			addParameters(stub);
 			pbn(");");
-			pc.add(stub.methodId, buffer.toString());
+			pc.add(stub.methodId, sb.toString());
 			nDispatch++;
 			if (nDispatch > 1000) {
 				pc.print();
@@ -1031,15 +1031,15 @@ public class ReflectionCacheSourceCreator {
 		source.append(line);
 	}
 
-	StringBuffer buffer = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	void pb (String line) {
-		buffer.append(line);
-		buffer.append("\n");
+		sb.append(line);
+		sb.append("\n");
 	}
 
 	private void pbn (String line) {
-		buffer.append(line);
+		sb.append(line);
 	}
 
 	class SwitchedCodeBlock {

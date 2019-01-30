@@ -342,7 +342,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			if (!implicitEndRow) endRow();
+			if (!implicitEndRow) {
+				if (cells.peek().endRow) return rowDefaults; // Row was already ended.
+				endRow();
+			}
 			invalidate();
 		}
 		implicitEndRow = false;
@@ -1041,31 +1044,35 @@ public class Table extends WidgetGroup {
 			float extra = layoutWidth - hpadding;
 			for (int i = 0; i < columns; i++)
 				extra -= columnWidth[i];
-			float used = 0;
-			int lastIndex = 0;
-			for (int i = 0; i < columns; i++) {
-				if (expandWidth[i] == 0) continue;
-				float amount = extra * expandWidth[i] / totalExpandWidth;
-				columnWidth[i] += amount;
-				used += amount;
-				lastIndex = i;
+			if (extra > 0) { // layoutWidth < tableMinWidth.
+				float used = 0;
+				int lastIndex = 0;
+				for (int i = 0; i < columns; i++) {
+					if (expandWidth[i] == 0) continue;
+					float amount = extra * expandWidth[i] / totalExpandWidth;
+					columnWidth[i] += amount;
+					used += amount;
+					lastIndex = i;
+				}
+				columnWidth[lastIndex] += extra - used;
 			}
-			columnWidth[lastIndex] += extra - used;
 		}
 		if (totalExpandHeight > 0) {
 			float extra = layoutHeight - vpadding;
 			for (int i = 0; i < rows; i++)
 				extra -= rowHeight[i];
-			float used = 0;
-			int lastIndex = 0;
-			for (int i = 0; i < rows; i++) {
-				if (expandHeight[i] == 0) continue;
-				float amount = extra * expandHeight[i] / totalExpandHeight;
-				rowHeight[i] += amount;
-				used += amount;
-				lastIndex = i;
+			if (extra > 0) { // layoutHeight < tableMinHeight.
+				float used = 0;
+				int lastIndex = 0;
+				for (int i = 0; i < rows; i++) {
+					if (expandHeight[i] == 0) continue;
+					float amount = extra * expandHeight[i] / totalExpandHeight;
+					rowHeight[i] += amount;
+					used += amount;
+					lastIndex = i;
+				}
+				rowHeight[lastIndex] += extra - used;
 			}
-			rowHeight[lastIndex] += extra - used;
 		}
 
 		// Distribute any additional width added by colspanned cells to the columns spanned.

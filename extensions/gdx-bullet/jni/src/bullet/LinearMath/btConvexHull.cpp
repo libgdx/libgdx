@@ -87,7 +87,7 @@ btVector3  NormalOf(const btVector3 *vert, const int n);
 btVector3 PlaneLineIntersection(const btPlane &plane, const btVector3 &p0, const btVector3 &p1)
 {
 	// returns the point where the line p0-p1 intersects the plane n&d
-				static btVector3 dif;
+    btVector3 dif;
 		dif = p1-p0;
 				btScalar dn= btDot(plane.normal,dif);
 				btScalar t = -(plane.dist+btDot(plane.normal,p0) )/dn;
@@ -112,7 +112,7 @@ btVector3 TriNormal(const btVector3 &v0, const btVector3 &v1, const btVector3 &v
 
 btScalar DistanceBetweenLines(const btVector3 &ustart, const btVector3 &udir, const btVector3 &vstart, const btVector3 &vdir, btVector3 *upoint, btVector3 *vpoint)
 {
-	static btVector3 cp;
+	btVector3 cp;
 	cp = btCross(udir,vdir).normalized();
 
 	btScalar distu = -btDot(cp,ustart);

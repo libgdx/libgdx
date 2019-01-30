@@ -96,6 +96,7 @@
 	<!-- graphics/g2d -->
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g2d/Batch.java"/>
+		<include name="graphics/g2d/PolygonBatch.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
@@ -246,6 +247,7 @@
 		<include name="graphics/glutils/GLFrameBuffer.java"/>
 		<include name="graphics/glutils/GLOnlyTextureData.java"/>
 		<include name="graphics/glutils/GLVersion.java"/>
+		<include name="graphics/glutils/HdpiMode.java"/>
 		<include name="graphics/glutils/HdpiUtils.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>

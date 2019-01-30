@@ -116,21 +116,21 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (Asset asset : bundle.getValue()) {
 				String path = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
 				if (path.startsWith("/")) path = path.substring(1);
-				buffer.append(asset.type.code);
-				buffer.append(":");
-				buffer.append(path);
-				buffer.append(":");
-				buffer.append(asset.file.isDirectory() ? 0 : asset.file.length());
-				buffer.append(":");
+				sb.append(asset.type.code);
+				sb.append(":");
+				sb.append(path);
+				sb.append(":");
+				sb.append(asset.file.isDirectory() ? 0 : asset.file.length());
+				sb.append(":");
 				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
-				buffer.append(mimetype == null ? "application/unknown" : mimetype);
-				buffer.append("\n");
+				sb.append(mimetype == null ? "application/unknown" : mimetype);
+				sb.append("\n");
 			}
-			target.child(bundle.getKey() + ".txt").writeString(buffer.toString(), false);
+			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);
 		}
 		return createDummyClass(logger, context);
 	}

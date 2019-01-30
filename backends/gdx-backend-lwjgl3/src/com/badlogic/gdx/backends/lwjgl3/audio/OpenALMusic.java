@@ -233,7 +233,7 @@ public abstract class OpenALMusic implements Music {
 		while (buffers-- > 0) {
 			int bufferID = alSourceUnqueueBuffers(sourceID);
 			if (bufferID == AL_INVALID_VALUE) break;
-			renderedSeconds = renderedSecondsQueue.pop();
+			if (renderedSecondsQueue.size > 0) renderedSeconds = renderedSecondsQueue.pop();
 			if (end) continue;
 			if (fill(bufferID))
 				alSourceQueueBuffers(sourceID, bufferID);

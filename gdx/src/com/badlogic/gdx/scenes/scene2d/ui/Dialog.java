@@ -184,7 +184,10 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** {@link #pack() Packs} the dialog and adds it to the stage with custom action which can be null for instant show */
+	/** {@link #pack() Packs} the dialog (but doesn't set the position), adds it to the stage, sets it as the keyboard and scroll
+	 * focus, clears any actions on the dialog, and adds the specified action to it. The previous keyboard and scroll focus are
+	 * remembered so they can be restored when the dialog is hidden.
+	 * @param action May be null. */
 	public Dialog show (Stage stage, Action action) {
 		clearActions();
 		removeCaptureListener(ignoreTouchDown);
@@ -199,6 +202,7 @@ public class Dialog extends Window {
 
 		pack();
 		stage.addActor(this);
+		stage.cancelTouchFocus();
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 		if (action != null) addAction(action);
@@ -206,14 +210,18 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** {@link #pack() Packs} the dialog and adds it to the stage, centered with default fadeIn action */
+	/** Centers the dialog in the stage and calls {@link #show(Stage, Action)} with a {@link Actions#fadeIn(float, Interpolation)}
+	 * action. */
 	public Dialog show (Stage stage) {
 		show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		return this;
 	}
 
-	/** Hides the dialog with the given action and then removes it from the stage. */
+	/** Removes the dialog from the stage, restoring the previous keyboard and scroll focus, and adds the specified action to the
+	 * dialog.
+	 * @param action If null, the dialog is removed immediately. Otherwise, the dialog is removed when the action completes. The
+	 *           dialog will not respond to touch down events during the action. */
 	public void hide (Action action) {
 		Stage stage = getStage();
 		if (stage != null) {

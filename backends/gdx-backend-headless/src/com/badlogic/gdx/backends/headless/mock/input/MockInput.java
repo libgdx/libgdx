@@ -56,6 +56,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return 0;
+	}
+
+	@Override
 	public int getX() {
 		return 0;
 	}
@@ -108,6 +113,16 @@ public class MockInput implements Input {
 	@Override
 	public boolean isTouched(int pointer) {
 		return false;
+	}
+
+	@Override
+	public float getPressure () {
+		return 0;
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return 0;
 	}
 
 	@Override

@@ -25,7 +25,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDbvt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp" />
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp" />
@@ -34,6 +33,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcherMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
@@ -132,13 +132,16 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btTypedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
@@ -148,11 +151,16 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\IDMath.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\MultiBodyTree.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btDefaultSoftBodySolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyHelpers.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
@@ -163,6 +171,8 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btPolarDecomposition.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer64.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btThreads.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeConvexResultCallback.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeRayResultCallback.cpp" />
@@ -172,6 +182,18 @@
     <ClCompile Include="..\..\..\src\custom\gdx\dynamics\FilterableVehicleRaycaster.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\btMultiBodyTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CloneTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CoilCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\DillCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\IDRandomUtil.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\invdyn_bullet_comparison.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyNameMap.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeDebugGraph.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\RandomTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\SimpleTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\User2InternalIndex.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bFile.cpp" />
@@ -181,6 +203,7 @@
     <ClCompile Include="..\..\..\swig-src\collision\collision_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\dynamics\dynamics_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\inversedynamics\inversedynamics_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\linearmath\linearmath_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\softbody\softbody_wrap.cpp" />
   </ItemGroup>
@@ -232,15 +255,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\extras\Serialize;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\extras\Serialize;..\..\..\src\extras;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\Serialize;..\..\..\src\extras;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -250,6 +274,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

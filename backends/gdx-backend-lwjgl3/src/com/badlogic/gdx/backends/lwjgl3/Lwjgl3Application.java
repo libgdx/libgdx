@@ -102,7 +102,7 @@ public class Lwjgl3Application implements Application {
 			this.audio = Gdx.audio = new MockAudio();
 		}
 		this.files = Gdx.files = new Lwjgl3Files();
-		this.net = Gdx.net = new Lwjgl3Net();
+		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
 
 		Lwjgl3Window window = createWindow(config, listener, 0);
@@ -372,16 +372,19 @@ public class Lwjgl3Application implements Application {
 		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 
-	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
-		Lwjgl3Window window = new Lwjgl3Window(listener, config);
+	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
+		final long sharedContext) {
+		final Lwjgl3Window window = new Lwjgl3Window(listener, config);
 		if (sharedContext == 0) {
 			// the main window is created immediately
 			createWindow(window, config, sharedContext);
 		} else {
 			// creation of additional windows is deferred to avoid GL context trouble
-			postRunnable(() -> {
-				createWindow(window, config, sharedContext);
-				windows.add(window);
+			postRunnable(new Runnable() {
+				public void run () {
+					createWindow(window, config, sharedContext);
+					windows.add(window);
+				}
 			});
 		}
 		return window;
@@ -405,7 +408,8 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, config.windowMaximized ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
-		
+		GLFW.glfwWindowHint(GLFW.GLFW_AUTO_ICONIFY, config.autoIconify ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+
 		if(sharedContextWindow == 0) {
 			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
 			GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
@@ -426,6 +430,10 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 			}
+		}
+
+		if (config.transparentFramebuffer) {
+			GLFW.glfwWindowHint(GLFW.GLFW_TRANSPARENT_FRAMEBUFFER, GLFW.GLFW_TRUE);
 		}
 
 		if (config.debug) {

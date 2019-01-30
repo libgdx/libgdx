@@ -44,7 +44,7 @@ public final class PropertiesUtils {
 	 * compatible with <code>java.util.Properties</code>.
 	 * <p>
 	 * The input stream remains open after this method returns.
-	 * 
+	 *
 	 * @param properties the map to be filled.
 	 * @param reader the input character stream reader.
 	 * @throws IOException if an error occurred when reading from the input stream.
@@ -221,7 +221,7 @@ public final class PropertiesUtils {
 	 * <code>=</code>, and <code>:</code> are written with a preceding backslash to ensure that they are properly loaded.
 	 * <p>
 	 * After the entries have been written, the output stream is flushed. The output stream remains open after this method returns.
-	 * 
+	 *
 	 * @param properties the {@code ObjectMap}.
 	 * @param writer an output character stream writer.
 	 * @param comment an optional comment to be written, or null.
@@ -263,7 +263,11 @@ public final class PropertiesUtils {
 			}
 			switch (ch) {
 			case ' ':
-				if (i == 0 || escapeSpace) outBuffer.append("\\ ");
+				if (i == 0 || escapeSpace) {
+					outBuffer.append("\\ ");
+				} else {
+					outBuffer.append(ch);
+				}
 				break;
 			case '\n':
 				outBuffer.append("\\n");

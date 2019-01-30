@@ -175,7 +175,10 @@ const char*	btMultiSphereShape::serialize(void* dataBuffer, btSerializer* serial
 		}
 		serializer->finalizeChunk(chunk,"btPositionAndRadius",BT_ARRAY_CODE,(void*)&m_localPositionArray[0]);
 	}
-	
+
+	// Fill padding with zeros to appease msan.
+	memset(shapeData->m_padding, 0, sizeof(shapeData->m_padding));
+
 	return "btMultiSphereShapeData";
 }
 

@@ -316,8 +316,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this.x * y - this.y * x;
 	}
 
-	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
-	 *         counter-clockwise) and between 0 and 360. */
+	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise) and between 0 and 360. */
 	public float angle () {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
@@ -363,6 +363,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
 
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param degrees the angle in degrees
+	 * @param reference center Vector2 */
+	public Vector2 rotateAround (Vector2 reference, float degrees) {
+		return this.sub(reference).rotate(degrees).add(reference);
+	}
+
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param radians the angle in radians */
 	public Vector2 rotateRad (float radians) {
@@ -376,6 +383,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = newY;
 
 		return this;
+	}
+
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians
+	 * @param reference center Vector2 */
+	public Vector2 rotateAroundRad (Vector2 reference, float radians) {
+		return this.sub(reference).rotateRad(radians).add(reference);
 	}
 
 	/** Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is counter-clockwise and < 0 is clockwise. */
@@ -446,23 +460,17 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return true;
 	}
 
-	/**
-	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
-	 *
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
 	 * @param other other vector to compare
-	 * @return true if vector are equal, otherwise false
-	 */
+	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (final Vector2 other) {
 		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
-	/**
-	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
-	 *
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
 	 * @param x x component of the other vector to compare
 	 * @param y y component of the other vector to compare
-	 * @return true if vector are equal, otherwise false
-	 */
+	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (float x, float y) {
 		return epsilonEquals(x, y, MathUtils.FLOAT_ROUNDING_ERROR);
 	}

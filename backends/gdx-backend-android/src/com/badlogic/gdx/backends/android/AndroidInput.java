@@ -109,6 +109,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	boolean[] touched = new boolean[NUM_TOUCHES];
 	int[] button = new int[NUM_TOUCHES];
 	int[] realId = new int[NUM_TOUCHES];
+	float[] pressure = new float[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private int keyCount = 0;
 	private boolean[] keys = new boolean[SUPPORTED_KEYS];
@@ -263,6 +264,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return NUM_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		synchronized (this) {
 			return touchX[0];
@@ -294,6 +300,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		synchronized (this) {
 			return touched[pointer];
 		}
+	}
+
+	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return pressure[pointer];
 	}
 
 	@Override
@@ -407,7 +423,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				}
 			}
 
-			if (touchEvents.size() == 0) {
+			if (touchEvents.isEmpty()) {
 				for (int i = 0; i < deltaX.length; i++) {
 					deltaX[0] = 0;
 					deltaY[0] = 0;
@@ -692,7 +708,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	void registerSensorListeners () {
 		if (config.useAccelerometer) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
+			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) {
 				accelerometerAvailable = false;
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
@@ -705,7 +721,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() == 0) {
+			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty()) {
 				gyroscopeAvailable = false;
 			} else {
 				Sensor gyroscope = manager.getSensorList(Sensor.TYPE_GYROSCOPE).get(0);
@@ -720,7 +736,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (config.useRotationVectorSensor){
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			List<Sensor> rotationVectorSensors = manager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
-			if (rotationVectorSensors.size() > 0){
+			if (!rotationVectorSensors.isEmpty()){
 				rotationVectorListener = new SensorListener();
 				for (Sensor sensor : rotationVectorSensors){ // favor AOSP sensor
 					if (sensor.getVendor().equals("Google Inc.") && sensor.getVersion() == 3){
@@ -787,10 +803,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator)
-			return (Build.VERSION.SDK_INT >= 11 && vibrator != null) ? vibrator.hasVibrator() : vibrator != null;
+		if (peripheral == Peripheral.Vibrator) {
+			if (Build.VERSION.SDK_INT >= 11) {
+				return vibrator != null && vibrator.hasVibrator();
+			} else {
+				return vibrator != null;
+			}
+		}
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
+		if (peripheral == Peripheral.Pressure) return true;
 		return false;
 	}
 
@@ -829,11 +851,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (realId[i] == pointerId) return i;
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < len; i++) {
-			buf.append(i + ":" + realId[i] + " ");
+			sb.append(i + ":" + realId[i] + " ");
 		}
-		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
+		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
 		return -1;
 	}
 

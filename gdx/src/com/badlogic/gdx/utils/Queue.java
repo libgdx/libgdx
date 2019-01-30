@@ -183,7 +183,7 @@ public class Queue<T> implements Iterable<T> {
 		if (identity || value == null) {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (values[i] == value) return i;
+					if (values[i] == value) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (values[i] == value) return i - head;
@@ -193,7 +193,7 @@ public class Queue<T> implements Iterable<T> {
 		} else {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (value.equals(values[i])) return i;
+					if (value.equals(values[i])) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (value.equals(values[i])) return i - head;
@@ -244,6 +244,11 @@ public class Queue<T> implements Iterable<T> {
 		}
 		size--;
 		return value;
+	}
+
+	/** Returns true if the queue is empty. */
+	public boolean isEmpty () {
+		return size == 0;
 	}
 
 	/** Returns the first (head) item in the queue (without removing it).

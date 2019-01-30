@@ -139,7 +139,7 @@ public class IntSet {
 	}
 
 	public void addAll (IntArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (IntArray array, int offset, int length) {
@@ -262,7 +262,7 @@ public class IntSet {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			add(key);
+			addResize(key);
 			return;
 		}
 		// Store key in the stash.
@@ -322,6 +322,11 @@ public class IntSet {
 		stashSize--;
 		int lastIndex = capacity + stashSize;
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
+	}
+
+	/** Returns true if the set is empty. */
+	public boolean isEmpty () {
+		return size == 0;
 	}
 
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
@@ -386,6 +391,7 @@ public class IntSet {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}

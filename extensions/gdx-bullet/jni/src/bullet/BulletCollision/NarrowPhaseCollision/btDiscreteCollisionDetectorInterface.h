@@ -67,10 +67,12 @@ struct btStorageResult : public btDiscreteCollisionDetectorInterface::Result
 		btVector3	m_closestPointInB;
 		btScalar	m_distance; //negative means penetration !
 
+    protected:
 		btStorageResult() : m_distance(btScalar(BT_LARGE_FLOAT))
 		{
-
 		}
+		
+	public:
 		virtual ~btStorageResult() {};
 
 		virtual void addContactPoint(const btVector3& normalOnBInWorld,const btVector3& pointInWorld,btScalar depth)

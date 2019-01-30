@@ -53,6 +53,7 @@ public class MultiWindowTest {
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
+				config.useVsync(false);
 				config.setWindowListener(new Lwjgl3WindowAdapter() {
 					@Override
 					public void created(Lwjgl3Window window) {
@@ -92,6 +93,7 @@ public class MultiWindowTest {
 	public static void main(String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Multi-window test");
+		config.useVsync(true);
 		new Lwjgl3Application(new MainWindow(), config);
 	}
 }

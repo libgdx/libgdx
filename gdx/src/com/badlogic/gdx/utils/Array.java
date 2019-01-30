@@ -101,8 +101,35 @@ public class Array<T> implements Iterable<T> {
 		items[size++] = value;
 	}
 
+	public void add (T value1, T value2) {
+		T[] items = this.items;
+		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		size += 2;
+	}
+
+	public void add (T value1, T value2, T value3) {
+		T[] items = this.items;
+		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		size += 3;
+	}
+
+	public void add (T value1, T value2, T value3, T value4) {
+		T[] items = this.items;
+		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		size += 4;
+	}
+
 	public void addAll (Array<? extends T> array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (Array<? extends T> array, int start, int count) {
@@ -312,6 +339,11 @@ public class Array<T> implements Iterable<T> {
 		return items[0];
 	}
 
+	/** Returns true if the array is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	public void clear () {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
@@ -331,6 +363,7 @@ public class Array<T> implements Iterable<T> {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public T[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -432,6 +465,7 @@ public class Array<T> implements Iterable<T> {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size <= newSize) return;
 		for (int i = newSize; i < size; i++)
 			items[i] = null;
@@ -514,12 +548,12 @@ public class Array<T> implements Iterable<T> {
 
 	/** @see #Array(Class) */
 	static public <T> Array<T> of (Class<T> arrayType) {
-		return new Array<T>(arrayType);
+		return new Array(arrayType);
 	}
 
 	/** @see #Array(boolean, int, Class) */
 	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
-		return new Array<T>(ordered, capacity, arrayType);
+		return new Array(ordered, capacity, arrayType);
 	}
 
 	/** @see #Array(Object[]) */

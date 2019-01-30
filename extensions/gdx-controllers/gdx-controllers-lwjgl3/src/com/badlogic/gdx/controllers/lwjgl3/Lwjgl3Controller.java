@@ -55,7 +55,7 @@ public class Lwjgl3Controller implements Controller {
 		for(int i = 0; i < axes.limit(); i++) {
 			if(axisState[i] != axes.get(i)) {
 				for(ControllerListener listener: listeners) {
-					listener.axisMoved(this, i, axes.get(i));
+					if (listener.axisMoved(this, i, axes.get(i))) break;
 				}
 				manager.axisChanged(this, i, axes.get(i));
 			}
@@ -66,9 +66,9 @@ public class Lwjgl3Controller implements Controller {
 			if(buttonState[i] != (buttons.get(i) == GLFW.GLFW_PRESS)) {
 				for(ControllerListener listener: listeners) {
 					if(buttons.get(i) == GLFW.GLFW_PRESS) {
-						listener.buttonDown(this, i);
+						if (listener.buttonDown(this, i)) break;
 					} else {
-						listener.buttonUp(this, i);
+						if (listener.buttonUp(this, i)) break;
 					}
 				}
 				manager.buttonChanged(this, i, buttons.get(i) == GLFW.GLFW_PRESS);
@@ -80,7 +80,7 @@ public class Lwjgl3Controller implements Controller {
 			if(hatState[i] != hats.get(i)) {
 				hatState[i] = hats.get(i);
 				for(ControllerListener listener: listeners) {
-					listener.povMoved(this, i, getPov(i));
+					if (listener.povMoved(this, i, getPov(i))) break;
 				}
 				manager.hatChanged(this, i, getPov(i));
 			}

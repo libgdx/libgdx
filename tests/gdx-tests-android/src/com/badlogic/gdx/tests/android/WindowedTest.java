@@ -39,10 +39,10 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 		super.onCreate(bundle);
 
 		Button b1 = new Button(this);
-		b1.setText("Change Color");
+		b1.setText(getResources().getString(R.string.change_color));
 		b1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 		Button b2 = new Button(this);
-		b2.setText("New Window");
+		b2.setText(getResources().getString(R.string.new_window));
 		b2.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 		View view = initializeForView(this);
 

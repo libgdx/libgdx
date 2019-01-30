@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,6 +84,7 @@ public final class Intersector {
 	public static boolean intersectSegmentPlane (Vector3 start, Vector3 end, Plane plane, Vector3 intersection) {
 		Vector3 dir = v0.set(end).sub(start);
 		float denom = dir.dot(plane.getNormal());
+		if (denom == 0f) return false;
 		float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
 		if (t < 0 || t > 1) return false;
 
@@ -149,21 +149,20 @@ public final class Intersector {
 	private final static Vector2 s = new Vector2();
 	private final static Vector2 e = new Vector2();
 
-	/** Intersects two resulting polygons with the same winding and sets the overlap polygon resulting from the intersection.
+	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
-	 *
 	 * @param p1 The polygon that is being clipped
 	 * @param p2 The clip polygon
-	 * @param overlap The intersection of the two polygons (optional)
+	 * @param overlap The intersection of the two polygons (can be null, if an intersection polygon is not needed)
 	 * @return Whether the two polygons intersect. */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
+			return false;
+		}
 		// reusable points to trace edges around polygon
 		floatArray2.clear();
 		floatArray.clear();
 		floatArray2.addAll(p1.getTransformedVertices());
-		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
-			return false;
-		}
 		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
 			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i + 1]);
 			// wrap around to beginning of array if index points to end;
@@ -201,8 +200,13 @@ public final class Intersector {
 			floatArray2.addAll(floatArray);
 			floatArray.clear();
 		}
-		if (!(floatArray2.size == 0)) {
-			overlap.setVertices(floatArray2.toArray());
+		if (floatArray2.size != 0) {
+			if (overlap != null) {
+				if (overlap.getVertices().length == floatArray2.size)
+					System.arraycopy(floatArray2.items, 0, overlap.getVertices(), 0, floatArray2.size);
+				else
+					overlap.setVertices(floatArray2.toArray());
+			}
 			return true;
 		} else {
 			return false;
@@ -613,21 +617,22 @@ public final class Intersector {
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
 	 * @param ray The ray
-	 * @param triangles The triangles, each successive 3 elements from a vertex
+	 * @param triangles The triangles, each successive 9 elements are the 3 vertices of a triangle, a vertex is made of 3
+	 *           successive floats (XYZ)
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, float[] triangles, Vector3 intersection) {
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
-		if (triangles.length / 3 % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+		if (triangles.length % 9 != 0) throw new RuntimeException("triangles array size is not a multiple of 9");
 
-		for (int i = 0; i < triangles.length - 6; i += 9) {
+		for (int i = 0; i < triangles.length; i += 9) {
 			boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
 				tmp2.set(triangles[i + 3], triangles[i + 4], triangles[i + 5]),
 				tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
@@ -637,7 +642,7 @@ public final class Intersector {
 			}
 		}
 
-		if (hit == false)
+		if (!hit)
 			return false;
 		else {
 			if (intersection != null) intersection.set(best);
@@ -669,7 +674,7 @@ public final class Intersector {
 				tmp2.set(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]),
 				tmp3.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
@@ -679,7 +684,7 @@ public final class Intersector {
 			}
 		}
 
-		if (hit == false)
+		if (!hit)
 			return false;
 		else {
 			if (intersection != null) intersection.set(best);
@@ -690,7 +695,7 @@ public final class Intersector {
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
 	 * @param ray The ray
-	 * @param triangles The triangles
+	 * @param triangles The triangles, each successive 3 elements are the 3 vertices of a triangle
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, List<Vector3> triangles, Vector3 intersection) {
@@ -699,10 +704,10 @@ public final class Intersector {
 
 		if (triangles.size() % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
-		for (int i = 0; i < triangles.size() - 2; i += 3) {
+		for (int i = 0; i < triangles.size(); i += 3) {
 			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
 
-			if (result == true) {
+			if (result) {
 				float dist = ray.origin.dst2(tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
@@ -785,7 +790,6 @@ public final class Intersector {
 
 	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
 	 * area of overlap.
-	 * 
 	 * @return Whether the rectangles intersect */
 	static public boolean intersectRectangles (Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
 		if (rectangle1.overlaps(rectangle2)) {
@@ -796,6 +800,39 @@ public final class Intersector {
 			return true;
 		}
 		return false;
+	}
+
+	/** Determines whether the given rectangle and segment intersect
+	 * @param startX x-coordinate start of line segment
+	 * @param startY y-coordinate start of line segment
+	 * @param endX y-coordinate end of line segment
+	 * @param endY y-coordinate end of line segment
+	 * @param rectangle rectangle that is being tested for collision
+	 * @return whether the rectangle intersects with the line segment */
+	public static boolean intersectSegmentRectangle (float startX, float startY, float endX, float endY, Rectangle rectangle) {
+		float rectangleEndX = rectangle.x + rectangle.width;
+		float rectangleEndY = rectangle.y + rectangle.height;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, null))
+			return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY, null))
+			return true;
+
+		return rectangle.contains(startX, startY);
+	}
+
+	/**
+	 * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
+	 */
+	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle) {
+		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
 	}
 
 	/** Check whether the given line segment and {@link Polygon} intersect.
@@ -912,7 +949,6 @@ public final class Intersector {
 	}
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap.
-	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @return Whether polygons overlap. */
@@ -922,7 +958,6 @@ public final class Intersector {
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum
 	 * Translation Vector indicating the minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
-	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
@@ -939,7 +974,6 @@ public final class Intersector {
 	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
 	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
 	 * collision with the polygon defined by verts2.
-	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).

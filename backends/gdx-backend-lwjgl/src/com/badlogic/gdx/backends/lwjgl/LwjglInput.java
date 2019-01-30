@@ -192,6 +192,8 @@ final public class LwjglInput implements Input {
 					}
 				});
 
+				dialog.setModal(true);
+				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
 				dialog.dispose();
 
@@ -206,6 +208,11 @@ final public class LwjglInput implements Input {
 
 			}
 		});
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return 1;
 	}
 
 	public int getX () {
@@ -268,6 +275,16 @@ final public class LwjglInput implements Input {
 			return false;
 		else
 			return isTouched();
+	}
+
+	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
 	}
 
 	public boolean supportsMultitouch () {

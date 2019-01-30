@@ -1,4 +1,4 @@
-#if defined(diffuseTextureFlag) || defined(specularTextureFlag)
+#if defined(diffuseTextureFlag) || defined(specularTextureFlag) || defined(emissiveTextureFlag)
 #define textureFlag
 #endif
 
@@ -31,6 +31,11 @@ attribute vec2 a_texCoord0;
 #ifdef diffuseTextureFlag
 uniform vec4 u_diffuseUVTransform;
 varying vec2 v_diffuseUV;
+#endif
+
+#ifdef emissiveTextureFlag
+uniform vec4 u_emissiveUVTransform;
+varying vec2 v_emissiveUV;
 #endif
 
 #ifdef specularTextureFlag
@@ -189,6 +194,10 @@ void main() {
 		v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
 	#endif //diffuseTextureFlag
 	
+	#ifdef emissiveTextureFlag
+		v_emissiveUV = u_emissiveUVTransform.xy + a_texCoord0 * u_emissiveUVTransform.zw;
+	#endif //emissiveTextureFlag
+
 	#ifdef specularTextureFlag
 		v_specularUV = u_specularUVTransform.xy + a_texCoord0 * u_specularUVTransform.zw;
 	#endif //specularTextureFlag
@@ -242,8 +251,8 @@ void main() {
 		
 	#ifdef shadowMapFlag
 		vec4 spos = u_shadowMapProjViewTrans * pos;
-		v_shadowMapUv.xy = (spos.xy / spos.w) * 0.5 + 0.5;
-		v_shadowMapUv.z = min(spos.z * 0.5 + 0.5, 0.998);
+		v_shadowMapUv.xyz = (spos.xyz / spos.w) * 0.5 + 0.5;
+		v_shadowMapUv.z = min(v_shadowMapUv.z, 0.998);
 	#endif //shadowMapFlag
 	
 	#if defined(normalFlag)

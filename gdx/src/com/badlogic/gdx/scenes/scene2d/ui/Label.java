@@ -38,6 +38,7 @@ public class Label extends Widget {
 	private final GlyphLayout layout = new GlyphLayout();
 	private final Vector2 prefSize = new Vector2();
 	private final StringBuilder text = new StringBuilder();
+	private int intValue = Integer.MIN_VALUE;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private int lineAlign = Align.left;
@@ -88,6 +89,16 @@ public class Label extends Widget {
 		return style;
 	}
 
+	/** Sets the text to the specified integer value. If the text is already equivalent to the specified value, a string is not
+	 * allocated.
+	 * @return true if the text was changed. */
+	public boolean setText (int value) {
+		if (this.intValue == value) return false;
+		setText(Integer.toString(value));
+		intValue = value;
+		return true;
+	}
+
 	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
 		if (newText == null) newText = "";
@@ -100,6 +111,7 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
+		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
 	}
 
@@ -333,7 +345,12 @@ public class Label extends Widget {
 	}
 
 	public String toString () {
-		return super.toString() + ": " + text;
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "Label " : "") + className + ": " + text;
 	}
 
 	/** The style for a label, see {@link Label}.

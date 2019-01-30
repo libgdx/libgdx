@@ -35,7 +35,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
 import java.io.IOException;
 
 /** @brief synchronous loader for TMX maps created with the Tiled tool */
@@ -128,7 +130,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
 			root = xml.parse(tmxFile);
-			boolean generateMipMaps = (parameter != null ? parameter.generateMipMaps : false);
+			boolean generateMipMaps = (parameter != null && parameter.generateMipMaps);
 			TextureLoader.TextureParameter texParams = new TextureParameter();
 			texParams.genMipMaps = generateMipMaps;
 			if (parameter != null) {
@@ -340,7 +342,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						imageHeight = imageElement.getIntAttribute("height", 0);
 						image = getRelativeFileHandle(tsx, imageSource);
 					}					
-				} catch (IOException e) {
+				} catch (SerializationException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {

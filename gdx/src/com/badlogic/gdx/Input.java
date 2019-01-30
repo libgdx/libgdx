@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /** <p>
@@ -558,7 +557,7 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
 	}
 
 	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
@@ -579,6 +578,9 @@ public interface Input {
 	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
 	
+	/** @return The maximum number of pointers supported */
+	public int getMaxPointers ();
+
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
@@ -627,12 +629,24 @@ public interface Input {
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer
 	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
 
-	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
+	/** @return the pressure of the first pointer */
+	public float getPressure ();
+
+	/** Returns the pressure of the given pointer, where 0 is untouched. On Android it should be
+	 * up to 1.0, but it can go above that slightly and its not consistent between devices. On iOS 1.0 is the normal touch
+	 * and significantly more of hard touch. Check relevant manufacturer documentation for details.
+	 * Check availability with {@link Input#isPeripheralAvailable(Peripheral)}. If not supported, returns 1.0 when touched.
+	 *
+	 * @param pointer the pointer id.
+	 * @return the pressure */
+	public float getPressure (int pointer);
+
+	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
 	 * constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */

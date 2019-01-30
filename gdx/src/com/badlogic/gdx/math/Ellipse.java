@@ -83,8 +83,8 @@ public class Ellipse implements Serializable, Shape2D {
 	public Ellipse (Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
-		this.width = circle.radius;
-		this.height = circle.radius;
+		this.width = circle.radius * 2f;
+		this.height = circle.radius * 2f;
 	}
 
 	/** Checks whether or not this ellipse contains the given point.
@@ -135,8 +135,8 @@ public class Ellipse implements Serializable, Shape2D {
 	public void set (Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
-		this.width = circle.radius;
-		this.height = circle.radius;
+		this.width = circle.radius * 2f;
+		this.height = circle.radius * 2f;
 	}
 
 	public void set (Vector2 position, Vector2 size) {

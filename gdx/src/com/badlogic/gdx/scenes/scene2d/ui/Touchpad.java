@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
@@ -133,6 +134,8 @@ public class Touchpad extends Widget {
 
 	@Override
 	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && this.getTouchable() != Touchable.enabled) return null;
+		if (!isVisible()) return null;
 		return touchBounds.contains(x, y) ? this : null;
 	}
 

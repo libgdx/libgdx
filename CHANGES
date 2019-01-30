@@ -1,4 +1,50 @@
+[1.9.10]
+- API Addition: Input allows getting the maximum number of pointers supported by the backend
+- API Addition: Configuration option added to allow setting a max number of threads to use for net requests
+- API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
+- API Addition: New MathUtils norm and map methods
+
+[1.9.9]
+- API Addition: Add support for stripping whitespace in PixmapPacker
+- API Addition: Add support for 9 patch packing in PixmapPacker
+- API Addition: Pressure support for ios/android. https://github.com/libgdx/libgdx/pull/5270
+- Update to Lwjgl 3.2.0
+- Update android level we build against to 7.1 (API 25)
+- API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
+- Skin JSON files can now use the simple names of classes, i.e. "BitmapFont" rather than "com.badlogic.gdx.graphics.g2d.BitmapFont". Custom classes can be added by overriding Skin.getJsonLoader() and calling json.setClassTag().
+- Skin supports cascading styles in JSON. Use the "parent" property to tag another style by name to use its values as defaults. See https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/assets/data/uiskin.json for example.
+- SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
+- API addition: Tree indentation can be customized.
+- Fixed GlyphLayout not respecting BitmapFontData#down.
+- API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
+- API Change: BitmapFont#getSpaceWidth changed to BitmapFont#getSpaceXadvance.
+- Many GlyphLayout fixes.
+- API Addition: Added FileHandle#map(), can be used to memory map a file
+- API Change: BitmapFontData#getGlyphs changed for better glyph layout. See https://github.com/libgdx/libgdx/commit/9a7dfdff3c6374a5ebd2f33a819982aceb287dfa
+- API Change: Actor#hit is now responsible for returning null if invisible. #5264
+- API Addition: Added [Collection]#isEmpty() method to all 22 custom LibGDX-collections (e.g. Array, ObjectMap, ObjectSet, Queue, ...)
+- API Addition: StringBuilder#clear()
+- API Addition: Color#WHITE_FLOAT_BITS
+- Table layout fixed when expand is used and the layout width is less than the table's min width.
+- InputMultiplexer#setProcessors(Array) now copies the items instead of using the specified array instance.
+- API Change: A wrapped HorizontalGroup or VerticalGroup will now size children down to their min size if the group is smaller than their pref size.
+- LWJGL3: useVSync() is now a per-window setting. Any additional windows should disable vsync to avoid frames dropping to (refresh rate / # of windows).
+- Batch and sprite implementations and SpriteCache store Color separately from the float packed color, since converting to/from float is lossy.
+- API Change: NumberUtils floatToIntColor expands the alpha from 0-254 to 0-255, so 255 doesn't become 254 from conversion from int to float to int.
+- API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
+- API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
+- API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
+- API Change: DragScrollListener no longer requires the touch/mouse cursor to be directly above/below the scroll pane.
+- API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
+- API Change: List now handles more key presses.
+- API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
+
 [1.9.8]
+- Add iPhoneX images
+- Fix MacOS issue with GL_ARB_texture_float extension check
+- Fix AtlasTmxMapLoader tileset tile id offset
+- Bullet: updated to 2.87, see: http://bulletphysics.org/wordpress/?p=485
+- API Addition: Possibility to specify TexturePacker settings for resampling when scaling.
 - API Addition: Support for customizing render buffer attachments in GLFrameBuffers
 - API Change: Revert to constructors for GLFrameBuffers for easier customization
 

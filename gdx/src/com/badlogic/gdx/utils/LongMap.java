@@ -168,8 +168,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return null;
 	}
 
-	public void putAll (LongMap<V> map) {
-		for (Entry<V> entry : map.entries())
+	public void putAll (LongMap<? extends V> map) {
+		for (Entry<? extends V> entry : map.entries())
 			put(entry.key, entry.value);
 	}
 
@@ -285,7 +285,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.
@@ -400,6 +400,11 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			valueTable[index] = null;
 	}
 
+	/** Returns true if the map is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {
@@ -436,8 +441,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		hasZeroValue = false;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation. */
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
 	public boolean containsValue (Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
@@ -503,6 +508,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
@@ -585,13 +591,9 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			if (key != EMPTY) {
 				V value = valueTable[i];
 				if (value == null) {
-					if (!other.containsKey(key) || other.get(key) != null) {
-						return false;
-					}
+					if (!other.containsKey(key) || other.get(key) != null) return false;
 				} else {
-					if (!value.equals(other.get(key))) {
-						return false;
-					}
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
 		}
@@ -667,8 +669,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);

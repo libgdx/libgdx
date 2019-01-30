@@ -82,8 +82,8 @@ public class SpriteCache implements Disposable {
 	private final Array<Texture> textures = new Array(8);
 	private final IntArray counts = new IntArray(8);
 
-	private float color = Color.WHITE.toFloatBits();
-	private Color tempColor = new Color(1, 1, 1, 1);
+	private final Color color = new Color(1, 1, 1, 1);
+	private float colorPacked = Color.WHITE_FLOAT_BITS;
 
 	private ShaderProgram customShader = null;
 
@@ -140,29 +140,29 @@ public class SpriteCache implements Disposable {
 
 	/** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
-		color = tint.toFloatBits();
+		color.set(tint);
+		colorPacked = tint.toFloatBits();
 	}
 
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
-		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = NumberUtils.intToFloatColor(intBits);
-	}
-
-	/** @see #setColor(Color)
-	 * @see Color#toFloatBits() */
-	public void setColor (float color) {
-		this.color = color;
+		color.set(r, g, b, a);
+		colorPacked = color.toFloatBits();
 	}
 
 	public Color getColor () {
-		int intBits = NumberUtils.floatToIntColor(color);
-		Color color = this.tempColor;
-		color.r = (intBits & 0xff) / 255f;
-		color.g = ((intBits >>> 8) & 0xff) / 255f;
-		color.b = ((intBits >>> 16) & 0xff) / 255f;
-		color.a = ((intBits >>> 24) & 0xff) / 255f;
 		return color;
+	}
+
+	/** Sets the color of this sprite cache, expanding the alpha from 0-254 to 0-255.
+	 * @see Color#toFloatBits() */
+	public void setPackedColor (float packedColor) {
+		Color.abgr8888ToColor(color, packedColor);
+		colorPacked = packedColor;
+	}
+
+	public float getPackedColor () {
+		return colorPacked;
 	}
 
 	/** Starts the definition of a new cache, allowing the add and {@link #endCache()} methods to be called. */
@@ -268,45 +268,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = 0;
 		tempVertices[4] = 1;
 
 		tempVertices[5] = x;
 		tempVertices[6] = fy2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = 0;
 		tempVertices[9] = 0;
 
 		tempVertices[10] = fx2;
 		tempVertices[11] = fy2;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = 1;
 		tempVertices[14] = 0;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = fx2;
 			tempVertices[16] = y;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = 1;
 			tempVertices[19] = 1;
 			add(texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = fx2;
 			tempVertices[16] = fy2;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = 1;
 			tempVertices[19] = 0;
 
 			tempVertices[20] = fx2;
 			tempVertices[21] = y;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = 1;
 			tempVertices[24] = 1;
 
 			tempVertices[25] = x;
 			tempVertices[26] = y;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = 0;
 			tempVertices[29] = 1;
 			add(texture, tempVertices, 0, 30);
@@ -379,45 +379,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = u;
 		tempVertices[4] = v;
 
 		tempVertices[5] = x;
 		tempVertices[6] = fy2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = u;
 		tempVertices[9] = v2;
 
 		tempVertices[10] = fx2;
 		tempVertices[11] = fy2;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = u2;
 		tempVertices[14] = v2;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = fx2;
 			tempVertices[16] = y;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v;
 			add(texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = fx2;
 			tempVertices[16] = fy2;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v2;
 
 			tempVertices[20] = fx2;
 			tempVertices[21] = y;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = u2;
 			tempVertices[24] = v;
 
 			tempVertices[25] = x;
 			tempVertices[26] = y;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(texture, tempVertices, 0, 30);
@@ -450,45 +450,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = u;
 		tempVertices[4] = v;
 
 		tempVertices[5] = x;
 		tempVertices[6] = fy2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = u;
 		tempVertices[9] = v2;
 
 		tempVertices[10] = fx2;
 		tempVertices[11] = fy2;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = u2;
 		tempVertices[14] = v2;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = fx2;
 			tempVertices[16] = y;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v;
 			add(texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = fx2;
 			tempVertices[16] = fy2;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v2;
 
 			tempVertices[20] = fx2;
 			tempVertices[21] = y;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = u2;
 			tempVertices[24] = v;
 
 			tempVertices[25] = x;
 			tempVertices[26] = y;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(texture, tempVertices, 0, 30);
@@ -594,45 +594,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x1;
 		tempVertices[1] = y1;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = u;
 		tempVertices[4] = v;
 
 		tempVertices[5] = x2;
 		tempVertices[6] = y2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = u;
 		tempVertices[9] = v2;
 
 		tempVertices[10] = x3;
 		tempVertices[11] = y3;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = u2;
 		tempVertices[14] = v2;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = x4;
 			tempVertices[16] = y4;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v;
 			add(texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = x3;
 			tempVertices[16] = y3;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v2;
 
 			tempVertices[20] = x4;
 			tempVertices[21] = y4;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = u2;
 			tempVertices[24] = v;
 
 			tempVertices[25] = x1;
 			tempVertices[26] = y1;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(texture, tempVertices, 0, 30);
@@ -655,45 +655,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = u;
 		tempVertices[4] = v;
 
 		tempVertices[5] = x;
 		tempVertices[6] = fy2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = u;
 		tempVertices[9] = v2;
 
 		tempVertices[10] = fx2;
 		tempVertices[11] = fy2;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = u2;
 		tempVertices[14] = v2;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = fx2;
 			tempVertices[16] = y;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v;
 			add(region.texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = fx2;
 			tempVertices[16] = fy2;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v2;
 
 			tempVertices[20] = fx2;
 			tempVertices[21] = y;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = u2;
 			tempVertices[24] = v;
 
 			tempVertices[25] = x;
 			tempVertices[26] = y;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(region.texture, tempVertices, 0, 30);
@@ -785,45 +785,45 @@ public class SpriteCache implements Disposable {
 
 		tempVertices[0] = x1;
 		tempVertices[1] = y1;
-		tempVertices[2] = color;
+		tempVertices[2] = colorPacked;
 		tempVertices[3] = u;
 		tempVertices[4] = v;
 
 		tempVertices[5] = x2;
 		tempVertices[6] = y2;
-		tempVertices[7] = color;
+		tempVertices[7] = colorPacked;
 		tempVertices[8] = u;
 		tempVertices[9] = v2;
 
 		tempVertices[10] = x3;
 		tempVertices[11] = y3;
-		tempVertices[12] = color;
+		tempVertices[12] = colorPacked;
 		tempVertices[13] = u2;
 		tempVertices[14] = v2;
 
 		if (mesh.getNumIndices() > 0) {
 			tempVertices[15] = x4;
 			tempVertices[16] = y4;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v;
 			add(region.texture, tempVertices, 0, 20);
 		} else {
 			tempVertices[15] = x3;
 			tempVertices[16] = y3;
-			tempVertices[17] = color;
+			tempVertices[17] = colorPacked;
 			tempVertices[18] = u2;
 			tempVertices[19] = v2;
 
 			tempVertices[20] = x4;
 			tempVertices[21] = y4;
-			tempVertices[22] = color;
+			tempVertices[22] = colorPacked;
 			tempVertices[23] = u2;
 			tempVertices[24] = v;
 
 			tempVertices[25] = x1;
 			tempVertices[26] = y1;
-			tempVertices[27] = color;
+			tempVertices[27] = colorPacked;
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(region.texture, tempVertices, 0, 30);
@@ -1001,7 +1001,7 @@ public class SpriteCache implements Disposable {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 
