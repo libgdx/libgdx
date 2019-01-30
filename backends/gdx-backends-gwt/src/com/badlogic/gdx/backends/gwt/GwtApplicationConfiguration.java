@@ -52,6 +52,9 @@ public class GwtApplicationConfiguration {
 	public OrientationLockType fullscreenOrientation;
 	/** whether to automatically mute/unmute all sound on pause/resume. Only supported in the Web Audio API backend. **/
 	public boolean autoMuteOnPause = false;
+	/* Whether openURI will open page in new tab. By default it will, however if may be blocked by popup blocker. */
+	/* To prevent the page from being blocked you can redirect to the new page. However this will exit your game.  */
+	public boolean openURLInNewWindow = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
