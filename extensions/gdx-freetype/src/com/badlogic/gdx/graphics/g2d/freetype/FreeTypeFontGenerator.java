@@ -646,7 +646,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class FreeTypeBitmapFontData extends BitmapFontData implements Disposable {
-		Array<TextureRegion> regions;
+		public Array<TextureRegion> regions;
 
 		// Fields for incremental glyph generation.
 		FreeTypeFontGenerator generator;
