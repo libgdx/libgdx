@@ -551,11 +551,10 @@ public class Vector2 implements Serializable, Comparable, Vector<Vector2> {
 		this.y = 0;
 		return this;
 	}
-
+	
 	/** Compares this vector with the other {@link Vector2} based on x and y variables.
-     * Useful for sorting.
-	 * @param other other vector to compare
-	 **/
+	 * Useful for sorting.
+	 * @param other other vector to compare */
 	@Override
 	public int compareTo(Object other) {
 		Vector2 v = (Vector2) other;
