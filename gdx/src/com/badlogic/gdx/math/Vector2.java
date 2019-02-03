@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
-public class Vector2 implements Serializable, Vector<Vector2> {
+public class Vector2 implements Serializable, Comparable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
 
 	public final static Vector2 X = new Vector2(1, 0);
@@ -550,5 +550,25 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.x = 0;
 		this.y = 0;
 		return this;
+	}
+
+	/** Compares this vector with the other {@link Vector2} based on x and y variables.
+     * Useful for sorting.
+	 * @param other other vector to compare
+	 **/
+	@Override
+	public int compareTo(Object other) {
+		Vector2 v = (Vector2) other;
+		if (this.x >= 0) {
+			if (v.x < 0) {
+				return -1;
+			}
+			return -Float.compare(this.y, v.y);
+		} else {
+			if(v.x >= 0) {
+				return 1;
+			}
+			return Float.compare(this.y, v.y);
+		}
 	}
 }

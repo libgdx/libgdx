@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
  * @author badlogicgames@gmail.com */
-public class Vector3 implements Serializable, Vector<Vector3> {
+public class Vector3 implements Serializable, Comparable, Vector<Vector3> {
 	private static final long serialVersionUID = 3840054589595372522L;
 
 	/** the x-component of this vector **/
@@ -719,5 +719,15 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		this.y = 0;
 		this.z = 0;
 		return this;
+	}
+
+	/** Compares this vector with the other {@link Vector3} based on {@link Math#atan2(double var0, double var2)}.
+	 * useful for sorting.
+	 * @param other other vector to compare
+	 **/
+	@Override
+	public int compareTo(Object other) {
+		Vector3 v = (Vector3) other;
+		return Double.compare(Math.atan2(this.x, this.z), Math.atan2(v.x, v.z));
 	}
 }
