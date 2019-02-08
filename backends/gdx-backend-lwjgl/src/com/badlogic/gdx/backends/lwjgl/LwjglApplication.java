@@ -137,7 +137,7 @@ public class LwjglApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	void mainLoop () {
+	protected void mainLoop () {
 		SnapshotArray<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		try {
