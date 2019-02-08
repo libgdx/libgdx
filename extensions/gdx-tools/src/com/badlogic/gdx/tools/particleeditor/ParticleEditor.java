@@ -81,7 +81,7 @@ public class ParticleEditor extends JFrame {
 	ParticleEffect effect = new ParticleEffect();
 	File effectFile;
 	final HashMap<ParticleEmitter, ParticleData> particleData = new HashMap();
-	private JCheckBox renderGridCheckBox;
+	JCheckBox renderGridCheckBox;
 
 	public ParticleEditor () {
 		super("Particle Editor");
