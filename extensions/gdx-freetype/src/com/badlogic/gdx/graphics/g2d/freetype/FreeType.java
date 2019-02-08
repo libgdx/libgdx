@@ -716,7 +716,8 @@ public class FreeType {
 				converted.setBlending(Blending.None);
 				converted.drawPixmap(pixmap, 0, 0);
 				pixmap.dispose();
-			}
+			} else
+				converted.setBlending(Blending.None);
 			return converted;
 		}
 		// @off

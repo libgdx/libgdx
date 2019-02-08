@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,10 +44,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -524,6 +521,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
 				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+				shadowPixmap.setBlending(Blending.None);
 
 				Color shadowColor = parameter.shadowColor;
 				float a = shadowColor.a;
@@ -553,6 +551,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				mainPixmap = shadowPixmap;
 			} else if (parameter.borderWidth == 0) {
 				// No shadow and no border, draw glyph additional times.
+				mainPixmap.setBlending(Blending.None);
 				for (int i = 0, n = parameter.renderCount - 1; i < n; i++)
 					mainPixmap.drawPixmap(mainPixmap, 0, 0);
 			}
@@ -560,6 +559,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			if (parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0) {
 				Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
 					mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+				padPixmap.setBlending(Blending.None);
 				padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
 				mainPixmap.dispose();
 				mainPixmap = padPixmap;
