@@ -165,6 +165,21 @@ public class ImageProcessor {
 			image = newImage;
 		}
 
+		if (isPatch) {
+			// Ninepatches aren't rotated or whitespace stripped.
+			rect = new Rect(image, 0, 0, width, height, true);
+			rect.splits = splits;
+			rect.pads = pads;
+			rect.canRotate = false;
+		} else {
+			try {
+				rect = stripWhitespace(name, image);
+			} catch (RuntimeException ex) {
+				throw new RuntimeException("Unable to strip whitespace: " + name, ex);
+			}
+			if (rect == null) return null;
+		}
+
 		// Scale image.
 		if (scale != 1) {
 			int originalWidth = width, originalHeight = height;
@@ -190,17 +205,6 @@ public class ImageProcessor {
 				name = matcher.group(1);
 				index = Integer.parseInt(matcher.group(2));
 			}
-		}
-
-		if (isPatch) {
-			// Ninepatches aren't rotated or whitespace stripped.
-			rect = new Rect(image, 0, 0, width, height, true);
-			rect.splits = splits;
-			rect.pads = pads;
-			rect.canRotate = false;
-		} else {
-			rect = stripWhitespace(name, image);
-			if (rect == null) return null;
 		}
 
 		rect.name = name;
