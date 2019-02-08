@@ -38,9 +38,9 @@ import com.badlogic.gdx.utils.Align;
 public class ScrollPaneWithDynamicScrolling extends GdxTest {
 	private Stage stage;
 	private Table container;
-	private Label dynamicLabel;
-	private ScrollPane scrollPane;
-	private int count;
+	Label dynamicLabel;
+	ScrollPane scrollPane;
+	int count;
 	
 	public void create () {
 		stage = new Stage();
