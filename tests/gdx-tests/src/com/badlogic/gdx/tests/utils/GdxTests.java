@@ -204,6 +204,7 @@ public class GdxTests {
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
 		ScrollPaneTextAreaTest.class,
+		ScrollPaneWithDynamicScrolling.class,
 		SelectTest.class,
 		SensorTest.class,
 		ShaderCollectionTest.class,
