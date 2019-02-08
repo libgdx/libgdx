@@ -302,10 +302,10 @@ public class GlyphLayout implements Poolable {
 		}
 
 		this.width = width;
-		if(fontData.flipped)
+		if (fontData.flipped)
 			this.height = fontData.capHeight + lines * fontData.down + blankLines * fontData.down * fontData.blankLineScale;
 		else
-			this.height = fontData.capHeight - lines * fontData.down - blankLines * fontData.down * fontData.blankLineScale;
+			this.height = fontData.capHeight + lines * -fontData.down + blankLines * -fontData.down * fontData.blankLineScale;
 	}
 
 	/** @param truncate May be empty string. */
