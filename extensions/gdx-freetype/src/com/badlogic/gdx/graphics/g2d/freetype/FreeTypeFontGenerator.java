@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,10 +44,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -93,43 +90,9 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
-		name = fontFile.pathWithoutExtension();
-		int fileSize = (int)fontFile.length();
-
+		name = fontFile.nameWithoutExtension();
 		library = FreeType.initFreeType();
-		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
-
-		ByteBuffer buffer = null;
-
-		try {
-			buffer = fontFile.map();
-		} catch (GdxRuntimeException e) {
-			// Silently error, certain platforms do not support file mapping.
-		}
-
-		if (buffer == null) {
-			InputStream input = fontFile.read();
-			try {
-				if (fileSize == 0) {
-					// Copy to a byte[] to get the file size, then copy to the buffer.
-					byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
-					buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-					BufferUtils.copy(data, 0, buffer, data.length);
-				} else {
-					// Trust the specified file size.
-					buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
-					StreamUtils.copyStream(input, buffer);
-				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException(ex);
-			} finally {
-				StreamUtils.closeQuietly(input);
-			}
-		}
-
-		face = library.newMemoryFace(buffer, faceIndex);
-		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + fontFile);
-
+		face = library.newFace(fontFile, faceIndex);
 		if (checkForBitmapFont()) return;
 		setPixelSizes(0, 15);
 	}
@@ -197,6 +160,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		generateData(parameter, data);
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
@@ -316,6 +280,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
+		data.name = name + "-" + parameter.size;
 		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
@@ -556,6 +521,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
 				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+				shadowPixmap.setBlending(Blending.None);
 
 				Color shadowColor = parameter.shadowColor;
 				float a = shadowColor.a;
@@ -585,6 +551,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				mainPixmap = shadowPixmap;
 			} else if (parameter.borderWidth == 0) {
 				// No shadow and no border, draw glyph additional times.
+				mainPixmap.setBlending(Blending.None);
 				for (int i = 0, n = parameter.renderCount - 1; i < n; i++)
 					mainPixmap.drawPixmap(mainPixmap, 0, 0);
 			}
@@ -592,6 +559,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			if (parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0) {
 				Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
 					mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+				padPixmap.setBlending(Blending.None);
 				padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
 				mainPixmap.dispose();
 				mainPixmap = padPixmap;
@@ -640,6 +608,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		return glyph;
 	}
 
+	public String toString () {
+		return name;
+	}
+
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
 	@Override
 	public void dispose () {
@@ -674,7 +646,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class FreeTypeBitmapFontData extends BitmapFontData implements Disposable {
-		Array<TextureRegion> regions;
+		public Array<TextureRegion> regions;
 
 		// Fields for incremental glyph generation.
 		FreeTypeFontGenerator generator;

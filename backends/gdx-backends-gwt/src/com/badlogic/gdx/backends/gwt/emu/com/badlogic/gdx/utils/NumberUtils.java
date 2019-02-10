@@ -29,7 +29,10 @@ public final class NumberUtils {
 	}
 
 	public static int floatToIntColor (float value) {
-		return Numbers.floatToIntBits(value);
+		// matches non-emulated behavior except for floats that are infinite or NaN
+		int intBits = Numbers.floatToIntBits(value);
+		intBits |= (int)((intBits >>> 24) * (255f / 254f)) << 24;
+		return intBits;
 	}
 
 	public static float intToFloatColor (int value) {
@@ -43,10 +46,10 @@ public final class NumberUtils {
 	}
 
 	public static long doubleToLongBits (double value) {
-		return 0; // FIXME
+		return Numbers.doubleToLongBits(value);
 	}
 
 	public static double longBitsToDouble (long value) {
-		return 0; // FIXME
+		return Numbers.longBitsToDouble(value);
 	}
 }

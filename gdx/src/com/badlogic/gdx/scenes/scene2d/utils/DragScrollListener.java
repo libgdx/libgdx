@@ -71,22 +71,20 @@ public class DragScrollListener extends DragListener {
 
 	public void drag (InputEvent event, float x, float y, int pointer) {
 		event.getListenerActor().localToActorCoordinates(scroll, tmpCoords.set(x, y));
-		if (tmpCoords.x >= 0 && tmpCoords.x < scroll.getWidth()) {
-			if (tmpCoords.y >= scroll.getHeight()) {
-				scrollDown.cancel();
-				if (!scrollUp.isScheduled()) {
-					startTime = System.currentTimeMillis();
-					Timer.schedule(scrollUp, tickSecs, tickSecs);
-				}
-				return;
-			} else if (tmpCoords.y < 0) {
-				scrollUp.cancel();
-				if (!scrollDown.isScheduled()) {
-					startTime = System.currentTimeMillis();
-					Timer.schedule(scrollDown, tickSecs, tickSecs);
-				}
-				return;
+		if (tmpCoords.y >= scroll.getHeight()) {
+			scrollDown.cancel();
+			if (!scrollUp.isScheduled()) {
+				startTime = System.currentTimeMillis();
+				Timer.schedule(scrollUp, tickSecs, tickSecs);
 			}
+			return;
+		} else if (tmpCoords.y < 0) {
+			scrollUp.cancel();
+			if (!scrollDown.isScheduled()) {
+				startTime = System.currentTimeMillis();
+				Timer.schedule(scrollDown, tickSecs, tickSecs);
+			}
+			return;
 		}
 		scrollUp.cancel();
 		scrollDown.cancel();

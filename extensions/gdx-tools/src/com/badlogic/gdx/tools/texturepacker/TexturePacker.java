@@ -83,12 +83,16 @@ public class TexturePacker {
 		else
 			packer = new MaxRectsPacker(settings);
 
-		imageProcessor = new ImageProcessor(settings);
+		imageProcessor = newImageProcessor(settings);
 		setRootDir(rootDir);
 	}
 
 	public TexturePacker (Settings settings) {
 		this(null, settings);
+	}
+
+	protected ImageProcessor newImageProcessor (Settings settings) {
+		return new ImageProcessor(settings);
 	}
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
@@ -97,8 +101,17 @@ public class TexturePacker {
 			rootPath = null;
 			return;
 		}
-		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+		try {
+			rootPath = rootDir.getCanonicalPath();
+		} catch (IOException ex) {
+			rootPath = rootDir.getAbsolutePath();
+		}
+		rootPath = rootPath.replace('\\', '/');
 		if (!rootPath.endsWith("/")) rootPath += "/";
+	}
+
+	public String getRootPath () {
+		return rootPath;
 	}
 
 	public void addImage (File file) {
@@ -508,7 +521,7 @@ public class TexturePacker {
 		private File file;
 		int score1, score2;
 
-		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
+		public Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
 			image = new BufferedImage(source.getColorModel(),
 				source.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null),
 				source.getColorModel().isAlphaPremultiplied(), null);

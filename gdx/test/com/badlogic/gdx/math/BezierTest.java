@@ -25,7 +25,7 @@ public class BezierTest {
 		LibGDXArrays, JavaArrays, JavaVarArgs
 	}
 
-	@Parameters(name = "use setter {0} imported type {1}")
+	@Parameters(name = "imported type {0} use setter {1}")
 	public static Collection<Object[]> parameters () {
 		Collection<Object[]> parameters = new ArrayList<Object[]>();
 		for(ImportType type : ImportType.values()){

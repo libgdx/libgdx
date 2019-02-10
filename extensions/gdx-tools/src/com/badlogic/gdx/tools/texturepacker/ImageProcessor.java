@@ -55,7 +55,7 @@ public class ImageProcessor {
 
 	/** The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
 	 * @param rootPath Used to strip the root directory prefix from image file names, can be null. */
-	public void addImage (File file, String rootPath) {
+	public Rect addImage (File file, String rootPath) {
 		BufferedImage image;
 		try {
 			image = ImageIO.read(file);
@@ -64,7 +64,13 @@ public class ImageProcessor {
 		}
 		if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
-		String name = file.getAbsolutePath().replace('\\', '/');
+		String name;
+		try {
+			name = file.getCanonicalPath();
+		} catch (IOException ex) {
+			name = file.getAbsolutePath();
+		}
+		name = name.replace('\\', '/');
 
 		// Strip root dir off front of image path.
 		if (rootPath != null) {
@@ -78,6 +84,7 @@ public class ImageProcessor {
 
 		Rect rect = addImage(image, name);
 		if (rect != null && settings.limitMemory) rect.unloadImage(file);
+		return rect;
 	}
 
 	/** The image will be kept in-memory during packing.
@@ -121,13 +128,17 @@ public class ImageProcessor {
 		return rects;
 	}
 
+	public Settings getSettings () {
+		return settings;
+	}
+
 	public void clear () {
 		rects.clear();
 		crcs.clear();
 	}
 
 	/** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
-	Rect processImage (BufferedImage image, String name) {
+	protected Rect processImage (BufferedImage image, String name) {
 		if (scale <= 0) throw new IllegalArgumentException("scale cannot be <= 0: " + scale);
 
 		int width = image.getWidth(), height = image.getHeight();
@@ -154,6 +165,21 @@ public class ImageProcessor {
 			image = newImage;
 		}
 
+		if (isPatch) {
+			// Ninepatches aren't rotated or whitespace stripped.
+			rect = new Rect(image, 0, 0, width, height, true);
+			rect.splits = splits;
+			rect.pads = pads;
+			rect.canRotate = false;
+		} else {
+			try {
+				rect = stripWhitespace(name, image);
+			} catch (RuntimeException ex) {
+				throw new RuntimeException("Unable to strip whitespace: " + name, ex);
+			}
+			if (rect == null) return null;
+		}
+
 		// Scale image.
 		if (scale != 1) {
 			int originalWidth = width, originalHeight = height;
@@ -169,17 +195,6 @@ public class ImageProcessor {
 				g.drawImage(image, 0, 0, width, height, null);
 			}
 			image = newImage;
-		}
-
-		if (isPatch) {
-			// Ninepatches aren't rotated or whitespace stripped.
-			rect = new Rect(image, 0, 0, width, height, true);
-			rect.splits = splits;
-			rect.pads = pads;
-			rect.canRotate = false;
-		} else {
-			rect = stripWhitespace(image);
-			if (rect == null) return null;
 		}
 
 		// Strip digits off end of name and use as index.
@@ -198,7 +213,7 @@ public class ImageProcessor {
 	}
 
 	/** Strips whitespace and returns the rect, or null if the image should be ignored. */
-	private Rect stripWhitespace (BufferedImage source) {
+	protected Rect stripWhitespace (String name, BufferedImage source) {
 		WritableRaster alphaRaster = source.getAlphaRaster();
 		if (alphaRaster == null || (!settings.stripWhitespaceX && !settings.stripWhitespaceY))
 			return new Rect(source, 0, 0, source.getWidth(), source.getHeight(), false);

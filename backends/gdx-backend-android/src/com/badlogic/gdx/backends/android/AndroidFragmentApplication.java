@@ -160,7 +160,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
 		audio = new AndroidAudio(getActivity(), config);
 		files = new AndroidFiles(getResources().getAssets(), getActivity().getFilesDir().getAbsolutePath());
-		net = new AndroidNet(this);
+		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();
 		this.clipboard = new AndroidClipboard(getActivity());

@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.graphics.Color;
-
 public final class NumberUtils {
 	public static int floatToIntBits (float value) {
 		return Float.floatToIntBits(value);

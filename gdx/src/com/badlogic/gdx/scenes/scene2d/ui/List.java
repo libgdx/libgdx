@@ -29,8 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
@@ -52,6 +52,8 @@ public class List<T> extends Widget implements Cullable {
 	float itemHeight;
 	private int alignment = Align.left;
 	int touchDown = -1, overIndex = -1;
+	private InputListener keyListener;
+	boolean typeToSelect;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -68,16 +70,61 @@ public class List<T> extends Widget implements Cullable {
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 
-		addListener(new InputListener() {
+		addListener(keyListener = new InputListener() {
+			long typeTimeout;
+			String prefix;
+
 			public boolean keyDown (InputEvent event, int keycode) {
-				if (keycode == Keys.A && UIUtils.ctrl() && selection.getMultiple()) {
-					selection.clear();
-					selection.addAll(items);
+				if (items.isEmpty()) return false;
+				int index;
+				switch (keycode) {
+				case Keys.A:
+					if (UIUtils.ctrl() && selection.getMultiple()) {
+						selection.clear();
+						selection.addAll(items);
+						return true;
+					}
+					break;
+				case Keys.HOME:
+					setSelectedIndex(0);
+					return true;
+				case Keys.END:
+					setSelectedIndex(items.size - 1);
+					return true;
+				case Keys.DOWN:
+					index = items.indexOf(getSelected(), false) + 1;
+					if (index >= items.size) index = 0;
+					setSelectedIndex(index);
+					return true;
+				case Keys.UP:
+					index = items.indexOf(getSelected(), false) - 1;
+					if (index < 0) index = items.size - 1;
+					setSelectedIndex(index);
+					return true;
+				case Keys.ESCAPE:
+					getStage().setKeyboardFocus(null);
 					return true;
 				}
 				return false;
 			}
 
+			public boolean keyTyped (InputEvent event, char character) {
+				if (!typeToSelect) return false;
+				long time = System.currentTimeMillis();
+				if (time > typeTimeout) prefix = "";
+				typeTimeout = time + 300;
+				prefix += Character.toLowerCase(character);
+				for (int i = 0, n = items.size; i < n; i++) {
+					if (List.this.toString(items.get(i)).toLowerCase().startsWith(prefix)) {
+						setSelectedIndex(i);
+						break;
+					}
+				}
+				return false;
+			}
+		});
+
+		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return true;
 				if (selection.isDisabled()) return true;
@@ -317,7 +364,7 @@ public class List<T> extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	protected String toString (T object) {
+	public String toString (T object) {
 		return object.toString();
 	}
 
@@ -329,6 +376,14 @@ public class List<T> extends Widget implements Cullable {
 	 * @param alignment See {@link Align}. */
 	public void setAlignment (int alignment) {
 		this.alignment = alignment;
+	}
+
+	public void setTypeToSelect (boolean typeToSelect) {
+		this.typeToSelect = typeToSelect;
+	}
+
+	public InputListener getKeyListener () {
+		return keyListener;
 	}
 
 	/** The style for a list, see {@link List}.

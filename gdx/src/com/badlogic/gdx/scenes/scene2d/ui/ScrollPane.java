@@ -873,6 +873,8 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the scroll offset so the specified rectangle is fully in view, and optionally centered vertically and/or horizontally,
 	 * if possible. Coordinates are in the scroll pane widget's coordinate system. */
 	public void scrollTo (float x, float y, float width, float height, boolean centerHorizontal, boolean centerVertical) {
+		validate();
+
 		float amountX = this.amountX;
 		if (centerHorizontal) {
 			amountX = x - areaWidth / 2 + width / 2;

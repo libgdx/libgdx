@@ -25,12 +25,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.PixmapPackerIO;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -53,7 +48,11 @@ public class PixmapPackerTest extends GdxTest {
 	NinePatch ninePatch;
 	NinePatch officialPatch;
 
+	Animation<TextureRegion> animation;
+
 	Skin skin;
+
+	float stateTime = 0;
 
 	@Override
 	public void create () {
@@ -70,14 +69,17 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
 		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
+		Pixmap pixmap5 = new Pixmap(Gdx.files.internal("data/badlogic-with-whitespace.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false);
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false,
+				true, true, new PixmapPacker.GuillotineStrategy());
 		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
 			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace " + count, pixmap5);
 		}
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
@@ -90,14 +92,23 @@ public class PixmapPackerTest extends GdxTest {
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
 			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace -" + count, pixmap5);
 		}
+
+		packer.pack("badlogic-anim_0", pixmap1);
+		packer.pack("badlogic-anim_1", pixmap5);
+		packer.pack("badlogic-anim_2", pixmap1);
+		packer.pack("badlogic-anim_3", pixmap5);
 
 		pixmap1.dispose();
 		pixmap2.dispose();
 		pixmap3.dispose();
 		pixmap4.dispose();
+		pixmap5.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
+		animation = new Animation<TextureRegion>(0.33f, atlas.findRegions("badlogic-anim"), Animation.PlayMode.LOOP);
+
 		textureRegions = new Array<TextureRegion>();
 		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmapPackerTest", "Number of updated textures: " + atlas.getTextures().size);
@@ -118,48 +129,8 @@ public class PixmapPackerTest extends GdxTest {
 		officialPatch = skin.getPatch("textfield");
 		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-		PixmapPackerIO pixmapPackerIO = new PixmapPackerIO();
-		try {
-			PixmapPackerIO.SaveParameters saveParameters = new PixmapPackerIO.SaveParameters();
-			saveParameters.format = PixmapPackerIO.ImageFormat.PNG;
-			pixmapPackerIO.save(Gdx.files.local("pixmapPackerTest.atlas"), packer, saveParameters);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		TextureAtlas loaded = new TextureAtlas(Gdx.files.local("pixmapPackerTest.atlas"));
-		for (int i = 0; i < loaded.getRegions().size; i++) {
-			final TextureAtlas.AtlasRegion atlasRegion = loaded.getRegions().get(i);
-			compare(atlas, atlasRegion);
-		}
 	}
-
-	private void compare (TextureAtlas original, TextureAtlas.AtlasRegion loaded) {
-		final TextureAtlas.AtlasRegion originalRegion = original.findRegion(loaded.name);
-		if (originalRegion == null) throw new GdxRuntimeException("No original AtlasRegion found");
-
-		if (originalRegion.index != loaded.index) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.offsetX != loaded.offsetX) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.offsetY != loaded.offsetY) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.packedWidth != loaded.packedWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.packedHeight != loaded.packedHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.originalWidth != loaded.originalWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.originalHeight != loaded.originalHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.rotate != loaded.rotate) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.splits != null && loaded.splits != null) {
-			for (int i = 0; i < originalRegion.splits.length; i++) {
-				if (originalRegion.splits[i] != loaded.splits[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-			}
-		} else {
-			if (originalRegion.splits != loaded.splits) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		}
-		if (originalRegion.pads != null && loaded.pads != null) {
-			for (int i = 0; i < originalRegion.pads.length; i++) {
-				if (originalRegion.pads[i] != loaded.pads[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-			}
-		} else {
-			if (originalRegion.pads != loaded.pads) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		}	}
 
 	@Override
 	public void render () {
@@ -171,11 +142,14 @@ public class PixmapPackerTest extends GdxTest {
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
 		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);
 		officialPatch.draw(batch, (int)(size * 0.25f + 20), 10, quarterSize, quarterSize);
+		batch.draw(animation.getKeyFrame(stateTime), 30 + (quarterSize * 2), 10, quarterSize, quarterSize);
 		batch.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(0, 0, size, size);
 		shapeRenderer.end();
+
+		stateTime += Gdx.graphics.getDeltaTime();
 	}
 
 	@Override
