@@ -12,7 +12,7 @@
 	<property name="build-natives" value="false"/>
 
 	<!-- should we build natives in release mode -->
-	<property name="release" value="false"/>
+	<property name="release" value="true"/>
 
 	<!-- clean distribution/output directory -->
 	<target name="clean">
