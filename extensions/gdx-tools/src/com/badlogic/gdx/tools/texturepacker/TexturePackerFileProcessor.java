@@ -96,11 +96,11 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				parent = parent.getParentFile();
 				settings = dirToSettings.get(parent);
 				if (settings != null) {
-					settings = new Settings(settings);
+					settings = newSettings(settings);
 					break;
 				}
 			}
-			if (settings == null) settings = new Settings(defaultSettings);
+			if (settings == null) settings = newSettings(defaultSettings);
 			// Merge settings from current directory.
 			merge(settings, settingsFile);
 			dirToSettings.put(settingsFile.getParentFile(), settings);
@@ -137,7 +137,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		File settingsFile = new File(root, "pack.json");
 		Settings rootSettings = defaultSettings;
 		if (settingsFile.exists()) {
-			rootSettings = new Settings(rootSettings);
+			rootSettings = newSettings(rootSettings);
 			merge(rootSettings, settingsFile);
 		}
 
@@ -286,6 +286,10 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		TexturePacker packer = new TexturePacker(root, settings);
 		packer.setProgressListener(progress);
 		return packer;
+	}
+
+	protected Settings newSettings (Settings settings) {
+		return new Settings(settings);
 	}
 
 	public ProgressListener getProgressListener () {
