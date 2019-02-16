@@ -165,21 +165,23 @@ static inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
 }
 
 static inline uint32_t blend(uint32_t src, uint32_t dst) {
-	int32_t src_r = (src & 0xff000000) >> 24;
-	int32_t src_g = (src & 0xff0000) >> 16;
-	int32_t src_b = (src & 0xff00) >> 8;
 	int32_t src_a = (src & 0xff);
-		
-	int32_t dst_r = (dst & 0xff000000) >> 24;
-	int32_t dst_g = (dst & 0xff0000) >> 16;
-	int32_t dst_b = (dst & 0xff00) >> 8;
+	if (src_a == 0) return dst;
+	int32_t src_b = (src & 0xff00) >> 8;
+	int32_t src_g = (src & 0xff0000) >> 16;
+	int32_t src_r = (src & 0xff000000) >> 24;
+
 	int32_t dst_a = (dst & 0xff);
-		
-	dst_r = dst_r + src_a * (src_r - dst_r) / 255;
-	dst_g = dst_g + src_a * (src_g - dst_g) / 255;
-	dst_b = dst_b + src_a * (src_b - dst_b) / 255;
-	dst_a = (int32_t)((1.0f - (1.0f - src_a / 255.0f) * (1.0f - dst_a / 255.0f)) * 255);
-	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | dst_a);
+	int32_t dst_b = (dst & 0xff00) >> 8;
+	int32_t dst_g = (dst & 0xff0000) >> 16;
+	int32_t dst_r = (dst & 0xff000000) >> 24;
+
+	dst_a -= (dst_a * src_a) / 255;
+	int32_t a = dst_a + src_a;
+	dst_r = (dst_r * dst_a + src_r * src_a) / a;
+	dst_g = (dst_g * dst_a + src_g * src_a) / a;
+	dst_b = (dst_b * dst_a + src_b * src_a) / a;
+	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
 }
 
 static inline uint32_t get_pixel_alpha(unsigned char *pixel_addr) {
