@@ -22,10 +22,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** GWT emulation of AsynchExecutor, will call tasks immediately :D
  * @author badlogic */
 public class AsyncExecutor implements Disposable {
+	/** Creates a new AsynchExecutor with the name "AsynchExecutor-Thread". */
+	public AsyncExecutor (int maxConcurrent) {
+	}
 
 	/** Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
-	 * @param maxConcurrent */
-	public AsyncExecutor (int maxConcurrent) {
+	 * @param maxConcurrent
+	 * @param name The name of the threads. */
+	public AsyncExecutor (int maxConcurrent, String name) {
 	}
 
 	/** Submits a {@link Runnable} to be executed asynchronously. If maxConcurrent runnables are already running, the runnable will
