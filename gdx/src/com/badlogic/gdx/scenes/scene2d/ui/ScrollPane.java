@@ -1136,6 +1136,7 @@ public class ScrollPane extends WidgetGroup {
 
 		public ScrollPaneStyle (ScrollPaneStyle style) {
 			this.background = style.background;
+			this.corner = style.corner;
 			this.hScroll = style.hScroll;
 			this.hScrollKnob = style.hScrollKnob;
 			this.vScroll = style.vScroll;
