@@ -168,12 +168,12 @@ static inline uint32_t blend(uint32_t src, uint32_t dst) {
 	uint32_t src_a = src & 0xff;
 	if (src_a == 0) return dst;
 	uint32_t src_b = (src >> 8) & 0xff;
-	uint32_t src_g = (src >> 16) & 0xff
-	uint32_t src_r = (src >> 24) & 0xff
+	uint32_t src_g = (src >> 16) & 0xff;
+	uint32_t src_r = (src >> 24) & 0xff;
 
 	uint32_t dst_a = dst & 0xff;
 	uint32_t dst_b = (dst >> 8) & 0xff;
-	uint32_t dst_g = (dst >> 16) & 0xff
+	uint32_t dst_g = (dst >> 16) & 0xff;
 	uint32_t dst_r = (dst >> 24) & 0xff;
 
 	dst_a -= (dst_a * src_a) / 255;
