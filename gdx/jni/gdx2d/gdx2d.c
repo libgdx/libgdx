@@ -165,19 +165,19 @@ static inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
 }
 
 static inline uint32_t blend(uint32_t src, uint32_t dst) {
-	int32_t src_a = (src & 0xff);
+	uint32_t src_a = src & 0xff;
 	if (src_a == 0) return dst;
-	int32_t src_b = (src & 0xff00) >> 8;
-	int32_t src_g = (src & 0xff0000) >> 16;
-	int32_t src_r = (src & 0xff000000) >> 24;
+	uint32_t src_b = (src >> 8) & 0xff;
+	uint32_t src_g = (src >> 16) & 0xff
+	uint32_t src_r = (src >> 24) & 0xff
 
-	int32_t dst_a = (dst & 0xff);
-	int32_t dst_b = (dst & 0xff00) >> 8;
-	int32_t dst_g = (dst & 0xff0000) >> 16;
-	int32_t dst_r = (dst & 0xff000000) >> 24;
+	uint32_t dst_a = dst & 0xff;
+	uint32_t dst_b = (dst >> 8) & 0xff;
+	uint32_t dst_g = (dst >> 16) & 0xff
+	uint32_t dst_r = (dst >> 24) & 0xff;
 
 	dst_a -= (dst_a * src_a) / 255;
-	int32_t a = dst_a + src_a;
+	uint32_t a = dst_a + src_a;
 	dst_r = (dst_r * dst_a + src_r * src_a) / a;
 	dst_g = (dst_g * dst_a + src_g * src_a) / a;
 	dst_b = (dst_b * dst_a + src_b * src_a) / a;
