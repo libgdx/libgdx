@@ -46,6 +46,10 @@ public enum IOSDevice {
 	IPHONE_8("iPhone10,4", 326),
     	IPHONE_8_PLUS("iPhone10,5", 401),
 	IPHONE_X("iPhone10,6", 458),
+	IPHONE_XR("iPhone11,8", 326),
+	IPHONE_XS("iPhone11,2", 458),
+	IPHONE_XS_MAX("iPhone11,4", 458),
+	IPHONE_XS_MAX_2_NANO_SIM("iPhone11,6", 458),
 	
 	IPOD_TOUCH_1G("iPod1,1", 163),
 	IPOD_TOUCH_2G("iPod2,1", 163),

@@ -29,11 +29,12 @@ import apple.uikit.UIApplication;
 
 public class IOSNet implements Net {
 
-	NetJavaImpl netJavaImpl = new NetJavaImpl();
+	NetJavaImpl netJavaImpl;
 	final UIApplication uiApp;
 
-	public IOSNet (IOSApplication app) {
+	public IOSNet (IOSApplication app, IOSApplicationConfiguration configuration) {
 		uiApp = app.uiApp;
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
 	}
 
 	@Override

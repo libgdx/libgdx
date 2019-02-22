@@ -24,14 +24,15 @@ allprojects {
     buildscript {
         repositories {
             mavenCentral()
+            google()
             jcenter()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-            google()
         }
     }
 
     repositories {
         mavenCentral()
+        google()
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }

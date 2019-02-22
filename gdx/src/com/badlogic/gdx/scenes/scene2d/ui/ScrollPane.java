@@ -114,13 +114,13 @@ public class ScrollPane extends WidgetGroup {
 				if (pointer == 0 && button != 0) return false;
 				getStage().setScrollFocus(ScrollPane.this);
 
-				if (!flickScroll) resetFade();
+				if (!flickScroll) setScrollbarsVisible(true);
 
 				if (fadeAlpha == 0) return false;
 
 				if (scrollBarTouch && scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
-					resetFade();
+					setScrollbarsVisible(true);
 					if (hKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = hKnobBounds.x;
@@ -133,7 +133,7 @@ public class ScrollPane extends WidgetGroup {
 				}
 				if (scrollBarTouch && scrollY && vScrollBounds.contains(x, y)) {
 					event.stop();
-					resetFade();
+					setScrollbarsVisible(true);
 					if (vKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = vKnobBounds.y;
@@ -176,14 +176,14 @@ public class ScrollPane extends WidgetGroup {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				if (!flickScroll) resetFade();
+				if (!flickScroll) setScrollbarsVisible(true);
 				return false;
 			}
 		});
 
 		flickScrollListener = new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				resetFade();
+				setScrollbarsVisible(true);
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
@@ -216,7 +216,7 @@ public class ScrollPane extends WidgetGroup {
 
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
-				resetFade();
+				setScrollbarsVisible(true);
 				if (scrollY)
 					setScrollY(amountY + getMouseWheelY() * amount);
 				else if (scrollX) //
@@ -228,9 +228,15 @@ public class ScrollPane extends WidgetGroup {
 		});
 	}
 
-	void resetFade () {
-		fadeAlpha = fadeAlphaSeconds;
-		fadeDelay = fadeDelaySeconds;
+	/** Shows or hides the scrollbars for when using {@link #setFadeScrollBars(boolean)}. */
+	public void setScrollbarsVisible (boolean visible) {
+		if (visible) {
+			fadeAlpha = fadeAlphaSeconds;
+			fadeDelay = fadeDelaySeconds;
+		} else {
+			fadeAlpha = 0;
+			fadeDelay = 0;
+		}
 	}
 
 	/** Cancels the stage's touch focus for all listeners except this scroll pane's flick scroll listener. This causes any widgets
@@ -282,7 +288,7 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (flingTimer > 0) {
-			resetFade();
+			setScrollbarsVisible(true);
 
 			float alpha = flingTimer / flingTime;
 			amountX -= velocityX * alpha * delta;
@@ -331,13 +337,13 @@ public class ScrollPane extends WidgetGroup {
 		if (!panning) {
 			if (overscrollX && scrollX) {
 				if (amountX < 0) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
 						* delta;
 					if (amountX > 0) scrollX(0);
 					animating = true;
 				} else if (amountX > maxX) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountX -= (overscrollSpeedMin
 						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX) / overscrollDistance) * delta;
 					if (amountX < maxX) scrollX(maxX);
@@ -346,13 +352,13 @@ public class ScrollPane extends WidgetGroup {
 			}
 			if (overscrollY && scrollY) {
 				if (amountY < 0) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
 						* delta;
 					if (amountY > 0) scrollY(0);
 					animating = true;
 				} else if (amountY > maxY) {
-					resetFade();
+					setScrollbarsVisible(true);
 					amountY -= (overscrollSpeedMin
 						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY) / overscrollDistance) * delta;
 					if (amountY < maxY) scrollY(maxY);
@@ -601,31 +607,37 @@ public class ScrollPane extends WidgetGroup {
 
 		// Render scrollbars and knobs on top if they will be visible
 		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
-		if (alpha > 0f) {
-			batch.setColor(color.r, color.g, color.b, alpha);
-			boolean x = scrollX && hKnobBounds.width > 0;
-			boolean y = scrollY && vKnobBounds.height > 0;
-			if (x && y) {
-				if (style.corner != null) {
-					style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
-						vScrollBounds.y);
-				}
-			}
-			if (x) {
-				if (style.hScroll != null)
-					style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
-				if (style.hScrollKnob != null)
-					style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
-			}
-			if (y) {
-				if (style.vScroll != null)
-					style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
-				if (style.vScrollKnob != null)
-					style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
-			}
-		}
+		drawScrollBars(batch, color.r, color.g, color.b, alpha);
 
 		resetTransform(batch);
+	}
+
+	/** Renders the scrollbars after the children have been drawn. If the scrollbars faded out, a is zero and rendering can be
+	 * skipped. */
+	protected void drawScrollBars (Batch batch, float r, float g, float b, float a) {
+		if (a <= 0) return;
+		batch.setColor(r, g, b, a);
+
+		boolean x = scrollX && hKnobBounds.width > 0;
+		boolean y = scrollY && vKnobBounds.height > 0;
+		if (x && y) {
+			if (style.corner != null) {
+				style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
+					vScrollBounds.y);
+			}
+		}
+		if (x) {
+			if (style.hScroll != null)
+				style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
+			if (style.hScrollKnob != null)
+				style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
+		}
+		if (y) {
+			if (style.vScroll != null)
+				style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
+			if (style.vScrollKnob != null)
+				style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
+		}
 	}
 
 	/** Generate fling gesture.
@@ -811,14 +823,17 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getVisualScrollPercentX () {
+		if (maxX == 0) return 0;
 		return MathUtils.clamp(visualAmountX / maxX, 0, 1);
 	}
 
 	public float getVisualScrollPercentY () {
+		if (maxY == 0) return 0;
 		return MathUtils.clamp(visualAmountY / maxY, 0, 1);
 	}
 
 	public float getScrollPercentX () {
+		if (maxX == 0) return 0;
 		return MathUtils.clamp(amountX / maxX, 0, 1);
 	}
 
@@ -827,6 +842,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getScrollPercentY () {
+		if (maxY == 0) return 0;
 		return MathUtils.clamp(amountY / maxY, 0, 1);
 	}
 
@@ -857,6 +873,8 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the scroll offset so the specified rectangle is fully in view, and optionally centered vertically and/or horizontally,
 	 * if possible. Coordinates are in the scroll pane widget's coordinate system. */
 	public void scrollTo (float x, float y, float width, float height, boolean centerHorizontal, boolean centerVertical) {
+		validate();
+
 		float amountX = this.amountX;
 		if (centerHorizontal) {
 			amountX = x - areaWidth / 2 + width / 2;
@@ -926,6 +944,7 @@ public class ScrollPane extends WidgetGroup {
 	public void setScrollingDisabled (boolean x, boolean y) {
 		disableX = x;
 		disableY = y;
+		invalidate();
 	}
 
 	public boolean isScrollingDisabledX () {
@@ -1045,6 +1064,10 @@ public class ScrollPane extends WidgetGroup {
 		this.fadeDelaySeconds = fadeDelaySeconds;
 	}
 
+	public boolean getFadeScrollBars () {
+		return fadeScrollBars;
+	}
+
 	/** When false, the scroll bars don't respond to touch or mouse events. Default is true. */
 	public void setScrollBarTouch (boolean scrollBarTouch) {
 		this.scrollBarTouch = scrollBarTouch;
@@ -1113,6 +1136,7 @@ public class ScrollPane extends WidgetGroup {
 
 		public ScrollPaneStyle (ScrollPaneStyle style) {
 			this.background = style.background;
+			this.corner = style.corner;
 			this.hScroll = style.hScroll;
 			this.hScrollKnob = style.hScrollKnob;
 			this.vScroll = style.vScroll;

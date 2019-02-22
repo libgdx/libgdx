@@ -157,7 +157,7 @@ public class FileHandle {
 		return new BufferedInputStream(read(), bufferSize);
 	}
 
-	/** Returns a reader for reading this file as characters.
+	/** Returns a reader for reading this file as characters the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader () {
 		return new InputStreamReader(read());
@@ -175,7 +175,7 @@ public class FileHandle {
 		}
 	}
 
-	/** Returns a buffered reader for reading this file as characters.
+	/** Returns a buffered reader for reading this file as characters using the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize) {
 		return new BufferedReader(new InputStreamReader(read()), bufferSize);

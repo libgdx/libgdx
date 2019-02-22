@@ -99,10 +99,17 @@ public class IOSApplicationConfiguration {
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 	
+	/** whether the home indicator should be hidden or not **/
+	public boolean hideHomeIndicator = true;
+	
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
 
 	/** Edges where app gestures must be fired over system gestures.
 	 * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
 	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
+
 }

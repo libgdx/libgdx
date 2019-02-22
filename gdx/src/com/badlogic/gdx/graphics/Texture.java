@@ -27,6 +27,7 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -218,6 +219,11 @@ public class Texture extends GLTexture {
 		if (glHandle == 0) return;
 		delete();
 		if (data.isManaged()) if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).removeValue(this, true);
+	}
+
+	public String toString () {
+		if (data instanceof FileTextureData) return data.toString();
+		return super.toString();
 	}
 
 	private static void addManagedTexture (Application app, Texture texture) {

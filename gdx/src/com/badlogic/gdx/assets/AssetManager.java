@@ -119,7 +119,7 @@ public class AssetManager implements Disposable {
 			setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
 			setLoader(Cubemap.class, new CubemapLoader(resolver));
 		}
-		executor = new AsyncExecutor(1);
+		executor = new AsyncExecutor(1, "AssetManager");
 	}
 
 	/** Returns the {@link FileHandleResolver} for which this AssetManager was loaded with.
@@ -747,8 +747,9 @@ public class AssetManager implements Disposable {
 
 	/** @return a string containing ref count and dependency information for all assets. */
 	public synchronized String getDiagnostics () {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(256);
 		for (String fileName : assetTypes.keys()) {
+			if (sb.length() > 0) sb.append("\n");
 			sb.append(fileName);
 			sb.append(", ");
 
@@ -769,7 +770,6 @@ public class AssetManager implements Disposable {
 				}
 				sb.append("]");
 			}
-			sb.append("\n");
 		}
 		return sb.toString();
 	}

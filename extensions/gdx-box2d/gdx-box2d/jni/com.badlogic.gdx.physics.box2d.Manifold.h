@@ -51,10 +51,10 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetPoint
 }
 #endif
 #endif
-/* Header for class com_badlogic_gdx_physics_box2d_Manifold_ManifoldType */
+/* Header for class com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint */
 
-#ifndef _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldType
-#define _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldType
+#ifndef _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint
+#define _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,10 +62,10 @@ extern "C" {
 }
 #endif
 #endif
-/* Header for class com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint */
+/* Header for class com_badlogic_gdx_physics_box2d_Manifold_ManifoldType */
 
-#ifndef _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint
-#define _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldPoint
+#ifndef _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldType
+#define _Included_com_badlogic_gdx_physics_box2d_Manifold_ManifoldType
 #ifdef __cplusplus
 extern "C" {
 #endif

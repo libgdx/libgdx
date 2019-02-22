@@ -134,6 +134,8 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void insert (int index, Node node) {
+		int existingIndex = rootNodes.indexOf(node, true);
+		if (existingIndex != -1 && existingIndex < index) index--;
 		remove(node);
 		node.parent = null;
 		rootNodes.insert(index, node);
@@ -174,7 +176,7 @@ public class Tree extends WidgetGroup {
 		prefWidth = Math.max(prefWidth, style.minus.getMinWidth());
 		prefHeight = getHeight();
 		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		computeSize(rootNodes, indentSpacing, plusMinusWidth);
+		computeSize(rootNodes, 0, plusMinusWidth);
 		prefWidth += padding * 2;
 		prefHeight = getHeight() - prefHeight;
 	}
@@ -190,7 +192,6 @@ public class Tree extends WidgetGroup {
 				Layout layout = (Layout)actor;
 				rowWidth += layout.getPrefWidth();
 				node.height = layout.getPrefHeight();
-				layout.pack();
 			} else {
 				rowWidth += actor.getWidth();
 				node.height = actor.getHeight();
@@ -218,6 +219,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			float x = indent + plusMinusWidth;
 			if (node.icon != null) x += spacing + node.icon.getMinWidth();
+			if (node.actor instanceof Layout) ((Layout)node.actor).pack();
 			y -= node.getHeight();
 			node.actor.setPosition(x, y);
 			y -= ySpacing;
@@ -320,6 +322,16 @@ public class Tree extends WidgetGroup {
 
 	public Array<Node> getRootNodes () {
 		return rootNodes;
+	}
+
+	/** Removes the root node actors from the tree and adds them again. This is useful after changing the order of
+	 * {@link #getRootNodes()}.
+	 * @see Node#updateChildren() */
+	public void updateRootNodes () {
+		for (int i = rootNodes.size - 1; i >= 0; i--)
+			rootNodes.get(i).removeFromTree(this);
+		for (int i = 0, n = rootNodes.size; i < n; i++)
+			rootNodes.get(i).addToTree(this);
 	}
 
 	/** @return May be null. */
@@ -523,7 +535,6 @@ public class Tree extends WidgetGroup {
 			Tree tree = getTree();
 			if (tree == null) return;
 			node.removeFromTree(tree);
-			if (children.size == 0) expanded = false;
 		}
 
 		public void removeAll () {
@@ -556,7 +567,13 @@ public class Tree extends WidgetGroup {
 			return children;
 		}
 
-		/** Adds the child node actors to the tree again. This is useful after changing the order of {@link #getChildren()}. */
+		public boolean hasChildren () {
+			return children.size > 0;
+		}
+
+		/** Removes the child node actors from the tree and adds them again. This is useful after changing the order of
+		 * {@link #getChildren()}.
+		 * @see Tree#updateRootNodes() */
 		public void updateChildren () {
 			if (!expanded) return;
 			Tree tree = getTree();

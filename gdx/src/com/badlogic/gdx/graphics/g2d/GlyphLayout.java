@@ -302,7 +302,10 @@ public class GlyphLayout implements Poolable {
 		}
 
 		this.width = width;
-		this.height = fontData.capHeight - lines * fontData.down - blankLines * fontData.down * fontData.blankLineScale;
+		if (fontData.flipped)
+			this.height = fontData.capHeight + lines * fontData.down + blankLines * fontData.down * fontData.blankLineScale;
+		else
+			this.height = fontData.capHeight + lines * -fontData.down + blankLines * -fontData.down * fontData.blankLineScale;
 	}
 
 	/** @param truncate May be empty string. */
@@ -415,6 +418,7 @@ public class GlyphLayout implements Poolable {
 	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
 	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
+		if (last.fixedWidth) return;
 		float width = (last.width + last.xoffset) * fontData.scaleX - fontData.padRight;
 		run.width += width - run.xAdvances.peek(); // Can cause the run width to be > targetWidth, but the problem is minimal.
 		run.xAdvances.set(run.xAdvances.size - 1, width);

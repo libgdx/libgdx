@@ -154,6 +154,9 @@ public class BitmapFont implements Disposable {
 		this.integer = integer;
 
 		if (pageRegions == null || pageRegions.size == 0) {
+			if (data.imagePaths == null)
+				throw new IllegalArgumentException("If no regions are specified, the font data must have an images path.");
+
 			// Load each path.
 			int n = data.imagePaths.length;
 			regions = new Array(n);
@@ -382,8 +385,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public String toString () {
-		if (data.fontFile != null) return data.fontFile.nameWithoutExtension();
-		return super.toString();
+		return data.name != null ? data.name : super.toString();
 	}
 
 	/** Represents a single character in a font page. */
@@ -430,6 +432,8 @@ public class BitmapFont implements Disposable {
 
 	/** Backing data for a {@link BitmapFont}. */
 	static public class BitmapFontData {
+		/** The name of the font, or null. */
+		public String name;
 		/** An array of the image paths, for multiple texture pages. */
 		public String[] imagePaths;
 		public FileHandle fontFile;
@@ -484,6 +488,8 @@ public class BitmapFont implements Disposable {
 		public void load (FileHandle fontFile, boolean flip) {
 			if (imagePaths != null) throw new IllegalStateException("Already loaded.");
 
+			name = fontFile.nameWithoutExtension();
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 			try {
 				String line = reader.readLine(); // info
@@ -500,7 +506,7 @@ public class BitmapFont implements Disposable {
 
 				line = reader.readLine();
 				if (line == null) throw new GdxRuntimeException("Missing common header.");
-				String[] common = line.split(" ", 7); // At most we want the 6th element; i.e. "page=N"
+				String[] common = line.split(" ", 9); // At most we want the 6th element; i.e. "page=N"
 
 				// At least lineHeight and base are required.
 				if (common.length < 3) throw new GdxRuntimeException("Invalid common header.");
@@ -551,6 +557,7 @@ public class BitmapFont implements Disposable {
 					line = reader.readLine();
 					if (line == null) break; // EOF
 					if (line.startsWith("kernings ")) break; // Starting kernings block.
+					if (line.startsWith("metrics ")) break; // Starting metrics block.
 					if (!line.startsWith("char ")) continue;
 
 					Glyph glyph = new Glyph();
@@ -617,6 +624,38 @@ public class BitmapFont implements Disposable {
 					}
 				}
 
+				boolean hasMetricsOverride = false;
+				float overrideAscent = 0;
+				float overrideDescent = 0;
+				float overrideDown = 0;
+				float overrideCapHeight = 0;
+				float overrideLineHeight = 0;
+				float overrideSpaceXAdvance = 0;
+				float overrideXHeight = 0;
+
+				//Metrics override
+				if (line != null && line.startsWith("metrics ")) {
+
+					hasMetricsOverride = true;
+
+					StringTokenizer tokens = new StringTokenizer(line, " =");
+					tokens.nextToken();
+					tokens.nextToken();
+					overrideAscent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDescent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDown = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideCapHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideLineHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideSpaceXAdvance = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideXHeight = Float.parseFloat(tokens.nextToken());
+				}
+
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
@@ -663,6 +702,18 @@ public class BitmapFont implements Disposable {
 					ascent = -ascent;
 					down = -down;
 				}
+
+				if (hasMetricsOverride) {
+					this.ascent = overrideAscent;
+					this.descent = overrideDescent;
+					this.down = overrideDown;
+					this.capHeight = overrideCapHeight;
+					this.lineHeight = overrideLineHeight;
+					this.spaceXadvance = overrideSpaceXAdvance;
+					this.xHeight = overrideXHeight;
+				}
+
+
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 			} finally {
@@ -896,6 +947,10 @@ public class BitmapFont implements Disposable {
 		 * @throws IllegalArgumentException if the resulting scale is zero. */
 		public void scale (float amount) {
 			setScale(scaleX + amount, scaleY + amount);
+		}
+
+		public String toString () {
+			return name != null ? name : super.toString();
 		}
 	}
 }

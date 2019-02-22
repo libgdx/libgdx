@@ -617,16 +617,17 @@ public final class Intersector {
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
 	 * @param ray The ray
-	 * @param triangles The triangles, each successive 3 elements from a vertex
+	 * @param triangles The triangles, each successive 9 elements are the 3 vertices of a triangle, a vertex is made of 3
+	 *           successive floats (XYZ)
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, float[] triangles, Vector3 intersection) {
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
-		if (triangles.length / 3 % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+		if (triangles.length % 9 != 0) throw new RuntimeException("triangles array size is not a multiple of 9");
 
-		for (int i = 0; i < triangles.length - 6; i += 9) {
+		for (int i = 0; i < triangles.length; i += 9) {
 			boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
 				tmp2.set(triangles[i + 3], triangles[i + 4], triangles[i + 5]),
 				tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), tmp);
@@ -694,7 +695,7 @@ public final class Intersector {
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
 	 * @param ray The ray
-	 * @param triangles The triangles
+	 * @param triangles The triangles, each successive 3 elements are the 3 vertices of a triangle
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, List<Vector3> triangles, Vector3 intersection) {
@@ -703,7 +704,7 @@ public final class Intersector {
 
 		if (triangles.size() % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
-		for (int i = 0; i < triangles.size() - 2; i += 3) {
+		for (int i = 0; i < triangles.size(); i += 3) {
 			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
 
 			if (result) {
@@ -799,6 +800,39 @@ public final class Intersector {
 			return true;
 		}
 		return false;
+	}
+
+	/** Determines whether the given rectangle and segment intersect
+	 * @param startX x-coordinate start of line segment
+	 * @param startY y-coordinate start of line segment
+	 * @param endX y-coordinate end of line segment
+	 * @param endY y-coordinate end of line segment
+	 * @param rectangle rectangle that is being tested for collision
+	 * @return whether the rectangle intersects with the line segment */
+	public static boolean intersectSegmentRectangle (float startX, float startY, float endX, float endY, Rectangle rectangle) {
+		float rectangleEndX = rectangle.x + rectangle.width;
+		float rectangleEndY = rectangle.y + rectangle.height;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null))
+		    return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, null))
+			return true;
+
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY, null))
+			return true;
+
+		return rectangle.contains(startX, startY);
+	}
+
+	/**
+	 * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
+	 */
+	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle) {
+		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
 	}
 
 	/** Check whether the given line segment and {@link Polygon} intersect.

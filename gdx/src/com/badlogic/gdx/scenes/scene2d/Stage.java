@@ -78,7 +78,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private int mouseScreenX, mouseScreenY;
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
-	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 	private boolean actionsRequestRendering = true;
 
 	private ShapeRenderer debugShapes;
@@ -167,6 +167,7 @@ public class Stage extends InputAdapter implements Disposable {
 		debugShapes.begin();
 		root.drawDebug(debugShapes);
 		debugShapes.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	/** Disables debug on all actors recursively except the specified actor and any children. */
@@ -443,8 +444,10 @@ public class Stage extends InputAdapter implements Disposable {
 		return handled;
 	}
 
-	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
-	 * will be used as the {@link Event#getListenerActor() listener actor} and {@link Event#getTarget() target}. */
+	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. Touch focus
+	 * is added automatically when true is returned from {@link InputListener#touchDown(InputEvent, float, float, int, int)
+	 * touchDown}. The specified actors will be used as the {@link Event#getListenerActor() listener actor} and
+	 * {@link Event#getTarget() target} for the touchDragged and touchUp events. */
 	public void addTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		TouchFocus focus = Pools.obtain(TouchFocus.class);
 		focus.listenerActor = listenerActor;
@@ -455,8 +458,8 @@ public class Stage extends InputAdapter implements Disposable {
 		touchFocuses.add(focus);
 	}
 
-	/** Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
-	 * the listener may never receive a touchUp event if this method is used. */
+	/** Removes touch focus for the specified listener, pointer, and button. Note the listener will not receive a touchUp event
+	 * when this method is used. */
 	public void removeTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
@@ -469,9 +472,9 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
-	/** Cancels touch focus for the specified actor.
+	/** Cancels touch focus for all listeners with the specified listener actor.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocus (Actor actor) {
+	public void cancelTouchFocus (Actor listenerActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -484,7 +487,7 @@ public class Stage extends InputAdapter implements Disposable {
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = items[i];
-			if (focus.listenerActor != actor) continue;
+			if (focus.listenerActor != listenerActor) continue;
 			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
@@ -498,10 +501,9 @@ public class Stage extends InputAdapter implements Disposable {
 		Pools.free(event);
 	}
 
-	/** Sends a touchUp event to all listeners that are registered to receive touchDragged and touchUp events and removes their
-	 * touch focus. This method removes all touch focus listeners, but sends a touchUp event so that the state of the listeners
-	 * remains consistent (listeners typically expect to receive touchUp eventually). The location of the touchUp is
-	 * {@link Integer#MIN_VALUE}. Listeners can use {@link InputEvent#isTouchFocusCancel()} to ignore this event if needed. */
+	/** Removes all touch focus listeners, sending a touchUp event to each listener. Listeners typically expect to receive a
+	 * touchUp event when they have touch focus. The location of the touchUp is {@link Integer#MIN_VALUE}. Listeners can use
+	 * {@link InputEvent#isTouchFocusCancel()} to ignore this event if needed. */
 	public void cancelTouchFocus () {
 		cancelTouchFocusExcept(null, null);
 	}
@@ -699,10 +701,13 @@ public class Stage extends InputAdapter implements Disposable {
 		return root;
 	}
 
-	/** Replaces the root group. Usually this is not necessary but a subclass may be desired in some cases, eg being notified of
+	/** Replaces the root group. This can be useful, for example, to subclass the root group to be notified by
 	 * {@link Group#childrenChanged()}. */
 	public void setRoot (Group root) {
+		if (root.parent != null) root.parent.removeActor(root, false);
 		this.root = root;
+		root.setParent(null);
+		root.setStage(this);
 	}
 
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
@@ -741,7 +746,6 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix.
 	 * @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
 	public void calculateScissors (Rectangle localRect, Rectangle scissorRect) {
-		viewport.calculateScissors(batch.getTransformMatrix(), localRect, scissorRect);
 		Matrix4 transformMatrix;
 		if (debugShapes != null && debugShapes.isDrawing())
 			transformMatrix = debugShapes.getTransformMatrix();
