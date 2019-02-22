@@ -132,7 +132,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	protected final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
-	boolean keyboardAvailable;
+	protected boolean keyboardAvailable;
 	protected final float[] magneticFieldValues = new float[3];
 	protected final float[] rotationVectorValues = new float[3];
 	private float azimuth = 0;
