@@ -31,6 +31,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** @author Nathan Sweet */
@@ -120,7 +121,9 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	void merge (Settings settings, File settingsFile) {
 		try {
-			json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+			JsonValue root = new JsonReader().parse(new FileReader(settingsFile));
+			if (root == null) return; // Empty file.
+			json.readFields(settings, root);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error reading settings file: " + settingsFile, ex);
 		}
@@ -186,7 +189,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		if (settings.ignore) return;
 
 		if (settings.combineSubdirectories) {
-			// Collect all files under subdirectories and ignore subdirectories without pack.json files.
+			// Collect all files under subdirectories except those with a pack.json file. A directory with its own settings can't be
+			// combined since combined directories must use the settings of the parent directory.
 			files = new FileProcessor(this) {
 				protected void processDir (Entry entryDir, ArrayList<Entry> files) {
 					if (!entryDir.inputFile.equals(inputDir.inputFile) && new File(entryDir.inputFile, "pack.json").exists()) {
