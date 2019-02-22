@@ -633,7 +633,7 @@ public class BitmapFont implements Disposable {
 				float overrideSpaceXAdvance = 0;
 				float overrideXHeight = 0;
 
-				//Metrics override
+				// Metrics override
 				if (line != null && line.startsWith("metrics ")) {
 
 					hasMetricsOverride = true;
@@ -712,7 +712,6 @@ public class BitmapFont implements Disposable {
 					this.spaceXadvance = overrideSpaceXAdvance;
 					this.xHeight = overrideXHeight;
 				}
-
 
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
@@ -868,12 +867,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			if (isWhitespace((char)glyphs.get(i).id)) return i;
-			for (; i > 0; i--)
-				if (!isWhitespace((char)glyphs.get(i).id)) break;
+			char ch = (char)glyphs.get(i).id;
+			if (isWhitespace(ch)) return i;
+			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				char ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
+				ch = (char)glyphs.get(i).id;
+				if (isBreakChar(ch)) return i + 1;
+				if (isWhitespace(ch)) return i + 1;
 			}
 			return 0;
 		}
