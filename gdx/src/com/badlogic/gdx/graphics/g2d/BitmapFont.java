@@ -839,6 +839,7 @@ public class BitmapFont implements Disposable {
 
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
 				if (glyph == null) {
 					if (missingGlyph == null) continue;
