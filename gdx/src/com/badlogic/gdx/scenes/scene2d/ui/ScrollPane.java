@@ -600,6 +600,7 @@ public class ScrollPane extends WidgetGroup {
 
 		// Render scrollbars and knobs on top if they will be visible
 		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawScrollBars(batch, color.r, color.g, color.b, alpha);
 
 		resetTransform(batch);
