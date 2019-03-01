@@ -81,7 +81,6 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/x86_64" />
 		<mkdir dir="${libs}/linux32" />
 		<mkdir dir="${libs}/linux64" />
-		<mkdir dir="${libs}/macosx32" />
 		<mkdir dir="${libs}/macosx64" />
 		<mkdir dir="${libs}/windows32" />
 		<mkdir dir="${libs}/windows64" />
