@@ -521,7 +521,6 @@ public class FreeTypeFontGenerator implements Disposable {
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
 				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
-				shadowPixmap.setBlending(Blending.None);
 
 				Color shadowColor = parameter.shadowColor;
 				float a = shadowColor.a;
@@ -551,7 +550,6 @@ public class FreeTypeFontGenerator implements Disposable {
 				mainPixmap = shadowPixmap;
 			} else if (parameter.borderWidth == 0) {
 				// No shadow and no border, draw glyph additional times.
-				mainPixmap.setBlending(Blending.None);
 				for (int i = 0, n = parameter.renderCount - 1; i < n; i++)
 					mainPixmap.drawPixmap(mainPixmap, 0, 0);
 			}

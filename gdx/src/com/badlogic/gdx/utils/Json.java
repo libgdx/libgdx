@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
@@ -551,6 +552,28 @@ public class Json {
 				writeObjectEnd();
 				return;
 			}
+			if (value instanceof ObjectSet) {
+				if (knownType == null) knownType = ObjectSet.class;
+				writeObjectStart(actualType, knownType);
+				writer.name("values");
+				writeArrayStart();
+				for (Object entry : (ObjectSet)value)
+					writeValue(entry, elementType, null);
+				writeArrayEnd();
+				writeObjectEnd();
+				return;
+			}
+			if (value instanceof IntSet) {
+				if (knownType == null) knownType = IntSet.class;
+				writeObjectStart(actualType, knownType);
+				writer.name("values");
+				writeArrayStart();
+				for (IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext;)
+					writeValue(Integer.valueOf(iter.next()), Integer.class, null);
+				writeArrayEnd();
+				writeObjectEnd();
+				return;
+			}
 			if (value instanceof ArrayMap) {
 				if (knownType == null) knownType = ArrayMap.class;
 				writeObjectStart(actualType, knownType);
@@ -934,22 +957,30 @@ public class Json {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-
+					return (T)result;
+				}
+				if (object instanceof ObjectSet) {
+					ObjectSet result = (ObjectSet)object;
+					for (JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+						result.add(readValue(elementType, null, child));
+					return (T)result;
+				}
+				if (object instanceof IntSet) {
+					IntSet result = (IntSet)object;
+					for (JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+						result.add(child.asInt());
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-
 					return (T)result;
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next) {
-						if (child.name.equals(typeName)) {
-							continue;
-						}
+						if (child.name.equals(typeName)) continue;
 						result.put(child.name, readValue(elementType, null, child));
 					}
 					return (T)result;
@@ -1060,7 +1091,7 @@ public class Json {
 	 * type. */
 	public void copyFields (Object from, Object to) {
 		ObjectMap<String, FieldMetadata> toFields = getFields(from.getClass());
-		for (ObjectMap.Entry<String, FieldMetadata> entry: getFields(from.getClass())) {
+		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(from.getClass())) {
 			FieldMetadata toField = toFields.get(entry.key);
 			Field fromField = entry.value.field;
 			if (toField == null) throw new SerializationException("To object is missing field" + entry.key);

@@ -41,6 +41,9 @@
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared -static -static-libgcc -static-libstdc++ -m64"/>
 	<property name="libraries" value="-ldinput8 -ldxguid"/>
+
+	<!-- define stripper -->
+	<property name="stripper" value="${compilerPrefix}strip${compilerSuffix}"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -67,6 +70,23 @@
 		</condition>
 		<condition property="has-compiler">
 			<equals arg1="${compiler-found}" arg2="true"/>
+		</condition>
+		<condition property="stripper-found">
+			<or>
+				<!-- Include both b/c Windows might be either -->
+				<available file="${stripper}" filepath="${env.PATH}"/>
+				<available file="${stripper}" filepath="${env.Path}"/>
+			</or>
+		</condition>
+		<condition property="should-strip">
+			<and>
+				<equals arg1="${stripper-found}" arg2="true"/>
+				<equals arg1="${release}" arg2="true"/>
+				<!-- Don't strip mac osx libs -->
+				<not>
+					<contains string="${libName}" substring="dylib"/>
+				</not>
+			</and>
 		</condition>
 		
 	</target>
@@ -141,8 +161,16 @@
 			<arg line="${libraries}" />
 		</exec>
 	</target>	
+
+	<!-- strips the shared library of debug symbols -->
+	<target name="strip" depends="link" if="should-strip">
+		<exec executable="${stripper}" failonerror="true" dir="${buildDir}">
+			<arg value="--strip-unneeded"/>
+			<arg path="${libsDir}/${libName}" />
+		</exec>
+	</target>
 	
-	<target name="postcompile" depends="link">
+	<target name="postcompile" depends="strip">
 		
 	</target>
 </project>

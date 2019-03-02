@@ -34,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
  * <p>
@@ -55,7 +54,6 @@ public class ScrollPane extends WidgetGroup {
 	final Rectangle vKnobBounds = new Rectangle();
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
-	private final Rectangle scissorBounds = new Rectangle();
 	private ActorGestureListener flickScrollListener;
 
 	boolean scrollX, scrollY;
@@ -593,16 +591,11 @@ public class ScrollPane extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
 
-		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-		// project those to screen coordinates for OpenGL ES to consume.
-		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
-
-		// Enable scissors for widget area and draw the widget.
 		batch.flush();
-		if (ScissorStack.pushScissors(scissorBounds)) {
+		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
 			drawChildren(batch, parentAlpha);
 			batch.flush();
-			ScissorStack.popScissors();
+			clipEnd();
 		}
 
 		// Render scrollbars and knobs on top if they will be visible
@@ -1104,9 +1097,11 @@ public class ScrollPane extends WidgetGroup {
 	public void drawDebug (ShapeRenderer shapes) {
 		shapes.flush();
 		applyTransform(shapes, computeTransform());
-		if (ScissorStack.pushScissors(scissorBounds)) {
+		shapes.flush();
+		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
 			drawDebugChildren(shapes);
-			ScissorStack.popScissors();
+			shapes.flush();
+			clipEnd();
 		}
 		resetTransform(shapes);
 	}
@@ -1136,6 +1131,7 @@ public class ScrollPane extends WidgetGroup {
 
 		public ScrollPaneStyle (ScrollPaneStyle style) {
 			this.background = style.background;
+			this.corner = style.corner;
 			this.hScroll = style.hScroll;
 			this.hScrollKnob = style.hScrollKnob;
 			this.vScroll = style.vScroll;
