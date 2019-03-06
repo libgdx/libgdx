@@ -1019,7 +1019,11 @@ public class SpriteCache implements Disposable {
 	}
 
 	/** Returns the custom shader, or null if the default shader is being used. */
-	public ShaderProgram getShader () {
+	public ShaderProgram getCustomShader () {
 		return customShader;
+	}
+
+	public boolean isDrawing () {
+		return drawing;
 	}
 }
