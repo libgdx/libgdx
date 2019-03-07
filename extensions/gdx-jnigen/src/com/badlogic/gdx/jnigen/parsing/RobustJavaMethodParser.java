@@ -130,7 +130,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 				} else {
 					if (member instanceof MethodDeclaration) {
 						MethodDeclaration method = (MethodDeclaration)member;
-						if(method.isNative()) continue;
+						if(!method.isNative()) continue;
 						methods.add(createMethod(method));
 					}
 				}
