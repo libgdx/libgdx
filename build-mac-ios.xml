@@ -1,10 +1,6 @@
 <project name="gdx-ios-build" default="all" basedir=".">
     
 	<target name="core">
-		<ant antfile="build-macosx32.xml" dir="gdx/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
         <ant antfile="build-macosx64.xml" dir="gdx/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
@@ -22,10 +18,6 @@
 	</target>
 	
 	<target name="freetype" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-freetype/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
         <ant antfile="build-macosx64.xml" dir="extensions/gdx-freetype/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
@@ -34,10 +26,6 @@
 	</target>
     
     <target name="box2d" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-box2d/gdx-box2d/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
         <ant antfile="build-macosx64.xml" dir="extensions/gdx-box2d/gdx-box2d/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
@@ -46,10 +34,6 @@
 	</target>
 	
 	<target name="bullet" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-bullet/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
         <ant antfile="build-macosx64.xml" dir="extensions/gdx-bullet/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
@@ -58,10 +42,6 @@
 	</target>
 	
 	<target name="controllers" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
         <ant antfile="build-macosx64.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>

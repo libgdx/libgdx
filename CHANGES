@@ -5,6 +5,7 @@
 - API Addition: New MathUtils norm and map methods
 - API Change: Pixmap blending was incorrect. Generated fonts may change for the better, but may require adjusting font settings.
 - API Change: Particle effects obtained from a ParticleEffectPool are now automatically started
+- Removed OSX 32-bit support
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
