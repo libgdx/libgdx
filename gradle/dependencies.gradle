@@ -35,7 +35,7 @@ versions.androidPlugin = "3.1.0"
 versions.androidSdk = 27
 versions.androidBuildTools = "27.0.3"
 versions.androidSupport = "25.+"
-versions.javaparser = "3.10.0"
+versions.javaparser = "2.3.0"
 
 libraries.lwjgl = [
         "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
