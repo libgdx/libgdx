@@ -84,7 +84,6 @@ public class LwjglGraphics implements Graphics {
 		this.canvas = canvas;
 	}
 
-
 	public int getHeight () {
 		if (canvas != null)
 			return Math.max(1, canvas.getHeight());
