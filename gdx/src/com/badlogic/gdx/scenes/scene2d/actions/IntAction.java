@@ -55,7 +55,12 @@ public class IntAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		value = (int)(start + (end - start) * percent);
+		if (percent == 0)
+			value = start;
+		else if (percent == 1)
+			value = end;
+		else
+			value = (int)(start + (end - start) * percent);
 	}
 
 	/** Gets the current int value. */
