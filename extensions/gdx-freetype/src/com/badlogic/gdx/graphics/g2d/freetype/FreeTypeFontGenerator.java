@@ -760,7 +760,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Pixels to add to glyph spacing when text is rendered. Can be negative. */
 		public int spaceX, spaceY;
-		/** Pixels to add to the glyph in the texture. Can be negative. */
+		/** Pixels to add to the glyph in the texture. Cannot be negative. */
 		public int padTop, padLeft, padBottom, padRight;
 		/** The characters the font should contain. If '\0' is not included then {@link BitmapFontData#missingGlyph} is not set. */
 		public String characters = DEFAULT_CHARS;
