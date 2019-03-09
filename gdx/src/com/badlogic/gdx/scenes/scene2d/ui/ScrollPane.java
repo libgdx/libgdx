@@ -1100,6 +1100,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
+		super.drawDebug(shapes);
 		shapes.flush();
 		applyTransform(shapes, computeTransform());
 		shapes.flush();
