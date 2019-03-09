@@ -36,10 +36,10 @@ public class ColorAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		if (percent == 1)
+		if (percent == 0)
+			color.set(startR, startG, startB, startA);
+		else if (percent == 1)
 			color.set(end);
-		else if (percent == 0)
-			color.set(color);
 		else {
 			float r = startR + (end.r - startR) * percent;
 			float g = startG + (end.g - startG) * percent;
