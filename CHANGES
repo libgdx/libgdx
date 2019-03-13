@@ -1,5 +1,6 @@
 [1.9.10]
 - Update to MobiVM 2.3.6 release
+- Update to LWJGL 3.2.1
 - API Addition: Input allows getting the maximum number of pointers supported by the backend
 - API Addition: Configuration option added to allow setting a max number of threads to use for net requests
 - API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
