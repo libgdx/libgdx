@@ -50,13 +50,8 @@ abstract public class TemporalAction extends Action {
 			}
 			time += delta;
 			complete = time >= duration;
-			float percent;
-			if (complete)
-				percent = 1;
-			else {
-				percent = time / duration;
-				if (interpolation != null) percent = interpolation.apply(percent);
-			}
+			float percent = complete ? 1 : time / duration;
+			if (interpolation != null) percent = interpolation.apply(percent);
 			update(reverse ? 1 - percent : percent);
 			if (complete) end();
 			return complete;
@@ -130,5 +125,10 @@ abstract public class TemporalAction extends Action {
 	/** When true, the action's progress will go from 100% to 0%. */
 	public void setReverse (boolean reverse) {
 		this.reverse = reverse;
+	}
+
+	/** Returns true after {@link #act(float)} has been called where time >= duration. */
+	public boolean isComplete () {
+		return complete;
 	}
 }

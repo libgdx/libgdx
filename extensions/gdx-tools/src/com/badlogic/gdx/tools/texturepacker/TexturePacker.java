@@ -101,8 +101,17 @@ public class TexturePacker {
 			rootPath = null;
 			return;
 		}
-		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+		try {
+			rootPath = rootDir.getCanonicalPath();
+		} catch (IOException ex) {
+			rootPath = rootDir.getAbsolutePath();
+		}
+		rootPath = rootPath.replace('\\', '/');
 		if (!rootPath.endsWith("/")) rootPath += "/";
+	}
+
+	public String getRootPath () {
+		return rootPath;
 	}
 
 	public void addImage (File file) {

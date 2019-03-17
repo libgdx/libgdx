@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,10 +44,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -560,6 +557,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			if (parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0) {
 				Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
 					mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+				padPixmap.setBlending(Blending.None);
 				padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
 				mainPixmap.dispose();
 				mainPixmap = padPixmap;
@@ -646,7 +644,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class FreeTypeBitmapFontData extends BitmapFontData implements Disposable {
-		Array<TextureRegion> regions;
+		public Array<TextureRegion> regions;
 
 		// Fields for incremental glyph generation.
 		FreeTypeFontGenerator generator;
@@ -762,7 +760,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Pixels to add to glyph spacing when text is rendered. Can be negative. */
 		public int spaceX, spaceY;
-		/** Pixels to add to the glyph in the texture. Can be negative. */
+		/** Pixels to add to the glyph in the texture. Cannot be negative. */
 		public int padTop, padLeft, padBottom, padRight;
 		/** The characters the font should contain. If '\0' is not included then {@link BitmapFontData#missingGlyph} is not set. */
 		public String characters = DEFAULT_CHARS;

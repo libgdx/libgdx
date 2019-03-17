@@ -31,7 +31,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2 -stdlib=libc++"/>
+	<property name="g++-opts" value="-c -Wall -O2 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2 -stdlib=libc++ -stdlib=libc++"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>

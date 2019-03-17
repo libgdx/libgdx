@@ -42,7 +42,7 @@ public interface ApplicationListener {
 	/** Called when the {@link Application} should render itself. */
 	public void render ();
 
-	/** Called when the {@link Application} is paused, usually when it's not active or visible on screen. An Application is also
+	/** Called when the {@link Application} is paused, usually when it's not active or visible on-screen. An Application is also
 	 * paused before it is destroyed. */
 	public void pause ();
 

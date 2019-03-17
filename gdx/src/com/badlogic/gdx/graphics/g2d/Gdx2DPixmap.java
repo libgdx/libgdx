@@ -138,6 +138,7 @@ public class Gdx2DPixmap implements Disposable {
 
 	private void convert (int requestedFormat) {
 		Gdx2DPixmap pixmap = new Gdx2DPixmap(width, height, requestedFormat);
+		pixmap.setBlend(GDX2D_BLEND_NONE);
 		pixmap.drawPixmap(this, 0, 0, 0, 0, width, height);
 		dispose();
 		this.basePtr = pixmap.basePtr;

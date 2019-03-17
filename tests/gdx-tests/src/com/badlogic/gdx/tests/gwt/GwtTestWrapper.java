@@ -83,6 +83,7 @@ import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
+import com.badlogic.gdx.tests.PixmapPackerTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.ReflectionCorrectnessTest;
 import com.badlogic.gdx.tests.ReflectionTest;
@@ -102,6 +103,7 @@ import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -463,7 +465,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public void setCursorPosition (int x, int y) {
-			setCursorPosition(x, y);
+			input.setCursorPosition(x, y);
 		}
 	}
 
@@ -689,6 +691,10 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new PixelsPerInchTest();
 			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new PixmapPackerTest();
+			}
 		},
 		// new Instancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't work
 		new Instancer() {
@@ -772,6 +778,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TextureAtlasTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TiledMapObjectLoadingTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

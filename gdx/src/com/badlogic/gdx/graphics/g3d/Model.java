@@ -237,6 +237,7 @@ public class Model implements Disposable {
 		for (ModelMeshPart part : modelMesh.parts) {
 			numIndices += part.indices.length;
 		}
+		boolean hasIndices = numIndices > 0;
 		VertexAttributes attributes = new VertexAttributes(modelMesh.attributes);
 		int numVertices = modelMesh.vertices.length / (attributes.vertexSize / 4);
 
@@ -252,9 +253,11 @@ public class Model implements Disposable {
 			meshPart.id = part.id;
 			meshPart.primitiveType = part.primitiveType;
 			meshPart.offset = offset;
-			meshPart.size = part.indices.length;
+			meshPart.size = hasIndices ? part.indices.length : numVertices;
 			meshPart.mesh = mesh;
-			mesh.getIndicesBuffer().put(part.indices);
+			if (hasIndices) {
+				mesh.getIndicesBuffer().put(part.indices);
+			}
 			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}

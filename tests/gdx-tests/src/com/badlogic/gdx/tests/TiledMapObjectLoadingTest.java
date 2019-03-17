@@ -28,17 +28,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.CircleMapObject;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
@@ -51,6 +56,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private OrthoCamController cameraController;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private String loadingStatus;
 
 	@Override
 	public void create () {
@@ -58,8 +64,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 100, 100);
-		camera.zoom = 2;
+		camera.setToOrtho(false, (w / h) * 512, 512);
+		camera.zoom = .5f;
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
@@ -70,6 +76,23 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
 		shapeRenderer = new ShapeRenderer();
+		
+		// Test get objects by type (adding circle manually because it doesn't exists in Tiledmap editor)
+		
+		loadingStatus = "loading status:\n";
+		MapLayer layer = map.getLayers().get("Objects");
+		MapObjects mapObjects = layer.getObjects();
+		
+		mapObjects.add(new CircleMapObject(280, 400, 50));
+
+		loadingStatus += "- MapObject : " + mapObjects.getByType(MapObject.class).size + "\n";
+		loadingStatus += "- CircleMapObject : " + mapObjects.getByType(CircleMapObject.class).size + "\n";
+		loadingStatus += "- EllipseMapObject : " + mapObjects.getByType(EllipseMapObject.class).size + "\n";
+		loadingStatus += "- PolygonMapObject : " + mapObjects.getByType(PolygonMapObject.class).size + "\n";
+		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
+		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
+		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
+		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 	}
 
 	@Override
@@ -106,6 +129,11 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				Ellipse ellipse = ((EllipseMapObject)mapObject).getEllipse();
 				shapeRenderer.ellipse(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 				shapeRenderer.end();
+			} else if (mapObject instanceof CircleMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Circle circle = ((CircleMapObject)mapObject).getCircle();
+				shapeRenderer.circle(circle.x, circle.y, circle.radius);
+				shapeRenderer.end();
 			} else if (mapObject instanceof RectangleMapObject) {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 				Rectangle rectangle = ((RectangleMapObject)mapObject).getRectangle();
@@ -116,10 +144,15 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				Polygon polygon = ((PolygonMapObject)mapObject).getPolygon();
 				shapeRenderer.polygon(polygon.getTransformedVertices());
 				shapeRenderer.end();
+			} else if (mapObject instanceof PolylineMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
+				shapeRenderer.polyline(polyline.getTransformedVertices());
+				shapeRenderer.end();
 			}
 		}
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 500);
 		batch.end();
 	}
 
