@@ -34,8 +34,7 @@ devspaces create
 devspaces start libgdx
 ```
 
-3. Start containers synchronization
-Open terminal on folder you want to sync with devspaces and run:
+3. Start containers synchronization.
 
 ```bash
 cd ..
