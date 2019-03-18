@@ -18,6 +18,8 @@ RUN wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz \
  && apt-get update \
  && apt-get install -y libc6:i386 libstdc++6:i386 zlib1g:i386 \
  && apt-get clean \
+ && rm -rf android-sdk_r24.4.1-linux.tgz \
+ && rm -rf android-ndk-r12b-linux-x86_64 \
  && rm -rf /var/lib/apt/lists /var/cache/apt
 
 ENV ANDROID_HOME=$HOME/android-sdk-linux \
