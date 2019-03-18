@@ -53,7 +53,7 @@ devspaces info libgdx
 devspaces exec libgdx
 ```
 
-6. Wait until source code will be synced and build the project. You may find out the sync status by openning `localhost:49152` in your browser.
+6. Wait until source code will be synced and build the project. You may find out the sync status by openning `http://localhost:49152` in your browser.
  
 ```bash
 cd libgdx
