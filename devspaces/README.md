@@ -47,8 +47,6 @@ devspaces bind libgdx
 devspaces info libgdx
 ```
 
-Retrieve published DNS, endpoints using this command and 
-
 5. Connect to development container
 
 ```bash
