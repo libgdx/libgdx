@@ -64,7 +64,6 @@ devspaces exec libgdx
 
 ```bash
 ./gradlew tests:gdx-tests-android:installDebug
-./gradlew tests:gdx-tests-gwt:superDev
 ```
 
 ### Troubleshooting
