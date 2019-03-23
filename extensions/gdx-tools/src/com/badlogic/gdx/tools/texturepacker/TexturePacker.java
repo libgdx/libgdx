@@ -55,7 +55,7 @@ import java.awt.image.BufferedImage;
 public class TexturePacker {
 	String rootPath;
 	private final Settings settings;
-	private final Packer packer;
+	private Packer packer;
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
 	private ProgressListener progress;
@@ -126,6 +126,10 @@ public class TexturePacker {
 		inputImage.image = image;
 		inputImage.name = name;
 		inputImages.add(inputImage);
+	}
+
+	public void setPacker (Packer packer) {
+		this.packer = packer;
 	}
 
 	public void pack (File outputDir, String packFileName) {
