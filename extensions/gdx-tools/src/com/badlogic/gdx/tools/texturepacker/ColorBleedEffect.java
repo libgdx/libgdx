@@ -46,9 +46,6 @@ public class ColorBleedEffect {
 			iterations++;
 		}
 
-		for (int i = 0; i < rgb.length; i++)
-			rgb[i] = (rgb[i] & 0x00ffffff) + (0xFF << 24);
-
 		processedImage.setRGB(0, 0, width, height, rgb, 0, width);
 		return processedImage;
 	}
