@@ -652,6 +652,13 @@ public interface Input {
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
+	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
+	 * constant is meaningful before version 4.0.
+	 *
+	 * @param button the button to check.
+	 * @return true or false. */
+	public boolean isButtonJustPressed (int button);
+
 	/** Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.

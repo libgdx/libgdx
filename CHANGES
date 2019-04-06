@@ -1,4 +1,5 @@
 [1.9.10]
+- API Addition: Input.isButtonJustPressed
 - Update to LWJGL 2 backend to 2.9.3
 - Update to MobiVM 2.3.6 release
 - Update to LWJGL 3.2.1

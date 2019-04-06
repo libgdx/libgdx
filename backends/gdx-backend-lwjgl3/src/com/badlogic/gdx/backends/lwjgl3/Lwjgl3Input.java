@@ -42,6 +42,7 @@ public class Lwjgl3Input implements Input, Disposable {
 	private int pressedKeys;
 	private boolean keyJustPressed;
 	private boolean[] justPressedKeys = new boolean[256];
+	private boolean[] justPressedButtons = new boolean[5];
 	private char lastCharacter;
 		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
@@ -152,6 +153,7 @@ public class Lwjgl3Input implements Input, Disposable {
 			if (action == GLFW.GLFW_PRESS) {
 				mousePressed++;
 				justTouched = true;
+				justPressedButtons[gdxButton] = true;
 				Lwjgl3Input.this.window.getGraphics().requestRendering();
 				eventQueue.touchDown(mouseX, mouseY, 0, gdxButton);
 			} else {
@@ -182,6 +184,9 @@ public class Lwjgl3Input implements Input, Disposable {
 		for (int i = 0; i < justPressedKeys.length; i++) {
 			justPressedKeys[i] = false;
 		}
+		for (int i = 0; i < justPressedButtons.length; i++) {
+			justPressedButtons[i] = false;
+		}
 		eventQueue.setProcessor(null);
 		eventQueue.drain();
 	}
@@ -201,7 +206,12 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 	
 	void prepareNext (){
-		justTouched = false;
+		if(justTouched) {
+			justTouched = false;
+			for(int i = 0; i < justPressedButtons.length; i++) {
+				justPressedButtons[i] = false;
+			}
+		}
 		
 		if (keyJustPressed) {
 			keyJustPressed = false;
@@ -290,6 +300,14 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public boolean isButtonPressed(int button) {
 		return GLFW.glfwGetMouseButton(window.getWindowHandle(), button) == GLFW.GLFW_PRESS;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button >= justPressedButtons.length) {
+			return false;
+		}
+		return justPressedButtons[button];
 	}
 
 	@Override

@@ -341,6 +341,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
+	}
+
+	@Override
 	public boolean isKeyPressed (int key) {
 		return false;
 	}

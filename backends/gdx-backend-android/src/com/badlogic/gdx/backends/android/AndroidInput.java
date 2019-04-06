@@ -115,6 +115,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private boolean[] keys = new boolean[SUPPORTED_KEYS];
 	private boolean keyJustPressed = false;
 	private boolean[] justPressedKeys = new boolean[SUPPORTED_KEYS];
+	private boolean[] justPressedButtons = new boolean[NUM_TOUCHES];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	protected final float[] accelerometerValues = new float[3];
@@ -356,7 +357,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	void processEvents () {
 		synchronized (this) {
-			justTouched = false;
+			if (justTouched) {
+				justTouched = false;
+				for (int i = 0; i < justPressedButtons.length; i++) {
+					justPressedButtons[i] = false;
+				}
+			}
 			if (keyJustPressed) {
 				keyJustPressed = false;
 				for (int i = 0; i < justPressedKeys.length; i++) {
@@ -394,6 +400,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, e.button);
 						justTouched = true;
+						justPressedButtons[e.button] = true;
 						break;
 					case TouchEvent.TOUCH_UP:
 						processor.touchUp(e.x, e.y, e.pointer, e.button);
@@ -652,6 +659,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 			return (touched[0] && (this.button[0] == button));
 		}
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button > NUM_TOUCHES) return false;
+		return justPressedButtons[button];
 	}
 
 	final float[] R = new float[9];
