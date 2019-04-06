@@ -216,6 +216,7 @@ public class Group extends Actor implements Cullable {
 	protected void applyTransform (ShapeRenderer shapes, Matrix4 transform) {
 		oldTransform.set(shapes.getTransformMatrix());
 		shapes.setTransformMatrix(transform);
+		shapes.flush();
 	}
 
 	/** Restores the shape renderer transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the

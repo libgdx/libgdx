@@ -1101,10 +1101,8 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
-		super.drawDebug(shapes);
-		shapes.flush();
+		drawDebugBounds(shapes);
 		applyTransform(shapes, computeTransform());
-		shapes.flush();
 		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
 			drawDebugChildren(shapes);
 			shapes.flush();

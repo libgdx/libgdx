@@ -1200,6 +1200,7 @@ public class ShapeRenderer implements Disposable {
 
 	public void flush () {
 		ShapeType type = shapeType;
+		if (type == null) return;
 		end();
 		begin(type);
 	}

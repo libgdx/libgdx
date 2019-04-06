@@ -521,7 +521,9 @@ public class Pixmap implements Disposable {
 			context.setStrokeStyle(color);
 			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
 		}
-		context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+		if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
+			context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+		}		
 		pixels = null;
 	}
 	
