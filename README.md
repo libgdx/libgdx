@@ -1,6 +1,7 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
 [![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) (Jenkins)
+
 [![Travis build status](https://travis-ci.org/libgdx/libgdx.svg?branch=master)](https://travis-ci.org/libgdx/libgdx) (Travis)
 
 libGDX is a cross-platform Java game development framework based on 
