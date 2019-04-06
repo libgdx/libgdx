@@ -24,7 +24,7 @@ import java.awt.image.BufferedImage;
  * @author Ariel Coppes
  * @author Nathan Sweet */
 public class ColorBleedEffect {
-	static private final int[][] offsets = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+	static private final int[] offsets = {-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
 
 	public BufferedImage processImage (BufferedImage image, int maxIterations) {
 		int width = image.getWidth();
@@ -59,12 +59,14 @@ public class ColorBleedEffect {
 			int r = 0, g = 0, b = 0;
 			int count = 0;
 
-			for (int i = 0, n = offsets.length; i < n; i++) {
-				int[] offset = offsets[i];
-				int column = x + offset[0];
-				int row = y + offset[1];
-
-				if (column < 0 || column >= width || row < 0 || row >= height) continue;
+			for (int i = 0, n = offsets.length; i < n; i += 2) {
+				int column = x + offsets[i];
+				int row = y + offsets[i + 1];
+				if (column < 0 || column >= width || row < 0 || row >= height) {
+					column = x;
+					row = y;
+					continue;
+				}
 
 				int currentPixelIndex = getPixelIndex(width, column, row);
 				if (!mask.isBlank(currentPixelIndex)) {
@@ -85,7 +87,7 @@ public class ColorBleedEffect {
 		iterator.reset();
 	}
 
-	private int getPixelIndex (int width, int x, int y) {
+	static private int getPixelIndex (int width, int x, int y) {
 		return y * width + x;
 	}
 
@@ -101,7 +103,7 @@ public class ColorBleedEffect {
 		return (argb >> 0) & 0xFF;
 	}
 
-	static public int argb (int a, int r, int g, int b) {
+	static private int argb (int a, int r, int g, int b) {
 		if (a < 0 || a > 255 || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 			throw new IllegalArgumentException("Invalid RGBA: " + r + ", " + g + "," + b + "," + a);
 		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
