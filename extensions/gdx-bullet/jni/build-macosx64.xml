@@ -33,7 +33,8 @@
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-		
+				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+
 	</fileset>
 
 	<!-- define linker and options -->
