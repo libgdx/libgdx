@@ -201,12 +201,12 @@ public class JniGenSharedLibraryLoader {
 				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, isArm, nativesZip));
 			else if (!is64Bit) {
 				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "arm"+abi+".so");
+					loaded = loadLibrary("lib" + sharedLibName + "arm" + abi + ".so");
 				else
 					loaded = loadLibrary("lib" + sharedLibName + ".so");
 			} else {
 				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "arm"+abi+"64.so");
+					loaded = loadLibrary("lib" + sharedLibName + "arm" + abi + "64.so");
 				else
 					loaded = loadLibrary("lib" + sharedLibName + "64.so");
 			}
