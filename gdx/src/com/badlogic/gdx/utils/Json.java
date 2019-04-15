@@ -56,6 +56,7 @@ public class Json {
 	private boolean ignoreDeprecated;
 	private boolean readDeprecated;
 	private boolean enumNames = true;
+	private boolean sortFields;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
@@ -73,7 +74,7 @@ public class Json {
 	}
 
 	/** When true, fields in the JSON that are not found on the class will not throw a {@link SerializationException}. Default is
-	 * false. */
+	 * false. Default is false. */
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
 	}
@@ -82,23 +83,28 @@ public class Json {
 		return ignoreUnknownFields;
 	}
 
-	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
+	/** When true, fields with the {@link Deprecated} annotation will not be read or written. Default is false.
+	 * @see #setReadDeprecated(boolean)
+	 * @see #setDeprecated(Class, String, boolean) */
 	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
 		this.ignoreDeprecated = ignoreDeprecated;
 	}
 
 	/** When true, fields with the {@link Deprecated} annotation will be read (but not written) when
-	 * {@link #setIgnoreDeprecated(boolean)} is true. */
+	 * {@link #setIgnoreDeprecated(boolean)} is true. Default is false.
+	 * @see #setDeprecated(Class, String, boolean) */
 	public void setReadDeprecated (boolean readDeprecated) {
 		this.readDeprecated = readDeprecated;
 	}
 
-	/** @see JsonWriter#setOutputType(OutputType) */
+	/** Default is {@link OutputType#minimal}.
+	 * @see JsonWriter#setOutputType(OutputType) */
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
 	}
 
-	/** @see JsonWriter#setQuoteLongValues(boolean) */
+	/** Default is false.
+	 * @see JsonWriter#setQuoteLongValues(boolean) */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
 	}
@@ -162,6 +168,21 @@ public class Json {
 		metadata.elementType = elementType;
 	}
 
+	/** The specified field will be treated as if it has or does not have the {@link Deprecated} annotation.
+	 * @see #setIgnoreDeprecated(boolean)
+	 * @see #setReadDeprecated(boolean) */
+	public void setDeprecated (Class type, String fieldName, boolean deprecated) {
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
+		FieldMetadata metadata = fields.get(fieldName);
+		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
+		metadata.deprecated = deprecated;
+	}
+
+	/** When true, fields are sorted alphabetically when written, otherwise the source code order is used. Default is false. */
+	public void setSortFields (boolean sortFields) {
+		this.sortFields = sortFields;
+	}
+
 	private OrderedMap<String, FieldMetadata> getFields (Class type) {
 		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields != null) return fields;
@@ -192,10 +213,9 @@ public class Json {
 				}
 			}
 
-			if (ignoreDeprecated && !readDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
-
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
+		if (sortFields) nameToField.keys.sort();
 		typeToFields.put(type, nameToField);
 		return nameToField;
 	}
@@ -281,8 +301,8 @@ public class Json {
 		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		int i = 0;
 		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
+			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
-			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {
@@ -331,8 +351,8 @@ public class Json {
 
 		int i = 0;
 		for (FieldMetadata metadata : fields.values()) {
+			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
-			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				values[i++] = field.get(object);
 			} catch (ReflectionException ex) {
@@ -835,6 +855,8 @@ public class Json {
 					ex.addTrace(child.trace());
 					throw ex;
 				}
+			} else {
+				if (ignoreDeprecated && !readDeprecated && metadata.deprecated) continue;
 			}
 			Field field = metadata.field;
 			try {
@@ -1168,12 +1190,14 @@ public class Json {
 	static private class FieldMetadata {
 		final Field field;
 		Class elementType;
+		boolean deprecated;
 
 		public FieldMetadata (Field field) {
 			this.field = field;
 			int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType())
 				|| ClassReflection.isAssignableFrom(Map.class, field.getType())) ? 1 : 0;
 			this.elementType = field.getElementType(index);
+			deprecated = field.isAnnotationPresent(Deprecated.class);
 		}
 	}
 
