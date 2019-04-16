@@ -47,6 +47,7 @@ public class Animation<T> {
 	private float animationDuration;
 	private int lastFrameNumber;
 	private float lastStateTime;
+	private float stateTime;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -84,6 +85,18 @@ public class Animation<T> {
 		setKeyFrames(keyFrames);
 	}
 
+	/**
+	 * Returns a frame based on the so called state time of this Animation. This
+	 * is the amount of seconds an object has spent in the state this Animation
+	 * instance represents, e.g. running, jumping and so on. The mode specifies
+	 * whether the animation is looping or not.
+	 * @param looping Whether the animation is looping or not.
+	 * @return The frame for the state time of this Animation.
+	 */
+	public T getKeyFrame(boolean looping) {
+		return this.getKeyFrame(this.stateTime, looping);
+	}
+
 	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
 	 * state this Animation instance represents, e.g. running, jumping and so on. The mode specifies whether the animation is
 	 * looping or not.
@@ -112,6 +125,16 @@ public class Animation<T> {
 		return frame;
 	}
 
+	/**
+	 * Returns a frame based on the so called state time of this Animation. This
+	 * is the amount of seconds an object has spent in the state this Animation
+	 * instance represents, e.g. running, jumping and so on.
+	 * @return The frame for the state time of this Animation.
+	 */
+	public T getKeyFrame() {
+		return this.getKeyFrame(this.stateTime);
+	}
+
 	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
 	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
 	 * {@link #setPlayMode(PlayMode)} method.
@@ -121,6 +144,14 @@ public class Animation<T> {
 	public T getKeyFrame (float stateTime) {
 		int frameNumber = getKeyFrameIndex(stateTime);
 		return keyFrames[frameNumber];
+	}
+
+	/**
+	 * Returns the current frame number, for the state time of this Animation.
+	 * @return Current frame number, for the state time of this Animation.
+	 */
+	public int getKeyFrameIndex() {
+		return this.getKeyFrameIndex(this.stateTime);
 	}
 
 	/** Returns the current frame number.
@@ -211,5 +242,39 @@ public class Animation<T> {
 	/** @return the duration of the entire animation, number of frames times frame duration, in seconds */
 	public float getAnimationDuration () {
 		return animationDuration;
+	}
+
+	/**
+	 * Updates the state time of this Animation, given how much time passed,
+	 * since the previous frame, in seconds.
+	 * @param deltaTime How much time passed since the previous frame, in
+	 * seconds.
+	 */
+	public void update(float deltaTime) {
+		this.stateTime += deltaTime;
+	}
+
+	/**
+	 * Gets the state time of this Animation.
+	 * @return The state time of this Animation.
+	 */
+	public float getStateTime() {
+		return this.stateTime;
+	}
+
+	/**
+	 * Sets the state time of this Animation.
+	 * @param stateTime The new state time of this Animation.
+	 */
+	public void setStateTime(float stateTime) {
+		this.stateTime = stateTime;
+	}
+
+	/**
+	 * Resets the state time of this Animation to 0.0f, to start playing from
+	 * the 1st frame.
+	 */
+	public void reset() {
+		this.stateTime = 0.0f;
 	}
 }
