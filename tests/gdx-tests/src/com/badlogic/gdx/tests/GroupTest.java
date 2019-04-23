@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.jetbrains.annotations.NotNull;
 
 /** This tests both {@link Actor#parentToLocalCoordinates(Vector2)} and {@link Actor#localToParentCoordinates(Vector2)}. */
 public class GroupTest extends GdxTest {
@@ -195,7 +196,7 @@ public class GroupTest extends GdxTest {
 			this.name = name;
 
 			addListener(new InputListener() {
-				public boolean mouseMoved (InputEvent event, float x, float y) {
+				public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
 					// These come from Actor#parentToLocalCoordinates.
 					testX = x;
 					testY = y;
@@ -204,7 +205,7 @@ public class GroupTest extends GdxTest {
 			});
 		}
 
-		public void draw (Batch batch, float parentAlpha) {
+		public void draw (@NotNull Batch batch, float parentAlpha) {
 			// Use Stage#toScreenCoordinates, which we know is correct.
 			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY()).rotate(getRotation())
 				.add(getOriginX(), getOriginY()).add(getX(), getY());

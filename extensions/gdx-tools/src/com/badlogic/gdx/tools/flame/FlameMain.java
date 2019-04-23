@@ -112,6 +112,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
 /** @author Inferno */
 public class FlameMain extends JFrame implements AssetErrorListener {
 	public static final String 	DEFAULT_FONT = "default.fnt",
@@ -718,7 +720,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			playPauseButton = new TextButton("Pause", skin);
 			playPauseButton.addListener(new ClickListener(){
 				@Override
-				public void clicked (InputEvent event, float x, float y) {
+				public void clicked (@NotNull InputEvent event, float x, float y) {
 					isUpdate = !isUpdate;
 					playPauseButton.setText(isUpdate ? "Pause" : "Play");
 				}

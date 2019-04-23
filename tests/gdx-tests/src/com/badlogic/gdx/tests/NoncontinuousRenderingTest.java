@@ -47,6 +47,8 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import org.jetbrains.annotations.NotNull;
+
 public class NoncontinuousRenderingTest extends GdxTest {
 	SpriteBatch batch;
 	Texture texture;
@@ -125,7 +127,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		
 		Button button0 = new TextButton("Toggle continuous rendering", skin, "toggle");
 		button0.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				boolean continuous = Gdx.graphics.isContinuousRendering();
 				Gdx.graphics.setContinuousRendering(!continuous);
 			}
@@ -135,7 +137,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final String str1 = "2s sleep -> Application.postRunnable()";
 		Button button1 = new TextButton(str1, skin);
 		button1.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				new Thread(new Runnable(){
 					public void run () {
 						try {
@@ -155,7 +157,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final String str2 = "2s sleep -> Graphics.requestRendering()";
 		Button button2 = new TextButton(str2, skin);
 		button2.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				final Graphics graphics = Gdx.graphics; // caching necessary to ensure call on this window
 				new Thread(new Runnable(){
 					public void run () {
@@ -173,7 +175,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final String str3 = "2s Timer -> Application.postRunnable()";
 		Button button3 = new TextButton(str3, skin);
 		button3.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				Timer.schedule(new Task(){
 					public void run () {
 						nextColor();
@@ -189,7 +191,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final String str4 = "2s DelayAction";
 		Button button4 = new TextButton(str4, skin);
 		button4.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				stage.addAction(Actions.sequence(Actions.delay(2), Actions.run(new Runnable(){
 					public void run () {
 						nextColor();
@@ -202,7 +204,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final String str5 = "(2s sleep -> toggle continuous) 2X";
 		Button button5 = new TextButton(str5, skin);
 		button5.addListener(new ChangeListener(){
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				final Graphics graphics = Gdx.graphics; // caching necessary to ensure call on this window
 				new Thread(new Runnable(){
 					public void run () {
@@ -223,7 +225,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		final CheckBox actionsRequestRendering = new CheckBox("ActionsRequestRendering", skin);
 		actionsRequestRendering.setChecked(true);
 		actionsRequestRendering.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				stage.setActionsRequestRendering(actionsRequestRendering.isChecked());
 			}
 		});

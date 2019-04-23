@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import org.jetbrains.annotations.NotNull;
+
 /** Keeps track of an application's tooltips.
  * @author Nathan Sweet */
 public class TooltipManager {
@@ -82,7 +84,7 @@ public class TooltipManager {
 		}
 	};
 
-	public void touchDown (Tooltip tooltip) {
+	public void touchDown (@NotNull Tooltip tooltip) {
 		showTask.cancel();
 		if (tooltip.container.remove()) resetTask.cancel();
 		resetTask.run();
@@ -92,7 +94,7 @@ public class TooltipManager {
 		}
 	}
 
-	public void enter (Tooltip tooltip) {
+	public void enter (@NotNull Tooltip tooltip) {
 		showTooltip = tooltip;
 		showTask.cancel();
 		if (enabled || tooltip.always) {
@@ -103,7 +105,7 @@ public class TooltipManager {
 		}
 	}
 
-	public void hide (Tooltip tooltip) {
+	public void hide (@NotNull Tooltip tooltip) {
 		showTooltip = null;
 		showTask.cancel();
 		if (tooltip.container.hasParent()) {
@@ -115,7 +117,7 @@ public class TooltipManager {
 	}
 
 	/** Called when tooltip is shown. Default implementation sets actions to animate showing. */
-	protected void showAction (Tooltip tooltip) {
+	protected void showAction (@NotNull Tooltip tooltip) {
 		float actionTime = animations ? (time > 0 ? 0.5f : 0.15f) : 0.1f;
 		tooltip.container.setTransform(true);
 		tooltip.container.getColor().a = 0.2f;
@@ -125,7 +127,7 @@ public class TooltipManager {
 
 	/** Called when tooltip is hidden. Default implementation sets actions to animate hiding and to remove the actor from the stage
 	 * when the actions are complete. A subclass must at least remove the actor. */
-	protected void hideAction (Tooltip tooltip) {
+	protected void hideAction (@NotNull Tooltip tooltip) {
 		tooltip.container
 			.addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), removeActor()));
 	}
@@ -148,6 +150,7 @@ public class TooltipManager {
 		showTask.cancel();
 	}
 
+	@NotNull
 	static public TooltipManager getInstance () {
 		if (files == null || files != Gdx.files) {
 			files = Gdx.files;

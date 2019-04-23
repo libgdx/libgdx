@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
  * Only when using a {@link TextureRegionDrawable} will the actor's scale, rotation, and origin be used when drawing.
@@ -45,40 +47,40 @@ public class Image extends Widget {
 
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
-	public Image (NinePatch patch) {
+	public Image (@Nullable NinePatch patch) {
 		this(new NinePatchDrawable(patch), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param region May be null. */
-	public Image (TextureRegion region) {
+	public Image (@Nullable TextureRegion region) {
 		this(new TextureRegionDrawable(region), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center. */
-	public Image (Texture texture) {
+	public Image (@NotNull Texture texture) {
 		this(new TextureRegionDrawable(new TextureRegion(texture)));
 	}
 
 	/** Creates an image stretched, and aligned center. */
-	public Image (Skin skin, String drawableName) {
+	public Image (@NotNull Skin skin, @NotNull String drawableName) {
 		this(skin.getDrawable(drawableName), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param drawable May be null. */
-	public Image (Drawable drawable) {
+	public Image (@Nullable Drawable drawable) {
 		this(drawable, Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image aligned center.
 	 * @param drawable May be null. */
-	public Image (Drawable drawable, Scaling scaling) {
+	public Image (@Nullable Drawable drawable, @NotNull Scaling scaling) {
 		this(drawable, scaling, Align.center);
 	}
 
 	/** @param drawable May be null. */
-	public Image (Drawable drawable, Scaling scaling, int align) {
+	public Image (@Nullable Drawable drawable, @NotNull Scaling scaling, int align) {
 		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
@@ -112,7 +114,7 @@ public class Image extends Widget {
 			imageY = (int)(height / 2 - imageHeight / 2);
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (@NotNull Batch batch, float parentAlpha) {
 		validate();
 
 		Color color = getColor();
@@ -134,14 +136,14 @@ public class Image extends Widget {
 		if (drawable != null) drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 	}
 
-	public void setDrawable (Skin skin, String drawableName) {
+	public void setDrawable (@NotNull Skin skin, @NotNull String drawableName) {
 		setDrawable(skin.getDrawable(drawableName));
 	}
 
 	/** Sets a new drawable for the image. The image's pref size is the drawable's min size. If using the image actor's size rather
 	 * than the pref size, {@link #pack()} can be used to size the image to its pref size.
 	 * @param drawable May be null. */
-	public void setDrawable (Drawable drawable) {
+	public void setDrawable (@Nullable Drawable drawable) {
 		if (this.drawable == drawable) return;
 		if (drawable != null) {
 			if (getPrefWidth() != drawable.getMinWidth() || getPrefHeight() != drawable.getMinHeight()) invalidateHierarchy();
@@ -151,11 +153,12 @@ public class Image extends Widget {
 	}
 
 	/** @return May be null. */
+	@Nullable
 	public Drawable getDrawable () {
 		return drawable;
 	}
 
-	public void setScaling (Scaling scaling) {
+	public void setScaling (@NotNull Scaling scaling) {
 		if (scaling == null) throw new IllegalArgumentException("scaling cannot be null.");
 		this.scaling = scaling;
 		invalidate();
@@ -200,6 +203,7 @@ public class Image extends Widget {
 		return imageHeight;
 	}
 
+	@NotNull
 	public String toString () {
 		String name = getName();
 		if (name != null) return name;

@@ -40,6 +40,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import org.jetbrains.annotations.NotNull;
+
 public class InterpolationTest extends GdxTest {
 	Stage stage;
 	private Skin skin;
@@ -102,7 +104,7 @@ public class InterpolationTest extends GdxTest {
 		list = new List(skin);
 		list.setItems(interpolationNames);
 		list.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				selectedInterpolation = list.getSelected();
 				time = 0;
 				resetPositions();

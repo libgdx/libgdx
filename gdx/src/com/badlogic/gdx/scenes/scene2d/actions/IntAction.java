@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 
+import org.jetbrains.annotations.Nullable;
+
 /** An action that has an int, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class IntAction extends TemporalAction {
@@ -44,7 +46,7 @@ public class IntAction extends TemporalAction {
 	}
 
 	/** Creates a FloatAction that transitions from start to end. */
-	public IntAction (int start, int end, float duration, Interpolation interpolation) {
+	public IntAction (int start, int end, float duration, @Nullable Interpolation interpolation) {
 		super(duration, interpolation);
 		this.start = start;
 		this.end = end;

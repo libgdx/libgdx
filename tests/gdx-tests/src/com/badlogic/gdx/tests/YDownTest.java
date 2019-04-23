@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import org.jetbrains.annotations.NotNull;
 
 /** A simple example of how to use a y-down coordinate system.
  * @author mzechner */
@@ -133,7 +134,7 @@ public class YDownTest extends GdxTest {
 			setHeight(region.getRegionHeight());
 
 			addListener(new InputListener() {
-				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 					// we only care for the first finger to make things easier
 					if (pointer != 0) return false;
 
@@ -144,7 +145,7 @@ public class YDownTest extends GdxTest {
 					return true;
 				}
 
-				public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
 					// we only care for the first finger to make things easier
 					if (pointer != 0) return;
 
@@ -162,7 +163,7 @@ public class YDownTest extends GdxTest {
 		}
 
 		@Override
-		public void draw (Batch batch, float parentAlpha) {
+		public void draw (@NotNull Batch batch, float parentAlpha) {
 			batch.draw(region, getX(), getY());
 		}
 	}

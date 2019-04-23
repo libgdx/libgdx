@@ -29,6 +29,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField {
@@ -204,7 +206,7 @@ public class TextArea extends TextField {
 		linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
 	}
 
-	protected float getTextY (BitmapFont font, Drawable background) {
+	protected float getTextY (@NotNull BitmapFont font, @Nullable Drawable background) {
 		float textY = getHeight();
 		if (background != null) {
 			textY = (int)(textY - background.getTopHeight());
@@ -212,7 +214,7 @@ public class TextArea extends TextField {
 		return textY;
 	}
 
-	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
+	protected void drawSelection (@NotNull Drawable selection, @NotNull Batch batch, @NotNull BitmapFont font, float x, float y) {
 		int i = firstLineShowing * 2;
 		float offsetY = 0;
 		int minIndex = Math.min(cursor, selectionStart);
@@ -240,7 +242,7 @@ public class TextArea extends TextField {
 		}
 	}
 
-	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
+	protected void drawText (@NotNull Batch batch, @NotNull BitmapFont font, float x, float y) {
 		float offsetY = 0;
 		for (int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
 			font.draw(batch, displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1], 0, Align.left, false);
@@ -248,7 +250,7 @@ public class TextArea extends TextField {
 		}
 	}
 
-	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
+	protected void drawCursor (@NotNull Drawable cursorPatch, @NotNull Batch batch, @NotNull BitmapFont font, float x, float y) {
 		float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
 			: glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
 		cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
@@ -299,6 +301,7 @@ public class TextArea extends TextField {
 		}
 	}
 
+	@NotNull
 	protected InputListener createInputListener () {
 		return new TextAreaListener();
 	}
@@ -378,7 +381,7 @@ public class TextArea extends TextField {
 			updateCurrentLine();
 		}
 
-		public boolean keyDown (InputEvent event, int keycode) {
+		public boolean keyDown (@NotNull InputEvent event, int keycode) {
 			boolean result = super.keyDown(event, keycode);
 			if (hasKeyboardFocus()) {
 				boolean repeat = false;
@@ -419,7 +422,7 @@ public class TextArea extends TextField {
 			return result;
 		}
 
-		public boolean keyTyped (InputEvent event, char character) {
+		public boolean keyTyped (@NotNull InputEvent event, char character) {
 			boolean result = super.keyTyped(event, character);
 			showCursor();
 			return result;

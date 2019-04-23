@@ -35,6 +35,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ScrollPaneWithDynamicScrolling extends GdxTest {
 	private Stage stage;
 	private Table container;
@@ -69,7 +71,7 @@ public class ScrollPaneWithDynamicScrolling extends GdxTest {
 		
 		btAdd.addListener(new ChangeListener() {
 			@Override
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				dynamicLabel.setText(dynamicLabel.getText() + "\nline " + count++);
 				scrollPane.scrollTo(0, 0, 0, 0);
 			}

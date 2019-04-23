@@ -29,6 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
  * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.<br>
@@ -49,33 +51,33 @@ public class Button extends Table implements Disableable {
 	private ClickListener clickListener;
 	private boolean programmaticChangeEvents = true;
 
-	public Button (Skin skin) {
+	public Button (@NotNull Skin skin) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (Skin skin, String styleName) {
+	public Button (@NotNull Skin skin, @NotNull String styleName) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(styleName, ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (Actor child, Skin skin, String styleName) {
+	public Button (@NotNull Actor child, @NotNull Skin skin, @NotNull String styleName) {
 		this(child, skin.get(styleName, ButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public Button (Actor child, ButtonStyle style) {
+	public Button (@NotNull Actor child, @NotNull ButtonStyle style) {
 		initialize();
 		add(child);
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (ButtonStyle style) {
+	public Button (@NotNull ButtonStyle style) {
 		initialize();
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
@@ -89,31 +91,31 @@ public class Button extends Table implements Disableable {
 	private void initialize () {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				if (isDisabled()) return;
 				setChecked(!isChecked, true);
 			}
 		});
 		addListener(new FocusListener() {
-			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+			public void keyboardFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
 				Button.this.focused = focused;
 			}
 		});
 	}
 
-	public Button (Drawable up) {
+	public Button (@Nullable Drawable up) {
 		this(new ButtonStyle(up, null, null));
 	}
 
-	public Button (Drawable up, Drawable down) {
+	public Button (@Nullable Drawable up, @Nullable Drawable down) {
 		this(new ButtonStyle(up, down, null));
 	}
 
-	public Button (Drawable up, Drawable down, Drawable checked) {
+	public Button (@Nullable Drawable up, @Nullable Drawable down, @Nullable Drawable checked) {
 		this(new ButtonStyle(up, down, checked));
 	}
 
-	public Button (Actor child, Skin skin) {
+	public Button (@NotNull Actor child, @NotNull Skin skin) {
 		this(child, skin.get(ButtonStyle.class));
 	}
 
@@ -170,7 +172,7 @@ public class Button extends Table implements Disableable {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
-	public void setStyle (ButtonStyle style) {
+	public void setStyle (@NotNull ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
@@ -199,16 +201,18 @@ public class Button extends Table implements Disableable {
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
 	 * called. */
+	@NotNull
 	public ButtonStyle getStyle () {
 		return style;
 	}
 
 	/** @return May be null. */
+	@Nullable
 	public ButtonGroup getButtonGroup () {
 		return buttonGroup;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (@NotNull Batch batch, float parentAlpha) {
 		validate();
 
 		boolean isDisabled = isDisabled();
@@ -290,14 +294,14 @@ public class Button extends Table implements Disableable {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
+		@Nullable public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
+		@Nullable public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (Drawable up, Drawable down, Drawable checked) {
+		public ButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable Drawable checked) {
 			this.up = up;
 			this.down = down;
 			this.checked = checked;

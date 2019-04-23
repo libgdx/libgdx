@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A slider is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between
  * each value the slider represents.
@@ -41,15 +43,15 @@ import com.badlogic.gdx.utils.Pools;
 public class Slider extends ProgressBar {
 	int draggingPointer = -1;
 	boolean mouseOver;
-	private Interpolation visualInterpolationInverse = Interpolation.linear;
+	@NotNull private Interpolation visualInterpolationInverse = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
 
-	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
+	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
 	}
 
-	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
+	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin, @NotNull String styleName) {
 		this(min, max, stepSize, vertical, skin.get(styleName, SliderStyle.class));
 	}
 
@@ -62,11 +64,11 @@ public class Slider extends ProgressBar {
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
 	 * @param style the {@link SliderStyle} */
-	public Slider (float min, float max, float stepSize, boolean vertical, SliderStyle style) {
+	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull SliderStyle style) {
 		super(min, max, stepSize, vertical, style);
 
 		addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 				if (disabled) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
@@ -74,7 +76,7 @@ public class Slider extends ProgressBar {
 				return true;
 			}
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != draggingPointer) return;
 				draggingPointer = -1;
 				// The position is invalid when focus is cancelled
@@ -86,15 +88,15 @@ public class Slider extends ProgressBar {
 				}
 			}
 
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y);
 			}
 
-			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+			public void enter (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+			public void exit (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}
 		});
@@ -102,10 +104,12 @@ public class Slider extends ProgressBar {
 
 	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(ProgressBarStyle)}
 	 * is called. */
+	@NotNull
 	public SliderStyle getStyle () {
 		return (SliderStyle)super.getStyle();
 	}
 
+	@Nullable
 	protected Drawable getKnobDrawable () {
 		SliderStyle style = getStyle();
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob
@@ -166,7 +170,7 @@ public class Slider extends ProgressBar {
 
 	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
 	 * @param values May be null. */
-	public void setSnapToValues (float[] values, float threshold) {
+	public void setSnapToValues (@Nullable float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
@@ -178,7 +182,7 @@ public class Slider extends ProgressBar {
 
 	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
 	 * {@link #setVisualInterpolation(Interpolation) visual interpolation}. */
-	public void setVisualInterpolationInverse (Interpolation interpolation) {
+	public void setVisualInterpolationInverse (@NotNull Interpolation interpolation) {
 		this.visualInterpolationInverse = interpolation;
 	}
 
@@ -187,16 +191,16 @@ public class Slider extends ProgressBar {
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
 		/** Optional. */
-		public Drawable knobOver, knobDown;
+		@Nullable public Drawable knobOver, knobDown;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (Drawable background, Drawable knob) {
+		public SliderStyle (@Nullable Drawable background, @Nullable Drawable knob) {
 			super(background, knob);
 		}
 
-		public SliderStyle (SliderStyle style) {
+		public SliderStyle (@NotNull SliderStyle style) {
 			super(style);
 			this.knobOver = style.knobOver;
 			this.knobDown = style.knobDown;

@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import org.jetbrains.annotations.NotNull;
 
 public class ScrollPane2Test extends GdxTest {
 	Stage stage;
@@ -42,7 +43,7 @@ public class ScrollPane2Test extends GdxTest {
 		pane2.setScrollingDisabled(false, true);
 		// pane2.setCancelTouchFocus(false);
 		pane2.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 				event.stop();
 				return true;
 			}

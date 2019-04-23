@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A checkbox is a button that contains an image indicating the checked or unchecked state and a label.
  * @author Nathan Sweet */
@@ -30,15 +32,15 @@ public class CheckBox extends TextButton {
 	private Cell imageCell;
 	private CheckBoxStyle style;
 
-	public CheckBox (String text, Skin skin) {
+	public CheckBox (@Nullable String text, @NotNull Skin skin) {
 		this(text, skin.get(CheckBoxStyle.class));
 	}
 
-	public CheckBox (String text, Skin skin, String styleName) {
+	public CheckBox (@Nullable String text, @NotNull Skin skin, @NotNull String styleName) {
 		this(text, skin.get(styleName, CheckBoxStyle.class));
 	}
 
-	public CheckBox (String text, CheckBoxStyle style) {
+	public CheckBox (@Nullable String text, @NotNull CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
 		Label label = getLabel();
@@ -48,7 +50,7 @@ public class CheckBox extends TextButton {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void setStyle (ButtonStyle style) {
+	public void setStyle (@NotNull ButtonStyle style) {
 		if (!(style instanceof CheckBoxStyle)) throw new IllegalArgumentException("style must be a CheckBoxStyle.");
 		super.setStyle(style);
 		this.style = (CheckBoxStyle)style;
@@ -56,11 +58,12 @@ public class CheckBox extends TextButton {
 
 	/** Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
 	 * called. */
+	@NotNull
 	public CheckBoxStyle getStyle () {
 		return style;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (@NotNull Batch batch, float parentAlpha) {
 		Drawable checkbox = null;
 		if (isDisabled()) {
 			if (isChecked && style.checkboxOnDisabled != null)
@@ -81,10 +84,12 @@ public class CheckBox extends TextButton {
 		super.draw(batch, parentAlpha);
 	}
 
+	@NotNull
 	public Image getImage () {
 		return image;
 	}
 
+	@NotNull
 	public Cell getImageCell () {
 		return imageCell;
 	}
@@ -94,19 +99,19 @@ public class CheckBox extends TextButton {
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
 		/** Optional. */
-		public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
+		@Nullable public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
 
 		public CheckBoxStyle () {
 		}
 
-		public CheckBoxStyle (Drawable checkboxOff, Drawable checkboxOn, BitmapFont font, Color fontColor) {
+		public CheckBoxStyle (@NotNull Drawable checkboxOff, @NotNull Drawable checkboxOn, @NotNull BitmapFont font, @Nullable Color fontColor) {
 			this.checkboxOff = checkboxOff;
 			this.checkboxOn = checkboxOn;
 			this.font = font;
 			this.fontColor = fontColor;
 		}
 
-		public CheckBoxStyle (CheckBoxStyle style) {
+		public CheckBoxStyle (@NotNull CheckBoxStyle style) {
 			super(style);
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;

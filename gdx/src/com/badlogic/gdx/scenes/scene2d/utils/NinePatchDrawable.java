@@ -20,6 +20,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /** Drawable for a {@link NinePatch}.
  * <p>
  * The drawable sizes are set when the ninepatch is set, but they are separate values. Eg, {@link Drawable#getLeftWidth()} could
@@ -40,16 +43,16 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 		setPatch(patch);
 	}
 
-	public NinePatchDrawable (NinePatchDrawable drawable) {
+	public NinePatchDrawable (@NotNull NinePatchDrawable drawable) {
 		super(drawable);
 		this.patch = drawable.patch;
 	}
 
-	public void draw (Batch batch, float x, float y, float width, float height) {
+	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
 		patch.draw(batch, x, y, width, height);
 	}
 
-	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+	public void draw (@NotNull Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
 		patch.draw(batch, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
@@ -58,12 +61,14 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 	 * the patch's padding. */
 	public void setPatch (NinePatch patch) {
 		this.patch = patch;
-		setMinWidth(patch.getTotalWidth());
-		setMinHeight(patch.getTotalHeight());
-		setTopHeight(patch.getPadTop());
-		setRightWidth(patch.getPadRight());
-		setBottomHeight(patch.getPadBottom());
-		setLeftWidth(patch.getPadLeft());
+		if (patch != null) {
+			setMinWidth(patch.getTotalWidth());
+			setMinHeight(patch.getTotalHeight());
+			setTopHeight(patch.getPadTop());
+			setRightWidth(patch.getPadRight());
+			setBottomHeight(patch.getPadBottom());
+			setLeftWidth(patch.getPadLeft());
+		}
 	}
 
 	public NinePatch getPatch () {
@@ -71,7 +76,8 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 	}
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
-	public NinePatchDrawable tint (Color tint) {
+	@NotNull
+	public NinePatchDrawable tint (@NotNull Color tint) {
 		NinePatchDrawable drawable = new NinePatchDrawable(this);
 		drawable.patch = new NinePatch(drawable.getPatch(), tint);
 		return drawable;

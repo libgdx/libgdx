@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import org.jetbrains.annotations.NotNull;
 
 public class TableTest extends GdxTest {
 	Skin skin;
@@ -54,7 +55,7 @@ public class TableTest extends GdxTest {
 		Label label = new Label("This is some text.", skin);
 
 		root = new Table() {
-			public void draw (Batch batch, float parentAlpha) {
+			public void draw (@NotNull Batch batch, float parentAlpha) {
 				super.draw(batch, parentAlpha);
 			}
 		};
@@ -72,7 +73,7 @@ public class TableTest extends GdxTest {
 		table.pack();
 		// table.debug();
 		table.addListener(new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				System.out.println("click!");
 			}
 		});

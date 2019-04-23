@@ -19,17 +19,20 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /** Drawable that stores the size information but doesn't draw anything.
  * @author Nathan Sweet */
 public class BaseDrawable implements Drawable {
-	private String name;
+	@Nullable private String name;
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
 
 	public BaseDrawable () {
 	}
 
 	/** Creates a new empty drawable with the same sizing information as the specified drawable. */
-	public BaseDrawable (Drawable drawable) {
+	public BaseDrawable (@NotNull Drawable drawable) {
 		if (drawable instanceof BaseDrawable) name = ((BaseDrawable)drawable).getName();
 		leftWidth = drawable.getLeftWidth();
 		rightWidth = drawable.getRightWidth();
@@ -39,7 +42,7 @@ public class BaseDrawable implements Drawable {
 		minHeight = drawable.getMinHeight();
 	}
 
-	public void draw (Batch batch, float x, float y, float width, float height) {
+	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
 	}
 
 	public float getLeftWidth () {
@@ -97,19 +100,21 @@ public class BaseDrawable implements Drawable {
 		this.minHeight = minHeight;
 	}
 
-	public void setMinSize (float minWidth, float minHeight) {
-		setMinWidth(minWidth);
-		setMinHeight(minHeight);
-	}
+    public void setMinSize (float minWidth, float minHeight) {
+        setMinWidth(minWidth);
+        setMinHeight(minHeight);
+    }
 
+	@Nullable
 	public String getName () {
 		return name;
 	}
 
-	public void setName (String name) {
+	public void setName (@Nullable String name) {
 		this.name = name;
 	}
 
+	@Nullable
 	public String toString () {
 		if (name == null) return ClassReflection.getSimpleName(getClass());
 		return name;

@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Event for actor input: touch, mouse, keyboard, and scroll.
  * @see InputListener */
@@ -26,7 +28,7 @@ public class InputEvent extends Event {
 	private float stageX, stageY;
 	private int pointer, button, keyCode, scrollAmount;
 	private char character;
-	private Actor relatedActor;
+	@Nullable private Actor relatedActor;
 
 	public void reset () {
 		super.reset();
@@ -53,11 +55,12 @@ public class InputEvent extends Event {
 	}
 
 	/** The type of input event. */
+	@NotNull
 	public Type getType () {
 		return type;
 	}
 
-	public void setType (Type type) {
+	public void setType (@NotNull Type type) {
 		this.type = type;
 	}
 
@@ -110,18 +113,20 @@ public class InputEvent extends Event {
 
 	/** The actor related to the event. Valid for: enter and exit. For enter, this is the actor being exited, or null. For exit,
 	 * this is the actor being entered, or null. */
+	@Nullable
 	public Actor getRelatedActor () {
 		return relatedActor;
 	}
 
 	/** @param relatedActor May be null. */
-	public void setRelatedActor (Actor relatedActor) {
+	public void setRelatedActor (@Nullable Actor relatedActor) {
 		this.relatedActor = relatedActor;
 	}
 
 	/** Sets actorCoords to this event's coordinates relative to the specified actor.
 	 * @param actorCoords Output for resulting coordinates. */
-	public Vector2 toCoordinates (Actor actor, Vector2 actorCoords) {
+	@NotNull
+	public Vector2 toCoordinates (@NotNull Actor actor, @NotNull Vector2 actorCoords) {
 		actorCoords.set(stageX, stageY);
 		actor.stageToLocalCoordinates(actorCoords);
 		return actorCoords;
@@ -132,6 +137,7 @@ public class InputEvent extends Event {
 		return stageX == Integer.MIN_VALUE || stageY == Integer.MIN_VALUE;
 	}
 
+	@NotNull
 	public String toString () {
 		return type.toString();
 	}

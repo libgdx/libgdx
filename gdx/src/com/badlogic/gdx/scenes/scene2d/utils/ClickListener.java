@@ -22,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Detects mouse over, mouse or finger touch presses, and clicks on an actor. A touch must go down over the actor and is
  * considered pressed as long as it is over the actor or within the {@link #setTapSquareSize(float) tap square}. This behavior
@@ -53,7 +55,7 @@ public class ClickListener extends InputListener {
 		this.button = button;
 	}
 
-	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+	public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 		if (pressed) return false;
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;
 		pressed = true;
@@ -65,7 +67,7 @@ public class ClickListener extends InputListener {
 		return true;
 	}
 
-	public void touchDragged (InputEvent event, float x, float y, int pointer) {
+	public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
 		if (pointer != pressedPointer || cancelled) return;
 		pressed = isOver(event.getListenerActor(), x, y);
 		if (!pressed) {
@@ -74,7 +76,7 @@ public class ClickListener extends InputListener {
 		}
 	}
 
-	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+	public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (!cancelled) {
 				boolean touchUpOver = isOver(event.getListenerActor(), x, y);
@@ -95,11 +97,11 @@ public class ClickListener extends InputListener {
 		}
 	}
 
-	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+	public void enter (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
 		if (pointer == -1 && !cancelled) over = true;
 	}
 
-	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+	public void exit (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
 		if (pointer == -1 && !cancelled) over = false;
 	}
 
@@ -110,11 +112,11 @@ public class ClickListener extends InputListener {
 		pressed = false;
 	}
 
-	public void clicked (InputEvent event, float x, float y) {
+	public void clicked (@NotNull InputEvent event, float x, float y) {
 	}
 
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
-	public boolean isOver (Actor actor, float x, float y) {
+	public boolean isOver (@NotNull Actor actor, float x, float y) {
 		Actor hit = actor.hit(x, y, true);
 		if (hit == null || !hit.isDescendantOf(actor)) return inTapSquare(x, y);
 		return true;

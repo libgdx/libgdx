@@ -44,6 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
 /** @author Daniel Holderbaum */
 public class Benchmark3DTest extends BaseG3dHudTest {
 
@@ -101,7 +103,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		lightingCheckBox.setChecked(lighting);
 		lightingCheckBox.addListener(new ChangeListener() {
 			@Override
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				lighting = lightingCheckBox.isChecked();
 			}
 		});
@@ -112,7 +114,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		lightsCheckBox.setChecked(false);
 		lightsCheckBox.addListener(new ChangeListener() {
 			@Override
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				lightsCheckBox.setChecked(false);
 				randomizeLights();
 			}

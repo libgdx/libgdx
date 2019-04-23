@@ -7,13 +7,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Iterator;
 
 /** Manages selected objects. Optionally fires a {@link ChangeEvent} on an actor. Selection changes can be vetoed via
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	private Actor actor;
+	@Nullable private Actor actor;
 	final OrderedSet<T> selected = new OrderedSet();
 	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
@@ -21,16 +24,16 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean multiple;
 	boolean required;
 	private boolean programmaticChangeEvents = true;
-	T lastSelected;
+	@Nullable T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
-	public void setActor (Actor actor) {
+	public void setActor (@Nullable Actor actor) {
 		this.actor = actor;
 	}
 
 	/** Selects or deselects the specified item based on how the selection is configured, whether ctrl is currently pressed, etc.
 	 * This is typically invoked by user interaction. */
-	public void choose (T item) {
+	public void choose (@NotNull T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		snapshot();
@@ -76,11 +79,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.size;
 	}
 
+	@NotNull
 	public OrderedSet<T> items () {
 		return selected;
 	}
 
 	/** Returns the first selected item, or null. */
+	@Nullable
 	public T first () {
 		return selected.size == 0 ? null : selected.first();
 	}
@@ -100,7 +105,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Sets the selection to only the specified item. */
-	public void set (T item) {
+	public void set (@NotNull T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();
@@ -115,7 +120,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	public void setAll (Array<T> items) {
+	public void setAll (@NotNull Array<T> items) {
 		boolean added = false;
 		snapshot();
 		lastSelected = null;
@@ -137,7 +142,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Adds the item to the selection. */
-	public void add (T item) {
+	public void add (@NotNull T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.add(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
@@ -148,7 +153,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
-	public void addAll (Array<T> items) {
+	public void addAll (@NotNull Array<T> items) {
 		boolean added = false;
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
@@ -167,7 +172,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	public void remove (T item) {
+	public void remove (@NotNull T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.remove(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
@@ -178,7 +183,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
-	public void removeAll (Array<T> items) {
+	public void removeAll (@NotNull Array<T> items) {
 		boolean removed = false;
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
@@ -228,12 +233,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** @param item May be null (returns false). */
-	public boolean contains (T item) {
+	public boolean contains (@Nullable T item) {
 		if (item == null) return false;
 		return selected.contains(item);
 	}
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
+	@Nullable
 	public T getLastSelected () {
 		if (lastSelected != null) {
 			return lastSelected;
@@ -243,14 +249,17 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return null;
 	}
 
+	@NotNull
 	public Iterator<T> iterator () {
 		return selected.iterator();
 	}
 
+	@NotNull
 	public Array<T> toArray () {
 		return selected.iterator().toArray();
 	}
 
+	@NotNull
 	public Array<T> toArray (Array<T> array) {
 		return selected.iterator().toArray(array);
 	}
@@ -296,6 +305,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	@NotNull
 	public String toString () {
 		return selected.toString();
 	}

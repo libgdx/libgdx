@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A button with a child {@link Label} to display text.
  * @author Nathan Sweet */
@@ -29,17 +31,17 @@ public class TextButton extends Button {
 	private Label label;
 	private TextButtonStyle style;
 
-	public TextButton (String text, Skin skin) {
+	public TextButton (@Nullable String text, @NotNull Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (String text, Skin skin, String styleName) {
+	public TextButton (@Nullable String text, @NotNull Skin skin, @NotNull String styleName) {
 		this(text, skin.get(styleName, TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (String text, TextButtonStyle style) {
+	public TextButton (@Nullable String text, @NotNull TextButtonStyle style) {
 		super();
 		setStyle(style);
 		this.style = style;
@@ -49,7 +51,7 @@ public class TextButton extends Button {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void setStyle (ButtonStyle style) {
+	public void setStyle (@NotNull ButtonStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
 		if (!(style instanceof TextButtonStyle)) throw new IllegalArgumentException("style must be a TextButtonStyle.");
 		super.setStyle(style);
@@ -63,11 +65,12 @@ public class TextButton extends Button {
 		}
 	}
 
+	@NotNull
 	public TextButtonStyle getStyle () {
 		return style;
 	}
 
-	public void draw (Batch batch, float parentAlpha) {
+	public void draw (@NotNull Batch batch, float parentAlpha) {
 		Color fontColor;
 		if (isDisabled() && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;
@@ -83,27 +86,33 @@ public class TextButton extends Button {
 		super.draw(batch, parentAlpha);
 	}
 
-	public void setLabel (Label label) {
+	public void setLabel (@NotNull Label label) {
 		getLabelCell().setActor(label);
 		this.label = label;
 	}
 
+	@NotNull
 	public Label getLabel () {
 		return label;
 	}
 
+	@NotNull
 	public Cell<Label> getLabelCell () {
-		return getCell(label);
+		Cell cell = getCell(label);
+		assert cell != null;
+		return cell;
 	}
 
-	public void setText (String text) {
+	public void setText (@Nullable String text) {
 		label.setText(text);
 	}
 
+	@NotNull
 	public CharSequence getText () {
 		return label.getText();
 	}
 
+	@NotNull
 	public String toString () {
 		String name = getName();
 		if (name != null) return name;
@@ -118,17 +127,17 @@ public class TextButton extends Button {
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
 		/** Optional. */
-		public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		@Nullable public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
 
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+		public TextButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable  Drawable checked, @Nullable BitmapFont font) {
 			super(up, down, checked);
 			this.font = font;
 		}
 
-		public TextButtonStyle (TextButtonStyle style) {
+		public TextButtonStyle (@NotNull TextButtonStyle style) {
 			super(style);
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);

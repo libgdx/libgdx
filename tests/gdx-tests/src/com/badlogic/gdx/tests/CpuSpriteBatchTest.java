@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import org.jetbrains.annotations.NotNull;
 
 public class CpuSpriteBatchTest extends GdxTest {
 
@@ -47,7 +48,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 			setSize(drawable.getMinWidth(), drawable.getMinHeight());
 		}
 
-		public void draw (Batch batch, float parentAlpha) {
+		public void draw (@NotNull Batch batch, float parentAlpha) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, parentAlpha);
 			drawable.draw(batch, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),

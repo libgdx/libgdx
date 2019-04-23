@@ -36,6 +36,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class BaseG3dHudTest extends BaseG3dTest {
 	public final static int PREF_HUDWIDTH = 640;
 	public final static int PREF_HUDHEIGHT = 480;
@@ -75,7 +77,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 		modelsList.setItems(models);
 		modelsList.addListener(new ClickListener() {
 			@Override
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				if (!modelsWindow.isCollapsed() && getTapCount() == 2) {
 					onModelClicked(modelsList.getSelected());
 					modelsWindow.collapse();
@@ -90,7 +92,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 		gridCheckBox.setChecked(showAxes);
 		gridCheckBox.addListener(new ChangeListener() {
 			@Override
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				showAxes = gridCheckBox.isChecked();
 			}
 		});
@@ -184,7 +186,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 			super(title, skin);
 			addListener(new ClickListener() {
 				@Override
-				public void clicked (InputEvent event, float x, float y) {
+				public void clicked (@NotNull InputEvent event, float x, float y) {
 					if (getTapCount() == 2 && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth())
 						toggleCollapsed();
 				}

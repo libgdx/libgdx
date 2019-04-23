@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import org.jetbrains.annotations.NotNull;
 
 public class GroupCullingTest extends GdxTest {
 	static private final int count = 100;
@@ -52,7 +53,7 @@ public class GroupCullingTest extends GdxTest {
 
 		for (int i = 0; i < count; i++) {
 			labels.add(new Label("Label: " + i, skin) {
-				public void draw (Batch batch, float parentAlpha) {
+				public void draw (@NotNull Batch batch, float parentAlpha) {
 					super.draw(batch, parentAlpha);
 					drawn++;
 				}

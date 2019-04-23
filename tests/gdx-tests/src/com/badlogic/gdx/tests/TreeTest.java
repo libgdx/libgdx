@@ -30,6 +30,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 
+import org.jetbrains.annotations.NotNull;
+
 public class TreeTest extends GdxTest {
 	Stage stage;
 	Skin skin;
@@ -89,7 +91,7 @@ public class TreeTest extends GdxTest {
 			}
 		});
 		moo5.getActor().addListener(new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				Node node = tree.findNode("moo4");
 				if (node != null) node.remove();
 			}

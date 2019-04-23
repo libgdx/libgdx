@@ -24,6 +24,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /** Drawable for a {@link TextureRegion}.
  * @author Nathan Sweet */
 public class TextureRegionDrawable extends BaseDrawable implements TransformDrawable {
@@ -33,7 +36,7 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 	public TextureRegionDrawable () {
 	}
 
-	public TextureRegionDrawable (Texture texture) {
+	public TextureRegionDrawable (@NotNull Texture texture) {
 		setRegion(new TextureRegion(texture));
 	}
 
@@ -41,16 +44,16 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 		setRegion(region);
 	}
 
-	public TextureRegionDrawable (TextureRegionDrawable drawable) {
+	public TextureRegionDrawable (@NotNull TextureRegionDrawable drawable) {
 		super(drawable);
 		setRegion(drawable.region);
 	}
 
-	public void draw (Batch batch, float x, float y, float width, float height) {
+	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
 		batch.draw(region, x, y, width, height);
 	}
 
-	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+	public void draw (@NotNull Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
 		batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
@@ -68,7 +71,7 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 	}
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
-	public Drawable tint (Color tint) {
+	public Drawable tint (@NotNull Color tint) {
 		Sprite sprite;
 		if (region instanceof AtlasRegion)
 			sprite = new AtlasSprite((AtlasRegion)region);

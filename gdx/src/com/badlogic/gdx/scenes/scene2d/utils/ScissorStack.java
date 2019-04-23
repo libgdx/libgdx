@@ -25,6 +25,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /** A stack of {@link Rectangle} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
  * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
  * the real top of the stack.
@@ -42,7 +45,7 @@ public class ScissorStack {
 	 * Any drawing should be flushed before pushing scissors.
 	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
 	 *         no drawing should occur. */
-	public static boolean pushScissors (Rectangle scissor) {
+	public static boolean pushScissors (@NotNull Rectangle scissor) {
 		fix(scissor);
 
 		if (scissors.size == 0) {
@@ -73,6 +76,7 @@ public class ScissorStack {
 	 * no more rectangles are on the stack, {@link GL20#GL_SCISSOR_TEST} is disabled.
 	 * <p>
 	 * Any drawing should be flushed before popping scissors. */
+	@NotNull
 	public static Rectangle popScissors () {
 		Rectangle old = scissors.pop();
 		if (scissors.size == 0)
@@ -85,12 +89,13 @@ public class ScissorStack {
 	}
 
 	/** @return null if there are no scissors. */
-	public static Rectangle peekScissors () {
+    @Nullable
+    public static Rectangle peekScissors () {
 		if (scissors.size == 0) return null;
 		return scissors.peek();
 	}
 
-	private static void fix (Rectangle rect) {
+	private static void fix (@NotNull Rectangle rect) {
 		rect.x = Math.round(rect.x);
 		rect.y = Math.round(rect.y);
 		rect.width = Math.round(rect.width);
@@ -107,7 +112,8 @@ public class ScissorStack {
 
 	/** Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
 	 * @see #calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
-	public static void calculateScissors (Camera camera, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
+	public static void calculateScissors (@NotNull Camera camera, @NotNull Matrix4 batchTransform,
+		@NotNull Rectangle area, @NotNull Rectangle scissor) {
 		calculateScissors(camera, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), batchTransform, area, scissor);
 	}
 
@@ -120,8 +126,8 @@ public class ScissorStack {
 	 * @param batchTransform the transformation {@link Matrix4}
 	 * @param area the {@link Rectangle} to transform to window coordinates
 	 * @param scissor the Rectangle to store the result in */
-	public static void calculateScissors (Camera camera, float viewportX, float viewportY, float viewportWidth,
-		float viewportHeight, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
+	public static void calculateScissors (@NotNull Camera camera, float viewportX, float viewportY, float viewportWidth,
+		float viewportHeight, @NotNull Matrix4 batchTransform, @NotNull Rectangle area, @NotNull Rectangle scissor) {
 		tmp.set(area.x, area.y, 0);
 		tmp.mul(batchTransform);
 		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
@@ -136,6 +142,7 @@ public class ScissorStack {
 	}
 
 	/** @return the current viewport in OpenGL ES window coordinates based on the currently applied scissor */
+	@NotNull
 	public static Rectangle getViewport () {
 		if (scissors.size == 0) {
 			viewport.set(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -19,6 +19,8 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.utils.Pool;
 
+import org.jetbrains.annotations.NotNull;
+
 /** Executes a number of actions one at a time.
  * @author Nathan Sweet */
 public class SequenceAction extends ParallelAction {
@@ -27,29 +29,29 @@ public class SequenceAction extends ParallelAction {
 	public SequenceAction () {
 	}
 
-	public SequenceAction (Action action1) {
+	public SequenceAction (@NotNull Action action1) {
 		addAction(action1);
 	}
 
-	public SequenceAction (Action action1, Action action2) {
+	public SequenceAction (@NotNull Action action1, @NotNull Action action2) {
 		addAction(action1);
 		addAction(action2);
 	}
 
-	public SequenceAction (Action action1, Action action2, Action action3) {
+	public SequenceAction (@NotNull Action action1, @NotNull Action action2, @NotNull Action action3) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 	}
 
-	public SequenceAction (Action action1, Action action2, Action action3, Action action4) {
+	public SequenceAction (@NotNull Action action1, @NotNull Action action2, @NotNull Action action3, @NotNull Action action4) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 		addAction(action4);
 	}
 
-	public SequenceAction (Action action1, Action action2, Action action3, Action action4, Action action5) {
+	public SequenceAction (@NotNull Action action1, @NotNull Action action2, @NotNull Action action3, @NotNull Action action4, @NotNull Action action5) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);

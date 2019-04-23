@@ -33,6 +33,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SoundTest extends GdxTest {
 	Sound sound;
 	float volume = 0.5f;
@@ -80,7 +82,7 @@ public class SoundTest extends GdxTest {
 		ui.addActor(table);
 
 		play.addListener(new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				soundId = sound.play(volume.getValue());
 				sound.setPitch(soundId, pitch.getValue());
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
@@ -88,24 +90,24 @@ public class SoundTest extends GdxTest {
 		});
 
 		stop.addListener(new ClickListener() {
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				sound.stop(soundId);
 			}
 		});
 		pitch.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				sound.setPitch(soundId, pitch.getValue());
 				pitchValue.setText("" + pitch.getValue());
 			}
 		});
 		volume.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				sound.setVolume(soundId, volume.getValue());
 				volumeValue.setText("" + volume.getValue());
 			}
 		});
 		pan.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
 				panValue.setText("" + pan.getValue());
 			}

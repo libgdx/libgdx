@@ -50,6 +50,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ShaderCollectionTest extends BaseG3dHudTest {
 	/** Desktop only: Set this to an absolute path to load the shader files from an alternative location. */
 	final static String hotLoadFolder = null;
@@ -307,7 +309,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		shadersList.setItems(shaders);
 		shadersList.addListener(new ClickListener() {
 			@Override
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				if (!shadersWindow.isCollapsed() && getTapCount() == 2) {
 					setShader(shadersList.getSelected());
 					shadersWindow.collapse();
@@ -320,7 +322,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		materialsList.setItems(materials);
 		materialsList.addListener(new ClickListener() {
 			@Override
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				if (!materialsWindow.isCollapsed() && getTapCount() == 2) {
 					setMaterial(materialsList.getSelected());
 					materialsWindow.collapse();
@@ -333,7 +335,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		environmentsList.setItems(environments);
 		environmentsList.addListener(new ClickListener() {
 			@Override
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				if (!environmentsWindow.isCollapsed() && getTapCount() == 2) {
 					setEnvironment(environmentsList.getSelected());
 					environmentsWindow.collapse();

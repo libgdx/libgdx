@@ -25,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+import org.jetbrains.annotations.NotNull;
+
 public class GwtWindowModeTest extends GdxTest {
 	private Stage stage;
 	boolean isWindowed;
@@ -45,7 +47,7 @@ public class GwtWindowModeTest extends GdxTest {
 
 		changeModeButton.addListener(new ClickListener() {
 			@Override
-			public void clicked (InputEvent event, float x, float y) {
+			public void clicked (@NotNull InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				if (isWindowed) {
 					isWindowed = false;

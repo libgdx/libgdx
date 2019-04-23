@@ -18,13 +18,15 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+import org.jetbrains.annotations.NotNull;
+
 /** A drawable knows how to draw itself at a given rectangular size. It provides padding sizes and a minimum size so that other
  * code can determine how to size and position content.
  * @author Nathan Sweet */
 public interface Drawable {
 	/** Draws this drawable at the specified bounds. The drawable should be tinted with {@link Batch#getColor()}, possibly by
 	 * mixing its own color. */
-	public void draw (Batch batch, float x, float y, float width, float height);
+	public void draw (@NotNull Batch batch, float x, float y, float width, float height);
 
 	public float getLeftWidth ();
 

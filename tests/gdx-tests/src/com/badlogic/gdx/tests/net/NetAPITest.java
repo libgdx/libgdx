@@ -37,6 +37,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 
+import org.jetbrains.annotations.NotNull;
+
 public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	SpriteBatch batch;
@@ -92,7 +94,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		{
 			ClickListener clickListener = new ClickListener() {
 				@Override
-				public void clicked (InputEvent event, float x, float y) {
+				public void clicked (@NotNull InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
 
 					clickedButton = event.getListenerActor();
@@ -133,7 +135,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 			ClickListener cancelListener = new ClickListener() {
 				@Override
-				public void clicked (InputEvent event, float x, float y) {
+				public void clicked (@NotNull InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
 					if (httpRequest != null) {
 						Gdx.net.cancelHttpRequest(httpRequest);

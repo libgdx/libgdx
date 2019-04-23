@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Executes a number of actions at the same time.
  * @author Nathan Sweet */
@@ -30,29 +32,29 @@ public class ParallelAction extends Action {
 	public ParallelAction () {
 	}
 
-	public ParallelAction (Action action1) {
+	public ParallelAction (@NotNull  Action action1) {
 		addAction(action1);
 	}
 
-	public ParallelAction (Action action1, Action action2) {
+	public ParallelAction (@NotNull  Action action1, @NotNull  Action action2) {
 		addAction(action1);
 		addAction(action2);
 	}
 
-	public ParallelAction (Action action1, Action action2, Action action3) {
+	public ParallelAction (@NotNull  Action action1, @NotNull  Action action2, @NotNull  Action action3) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 	}
 
-	public ParallelAction (Action action1, Action action2, Action action3, Action action4) {
+	public ParallelAction (@NotNull  Action action1, @NotNull  Action action2, @NotNull  Action action3, @NotNull  Action action4) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 		addAction(action4);
 	}
 
-	public ParallelAction (Action action1, Action action2, Action action3, Action action4, Action action5) {
+	public ParallelAction (@NotNull  Action action1, @NotNull  Action action2, @NotNull  Action action3, @NotNull  Action action4, @NotNull  Action action5) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
@@ -102,10 +104,12 @@ public class ParallelAction extends Action {
 		super.setActor(actor);
 	}
 
+	@NotNull
 	public Array<Action> getActions () {
 		return actions;
 	}
 
+	@NotNull
 	public String toString () {
 		StringBuilder buffer = new StringBuilder(64);
 		buffer.append(super.toString());

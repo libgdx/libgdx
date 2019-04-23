@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import org.jetbrains.annotations.NotNull;
 
 /** @author Daniel Holderbaum */
 public class StageDebugTest extends GdxTest {
@@ -41,7 +42,7 @@ public class StageDebugTest extends GdxTest {
 
 	class DebugActor extends Actor {
 		@Override
-		public void draw (Batch batch, float parentAlpha) {
+		public void draw (@NotNull Batch batch, float parentAlpha) {
 			batch.draw(textureRegion, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
 				getRotation());
 		}
