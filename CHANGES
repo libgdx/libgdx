@@ -13,6 +13,7 @@
 - API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
 - API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
 - LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- API Change: TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed. imageResolver/atlasResolver removed from method signatures, these are class variables now (as a positive side effect AtlasTmxMapLoader supports group layers and image layers now)
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
@@ -48,7 +49,6 @@
 - API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 - API Change: List now handles more key presses.
 - API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
-- API Change: TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed. imageResolver/atlasResolver removed from method signatures, these are class variables now. AtlasTmxMapLoader supports group layers and image layers now
 
 [1.9.8]
 - Add iPhoneX images

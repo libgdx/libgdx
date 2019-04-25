@@ -25,10 +25,8 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -47,8 +45,6 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	public static class Parameters extends BaseTmxMapLoader.Parameters {
 
 	}
-
-	protected ImageResolver imageResolver;
 
 	public TmxMapLoader () {
 		super(new InternalFileHandleResolver());
@@ -91,7 +87,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				textures.put(textureFile.path(), texture);
 			}
 
-			this.imageResolver = new DirectImageResolver(textures);
+			this.imageLayerImageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile);
 			map.setOwnedResources(textures.values().toArray());
 			return map;
@@ -112,7 +108,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			flipY = true;
 		}
 		try {
-			this.imageResolver = new AssetManagerImageResolver(manager);
+			this.imageLayerImageResolver = new AssetManagerImageResolver(manager);
 			map = loadTilemap(root, tmxFile);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
@@ -301,7 +297,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			tileset.setName(name);
 			tileset.getProperties().put("firstgid", firstgid);
 			if (image != null) {
-				TextureRegion texture = imageResolver.getImage(image.path());
+				TextureRegion texture = imageLayerImageResolver.getImage(image.path());
 
 				MapProperties props = tileset.getProperties();
 				props.put("imagesource", imageSource);
@@ -342,7 +338,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 							image = getRelativeFileHandle(tmxFile, imageSource);
 						}
 					}
-					TextureRegion texture = imageResolver.getImage(image.path());
+					TextureRegion texture = imageLayerImageResolver.getImage(image.path());
 					TiledMapTile tile = new StaticTiledMapTile(texture);
 					tile.setId(firstgid + tileElement.getIntAttribute("id"));
 					tile.setOffsetX(offsetX);
@@ -407,10 +403,5 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			}
 			map.getTileSets().addTileSet(tileset);
 		}
-	}
-
-	@Override
-	protected TextureRegion getImage(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, String imagePath) {
-		return imageResolver.getImage(imagePath);
 	}
 }

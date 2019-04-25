@@ -65,6 +65,8 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
 
+	protected ImageResolver imageLayerImageResolver;
+
 	protected TiledMap map;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
@@ -232,9 +234,6 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		}
 	}
 
-	/**
-	 * Load an image layer and add it to the parentLayers. The images are resolved by {@link #getImage(TiledMap, MapLayers, Element, FileHandle, String)}
-	 */
 	protected void loadImageLayer(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("imagelayer")) {
 			float x = 0;
@@ -258,7 +257,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			if (image != null) {
 				String source = image.getAttribute("source");
 				FileHandle handle = getRelativeFileHandle(tmxFile, source);
-				texture = getImage(map, parentLayers, element, tmxFile, handle.path());
+				texture = imageLayerImageResolver.getImage(handle.path());
 				y -= texture.getRegionHeight();
 			}
 
@@ -274,11 +273,6 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			parentLayers.add(layer);
 		}
 	}
-
-	/**
-	 * Resolve and get image for {@link #loadImageLayer(TiledMap, MapLayers, Element, FileHandle)}
-	 */
-	protected abstract TextureRegion getImage(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, String imagePath);
 
 	protected void loadBasicLayerInfo (MapLayer layer, Element element) {
 		String name = element.getAttribute("name", null);

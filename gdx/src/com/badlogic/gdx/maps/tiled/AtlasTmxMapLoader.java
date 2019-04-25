@@ -25,8 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -143,6 +142,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			atlases.put(atlasFile.path(), atlas);
 
 			this.atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
+			this.imageLayerImageResolver = new ImageResolver.TextureAtlasImageResolver(atlas);
 			TiledMap map = loadTilemap(root, tmxFile);
 			map.setOwnedResources(atlases.values().toArray());
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
@@ -199,6 +199,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		try {
 			this.atlasResolver = new AtlasResolver.AssetManagerAtlasResolver(manager);
+			this.imageLayerImageResolver = new ImageResolver.AssetManagerImageResolver(manager);
 			map = loadTilemap(root, tmxFile);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
@@ -409,29 +410,6 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 				loadProperties(tileset.getProperties(), properties);
 			}
 			map.getTileSets().addTileSet(tileset);
-		}
-	}
-
-	@Override
-	protected TextureRegion getImage(TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, String imagePath) {
-		if (atlasResolver instanceof AtlasResolver.DirectAtlasResolver) {
-			final AtlasResolver.DirectAtlasResolver directAtlasResolver = (AtlasResolver.DirectAtlasResolver) this.atlasResolver;
-			final ObjectMap.Values<TextureAtlas> atlasValues = directAtlasResolver.atlases.values();
-			for (TextureAtlas textureAtlas : atlasValues) {
-				final AtlasRegion atlasRegion = textureAtlas.findRegion(imagePath);
-				if (atlasRegion != null) {
-					return atlasRegion;
-				}
-			}
-			return null;
-		} else if (atlasResolver instanceof AtlasResolver.AssetManagerAtlasResolver) {
-			final TextureRegion textureRegion = ((AtlasResolver.AssetManagerAtlasResolver) atlasResolver).assetManager.get(imagePath, TextureRegion.class);
-			if (textureRegion != null) {
-				return textureRegion;
-			}
-			return null;
-		} else {
-			return null;
 		}
 	}
 }
