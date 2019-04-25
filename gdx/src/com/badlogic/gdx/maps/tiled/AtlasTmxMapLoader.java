@@ -58,7 +58,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		public TextureAtlas getAtlas (String name);
 
 		public static class DirectAtlasResolver implements AtlasResolver {
-			public final ObjectMap<String, TextureAtlas> atlases;
+
+			private final ObjectMap<String, TextureAtlas> atlases;
 
 			public DirectAtlasResolver (ObjectMap<String, TextureAtlas> atlases) {
 				this.atlases = atlases;
@@ -72,7 +73,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 
 		public static class AssetManagerAtlasResolver implements AtlasResolver {
-			public final AssetManager assetManager;
+			private final AssetManager assetManager;
 
 			public AssetManagerAtlasResolver (AssetManager assetManager) {
 				this.assetManager = assetManager;
