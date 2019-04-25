@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	}
 
 	/** Creates loader
-	 *
+	 * 
 	 * @param resolver */
 	public TmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -80,7 +80,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			Array<FileHandle> textureFiles = loadTilesets(root, tmxFile);
 			textureFiles.addAll(loadImages(root, tmxFile));
-
+			
 			for (FileHandle textureFile : textureFiles) {
 				Texture texture = new Texture(textureFile, parameters.generateMipMaps);
 				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
@@ -121,7 +121,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	}
 
 	/** Retrieves TiledMap resource dependencies
-	 *
+	 * 
 	 * @param fileName
 	 * @param parameter not used for now
 	 * @return dependencies for the given .tmx file */
@@ -190,27 +190,27 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		}
 		return images;
 	}
-
+	
 	/** Loads the images in image layers
 	 * @param root the root XML element
 	 * @return a list of filenames for images inside image layers
 	 * @throws IOException */
 	protected Array<FileHandle> loadImages (Element root, FileHandle tmxFile) throws IOException {
 		Array<FileHandle> images = new Array<FileHandle>();
-
+		
 		for (Element imageLayer : root.getChildrenByName("imagelayer")) {
 			Element image = imageLayer.getChildByName("image");
 			String source = image.getAttribute("source", null);
 
 			if (source != null) {
 				FileHandle handle = getRelativeFileHandle(tmxFile, source);
-
+				
 				if (!images.contains(handle, false)) {
 					images.add(handle);
 				}
 			}
 		}
-
+		
 		return images;
 	}
 
@@ -219,7 +219,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * <p>
 	 * Default tileset's property keys that are loaded by default are:
 	 * </p>
-	 *
+	 * 
 	 * <ul>
 	 * <li><em>firstgid</em>, (int, defaults to 1) the first valid global id used for tile numbering</li>
 	 * <li><em>imagesource</em>, (String, defaults to empty string) the tileset source image filename</li>
@@ -230,7 +230,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * <li><em>margin</em>, (int, defaults to 0) the tileset margin</li>
 	 * <li><em>spacing</em>, (int, defaults to 0) the tileset spacing</li>
 	 * </ul>
-	 *
+	 * 
 	 * <p>
 	 * The values are extracted from the specified Tmx file, if a value can't be found then the default is used.
 	 * </p>
@@ -274,7 +274,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						imageWidth = imageElement.getIntAttribute("width", 0);
 						imageHeight = imageElement.getIntAttribute("height", 0);
 						image = getRelativeFileHandle(tsx, imageSource);
-					}
+					}					
 				} catch (SerializationException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
@@ -307,12 +307,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				props.put("tileheight", tileheight);
 				props.put("margin", margin);
 				props.put("spacing", spacing);
-
+	
 				int stopWidth = texture.getRegionWidth() - tilewidth;
 				int stopHeight = texture.getRegionHeight() - tileheight;
-
+	
 				int id = firstgid;
-
+	
 				for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 					for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
 						TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
@@ -404,4 +404,5 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			map.getTileSets().addTileSet(tileset);
 		}
 	}
+
 }
