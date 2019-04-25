@@ -35,11 +35,11 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 import java.io.IOException;
 
 /** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
- *
+ * 
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
  * in it indexed regions named after the tilesets used in the map. The indexes shall be local to the tileset (not the global id).
  * Strip whitespace and rotation should not be used when creating the atlas.
- *
+ * 
  * @author Justin Shapcott
  * @author Manuel Bua */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
@@ -404,8 +404,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			for (AnimatedTiledMapTile tile : animatedTiles) {
 				tileset.putTile(tile.getId(), tile);
-			}
-
+			}			
+			
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);
@@ -413,4 +413,5 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			map.getTileSets().addTileSet(tileset);
 		}
 	}
+
 }
