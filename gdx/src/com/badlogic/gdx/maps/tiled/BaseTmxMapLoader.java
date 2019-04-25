@@ -374,7 +374,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				object.getProperties().put("id", id);
 			}
 			object.getProperties().put("x", x);
-
+			
 			if (object instanceof TiledMapTileMapObject) {
 				object.getProperties().put("y", y);
 			} else {
