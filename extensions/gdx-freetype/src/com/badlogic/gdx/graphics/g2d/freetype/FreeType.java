@@ -715,6 +715,7 @@ public class FreeType {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
 				converted.setBlending(Blending.None);
 				converted.drawPixmap(pixmap, 0, 0);
+				converted.setBlending(Blending.SourceOver);
 				pixmap.dispose();
 			}
 			return converted;

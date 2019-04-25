@@ -116,10 +116,7 @@ public class WidgetGroup extends Group implements Layout {
 		// Widgets may call invalidateHierarchy during layout (eg, a wrapped label). The root-most widget group retries layout a
 		// reasonable number of times.
 		if (needsLayout) {
-			while (parent != null) {
-				if (parent instanceof WidgetGroup) return;
-				parent = parent.getParent();
-			}
+			if (parent instanceof WidgetGroup) return; // The parent widget will layout again.
 			for (int i = 0; i < 5; i++) {
 				needsLayout = false;
 				layout();

@@ -506,7 +506,7 @@ public class BitmapFont implements Disposable {
 
 				line = reader.readLine();
 				if (line == null) throw new GdxRuntimeException("Missing common header.");
-				String[] common = line.split(" ", 7); // At most we want the 6th element; i.e. "page=N"
+				String[] common = line.split(" ", 9); // At most we want the 6th element; i.e. "page=N"
 
 				// At least lineHeight and base are required.
 				if (common.length < 3) throw new GdxRuntimeException("Invalid common header.");
@@ -557,6 +557,7 @@ public class BitmapFont implements Disposable {
 					line = reader.readLine();
 					if (line == null) break; // EOF
 					if (line.startsWith("kernings ")) break; // Starting kernings block.
+					if (line.startsWith("metrics ")) break; // Starting metrics block.
 					if (!line.startsWith("char ")) continue;
 
 					Glyph glyph = new Glyph();
@@ -623,6 +624,38 @@ public class BitmapFont implements Disposable {
 					}
 				}
 
+				boolean hasMetricsOverride = false;
+				float overrideAscent = 0;
+				float overrideDescent = 0;
+				float overrideDown = 0;
+				float overrideCapHeight = 0;
+				float overrideLineHeight = 0;
+				float overrideSpaceXAdvance = 0;
+				float overrideXHeight = 0;
+
+				// Metrics override
+				if (line != null && line.startsWith("metrics ")) {
+
+					hasMetricsOverride = true;
+
+					StringTokenizer tokens = new StringTokenizer(line, " =");
+					tokens.nextToken();
+					tokens.nextToken();
+					overrideAscent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDescent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDown = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideCapHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideLineHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideSpaceXAdvance = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideXHeight = Float.parseFloat(tokens.nextToken());
+				}
+
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
@@ -669,6 +702,17 @@ public class BitmapFont implements Disposable {
 					ascent = -ascent;
 					down = -down;
 				}
+
+				if (hasMetricsOverride) {
+					this.ascent = overrideAscent;
+					this.descent = overrideDescent;
+					this.down = overrideDown;
+					this.capHeight = overrideCapHeight;
+					this.lineHeight = overrideLineHeight;
+					this.spaceXadvance = overrideSpaceXAdvance;
+					this.xHeight = overrideXHeight;
+				}
+
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 			} finally {
@@ -795,6 +839,7 @@ public class BitmapFont implements Disposable {
 
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
 				if (glyph == null) {
 					if (missingGlyph == null) continue;
@@ -823,12 +868,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			if (isWhitespace((char)glyphs.get(i).id)) return i;
-			for (; i > 0; i--)
-				if (!isWhitespace((char)glyphs.get(i).id)) break;
+			char ch = (char)glyphs.get(i).id;
+			if (isWhitespace(ch)) return i;
+			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				char ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
+				ch = (char)glyphs.get(i).id;
+				if (isBreakChar(ch)) return i + 1;
+				if (isWhitespace(ch)) return i + 1;
 			}
 			return 0;
 		}

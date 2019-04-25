@@ -109,7 +109,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public UIRectEdge preferredScreenEdgesDeferringSystemGestures() {
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
 			return app.config.screenEdgesDeferringSystemGestures;
 		}
 

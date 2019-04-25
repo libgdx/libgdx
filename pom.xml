@@ -45,9 +45,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <android.version>7.1</android.version>
     <gwt.version>2.8.0</gwt.version>
-    <lwjgl.version>2.9.2</lwjgl.version>
-    <lwjgl3.version>3.2.0</lwjgl3.version>
-    <robovm.version>2.3.5</robovm.version>
+    <lwjgl.version>2.9.3</lwjgl.version>
+    <lwjgl3.version>3.2.1</lwjgl3.version>
+    <robovm.version>2.3.6</robovm.version>
     <moe.version>1.4.0</moe.version>
   </properties>
 

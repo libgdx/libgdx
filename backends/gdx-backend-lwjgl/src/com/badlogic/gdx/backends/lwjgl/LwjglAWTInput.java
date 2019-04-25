@@ -112,6 +112,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	boolean[] keys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedButtons = new boolean[5];
 	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	Canvas canvas;
@@ -327,7 +328,12 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 
 	void processEvents () {
 		synchronized (this) {
-			justTouched = false;
+			if (justTouched) {
+				justTouched = false;
+				for (int i = 0; i < justPressedButtons.length; i++) {
+					justPressedButtons[i] = false;
+				}
+			}
 			if (keyJustPressed) {
 				keyJustPressed = false;
 				for (int i = 0; i < justPressedKeys.length; i++) {
@@ -365,6 +371,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, e.button);
 						justTouched = true;
+						justPressedButtons[e.button] = true;
 						break;
 					case TouchEvent.TOUCH_UP:
 						processor.touchUp(e.x, e.y, e.pointer, e.button);
@@ -817,6 +824,12 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	@Override
 	public boolean isButtonPressed (int button) {
 		return pressedButtons.contains(button);
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button >= justPressedButtons.length) return false;
+		return justPressedButtons[button];
 	}
 
 	@Override

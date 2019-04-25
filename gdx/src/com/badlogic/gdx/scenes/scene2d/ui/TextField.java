@@ -342,8 +342,7 @@ public class TextField extends Widget implements Disableable {
 						style.messageFontColor.a * color.a * parentAlpha);
 				} else
 					messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
-				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
-					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
+				drawMessageText(batch, messageFont, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
@@ -375,6 +374,10 @@ public class TextField extends Widget implements Disableable {
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
+	}
+
+	protected void drawMessageText (Batch batch, BitmapFont font, float x, float y, float maxWidth) {
+		font.draw(batch, messageText, x, y, 0, messageText.length(), maxWidth, textHAlign, false, "...");
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
@@ -422,6 +425,9 @@ public class TextField extends Widget implements Disableable {
 		} else
 			fontOffset = 0;
 		glyphPositions.add(x);
+
+		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
+		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size);
 
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
@@ -720,6 +726,10 @@ public class TextField extends Widget implements Disableable {
 	 * @see Align */
 	public void setAlignment (int alignment) {
 		this.textHAlign = alignment;
+	}
+
+	public int getAlignment () {
+		return textHAlign;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters.

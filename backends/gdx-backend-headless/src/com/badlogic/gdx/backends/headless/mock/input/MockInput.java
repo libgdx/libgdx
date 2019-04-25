@@ -131,6 +131,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		return false;
+	}
+
+	@Override
 	public boolean isKeyPressed(int key) {
 		return false;
 	}

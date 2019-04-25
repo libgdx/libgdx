@@ -20,13 +20,13 @@ ext {
     testnatives = [:]
 }
 
-versions.robovm = "2.3.5"
+versions.robovm = "2.3.6"
 versions.moe = "1.4.0"
 versions.gwt = "2.8.1"
 versions.gwtPlugin = "1.0.6"
 versions.jglwf = "1.1"
-versions.lwjgl = "2.9.2"
-versions.lwjgl3 = "3.2.0"
+versions.lwjgl = "2.9.3"
+versions.lwjgl3 = "3.2.1"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"

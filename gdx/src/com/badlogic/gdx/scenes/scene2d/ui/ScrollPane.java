@@ -34,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
  * <p>
@@ -55,7 +54,6 @@ public class ScrollPane extends WidgetGroup {
 	final Rectangle vKnobBounds = new Rectangle();
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
-	private final Rectangle scissorBounds = new Rectangle();
 	private ActorGestureListener flickScrollListener;
 
 	boolean scrollX, scrollY;
@@ -593,20 +591,17 @@ public class ScrollPane extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
 
-		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-		// project those to screen coordinates for OpenGL ES to consume.
-		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
-
-		// Enable scissors for widget area and draw the widget.
 		batch.flush();
-		if (ScissorStack.pushScissors(scissorBounds)) {
+		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
 			drawChildren(batch, parentAlpha);
 			batch.flush();
-			ScissorStack.popScissors();
+			clipEnd();
 		}
 
 		// Render scrollbars and knobs on top if they will be visible
-		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
+		float alpha = color.a * parentAlpha;
+		if (fadeScrollBars) alpha *= Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawScrollBars(batch, color.r, color.g, color.b, alpha);
 
 		resetTransform(batch);
@@ -651,33 +646,37 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
+		float width = 0;
 		if (widget instanceof Layout) {
-			float width = ((Layout)widget).getPrefWidth();
-			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
-			if (forceScrollY) {
-				float scrollbarWidth = 0;
-				if (style.vScrollKnob != null) scrollbarWidth = style.vScrollKnob.getMinWidth();
-				if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
-				width += scrollbarWidth;
-			}
-			return width;
+			validate();
+			width = ((Layout)widget).getPrefWidth();
+		} else if (widget != null) //
+			width = widget.getWidth();
+		if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+		if (scrollY) {
+			float scrollbarWidth = 0;
+			if (style.vScrollKnob != null) scrollbarWidth = style.vScrollKnob.getMinWidth();
+			if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+			width += scrollbarWidth;
 		}
-		return 150;
+		return width;
 	}
 
 	public float getPrefHeight () {
+		float height = 0;
 		if (widget instanceof Layout) {
-			float height = ((Layout)widget).getPrefHeight();
-			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
-			if (forceScrollX) {
-				float scrollbarHeight = 0;
-				if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
-				if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
-				height += scrollbarHeight;
-			}
-			return height;
+			validate();
+			height = ((Layout)widget).getPrefHeight();
+		} else if (widget != null) //
+			height = widget.getHeight();
+		if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+		if (scrollX) {
+			float scrollbarHeight = 0;
+			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+			height += scrollbarHeight;
 		}
-		return 150;
+		return height;
 	}
 
 	public float getMinWidth () {
@@ -873,6 +872,8 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the scroll offset so the specified rectangle is fully in view, and optionally centered vertically and/or horizontally,
 	 * if possible. Coordinates are in the scroll pane widget's coordinate system. */
 	public void scrollTo (float x, float y, float width, float height, boolean centerHorizontal, boolean centerVertical) {
+		validate();
+
 		float amountX = this.amountX;
 		if (centerHorizontal) {
 			amountX = x - areaWidth / 2 + width / 2;
@@ -1100,11 +1101,12 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
-		shapes.flush();
+		drawDebugBounds(shapes);
 		applyTransform(shapes, computeTransform());
-		if (ScissorStack.pushScissors(scissorBounds)) {
+		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
 			drawDebugChildren(shapes);
-			ScissorStack.popScissors();
+			shapes.flush();
+			clipEnd();
 		}
 		resetTransform(shapes);
 	}
@@ -1134,6 +1136,7 @@ public class ScrollPane extends WidgetGroup {
 
 		public ScrollPaneStyle (ScrollPaneStyle style) {
 			this.background = style.background;
+			this.corner = style.corner;
 			this.hScroll = style.hScroll;
 			this.hScrollKnob = style.hScrollKnob;
 			this.vScroll = style.vScroll;

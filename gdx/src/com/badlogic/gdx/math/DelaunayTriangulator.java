@@ -56,6 +56,7 @@ public class DelaunayTriangulator {
 	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
 	public ShortArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
+		if (count > 32767) throw new IllegalArgumentException("count must be <= " + 32767);
 		ShortArray triangles = this.triangles;
 		triangles.clear();
 		if (count < 6) return triangles;

@@ -357,6 +357,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isButtonJustPressed (int button) {
+			return false;
+		}
+
+		@Override
 		public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 			input.getTextInput(listener, title, text, hint);
 		}
@@ -465,7 +470,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public void setCursorPosition (int x, int y) {
-			setCursorPosition(x, y);
+			input.setCursorPosition(x, y);
 		}
 	}
 

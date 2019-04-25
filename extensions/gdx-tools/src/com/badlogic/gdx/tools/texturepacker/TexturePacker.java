@@ -55,7 +55,7 @@ import java.awt.image.BufferedImage;
 public class TexturePacker {
 	String rootPath;
 	private final Settings settings;
-	private final Packer packer;
+	private Packer packer;
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
 	private ProgressListener progress;
@@ -101,8 +101,17 @@ public class TexturePacker {
 			rootPath = null;
 			return;
 		}
-		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+		try {
+			rootPath = rootDir.getCanonicalPath();
+		} catch (IOException ex) {
+			rootPath = rootDir.getAbsolutePath();
+		}
+		rootPath = rootPath.replace('\\', '/');
 		if (!rootPath.endsWith("/")) rootPath += "/";
+	}
+
+	public String getRootPath () {
+		return rootPath;
 	}
 
 	public void addImage (File file) {
@@ -117,6 +126,10 @@ public class TexturePacker {
 		inputImage.image = image;
 		inputImage.name = name;
 		inputImages.add(inputImage);
+	}
+
+	public void setPacker (Packer packer) {
+		this.packer = packer;
 	}
 
 	public void pack (File outputDir, String packFileName) {

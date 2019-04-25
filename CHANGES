@@ -1,7 +1,18 @@
 [1.9.10]
+- API Addition: Input.isButtonJustPressed
+- Update to LWJGL 2 backend to 2.9.3
+- Update to MobiVM 2.3.6 release
+- Update to LWJGL 3.2.1
 - API Addition: Input allows getting the maximum number of pointers supported by the backend
 - API Addition: Configuration option added to allow setting a max number of threads to use for net requests
 - API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
+- API Addition: New MathUtils norm and map methods
+- API Change: Pixmap blending was incorrect. Generated fonts may change for the better, but may require adjusting font settings.
+- API Change: Particle effects obtained from a ParticleEffectPool are now automatically started
+- Removed OSX 32-bit support
+- API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
+- API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
+- LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
