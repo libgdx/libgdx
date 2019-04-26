@@ -745,11 +745,11 @@ public class ShapeRenderer implements Disposable {
 			renderer.vertex(x + width, y + height, z + depth);
 
 			renderer.color(colorBits);
-			renderer.vertex(x, y + height, z + depth);
+			renderer.vertex(x + width, y + height, z + depth);
 			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
 			renderer.color(colorBits);
-			renderer.vertex(x + width, y + height, z + depth);
+			renderer.vertex(x, y + height, z + depth);
 
 			// Left
 			renderer.color(colorBits);
