@@ -256,18 +256,18 @@ public class TextField extends Widget implements Disableable {
 		float startX = 0;
 		for (int i = 0; i < glyphCount; i++) {
 			if (glyphPositions[i] >= -renderOffset) {
-				visibleTextStart = Math.max(0, i);
+				visibleTextStart = i;
 				startX = glyphPositions[i];
 				break;
 			}
 		}
 
 		// calculate last visible char based on visible width and render offset
-		int length = Math.min(displayText.length(), glyphPositions.length - 1);
-		visibleTextEnd = Math.min(length, cursor + 1);
-		for (; visibleTextEnd <= length; visibleTextEnd++)
-			if (glyphPositions[visibleTextEnd] > startX + visibleWidth) break;
-		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
+		int end = visibleTextStart + 1;
+		float endX = visibleWidth - renderOffset;
+		for (int n = Math.min(displayText.length(), glyphCount); end <= n; end++)
+			if (glyphPositions[end] > endX) break;
+		visibleTextEnd = Math.max(0, end - 1);
 
 		if ((textHAlign & Align.left) == 0) {
 			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startX);
