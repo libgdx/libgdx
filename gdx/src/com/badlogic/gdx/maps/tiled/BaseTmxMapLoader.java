@@ -83,8 +83,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
-	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
-		TextureLoader.TextureParameter textureParameter);
+	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile, TextureLoader.TextureParameter textureParameter);
 
 	/**
 	 * Loads the map data, given the XML root element
@@ -660,7 +659,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 			AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
 			animatedTile.setId(tile.getId());
-			//TODO: Why replace ?? Kann das nicht gleich am Anfang ausgeschlossen werden ??
 			tileSet.putTile(tile.getId(), animatedTile);
 		}
 	}
