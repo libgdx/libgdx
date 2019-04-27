@@ -13,6 +13,9 @@
 - API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
 - API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
 - LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed.
+- AtlasTmxMapLoader supports group layers now (a positive side effect of the BaseTmxMapLoader refactoring).
+- API Change: TmxMapLoader and AtlasTmxMapLoader: load/loadAsync methods work exactly as before, but many methods of these classes had to change. This makes it possible implement new Tiled features.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
