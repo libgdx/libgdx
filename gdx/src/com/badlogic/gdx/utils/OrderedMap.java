@@ -27,10 +27,6 @@ import java.util.NoSuchElementException;
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
-
 	public OrderedMap () {
 		keys = new Array();
 	}
