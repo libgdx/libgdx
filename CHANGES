@@ -17,6 +17,7 @@
 - Fixed TextField rendering text outside the widget at small sizes.
 - API Addition: Group#getChild(int)
 - API Addition: notEmpty() for collections.
+- API Change: For Tree in scene2d.ui you must now provide generics for the type of node in your tree declaration.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
