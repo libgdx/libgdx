@@ -13,6 +13,10 @@
 - API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
 - API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
 - LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- API Addition: TextField#drawMessageText.
+- Fixed TextField rendering text outside the widget at small sizes.
+- API Addition: Group#getChild(int)
+- API Addition: notEmpty() for collections.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker

@@ -324,6 +324,11 @@ public class IntSet {
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
 	}
 
+	/** Returns true if the set has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the set is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -474,8 +479,8 @@ public class IntSet {
 		return buffer.toString();
 	}
 
-	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link IntSetIterator} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link IntSetIterator} constructor for nested or multithreaded iteration. */
 	public IntSetIterator iterator () {
 		if (iterator1 == null) {
 			iterator1 = new IntSetIterator(this);

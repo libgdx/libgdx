@@ -132,6 +132,11 @@ public class Bits {
 		}
 		return 0;
 	}
+	
+	/** @return true if this bitset contains at least one bit set to true */
+	public boolean notEmpty () {
+		return !isEmpty();
+	}
 
 	/** @return true if this bitset contains no bits that are set to true */
 	public boolean isEmpty () {

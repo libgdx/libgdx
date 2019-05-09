@@ -79,7 +79,7 @@ public class Tree extends WidgetGroup {
 				Node node = getNodeAt(y);
 				if (node == null) return;
 				if (node != getNodeAt(getTouchDownY())) return;
-				if (selection.getMultiple() && selection.hasItems() && UIUtils.shift()) {
+				if (selection.getMultiple() && selection.notEmpty() && UIUtils.shift()) {
 					// Select range (shift).
 					if (rangeStart == null) rangeStart = node;
 					Node rangeStart = Tree.this.rangeStart;

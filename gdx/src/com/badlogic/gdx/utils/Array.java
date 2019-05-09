@@ -339,6 +339,11 @@ public class Array<T> implements Iterable<T> {
 		return items[0];
 	}
 
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the array is empty. */
 	public boolean isEmpty () {
 		return size == 0;

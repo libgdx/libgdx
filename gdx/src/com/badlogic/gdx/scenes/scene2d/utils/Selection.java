@@ -58,7 +58,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
+	/** @deprecated Use {@link #notEmpty()}. */
+	@Deprecated
 	public boolean hasItems () {
+		return selected.size > 0;
+	}
+
+	public boolean notEmpty () {
 		return selected.size > 0;
 	}
 

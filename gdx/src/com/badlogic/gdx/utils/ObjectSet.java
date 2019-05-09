@@ -313,6 +313,11 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 	}
 
+	/** Returns true if the set has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the set is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -448,7 +453,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (!(obj instanceof ObjectSet)) return false;
 		ObjectSet other = (ObjectSet)obj;
 		if (other.size != size) return false;
-		T[] keyTable = this.keyTable; 
+		T[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null && !other.contains(keyTable[i])) return false;
 		return true;
