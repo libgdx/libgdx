@@ -81,7 +81,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	/** Creates a new set identical to the specified set. */
-	public ObjectSet (ObjectSet set) {
+	public ObjectSet (ObjectSet<? extends T> set) {
 		this((int)Math.floor(set.capacity * set.loadFactor), set.loadFactor);
 		stashSize = set.stashSize;
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);

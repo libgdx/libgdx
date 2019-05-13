@@ -42,7 +42,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		items = new Array(capacity);
 	}
 
-	public OrderedSet (OrderedSet set) {
+	public OrderedSet (OrderedSet<? extends T> set) {
 		super(set);
 		items = new Array(capacity);
 		items.addAll(set.items);
