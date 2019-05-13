@@ -181,10 +181,9 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
-	/** Returns if this array contains value.
+	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
-	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 * @return true if array contains value, false if it doesn't */
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public boolean contains (T value, boolean identity) {
 		T[] items = this.items;
 		int i = size - 1;
@@ -196,6 +195,16 @@ public class Array<T> implements Iterable<T> {
 				if (value.equals(items[i--])) return true;
 		}
 		return false;
+	}
+
+	/** Returns true if this array contains all the specified values.
+	 * @param values May contains nulls.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
+	public boolean containsAll (Array<? extends T> values, boolean identity) {
+		T[] items = values.items;
+		for (int i = 0, n = values.size; i < n; i++)
+			if (!contains(items[i], identity)) return false;
+		return true;
 	}
 
 	/** Returns the index of first occurrence of value in the array, or -1 if no such value exists.
