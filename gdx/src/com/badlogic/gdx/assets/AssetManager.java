@@ -463,7 +463,7 @@ public class AssetManager implements Disposable {
 			injected.add(desc.fileName);
 			injectDependency(parentAssetFilename, desc);
 		}
-		injected.clear();
+		injected.clear(32);
 	}
 
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {

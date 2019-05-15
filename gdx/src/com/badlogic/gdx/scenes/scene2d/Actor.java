@@ -320,21 +320,21 @@ public class Actor {
 	public boolean isDescendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
-		while (true) {
+		do {
 			if (parent == actor) return true;
 			parent = parent.parent;
-			if (parent == null) return false;
-		}
+		} while (parent != null);
+		return false;
 	}
 
 	/** Returns true if this actor is the same as or is the ascendant of the specified actor. */
 	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
-		while (true) {
+		do {
 			if (actor == this) return true;
 			actor = actor.parent;
-			if (actor == null) return false;
-		}
+		} while (actor != null);
+		return false;
 	}
 
 	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type, or null if none were

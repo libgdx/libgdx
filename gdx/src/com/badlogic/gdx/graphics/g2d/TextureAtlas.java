@@ -428,7 +428,7 @@ public class TextureAtlas implements Disposable {
 	public void dispose () {
 		for (Texture texture : textures)
 			texture.dispose();
-		textures.clear();
+		textures.clear(0);
 	}
 
 	static final Comparator<Region> indexComparator = new Comparator<Region>() {
