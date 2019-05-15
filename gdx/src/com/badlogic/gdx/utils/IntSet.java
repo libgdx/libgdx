@@ -448,6 +448,7 @@ public class IntSet {
 		IntSet other = (IntSet)obj;
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
+		int[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != EMPTY && !other.contains(keyTable[i])) return false;
 		return true;

@@ -181,8 +181,9 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		if (!(obj instanceof BinaryHeap)) return false;
 		BinaryHeap other = (BinaryHeap)obj;
 		if (other.size != size) return false;
+		Node[] nodes1 = this.nodes, nodes2 = other.nodes;
 		for (int i = 0, n = size; i < n; i++)
-			if (other.nodes[i].value != nodes[i].value) return false;
+			if (nodes1[i].value != nodes2[i].value) return false;
 		return true;
 	}
 
