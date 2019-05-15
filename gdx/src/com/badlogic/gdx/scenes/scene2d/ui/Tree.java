@@ -492,7 +492,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 		}
 
 		/** Called to add the actor to the tree when the node's parent is expanded. */
-		protected void addToTree (Tree tree) {
+		protected void addToTree (Tree<T> tree) {
 			tree.addActor(actor);
 			if (!expanded) return;
 			Object[] children = this.children.items;
@@ -501,7 +501,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 		}
 
 		/** Called to remove the actor from the tree when the node's parent is collapsed. */
-		protected void removeFromTree (Tree tree) {
+		protected void removeFromTree (Tree<T> tree) {
 			tree.removeActor(actor);
 			if (!expanded) return;
 			Object[] children = this.children.items;
@@ -536,8 +536,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 			children.removeValue(node, true);
 			if (!expanded) return;
 			Tree tree = getTree();
-			if (tree == null) return;
-			node.removeFromTree(tree);
+			if (tree != null) node.removeFromTree(tree);
 		}
 
 		public void removeAll () {
@@ -551,7 +550,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 		}
 
 		/** Returns the tree this node is currently in, or null. */
-		public Tree getTree () {
+		public Tree<T> getTree () {
 			Group parent = actor.getParent();
 			if (parent instanceof Tree) return (Tree)parent;
 			return null;
@@ -674,6 +673,28 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 		 * create a blank space in the tree above the node, eg for a separator. */
 		public float getHeight () {
 			return height;
+		}
+
+		/** Returns true of the specified node is this node or an ascendant of this node. */
+		public boolean isAscendantOf (T node) {
+			if (node == null) throw new IllegalArgumentException("node cannot be null.");
+			BaseNode current = node;
+			do {
+				if (current == this) return true;
+				current = current.parent;
+			} while (current != null);
+			return false;
+		}
+
+		/** Returns true of the specified node is this node or an descendant of this node. */
+		public boolean isDescendantOf (T node) {
+			if (node == null) throw new IllegalArgumentException("node cannot be null.");
+			BaseNode parent = this;
+			do {
+				if (parent == node) return true;
+				parent = parent.parent;
+			} while (parent != null);
+			return false;
 		}
 	}
 
