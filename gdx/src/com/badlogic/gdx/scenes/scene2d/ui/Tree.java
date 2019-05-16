@@ -675,7 +675,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 			return height;
 		}
 
-		/** Returns true of the specified node is this node or an ascendant of this node. */
+		/** Returns true if the specified node is this node or an ascendant of this node. */
 		public boolean isAscendantOf (T node) {
 			if (node == null) throw new IllegalArgumentException("node cannot be null.");
 			BaseNode current = node;
@@ -686,7 +686,7 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 			return false;
 		}
 
-		/** Returns true of the specified node is this node or an descendant of this node. */
+		/** Returns true if the specified node is this node or an descendant of this node. */
 		public boolean isDescendantOf (T node) {
 			if (node == null) throw new IllegalArgumentException("node cannot be null.");
 			BaseNode parent = this;
