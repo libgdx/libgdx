@@ -377,6 +377,11 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		}
 	}
 
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -411,8 +416,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		stashSize = 0;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation. */
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
 	public boolean containsValue (int value) {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
@@ -601,8 +606,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);

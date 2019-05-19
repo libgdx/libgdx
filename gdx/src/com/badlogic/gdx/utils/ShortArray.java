@@ -272,6 +272,11 @@ public class ShortArray {
 		return items[0];
 	}
 
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the array is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -375,10 +380,9 @@ public class ShortArray {
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		short[] items1 = this.items;
-		short[] items2 = array.items;
+		short[] items1 = this.items, items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

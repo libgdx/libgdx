@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** An unordered map that uses identity comparison for keys. This implementation is a cuckoo hash map using 3 hashes, random
  * walking, and a small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done
@@ -29,7 +30,7 @@ import com.badlogic.gdx.math.MathUtils;
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
  * next higher POT size.
  * @author Nathan Sweet */
-public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
+public class IdentityMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -365,6 +366,11 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 			valueTable[index] = null;
 	}
 
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -402,8 +408,8 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		stashSize = 0;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation.
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
 	public boolean containsValue (Object value, boolean identity) {
@@ -528,24 +534,35 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof IdentityMap)) return false;
-		IdentityMap<K, V> other = (IdentityMap) obj;
+		IdentityMap other = (IdentityMap)obj;
 		if (other.size != size) return false;
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++) {
 			K key = keyTable[i];
 			if (key != null) {
-				 V value = valueTable[i];
-				 if (value == null) {
-					 if (!other.containsKey(key) || other.get(key) != null) {
-						 return false;
-					 }
-				 } else {
-					if (!value.equals(other.get(key))) {
-						return false;
-					}
+				V value = valueTable[i];
+				if (value == null) {
+					if (other.get(key, ObjectMap.dummy) != null) return false;
+				} else {
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each value. */
+	public boolean equalsIdentity (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IdentityMap)) return false;
+		IdentityMap other = (IdentityMap)obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null && valueTable[i] != other.get(key, ObjectMap.dummy)) return false;
 		}
 		return true;
 	}
@@ -619,8 +636,8 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);
@@ -636,15 +653,6 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		keys2.valid = true;
 		keys1.valid = false;
 		return keys2;
-	}
-
-	static public class Entry<K, V> {
-		public K key;
-		public V value;
-
-		public String toString () {
-			return key + "=" + value;
-		}
 	}
 
 	static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I> {

@@ -35,6 +35,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
+	static final Object dummy = new Object();
 
 	public int size;
 
@@ -47,9 +48,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private int stashCapacity;
 	private int pushIterations;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
+	Entries entries1, entries2;
+	Values values1, values2;
+	Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectMap () {
@@ -284,7 +285,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size++;
 	}
 
-	/** Returns the value for the specified key, or null if the key is not in the map. */
+	/** Returns the value (which may be null) for the specified key, or null if the key is not in the map. */
 	public V get (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -298,7 +299,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return valueTable[index];
 	}
 
-	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	/** Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. */
 	public V get (K key, V defaultValue) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -378,6 +379,11 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			keyTable[index] = null;
 			valueTable[index] = null;
 		}
+	}
+
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
 	}
 
 	/** Returns true if the map is empty. */
@@ -546,7 +552,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof ObjectMap)) return false;
-		ObjectMap<K, V> other = (ObjectMap)obj;
+		ObjectMap other = (ObjectMap)obj;
 		if (other.size != size) return false;
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
@@ -555,11 +561,26 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (key != null) {
 				V value = valueTable[i];
 				if (value == null) {
-					if (!other.containsKey(key) || other.get(key) != null) return false;
+					if (other.get(key, dummy) != null) return false;
 				} else {
 					if (!value.equals(other.get(key))) return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each value. */
+	public boolean equalsIdentity (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IdentityMap)) return false;
+		IdentityMap other = (IdentityMap)obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null && valueTable[i] != other.get(key, dummy)) return false;
 		}
 		return true;
 	}

@@ -399,6 +399,11 @@ public class Group extends Actor implements Cullable {
 		return true;
 	}
 
+	/** Returns the child at the specified index. */
+	public Actor getChild (int index) {
+		return children.get(index);
+	}
+
 	/** Returns an ordered list of child actors in this group. */
 	public SnapshotArray<Actor> getChildren () {
 		return children;

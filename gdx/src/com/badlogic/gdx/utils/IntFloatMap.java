@@ -21,9 +21,9 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/** An unordered map where the keys are ints and values are floats. This implementation is a cuckoo hash map using 3 hashes, random
- * walking, and a small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table
- * size. <br>
+/** An unordered map where the keys are ints and values are floats. This implementation is a cuckoo hash map using 3 hashes,
+ * random walking, and a small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing
+ * the table size. <br>
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
@@ -413,6 +413,11 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		}
 	}
 
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the map is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -449,8 +454,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		stashSize = 0;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation. */
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
 	public boolean containsValue (float value) {
 		if (hasZeroValue && zeroValue == value) return true;
 		int[] keyTable = this.keyTable;
@@ -460,8 +465,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		return false;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation. */
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
 	public boolean containsValue (float value, float epsilon) {
 		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return true;
 		float[] valueTable = this.valueTable;
@@ -662,8 +667,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);

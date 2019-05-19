@@ -44,7 +44,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 				if (!multiple || (!toggle && !UIUtils.ctrl())) {
 					if (selected.size == 1 && selected.contains(item)) return;
 					modified = selected.size > 0;
-					selected.clear();
+					selected.clear(8);
 				}
 				if (!selected.add(item) && !modified) return;
 				lastSelected = item;
@@ -58,7 +58,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
+	/** @deprecated Use {@link #notEmpty()}. */
+	@Deprecated
 	public boolean hasItems () {
+		return selected.size > 0;
+	}
+
+	public boolean notEmpty () {
 		return selected.size > 0;
 	}
 
@@ -80,12 +86,12 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	void snapshot () {
-		old.clear();
+		old.clear(selected.size);
 		old.addAll(selected);
 	}
 
 	void revert () {
-		selected.clear();
+		selected.clear(old.size);
 		selected.addAll(old);
 	}
 
@@ -98,7 +104,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();
-		selected.clear();
+		selected.clear(8);
 		selected.add(item);
 		if (programmaticChangeEvents && fireChangeEvent())
 			revert();
@@ -113,7 +119,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		boolean added = false;
 		snapshot();
 		lastSelected = null;
-		selected.clear();
+		selected.clear(items.size);
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
 			if (item == null) throw new IllegalArgumentException("item cannot be null.");
@@ -194,7 +200,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void clear () {
 		if (selected.size == 0) return;
 		snapshot();
-		selected.clear();
+		selected.clear(8);
 		if (programmaticChangeEvents && fireChangeEvent())
 			revert();
 		else {

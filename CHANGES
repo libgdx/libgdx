@@ -16,6 +16,11 @@
 - TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed.
 - AtlasTmxMapLoader supports group layers now (a positive side effect of the BaseTmxMapLoader refactoring).
 - API Change: TmxMapLoader and AtlasTmxMapLoader: load/loadAsync methods work exactly as before, but many methods of these classes had to change. This makes it possible implement new Tiled features.
+- API Addition: TextField#drawMessageText.
+- Fixed TextField rendering text outside the widget at small sizes.
+- API Addition: Group#getChild(int)
+- API Addition: notEmpty() for collections.
+- API Change: For Tree in scene2d.ui you must now provide generics for the type of node in your tree declaration.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker

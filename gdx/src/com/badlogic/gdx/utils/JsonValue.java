@@ -160,7 +160,17 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
-	/** @deprecated Use the size property instead. Returns this number of children in the array or object. */
+	/** Returns true if there are one or more children in the array or object. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if there are not children in the array or object. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
+	/** @deprecated Use {@link #size} instead. Returns this number of children in the array or object. */
 	@Deprecated
 	public int size () {
 		return size;

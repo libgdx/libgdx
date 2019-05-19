@@ -342,40 +342,40 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the spaceTop, spaceLeft, spaceBottom, and spaceRight to the specified value. */
 	public Cell<T> space (float space) {
-		if (space < 0) throw new IllegalArgumentException("space cannot be < 0.");
+		if (space < 0) throw new IllegalArgumentException("space cannot be < 0: " + space);
 		space(new Fixed(space));
 		return this;
 	}
 
 	public Cell<T> space (float top, float left, float bottom, float right) {
-		if (top < 0) throw new IllegalArgumentException("top cannot be < 0.");
-		if (left < 0) throw new IllegalArgumentException("left cannot be < 0.");
-		if (bottom < 0) throw new IllegalArgumentException("bottom cannot be < 0.");
-		if (right < 0) throw new IllegalArgumentException("right cannot be < 0.");
+		if (top < 0) throw new IllegalArgumentException("top cannot be < 0: " + top);
+		if (left < 0) throw new IllegalArgumentException("left cannot be < 0: " + left);
+		if (bottom < 0) throw new IllegalArgumentException("bottom cannot be < 0: " + bottom);
+		if (right < 0) throw new IllegalArgumentException("right cannot be < 0: " + right);
 		space(new Fixed(top), new Fixed(left), new Fixed(bottom), new Fixed(right));
 		return this;
 	}
 
 	public Cell<T> spaceTop (float spaceTop) {
-		if (spaceTop < 0) throw new IllegalArgumentException("spaceTop cannot be < 0.");
+		if (spaceTop < 0) throw new IllegalArgumentException("spaceTop cannot be < 0: " + spaceTop);
 		this.spaceTop = new Fixed(spaceTop);
 		return this;
 	}
 
 	public Cell<T> spaceLeft (float spaceLeft) {
-		if (spaceLeft < 0) throw new IllegalArgumentException("spaceLeft cannot be < 0.");
+		if (spaceLeft < 0) throw new IllegalArgumentException("spaceLeft cannot be < 0: " + spaceLeft);
 		this.spaceLeft = new Fixed(spaceLeft);
 		return this;
 	}
 
 	public Cell<T> spaceBottom (float spaceBottom) {
-		if (spaceBottom < 0) throw new IllegalArgumentException("spaceBottom cannot be < 0.");
+		if (spaceBottom < 0) throw new IllegalArgumentException("spaceBottom cannot be < 0: " + spaceBottom);
 		this.spaceBottom = new Fixed(spaceBottom);
 		return this;
 	}
 
 	public Cell<T> spaceRight (float spaceRight) {
-		if (spaceRight < 0) throw new IllegalArgumentException("spaceRight cannot be < 0.");
+		if (spaceRight < 0) throw new IllegalArgumentException("spaceRight cannot be < 0: " + spaceRight);
 		this.spaceRight = new Fixed(spaceRight);
 		return this;
 	}

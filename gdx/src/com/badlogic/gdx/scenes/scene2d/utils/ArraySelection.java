@@ -37,7 +37,7 @@ public class ArraySelection<T> extends Selection<T> {
 					end = start;
 					start = temp;
 				}
-				if (!UIUtils.ctrl()) selected.clear();
+				if (!UIUtils.ctrl()) selected.clear(8);
 				for (int i = start; i <= end; i++)
 					selected.add(array.get(i));
 				if (fireChangeEvent())
