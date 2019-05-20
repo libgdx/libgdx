@@ -207,6 +207,16 @@ public class Array<T> implements Iterable<T> {
 		return true;
 	}
 
+	/** Returns true if this array contains any the specified values.
+	 * @param values May contains nulls.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
+	public boolean containsAny (Array<? extends T> values, boolean identity) {
+		T[] items = values.items;
+		for (int i = 0, n = values.size; i < n; i++)
+			if (contains(items[i], identity)) return true;
+		return false;
+	}
+
 	/** Returns the index of first occurrence of value in the array, or -1 if no such value exists.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
