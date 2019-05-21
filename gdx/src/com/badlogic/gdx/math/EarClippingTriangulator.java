@@ -24,12 +24,16 @@ import com.badlogic.gdx.utils.ShortArray;
  * <ul>
  * <li><a href="http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html">http://cgm.cs.mcgill.ca/~godfried/
  * teaching/cg-projects/97/Ian/algorithm2.html</a></li>
- * <li><a
- * href="http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">http://www.geometrictools.com/Documentation
+ * <li><a href=
+ * "http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">http://www.geometrictools.com/Documentation
  * /TriangulationByEarClipping.pdf</a></li>
  * </ul>
  * If the input polygon is not simple (self-intersects), there will be output but it is of unspecified quality (garbage in,
  * garbage out).
+ * <p>
+ * If the polygon vertices are very large or very close together then {@link GeometryUtils#isClockwise(float[], int, int)} may not
+ * be able to properly assess the winding (because it uses floats). In that case the vertices should be adjusted, eg by finding
+ * the smallest X and Y values and subtracting that from each vertex.
  * @author badlogicgames@gmail.com
  * @author Nicolas Gramlich (optimizations, collinear edge support)
  * @author Eric Spitz
