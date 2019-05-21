@@ -152,7 +152,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			float rightValue;
 			if (rightIndex >= size) {
 				rightNode = null;
-				rightValue = isMaxHeap ? Float.MIN_VALUE : Float.MAX_VALUE;
+				rightValue = isMaxHeap ? -Float.MAX_VALUE : Float.MAX_VALUE;
 			} else {
 				rightNode = nodes[rightIndex];
 				rightValue = rightNode.value;
