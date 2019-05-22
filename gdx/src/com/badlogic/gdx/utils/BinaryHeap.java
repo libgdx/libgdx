@@ -32,6 +32,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		nodes = new Node[capacity];
 	}
 
+	/** Add the node to the heap using it's current value. The node should not already be in the heap. */
 	public T add (T node) {
 		// Expand if necessary.
 		if (size == nodes.length) {
@@ -46,30 +47,34 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return node;
 	}
 
+	/** Sets the node's value and adds it to the heap. The node should not already be in the heap. */
 	public T add (T node, float value) {
 		node.value = value;
 		return add(node);
 	}
 
-	/** Returns if binary heap contains the provided node.
-	 * @param node May be null.
+	/** Returns true if the heap contains the specified node.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public boolean contains (T node, boolean identity) {
-		if (identity || node == null) {
+		if (node == null) throw new IllegalArgumentException("node cannot be null.");
+		if (identity) {
 			for (Node n : nodes)
 				if (n == node) return true;
 		} else {
-			for (Node n : nodes)
-				if (n.equals(node)) return true;
+			for (Node other : nodes)
+				if (other.equals(node)) return true;
 		}
 		return false;
 	}
 
+	/** Returns the first item in the heap. This is the item with the minimum value (or maximum value if the heap is a max heap,
+	 * see {@link BinaryHeap#BinaryHeap(int, boolean)}). */
 	public T peek () {
 		if (size == 0) throw new IllegalStateException("The heap is empty.");
 		return (T)nodes[0];
 	}
 
+	/** Removes the first item in the heap and returns it. */
 	public T pop () {
 		return remove(0);
 	}
@@ -104,6 +109,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		size = 0;
 	}
 
+	/** Changes the value of the node, which should already be in the heap. */
 	public void setValue (T node, float value) {
 		float oldValue = node.value;
 		node.value = value;
