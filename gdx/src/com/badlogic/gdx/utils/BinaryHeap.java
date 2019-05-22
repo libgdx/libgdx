@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-/** @author Nathan Sweet */
+/** A binary heap that stores nodes which each have a float value and are sorted either lowest first or highest first. The
+ * {@link Node} class can be extended to store additional information.
+ * @author Nathan Sweet */
 public class BinaryHeap<T extends BinaryHeap.Node> {
 	public int size;
 
@@ -32,7 +34,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		nodes = new Node[capacity];
 	}
 
-	/** Add the node to the heap using it's current value. The node should not already be in the heap. */
+	/** Adds the node to the heap using its current value. The node should not already be in the heap. */
 	public T add (T node) {
 		// Expand if necessary.
 		if (size == nodes.length) {
@@ -67,14 +69,15 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return false;
 	}
 
-	/** Returns the first item in the heap. This is the item with the minimum value (or maximum value if the heap is a max heap,
-	 * see {@link BinaryHeap#BinaryHeap(int, boolean)}). */
+	/** Returns the first item in the heap. This is the item with the lowest value (or highest value if this heap is configured as
+	 * a max heap). */
 	public T peek () {
 		if (size == 0) throw new IllegalStateException("The heap is empty.");
 		return (T)nodes[0];
 	}
 
-	/** Removes the first item in the heap and returns it. */
+	/** Removes the first item in the heap and returns it. This is the item with the lowest value (or highest value if this heap is
+	 * configured as a max heap). */
 	public T pop () {
 		return remove(0);
 	}
@@ -149,7 +152,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			if (leftIndex >= size) break;
 			int rightIndex = leftIndex + 1;
 
-			// Always have a left child.
+			// Always has a left child.
 			Node leftNode = nodes[leftIndex];
 			float leftValue = leftNode.value;
 
@@ -214,11 +217,14 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return buffer.toString();
 	}
 
-	/** @author Nathan Sweet */
+	/** A binary heap node.
+	 * @author Nathan Sweet */
 	static public class Node {
 		float value;
 		int index;
 
+		/** @param value The initial value for the node. To change the value, use {@link BinaryHeap#add(Node, float)} if the node is
+		 *           not in the heap, or {@link BinaryHeap#setValue(Node, float)} if the node is in the heap. */
 		public Node (float value) {
 			this.value = value;
 		}
