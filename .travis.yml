@@ -1,9 +1,9 @@
 sudo: true
 git:
-  depth: 1
-branches:
-  only:
-    - master
+  depth: 3
+#branches:
+#  only:
+#    - master
 
 matrix:
   include:
@@ -13,12 +13,35 @@ matrix:
       before_install:
         - brew update
         - brew install ant
+        - brew install ccache
+        - export PATH="/usr/local/opt/ccache/libexec:$PATH"
       install:
         - true
       script:
         - ant -f build-mac-ios.xml
-    - name: "Unit Tests"
+      cache: ccache
+    - name: "Compile and Unit Tests"
       language: android
+      addons:
+        apt:
+          packages:
+          - ant
+          - maven
+          - unzip
+          - gcc
+          - g++
+          - g++-multilib
+          - gcc-mingw-w64-base
+          - gcc-mingw-w64-i686
+          - g++-mingw-w64-i686
+          - binutils-mingw-w64-i686
+          - gcc-mingw-w64-x86-64
+          - g++-mingw-w64-x86-64
+          - binutils-mingw-w64-x86-64
+          - ccache
+          - lib32z1
+          - libx11-dev
+          - libx11-dev:i386
       android:
         components:
           - build-tools-25.0.3
@@ -26,15 +49,30 @@ matrix:
         licenses:
           - 'android-sdk-license-.+'
       before_install:
+        - ccache --show-stats
+        - export PATH="/usr/lib/ccache:${PATH}"
+        - echo $PATH
         - yes | sdkmanager "platforms;android-27"
+        - pushd .
+        - mkdir -p /opt/ndk && cd /opt/ndk && wget -q https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip -O ndk.zip && unzip -q ndk.zip && rm ndk.zip
+        - export NDK_HOME=/opt/ndk/android-ndk-r16b
+        - export PATH="/opt/ndk/android-ndk-r16b:${PATH}"
+        - export NDK_CCACHE=/usr/bin/ccache
+        - popd
       script:
+        - ant -f build.xml -Dbuild-natives=true -Dversion=nightly
+        - ls -l
         - ./gradlew fetchNatives
         - ./gradlew test
+        - ccache --show-stats
       before_cache:
         - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
         - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
       cache:
-        directories:
+        # How do we make ccache work in addition to directories? This doesn't seem to work
+        - ccache
+        - directories:
           - $HOME/.gradle/caches/
           - $HOME/.gradle/wrapper/
           - $HOME/.android/build-cache
+          - $HOME/.ccache
