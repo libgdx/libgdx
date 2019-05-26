@@ -155,28 +155,17 @@ public class SharedLibraryLoader {
 	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
 	 * @return The extracted file. */
 	public File extractFile (String sourcePath, String dirName) throws IOException {
-		return extractFile(sourcePath, dirName, null);
-	}
-
-	/** Extracts the specified file to the specified directory if it does not already exist or the CRC does not match. If file
-	 * extraction fails and the file exists at java.library.path, that file is returned.
-	 * @param sourcePath The file to extract from the classpath or JAR.
-	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
-	 * @param resultFileName The filename to use after extraction. If null, the sourcePath file name will be used.
-	 * @return The extracted file. */
-	public File extractFile (String sourcePath, String dirName, String resultFileName) throws IOException {
 		try {
 			String sourceCrc = crc(readFile(sourcePath));
 			if (dirName == null) dirName = sourceCrc;
-			if (resultFileName == null) resultFileName = new File(sourcePath).getName();
 
-			File extractedFile = getExtractedFile(dirName, resultFileName);
+			File extractedFile = getExtractedFile(dirName, new File(sourcePath).getName());
 			if (extractedFile == null) {
-				extractedFile = getExtractedFile(UUID.randomUUID().toString(), resultFileName);
+				extractedFile = getExtractedFile(UUID.randomUUID().toString(), new File(sourcePath).getName());
 				if (extractedFile == null) throw new GdxRuntimeException(
 					"Unable to find writable path to extract file. Is the user home directory writable?");
 			}
-			return extractFileIfRequired(sourcePath, sourceCrc, extractedFile);
+			return extractFile(sourcePath, sourceCrc, extractedFile);
 		} catch (RuntimeException ex) {
 			// Fallback to file at java.library.path location, eg for applets.
 			File file = new File(System.getProperty("java.library.path"), sourcePath);
@@ -190,16 +179,7 @@ public class SharedLibraryLoader {
 	 * @param sourcePath The file to extract from the classpath or JAR.
 	 * @param dir The location where the extracted file will be written. */
 	public void extractFileTo (String sourcePath, File dir) throws IOException {
-		extractFileIfRequired(sourcePath, crc(readFile(sourcePath)), new File(dir, new File(sourcePath).getName()));
-	}
-
-	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
-	 * extraction fails and the file exists at java.library.path, that file is returned.
-	 * @param sourcePath The file to extract from the classpath or JAR.
-	 * @param dir The location where the extracted file will be written. 
-	 * @param resultFileName The filename to use after extraction. Can be used to rename files during extraction. */
-	public void extractFileTo (String sourcePath, File dir, String resultFileName) throws IOException {
-		extractFileIfRequired(sourcePath, crc(readFile(sourcePath)), new File(dir, resultFileName));
+		extractFile(sourcePath, crc(readFile(sourcePath)), new File(dir, new File(sourcePath).getName()));
 	}
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
@@ -272,7 +252,7 @@ public class SharedLibraryLoader {
 		return false;
 	}
 
-	private File extractFileIfRequired (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
+	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
 		String extractedCrc = null;
 		if (extractedFile.exists()) {
 			try {
@@ -348,7 +328,7 @@ public class SharedLibraryLoader {
 	/** @return null if the file was extracted and loaded. */
 	private @Null Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
 		try {
-			System.load(extractFileIfRequired(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
+			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;
 		} catch (Throwable ex) {
 			return ex;
