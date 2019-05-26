@@ -247,7 +247,7 @@ public class AntScriptGenerator {
 		if (targetFolder == null) targetFolder = target.os.toString().toLowerCase() + (target.isARM ? "arm" : "") + (target.is64Bit ? "64" : "32");
 
 		// replace template vars with proper values
-		template = template.replace("%projectName%", config.sharedLibName + "-" + target.os + "-" + (target.isARM ? "arm" + "-" : "") + (target.is64Bit ? "64" : "32"));
+		template = template.replace("%projectName%", config.sharedLibName + "-" + target.os + "-" + (target.isARM ? "arm" : "") + (target.is64Bit ? "64" : "32"));
 		template = template.replace("%buildDir%", config.buildDir.child(targetFolder).path().replace('\\', '/'));
 		template = template.replace("%libsDir%", "../" + getLibsDirectory(config, target));
 		template = template.replace("%libName%", libName);
