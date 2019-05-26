@@ -433,8 +433,13 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
-	public void setCatchKey(int keycode, boolean catchKey) {
+	public void setCatchKey (int keycode, boolean catchKey) {
 
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
 	}
 
 	@Override

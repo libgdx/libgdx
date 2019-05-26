@@ -845,8 +845,13 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 
 	@Override
-	public void setCatchKey(int keycode, boolean catchKey) {
+	public void setCatchKey (int keycode, boolean catchKey) {
 
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
 	}
 
 	@Override

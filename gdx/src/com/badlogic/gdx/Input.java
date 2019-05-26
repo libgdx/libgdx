@@ -733,22 +733,36 @@ public interface Input {
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();
 
-	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.
-	 * 
+	 *
 	 * @param catchBack whether to catch the back button */
+	@Deprecated
 	public void setCatchBackKey (boolean catchBack);
 
-	/** @return whether the back button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the back button is currently being caught */
+	@Deprecated
 	public boolean isCatchBackKey ();
 
-	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
 	 * @param catchMenu whether to catch the menu button */
+	@Deprecated
 	public void setCatchMenuKey (boolean catchMenu);
 	
-	/** @return whether the menu button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the menu button is currently being caught */
+	@Deprecated
 	public boolean isCatchMenuKey ();
 
 	/**
@@ -760,7 +774,14 @@ public interface Input {
 	 * @param keycode  keycode to catch
 	 * @param catchKey whether to catch the given keycode
 	 */
-	public void setCatchKey(int keycode, boolean catchKey);
+	public void setCatchKey (int keycode, boolean catchKey);
+
+	/**
+	 *
+	 * @param keycode keycode to check if caught
+	 * @return true if the given keycode is configured to be caught
+	 */
+	public boolean isCatchKey (int keycode);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.

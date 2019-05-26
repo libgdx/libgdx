@@ -627,11 +627,17 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public void setCatchKey(int keycode, boolean catchKey) {
-		if (!catchKey)
+	public void setCatchKey (int keycode, boolean catchKey) {
+		if (!catchKey) {
 			keysToCatch.remove(keycode);
-		else if (catchKey)
+		} else if (catchKey) {
 			keysToCatch.add(keycode);
+		}
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return keysToCatch.contains(keyCount);
 	}
 
 	@Override

@@ -437,6 +437,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isCatchKey (int keycode) {
+			return input.isCatchKey(keycode);
+		}
+
+		@Override
 		public void setInputProcessor (InputProcessor processor) {
 			multiplexer.removeProcessor(lastProcessor);
 			multiplexer.addProcessor(processor);
