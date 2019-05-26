@@ -32,6 +32,7 @@ versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "3.1.0"
+versions.multiDex = "1.0.3"
 versions.androidSdk = 27
 versions.androidBuildTools = "27.0.3"
 versions.androidSupport = "25.+"
