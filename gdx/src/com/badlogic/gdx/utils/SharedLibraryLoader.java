@@ -43,9 +43,6 @@ public class SharedLibraryLoader {
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
 		|| System.getProperty("os.arch").equals("x86_64") || System.getProperty("os.arch").startsWith("aarch64") || System.getProperty("os.arch").startsWith("armv8") || System.getProperty("os.arch").startsWith("arm64");
 
-	// JDK 8 only.
-	static public String abi = System.getProperty("sun.arch.abi", "");
-
 	static {
 		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
 		String vm = System.getProperty("java.runtime.name");
@@ -64,10 +61,6 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-
-		// Attempt to figure out abi if missing. see https://github.com/bytedeco/javacpp/blob/e51d34a230ad1e076d2158bd6810a6032d4b6d74/src/main/java/org/bytedeco/javacpp/Loader.java#L106
-		if (isARM && !is64Bit && abi.isEmpty() && System.getProperty("sun.boot.library.path", "").toLowerCase().contains("openjdk-armhf"))
-			abi = "gnueabihf";
 	}
 
 	static private final HashSet<String> loadedLibraries = new HashSet();
@@ -104,7 +97,7 @@ public class SharedLibraryLoader {
 	/** Maps a platform independent library name to a platform dependent name. */
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
-		if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
+		if (isLinux) return "lib" + libraryName + (isARM ? "arm" : "") + (is64Bit ? "64.so" : ".so");
 		if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
 		return libraryName;
 	}

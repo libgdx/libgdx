@@ -30,8 +30,6 @@ public class BuildTarget {
 	public boolean is64Bit;
 	/** whether this is an ARM build, not used for Android **/
 	public boolean isARM;
-	/** abi type used to differentiate different arm versions */
-	public String abi = "";
 	/** the C files and directories to be included in the build, accepts Ant path format, must not be null **/
 	public String[] cIncludes;
 	/** the C files and directories to be excluded from the build, accepts Ant path format, must not be null **/
@@ -96,19 +94,18 @@ public class BuildTarget {
 	}
 
 	/** Legacy compatible addition to specify ARM values */
-	public BuildTarget setARM (boolean isARM, String abi) {
+	public BuildTarget setARM (boolean isARM) {
 		this.isARM = isARM;
-		this.abi = abi;
 		return this;
 	}
 
 	/** Creates a new default BuildTarget for the given OS, using common default values. */
 	public static BuildTarget newDefaultTarget (BuildTarget.TargetOs type, boolean is64Bit) {
-		return newDefaultTarget(type, is64Bit, false, "");
+		return newDefaultTarget(type, is64Bit, false);
 	}
 
 	/** Creates a new default BuildTarget for the given OS, using common default values. */
-	public static BuildTarget newDefaultTarget (BuildTarget.TargetOs type, boolean is64Bit, boolean isARM, String abi) {
+	public static BuildTarget newDefaultTarget (BuildTarget.TargetOs type, boolean is64Bit, boolean isARM) {
 		if (type == TargetOs.Windows && !is64Bit) {
 			// Windows 32-Bit
 			return new BuildTarget(TargetOs.Windows, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
@@ -125,25 +122,18 @@ public class BuildTarget {
 				"-Wl,--kill-at -shared -static -static-libgcc -static-libstdc++ -m64");
 		}
 
-		if (type == TargetOs.Linux && isARM && abi.equals("gnueabi") && !is64Bit) {
-			// Linux ARM 32-Bit softfloat
-			return new BuildTarget(TargetOs.Linux, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
-				new String[0], new String[0], "arm-linux-gnueabi-", "-c -Wall -O2 -fmessage-length=0 -fPIC",
-				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM, abi);
-		}
-
-		if (type == TargetOs.Linux && isARM && abi.equals("gnueabihf") && !is64Bit) {
+		if (type == TargetOs.Linux && isARM && !is64Bit) {
 			// Linux ARM 32-Bit hardfloat
 			return new BuildTarget(TargetOs.Linux, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "arm-linux-gnueabihf-", "-c -Wall -O2 -fmessage-length=0 -fPIC",
-				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM, abi);
+				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM);
 		}
 
-		if (type == TargetOs.Linux && isARM && abi.equals("") && is64Bit) {
+		if (type == TargetOs.Linux && isARM && is64Bit) {
 			// Linux ARM 64-Bit
 			return new BuildTarget(TargetOs.Linux, true, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "aarch64-linux-gnu-", "-c -Wall -O2 -fmessage-length=0 -fPIC",
-				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM, abi);
+				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM);
 		}
 
 		if (type == TargetOs.Linux && !is64Bit) {
