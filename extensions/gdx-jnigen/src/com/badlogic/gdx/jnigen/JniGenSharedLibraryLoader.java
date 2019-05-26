@@ -174,7 +174,7 @@ public class JniGenSharedLibraryLoader {
 		boolean isLinux = System.getProperty("os.name").contains("Linux");
 		boolean isMac = System.getProperty("os.name").contains("Mac");
 		boolean isAndroid = false;
-		boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64") || System.getProperty("os.arch").startsWith("aarch64") || System.getProperty("os.arch").startsWith("armv8") || System.getProperty("os.arch").startsWith("arm64");
+		boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
 		boolean isArm = System.getProperty("os.arch").equals("arm") || System.getProperty("os.arch").startsWith("aarch64");
 
 		String vm = System.getProperty("java.vm.name");
