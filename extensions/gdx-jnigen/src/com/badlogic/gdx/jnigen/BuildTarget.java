@@ -93,7 +93,7 @@ public class BuildTarget {
 		this.libraries = "";
 	}
 
-	/** Legacy compatible addition to specify ARM values */
+	/** Legacy compatible addition to specify isARM */
 	public BuildTarget setARM (boolean isARM) {
 		this.isARM = isARM;
 		return this;
