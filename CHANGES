@@ -19,6 +19,8 @@
 - API Addition: notEmpty() for collections.
 - API Change: For Tree in scene2d.ui you must now provide generics for the type of node in your tree declaration.
 - API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
+- API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
+- API Addition: Support for InstancedRendering via Mesh
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
@@ -54,8 +56,7 @@
 - API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 - API Change: List now handles more key presses.
 - API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
-- Adds new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
-- Adds methods to enable instanced rendering and set per instance data in a Mesh.
+
 
 [1.9.8]
 - Add iPhoneX images
