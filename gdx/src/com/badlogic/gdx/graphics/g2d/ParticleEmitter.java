@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -1540,13 +1541,23 @@ public class ParticleEmitter {
 		public void load (BufferedReader reader) throws IOException {
 			super.load(reader);
 			// For backwards compatibility, independent property may not be defined
-			reader.mark(100);
+			if (reader.markSupported())
+				reader.mark(100);
 			String line = reader.readLine();
-			if (line == null) throw new IOException("Missing value: " + "independent");
+			if (line == null) throw new IOException("Missing value: independent");
 			if (line.contains("independent"))
 				independent = Boolean.parseBoolean(readString(line));
-			else
+			else if (reader.markSupported())
 				reader.reset();
+			else {
+				// @see java.io.BufferedReader#markSupported may return false in some platforms (such as GWT),
+				// in that case backwards commpatibility is not possible
+				String errorMessage = "The loaded particle effect descriptor file uses an old invalid format. " +
+						"Please download the latest version of the Particle Editor tool and recreate the file by" +
+						" loading and saving it again.";
+				Gdx.app.error("ParticleEmitter", errorMessage);
+				throw new IOException(errorMessage);
+			}
 		}
 
 		public void load (IndependentScaledNumericValue value) {
