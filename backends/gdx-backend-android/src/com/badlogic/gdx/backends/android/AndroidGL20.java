@@ -253,7 +253,7 @@ public class AndroidGL20 implements GL20 {
 	
 	public int glGenBuffer () {
 		GLES20.glGenBuffers(1, ints, 0);
-      return ints[0];
+		return ints[0];
 	}
 
 	public void glGenerateMipmap (int target) {
@@ -266,7 +266,7 @@ public class AndroidGL20 implements GL20 {
 	
 	public int glGenFramebuffer () {
 		GLES20.glGenFramebuffers(1, ints, 0);
-      return ints[0];
+		return ints[0];
 	}
 
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
@@ -275,7 +275,7 @@ public class AndroidGL20 implements GL20 {
 	
 	public int glGenRenderbuffer () {
 		GLES20.glGenRenderbuffers(1, ints, 0);
-      return ints[0];
+		return ints[0];
 	}
 
 	public void glGenTextures (int n, IntBuffer textures) {
@@ -284,7 +284,7 @@ public class AndroidGL20 implements GL20 {
 	
 	public int glGenTexture () {
 		GLES20.glGenTextures(1, ints, 0);
-      return ints[0];
+		return ints[0];
 	}
 
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
@@ -384,7 +384,7 @@ public class AndroidGL20 implements GL20 {
 	}
 
 	public void glGetVertexAttribPointerv (int index, int pname, Buffer pointer) {
-//		GLES20.glGetVertexAttribPointerv (index, pname, pointer);
+		// FIXME won't implement this shit
 	}
 
 	public void glHint (int target, int mode) {
