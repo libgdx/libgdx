@@ -106,7 +106,7 @@ public final class Intersector {
 			.signum((linePoint2X - linePoint1X) * (pointY - linePoint1Y) - (linePoint2Y - linePoint1Y) * (pointX - linePoint1X));
 	}
 
-	/** Checks whether the given point is in or on the edge of the polygon.
+	/** Checks whether the given point is in the polygon.
 	 * @param polygon The polygon vertices passed as an array
 	 * @param point The point
 	 * @return true if the point is in the polygon */
@@ -126,7 +126,7 @@ public final class Intersector {
 		return oddNodes;
 	}
 
-	/** Returns true if the specified point is in or on the edge of the polygon.
+	/** Returns true if the specified point is in the polygon.
 	 * @param offset Starting polygon index.
 	 * @param count Number of array indices to use after offset. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
@@ -218,14 +218,14 @@ public final class Intersector {
 		return false;
 	}
 
-	/** Returns true if the specified poygons intersect. A vertex position on an edge is considered intersection. */
+	/** Returns true if the specified poygons intersect. */
 	static public boolean intersectPolygons (FloatArray polygon1, FloatArray polygon2) {
 		if (Intersector.isPointInPolygon(polygon1.items, 0, polygon1.size, polygon2.items[0], polygon2.items[1])) return true;
 		if (Intersector.isPointInPolygon(polygon2.items, 0, polygon2.size, polygon1.items[0], polygon1.items[1])) return true;
 		return intersectPolygonEdges(polygon1, polygon2);
 	}
 
-	/** Returns true if the lines of the specified poygons intersect. A vertex position on an edge is considered intersection. */
+	/** Returns true if the lines of the specified poygons intersect. */
 	static public boolean intersectPolygonEdges (FloatArray polygon1, FloatArray polygon2) {
 		int last1 = polygon1.size - 2, last2 = polygon2.size - 2;
 		float[] p1 = polygon1.items, p2 = polygon2.items;
