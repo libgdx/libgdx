@@ -294,13 +294,15 @@ public class Array<T> implements Iterable<T> {
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
 		T[] items = this.items;
 		int count = end - start + 1;
+		int lastIndex = size - count;
 		if (ordered)
 			System.arraycopy(items, start + count, items, start, size - (start + count));
 		else {
-			int lastIndex = this.size - 1;
 			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+				items[start + i] = items[lastIndex + i];
 		}
+		for (int i = lastIndex, n = size; i < n; i++)
+			items[i] = null;
 		size -= count;
 	}
 
