@@ -465,7 +465,13 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
 		} else if (config.windowMaximized) {
-			GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+			GLFWVidMode vidMode;
+			try {
+				vidmode = GLFW.glfwGetVideoMode(maximizedMonitor);
+			} catch (NullPointerException e) {
+				System.out.println("Monitor " + maximizedMonitor + " not found, using primary monitor!");
+				vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+			}
 			GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - windowWidth / 2, vidMode.height() / 2 - windowHeight / 2);
 		}
 		if (config.windowIconPaths != null) {
