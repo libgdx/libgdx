@@ -88,7 +88,7 @@ public class NetJavaImpl {
 			}
 
 			try {
-				return StreamUtils.copyStreamToString(input, connection.getContentLength());
+				return StreamUtils.copyStreamToString(input, connection.getContentLength(), "UTF8");
 			} catch (IOException e) {
 				return "";
 			} finally {
@@ -195,7 +195,7 @@ public class NetJavaImpl {
 							// we probably need to use the content as stream here instead of using it as a string.
 							String contentAsString = httpRequest.getContent();
 							if (contentAsString != null) {
-								OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+								OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF8");
 								try {
 									writer.write(contentAsString);
 								} finally {
