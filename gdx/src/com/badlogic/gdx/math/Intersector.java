@@ -111,17 +111,15 @@ public final class Intersector {
 	 * @param point The point
 	 * @return true if the point is in the polygon */
 	public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
-		Vector2 lastVertice = polygon.peek();
+		Vector2 last = polygon.peek();
 		float x = point.x, y = point.y;
 		boolean oddNodes = false;
 		for (int i = 0; i < polygon.size; i++) {
-			Vector2 vertice = polygon.get(i);
-			if ((vertice.y < y && lastVertice.y >= y) || (lastVertice.y < y && vertice.y >= y)) {
-				if (vertice.x + (y - vertice.y) / (lastVertice.y - vertice.y) * (lastVertice.x - vertice.x) < x) {
-					oddNodes = !oddNodes;
-				}
+			Vector2 vertex = polygon.get(i);
+			if ((vertex.y < y && last.y >= y) || (last.y < y && vertex.y >= y)) {
+				if (vertex.x + (y - vertex.y) / (last.y - vertex.y) * (last.x - vertex.x) < x) oddNodes = !oddNodes;
 			}
-			lastVertice = vertice;
+			last = vertex;
 		}
 		return oddNodes;
 	}
@@ -131,7 +129,7 @@ public final class Intersector {
 	 * @param count Number of array indices to use after offset. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
 		boolean oddNodes = false;
-		float y1 = polygon[offset + 1];
+		float sx = polygon[offset], sy = polygon[offset + 1], y1 = sy;
 		int yi = offset + 3;
 		for (int n = offset + count; yi < n; yi += 2) {
 			float y2 = polygon[yi];
@@ -141,10 +139,8 @@ public final class Intersector {
 			}
 			y1 = y2;
 		}
-		float y2 = polygon[offset + 1];
-		if ((y2 < y && y1 >= y) || (y1 < y && y2 >= y)) {
-			float x2 = polygon[offset];
-			if (x2 + (y - y2) / (y1 - y2) * (polygon[yi - 3] - x2) < x) oddNodes = !oddNodes;
+		if ((sy < y && y1 >= y) || (y1 < y && sy >= y)) {
+			if (sx + (y - sy) / (y1 - sy) * (polygon[yi - 3] - sx) < x) oddNodes = !oddNodes;
 		}
 		return oddNodes;
 	}
