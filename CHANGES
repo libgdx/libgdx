@@ -1,4 +1,5 @@
 [1.9.10]
+- Update Android backend to build against API 28 (Android 9.0)
 - API Addition: Input.isButtonJustPressed
 - Update to LWJGL 2 backend to 2.9.3
 - Update to MobiVM 2.3.6 release
