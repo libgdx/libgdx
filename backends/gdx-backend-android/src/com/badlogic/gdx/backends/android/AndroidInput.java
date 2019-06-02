@@ -31,6 +31,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
@@ -642,12 +643,18 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		vibrator.vibrate(milliseconds);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
+		else
+			vibrator.vibrate(milliseconds);
 	}
 
 	@Override
 	public void vibrate (long[] pattern, int repeat) {
-		vibrator.vibrate(pattern, repeat);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
+		else
+			vibrator.vibrate(pattern, repeat);
 	}
 
 	@Override
