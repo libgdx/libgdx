@@ -393,7 +393,7 @@
 	<!-- utils -->
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
-		<exclude name="utils/AtomicQueue.java"/> <!-- Reason: No atomic support -->
+		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>
 		<include name="utils/BinaryHeap.java"/>
