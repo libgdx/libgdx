@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.IntMap;
@@ -30,11 +29,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -58,9 +55,13 @@ public class GwtInput implements Input {
 	long currentEventTimeStamp;
 	final CanvasElement canvas;
 	boolean hasFocus = true;
+	GwtAccelerometer accelerometer;
 
 	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
+		Gdx.app.log("GwtAccelerometer supported", String.valueOf(GwtAccelerometer.isSupported()));
+		this.accelerometer = GwtAccelerometer.getInstance();
+		this.accelerometer.start();
 		hookEvents();
 	}
 
@@ -81,17 +82,17 @@ public class GwtInput implements Input {
 
 	@Override
 	public float getAccelerometerX () {
-		return 0;
+		return (float) this.accelerometer.x();
 	}
 
 	@Override
 	public float getAccelerometerY () {
-		return 0;
+		return (float) this.accelerometer.y();
 	}
 
 	@Override
 	public float getAccelerometerZ () {
-		return 0;
+		return (float) this.accelerometer.z();
 	}
 	
 	@Override
