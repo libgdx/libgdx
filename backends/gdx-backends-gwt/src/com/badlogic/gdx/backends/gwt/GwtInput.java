@@ -59,9 +59,21 @@ public class GwtInput implements Input {
 
 	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
-		Gdx.app.log("GwtAccelerometer supported", String.valueOf(GwtAccelerometer.isSupported()));
-		this.accelerometer = GwtAccelerometer.getInstance();
-		this.accelerometer.start();
+		GwtPermissions.queryPermission("accelerometer", new GwtPermissions.GwtPermissionResult() {
+			@Override
+			public void granted() {
+				setupAccelerometer();
+			}
+
+			@Override
+			public void denied() {
+			}
+
+			@Override
+			public void prompt() {
+				setupAccelerometer();
+			}
+		});
 		hookEvents();
 	}
 
@@ -80,21 +92,28 @@ public class GwtInput implements Input {
 		}
 	}
 
+	void setupAccelerometer () {
+		if (GwtAccelerometer.isSupported()) {
+			if (accelerometer == null) accelerometer = GwtAccelerometer.getInstance();
+			if (!accelerometer.activated()) accelerometer.start();
+		}
+	}
+
 	@Override
 	public float getAccelerometerX () {
-		return (float) this.accelerometer.x();
+		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
 	}
 
 	@Override
 	public float getAccelerometerY () {
-		return (float) this.accelerometer.y();
+		return this.accelerometer != null ? (float) this.accelerometer.y() : 0;
 	}
 
 	@Override
 	public float getAccelerometerZ () {
-		return (float) this.accelerometer.z();
+		return this.accelerometer != null ? (float) this.accelerometer.z() : 0;
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		// TODO Auto-generated method stub
@@ -240,7 +259,7 @@ public class GwtInput implements Input {
 			}
 		});
 	}
-	
+
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
@@ -321,7 +340,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return false;
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
@@ -616,7 +635,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		
+
 		if (hasFocus && !e.getType().equals("blur")) {
 			if (e.getType().equals("keydown")) {
 				// Gdx.app.log("GwtInput", "keydown");
@@ -666,7 +685,7 @@ public class GwtInput implements Input {
 
 			while (iterator.hasNext) {
 				int code = iterator.next();
-				
+
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
@@ -755,7 +774,7 @@ public class GwtInput implements Input {
 		}
 // if(hasFocus) e.preventDefault();
 	}
-	
+
 	private int getAvailablePointer () {
 		for (int i = 0; i < MAX_TOUCHES; i++) {
 			if (!touchMap.containsValue(i, false)) return i;
