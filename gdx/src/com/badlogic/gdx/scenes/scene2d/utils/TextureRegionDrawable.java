@@ -52,8 +52,10 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
 	public void setRegion (TextureRegion region) {
 		this.region = region;
-		setMinWidth(region.getRegionWidth());
-		setMinHeight(region.getRegionHeight());
+		if (region != null) {
+			setMinWidth(region.getRegionWidth());
+			setMinHeight(region.getRegionHeight());
+		}
 	}
 
 	public TextureRegion getRegion () {

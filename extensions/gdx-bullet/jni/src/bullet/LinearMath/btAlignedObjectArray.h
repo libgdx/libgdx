@@ -322,7 +322,7 @@ protected:
 		{
 			public:
 
-				bool operator() ( const T& a, const T& b )
+				bool operator() ( const T& a, const T& b ) const
 				{
 					return ( a < b );
 				}
@@ -475,16 +475,37 @@ protected:
 		}
 		return index;
 	}
+    
+    // If the key is not in the array, return -1 instead of 0,
+    // since 0 also means the first element in the array.
+    int	findLinearSearch2(const T& key) const
+    {
+        int index=-1;
+        int i;
+        
+        for (i=0;i<size();i++)
+        {
+            if (m_data[i] == key)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 
+    void removeAtIndex(int index)
+    {
+        if (index<size())
+        {
+            swap( index,size()-1);
+            pop_back();
+        }
+    }
 	void	remove(const T& key)
 	{
-
 		int findIndex = findLinearSearch(key);
-		if (findIndex<size())
-		{
-			swap( findIndex,size()-1);
-			pop_back();
-		}
+        removeAtIndex(findIndex);
 	}
 
 	//PCK: whole function

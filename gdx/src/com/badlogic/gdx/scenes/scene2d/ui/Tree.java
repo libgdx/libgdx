@@ -215,7 +215,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			float x = indent;
 			if (node.icon != null) x += node.icon.getMinWidth();
-			y -= node.height;
+			y -= node.getHeight();
 			node.actor.setPosition(x, y);
 			y -= ySpacing;
 			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
@@ -224,11 +224,20 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		drawBackground(batch, parentAlpha);
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, leftColumnWidth);
 		super.draw(batch, parentAlpha); // Draw actors.
+	}
+
+	/** Called to draw the background. Default implementation draws the style background drawable. */
+	protected void drawBackground (Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
 	}
 
 	/** Draws selection, icons, and expand icons. */
@@ -272,11 +281,13 @@ public class Tree extends WidgetGroup {
 	private float getNodeAt (Array<Node> nodes, float y, float rowY) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (y >= rowY - node.height - ySpacing && y < rowY) {
+			float height = node.height;
+			rowY -= node.getHeight() - height; // Node subclass may increase getHeight.
+			if (y >= rowY - height - ySpacing && y < rowY) {
 				foundNode = node;
 				return -1;
 			}
-			rowY -= node.height + ySpacing;
+			rowY -= height + ySpacing;
 			if (node.expanded) {
 				rowY = getNodeAt(node.children, y, rowY);
 				if (rowY == -1) return -1;
@@ -451,7 +462,7 @@ public class Tree extends WidgetGroup {
 				for (int i = 0, n = children.size; i < n; i++)
 					children.get(i).addToTree(tree);
 			} else {
-				for (int i = 0, n = children.size; i < n; i++)
+				for (int i = children.size - 1; i >= 0; i--)
 					children.get(i).removeFromTree(tree);
 			}
 			tree.invalidateHierarchy();
@@ -461,8 +472,9 @@ public class Tree extends WidgetGroup {
 		protected void addToTree (Tree tree) {
 			tree.addActor(actor);
 			if (!expanded) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).addToTree(tree);
+			Object[] children = this.children.items;
+			for (int i = this.children.size - 1; i >= 0; i--)
+				((Node)children[i]).addToTree(tree);
 		}
 
 		/** Called to remove the actor from the tree when the node's parent is collapsed. */
@@ -470,7 +482,7 @@ public class Tree extends WidgetGroup {
 			tree.removeActor(actor);
 			if (!expanded) return;
 			Object[] children = this.children.items;
-			for (int i = 0, n = this.children.size; i < n; i++)
+			for (int i = this.children.size - 1; i >= 0; i--)
 				((Node)children[i]).removeFromTree(tree);
 		}
 
@@ -509,8 +521,9 @@ public class Tree extends WidgetGroup {
 		public void removeAll () {
 			Tree tree = getTree();
 			if (tree != null) {
-				for (int i = 0, n = children.size; i < n; i++)
-					children.get(i).removeFromTree(tree);
+				Object[] children = this.children.items;
+				for (int i = this.children.size - 1; i >= 0; i--)
+					((Node)children[i]).removeFromTree(tree);
 			}
 			children.clear();
 		}
@@ -535,10 +548,13 @@ public class Tree extends WidgetGroup {
 			return children;
 		}
 
+		/** Adds the child node actors to the tree again. This is useful after changing the order of {@link #getChildren()}. */
 		public void updateChildren () {
 			if (!expanded) return;
 			Tree tree = getTree();
 			if (tree == null) return;
+			for (int i = children.size - 1; i >= 0; i--)
+				children.get(i).removeFromTree(tree);
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
@@ -624,6 +640,12 @@ public class Tree extends WidgetGroup {
 					node.expandTo();
 				}
 			}
+		}
+
+		/** Returns the height of the node as calculated for layout. A subclass may override and increase the returned height to
+		 * create a blank space in the tree above the node, eg for a separator. */
+		public float getHeight () {
+			return height;
 		}
 	}
 

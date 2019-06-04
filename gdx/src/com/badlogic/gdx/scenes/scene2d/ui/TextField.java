@@ -503,15 +503,16 @@ public class TextField extends Widget implements Disableable {
 		Stage stage = getStage();
 		if (stage == null) return;
 		TextField current = this;
+		Vector2 currentCoords = current.getParent().localToStageCoordinates(tmp2.set(current.getX(), current.getY()));
+		Vector2 bestCoords = tmp1;
 		while (true) {
-			current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
-			TextField textField = current.findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
+			TextField textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			if (textField == null) { // Try to wrap around.
 				if (up)
-					tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
+					currentCoords.set(Float.MIN_VALUE, Float.MIN_VALUE);
 				else
-					tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-				textField = current.findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+					currentCoords.set(Float.MAX_VALUE, Float.MAX_VALUE);
+				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			}
 			if (textField == null) {
 				Gdx.input.setOnscreenKeyboardVisible(false);
@@ -519,24 +520,28 @@ public class TextField extends Widget implements Disableable {
 			}
 			if (stage.setKeyboardFocus(textField)) break;
 			current = textField;
+			currentCoords.set(bestCoords);
 		}
 	}
 
+	/** @return May be null. */
 	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
 		boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
-			if (actor == this) continue;
 			if (actor instanceof TextField) {
+				if (actor == this) continue;
 				TextField textField = (TextField)actor;
 				if (textField.isDisabled() || !textField.focusTraversal) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
-				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
-					if (best == null
-						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
-						best = (TextField)actor;
-						bestCoords.set(actorCoords);
-					}
+				boolean below = actorCoords.y != currentCoords.y && (actorCoords.y < currentCoords.y ^ up);
+				boolean right = actorCoords.y == currentCoords.y && (actorCoords.x > currentCoords.x ^ up);
+				if (!below && !right) continue;
+				boolean better = best == null || (actorCoords.y != bestCoords.y && (actorCoords.y > bestCoords.y ^ up));
+				if (!better) better = actorCoords.y == bestCoords.y && (actorCoords.x < bestCoords.x ^ up);
+				if (better) {
+					best = (TextField)actor;
+					bestCoords.set(actorCoords);
 				}
 			} else if (actor instanceof Group)
 				best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
@@ -865,57 +870,68 @@ public class TextField extends Widget implements Disableable {
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
 			boolean jump = ctrl && !passwordMode;
+			boolean handled = true;
 
 			if (ctrl) {
-				if (keycode == Keys.V) {
+				switch (keycode) {
+				case Keys.V:
 					paste(clipboard.getContents(), true);
 					repeat = true;
-				}
-				if (keycode == Keys.C || keycode == Keys.INSERT) {
+					break;
+				case Keys.C:
+				case Keys.INSERT:
 					copy();
 					return true;
-				}
-				if (keycode == Keys.X) {
+				case Keys.X:
 					cut(true);
 					return true;
-				}
-				if (keycode == Keys.A) {
+				case Keys.A:
 					selectAll();
 					return true;
-				}
-				if (keycode == Keys.Z) {
+				case Keys.Z:
 					String oldText = text;
 					setText(undoText);
 					undoText = oldText;
 					updateDisplayText();
 					return true;
+				default:
+					handled = false;
 				}
 			}
 
 			if (UIUtils.shift()) {
-				if (keycode == Keys.INSERT) paste(clipboard.getContents(), true);
-				if (keycode == Keys.FORWARD_DEL) cut(true);
+				switch (keycode) {
+				case Keys.INSERT:
+					paste(clipboard.getContents(), true);
+					break;
+				case Keys.FORWARD_DEL:
+					cut(true);
+					break;
+				}
+
 				selection:
 				{
 					int temp = cursor;
 					keys:
 					{
-						if (keycode == Keys.LEFT) {
+						switch (keycode) {
+						case Keys.LEFT:
 							moveCursor(false, jump);
 							repeat = true;
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.RIGHT) {
+						case Keys.RIGHT:
 							moveCursor(true, jump);
 							repeat = true;
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.HOME) {
+						case Keys.HOME:
 							goHome(jump);
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.END) {
+						case Keys.END:
 							goEnd(jump);
+							handled = true;
 							break keys;
 						}
 						break selection;
@@ -927,31 +943,36 @@ public class TextField extends Widget implements Disableable {
 				}
 			} else {
 				// Cursor movement or other keys (kills selection).
-				if (keycode == Keys.LEFT) {
+				switch (keycode) {
+				case Keys.LEFT:
 					moveCursor(false, jump);
 					clearSelection();
 					repeat = true;
-				}
-				if (keycode == Keys.RIGHT) {
+					handled = true;
+					break;
+				case Keys.RIGHT:
 					moveCursor(true, jump);
 					clearSelection();
 					repeat = true;
-				}
-				if (keycode == Keys.HOME) {
+					handled = true;
+					break;
+				case Keys.HOME:
 					goHome(jump);
 					clearSelection();
-				}
-				if (keycode == Keys.END) {
+					handled = true;
+					break;
+				case Keys.END:
 					goEnd(jump);
 					clearSelection();
+					handled = true;
+					break;
 				}
 			}
+
 			cursor = MathUtils.clamp(cursor, 0, text.length());
 
-			if (repeat) {
-				scheduleKeyRepeatTask(keycode);
-			}
-			return true;
+			if (repeat) scheduleKeyRepeatTask(keycode);
+			return handled;
 		}
 
 		protected void scheduleKeyRepeatTask (int keycode) {

@@ -118,7 +118,7 @@ public abstract class Camera {
 	 * will not be orthogonalized.
 	 * 
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotate (Vector3 axis, float angle) {
 		direction.rotate(axis, angle);
 		up.rotate(axis, angle);
@@ -147,7 +147,7 @@ public abstract class Camera {
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotateAround (Vector3 point, Vector3 axis, float angle) {
 		tmpVec.set(point);
 		tmpVec.sub(position);
@@ -194,7 +194,7 @@ public abstract class Camera {
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		float x = screenCoords.x, y = screenCoords.y;
 		x = x - viewportX;
-		y = viewportHeight - y - 1;
+		y = Gdx.graphics.getHeight() - y - 1;
 		y = y - viewportY;
 		screenCoords.x = (2 * x) / viewportWidth - 1;
 		screenCoords.y = (2 * y) / viewportHeight - 1;

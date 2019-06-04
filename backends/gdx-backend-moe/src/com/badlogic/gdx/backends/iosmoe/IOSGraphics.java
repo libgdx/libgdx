@@ -16,10 +16,16 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import org.moe.natj.general.NatJ;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.general.ann.ByValue;
+import org.moe.natj.objc.ann.Selector;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES20;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES30;
 import com.badlogic.gdx.graphics.Cursor;
@@ -29,10 +35,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
-import org.moe.natj.general.NatJ;
-import org.moe.natj.general.Pointer;
-import org.moe.natj.general.ann.ByValue;
-import org.moe.natj.objc.ann.Selector;
+
 import apple.NSObject;
 import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGRect;
@@ -97,7 +100,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		super(peer);
 	}
 
-	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
+		boolean useGLES30, IOSGLKView view) {
+		this.view = view;
+
 		init();
 		this.config = config;
 
@@ -107,7 +113,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		height = (int)bounds.size().height();
 
 		if (useGLES30) {
-			context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);;
+			context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);
+			;
 			if (context != null)
 				gl20 = gl30 = new IOSGLES30();
 			else
@@ -119,7 +126,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		view = IOSGLKView.alloc().init(this, new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())), context);
+		view.setContext(context);
+		view.setGraphics(this);
 
 		view.setDelegate(this);
 		view.setDrawableColorFormat(config.colorFormat);
@@ -160,10 +168,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
-		// String machineString = HWMachine.getMachineString();
-		IOSDevice device = null; // IOSDevice.getDevice(machineString);
-		// if (device == null)
-		// 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		String machineString = HWMachine.getMachineString();
+		IOSDevice device = IOSDevice.getDevice(machineString);
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi / 160f : scale;
 		ppiX = ppi;
@@ -180,9 +187,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return this;
 	}
 
+	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
+		boolean useGLES30) {
+		CGRect bounds = app.getBounds();
+		IOSGLKView view = IOSGLKView.alloc()
+			.init(new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())));
+		return init(scale, app, config, input, useGLES30, view);
+	}
+
 	public void resume () {
-		if (!appPaused)
-			return;
+		if (!appPaused) return;
 		appPaused = false;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
@@ -195,8 +209,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	public void pause () {
-		if (appPaused)
-			return;
+		if (appPaused) return;
 		appPaused = true;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
@@ -273,6 +286,37 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public GL20 getGL20 () {
 		return gl20;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
 	}
 
 	@Override
@@ -411,8 +455,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public boolean supportsExtension (String extension) {
-		if (extensions == null)
-			extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
@@ -421,8 +464,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		if (isContinuous != this.isContinuous) {
 			this.isContinuous = isContinuous;
 			// start the GLKViewController if we go from non-continuous -> continuous
-			if (isContinuous)
-				viewController.setPaused(false);
+			if (isContinuous) viewController.setPaused(false);
 		}
 	}
 
@@ -436,23 +478,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		isFrameRequested = true;
 		// start the GLKViewController if we are in non-continuous mode
 		// (we should already be started in continuous mode)
-		if (!isContinuous)
-			viewController.setPaused(false);
+		if (!isContinuous) viewController.setPaused(false);
 	}
 
 	@Override
 	public boolean isFullscreen () {
 		return true;
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	@Override
@@ -474,11 +505,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public void setResizable(boolean resizable) {
+	public void setResizable (boolean resizable) {
 	}
 
 	@Override
-	public void setUndecorated(boolean undecorated) {
+	public void setUndecorated (boolean undecorated) {
 	}
 
 	private class IOSDisplayMode extends DisplayMode {

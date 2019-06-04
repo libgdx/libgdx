@@ -32,7 +32,6 @@ task copyNatives << {
 }
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [ file("../%ASSET_PATH%") ]
 
 // Setup Multi-OS Engine
 moe {
@@ -40,6 +39,10 @@ moe {
         project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
         testTarget 'ios-moe-Test'
+    }
+
+    remoteBuild {
+        resources = [ file("../%ASSET_PATH%") ]
     }
 }
 
@@ -52,6 +55,7 @@ moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
 eclipse {
     // Set Multi-OS Engine nature
     project {
+        name = appName + "-ios-moe"
         natures 'org.multi-os-engine.project'
     }
 }

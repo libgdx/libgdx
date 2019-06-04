@@ -168,11 +168,17 @@ SIMD_FORCE_INLINE	int	btConeShape::calculateSerializeBufferSize() const
 SIMD_FORCE_INLINE	const char*	btConeShape::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 	btConeShapeData* shapeData = (btConeShapeData*) dataBuffer;
-	
+
 	btConvexInternalShape::serialize(&shapeData->m_convexInternalShapeData,serializer);
-	
+
 	shapeData->m_upIndex = m_coneIndices[1];
-	
+
+	// Fill padding with zeros to appease msan.
+	shapeData->m_padding[0] = 0;
+	shapeData->m_padding[1] = 0;
+	shapeData->m_padding[2] = 0;
+	shapeData->m_padding[3] = 0;
+
 	return "btConeShapeData";
 }
 

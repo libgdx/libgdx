@@ -148,16 +148,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				callback.update(state);
 				if (state.hasEnded()) {
 					getRootPanel().clear();
-					if (loadingListener != null) {
+					if(loadingListener != null)
 						loadingListener.beforeSetup();
-					}
 					setupLoop();
-					if (loadingListener != null) {
+					if(loadingListener != null)
 						loadingListener.afterSetup();
-					}
 				}
 			}
-
 		});
 	}
 
@@ -182,7 +179,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		lastWidth = graphics.getWidth();
 		lastHeight = graphics.getHeight();
 		Gdx.app = this;
-		Gdx.audio = new GwtAudio();
+
+		if(config.disableAudio) {
+			Gdx.audio = null;
+		} else {
+			Gdx.audio = new GwtAudio();
+		}
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = Gdx.gl20;
@@ -421,7 +423,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 																			isChrome : userAgent.indexOf("chrome") != -1,
 																			isSafari : userAgent.indexOf("safari") != -1,
 																			isOpera : userAgent.indexOf("opera") != -1,
-																			isIE : userAgent.indexOf("msie") != -1,
+																			isIE : userAgent.indexOf("msie") != -1 || userAgent.indexOf("trident") != -1,
 																			// OS type flags
 																			isMacOS : userAgent.indexOf("mac") != -1,
 																			isLinux : userAgent.indexOf("linux") != -1,

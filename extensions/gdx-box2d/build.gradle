@@ -19,8 +19,5 @@ group = "box2d-parent"
 subprojects { box2dproject ->
     dependencies {
         compileOnly project(":gdx")
-        if (!box2dproject.name.contains("gwt")) {
-            compileOnly project(":extensions:gdx-jnigen")
-        }
     }
 }

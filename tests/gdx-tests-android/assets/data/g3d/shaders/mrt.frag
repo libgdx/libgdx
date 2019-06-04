@@ -38,10 +38,11 @@ void main() {
 
     #ifdef texturedFlag
         vec3 finnormal = normalize((v_tangent * normal.x) + (v_binormal * normal.y) + (v_normal * normal.z));
-        normalOut = finnormal;
+        normalOut = (finnormal + 1.0) * 0.5;
     #else
-        normalOut = v_normal;
+        normalOut = (v_normal + 1.0) * 0.5;
     #endif
 
-    positionOut = v_position;
+
+    positionOut = (v_position + 1.0) * 0.5;
 }

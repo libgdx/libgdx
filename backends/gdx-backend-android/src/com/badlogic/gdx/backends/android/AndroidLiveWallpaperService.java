@@ -474,6 +474,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		// end of lifecycle methods ////////////////////////////////////////////////////////
 
 		// input
+		
+		boolean iconDropConsumed = true;
+		int xIconDrop, yIconDrop;
 
 		@Override
 		public Bundle onCommand (final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras,
@@ -481,8 +484,35 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (DEBUG)
 				Log.d(TAG, " > AndroidWallpaperEngine - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
 					+ pResultRequested + ")" + ", linked: " + (linkedEngine == this));
+			
+			if (pAction.equals("android.home.drop")){
+				iconDropConsumed = false;
+				xIconDrop = pX;
+				yIconDrop = pY;
+				notifyIconDropped();
+			}
 
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
+		}
+		
+		protected void notifyIconDropped () {
+			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {
+				if (!iconDropConsumed) { // same type of synchronization as in notifyOffsetsChanged()
+					iconDropConsumed = true;
+
+					app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							boolean isCurrent = false;
+							synchronized (sync) {
+								isCurrent = (linkedEngine == AndroidWallpaperEngine.this);
+							}
+							if (isCurrent)
+								((AndroidWallpaperListener)app.listener).iconDropped(xIconDrop, yIconDrop);
+						}
+					});
+				}
+			}
 		}
 
 		@Override
@@ -576,5 +606,6 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				});
 			}
 		}
+		
 	}
 }

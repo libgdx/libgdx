@@ -423,7 +423,7 @@ public class GwtInput implements Input {
 				// on mac
 				delta = -1.0 * evt.wheelDelta / 40;
 			}
-		} else if (agentInfo.isChrome || agentInfo.isSafari) {
+		} else if (agentInfo.isChrome || agentInfo.isSafari || agentInfo.isIE) {
 			delta = -1.0 * evt.wheelDelta / 120;
 			// handle touchpad for chrome
 			if (Math.abs(delta) < 1) {

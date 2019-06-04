@@ -18,6 +18,7 @@ package com.badlogic.gdx.tools.texturepacker;
 
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Packer;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.ProgressListener;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -26,17 +27,22 @@ import java.util.Collections;
 
 /** @author Nathan Sweet */
 public class GridPacker implements Packer {
-	private Settings settings;
+	private final Settings settings;
 
 	public GridPacker (Settings settings) {
 		this.settings = settings;
 	}
 
 	public Array<Page> pack (Array<Rect> inputRects) {
+		return pack(null, inputRects);
+	}
+
+	public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects) {
 		if (!settings.silent) System.out.print("Packing");
 
+		int n = inputRects.size;
 		int cellWidth = 0, cellHeight = 0;
-		for (int i = 0, nn = inputRects.size; i < nn; i++) {
+		for (int i = 0; i < n; i++) {
 			Rect rect = inputRects.get(i);
 			cellWidth = Math.max(cellWidth, rect.width);
 			cellHeight = Math.max(cellHeight, rect.height);
@@ -48,6 +54,7 @@ public class GridPacker implements Packer {
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
+			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
 			Page result = packPage(inputRects, cellWidth, cellHeight);
 			pages.add(result);
 		}
@@ -63,8 +70,10 @@ public class GridPacker implements Packer {
 			maxWidth -= settings.paddingX;
 			maxHeight -= settings.paddingY;
 		}
+
+		int n = inputRects.size;
 		int x = 0, y = 0;
-		for (int i = inputRects.size - 1; i >= 0; i--) {
+		for (int i = n - 1; i >= 0; i--) {
 			if (x + cellWidth > maxWidth) {
 				y += cellHeight;
 				if (y > maxHeight - cellHeight) break;

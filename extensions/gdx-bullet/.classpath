@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/inversedynamics"/>
 	<classpathentry kind="src" path="jni/swig-src/extras"/>
 	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/softbody"/>
 	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/dynamics"/>

@@ -71,10 +71,11 @@ public class Wav {
 	}
 
 	/** @author Nathan Sweet */
-	static private class WavInputStream extends FilterInputStream {
-		int channels, sampleRate, dataRemaining;
+	static public class WavInputStream extends FilterInputStream {
 
-		WavInputStream (FileHandle file) {
+		public int channels, sampleRate, dataRemaining;
+
+		public WavInputStream (FileHandle file) {
 			super(file.read());
 			try {
 				if (read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')
@@ -87,12 +88,35 @@ public class Wav {
 
 				int fmtChunkLength = seekToChunk('f', 'm', 't', ' ');
 
+				// http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+				// http://soundfile.sapp.org/doc/WaveFormat/
 				int type = read() & 0xff | (read() & 0xff) << 8;
-				if (type != 1) throw new GdxRuntimeException("WAV files must be PCM: " + type);
+				if (type != 1) {
+					String name;
+					switch (type) {
+					case 0x0002:
+						name = "ADPCM";
+						break;
+					case 0x0003:
+						name = "IEEE float";
+						break;
+					case 0x0006:
+						name = "8-bit ITU-T G.711 A-law";
+						break;
+					case 0x0007:
+						name = "8-bit ITU-T G.711 u-law";
+						break;
+					case 0xFFFE:
+						name = "Extensible";
+						break;
+					default:
+						name = "Unknown";
+					}
+					throw new GdxRuntimeException("WAV files must be PCM, unsupported format: " + name + " (" + type + ")");
+				}
 
 				channels = read() & 0xff | (read() & 0xff) << 8;
-				if (channels != 1 && channels != 2)
-					throw new GdxRuntimeException("WAV files must have 1 or 2 channels: " + channels);
+				if (channels != 1 && channels != 2) throw new GdxRuntimeException("WAV files must have 1 or 2 channels: " + channels);
 
 				sampleRate = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 

@@ -187,6 +187,8 @@ public class ContactCacheTest extends BaseBulletTest {
 	public void dispose () {
 		// Deleting the active contact listener, also disables that particular type of contact listener.
 		if (contactListener != null) contactListener.dispose();
+		if (contactCache != null) contactCache.dispose();
+		contactCache = null;
 		contactListener = null;
 
 		super.dispose();

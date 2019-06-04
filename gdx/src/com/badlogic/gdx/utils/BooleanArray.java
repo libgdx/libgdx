@@ -80,6 +80,33 @@ public class BooleanArray {
 		items[size++] = value;
 	}
 
+	public void add (boolean value1, boolean value2) {
+		boolean[] items = this.items;
+		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		size += 2;
+	}
+
+	public void add (boolean value1, boolean value2, boolean value3) {
+		boolean[] items = this.items;
+		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		size += 3;
+	}
+
+	public void add (boolean value1, boolean value2, boolean value3, boolean value4) {
+		boolean[] items = this.items;
+		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		size += 4;
+	}
+
 	public void addAll (BooleanArray array) {
 		addAll(array, 0, array.size);
 	}

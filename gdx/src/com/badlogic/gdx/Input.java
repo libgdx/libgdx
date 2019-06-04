@@ -558,22 +558,25 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector
 	}
 
-	/** @return The rate of rotation around the x axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
 	public float getAccelerometerX ();
 
-	/** @return The rate of rotation around the y axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the Y axis, including the force of gravity */
 	public float getAccelerometerY ();
 
-	/** @return The rate of rotation around the z axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the Z axis, including the force of gravity */
 	public float getAccelerometerZ ();
 
+	/** @return The rate of rotation in rad/s around the X axis */
 	public float getGyroscopeX ();
 
+	/** @return The rate of rotation in rad/s around the Y axis */
 	public float getGyroscopeY ();
 
+	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
 	
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first

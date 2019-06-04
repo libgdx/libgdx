@@ -39,7 +39,7 @@ struct btMultiBodyJacobianData
 };
 
 
-class btMultiBodyConstraint
+ATTRIBUTE_ALIGNED16(class) btMultiBodyConstraint
 {
 protected:
 
@@ -84,11 +84,17 @@ protected:
 
 public:
 
+	BT_DECLARE_ALIGNED_ALLOCATOR();
+
 	btMultiBodyConstraint(btMultiBody* bodyA,btMultiBody* bodyB,int linkA, int linkB, int numRows, bool isUnilateral);
 	virtual ~btMultiBodyConstraint();
 
 	void updateJacobianSizes();
 	void allocateJacobiansMultiDof();
+
+	//many constraints have setFrameInB/setPivotInB. Will use 'getConstraintType' later.
+	virtual void setFrameInB(const btMatrix3x3& frameInB) {}
+	virtual void setPivotInB(const btVector3& pivotInB){}
 
 	virtual void finalizeMultiDof()=0;
 
@@ -177,6 +183,12 @@ public:
 
 	virtual void debugDraw(class btIDebugDraw* drawer)=0;
 
+	virtual void setGearRatio(btScalar ratio) {}
+	virtual void setGearAuxLink(int gearAuxLink) {}
+	virtual void setRelativePositionTarget(btScalar relPosTarget){}
+	virtual void setErp(btScalar erp){}
+	
+	
 };
 
 #endif //BT_MULTIBODY_CONSTRAINT_H
