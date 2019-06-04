@@ -260,12 +260,12 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			if (element.hasAttribute("offsetx")) {
 				x = Float.parseFloat(element.getAttribute("offsetx", "0"));
 			} else {
-				x = Integer.parseInt(element.getAttribute("x", "0"));
+				x = Float.parseFloat(element.getAttribute("x", "0"));
 			}
 			if (element.hasAttribute("offsety")) {
 				y = Float.parseFloat(element.getAttribute("offsety", "0"));
 			} else {
-				y = Integer.parseInt(element.getAttribute("y", "0"));
+				y = Float.parseFloat(element.getAttribute("y", "0"));
 			}
 			if (flipY) y = mapHeightInPixels - y;
 
