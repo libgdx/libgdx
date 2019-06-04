@@ -27,9 +27,11 @@ matrix:
           - 'android-sdk-license-.+'
       before_install:
         - yes | sdkmanager "platforms;android-27"
-      script:
+      install:
         - ./gradlew fetchNatives
+      script:
         - ./gradlew test
+        - ./gradlew tests:gdx-tests-gwt:compileGwt
       before_cache:
         - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
         - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
