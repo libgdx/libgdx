@@ -30,8 +30,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
-import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
-import com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -133,26 +131,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		}
 
-		if (config.preferWebAudioAPI && WebAudioAPIManager.isSupported()) {
-			preload();
-		} else {
-			// initialize SoundManager2
-			SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
-
-				@Override
-				public void onready () {
-					preload();
-				}
-
-				@Override
-				public void ontimeout (String status, String errorType) {
-					error("SoundManager", status + " " + errorType);
-				}
-			});
-		}
+		preloadAssets();
 	}
 
-	void preload () {
+	void preloadAssets() {
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = createPreloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
@@ -200,7 +182,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		lastWidth = graphics.getWidth();
 		lastHeight = graphics.getHeight();
 		Gdx.app = this;
-		Gdx.audio = new GwtAudio(config);
+		Gdx.audio = new GwtAudio();
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = Gdx.gl20;

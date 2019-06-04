@@ -36,21 +36,18 @@ import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
 
 public class WebAudioAPIManager implements LifecycleListener {
 	private final JavaScriptObject audioContext;
-	private final GwtApplicationConfiguration config;
 	private final JavaScriptObject globalVolumeNode;
 	private final AssetDownloader assetDownloader;
 	private final AudioControlGraphPool audioControlGraphPool;
 
-	public WebAudioAPIManager (GwtApplicationConfiguration config) {
-		this.config = config;
+	public WebAudioAPIManager () {
 		this.assetDownloader = new AssetDownloader();
 		this.audioContext = createAudioContextJSNI();
 		this.globalVolumeNode = createGlobalVolumeNodeJSNI();
 		this.audioControlGraphPool = new AudioControlGraphPool(audioContext, globalVolumeNode);
 
-		if (config.autoMuteOnPause) {
-			Gdx.app.addLifecycleListener(this);
-		}
+		// for automatically muting/unmuting on pause/resume
+		Gdx.app.addLifecycleListener(this);
 
 		CanvasElement canvasElement = ((GwtApplication)Gdx.app).getCanvasElement();
 

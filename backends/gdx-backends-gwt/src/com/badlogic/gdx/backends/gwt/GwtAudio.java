@@ -28,10 +28,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class GwtAudio implements Audio {
 	private WebAudioAPIManager webAudioAPIManager = null;
 
-	public GwtAudio (GwtApplicationConfiguration config) {
-		if (config.preferWebAudioAPI && WebAudioAPIManager.isSupported()) {
-			webAudioAPIManager = new WebAudioAPIManager(config);
-		}
+	public GwtAudio () {
+		webAudioAPIManager = new WebAudioAPIManager();
 	}
 
 	@Override
@@ -46,21 +44,11 @@ public class GwtAudio implements Audio {
 
 	@Override
 	public Sound newSound (FileHandle fileHandle) {
-		if (webAudioAPIManager != null) {
-			return webAudioAPIManager.createSound(fileHandle);
-		} else {
-			/* Use the SoundManager2 based implementation that uses the HTML5 Audio element or Flash, based on users preferences */
-			return new GwtSound(fileHandle);
-		}
+		return webAudioAPIManager.createSound(fileHandle);
 	}
 
 	@Override
 	public Music newMusic (FileHandle file) {
-		if (webAudioAPIManager != null) {
-			return webAudioAPIManager.createMusic(file);
-		} else {
-			/* Use the SoundManager2 based implementation that uses the HTML5 Audio element or Flash, based on users preferences */
-			return new GwtMusic(file);
-		}
+		return webAudioAPIManager.createMusic(file);
 	}
 }
