@@ -59,7 +59,7 @@ public class GwtInput implements Input {
 
 	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
-		GwtPermissions.queryPermission("accelerometer", new GwtPermissions.GwtPermissionResult() {
+		GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
 			@Override
 			public void granted() {
 				setupAccelerometer();
