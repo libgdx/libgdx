@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -113,6 +112,17 @@ public class WidgetGroup extends Group implements Layout {
 		if (!needsLayout) return;
 		needsLayout = false;
 		layout();
+
+		// Widgets may call invalidateHierarchy during layout (eg, a wrapped label). The root-most widget group retries layout a
+		// reasonable number of times.
+		if (needsLayout) {
+			if (parent instanceof WidgetGroup) return; // The parent widget will layout again.
+			for (int i = 0; i < 5; i++) {
+				needsLayout = false;
+				layout();
+				if (!needsLayout) break;
+			}
+		}
 	}
 
 	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
@@ -141,12 +151,10 @@ public class WidgetGroup extends Group implements Layout {
 	public void pack () {
 		setSize(getPrefWidth(), getPrefHeight());
 		validate();
-		// Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
-		// calls invalidateHierarchy() in layout() if its pref height has changed.
-		if (needsLayout) {
-			setSize(getPrefWidth(), getPrefHeight());
-			validate();
-		}
+		// Validating the layout may change the pref size. Eg, a wrapped label doesn't know its pref height until it knows its
+		// width, so it calls invalidateHierarchy() in layout() if its pref height has changed.
+		setSize(getPrefWidth(), getPrefHeight());
+		validate();
 	}
 
 	public void setFillParent (boolean fillParent) {

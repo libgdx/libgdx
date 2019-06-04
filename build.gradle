@@ -19,19 +19,21 @@ apply from: "gradle/dependencies.gradle"
 
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.9.5-SNAPSHOT'
+    version = '1.9.9-SNAPSHOT'
 
     buildscript {
         repositories {
-            mavenCentral()
+            google()
             jcenter()
+            mavenCentral()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         }
     }
 
     repositories {
-        mavenCentral()
+        google()
         jcenter()
+        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
@@ -44,20 +46,13 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
         options.fork = true
         options.incremental = true
     }
-
-    idea {
-        module {
-            scopes.PROVIDED.minus += [configurations.compile]
-            scopes.COMPILE.plus += [configurations.compile]
-        }
-    }
 }
 
-task fetchNatives {
+ant.importBuild("fetch.xml") { antTargetName ->
+    "ant-task-" + antTargetName    
+}
+task fetchNatives(dependsOn: "ant-task-all"){
     doLast {
-        ant.importBuild "fetch.xml"
-        fetch.execute()
-        copy.execute()
     }
 }
 

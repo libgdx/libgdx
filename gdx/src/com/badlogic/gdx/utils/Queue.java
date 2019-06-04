@@ -183,7 +183,7 @@ public class Queue<T> implements Iterable<T> {
 		if (identity || value == null) {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (values[i] == value) return i;
+					if (values[i] == value) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (values[i] == value) return i - head;
@@ -193,7 +193,7 @@ public class Queue<T> implements Iterable<T> {
 		} else {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (value.equals(values[i])) return i;
+					if (value.equals(values[i])) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (value.equals(values[i])) return i - head;
@@ -244,6 +244,16 @@ public class Queue<T> implements Iterable<T> {
 		}
 		size--;
 		return value;
+	}
+
+	/** Returns true if the queue has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if the queue is empty. */
+	public boolean isEmpty () {
+		return size == 0;
 	}
 
 	/** Returns the first (head) item in the queue (without removing it).
@@ -384,6 +394,33 @@ public class Queue<T> implements Iterable<T> {
 			Object itsValue = itsValues[itsIndex];
 
 			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue))) return false;
+			myIndex++;
+			itsIndex++;
+			if (myIndex == myBackingLength) myIndex = 0;
+			if (itsIndex == itsBackingLength) itsIndex = 0;
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each item. */
+	public boolean equalsIdentity (Object o) {
+		if (this == o) return true;
+		if (o == null || !(o instanceof Queue)) return false;
+
+		Queue<?> q = (Queue<?>)o;
+		final int size = this.size;
+
+		if (q.size != size) return false;
+
+		final T[] myValues = this.values;
+		final int myBackingLength = myValues.length;
+		final Object[] itsValues = q.values;
+		final int itsBackingLength = itsValues.length;
+
+		int myIndex = head;
+		int itsIndex = q.head;
+		for (int s = 0; s < size; s++) {
+			if (myValues[myIndex] != itsValues[itsIndex]) return false;
 			myIndex++;
 			itsIndex++;
 			if (myIndex == myBackingLength) myIndex = 0;

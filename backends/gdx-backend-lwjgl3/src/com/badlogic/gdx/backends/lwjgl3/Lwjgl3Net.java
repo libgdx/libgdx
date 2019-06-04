@@ -35,7 +35,11 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * @author acoppes */
 public class Lwjgl3Net implements Net {
 
-	NetJavaImpl netJavaImpl = new NetJavaImpl();
+	NetJavaImpl netJavaImpl;
+
+	public Lwjgl3Net(Lwjgl3ApplicationConfiguration configuration) {
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
+	}
 
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {

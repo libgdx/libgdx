@@ -101,20 +101,20 @@ public class GwtApplicationLogger implements ApplicationLogger {
 	}
 
 	private String getMessages (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (e != null) {
-			buffer.append(e.getMessage() + "\n");
+			sb.append(e.getMessage() + "\n");
 			e = e.getCause();
 		}
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	private String getStackTrace (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (StackTraceElement trace : e.getStackTrace()) {
-			buffer.append(trace.toString() + "\n");
+			sb.append(trace.toString() + "\n");
 		}
-		return buffer.toString();
+		return sb.toString();
 	}
 
 }

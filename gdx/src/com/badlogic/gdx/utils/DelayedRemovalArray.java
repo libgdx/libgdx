@@ -18,10 +18,13 @@ package com.badlogic.gdx.utils;
 
 import java.util.Comparator;
 
-/** Queues any removals done after {@link #begin()} is called to occur once {@link #end()} is called. This can allow code out of
- * your control to remove items without affecting iteration. Between begin and end, most mutator methods will throw
- * IllegalStateException. Only {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, {@link #removeRange(int, int)},
- * {@link #clear()}, and add methods are allowed.
+/** An array that queues removal during iteration until the iteration has completed. Queues any removals done after
+ * {@link #begin()} is called to occur once {@link #end()} is called. This can allow code out of your control to remove items
+ * without affecting iteration. Between begin and end, most mutator methods will throw IllegalStateException. Only
+ * {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, {@link #removeRange(int, int)}, {@link #clear()}, and add
+ * methods are allowed.
+ * <p>
+ * Note that DelayedRemovalArray is not for thread safety, only for removal during iteration.
  * <p>
  * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
  * problem.

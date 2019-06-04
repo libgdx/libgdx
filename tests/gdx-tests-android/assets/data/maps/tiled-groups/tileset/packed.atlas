@@ -1,0 +1,76 @@
+
+packed.png
+size: 256,32
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+default
+  rotate: false
+  xy: 1, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 0
+default
+  rotate: false
+  xy: 33, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 16
+default
+  rotate: false
+  xy: 65, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 36
+default
+  rotate: false
+  xy: 97, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 37
+default
+  rotate: false
+  xy: 97, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 38
+default
+  rotate: false
+  xy: 129, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 39
+default
+  rotate: false
+  xy: 161, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 52
+default
+  rotate: false
+  xy: 193, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 53
+default
+  rotate: false
+  xy: 193, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 54
+default
+  rotate: false
+  xy: 225, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 55

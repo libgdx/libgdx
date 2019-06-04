@@ -23,7 +23,6 @@
 			<fileset dir="../libs/windows64" includes="gdx-freetype64.dll"/>
 			<fileset dir="../libs/linux32" includes="libgdx-freetype.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-freetype64.so"/>
-			<fileset dir="../libs/macosx32" includes="libgdx-freetype.dylib"/>
 			<fileset dir="../libs/macosx64" includes="libgdx-freetype64.dylib"/>
 
 		</jar>

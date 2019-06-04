@@ -19,24 +19,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.NSExtensions;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSRange;
-import org.robovm.apple.uikit.UIAlertView;
-import org.robovm.apple.uikit.UIAlertViewDelegate;
-import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
-import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIKeyboardType;
-import org.robovm.apple.uikit.UIReturnKeyType;
-import org.robovm.apple.uikit.UITextAutocapitalizationType;
-import org.robovm.apple.uikit.UITextAutocorrectionType;
-import org.robovm.apple.uikit.UITextField;
-import org.robovm.apple.uikit.UITextFieldDelegate;
-import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
-import org.robovm.apple.uikit.UITextSpellCheckingType;
-import org.robovm.apple.uikit.UITouch;
-import org.robovm.apple.uikit.UITouchPhase;
+import org.robovm.apple.foundation.*;
+import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.Method;
 import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
@@ -56,6 +40,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
+	private static final int POINTER_NOT_FOUND = -1;
 
 	private static class NSObjectWrapper<T extends NSObject> {
 		private static final long HANDLE_OFFSET;
@@ -88,6 +73,8 @@ public class IOSInput implements Input {
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
+	float[] pressures = new float[MAX_TOUCHES];
+	boolean pressureSupported;
 	// we store the pointer to the UITouch struct here, or 0
 	long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
@@ -99,7 +86,7 @@ public class IOSInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
-	TouchEvent currentEvent = null;
+	private long currentEventTimeStamp = 0;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
@@ -123,6 +110,11 @@ public class IOSInput implements Input {
 		setupCompass();
 		UIDevice device = UIDevice.getCurrentDevice();
 		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
+
+		if (app.getIosVersion() >= 9){
+			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
+		}
 	}
 
 	protected void setupCompass () {
@@ -269,6 +261,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		return touchX[0];
 	}
@@ -329,8 +326,23 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return pressures[0];
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return pressures[pointer];
+	}
+
+	@Override
 	public boolean isButtonPressed (int button) {
 		return button == Buttons.LEFT && numTouched > 0;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
@@ -516,7 +528,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public long getCurrentEventTime () {
-		return currentEvent.timestamp;
+		return currentEventTimeStamp;
 	}
 
 	@Override
@@ -538,6 +550,16 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.inputProcessor = processor;
 	}
@@ -553,7 +575,8 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		if (peripheral == Peripheral.Compass) return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.Pressure) return pressureSupported;
 		return false;
 	}
 
@@ -606,7 +629,7 @@ public class IOSInput implements Input {
 		synchronized (touchEvents) {
 			justTouched = false;
 			for (TouchEvent event : touchEvents) {
-				currentEvent = event;
+				currentEventTimeStamp = event.timestamp;
 				switch (event.phase) {
 				case Began:
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
@@ -639,7 +662,13 @@ public class IOSInput implements Input {
 		for (int i = 0; i < touchDown.length; i++) {
 			if (touchDown[i] == ptr) return i;
 		}
-		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
+		// If pointer is not found
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < touchDown.length; i++) {
+			sb.append(i + ":" + touchDown[i] + " ");
+		}
+		Gdx.app.error("IOSInput", "Pointer ID lookup failed: " + ptr + ", " + sb.toString());
+		return POINTER_NOT_FOUND;
 	}
 
 	private static class NSSetExtensions extends NSExtensions {
@@ -671,6 +700,12 @@ public class IOSInput implements Input {
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
+			// if its not supported, we will simply use 1.0f when touch is present
+			float pressure = 1.0f;
+			if (pressureSupported) {
+				pressure = (float)touch.getForce();
+			}
+
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
@@ -678,7 +713,6 @@ public class IOSInput implements Input {
 				event.y = locY;
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
-				touchEvents.add(event);
 
 				if (phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
@@ -687,25 +721,38 @@ public class IOSInput implements Input {
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
 					deltaY[event.pointer] = 0;
+					pressures[event.pointer] = pressure;
 					numTouched++;
 				}
 
-				if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
+				else if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
 					event.pointer = findPointer(touch);
-					deltaX[event.pointer] = event.x - touchX[event.pointer];
-					deltaY[event.pointer] = event.y - touchY[event.pointer];
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						deltaX[event.pointer] = event.x - touchX[event.pointer];
+						deltaY[event.pointer] = event.y - touchY[event.pointer];
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+						pressures[event.pointer] = pressure;
+					}
 				}
 
-				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
+				else if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0;
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0;
-					numTouched--;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						touchDown[event.pointer] = 0;
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+						deltaX[event.pointer] = 0;
+						deltaY[event.pointer] = 0;
+						pressures[event.pointer] = 0;
+						numTouched--;
+					}
+				}
+
+				if (event.pointer != POINTER_NOT_FOUND) {
+					touchEvents.add(event);
+				} else {
+					touchEventPool.free(event);
 				}
 			}
 		}

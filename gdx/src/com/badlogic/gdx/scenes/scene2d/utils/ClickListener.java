@@ -61,14 +61,13 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
-		visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
+		setVisualPressed(true);
 		return true;
 	}
 
 	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 		if (pointer != pressedPointer || cancelled) return;
 		pressed = isOver(event.getListenerActor(), x, y);
-		if (pressed && pointer == 0 && button != -1 && !Gdx.input.isButtonPressed(button)) pressed = false;
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
 			invalidateTapSquare();
@@ -152,6 +151,14 @@ public class ClickListener extends InputListener {
 		return false;
 	}
 
+	/** If true, sets the visual pressed time to now. If false, clears the visual pressed time. */
+	public void setVisualPressed (boolean visualPressed) {
+		if (visualPressed)
+			visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
+		else
+			visualPressedTime = 0;
+	}
+
 	/** Returns true if the mouse or touch is over the actor or pressed and within the tap square. */
 	public boolean isOver () {
 		return over || pressed;
@@ -165,7 +172,8 @@ public class ClickListener extends InputListener {
 		return tapSquareSize;
 	}
 
-	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps. */
+	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive
+	 *           taps. */
 	public void setTapCountInterval (float tapCountInterval) {
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
 	}

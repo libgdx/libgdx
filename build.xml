@@ -3,13 +3,16 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.9.5-SNAPSHOT"/>
+	<property name="version" value="1.9.9-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
 
 	<!-- should we build natives? -->
 	<property name="build-natives" value="false"/>
+
+	<!-- should we build natives in release mode -->
+	<property name="release" value="true"/>
 
 	<!-- clean distribution/output directory -->
 	<target name="clean">
@@ -60,7 +63,7 @@
     <!-- gdx headless backend -->
     <target name="gdx-backend-headless" depends="gdx-core">
         <path id="classpath">
-                <pathelement location="${distDir}/gdx.jar"/>                    
+                <pathelement location="${distDir}/gdx.jar"/>
         </path>
         <ant antfile="../../build-template.xml" dir="backends/gdx-backend-headless">
 			    <property name="javacTarget" value="1.6"/>
@@ -121,7 +124,7 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
-    
+
     <!-- gdx robovm backend -->
     <target name="gdx-backend-robovm" depends="gdx-core">
 		<path id="classpath">
@@ -169,7 +172,7 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
-	
+
 	<target name="gdx-box2d-gwt" depends="gdx-core,gdx-backend-gwt,gdx-box2d">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
@@ -185,7 +188,7 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
-	
+
 	<!-- gdx controllers -->
 	<target name="gdx-controllers" depends="gdx-core">
 		<path id="classpath">
@@ -232,7 +235,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-android.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-9.0.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
@@ -247,8 +250,6 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
@@ -289,12 +290,13 @@
 			<reference refid="classpath"/>
 			<reference refid="src"/>
 		</ant>
-	</target>    	
+	</target>
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
-		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true">
+		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true"
+		additionalparam="-Xdoclint:none -encoding UTF-8">
 			<header><![CDATA[
 				libgdx API
 				<style>

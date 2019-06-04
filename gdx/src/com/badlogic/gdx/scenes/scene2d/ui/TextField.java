@@ -36,13 +36,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -108,11 +108,17 @@ public class TextField extends Widget implements Disableable {
 	private int visibleTextStart, visibleTextEnd;
 	private int maxLength = 0;
 
-	private float blinkTime = 0.32f;
-	boolean cursorOn = true;
-	long lastBlink;
+	boolean focused;
+	boolean cursorOn;
+	float blinkTime = 0.32f;
+	final Task blinkTask = new Task() {
+		public void run () {
+			cursorOn = !cursorOn;
+			Gdx.graphics.requestRendering();
+		}
+	};
 
-	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
+	final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
 	public TextField (String text, Skin skin) {
@@ -250,18 +256,18 @@ public class TextField extends Widget implements Disableable {
 		float startX = 0;
 		for (int i = 0; i < glyphCount; i++) {
 			if (glyphPositions[i] >= -renderOffset) {
-				visibleTextStart = Math.max(0, i);
+				visibleTextStart = i;
 				startX = glyphPositions[i];
 				break;
 			}
 		}
 
 		// calculate last visible char based on visible width and render offset
-		int length = Math.min(displayText.length(), glyphPositions.length - 1);
-		visibleTextEnd = Math.min(length, cursor + 1);
-		for (; visibleTextEnd <= length; visibleTextEnd++)
-			if (glyphPositions[visibleTextEnd] > startX + visibleWidth) break;
-		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
+		int end = visibleTextStart + 1;
+		float endX = visibleWidth - renderOffset;
+		for (int n = Math.min(displayText.length(), glyphCount); end <= n; end++)
+			if (glyphPositions[end] > endX) break;
+		visibleTextEnd = Math.max(0, end - 1);
 
 		if ((textHAlign & Align.left) == 0) {
 			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startX);
@@ -281,17 +287,23 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	private Drawable getBackgroundDrawable () {
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
-		if (!focused) keyRepeatTask.cancel();
+		boolean focused = hasKeyboardFocus();
+		if (focused != this.focused) {
+			this.focused = focused;
+			blinkTask.cancel();
+			cursorOn = focused;
+			if (focused)
+				Timer.schedule(blinkTask, blinkTime, blinkTime);
+			else
+				keyRepeatTask.cancel();
+		} else if (!focused) //
+			cursorOn = false;
 
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
@@ -324,24 +336,20 @@ public class TextField extends Widget implements Disableable {
 		float yOffset = font.isFlipped() ? -textHeight : 0;
 		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
+				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				if (style.messageFontColor != null) {
-					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
+					messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
 						style.messageFontColor.a * color.a * parentAlpha);
 				} else
-					font.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
-				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
-					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
+					messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
+				drawMessageText(batch, messageFont, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
 		}
-		if (focused && !disabled) {
-			blink();
-			if (cursorOn && cursorPatch != null) {
-				drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
-			}
+		if (!disabled && cursorOn && cursorPatch != null) {
+			drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
 		}
 	}
 
@@ -366,6 +374,10 @@ public class TextField extends Widget implements Disableable {
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
+	}
+
+	protected void drawMessageText (Batch batch, BitmapFont font, float x, float y, float maxWidth) {
+		font.draw(batch, messageText, x, y, 0, messageText.length(), maxWidth, textHAlign, false, "...");
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
@@ -399,7 +411,7 @@ public class TextField extends Widget implements Disableable {
 		} else
 			displayText = newDisplayText;
 
-		layout.setText(font, displayText);
+		layout.setText(font, displayText.toString().replace('\r', ' ').replace('\n', ' '));
 		glyphPositions.clear();
 		float x = 0;
 		if (layout.runs.size > 0) {
@@ -414,19 +426,10 @@ public class TextField extends Widget implements Disableable {
 			fontOffset = 0;
 		glyphPositions.add(x);
 
-		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
-	}
+		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
+		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size);
 
-	private void blink () {
-		if (!Gdx.graphics.isContinuousRendering()) {
-			cursorOn = true;
-			return;
-		}
-		long time = TimeUtils.nanoTime();
-		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
-			cursorOn = !cursorOn;
-			lastBlink = time;
-		}
+		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
@@ -509,7 +512,7 @@ public class TextField extends Widget implements Disableable {
 			TextField textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			if (textField == null) { // Try to wrap around.
 				if (up)
-					currentCoords.set(Float.MIN_VALUE, Float.MIN_VALUE);
+					currentCoords.set(-Float.MAX_VALUE, -Float.MAX_VALUE);
 				else
 					currentCoords.set(Float.MAX_VALUE, Float.MAX_VALUE);
 				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
@@ -518,7 +521,10 @@ public class TextField extends Widget implements Disableable {
 				Gdx.input.setOnscreenKeyboardVisible(false);
 				break;
 			}
-			if (stage.setKeyboardFocus(textField)) break;
+			if (stage.setKeyboardFocus(textField)) {
+				textField.selectAll();
+				break;
+			}
 			current = textField;
 			currentCoords.set(bestCoords);
 		}
@@ -532,7 +538,7 @@ public class TextField extends Widget implements Disableable {
 			if (actor instanceof TextField) {
 				if (actor == this) continue;
 				TextField textField = (TextField)actor;
-				if (textField.isDisabled() || !textField.focusTraversal) continue;
+				if (textField.isDisabled() || !textField.focusTraversal || !textField.ancestorsVisible()) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				boolean below = actorCoords.y != currentCoords.y && (actorCoords.y < currentCoords.y ^ up);
 				boolean right = actorCoords.y == currentCoords.y && (actorCoords.x > currentCoords.x ^ up);
@@ -722,6 +728,10 @@ public class TextField extends Widget implements Disableable {
 		this.textHAlign = alignment;
 	}
 
+	public int getAlignment () {
+		return textHAlign;
+	}
+
 	/** If true, the text in this text field will be shown as bullet characters.
 	 * @see #setPasswordCharacter(char) */
 	public void setPasswordMode (boolean passwordMode) {
@@ -785,11 +795,9 @@ public class TextField extends Widget implements Disableable {
 		public boolean acceptChar (TextField textField, char c);
 
 		static public class DigitsOnlyFilter implements TextFieldFilter {
-			@Override
 			public boolean acceptChar (TextField textField, char c) {
 				return Character.isDigit(c);
 			}
-
 		}
 	}
 
@@ -803,7 +811,6 @@ public class TextField extends Widget implements Disableable {
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		@Override
 		public void show (boolean visible) {
 			Gdx.input.setOnscreenKeyboardVisible(visible);
 		}
@@ -845,9 +852,11 @@ public class TextField extends Widget implements Disableable {
 		}
 
 		protected void setCursorPosition (float x, float y) {
-			lastBlink = 0;
-			cursorOn = false;
 			cursor = letterUnderCursor(x);
+
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 		}
 
 		protected void goHome (boolean jump) {
@@ -861,11 +870,11 @@ public class TextField extends Widget implements Disableable {
 		public boolean keyDown (InputEvent event, int keycode) {
 			if (disabled) return false;
 
-			lastBlink = 0;
-			cursorOn = false;
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 
-			Stage stage = getStage();
-			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+			if (!hasKeyboardFocus()) return false;
 
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
@@ -1003,8 +1012,7 @@ public class TextField extends Widget implements Disableable {
 				if (character < 32) return false;
 			}
 
-			Stage stage = getStage();
-			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+			if (!hasKeyboardFocus()) return false;
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
@@ -1019,21 +1027,24 @@ public class TextField extends Widget implements Disableable {
 				if (add || remove) {
 					String oldText = text;
 					int oldCursor = cursor;
-					if (hasSelection)
-						cursor = delete(false);
-					else {
-						if (backspace && cursor > 0) {
-							text = text.substring(0, cursor - 1) + text.substring(cursor--);
-							renderOffset = 0;
-						}
-						if (delete && cursor < text.length()) {
-							text = text.substring(0, cursor) + text.substring(cursor + 1);
+					if (remove) {
+						if (hasSelection)
+							cursor = delete(false);
+						else {
+							if (backspace && cursor > 0) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor--);
+								renderOffset = 0;
+							}
+							if (delete && cursor < text.length()) {
+								text = text.substring(0, cursor) + text.substring(cursor + 1);
+							}
 						}
 					}
 					if (add && !remove) {
 						// Character may be added to the text.
 						if (!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						if (!withinMaxLength(text.length())) return true;
+						if (hasSelection) cursor = delete(false);
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}

@@ -21,8 +21,8 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/** An unordered map that uses int keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small stash
- * for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
+/** An unordered map that uses int keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
+ * stash for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
@@ -168,8 +168,8 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		return null;
 	}
 
-	public void putAll (IntMap<V> map) {
-		for (Entry<V> entry : map.entries())
+	public void putAll (IntMap<? extends V> map) {
+		for (Entry<? extends V> entry : map.entries())
 			put(entry.key, entry.value);
 	}
 
@@ -286,7 +286,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.
@@ -401,6 +401,16 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			valueTable[index] = null;
 	}
 
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if the map is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
 	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {
@@ -437,8 +447,8 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		hasZeroValue = false;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation.
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
 	public boolean containsValue (Object value, boolean identity) {
@@ -506,6 +516,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
@@ -571,7 +582,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof IntMap)) return false;
-		IntMap<V> other = (IntMap)obj;
+		IntMap other = (IntMap)obj;
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
 		if (hasZeroValue) {
@@ -588,15 +599,28 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			if (key != EMPTY) {
 				V value = valueTable[i];
 				if (value == null) {
-					if (!other.containsKey(key) || other.get(key) != null) {
-						return false;
-					}
+					if (other.get(key, ObjectMap.dummy) != null) return false;
 				} else {
-					if (!value.equals(other.get(key))) {
-						return false;
-					}
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each value. */
+	public boolean equalsIdentity (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IntMap)) return false;
+		IntMap other = (IntMap)obj;
+		if (other.size != size) return false;
+		if (other.hasZeroValue != hasZeroValue) return false;
+		if (hasZeroValue && zeroValue != other.zeroValue) return false;
+		int[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			int key = keyTable[i];
+			if (key != EMPTY && valueTable[i] != other.get(key, ObjectMap.dummy)) return false;
 		}
 		return true;
 	}
@@ -675,8 +699,8 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);

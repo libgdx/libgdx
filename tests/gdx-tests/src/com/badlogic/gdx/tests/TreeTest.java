@@ -41,7 +41,8 @@ public class TreeTest extends GdxTest {
 		table.setFillParent(true);
 		stage.addActor(table);
 
-		final Tree tree = new Tree(skin);
+		// Be sure to provide generics for the type of node in the tree declaration. 
+		final Tree<Node> tree = new Tree(skin);
 
 		final Node moo1 = new Node(new TextButton("moo1", skin));
 		final Node moo2 = new Node(new TextButton("moo2", skin));

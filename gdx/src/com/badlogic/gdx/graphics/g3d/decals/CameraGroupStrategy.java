@@ -203,7 +203,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "}";
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 
 	@Override

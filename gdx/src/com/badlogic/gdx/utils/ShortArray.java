@@ -113,7 +113,7 @@ public class ShortArray {
 	}
 
 	public void addAll (ShortArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (ShortArray array, int offset, int length) {
@@ -272,6 +272,16 @@ public class ShortArray {
 		return items[0];
 	}
 
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if the array is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	public void clear () {
 		size = 0;
 	}
@@ -288,6 +298,7 @@ public class ShortArray {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public short[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -296,6 +307,7 @@ public class ShortArray {
 	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public short[] setSize (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (newSize > items.length) resize(Math.max(8, newSize));
 		size = newSize;
 		return items;
@@ -368,10 +380,9 @@ public class ShortArray {
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		short[] items1 = this.items;
-		short[] items2 = array.items;
+		short[] items1 = this.items, items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

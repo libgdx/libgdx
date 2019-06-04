@@ -44,6 +44,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -55,6 +56,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #createApplicationListener()}. Clients can override the default loading screen via
@@ -104,7 +108,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		setApplicationLogger(new GwtApplicationLogger(this.config.log));
 
-		addEventListeners();
 
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
@@ -151,6 +154,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					if(loadingListener != null)
 						loadingListener.beforeSetup();
 					setupLoop();
+					addEventListeners();
 					if(loadingListener != null)
 						loadingListener.afterSetup();
 				}
@@ -191,7 +195,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;
-		this.net = new GwtNet();
+		this.net = new GwtNet(config);
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
 		updateLogLabelSize();
@@ -223,10 +227,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	void mainLoop() {
 		graphics.update();
 		if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
-			GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			lastWidth = graphics.getWidth();
 			lastHeight = graphics.getHeight();
 			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+			GwtApplication.this.listener.resize(lastWidth, lastHeight);
 		}
 		runnablesHelper.addAll(runnables);
 		runnables.clear();
@@ -407,6 +411,20 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public void exit () {
 	}
+
+    /**
+     * @return {@code true} if application runs on a mobile device
+     */
+	public static boolean isMobileDevice() {
+	    // RegEx pattern from detectmobilebrowsers.com (public domain)
+        String pattern = "(android|bb\\d+|meego).+mobile|avantgo|bada\\/|blackberry|blazer|compal|elaine|fennec" +
+                "|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)" +
+                "i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\\.(browser|link)" +
+                "|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(Window.Navigator.getUserAgent().toLowerCase());
+        return m.matches();
+    }
 
 	/** Contains precomputed information on the user-agent. Useful for dealing with browser and OS behavioral differences. Kindly
 	 * borrowed from PlayN */

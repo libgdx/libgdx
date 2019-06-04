@@ -71,6 +71,11 @@ public class ParticleEffect implements Disposable, ResourceData.Configurable {
 			controllers.get(i).update();
 	}
 
+	public void update (float deltaTime) {
+		for (int i = 0, n = controllers.size; i < n; i++)
+			controllers.get(i).update(deltaTime);
+	}
+
 	public void draw () {
 		for (int i = 0, n = controllers.size; i < n; i++)
 			controllers.get(i).draw();

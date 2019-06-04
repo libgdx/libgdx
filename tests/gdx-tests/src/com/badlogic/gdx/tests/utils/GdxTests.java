@@ -58,6 +58,7 @@ import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
 import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
+import com.badlogic.gdx.tests.g3d.MaterialEmissiveTest;
 import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
@@ -110,6 +111,7 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		ClipboardTest.class,
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
@@ -163,6 +165,7 @@ public class GdxTests {
 		LifeCycleTest.class,
 		LightsTest.class,
 		MaterialTest.class,
+		MaterialEmissiveTest.class,
 		MatrixJNITest.class,
 		MeshBuilderTest.class,
 		MeshShaderTest.class,
@@ -186,6 +189,7 @@ public class GdxTests {
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
+		PixmapPackerIOTest.class,
 		PixmapTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
@@ -200,6 +204,8 @@ public class GdxTests {
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
+		ScrollPaneTextAreaTest.class,
+		ScrollPaneWithDynamicScrolling.class,
 		SelectTest.class,
 		SensorTest.class,
 		ShaderCollectionTest.class,

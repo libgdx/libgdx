@@ -43,29 +43,19 @@ public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
-	private String rootPath;
 	private final Settings settings;
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 	private float scale = 1;
 	private Resampling resampling = Resampling.bicubic;
 
-	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
-	public ImageProcessor (File rootDir, Settings settings) {
-		this.settings = settings;
-
-		if (rootDir != null) {
-			rootPath = rootDir.getAbsolutePath().replace('\\', '/');
-			if (!rootPath.endsWith("/")) rootPath += "/";
-		}
-	}
-
 	public ImageProcessor (Settings settings) {
-		this(null, settings);
+		this.settings = settings;
 	}
 
-	/** The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true. */
-	public void addImage (File file) {
+	/** The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
+	 * @param rootPath Used to strip the root directory prefix from image file names, can be null. */
+	public Rect addImage (File file, String rootPath) {
 		BufferedImage image;
 		try {
 			image = ImageIO.read(file);
@@ -74,7 +64,13 @@ public class ImageProcessor {
 		}
 		if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
-		String name = file.getAbsolutePath().replace('\\', '/');
+		String name;
+		try {
+			name = file.getCanonicalPath();
+		} catch (IOException ex) {
+			name = file.getAbsolutePath();
+		}
+		name = name.replace('\\', '/');
 
 		// Strip root dir off front of image path.
 		if (rootPath != null) {
@@ -88,10 +84,11 @@ public class ImageProcessor {
 
 		Rect rect = addImage(image, name);
 		if (rect != null && settings.limitMemory) rect.unloadImage(file);
+		return rect;
 	}
 
 	/** The image will be kept in-memory during packing.
-	 * @see #addImage(File) */
+	 * @see #addImage(File, String) */
 	public Rect addImage (BufferedImage image, String name) {
 		Rect rect = processImage(image, name);
 
@@ -104,7 +101,11 @@ public class ImageProcessor {
 			String crc = hash(rect.getImage(this));
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
-				if (!settings.silent) System.out.println(rect.name + " (alias of " + existing.name + ")");
+				if (!settings.silent) {
+					String rectName = rect.name + (rect.index != -1 ? "_" + rect.index : "");
+					String existingName = existing.name + (existing.index != -1 ? "_" + existing.index : "");
+					System.out.println(rectName + " (alias of " + existingName + ")");
+				}
 				existing.aliases.add(new Alias(rect));
 				return null;
 			}
@@ -119,6 +120,10 @@ public class ImageProcessor {
 		this.scale = scale;
 	}
 
+	public float getScale () {
+		return scale;
+	}
+
 	public void setResampling (Resampling resampling) {
 		this.resampling = resampling;
 	}
@@ -127,13 +132,17 @@ public class ImageProcessor {
 		return rects;
 	}
 
+	public Settings getSettings () {
+		return settings;
+	}
+
 	public void clear () {
 		rects.clear();
 		crcs.clear();
 	}
 
 	/** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
-	Rect processImage (BufferedImage image, String name) {
+	protected Rect processImage (BufferedImage image, String name) {
 		if (scale <= 0) throw new IllegalArgumentException("scale cannot be <= 0: " + scale);
 
 		int width = image.getWidth(), height = image.getHeight();
@@ -177,17 +186,6 @@ public class ImageProcessor {
 			image = newImage;
 		}
 
-		if (isPatch) {
-			// Ninepatches aren't rotated or whitespace stripped.
-			rect = new Rect(image, 0, 0, width, height, true);
-			rect.splits = splits;
-			rect.pads = pads;
-			rect.canRotate = false;
-		} else {
-			rect = stripWhitespace(image);
-			if (rect == null) return null;
-		}
-
 		// Strip digits off end of name and use as index.
 		int index = -1;
 		if (settings.useIndexes) {
@@ -198,13 +196,24 @@ public class ImageProcessor {
 			}
 		}
 
+		if (isPatch) {
+			// Ninepatches aren't rotated or whitespace stripped.
+			rect = new Rect(image, 0, 0, width, height, true);
+			rect.splits = splits;
+			rect.pads = pads;
+			rect.canRotate = false;
+		} else {
+			rect = stripWhitespace(name, image);
+			if (rect == null) return null;
+		}
+
 		rect.name = name;
 		rect.index = index;
 		return rect;
 	}
 
 	/** Strips whitespace and returns the rect, or null if the image should be ignored. */
-	private Rect stripWhitespace (BufferedImage source) {
+	protected Rect stripWhitespace (String name, BufferedImage source) {
 		WritableRaster alphaRaster = source.getAlphaRaster();
 		if (alphaRaster == null || (!settings.stripWhitespaceX && !settings.stripWhitespaceY))
 			return new Rect(source, 0, 0, source.getWidth(), source.getHeight(), false);

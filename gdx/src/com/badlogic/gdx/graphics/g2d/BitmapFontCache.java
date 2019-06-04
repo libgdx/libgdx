@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.Pools;
  * @author Alexander Dorokhov */
 public class BitmapFontCache {
 	static private final Color tempColor = new Color(1, 1, 1, 1);
-	static private final float whiteTint = Color.WHITE.toFloatBits();
 
 	private final BitmapFont font;
 	private boolean integer;
@@ -381,7 +380,7 @@ public class BitmapFontCache {
 			}
 		}
 
-		currentTint = whiteTint; // Cached glyphs have changed, reset the current tint.
+		currentTint = Color.WHITE_FLOAT_BITS; // Cached glyphs have changed, reset the current tint.
 	}
 
 	private void addGlyph (Glyph glyph, float x, float y, float color) {

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
@@ -26,10 +27,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
  * @author Nathan Sweet */
 public class DragListener extends InputListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1, stageTouchDownX = -1, stageTouchDownY = -1;
+	private float dragStartX, dragStartY, dragLastX, dragLastY, dragX, dragY;
 	private int pressedPointer = -1;
 	private int button;
 	private boolean dragging;
-	private float deltaX, deltaY;
 
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pressedPointer != -1) return false;
@@ -46,16 +47,18 @@ public class DragListener extends InputListener {
 		if (pointer != pressedPointer) return;
 		if (!dragging && (Math.abs(touchDownX - x) > tapSquareSize || Math.abs(touchDownY - y) > tapSquareSize)) {
 			dragging = true;
+			dragStartX = x;
+			dragStartY = y;
 			dragStart(event, x, y, pointer);
-			deltaX = x;
-			deltaY = y;
+			dragX = x;
+			dragY = y;
 		}
 		if (dragging) {
-			deltaX -= x;
-			deltaY -= y;
+			dragLastX = dragX;
+			dragLastY = dragY;
+			dragX = x;
+			dragY = y;
 			drag(event, x, y, pointer);
-			deltaX = x;
-			deltaY = y;
 		}
 	}
 
@@ -110,14 +113,43 @@ public class DragListener extends InputListener {
 		return stageTouchDownY;
 	}
 
+	public float getDragStartX () {
+		return dragStartX;
+	}
+
+	public void setDragStartX (float dragStartX) {
+		this.dragStartX = dragStartX;
+	}
+
+	public float getDragStartY () {
+		return dragStartY;
+	}
+
+	public void setDragStartY (float dragStartY) {
+		this.dragStartY = dragStartY;
+	}
+
+	public float getDragX () {
+		return dragX;
+	}
+
+	public float getDragY () {
+		return dragY;
+	}
+
+	/** The distance from drag start to the current drag position. */
+	public float getDragDistance () {
+		return Vector2.len(dragX - dragStartX, dragY - dragStartY);
+	}
+
 	/** Returns the amount on the x axis that the touch has been dragged since the last drag event. */
 	public float getDeltaX () {
-		return deltaX;
+		return dragX - dragLastX;
 	}
 
 	/** Returns the amount on the y axis that the touch has been dragged since the last drag event. */
 	public float getDeltaY () {
-		return deltaY;
+		return dragY - dragLastY;
 	}
 
 	public int getButton () {

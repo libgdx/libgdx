@@ -245,9 +245,10 @@ public class Table extends WidgetGroup {
 		return cell;
 	}
 
-	public void add (Actor... actors) {
+	public Table add (Actor... actors) {
 		for (int i = 0, n = actors.length; i < n; i++)
 			add(actors[i]);
+		return this;
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
@@ -342,7 +343,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			if (!implicitEndRow) endRow();
+			if (!implicitEndRow) {
+				if (cells.peek().endRow) return rowDefaults; // Row was already ended.
+				endRow();
+			}
 			invalidate();
 		}
 		implicitEndRow = false;
@@ -484,43 +488,43 @@ public class Table extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (float pad) {
-		pad(new Fixed(pad));
+		pad(Fixed.valueOf(pad));
 		return this;
 	}
 
 	public Table pad (float top, float left, float bottom, float right) {
-		padTop = new Fixed(top);
-		padLeft = new Fixed(left);
-		padBottom = new Fixed(bottom);
-		padRight = new Fixed(right);
+		padTop = Fixed.valueOf(top);
+		padLeft = Fixed.valueOf(left);
+		padBottom = Fixed.valueOf(bottom);
+		padRight = Fixed.valueOf(right);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the top edge of the table. */
 	public Table padTop (float padTop) {
-		this.padTop = new Fixed(padTop);
+		this.padTop = Fixed.valueOf(padTop);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the left edge of the table. */
 	public Table padLeft (float padLeft) {
-		this.padLeft = new Fixed(padLeft);
+		this.padLeft = Fixed.valueOf(padLeft);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the bottom edge of the table. */
 	public Table padBottom (float padBottom) {
-		this.padBottom = new Fixed(padBottom);
+		this.padBottom = Fixed.valueOf(padBottom);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the right edge of the table. */
 	public Table padRight (float padRight) {
-		this.padRight = new Fixed(padRight);
+		this.padRight = Fixed.valueOf(padRight);
 		sizeInvalid = true;
 		return this;
 	}
@@ -1041,31 +1045,35 @@ public class Table extends WidgetGroup {
 			float extra = layoutWidth - hpadding;
 			for (int i = 0; i < columns; i++)
 				extra -= columnWidth[i];
-			float used = 0;
-			int lastIndex = 0;
-			for (int i = 0; i < columns; i++) {
-				if (expandWidth[i] == 0) continue;
-				float amount = extra * expandWidth[i] / totalExpandWidth;
-				columnWidth[i] += amount;
-				used += amount;
-				lastIndex = i;
+			if (extra > 0) { // layoutWidth < tableMinWidth.
+				float used = 0;
+				int lastIndex = 0;
+				for (int i = 0; i < columns; i++) {
+					if (expandWidth[i] == 0) continue;
+					float amount = extra * expandWidth[i] / totalExpandWidth;
+					columnWidth[i] += amount;
+					used += amount;
+					lastIndex = i;
+				}
+				columnWidth[lastIndex] += extra - used;
 			}
-			columnWidth[lastIndex] += extra - used;
 		}
 		if (totalExpandHeight > 0) {
 			float extra = layoutHeight - vpadding;
 			for (int i = 0; i < rows; i++)
 				extra -= rowHeight[i];
-			float used = 0;
-			int lastIndex = 0;
-			for (int i = 0; i < rows; i++) {
-				if (expandHeight[i] == 0) continue;
-				float amount = extra * expandHeight[i] / totalExpandHeight;
-				rowHeight[i] += amount;
-				used += amount;
-				lastIndex = i;
+			if (extra > 0) { // layoutHeight < tableMinHeight.
+				float used = 0;
+				int lastIndex = 0;
+				for (int i = 0; i < rows; i++) {
+					if (expandHeight[i] == 0) continue;
+					float amount = extra * expandHeight[i] / totalExpandHeight;
+					rowHeight[i] += amount;
+					used += amount;
+					lastIndex = i;
+				}
+				rowHeight[lastIndex] += extra - used;
 			}
-			rowHeight[lastIndex] += extra - used;
 		}
 
 		// Distribute any additional width added by colspanned cells to the columns spanned.

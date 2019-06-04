@@ -106,7 +106,7 @@ public class LongArray {
 	}
 
 	public void addAll (LongArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (LongArray array, int offset, int length) {
@@ -265,6 +265,16 @@ public class LongArray {
 		return items[0];
 	}
 
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if the array is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	public void clear () {
 		size = 0;
 	}
@@ -281,6 +291,7 @@ public class LongArray {
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public long[] ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
@@ -289,6 +300,7 @@ public class LongArray {
 	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public long[] setSize (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (newSize > items.length) resize(Math.max(8, newSize));
 		size = newSize;
 		return items;
@@ -361,10 +373,9 @@ public class LongArray {
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		long[] items1 = this.items;
-		long[] items2 = array.items;
+		long[] items1 = this.items, items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

@@ -34,8 +34,8 @@ import com.badlogic.gdx.utils.Pools;
  * <p>
  * {@link ChangeEvent} is fired when the slider knob is moved. Canceling the event will move the knob to where it was previously.
  * <p>
- * For a horizontal progress bar, its preferred height is determined by the larger of the knob and background, and the preferred width
- * is 140, a relatively arbitrary size. These parameters are reversed for a vertical progress bar.
+ * For a horizontal progress bar, its preferred height is determined by the larger of the knob and background, and the preferred
+ * width is 140, a relatively arbitrary size. These parameters are reversed for a vertical progress bar.
  * @author mzechner
  * @author Nathan Sweet */
 public class Slider extends ProgressBar {
@@ -53,10 +53,11 @@ public class Slider extends ProgressBar {
 		this(min, max, stepSize, vertical, skin.get(styleName, SliderStyle.class));
 	}
 
-	/** Creates a new slider. If horizontal, its width is determined by the prefWidth parameter, its height is determined by the maximum of
-	 * the height of either the slider {@link NinePatch} or slider handle {@link TextureRegion}. The min and max values determine
-	 * the range the values of this slider can take on, the stepSize parameter specifies the distance between individual values.
-	 * E.g. min could be 4, max could be 10 and stepSize could be 0.2, giving you a total of 30 values, 4.0 4.2, 4.4 and so on.
+	/** Creates a new slider. If horizontal, its width is determined by the prefWidth parameter, its height is determined by the
+	 * maximum of the height of either the slider {@link NinePatch} or slider handle {@link TextureRegion}. The min and max values
+	 * determine the range the values of this slider can take on, the stepSize parameter specifies the distance between individual
+	 * values. E.g. min could be 4, max could be 10 and stepSize could be 0.2, giving you a total of 30 values, 4.0 4.2, 4.4 and so
+	 * on.
 	 * @param min the minimum value
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
@@ -76,7 +77,8 @@ public class Slider extends ProgressBar {
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != draggingPointer) return;
 				draggingPointer = -1;
-				if (!calculatePositionAndValue(x, y)) {
+				// The position is invalid when focus is cancelled
+				if (event.isTouchFocusCancel() || !calculatePositionAndValue(x, y)) {
 					// Fire an event on touchUp even if the value didn't change, so listeners can see when a drag ends via isDragging.
 					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 					fire(changeEvent);
@@ -135,14 +137,14 @@ public class Slider extends ProgressBar {
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
 			position = y - bg.getBottomHeight() - knobHeight * 0.5f;
 			value = min + (max - min) * visualInterpolationInverse.apply(position / (height - knobHeight));
-			position = Math.max(0, position);
+			position = Math.max(Math.min(0, bg.getBottomHeight()), position);
 			position = Math.min(height - knobHeight, position);
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
 			position = x - bg.getLeftWidth() - knobWidth * 0.5f;
 			value = min + (max - min) * visualInterpolationInverse.apply(position / (width - knobWidth));
-			position = Math.max(0, position);
+			position = Math.max(Math.min(0, bg.getLeftWidth()), position);
 			position = Math.min(width - knobWidth, position);
 		}
 
@@ -155,11 +157,19 @@ public class Slider extends ProgressBar {
 
 	/** Returns a snapped value. */
 	protected float snap (float value) {
-		if (snapValues == null) return value;
+		if (snapValues == null || snapValues.length == 0) return value;
+		float bestDiff = -1, bestValue = 0;
 		for (int i = 0; i < snapValues.length; i++) {
-			if (Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
+			float snapValue = snapValues[i];
+			float diff = Math.abs(value - snapValue);
+			if (diff <= threshold) {
+				if (bestDiff == -1 || diff < bestDiff) {
+					bestDiff = diff;
+					bestValue = snapValue;
+				}
+			}
 		}
-		return value;
+		return bestDiff == -1 ? value : bestValue;
 	}
 
 	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
