@@ -50,30 +50,32 @@ public class GwtInput implements Input {
 	boolean[] justPressedKeys = new boolean[256];
 	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
-	char lastKeyCharPressed;
-	float keyRepeatTimer;
 	long currentEventTimeStamp;
 	final CanvasElement canvas;
+	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
 
-	public GwtInput (CanvasElement canvas) {
+	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
-		GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
-			@Override
-			public void granted() {
-				setupAccelerometer();
-			}
+		this.config = config;
+		if (config.useAccelerometer) {
+			GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+				@Override
+				public void granted() {
+					setupAccelerometer();
+				}
 
-			@Override
-			public void denied() {
-			}
+				@Override
+				public void denied() {
+				}
 
-			@Override
-			public void prompt() {
-				setupAccelerometer();
-			}
-		});
+				@Override
+				public void prompt() {
+					setupAccelerometer();
+				}
+			});
+		}
 		hookEvents();
 	}
 
