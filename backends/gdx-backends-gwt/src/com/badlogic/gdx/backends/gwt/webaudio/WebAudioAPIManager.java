@@ -39,6 +39,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	private final JavaScriptObject globalVolumeNode;
 	private final AssetDownloader assetDownloader;
 	private final AudioControlGraphPool audioControlGraphPool;
+	private static boolean soundUnlocked;
 
 	public WebAudioAPIManager () {
 		this.assetDownloader = new AssetDownloader();
@@ -49,39 +50,49 @@ public class WebAudioAPIManager implements LifecycleListener {
 		// for automatically muting/unmuting on pause/resume
 		Gdx.app.addLifecycleListener(this);
 
-		CanvasElement canvasElement = ((GwtApplication)Gdx.app).getCanvasElement();
-
 		/*
-		 * The Web Audio API is blocked on many mobile platforms until the developer triggers the first sound playback using the
+		 * The Web Audio API is blocked on many platforms until the developer triggers the first sound playback using the
 		 * API. But it MUST happen as a direct result of a few specific input events. This is a major point of confusion for
 		 * developers new to the platform. Here we attach event listeners to the graphics canvas in order to unlock the sound system
 		 * on the first input event. On the event, we play a silent sample, which should unlock the sound - on platforms where it is
 		 * not necessary the effect should not be noticeable (i.e. we play silence). As soon as the attempt to unlock has been
 		 * performed, we remove all the event listeners.
 		 */
-		hookUpSoundUnlockers(canvasElement);
+		hookUpSoundUnlockers();
 	}
 
-	public native void hookUpSoundUnlockers (JavaScriptObject canvas) /*-{
+	public native void hookUpSoundUnlockers () /*-{
 		var self = this;
+
+		// An array of various user interaction events we should listen for
+		var userInputEventNames = [
+			'click', 'contextmenu', 'auxclick', 'dblclick', 'mousedown',
+			'mouseup', 'pointerup', 'touchend', 'keydown', 'keyup', 'touchstart'
+		];
+
 		var unlock = function(e) {
 			self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager::unlockSound()();
 
-			canvas.removeEventListener("mouseup", unlock);
-			canvas.removeEventListener("keyup", unlock);
-			canvas.removeEventListener("touchend", unlock);
+			userInputEventNames.forEach(function (eventName) {
+				$doc.removeEventListener(eventName, unlock);
+			});
 
 		};
 
-		canvas.addEventListener("mouseup", unlock);
-		canvas.addEventListener("keyup", unlock);
-		canvas.addEventListener("touchend", unlock);
+		userInputEventNames.forEach(function (eventName) {
+			$doc.addEventListener(eventName, unlock);
+		});
 	}-*/;
 
 	public void unlockSound () {
 		// Create a short silent sound in memory used for to unlock the sound system on mobile browsers on the first user
 		// interaction
 		new WebAudioAPISound(audioContext, globalVolumeNode, audioControlGraphPool).play();
+		soundUnlocked = true;
+	}
+
+	public static boolean isSoundUnlocked() {
+		return soundUnlocked;
 	}
 
 	/** Older browsers do not support the Web Audio API. This is where we find out.
