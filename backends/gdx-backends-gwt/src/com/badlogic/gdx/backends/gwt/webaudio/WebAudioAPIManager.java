@@ -58,7 +58,10 @@ public class WebAudioAPIManager implements LifecycleListener {
 		 * not necessary the effect should not be noticeable (i.e. we play silence). As soon as the attempt to unlock has been
 		 * performed, we remove all the event listeners.
 		 */
-		hookUpSoundUnlockers();
+		if (isAudioContextLocked(audioContext))
+			hookUpSoundUnlockers();
+		else
+			setUnlocked();
 	}
 
 	public native void hookUpSoundUnlockers () /*-{
@@ -77,7 +80,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 			// audio context when started.
 			audioContext.resume();
 			
-			self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager::unlockSound()();
+			self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager::setUnlocked()();
 
 			userInputEventNames.forEach(function (eventName) {
 				$doc.removeEventListener(eventName, unlock);
@@ -90,16 +93,18 @@ public class WebAudioAPIManager implements LifecycleListener {
 		});
 	}-*/;
 
-	public void unlockSound () {
-		// Create a short silent sound in memory used for to unlock the sound system on mobile browsers on the first user
-		// interaction
-		new WebAudioAPISound(audioContext, globalVolumeNode, audioControlGraphPool).play();
+	public void setUnlocked () {
+		Gdx.app.log("Webaudio", "Audiocontext unlocked");
 		soundUnlocked = true;
 	}
 
 	public static boolean isSoundUnlocked() {
 		return soundUnlocked;
 	}
+
+	static native boolean isAudioContextLocked(JavaScriptObject audioContext)  /*-{
+		return audioContext.state !== 'running';
+	}-*/;
 
 	/** Older browsers do not support the Web Audio API. This is where we find out.
 	 * 

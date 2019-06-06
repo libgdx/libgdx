@@ -77,7 +77,7 @@ public class WebAudioAPISound implements Sound {
 	protected long play (float volume, float pitch, float pan, boolean loop) {
 		// if the sound system is not yet unlocked, skip playing the sound.
 		// otherwise, it is played when the user makes his first input
-		if (!WebAudioAPIManager.isSoundUnlocked())
+		if (!WebAudioAPIManager.isSoundUnlocked() && WebAudioAPIManager.isAudioContextLocked(audioContext))
 			return -1;
 
 		// Get ourselves a fresh audio graph
