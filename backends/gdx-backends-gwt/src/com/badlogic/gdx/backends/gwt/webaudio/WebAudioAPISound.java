@@ -94,7 +94,7 @@ public class WebAudioAPISound implements Sound {
 		int myKey = nextKey++;
 
 		// Start the playback
-		playJSNI(audioBufferSourceNode, myKey, 0);
+		playJSNI(audioBufferSourceNode, myKey, 0f);
 
 		// Remember that we are playing
 		activeSounds.put(myKey, audioBufferSourceNode);
@@ -168,12 +168,12 @@ public class WebAudioAPISound implements Sound {
 
 	@Override
 	public long play () {
-		return play(1);
+		return play(1f);
 	}
 
 	@Override
 	public long play (float volume) {
-		return play(volume, 1, 0);
+		return play(volume, 1f, 0f);
 	}
 
 	@Override
@@ -183,12 +183,12 @@ public class WebAudioAPISound implements Sound {
 
 	@Override
 	public long loop () {
-		return loop(1);
+		return loop(1f);
 	}
 
 	@Override
 	public long loop (float volume) {
-		return loop(volume, 1, 0);
+		return loop(volume, 1f, 0f);
 	}
 
 	@Override

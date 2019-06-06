@@ -63,7 +63,8 @@ public class WebAudioAPIManager implements LifecycleListener {
 
 	public native void hookUpSoundUnlockers () /*-{
 		var self = this;
-
+		var audioContext = self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager::audioContext;
+		
 		// An array of various user interaction events we should listen for
 		var userInputEventNames = [
 			'click', 'contextmenu', 'auxclick', 'dblclick', 'mousedown',
@@ -71,6 +72,11 @@ public class WebAudioAPIManager implements LifecycleListener {
 		];
 
 		var unlock = function(e) {
+			
+			// resume audio context if it was suspended. It's only required for musics since sounds automatically resume
+			// audio context when started.
+			audioContext.resume();
+			
 			self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager::unlockSound()();
 
 			userInputEventNames.forEach(function (eventName) {

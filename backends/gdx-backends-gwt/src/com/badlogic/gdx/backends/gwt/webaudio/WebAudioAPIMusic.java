@@ -43,13 +43,13 @@ public class WebAudioAPIMusic implements Music {
 		JavaScriptObject audioSourceNode = createMediaElementAudioSourceNode(audioContext, audio.getAudioElement());
 
 		// Setup the sound graph to control pan and volume
-		audioControlGraph = audioControlGraphPool.newObject();
+		audioControlGraph = audioControlGraphPool.obtain();
 		audioControlGraph.setSource(audioSourceNode);
 	}
 
 	public void ended()
 	{
-		this.onCompletionListener.onCompletion(this);
+		if(this.onCompletionListener != null) this.onCompletionListener.onCompletion(this);
 	}
 
 	public native JavaScriptObject createMediaElementAudioSourceNode(JavaScriptObject audioContext, JavaScriptObject audioElement) /*-{

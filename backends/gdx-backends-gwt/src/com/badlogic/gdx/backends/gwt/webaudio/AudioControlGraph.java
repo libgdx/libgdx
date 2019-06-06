@@ -27,16 +27,10 @@ public class AudioControlGraph {
 	private JavaScriptObject panNode;
 
 	public AudioControlGraph (JavaScriptObject audioContext, JavaScriptObject destinationNode) {
-		this(audioContext, null, destinationNode);
-	}
-
-	public AudioControlGraph (JavaScriptObject audioContext, JavaScriptObject sourceNode, JavaScriptObject destinationNode) {
 		this.audioContext = audioContext;
 		this.destinationNode = destinationNode;
 
 		setupAudoGraph();
-
-		if (sourceNode != null) setSource(sourceNode);
 	}
 
 	public native JavaScriptObject setupAudoGraph () /*-{
