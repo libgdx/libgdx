@@ -60,9 +60,9 @@ public class GwtInput implements Input {
 		this.canvas = canvas;
 		this.config = config;
 		if (config.useAccelerometer) {
-			if (GwtApplication.agentInfo().isFirefox())
+			if (GwtApplication.agentInfo().isFirefox()) {
 				setupAccelerometer();
-			else
+			} else {
 				GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
 					@Override
 					public void granted() {
@@ -78,6 +78,7 @@ public class GwtInput implements Input {
 						setupAccelerometer();
 					}
 				});
+			}
 		}
 		hookEvents();
 	}
