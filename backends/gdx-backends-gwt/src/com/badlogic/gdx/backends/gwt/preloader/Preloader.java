@@ -46,7 +46,7 @@ public class Preloader {
 
 	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
-	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
+	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 
@@ -181,7 +181,7 @@ public class Preloader {
 								binaries.put(asset.url, (Blob) result);
 								break;
 							case Audio:
-								audio.put(asset.url, null);
+								audio.put(asset.url, (Blob) result);
 								break;
 							case Directory:
 								directories.put(asset.url, null);
@@ -212,7 +212,7 @@ public class Preloader {
 			return binaries.get(url).read();
 		}
 		if (audio.containsKey(url)) {
-			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
+			return audio.get(url).read();
 		}
 		return null;
 	}
@@ -308,7 +308,7 @@ public class Preloader {
 			return binaries.get(url).length();
 		}
 		if (audio.containsKey(url)) {
-			return 1; // FIXME sensible?
+			return audio.get(url).length();
 		}
 		return 0;
 	}
