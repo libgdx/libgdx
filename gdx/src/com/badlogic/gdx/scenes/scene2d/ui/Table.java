@@ -93,7 +93,7 @@ public class Table extends WidgetGroup {
 
 	private Cell obtainCell () {
 		Cell cell = cellPool.obtain();
-		cell.setLayout(this);
+		cell.setTable(this);
 		return cell;
 	}
 

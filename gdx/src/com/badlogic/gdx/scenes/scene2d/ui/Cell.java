@@ -41,10 +41,12 @@ public class Cell<T extends Actor> implements Poolable {
 	float computedPadTop, computedPadLeft, computedPadBottom, computedPadRight;
 
 	public Cell () {
-		reset();
+		cellAboveIndex = -1;
+		Cell defaults = defaults();
+		if (defaults != null) set(defaults);
 	}
 
-	public void setLayout (Table table) {
+	public void setTable (Table table) {
 		this.table = table;
 	}
 
@@ -924,9 +926,7 @@ public class Cell<T extends Actor> implements Poolable {
 		table = null;
 		endRow = false;
 		cellAboveIndex = -1;
-
-		Cell defaults = defaults();
-		if (defaults != null) set(defaults);
+		set(defaults());
 	}
 
 	void set (Cell cell) {

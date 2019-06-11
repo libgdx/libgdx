@@ -26,6 +26,7 @@
 - API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
 - API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
 - API Addition: Support for InstancedRendering via Mesh
+- API Change: Cell#setLayout renamed to setTable.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
