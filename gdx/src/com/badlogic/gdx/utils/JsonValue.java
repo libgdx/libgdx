@@ -859,6 +859,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		return name;
 	}
 
+	/** @param name May be null. */
 	public void setName (String name) {
 		this.name = name;
 	}
@@ -877,6 +878,7 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	/** Sets the name of the specified value and adds it after the last child. */
 	public void addChild (String name, JsonValue value) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		value.name = name;
 		addChild(value);
 	}
