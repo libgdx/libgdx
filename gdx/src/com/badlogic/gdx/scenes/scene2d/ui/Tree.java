@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -249,32 +250,40 @@ public class Tree<T extends BaseNode> extends WidgetGroup {
 
 	/** Draws selection, icons, and expand icons. */
 	private void draw (Batch batch, Array<T> nodes, float indent, float plusMinusWidth) {
+		Rectangle cullingArea = getCullingArea();
+		float cullBottom = 0, cullTop = 0;
+		if (cullingArea != null) {
+			cullBottom = cullingArea.y;
+			cullTop = cullBottom + cullingArea.height;
+		}
 		Drawable plus = style.plus, minus = style.minus;
 		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			T node = nodes.get(i);
 			float height = node.height;
 			Actor actor = node.actor;
+			float actorY = actor.getY();
+			if (cullingArea != null && actorY + height >= cullBottom && actorY <= cullTop) {
+				if (selection.contains(node) && style.selection != null) {
+					style.selection.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+				} else if (node == overNode && style.over != null) {
+					style.over.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+				}
 
-			if (selection.contains(node) && style.selection != null) {
-				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), height + ySpacing);
-			} else if (node == overNode && style.over != null) {
-				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), height + ySpacing);
+				if (node.icon != null) {
+					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
+					batch.setColor(actor.getColor());
+					node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
+					batch.setColor(Color.WHITE);
+				}
+
+				if (node.children.size > 0) {
+					Drawable expandIcon = node.expanded ? minus : plus;
+					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
+					expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
+				}
 			}
-
-			if (node.icon != null) {
-				float iconY = y + actor.getY() + Math.round((height - node.icon.getMinHeight()) / 2);
-				batch.setColor(actor.getColor());
-				node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
-				batch.setColor(Color.WHITE);
-			}
-
-			if (node.children.size == 0) continue;
-
-			Drawable expandIcon = node.expanded ? minus : plus;
-			float iconY = y + actor.getY() + Math.round((height - expandIcon.getMinHeight()) / 2);
-			expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
-			if (node.expanded) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
+			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
 		}
 	}
 
