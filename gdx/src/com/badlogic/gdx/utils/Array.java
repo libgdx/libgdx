@@ -298,8 +298,8 @@ public class Array<T> implements Iterable<T> {
 		if (ordered)
 			System.arraycopy(items, start + count, items, start, size - (start + count));
 		else {
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex + i];
+			if (count >= 0)
+				System.arraycopy(items, lastIndex + 0, items, start + 0, count);
 		}
 		for (int i = lastIndex, n = size; i < n; i++)
 			items[i] = null;

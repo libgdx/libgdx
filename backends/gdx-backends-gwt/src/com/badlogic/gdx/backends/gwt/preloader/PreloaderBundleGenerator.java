@@ -244,9 +244,7 @@ public class PreloaderBundleGenerator extends Generator {
 		List<String> classpathFiles = new ArrayList<String>();
 		try {
 			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.files.classpath");
-			for (String value : prop.getValues()) {
-				classpathFiles.add(value);
-			}
+			classpathFiles.addAll(prop.getValues());
 		} catch (BadPropertyValueException e) {
 			// Ignore
 		}		

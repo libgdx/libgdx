@@ -272,9 +272,7 @@ public final class ClassReflection {
 					// append to result set
 					if (!duplicate) {
 						Annotation[] copy = new Annotation[result.length + 1];
-						for (int j = 0; j < result.length; j++) {
-							copy[j] = result[j];
-						}
+						System.arraycopy(result, 0, copy, 0, result.length);
 						copy[result.length] = new Annotation(superAnnotations[i]);
 						result = copy;
 					}

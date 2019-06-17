@@ -29,16 +29,14 @@ public class ContactImpulse {
 	}
 
 	public float[] getNormalImpulses () {
-		for (int i = 0; i < impulse.count; i++) {
-			normalImpulses[i] = impulse.normalImpulses[i];
-		}
+        if (impulse.count >= 0)
+            System.arraycopy(impulse.normalImpulses, 0, normalImpulses, 0, impulse.count);
 		return normalImpulses;
 	}
 
 	public float[] getTangentImpulses () {
-		for (int i = 0; i < impulse.count; i++) {
-			tangentImpulses[i] = impulse.tangentImpulses[i];
-		}
+        if (impulse.count >= 0)
+            System.arraycopy(impulse.tangentImpulses, 0, tangentImpulses, 0, impulse.count);
 		return tangentImpulses;
 	}
 

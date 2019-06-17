@@ -57,8 +57,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		if (attributes.length == 0) throw new IllegalArgumentException("attributes must be >= 1");
 
 		VertexAttribute[] list = new VertexAttribute[attributes.length];
-		for (int i = 0; i < attributes.length; i++)
-			list[i] = attributes[i];
+		System.arraycopy(attributes, 0, list, 0, attributes.length);
 
 		this.attributes = list;
 		vertexSize = calculateOffsets();

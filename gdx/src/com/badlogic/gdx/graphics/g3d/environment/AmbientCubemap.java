@@ -44,8 +44,7 @@ public class AmbientCubemap {
 	}
 
 	public AmbientCubemap set (final float values[]) {
-		for (int i = 0; i < data.length; i++)
-			data[i] = values[i];
+		System.arraycopy(values, 0, data, 0, data.length);
 		return this;
 	}
 

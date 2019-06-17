@@ -44,10 +44,10 @@ public class GwtPreferences implements Preferences {
 	}
 
 	private Object toObject (String key, String value) {
-		if (key.endsWith("b")) return new Boolean(Boolean.parseBoolean(value));
-		if (key.endsWith("i")) return new Integer(Integer.parseInt(value));
-		if (key.endsWith("l")) return new Long(Long.parseLong(value));
-		if (key.endsWith("f")) return new Float(Float.parseFloat(value));
+		if (key.endsWith("b")) return Boolean.valueOf(value);
+		if (key.endsWith("i")) return Integer.valueOf(value);
+		if (key.endsWith("l")) return Long.valueOf(value);
+		if (key.endsWith("f")) return Float.valueOf(value);
 		return value;
 	}
 
