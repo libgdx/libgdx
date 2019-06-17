@@ -35,8 +35,7 @@
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-				<exclude name="android/**"/>
-
+		
 	</fileset>
 
 	<!-- define linker and options -->
