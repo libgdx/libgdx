@@ -22,7 +22,8 @@
 - Fixed TextField rendering text outside the widget at small sizes.
 - API Addition: Group#getChild(int)
 - API Addition: notEmpty() for collections.
-- API Change: For Tree in scene2d.ui you must now provide generics for the type of node in your tree declaration.
+- API Change: scene2d.ui Tree methods renamed for node set/getObject to set/getValue.
+- API Change: scene2d.ui Tree and Tree.Node require generics for the type of node, values, and actors.
 - API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
 - API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
 - API Addition: Support for InstancedRendering via Mesh
