@@ -493,20 +493,20 @@ public class ReflectionCacheSourceCreator {
 		String superClass = null;
 		if (c != null && (isVisible(c.getSuperclass())))
 			superClass = c.getSuperclass().getErasedType().getQualifiedSourceName() + ".class";
-		String assignables = null;
-		String interfaces = null;
+		StringBuilder assignables = null;
+		StringBuilder interfaces = null;
 
 		if (c != null && c.getFlattenedSupertypeHierarchy() != null) {
-			assignables = "new HashSet<Class>(Arrays.asList(";
+			assignables = new StringBuilder("new HashSet<Class>(Arrays.asList(");
 			boolean used = false;
 			for (JType i : c.getFlattenedSupertypeHierarchy()) {
 				if (!isVisible(i) || i.equals(t) || "java.lang.Object".equals(i.getErasedType().getQualifiedSourceName())) continue;
-				if (used) assignables += ", ";
-				assignables += i.getErasedType().getQualifiedSourceName() + ".class";
+				if (used) assignables.append(", ");
+				assignables.append(i.getErasedType().getQualifiedSourceName()).append(".class");
 				used = true;
 			}
 			if (used)
-				assignables += "))";
+				assignables.append("))");
 			else
 				assignables = null;
 		}
@@ -517,16 +517,16 @@ public class ReflectionCacheSourceCreator {
 		}
 		
 		if (c != null && c.getImplementedInterfaces() != null) {
-			interfaces = "new HashSet<Class>(Arrays.asList(";
+			interfaces = new StringBuilder("new HashSet<Class>(Arrays.asList(");
 			boolean used = false;
 			for (JType i : c.getImplementedInterfaces()) {
 				if (!isVisible(i) || i.equals(t)) continue;
-				if (used) interfaces += ", ";
-				interfaces += i.getErasedType().getQualifiedSourceName() + ".class";
+				if (used) interfaces.append(", ");
+				interfaces.append(i.getErasedType().getQualifiedSourceName()).append(".class");
 				used = true;
 			}
 			if (used)
-				interfaces += "))";
+				interfaces.append("))");
 			else
 				interfaces = null;
 		}

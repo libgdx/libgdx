@@ -140,10 +140,10 @@ public class AmbientCubemap {
 
 	@Override
 	public String toString () {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < data.length; i += 3) {
-			result += Float.toString(data[i]) + ", " + Float.toString(data[i + 1]) + ", " + Float.toString(data[i + 2]) + "\n";
+			result.append(Float.toString(data[i])).append(", ").append(Float.toString(data[i + 1])).append(", ").append(Float.toString(data[i + 2])).append("\n");
 		}
-		return result;
+		return result.toString();
 	}
 }

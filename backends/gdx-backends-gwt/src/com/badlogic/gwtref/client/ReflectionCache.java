@@ -44,10 +44,10 @@ public class ReflectionCache {
 		if (className.startsWith("[")) {
 			int dimensions = 0;
 			char c = className.charAt(0);
-			String suffix = "";
+			StringBuilder suffix = new StringBuilder();
 			while (c == '[') {
 				dimensions++;
-				suffix += "[]";
+				suffix.append("[]");
 				c = className.charAt(dimensions);
 			}
 			char t = className.charAt(dimensions);

@@ -175,55 +175,55 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createVertexShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
-			+ (hasNormals ? "attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n" : "")
-			+ (hasColors ? "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
+		StringBuilder shader = new StringBuilder("attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+				+ (hasNormals ? "attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n" : "")
+				+ (hasColors ? "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : ""));
 
 		for (int i = 0; i < numTexCoords; i++) {
-			shader += "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
+			shader.append("attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE).append(i).append(";\n");
 		}
 
-		shader += "uniform mat4 u_projModelView;\n";
-		shader += (hasColors ? "varying vec4 v_col;\n" : "");
+		shader.append("uniform mat4 u_projModelView;\n");
+		shader.append(hasColors ? "varying vec4 v_col;\n" : "");
 
 		for (int i = 0; i < numTexCoords; i++) {
-			shader += "varying vec2 v_tex" + i + ";\n";
+			shader.append("varying vec2 v_tex").append(i).append(";\n");
 		}
 
-		shader += "void main() {\n" + "   gl_Position = u_projModelView * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
-			+ (hasColors ? "   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
+		shader.append("void main() {\n" + "   gl_Position = u_projModelView * " + ShaderProgram.POSITION_ATTRIBUTE +
+				";\n").append(hasColors ? "   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
 
 		for (int i = 0; i < numTexCoords; i++) {
-			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
+			shader.append("   v_tex").append(i).append(" = ").append(ShaderProgram.TEXCOORD_ATTRIBUTE).append(i).append(";\n");
 		}
-		shader += "   gl_PointSize = 1.0;\n";
-		shader += "}\n";
-		return shader;
+		shader.append("   gl_PointSize = 1.0;\n");
+		shader.append("}\n");
+		return shader.toString();
 	}
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
+		StringBuilder shader = new StringBuilder("#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n");
 
-		if (hasColors) shader += "varying vec4 v_col;\n";
+		if (hasColors) shader.append("varying vec4 v_col;\n");
 		for (int i = 0; i < numTexCoords; i++) {
-			shader += "varying vec2 v_tex" + i + ";\n";
-			shader += "uniform sampler2D u_sampler" + i + ";\n";
+			shader.append("varying vec2 v_tex").append(i).append(";\n");
+			shader.append("uniform sampler2D u_sampler").append(i).append(";\n");
 		}
 
-		shader += "void main() {\n" + "   gl_FragColor = " + (hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
+		shader.append("void main() {\n" + "   gl_FragColor = ").append(hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
 
-		if (numTexCoords > 0) shader += " * ";
+		if (numTexCoords > 0) shader.append(" * ");
 
 		for (int i = 0; i < numTexCoords; i++) {
 			if (i == numTexCoords - 1) {
-				shader += " texture2D(u_sampler" + i + ",  v_tex" + i + ")";
+				shader.append(" texture2D(u_sampler").append(i).append(",  v_tex").append(i).append(")");
 			} else {
-				shader += " texture2D(u_sampler" + i + ",  v_tex" + i + ") *";
+				shader.append(" texture2D(u_sampler").append(i).append(",  v_tex").append(i).append(") *");
 			}
 		}
 
-		shader += ";\n}";
-		return shader;
+		shader.append(";\n}");
+		return shader.toString();
 	}
 
 	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
