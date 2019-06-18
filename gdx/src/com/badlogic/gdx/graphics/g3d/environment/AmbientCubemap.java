@@ -142,7 +142,7 @@ public class AmbientCubemap {
 	public String toString () {
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < data.length; i += 3) {
-			result.append(Float.toString(data[i])).append(", ").append(Float.toString(data[i + 1])).append(", ").append(Float.toString(data[i + 2])).append("\n");
+			result.append(data[i]).append(", ").append(data[i + 1]).append(", ").append(data[i + 2]).append("\n");
 		}
 		return result.toString();
 	}
