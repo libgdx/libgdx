@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,35 +44,47 @@ public class ReflectionCache {
 		if (className.startsWith("[")) {
 			int dimensions = 0;
 			char c = className.charAt(0);
-			StringBuilder suffix = new StringBuilder();
+			StringBuilder stringBuilder = new StringBuilder();
 			while (c == '[') {
 				dimensions++;
-				suffix.append("[]");
 				c = className.charAt(dimensions);
 			}
 			char t = className.charAt(dimensions);
 			switch (t) {
 			case 'Z':
-				return "boolean" + suffix;
+				stringBuilder.append("boolean");
+				break;
 			case 'B':
-				return "byte" + suffix;
+				stringBuilder.append("byte");
+                break;
 			case 'C':
-				return "char" + suffix;
+                stringBuilder.append("char");
+                break;
 			case 'L':
-				return className.substring(dimensions + 1, className.length() - 1).replace('$', '.') + suffix;
+                stringBuilder.append(className.substring(dimensions + 1, className.length() - 1).replace('$', '.'));
+                break;
 			case 'D':
-				return "double" + suffix;
+                stringBuilder.append("double");
+                break;
 			case 'F':
-				return "float" + suffix;
+                stringBuilder.append("float");
+                break;
 			case 'I':
-				return "int" + suffix;
+                stringBuilder.append("int");
+                break;
 			case 'J':
-				return "long" + suffix;
+                stringBuilder.append("long");
+                break;
 			case 'S':
-				return "short" + suffix;
+                stringBuilder.append("short");
+                break;
 			default:
 				throw new IllegalArgumentException("Couldn't transform '" + className + "' to qualified source name");
 			}
+			for(int i=0;i<dimensions;i++){
+                stringBuilder.append("[]");
+            }
+			return stringBuilder.toString();
 		} else {
 			return className.replace('$', '.');
 		}
