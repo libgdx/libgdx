@@ -28,8 +28,8 @@ public class InWindow {
 		int numBytes = _bufferOffset + _streamPos - offset;
 
 		// check negative offset ????
-        if (numBytes >= 0)
-            System.arraycopy(_bufferBase, offset + 0, _bufferBase, 0, numBytes);
+		if (numBytes >= 0)
+			System.arraycopy(_bufferBase, offset + 0, _bufferBase, 0, numBytes);
 		_bufferOffset -= offset;
 	}
 

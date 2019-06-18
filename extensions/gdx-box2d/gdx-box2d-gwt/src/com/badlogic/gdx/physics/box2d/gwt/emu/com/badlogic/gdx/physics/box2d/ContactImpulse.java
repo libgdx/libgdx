@@ -29,14 +29,14 @@ public class ContactImpulse {
 	}
 
 	public float[] getNormalImpulses () {
-        if (impulse.count >= 0)
-            System.arraycopy(impulse.normalImpulses, 0, normalImpulses, 0, impulse.count);
+		if (impulse.count >= 0)
+			System.arraycopy(impulse.normalImpulses, 0, normalImpulses, 0, impulse.count);
 		return normalImpulses;
 	}
 
 	public float[] getTangentImpulses () {
-        if (impulse.count >= 0)
-            System.arraycopy(impulse.tangentImpulses, 0, tangentImpulses, 0, impulse.count);
+		if (impulse.count >= 0)
+			System.arraycopy(impulse.tangentImpulses, 0, tangentImpulses, 0, impulse.count);
 		return tangentImpulses;
 	}
 

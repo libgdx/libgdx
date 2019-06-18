@@ -56,34 +56,34 @@ public class ReflectionCache {
 				break;
 			case 'B':
 				stringBuilder.append("byte");
-                break;
+				break;
 			case 'C':
-                stringBuilder.append("char");
-                break;
+				stringBuilder.append("char");
+				break;
 			case 'L':
-                stringBuilder.append(className.substring(dimensions + 1, className.length() - 1).replace('$', '.'));
-                break;
+				stringBuilder.append(className.substring(dimensions + 1, className.length() - 1).replace('$', '.'));
+				break;
 			case 'D':
-                stringBuilder.append("double");
-                break;
+				stringBuilder.append("double");
+				break;
 			case 'F':
-                stringBuilder.append("float");
-                break;
+				stringBuilder.append("float");
+				break;
 			case 'I':
-                stringBuilder.append("int");
-                break;
+				stringBuilder.append("int");
+				break;
 			case 'J':
-                stringBuilder.append("long");
-                break;
+				stringBuilder.append("long");
+				break;
 			case 'S':
-                stringBuilder.append("short");
-                break;
+				stringBuilder.append("short");
+				break;
 			default:
 				throw new IllegalArgumentException("Couldn't transform '" + className + "' to qualified source name");
 			}
 			for(int i=0;i<dimensions;i++){
-                stringBuilder.append("[]");
-            }
+				stringBuilder.append("[]");
+			}
 			return stringBuilder.toString();
 		} else {
 			return className.replace('$', '.');
