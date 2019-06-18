@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.utils.NumberUtils;
-import jdk.internal.joptsimple.internal.Strings;
 
 /** A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
  * internal values after execution.
@@ -327,7 +326,13 @@ public class Color {
 	public String toString () {
 		String value = Integer
 			.toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a)));
-		return Strings.repeat('0',8 - value.length()) + value;
+
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0,len=8-value.length();i<len;++i) {
+			stringBuilder.append('0');
+		}
+		stringBuilder.append(value);
+		return stringBuilder.toString();
 	}
 
 	/** Returns a new color from a hex string with the format RRGGBBAA.
