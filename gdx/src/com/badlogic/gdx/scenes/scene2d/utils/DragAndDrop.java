@@ -42,7 +42,7 @@ public class DragAndDrop {
 	private int button;
 	float dragActorX = 0, dragActorY = 0;
 	float touchOffsetX, touchOffsetY;
-	long dragStartTime;
+	long dragValidTime;
 	int dragTime = 250;
 	int activePointer = -1;
 	boolean cancelTouchFocus = true;
@@ -58,7 +58,7 @@ public class DragAndDrop {
 
 				activePointer = pointer;
 
-				dragStartTime = System.currentTimeMillis();
+				dragValidTime = System.currentTimeMillis() + dragTime;
 				dragSource = source;
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
@@ -125,7 +125,7 @@ public class DragAndDrop {
 				activePointer = -1;
 				if (payload == null) return;
 
-				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
+				if (System.currentTimeMillis() < dragValidTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) {
 					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
@@ -220,6 +220,15 @@ public class DragAndDrop {
 	 * that was meant to be a click. Default is 250. */
 	public void setDragTime (int dragMillis) {
 		this.dragTime = dragMillis;
+	}
+
+	public int getDragTime () {
+		return dragTime;
+	}
+
+	/** Returns true if a drag is in progress and the {@link #setDragTime(int) drag time} has elapsed since the drag started. */
+	public boolean isDragValid () {
+		return payload != null && System.currentTimeMillis() >= dragValidTime;
 	}
 
 	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled if
