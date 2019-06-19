@@ -31,6 +31,11 @@ public class DefaultAssetFilter implements AssetFilter {
 	}
 
 	@Override
+	public boolean preload(String file) {
+		return true;
+	}
+
+	@Override
 	public AssetType getType (String file) {
 		String extension = extension(file).toLowerCase();
 		if (isImage(extension)) return AssetType.Image;
