@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
@@ -25,18 +23,25 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 public class LwjglApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
 	 * natives are not needed. */
 	static public boolean disableAudio;
 
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
+
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;
-	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version is
-	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when
+	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version
+	 * is not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when
 	 * {@link #useGL30} is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a
 	 * lower value might cause some features not to function properly. OSX requires 3.2 though.
 	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
@@ -79,8 +84,14 @@ public class LwjglApplicationConfiguration {
 	public Color initialBackgroundColor = Color.BLACK;
 	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
 	public int foregroundFPS = 60;
-	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not
+	 * render. **/
 	public int backgroundFPS = 60;
+	/** {@link LifecycleListener#pause()} and don't render when the window is minimized. **/
+	public boolean pauseWhenMinimized = true;
+	/** {@link LifecycleListener#pause()} (but continue rendering) when the window is not minimized and not the foreground window.
+	 * To stop rendering when not the foreground window, use backgroundFPS -1. **/
+	public boolean pauseWhenBackground = false;
 	/** Allows software OpenGL rendering if hardware acceleration was not available.
 	 * @see LwjglGraphics#isSoftwareMode() */
 	public boolean allowSoftwareMode = false;
@@ -161,8 +172,8 @@ public class LwjglApplicationConfiguration {
 			}
 			if (duplicate) continue;
 			if (mode.getBitDepth() != desktopMode.getBitDepth()) continue;
-			modes.add(new LwjglApplicationConfigurationDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode
-				.getBitDepth()));
+			modes.add(new LwjglApplicationConfigurationDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(),
+				mode.getBitDepth()));
 		}
 
 		return modes.toArray(new DisplayMode[modes.size()]);

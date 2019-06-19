@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
 import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
 import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
+import org.robovm.apple.uikit.UIRectEdge;
 
 public class IOSApplicationConfiguration {
 	/** whether to enable screen dimming. */
@@ -89,7 +90,7 @@ public class IOSApplicationConfiguration {
 
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = false;
-	
+
 	/** whether or not the onScreenKeyboard should be closed on return key **/
 	public boolean keyboardCloseOnReturn = true;
 
@@ -97,7 +98,21 @@ public class IOSApplicationConfiguration {
 	 *  When GL ES 3 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
-	
+
+	/** whether the home indicator should be hidden or not **/
+	public boolean hideHomeIndicator = true;
+
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
+
+	/** Edges where app gestures must be fired over system gestures.
+	 * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
+	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
+
+	/** whether to use audio or not. Default is <code>true</code> **/
+	public boolean useAudio = true;
+
 }

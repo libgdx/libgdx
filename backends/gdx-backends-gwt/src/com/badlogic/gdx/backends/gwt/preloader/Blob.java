@@ -80,6 +80,6 @@ public final class Blob {
 		return encoded.toString();
 	}
 
-	private final Int8Array data;
+	protected final Int8Array data;
 
 }

@@ -23,6 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
  * number of value instances that need to be created and reduces verbosity in code that specifies values.
  * @author Nathan Sweet */
 abstract public class Value {
+	/** Calls {@link #get(Actor)} with null. */
+	public float get () {
+		return get(null);
+	}
+
 	/** @param context May be null. */
 	abstract public float get (Actor context);
 
@@ -32,6 +37,8 @@ abstract public class Value {
 	/** A fixed value that is not computed each time it is used.
 	 * @author Nathan Sweet */
 	static public class Fixed extends Value {
+		static final Fixed[] cache = new Fixed[111];
+
 		private final float value;
 
 		public Fixed (float value) {
@@ -40,6 +47,20 @@ abstract public class Value {
 
 		public float get (Actor context) {
 			return value;
+		}
+
+		public String toString () {
+			return Float.toString(value);
+		}
+
+		static public Fixed valueOf (float value) {
+			if (value == 0) return zero;
+			if (value >= -10 && value <= 100 && value == (int)value) {
+				Fixed fixed = cache[(int)value + 10];
+				if (fixed == null) cache[(int)value + 10] = fixed = new Fixed(value);
+				return fixed;
+			}
+			return new Fixed(value);
 		}
 	}
 

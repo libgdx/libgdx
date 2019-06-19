@@ -60,7 +60,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 	@Override
 	public Void call () throws Exception {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
-		if (dependenciesLoaded == false) {
+		if (!dependenciesLoaded) {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 			if (dependencies != null) {
 				removeDuplicates(dependencies);

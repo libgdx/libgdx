@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.HttpStatus;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -45,6 +47,7 @@ public class GwtNet implements Net {
 
 	ObjectMap<HttpRequest, Request> requests;
 	ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	GwtApplicationConfiguration config;
 
 	private final class HttpClientResponse implements HttpResponse {
 
@@ -101,7 +104,8 @@ public class GwtNet implements Net {
 		}
 	}
 
-	public GwtNet () {
+	public GwtNet (GwtApplicationConfiguration config) {
+		this.config = config;
 		requests = new ObjectMap<HttpRequest, Request>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -204,7 +208,12 @@ public class GwtNet implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		Window.open(URI, "_blank", null);
+		if (config.openURLInNewWindow) {
+			Window.open(URI, "_blank", null);
+		} else {
+			Window.Location.assign(URI);
+		}
 		return true;
 	}
+
 }

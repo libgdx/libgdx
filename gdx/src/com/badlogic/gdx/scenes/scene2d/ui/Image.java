@@ -38,7 +38,7 @@ public class Image extends Widget {
 	private float imageX, imageY, imageWidth, imageHeight;
 	private Drawable drawable;
 
-	/** Creates an image with no region or patch, stretched, and aligned center. */
+	/** Creates an image with no drawable, stretched, and aligned center. */
 	public Image () {
 		this((Drawable)null);
 	}
@@ -138,7 +138,9 @@ public class Image extends Widget {
 		setDrawable(skin.getDrawable(drawableName));
 	}
 
-	/** @param drawable May be null. */
+	/** Sets a new drawable for the image. The image's pref size is the drawable's min size. If using the image actor's size rather
+	 * than the pref size, {@link #pack()} can be used to size the image to its pref size.
+	 * @param drawable May be null. */
 	public void setDrawable (Drawable drawable) {
 		if (this.drawable == drawable) return;
 		if (drawable != null) {
@@ -196,5 +198,14 @@ public class Image extends Widget {
 
 	public float getImageHeight () {
 		return imageHeight;
+	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "Image " : "") + className + ": " + drawable;
 	}
 }

@@ -377,7 +377,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setVertexTransform (Matrix4 transform) {
-		if ((vertexTransformationEnabled = (transform != null)) == true) {
+		vertexTransformationEnabled = transform != null;
+		if (vertexTransformationEnabled) {
 			positionTransform.set(transform);
 			normalTransform.set(transform).inv().transpose();
 		} else {
@@ -521,8 +522,8 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertices.items[o + colOffset + 2] *= color.b;
 				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
 			} else if (cpOffset >= 0) {
-				vertices.items[o + cpOffset] = tempC1.set(NumberUtils.floatToIntColor(vertices.items[o + cpOffset])).mul(color)
-					.toFloatBits();
+				Color.abgr8888ToColor(tempC1, vertices.items[o + cpOffset]);
+				vertices.items[o + cpOffset] = tempC1.mul(color).toFloatBits();
 			}
 		}
 

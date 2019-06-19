@@ -101,6 +101,13 @@ public class IOSApplicationConfiguration {
 	/** whether the status bar should be visible or not **/
 	public boolean statusBarVisible = false;
 	
+	/** whether the home indicator should be hidden or not **/
+	public boolean hideHomeIndicator = true;
+	
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	public int maxNetThreads = Integer.MAX_VALUE;
+
 }

@@ -66,12 +66,6 @@ public class DesktopControllersBuild {
 		lin64.cppIncludes = linuxSrc;
 		lin64.headerDirs = includes;
 		lin64.libraries = "-lX11";
-
-		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
-		mac.cppIncludes = mac64Src;
-		mac.headerDirs = includes;
-		mac.cppFlags += " -x objective-c++";
-		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.cppIncludes = mac64Src;
@@ -79,7 +73,7 @@ public class DesktopControllersBuild {
 		mac64.cppFlags += " -x objective-c++";
 		mac64.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, mac64);
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac64);
 //		if (!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
 //			throw new Exception("build failed");
 //		}

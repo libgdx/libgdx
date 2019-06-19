@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.utils.BufferUtils.h>
 
-//@line:497
+//@line:549
  
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -9,7 +9,7 @@
 	char* buffer = (char*)(obj_buffer?env->GetDirectBufferAddress(obj_buffer):0);
 
 
-//@line:559
+//@line:557
 
 		free(buffer);
 	 
@@ -19,7 +19,7 @@
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer(JNIEnv* env, jclass clazz, jint numBytes) {
 
 
-//@line:563
+//@line:561
 
 		return env->NewDirectByteBuffer((char*)malloc(numBytes), numBytes);
 	
@@ -29,7 +29,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableB
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_getBufferAddress
 (JNIEnv* env, jclass clazz, jobject obj_buffer, unsigned char* buffer) {
 
-//@line:567
+//@line:565
 
 	    return (jlong) buffer;
 	
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear(JNIEnv* env
 	char* buffer = (char*)(obj_buffer?env->GetDirectBufferAddress(obj_buffer):0);
 
 
-//@line:572
+//@line:570
 
 		memset(buffer, 0, numBytes);
 	
@@ -60,7 +60,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:576
+//@line:574
 
 		memcpy(dst, src + offset, numFloats << 2 );
 	
@@ -73,7 +73,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3BILjav
 	char* src = (char*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:580
+//@line:578
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -86,7 +86,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3CILjav
 	unsigned short* src = (unsigned short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:584
+//@line:582
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3SILjav
 	short* src = (short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:588
+//@line:586
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	 
@@ -112,7 +112,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3IILjav
 	int* src = (int*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:592
+//@line:590
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -125,7 +125,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3JILjav
 	long long* src = (long long*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:596
+//@line:594
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FILjav
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:600
+//@line:598
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -151,7 +151,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3DILjav
 	double* src = (double*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:604
+//@line:602
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -164,7 +164,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 	unsigned char* dst = (unsigned char*)(obj_dst?env->GetDirectBufferAddress(obj_dst):0);
 
 
-//@line:608
+//@line:606
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -172,7 +172,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 }
 
 
-//@line:612
+//@line:610
 
 	template<size_t n1, size_t n2> void transform(float * const &src, float * const &m, float * const &dst) {}
 	
@@ -271,7 +271,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:707
+//@line:705
 
 		transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);  
 	
@@ -284,7 +284,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:711
+//@line:709
 
 		transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);  
 	
@@ -298,7 +298,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:715
+//@line:713
 
 		transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -311,7 +311,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:719
+//@line:717
 
 		transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -325,7 +325,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:723
+//@line:721
 
 		transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -338,7 +338,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:727
+//@line:725
 
 		transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -352,7 +352,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:731
+//@line:729
 
 		transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -365,7 +365,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:735
+//@line:733
 
 		transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -379,7 +379,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:739
+//@line:737
 
 		transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -392,7 +392,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni_
 	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
 
 
-//@line:743
+//@line:741
 
 		transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	
@@ -404,7 +404,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni_
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2IILjava_nio_Buffer_2II
 (JNIEnv* env, jclass clazz, jobject obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject obj_vertices, jint verticesOffsetInBytes, jint numVertices, unsigned char* vertex, unsigned char* vertices) {
 
-//@line:747
+//@line:745
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
 	
@@ -423,7 +423,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava_nio_Buffer_2II
 (JNIEnv* env, jclass clazz, jfloatArray obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject obj_vertices, jint verticesOffsetInBytes, jint numVertices, unsigned char* vertices, float* vertex) {
 
-//@line:751
+//@line:749
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
 	
@@ -443,7 +443,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2II_3FII
 (JNIEnv* env, jclass clazz, jobject obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jfloatArray obj_vertices, jint verticesOffsetInBytes, jint numVertices, unsigned char* vertex, float* vertices) {
 
-//@line:755
+//@line:753
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
 	
@@ -463,7 +463,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find___3FII_3FII
 (JNIEnv* env, jclass clazz, jfloatArray obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jfloatArray obj_vertices, jint verticesOffsetInBytes, jint numVertices, float* vertex, float* vertices) {
 
-//@line:759
+//@line:757
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
 	
@@ -484,7 +484,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FII_3FII
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2IILjava_nio_Buffer_2IIF
 (JNIEnv* env, jclass clazz, jobject obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject obj_vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon, unsigned char* vertex, unsigned char* vertices) {
 
-//@line:763
+//@line:761
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	
@@ -503,7 +503,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava_nio_Buffer_2IIF
 (JNIEnv* env, jclass clazz, jfloatArray obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject obj_vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon, unsigned char* vertices, float* vertex) {
 
-//@line:767
+//@line:765
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	
@@ -523,7 +523,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2II_3FIIF
 (JNIEnv* env, jclass clazz, jobject obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jfloatArray obj_vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon, unsigned char* vertex, float* vertices) {
 
-//@line:771
+//@line:769
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	
@@ -543,7 +543,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_find___3FII_3FIIF
 (JNIEnv* env, jclass clazz, jfloatArray obj_vertex, jint vertexOffsetInBytes, jint strideInBytes, jfloatArray obj_vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon, float* vertex, float* vertices) {
 
-//@line:775
+//@line:773
 
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	

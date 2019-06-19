@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.utils.shapebuilders;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ShortArray;
 
@@ -26,6 +27,7 @@ import com.badlogic.gdx.utils.ShortArray;
  * @author xoppa */
 public class SphereShapeBuilder extends BaseShapeBuilder {
 	private final static ShortArray tmpIndices = new ShortArray();
+	private final static Matrix3 normalTransform = new Matrix3();
 
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisionsU, int divisionsV) {
 		build(builder, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
@@ -64,6 +66,8 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 
+		normalTransform.set(transform);
+
 		final int s = divisionsU + 3;
 		tmpIndices.clear();
 		tmpIndices.ensureCapacity(divisionsU * 2);
@@ -80,9 +84,9 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 			for (int iu = 0; iu <= divisionsU; iu++) {
 				angleU = auo + stepU * iu;
 				u = 1f - us * iu;
-				// Fixme : wrong normal calculation if transform
-				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
-				curr1.normal.set(curr1.position).nor();
+				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t);
+				curr1.normal.set(curr1.position).mul(normalTransform).nor();
+				curr1.position.mul(transform);
 				curr1.uv.set(u, v);
 				tmpIndices.set(tempOffset, builder.vertex(curr1));
 				final int o = tempOffset + s;

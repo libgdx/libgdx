@@ -33,88 +33,71 @@ public class GwtApplicationLogger implements ApplicationLogger {
 
 	@Override
 	public void log (String tag, String message) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message);
-		log.setCursorPos(log.getText().length() - 1);
-		System.out.println(tag + ": " + message);
+		logText(tag + ": " + message, false);
 	}
+
+	private void logText(String message, boolean error) {
+		if (log != null) {
+			log.setText(log.getText() + "\n" + message + "\n");
+			log.setCursorPos(log.getText().length() - 1);
+		} else if (error) {
+			consoleError(message);
+		} else {
+			consoleLog(message);
+		}
+	}
+
+	native static public void consoleLog(String message) /*-{
+		console.log( message );
+	}-*/;
+
+	native static public void consoleError(String message) /*-{
+		console.error( message );
+	}-*/;
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-		log.setCursorPos(log.getText().length() - 1);
-		System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-		System.out.println(getStackTrace(exception));
+		logText(tag + ": " + message + "\n" + getMessages(exception), false);
+		logText(getStackTrace(exception), false);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-		log.setCursorPos(log.getText().length() - 1);
-		System.err.println(tag + ": " + message);
+		logText(tag + ": " + message, true);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-		log.setCursorPos(log.getText().length() - 1);
-		System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
-		System.out.println(getStackTrace(exception));
+		logText(tag + ": " + message + "\n" + getMessages(exception), true);
+		logText(getStackTrace(exception), false);
 	}
 
 	@Override
 	public void debug (String tag, String message) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-		log.setCursorPos(log.getText().length() - 1);
-		System.out.println(tag + ": " + message + "\n");
+		logText(tag + ": " + message, false);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		checkLogLabel();
-		log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-		log.setCursorPos(log.getText().length() - 1);
-		System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-		System.out.println(getStackTrace(exception));
-	}
-
-	private void checkLogLabel () {
-		if (log == null) {
-			((GwtApplication)Gdx.app).log = log = new TextArea();
-
-			// It's possible that log functions are called
-			// before the app is initialized. E.g. SoundManager can call log functions before the app is initialized.
-			// Since graphics is null, we're getting errors. The log size will be updated later, in case graphics was null
-			if (Gdx.graphics != null) {
-				log.setSize(Gdx.graphics.getWidth() + "px", "200px");
-			} else {
-				log.setSize("400px", "200px"); // Dummy value
-			}
-
-			log.setReadOnly(true);
-			((GwtApplication)Gdx.app).getRootPanel().add(log);
-		}
+		logText(tag + ": " + message + "\n" + getMessages(exception), false);
+		logText(getStackTrace(exception), false);
 	}
 
 	private String getMessages (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (e != null) {
-			buffer.append(e.getMessage() + "\n");
+			sb.append(e.getMessage() + "\n");
 			e = e.getCause();
 		}
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	private String getStackTrace (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (StackTraceElement trace : e.getStackTrace()) {
-			buffer.append(trace.toString() + "\n");
+			sb.append(trace.toString() + "\n");
 		}
-		return buffer.toString();
+		return sb.toString();
 	}
 
 }

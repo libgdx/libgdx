@@ -23,11 +23,12 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Lwjgl3Input implements Input, Disposable {
 	private final Lwjgl3Window window;
@@ -41,6 +42,7 @@ public class Lwjgl3Input implements Input, Disposable {
 	private int pressedKeys;
 	private boolean keyJustPressed;
 	private boolean[] justPressedKeys = new boolean[256];
+	private boolean[] justPressedButtons = new boolean[5];
 	private char lastCharacter;
 		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
@@ -85,10 +87,31 @@ public class Lwjgl3Input implements Input, Disposable {
 	};
 	
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
+		private long pauseTime = 250000000L; //250ms
+		private float scrollYRemainder;
+		private long lastScrollEventTime;
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
-			eventQueue.scrolled((int)-Math.signum(scrollY));
+			if (scrollYRemainder > 0 && scrollY < 0 || scrollYRemainder < 0 && scrollY > 0 ||
+				TimeUtils.nanoTime() - lastScrollEventTime > pauseTime ) { 
+				// fire a scroll event immediately:
+				//  - if the scroll direction changes; 
+				//  - if the user did not move the wheel for more than 250ms
+				scrollYRemainder = 0;
+				int scrollAmount = (int)-Math.signum(scrollY);
+				eventQueue.scrolled(scrollAmount);
+				lastScrollEventTime = TimeUtils.nanoTime();
+			}
+			else {
+				scrollYRemainder += scrollY;
+				while (Math.abs(scrollYRemainder) >= 1) {
+					int scrollAmount = (int)-Math.signum(scrollY);
+					eventQueue.scrolled(scrollAmount);
+					lastScrollEventTime = TimeUtils.nanoTime();
+					scrollYRemainder += scrollAmount;
+				}
+			}
 		}
 	};
 	
@@ -130,6 +153,7 @@ public class Lwjgl3Input implements Input, Disposable {
 			if (action == GLFW.GLFW_PRESS) {
 				mousePressed++;
 				justTouched = true;
+				justPressedButtons[gdxButton] = true;
 				Lwjgl3Input.this.window.getGraphics().requestRendering();
 				eventQueue.touchDown(mouseX, mouseY, 0, gdxButton);
 			} else {
@@ -160,6 +184,9 @@ public class Lwjgl3Input implements Input, Disposable {
 		for (int i = 0; i < justPressedKeys.length; i++) {
 			justPressedKeys[i] = false;
 		}
+		for (int i = 0; i < justPressedButtons.length; i++) {
+			justPressedButtons[i] = false;
+		}
 		eventQueue.setProcessor(null);
 		eventQueue.drain();
 	}
@@ -179,7 +206,12 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 	
 	void prepareNext (){
-		justTouched = false;
+		if(justTouched) {
+			justTouched = false;
+			for(int i = 0; i < justPressedButtons.length; i++) {
+				justPressedButtons[i] = false;
+			}
+		}
 		
 		if (keyJustPressed) {
 			keyJustPressed = false;
@@ -189,6 +221,11 @@ public class Lwjgl3Input implements Input, Disposable {
 		}	
 		deltaX = 0;
 		deltaY = 0;
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return 1;
 	}
 
 	@Override
@@ -251,8 +288,26 @@ public class Lwjgl3Input implements Input, Disposable {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isButtonPressed(int button) {
 		return GLFW.glfwGetMouseButton(window.getWindowHandle(), button) == GLFW.GLFW_PRESS;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button >= justPressedButtons.length) {
+			return false;
+		}
+		return justPressedButtons[button];
 	}
 
 	@Override
@@ -788,7 +843,17 @@ public class Lwjgl3Input implements Input, Disposable {
 	public boolean isCatchMenuKey() {
 		return false;
 	}
-	
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
+
 	@Override
 	public float getAccelerometerX() {
 		return 0;

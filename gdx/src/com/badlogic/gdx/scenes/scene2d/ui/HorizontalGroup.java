@@ -26,7 +26,9 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /** A group that lays out its children side by side horizontally, with optional wrapping. This can be easier than using
- * {@link Table} when actors need to be inserted into or removed from the middle of the group.
+ * {@link Table} when actors need to be inserted into or removed from the middle of the group. {@link #getChildren()} can be
+ * sorted to change the order of the actors (eg {@link Actor#setZIndex(int)}). {@link #invalidate()} must be called after changing
+ * the children order.
  * <p>
  * The preferred width is the sum of the children's preferred widths plus spacing. The preferred height is the largest preferred
  * height of any child. The preferred size is slightly different when {@link #wrap() wrap} is enabled. The min size is the
@@ -80,6 +82,7 @@ public class HorizontalGroup extends WidgetGroup {
 				if (child instanceof Layout) {
 					Layout layout = (Layout)child;
 					width = layout.getPrefWidth();
+					if (width > groupWidth) width = Math.max(groupWidth, layout.getMinWidth());
 					height = layout.getPrefHeight();
 				} else {
 					width = child.getWidth();
@@ -241,6 +244,7 @@ public class HorizontalGroup extends WidgetGroup {
 			if (child instanceof Layout) {
 				layout = (Layout)child;
 				width = layout.getPrefWidth();
+				if (width > groupWidth) width = Math.max(groupWidth, layout.getMinWidth());
 				height = layout.getPrefHeight();
 			} else {
 				width = child.getWidth();
@@ -470,9 +474,12 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** If false, the widgets are arranged in a single row and the preferred width is the widget widths plus spacing. If true, the
-	 * widgets will wrap using the width of the horizontal group. The preferred width of the group will be 0 as it is expected that
-	 * something external will set the width of the group. Default is false.
+	/** If false, the widgets are arranged in a single row and the preferred width is the widget widths plus spacing.
+	 * <p>
+	 * If true, the widgets will wrap using the width of the horizontal group. The preferred width of the group will be 0 as it is
+	 * expected that something external will set the width of the group. Widgets are sized to their preferred width unless it is
+	 * larger than the group's width, in which case they are sized to the group's width but not less than their minimum width.
+	 * Default is false.
 	 * <p>
 	 * When wrap is enabled, the group's preferred height depends on the width of the group. In some cases the parent of the group
 	 * will need to layout twice: once to set the width of the group and a second time to adjust to the group's new preferred
@@ -491,10 +498,11 @@ public class HorizontalGroup extends WidgetGroup {
 		return wrap;
 	}
 
-	/** Sets the alignment of widgets within each row of the horizontal group. Set to {@link Align#center}, {@link Align#top}, or
-	 * {@link Align#bottom}. */
-	public HorizontalGroup rowAlign (int row) {
-		this.rowAlign = row;
+	/** Sets the horizontal alignment of each row of widgets when {@link #wrap() wrapping} is enabled and sets the vertical
+	 * alignment of widgets within each row. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
+	public HorizontalGroup rowAlign (int rowAlign) {
+		this.rowAlign = rowAlign;
 		return this;
 	}
 
@@ -511,10 +519,26 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
+	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of each row of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public HorizontalGroup rowLeft () {
+		rowAlign |= Align.left;
+		rowAlign &= ~Align.right;
+		return this;
+	}
+
 	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of widgets within each row. */
 	public HorizontalGroup rowBottom () {
 		rowAlign |= Align.bottom;
 		rowAlign &= ~Align.top;
+		return this;
+	}
+
+	/** Adds {@link Align#right} and clears {@link Align#left} for the alignment of each row of widgets when {@link #wrap()
+	 * wrapping} is enabled. */
+	public HorizontalGroup rowRight () {
+		rowAlign |= Align.right;
+		rowAlign &= ~Align.left;
 		return this;
 	}
 

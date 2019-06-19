@@ -29,9 +29,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -92,6 +97,7 @@ public class FileHandle {
 		return file.getName();
 	}
 
+	/** Returns the file extension (without the dot) or an empty string if the file name doesn't contain a dot. */
 	public String extension () {
 		String name = file.getName();
 		int dotIndex = name.lastIndexOf('.');
@@ -151,7 +157,7 @@ public class FileHandle {
 		return new BufferedInputStream(read(), bufferSize);
 	}
 
-	/** Returns a reader for reading this file as characters.
+	/** Returns a reader for reading this file as characters the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader () {
 		return new InputStreamReader(read());
@@ -169,7 +175,7 @@ public class FileHandle {
 		}
 	}
 
-	/** Returns a buffered reader for reading this file as characters.
+	/** Returns a buffered reader for reading this file as characters using the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize) {
 		return new BufferedReader(new InputStreamReader(read()), bufferSize);
@@ -254,6 +260,30 @@ public class FileHandle {
 			StreamUtils.closeQuietly(input);
 		}
 		return position - offset;
+	}
+
+	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map () {
+		return map(MapMode.READ_ONLY);
+	}
+
+	/** Attempts to memory map this file. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map (FileChannel.MapMode mode) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
+		RandomAccessFile raf = null;
+		try {
+			raf = new RandomAccessFile(file, mode == MapMode.READ_ONLY ? "r" : "rw");
+			FileChannel fileChannel = raf.getChannel();
+			ByteBuffer map = fileChannel.map(mode, 0, file.length());
+			map.order(ByteOrder.nativeOrder());
+			return map;
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
+		} finally {
+			StreamUtils.closeQuietly(raf);
+		}
 	}
 
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
@@ -586,8 +616,16 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file. */
 	public void moveTo (FileHandle dest) {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot move a classpath file: " + file);
-		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		switch (type) {
+		case Classpath:
+			throw new GdxRuntimeException("Cannot move a classpath file: " + file);
+		case Internal:
+			throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		case Absolute:
+		case External:
+			// Try rename for efficiency and to change case on case-insensitive file systems.
+			if (file().renameTo(dest.file())) return;
+		}
 		copyTo(dest);
 		delete();
 		if (exists() && isDirectory()) deleteDirectory();

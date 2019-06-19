@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Align;
 /** A button with a child {@link Label} to display text.
  * @author Nathan Sweet */
 public class TextButton extends Button {
-	private final Label label;
+	private Label label;
 	private TextButtonStyle style;
 
 	public TextButton (String text, Skin skin) {
@@ -83,6 +83,11 @@ public class TextButton extends Button {
 		super.draw(batch, parentAlpha);
 	}
 
+	public void setLabel (Label label) {
+		getLabelCell().setActor(label);
+		this.label = label;
+	}
+
 	public Label getLabel () {
 		return label;
 	}
@@ -97,6 +102,15 @@ public class TextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
+	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "TextButton " : "") + className + ": " + label.getText();
 	}
 
 	/** The style for a text button, see {@link TextButton}.

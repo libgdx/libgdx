@@ -55,12 +55,12 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = (button != -1);
 				input.button[realPointerIndex] = button;
+				input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
 				break;
 
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_OUTSIDE:
-			case MotionEvent.ACTION_CANCEL:
 				realPointerIndex = input.lookUpPointerIndex(pointerId);
 				if (realPointerIndex == -1) break;
 				if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
@@ -75,6 +75,20 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = false;
 				input.button[realPointerIndex] = 0;
+				input.pressure[realPointerIndex] = 0;
+				break;
+
+			case MotionEvent.ACTION_CANCEL:
+				for (int i = 0; i < input.realId.length; i++) {
+					input.realId[i] = -1;
+					input.touchX[i] = 0;
+					input.touchY[i] = 0;
+					input.deltaX[i] = 0;
+					input.deltaY[i] = 0;
+					input.touched[i] = false;
+					input.button[i] = 0;
+					input.pressure[i] = 0;
+				}
 				break;
 
 			case MotionEvent.ACTION_MOVE:
@@ -96,6 +110,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
 					input.touchX[realPointerIndex] = x;
 					input.touchY[realPointerIndex] = y;
+					input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
 				}
 				break;
 			}

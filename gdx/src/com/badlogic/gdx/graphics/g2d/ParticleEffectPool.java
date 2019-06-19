@@ -29,7 +29,9 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 	}
 
 	protected PooledEffect newObject () {
-		return new PooledEffect(effect);
+		PooledEffect pooledEffect = new PooledEffect(effect);
+		pooledEffect.start();
+		return pooledEffect;
 	}
 	
 	public void free (PooledEffect effect) {

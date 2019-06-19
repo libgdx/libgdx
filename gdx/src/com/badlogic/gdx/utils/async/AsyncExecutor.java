@@ -32,13 +32,19 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class AsyncExecutor implements Disposable {
 	private final ExecutorService executor;
 
-	/** Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
-	 * @param maxConcurrent */
+	/** Creates a new AsynchExecutor with the name "AsynchExecutor-Thread". */
 	public AsyncExecutor (int maxConcurrent) {
+		this(maxConcurrent, "AsynchExecutor-Thread");
+	}
+
+	/** Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
+	 * @param maxConcurrent
+	 * @param name The name of the threads. */
+	public AsyncExecutor (int maxConcurrent, final String name) {
 		executor = Executors.newFixedThreadPool(maxConcurrent, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {
-				Thread thread = new Thread(r, "AsynchExecutor-Thread");
+				Thread thread = new Thread(r, name);
 				thread.setDaemon(true);
 				return thread;
 			}

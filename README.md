@@ -1,6 +1,8 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
-[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx&.png)](http://144.76.220.132:8080/job/libgdx/)
+[![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) (Jenkins)
+
+[![Travis build status](https://travis-ci.org/libgdx/libgdx.svg?branch=master)](https://travis-ci.org/libgdx/libgdx) (Travis)
 
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
@@ -33,6 +35,8 @@ You can follow the latest news about libGDX on the [blog](http://www.badlogicgam
 You can get help on our [forum](http://badlogicgames.com/forum/) and talk to other libGDX 
 users on our IRC channel #libgdx at irc.freenode.net.
 
+Another way of getting help or talking to other libGDX users is the [libgdx discord](https://discord.gg/6pgDK9F).
+
 ### Reporting Issues
 Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on GitHub to report issues. Make sure you read the 
 [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
@@ -59,7 +63,7 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 
 <table>
 <tr>
-<td style="text-align: center;"><a href="http://bit.ly/robovmgdx"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
+<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
 <td style="text-align: center;"><a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a></td>
 </tr>
 

@@ -92,9 +92,10 @@ public class Decal {
 		vertices[C4] = color;
 	}
 
-	/** @see #setColor(Color) */
-	public void setColor (float color) {
-		this.color.set(NumberUtils.floatToIntColor(color));
+	/** Sets the color of this decal, expanding the alpha from 0-254 to 0-255.
+	 * @see #setColor(Color) */
+	public void setPackedColor (float color) {
+		Color.abgr8888ToColor(this.color, color);
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;

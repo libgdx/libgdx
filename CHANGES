@@ -1,3 +1,70 @@
+[1.9.10]
+- Update GWT Backend to GWT 2.8.2
+- Update Android backend to build against API 28 (Android 9.0)
+- API Addition: Input.isButtonJustPressed
+- Update to LWJGL 2 backend to 2.9.3
+- Update to MobiVM 2.3.6 release
+- Update to LWJGL 3.2.1
+- API Addition: Input allows getting the maximum number of pointers supported by the backend
+- API Addition: Configuration option added to allow setting a max number of threads to use for net requests
+- API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
+- API Addition: New MathUtils norm and map methods
+- API Change: Pixmap blending was incorrect. Generated fonts may change for the better, but may require adjusting font settings.
+- API Change: Particle effects obtained from a ParticleEffectPool are now automatically started
+- Removed OSX 32-bit support
+- API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
+- API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
+- LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed.
+- AtlasTmxMapLoader supports group layers now (a positive side effect of the BaseTmxMapLoader refactoring).
+- API Change: TmxMapLoader and AtlasTmxMapLoader: load/loadAsync methods work exactly as before, but many methods of these classes had to change. This makes it possible implement new Tiled features.
+- API Addition: TextField#drawMessageText.
+- Fixed TextField rendering text outside the widget at small sizes.
+- API Addition: Group#getChild(int)
+- API Addition: notEmpty() for collections.
+- API Change: scene2d.ui Tree methods renamed for node set/getObject to set/getValue.
+- API Change: scene2d.ui Tree and Tree.Node require generics for the type of node, values, and actors.
+- API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
+- API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
+- API Addition: Support for InstancedRendering via Mesh
+- API Change: Cell#setLayout renamed to setTable.
+
+[1.9.9]
+- API Addition: Add support for stripping whitespace in PixmapPacker
+- API Addition: Add support for 9 patch packing in PixmapPacker
+- API Addition: Pressure support for ios/android. https://github.com/libgdx/libgdx/pull/5270
+- Update to Lwjgl 3.2.0
+- Update android level we build against to 7.1 (API 25)
+- API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
+- Skin JSON files can now use the simple names of classes, i.e. "BitmapFont" rather than "com.badlogic.gdx.graphics.g2d.BitmapFont". Custom classes can be added by overriding Skin.getJsonLoader() and calling json.setClassTag().
+- Skin supports cascading styles in JSON. Use the "parent" property to tag another style by name to use its values as defaults. See https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/assets/data/uiskin.json for example.
+- SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
+- API addition: Tree indentation can be customized.
+- Fixed GlyphLayout not respecting BitmapFontData#down.
+- API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
+- API Change: BitmapFont#getSpaceWidth changed to BitmapFont#getSpaceXadvance.
+- Many GlyphLayout fixes.
+- API Addition: Added FileHandle#map(), can be used to memory map a file
+- API Change: BitmapFontData#getGlyphs changed for better glyph layout. See https://github.com/libgdx/libgdx/commit/9a7dfdff3c6374a5ebd2f33a819982aceb287dfa
+- API Change: Actor#hit is now responsible for returning null if invisible. #5264
+- API Addition: Added [Collection]#isEmpty() method to all 22 custom LibGDX-collections (e.g. Array, ObjectMap, ObjectSet, Queue, ...)
+- API Addition: StringBuilder#clear()
+- API Addition: Color#WHITE_FLOAT_BITS
+- Table layout fixed when expand is used and the layout width is less than the table's min width.
+- InputMultiplexer#setProcessors(Array) now copies the items instead of using the specified array instance.
+- API Change: A wrapped HorizontalGroup or VerticalGroup will now size children down to their min size if the group is smaller than their pref size.
+- LWJGL3: useVSync() is now a per-window setting. Any additional windows should disable vsync to avoid frames dropping to (refresh rate / # of windows).
+- Batch and sprite implementations and SpriteCache store Color separately from the float packed color, since converting to/from float is lossy.
+- API Change: NumberUtils floatToIntColor expands the alpha from 0-254 to 0-255, so 255 doesn't become 254 from conversion from int to float to int.
+- API Change: Batch and Decal setColor(float) renamed to setPackedColor for differentiation, since the conversion from float to Color is lossy.
+- API Change: PolygonSprite getVertexColor renamed to getPackedColor to match other classes.
+- API Change: FreeTypeFontGenerator only generates a missing glyph if \0 is in the characters.
+- API Change: DragScrollListener no longer requires the touch/mouse cursor to be directly above/below the scroll pane.
+- API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
+- API Change: List now handles more key presses.
+- API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
+
+
 [1.9.8]
 - Add iPhoneX images
 - Fix MacOS issue with GL_ARB_texture_float extension check
