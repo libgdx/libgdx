@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
 import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
 import org.robovm.apple.glkit.GLKViewDrawableMultisample;
@@ -115,4 +117,15 @@ public class IOSApplicationConfiguration {
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;
 
+	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
+
+	/**
+	 * adds device information for newer iOS devices, or overrides information for given ones
+	 * @param classifier human readable device classifier
+	 * @param machineString machine string returned by iOS
+	 * @param ppi device's pixel per inch value
+	 */
+	public void addIosDevice(String classifier, String machineString, int ppi) {
+		IOSDevice.addDeviceToMap(knownDevices, classifier, machineString, ppi);
+	}
 }
