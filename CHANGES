@@ -1,4 +1,5 @@
 [1.9.10]
+- API Adittion: Add statusBarVisible configuration to IOSApplicationConfiguration
 - Update GWT Backend to GWT 2.8.2
 - Update Android backend to build against API 28 (Android 9.0)
 - API Addition: Input.isButtonJustPressed
