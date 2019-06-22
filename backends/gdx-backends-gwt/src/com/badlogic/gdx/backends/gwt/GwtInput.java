@@ -341,9 +341,9 @@ public class GwtInput implements Input {
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
-	private native boolean isCursorCatchedJSNI () /*-{
+	private native boolean isCursorCatchedJSNI (CanvasElement canvas) /*-{
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		if (navigator.pointer) {
 			if (typeof (navigator.pointer.isLocked) === "boolean") {
@@ -357,6 +357,11 @@ public class GwtInput implements Input {
 				return navigator.pointer.islocked();
 			}
 		}
+
+		if ($doc.pointerLockElement === canvas || $doc.mozPointerLockElement === canvas) {
+			return true;
+		}
+
 		return false;
 	}-*/;
 
@@ -366,7 +371,7 @@ public class GwtInput implements Input {
 		// Navigator pointer is not the right interface according to spec.
 		// Here for backwards compatibility only
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		// element.requestPointerLock
 		if (!element.requestPointerLock) {
@@ -427,7 +432,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isCursorCatched () {
-		return isCursorCatchedJSNI();
+		return isCursorCatchedJSNI(canvas);
 	}
 
 	@Override

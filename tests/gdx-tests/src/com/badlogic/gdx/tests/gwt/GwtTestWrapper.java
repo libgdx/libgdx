@@ -146,12 +146,12 @@ public class GwtTestWrapper extends GdxTest {
 		Arrays.sort(tests, new Comparator<Instancer>() {
 			@Override
 			public int compare (Instancer o1, Instancer o2) {
-				return o1.instance().getClass().getName().compareTo(o2.instance().getClass().getName());
+				return o1.instance().getClass().getSimpleName().compareTo(o2.instance().getClass().getSimpleName());
 			}
 		});
 		for (final Instancer instancer : tests) {
 			table.row();
-			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
+			TextButton button = new TextButton(instancer.instance().getClass().getSimpleName(), skin);
 			button.addListener(new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
@@ -491,7 +491,7 @@ public class GwtTestWrapper extends GdxTest {
 
 	Instancer[] tests = {new Instancer() {
 		public GdxTest instance () {
-			return new AccelerometerTest();
+			return new GwtInputTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
