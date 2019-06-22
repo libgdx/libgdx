@@ -111,7 +111,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length())
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
 				continue;
 			handles[count++] = new AndroidZipFileHandle(zipEntries[i].mFileName);
 		}
@@ -124,7 +124,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length())
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
 				continue;
 			FileHandle child = new AndroidZipFileHandle(zipEntries[i].mFileName);
 			if (!filter.accept(child.file()))
@@ -146,7 +146,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length())
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
 				continue;
 			String path = zipEntries[i].mFileName;
 			if (!filter.accept(file, path))
@@ -168,7 +168,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length())
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
 				continue;
 			String path = zipEntries[i].mFileName;
 			if (!path.endsWith(suffix))
