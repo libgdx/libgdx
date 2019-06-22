@@ -29,25 +29,27 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TreeTest extends GdxTest {
 	Stage stage;
+	Skin skin;
+	Tree<Node, String> tree;
+
+	class Node extends Tree.Node<Node, String, TextButton> {
+		public Node (String text) {
+			super(new TextButton(text, skin));
+			setValue(text);
+		}
+	}
 
 	public void create () {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
-		final Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
 
-		class Node extends Tree.Node<Node, String, TextButton> {
-			public Node (String text) {
-				super(new TextButton(text, skin));
-				setValue(text);
-			}
-		}
-
-		final Tree<Node, String> tree = new Tree(skin);
+		tree = new Tree(skin);
 		final Node moo1 = new Node("moo1");
 		final Node moo2 = new Node("moo2");
 		final Node moo3 = new Node("moo3");
@@ -79,6 +81,8 @@ public class TreeTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		
+		System.out.println(tree.findNode("moo4").getTree()); 
 	}
 
 	public void resize (int width, int height) {

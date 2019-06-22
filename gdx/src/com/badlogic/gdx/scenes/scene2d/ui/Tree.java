@@ -16,9 +16,12 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -40,10 +43,12 @@ import com.badlogic.gdx.utils.Array;
  * @param <V> The type of values for each node.
  * @author Nathan Sweet */
 public class Tree<N extends Node, V> extends WidgetGroup {
+	static private final Vector2 tmp = new Vector2();
+
 	TreeStyle style;
 	final Array<N> rootNodes = new Array();
 	final Selection<N> selection;
-	float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
+	float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, paddingLeft, paddingRight, indentSpacing;
 	private float prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private N foundNode, overNode;
@@ -130,7 +135,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		this.style = style;
 
 		// Reasonable default.
-		if (indentSpacing == 0) indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
+		if (indentSpacing == 0) indentSpacing = plusMinusWidth();
 	}
 
 	public void add (N node) {
@@ -174,14 +179,19 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		sizeInvalid = true;
 	}
 
+	private float plusMinusWidth () {
+		float width = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
+		if (style.plusOver != null) width = Math.max(width, style.plusOver.getMinWidth());
+		if (style.minusOver != null) width = Math.max(width, style.minusOver.getMinWidth());
+		return width;
+	}
+
 	private void computeSize () {
 		sizeInvalid = false;
-		prefWidth = style.plus.getMinWidth();
-		prefWidth = Math.max(prefWidth, style.minus.getMinWidth());
+		prefWidth = plusMinusWidth();
 		prefHeight = getHeight();
-		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		computeSize(rootNodes, 0, plusMinusWidth);
-		prefWidth += padding * 2;
+		computeSize(rootNodes, 0, prefWidth);
+		prefWidth += paddingLeft + paddingRight;
 		prefHeight = getHeight() - prefHeight;
 	}
 
@@ -212,8 +222,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		layout(rootNodes, padding, getHeight() - ySpacing / 2, plusMinusWidth);
+		layout(rootNodes, paddingLeft, getHeight() - ySpacing / 2, plusMinusWidth());
 	}
 
 	private float layout (Array<N> nodes, float indent, float y, float plusMinusWidth) {
@@ -236,8 +245,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		drawBackground(batch, parentAlpha);
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		float plusMinusWidth = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth());
-		draw(batch, rootNodes, padding, plusMinusWidth);
+		draw(batch, rootNodes, paddingLeft, plusMinusWidth());
 		super.draw(batch, parentAlpha); // Draw actors.
 	}
 
@@ -258,7 +266,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			cullBottom = cullingArea.y;
 			cullTop = cullBottom + cullingArea.height;
 		}
-		Drawable plus = style.plus, minus = style.minus;
+		Drawable plus = style.plus, minus = style.minus, plusOver = style.plusOver, minusOver = style.minusOver;
 		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
@@ -276,17 +284,29 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
 					batch.setColor(actor.getColor());
 					node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
-					batch.setColor(Color.WHITE);
+					batch.setColor(1, 1, 1, 1);
 				}
 
 				if (node.children.size > 0) {
-					Drawable expandIcon = node.expanded ? minus : plus;
+					Drawable expandIcon = null;
+					if (node == overNode && canExpand(iconX)) expandIcon = node.expanded ? minusOver : plusOver;
+					if (expandIcon == null) expandIcon = node.expanded ? minus : plus;
 					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
 					expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
 				}
 			}
 			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
 		}
+	}
+
+	/** Return true if {@link TreeStyle#plusOver} or {@link TreeStyle#minusOver} should be displayed for the {@link #getOverNode()
+	 * over node}. Default returns true on desktop if the mouse is left of iconX and clicking would expand the node.
+	 * @param iconX The X coordinate of the over node's icon. */
+	protected boolean canExpand (float iconX) {
+		if (Gdx.app.getType() != ApplicationType.Desktop) return true;
+		if (selection.getMultiple() && (UIUtils.ctrl() || UIUtils.shift())) return false;
+		float x = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
+		return x >= 0 && x < iconX;
 	}
 
 	/** @return May be null. */
@@ -375,7 +395,14 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 	/** Sets the amount of horizontal space between the nodes and the left/right edges of the tree. */
 	public void setPadding (float padding) {
-		this.padding = padding;
+		paddingLeft = padding;
+		paddingRight = padding;
+	}
+
+	/** Sets the amount of horizontal space between the nodes and the left/right edges of the tree. */
+	public void setPadding (float left, float right) {
+		this.paddingLeft = left;
+		this.paddingRight = right;
 	}
 
 	public void setIndentSpacing (float indentSpacing) {
@@ -396,7 +423,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		return ySpacing;
 	}
 
-	/** Sets the amount of horizontal space between the node actors and icons. */
+	/** Sets the amount of horizontal space left and right of the node's icon. */
 	public void setIconSpacing (float left, float right) {
 		this.iconSpacingLeft = left;
 		this.iconSpacingRight = right;
@@ -488,7 +515,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * @param <A> The type for the node's actor.
 	 * @author Nathan Sweet */
 	static abstract public class Node<N extends Node, V, A extends Actor> {
-		final A actor;
+		A actor;
 		N parent;
 		final Array<N> children = new Array(0);
 		boolean selectable = true;
@@ -500,6 +527,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public Node (A actor) {
 			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 			this.actor = actor;
+		}
+
+		/** Creates a node without an actor. An actor must be set using {@link #setActor(Actor)} before this node can be used. */
+		public Node () {
 		}
 
 		public void setExpanded (boolean expanded) {
@@ -576,11 +607,21 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			children.clear();
 		}
 
-		/** Returns the tree this node is currently in, or null. */
+		/** Returns the tree this node's actor is currently in, or null. The actor is only in the tree when all of its parent nodes
+		 * are expanded. */
 		public Tree<N, V> getTree () {
 			Group parent = actor.getParent();
 			if (parent instanceof Tree) return (Tree)parent;
 			return null;
+		}
+
+		public void setActor (A newActor) {
+			if (actor != null) {
+				Tree<N, V> tree = getTree();
+				actor.remove();
+				if (tree != null) tree.addActor(newActor);
+			}
+			actor = newActor;
 		}
 
 		public A getActor () {
@@ -730,6 +771,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	static public class TreeStyle {
 		public Drawable plus, minus;
 		/** Optional. */
+		public Drawable plusOver, minusOver;
 		public Drawable over, selection, background;
 
 		public TreeStyle () {
@@ -744,7 +786,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public TreeStyle (TreeStyle style) {
 			this.plus = style.plus;
 			this.minus = style.minus;
+			this.plusOver = style.plusOver;
+			this.minusOver = style.minusOver;
+			this.over = style.over;
 			this.selection = style.selection;
+			this.background = style.background;
 		}
 	}
 }
