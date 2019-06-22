@@ -464,6 +464,13 @@ public class Lwjgl3Application implements Application {
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
+		} else if (config.windowMaximized) {
+			if (config.maximizedMonitor != null) {
+				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(config.maximizedMonitor.monitorHandle);
+				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
+			} else {
+				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
+			}
 		}
 		if (config.windowIconPaths != null) {
 			Lwjgl3Window.setIcon(windowHandle, config.windowIconPaths, config.windowIconFileType);
