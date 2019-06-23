@@ -373,6 +373,7 @@ public class GwtInput implements Input {
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported();
+		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
