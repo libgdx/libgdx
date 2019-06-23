@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.android;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,6 +36,7 @@ public class GdxTestActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		config.useRotationVectorSensor = true;
+		config.useGyroscope = true;
 		initialize(test, config);
 	}
 }

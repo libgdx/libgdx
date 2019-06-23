@@ -55,6 +55,7 @@ public class GwtInput implements Input {
 	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
+	GwtGyroscope gyroscope;
 
 	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
@@ -76,6 +77,27 @@ public class GwtInput implements Input {
 					@Override
 					public void prompt() {
 						setupAccelerometer();
+					}
+				});
+			}
+		}
+		if (config.useGyroscope) {
+			if (GwtApplication.agentInfo().isFirefox()) {
+				setupGyroscope();
+			} else {
+				GwtPermissions.queryPermission(GwtGyroscope.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+					@Override
+					public void granted() {
+						setupGyroscope();
+					}
+
+					@Override
+					public void denied() {
+					}
+
+					@Override
+					public void prompt() {
+						setupGyroscope();
 					}
 				});
 			}
@@ -105,6 +127,13 @@ public class GwtInput implements Input {
 		}
 	}
 
+	void setupGyroscope () {
+		if (GwtGyroscope.isSupported()) {
+			if (gyroscope == null) gyroscope = GwtGyroscope.getInstance();
+			if (!gyroscope.activated()) gyroscope.start();
+		}
+	}
+
 	@Override
 	public float getAccelerometerX () {
 		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
@@ -122,20 +151,17 @@ public class GwtInput implements Input {
 
 	@Override
 	public float getGyroscopeX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.x() : 0;
 	}
 
 	@Override
 	public float getGyroscopeY () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.y() : 0;
 	}
 
 	@Override
 	public float getGyroscopeZ () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.z() : 0;
 	}
 
 	@Override
