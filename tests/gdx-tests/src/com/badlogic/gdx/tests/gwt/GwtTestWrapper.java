@@ -491,7 +491,7 @@ public class GwtTestWrapper extends GdxTest {
 
 	Instancer[] tests = {new Instancer() {
 		public GdxTest instance () {
-			return new GwtInputTest();
+			return new AccelerometerTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
@@ -622,6 +622,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GroupFadeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new GwtInputTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
