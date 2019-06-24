@@ -361,9 +361,17 @@ public class GwtInput implements Input {
 	}
 
 	@Override
-	public Orientation getNativeOrientation () {
-		return Orientation.Landscape;
-	}
+	public native Orientation getNativeOrientation () /*-{
+		if ("screen" in $wnd) {
+			var orientation = $wnd.screen.msOrientation || $wnd.screen.mozOrientation || ($wnd.screen.orientation || {}).type;
+			if (orientation === "landscape-primary" || orientation === "landscape-secondary") {
+				return @com.badlogic.gdx.Input.Orientation::Landscape;
+			} else if (orientation === "portrait-secondary" || orientation === "portrait-primary") {
+				return @com.badlogic.gdx.Input.Orientation::Portrait;
+			}
+		}
+		return @com.badlogic.gdx.Input.Orientation::Landscape;
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
