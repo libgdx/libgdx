@@ -269,10 +269,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
-			float height = node.height;
 			Actor actor = node.actor;
-			float actorY = actor.getY();
-			if (cullingArea != null && actorY + height >= cullBottom && actorY <= cullTop) {
+			float actorY = actor.getY(), height = node.height;
+			if (cullingArea == null || (actorY + height >= cullBottom && actorY <= cullTop)) {
 				if (selection.contains(node) && style.selection != null) {
 					style.selection.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
 				} else if (node == overNode && style.over != null) {
@@ -293,6 +292,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
 					expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
 				}
+			} else if (actorY < cullBottom) {
+				return;
 			}
 			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
 		}
