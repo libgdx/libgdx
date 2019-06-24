@@ -189,10 +189,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	private void computeSize () {
 		sizeInvalid = false;
 		prefWidth = plusMinusWidth();
-		prefHeight = getHeight();
+		prefHeight = 0;
 		computeSize(rootNodes, 0, prefWidth);
 		prefWidth += paddingLeft + paddingRight;
-		prefHeight = getHeight() - prefHeight;
 	}
 
 	private void computeSize (Array<N> nodes, float indent, float plusMinusWidth) {
@@ -215,7 +214,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				node.height = Math.max(node.height, node.icon.getMinHeight());
 			}
 			prefWidth = Math.max(prefWidth, rowWidth);
-			prefHeight -= node.height + ySpacing;
+			prefHeight += node.height + ySpacing;
 			if (node.expanded) computeSize(node.children, indent + indentSpacing, plusMinusWidth);
 		}
 	}
