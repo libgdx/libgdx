@@ -33,6 +33,7 @@
 - API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
 - API Addition: Support for InstancedRendering via Mesh
 - API Change: Cell#setLayout renamed to setTable.
+- API Addition: Added Array.allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
