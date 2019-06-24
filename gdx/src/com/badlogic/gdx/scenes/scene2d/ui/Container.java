@@ -4,9 +4,11 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
+import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
@@ -148,6 +150,11 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 		actor.setBounds(x, y, width, height);
 		if (actor instanceof Layout) ((Layout)actor).validate();
+	}
+
+	public void setCullingArea (Rectangle cullingArea) {
+		super.setCullingArea(cullingArea);
+		if (fillX == 1 && fillY == 1 && actor instanceof Cullable) ((Cullable)actor).setCullingArea(cullingArea);
 	}
 
 	/** @param actor May be null. */
