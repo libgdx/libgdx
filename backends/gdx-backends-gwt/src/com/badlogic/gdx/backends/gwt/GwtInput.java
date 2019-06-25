@@ -356,9 +356,21 @@ public class GwtInput implements Input {
 	}
 
 	@Override
-	public int getRotation () {
+	public native int getRotation () /*-{
+		if ("screen" in $wnd) {
+			var orientation = $wnd.screen.msOrientation || $wnd.screen.mozOrientation || ($wnd.screen.orientation || {}).type;
+			if (orientation === "portrait-primary") {
+				return 0;
+			} else if (orientation === "landscape-primary") {
+				return 90;
+			} else if (orientation === "portrait-secondary") {
+				return 180;
+			} else if (orientation === "landscape-secondary") {
+				return 270;
+			}
+		}
 		return 0;
-	}
+	}-*/;
 
 	@Override
 	public native Orientation getNativeOrientation () /*-{
