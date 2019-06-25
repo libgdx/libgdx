@@ -16,6 +16,15 @@
 
 apply from: "gradle/dependencies.gradle"
 
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:3.23.1"
+    }
+}
+
 allprojects {
     group = 'com.badlogicgames.gdx'
     version = '1.10.0-SNAPSHOT'
@@ -47,15 +56,41 @@ allprojects {
 configure(subprojects - project(":tests:gdx-tests-android")) {
     apply plugin: "idea"
     apply plugin: "java"
+    apply plugin: "com.diffplug.gradle.spotless"
 
     compileJava {
         options.fork = true
         options.incremental = true
     }
+
+    spotless {
+        java {
+            licenseHeader '/*******************************************************************************\n' +
+                    ' * Copyright 2011 See AUTHORS file.\n' +
+                    ' * \n' +
+                    ' * Licensed under the Apache License, Version 2.0 (the "License");\n' +
+                    ' * you may not use this file except in compliance with the License.\n' +
+                    ' * You may obtain a copy of the License at\n' +
+                    ' * \n' +
+                    ' *   http://www.apache.org/licenses/LICENSE-2.0\n' +
+                    ' * \n' +
+                    ' * Unless required by applicable law or agreed to in writing, software\n' +
+                    ' * distributed under the License is distributed on an "AS IS" BASIS,\n' +
+                    ' * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n' +
+                    ' * See the License for the specific language governing permissions and\n' +
+                    ' * limitations under the License.\n' +
+                    ' ******************************************************************************/\n'
+            removeUnusedImports()
+            eclipse().configFile '../eclipse-formatter.xml'
+        }
+        xml {
+            indentWithTabs()
+        }
+    }
 }
 
 ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName    
+    "ant-task-" + antTargetName
 }
 task fetchNatives(dependsOn: "ant-task-all"){
     doLast {
