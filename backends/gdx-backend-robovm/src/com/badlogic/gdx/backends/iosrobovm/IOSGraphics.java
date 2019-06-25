@@ -55,12 +55,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	private static final String tag = "IOSGraphics";
 
-	static class IOSUIViewController extends GLKViewController {
+	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
 		boolean created = false;
 
-		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
@@ -237,7 +237,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = new IOSUIViewController(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
