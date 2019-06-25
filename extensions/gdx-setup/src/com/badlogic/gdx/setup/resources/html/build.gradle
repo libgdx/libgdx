@@ -78,8 +78,3 @@ tasks.draftCompileGwt.dependsOn(addSource)
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
-
-
-eclipse.project {
-    name = appName + "-html"
-}
