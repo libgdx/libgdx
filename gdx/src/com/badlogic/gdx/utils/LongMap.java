@@ -21,6 +21,8 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 
+import static com.badlogic.gdx.utils.Collections.isAllocateIterators;
+
 /** An unordered map that uses long keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
  * stash for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
  * <br>
@@ -655,10 +657,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	/** Returns an iterator for the entries in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<V> entries () {
-		if (Array.allocateIterators) return new Entries(this);
+		if (isAllocateIterators()) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -677,10 +679,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
-		if (Array.allocateIterators) return new Values(this);
+		if (isAllocateIterators()) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -699,10 +701,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
-		if (Array.allocateIterators) return new Keys(this);
+		if (isAllocateIterators()) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);

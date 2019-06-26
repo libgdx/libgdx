@@ -482,10 +482,10 @@ public class IntSet {
 
 	/** Returns an iterator for the keys in the set. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link IntSetIterator} constructor for nested or multithreaded iteration. */
 	public IntSetIterator iterator () {
-		if (Array.allocateIterators) return new IntSetIterator(this);
+		if (Collections.isAllocateIterators()) return new IntSetIterator(this);
 		if (iterator1 == null) {
 			iterator1 = new IntSetIterator(this);
 			iterator2 = new IntSetIterator(this);
