@@ -64,6 +64,8 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     }
 
     spotless {
+        lineEndings 'UNIX'
+
         java {
             licenseHeader '/*******************************************************************************\n' +
                     ' * Copyright 2011 See AUTHORS file.\n' +
@@ -83,6 +85,11 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
             removeUnusedImports()
             eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
         }
+
+        cpp {
+            indentWithTabs()
+        }
+
         xml {
             indentWithTabs()
         }
