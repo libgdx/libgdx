@@ -635,8 +635,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public void setActor (A newActor) {
 			if (actor != null) {
 				Tree<N, V> tree = getTree();
-				actor.remove();
-				if (tree != null) tree.addActor(newActor);
+				if (tree != null) {
+					actor.remove();
+					tree.addActor(newActor);
+				}
 			}
 			actor = newActor;
 		}
