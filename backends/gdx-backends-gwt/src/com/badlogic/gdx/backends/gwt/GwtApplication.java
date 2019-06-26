@@ -114,20 +114,28 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			this.root = config.rootPanel;
 		} else {
 			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
+			int width = config.width;
+			int height = config.height;
+			if (config.usePhysicalPixels) {
+				double density = GwtGraphics.getNativeScreenDensity();
+				width = (int) (width / density);
+				height = (int) (height / density);
+			}
+
 			if (element == null) {
 				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
+				panel.setWidth("" + width + "px");
+				panel.setHeight("" + height + "px");
 				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 				RootPanel.get().add(panel);
-				RootPanel.get().setWidth("" + config.width + "px");
-				RootPanel.get().setHeight("" + config.height + "px");
+				RootPanel.get().setWidth("" + width + "px");
+				RootPanel.get().setHeight("" + height + "px");
 				this.root = panel;
 			} else {
 				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
+				panel.setWidth("" + width + "px");
+				panel.setHeight("" + height + "px");
 				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 				element.appendChild(panel.getElement());

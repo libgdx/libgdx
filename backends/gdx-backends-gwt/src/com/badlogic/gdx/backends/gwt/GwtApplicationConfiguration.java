@@ -39,6 +39,8 @@ public class GwtApplicationConfiguration {
 	/** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
 	 * body element of the DOM **/
 	public String canvasId;
+	/** Whether to use physical device pixels or CSS pixels for scaling the canvas. Important for Retina, HDPI and mobile displays */
+	public boolean usePhysicalPixels;
 	/** a TextArea to log messages to, can be null in which case a TextArea will be added to the body element of the DOM. */
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
@@ -64,5 +66,11 @@ public class GwtApplicationConfiguration {
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
 		this.height = height;
+	}
+
+	public GwtApplicationConfiguration (int width, int height, boolean usePhysicalPixels) {
+		this.width = width;
+		this.height = height;
+		this.usePhysicalPixels = usePhysicalPixels;
 	}
 }
