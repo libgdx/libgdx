@@ -81,7 +81,7 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
                     ' * limitations under the License.\n' +
                     ' ******************************************************************************/\n'
             removeUnusedImports()
-            eclipse().configFile '../eclipse-formatter.xml'
+            eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
         }
         xml {
             indentWithTabs()
