@@ -37,7 +37,7 @@ public class BuildExecutor {
 		FileDescriptor build = new FileDescriptor(buildFile);
 		String ant = System.getProperty("os.name").contains("Windows") ? "ant.bat" : "ant";
 
-		List<String> command = new ArrayList<>();
+		List<String> command = new ArrayList<String>();
 		command.add(ant);
 		command.add("-f");
 		command.add(build.file.getAbsolutePath());
