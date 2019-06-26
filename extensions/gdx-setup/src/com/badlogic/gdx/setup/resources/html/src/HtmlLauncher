@@ -27,7 +27,13 @@ public class HtmlLauncher extends GwtApplication {
         //     Window.enableScrolling(false);
         //     Window.setMargin("0");
         //     Window.addResizeHandler(new ResizeListener());
-        //     cfg.preferFlash = false;
+        //
+        //     If you want to support mobile screens, set usePhysicalPixels and convert the size
+        //     cfg.usePhysicalPixels = true;
+        //     double density = GwtGraphics.getNativeScreenDensity();
+        //     cfg.width = (int) (cfg.width * density);
+        //     cfg.height = (int) (cfg.height * density);
+        //
         //     return cfg;
         // }
         //
@@ -38,6 +44,11 @@ public class HtmlLauncher extends GwtApplication {
         //         int height = event.getHeight() - PADDING;
         //         getRootPanel().setWidth("" + width + "px");
         //         getRootPanel().setHeight("" + height + "px");
+        //         if (cfg.usePhysicalPixels) {
+        //             double density = GwtGraphics.getNativeScreenDensity();
+        //             width = (int) (width * density);
+        //             height = (int) (height * density);
+        //         }
         //         getApplicationListener().resize(width, height);
         //         Gdx.graphics.setWindowedMode(width, height);
         //     }
