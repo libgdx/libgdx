@@ -188,7 +188,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		return 0;
 	}
 
-	/** @see Collections#setAllocateIterators(boolean) */
+	/** @see Collections#allocateIterators */
 	@Override
 	public Iterator<VertexAttribute> iterator () {
 		if (iterable == null) iterable = new ReadonlyIterable<VertexAttribute>(attributes);
@@ -242,7 +242,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 
 		@Override
 		public Iterator<T> iterator () {
-			if (Collections.isAllocateIterators()) return new ReadonlyIterator(array);
+			if (Collections.allocateIterators) return new ReadonlyIterator(array);
 			if (iterator1 == null) {
 				iterator1 = new ReadonlyIterator(array);
 				iterator2 = new ReadonlyIterator(array);

@@ -21,8 +21,6 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
-import static com.badlogic.gdx.utils.Collections.isAllocateIterators;
-
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
  * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
@@ -332,10 +330,10 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the queue. Remove is supported.
 	 * <p>
-	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link QueueIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (isAllocateIterators()) return new QueueIterator(this, true);
+		if (Collections.allocateIterators) return new QueueIterator(this, true);
 		if (iterable == null) iterable = new QueueIterable(this);
 		return iterable.iterator();
 	}
@@ -499,9 +497,9 @@ public class Queue<T> implements Iterable<T> {
 			this.allowRemove = allowRemove;
 		}
 
-		/** @see Collections#setAllocateIterators(boolean) */
+		/** @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
-			if (isAllocateIterators()) return new QueueIterator(queue, allowRemove);
+			if (Collections.allocateIterators) return new QueueIterator(queue, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {

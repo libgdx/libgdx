@@ -485,10 +485,10 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	/** Returns an iterator for the keys in the set. Remove is supported.
 	 * <p>
-	 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link ObjectSetIterator} constructor for nested or multithreaded iteration. */
 	public ObjectSetIterator<T> iterator () {
-		if (Collections.isAllocateIterators()) return new ObjectSetIterator(this);
+		if (Collections.allocateIterators) return new ObjectSetIterator(this);
 		if (iterator1 == null) {
 			iterator1 = new ObjectSetIterator(this);
 			iterator2 = new ObjectSetIterator(this);

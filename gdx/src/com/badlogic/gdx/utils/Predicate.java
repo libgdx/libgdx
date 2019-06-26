@@ -99,11 +99,11 @@ public interface Predicate<T> {
 
 		/** Returns an iterator. Remove is supported.
 		 * <p>
-		 * If {@link Collections#isAllocateIterators()} is false, the same iterator instance is returned each time this method is called. Use
+		 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use
 		 * the {@link Predicate.PredicateIterator} constructor for nested or multithreaded iteration. */
 		@Override
 		public Iterator<T> iterator () {
-			if (Collections.isAllocateIterators()) return new PredicateIterator<T>(iterable.iterator(), predicate);
+			if (Collections.allocateIterators) return new PredicateIterator<T>(iterable.iterator(), predicate);
 			if (iterator == null)
 				iterator = new PredicateIterator<T>(iterable.iterator(), predicate);
 			else
