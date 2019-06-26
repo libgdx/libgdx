@@ -278,15 +278,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			float actorY = actor.getY(), height = node.height;
 			if (cullingArea == null || (actorY + height >= cullBottom && actorY <= cullTop)) {
 				if (selection.contains(node) && style.selection != null) {
-					style.selection.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+					drawSelection(node, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
 				} else if (node == overNode && style.over != null) {
-					style.over.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+					drawOver(node, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
 				}
 
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
 					batch.setColor(actor.getColor());
-					node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
+					drawIcon(node, batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
 					batch.setColor(1, 1, 1, 1);
 				}
 
@@ -302,6 +302,18 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			}
 			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
 		}
+	}
+
+	protected void drawSelection (N node, Batch batch, float x, float y, float width, float height) {
+		style.selection.draw(batch, x, y, width, height);
+	}
+
+	protected void drawOver (N node, Batch batch, float x, float y, float width, float height) {
+		style.over.draw(batch, x, y, width, height);
+	}
+
+	protected void drawIcon (N node, Batch batch, float x, float y, float width, float height) {
+		node.icon.draw(batch, x, y, width, height);
 	}
 
 	/** Return true if {@link TreeStyle#plusOver} or {@link TreeStyle#minusOver} should be displayed for the {@link #getOverNode()
