@@ -27,10 +27,6 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
  * last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class Array<T> implements Iterable<T> {
-	/** When true, {@link Iterable#iterator()} in this class and others will allocate a new iterator for each invocation. When
-	 * false, the iterator is reused and nested use will throw an exception. Default is false. */
-	static public boolean allocateIterators;
-
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
 	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
 	public T[] items;
@@ -476,20 +472,20 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the array. Remove is supported.
 	 * <p>
-	 * If {@link #allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (Array.allocateIterators) return new ArrayIterator(this, true);
+		if (Collections.allocateIterators) return new ArrayIterator(this, true);
 		if (iterable == null) iterable = new ArrayIterable(this);
 		return iterable.iterator();
 	}
 
 	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next().
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterable instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterable instance is returned each time this method is called. Use the
 	 * {@link Predicate.PredicateIterable} constructor for nested or multithreaded iteration. */
 	public Iterable<T> select (Predicate<T> predicate) {
-		if (Array.allocateIterators) new Predicate.PredicateIterable<T>(this, predicate);
+		if (Collections.allocateIterators) new Predicate.PredicateIterable<T>(this, predicate);
 		if (predicateIterable == null)
 			predicateIterable = new Predicate.PredicateIterable<T>(this, predicate);
 		else
@@ -675,9 +671,9 @@ public class Array<T> implements Iterable<T> {
 			this.allowRemove = allowRemove;
 		}
 
-		/** @see Array#allocateIterators */
+		/** @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
-			if (allocateIterators) return new ArrayIterator(array, allowRemove);
+			if (Collections.allocateIterators) return new ArrayIterator(array, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {

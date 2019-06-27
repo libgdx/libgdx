@@ -617,10 +617,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 
 	/** Returns an iterator for the entries in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries entries () {
-		if (Array.allocateIterators) return new Entries(this);
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -639,10 +639,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values values () {
-		if (Array.allocateIterators) return new Values(this);
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -661,10 +661,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
-	 * If {@link Array#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
 	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
-		if (Array.allocateIterators) return new Keys(this);
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);
