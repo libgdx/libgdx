@@ -297,6 +297,8 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 		} catch (RuntimeException e) {
 			// this exception is sometimes thrown by getDevice().
 			// we can't use this device anyway, so ignore it and move on
+			Gdx.app.error(TAG, "Could not get information about " + deviceId +
+							", ignoring the device.", e);
 		}
 	}
 	
