@@ -359,14 +359,15 @@ public class GwtInput implements Input {
 	public native int getRotation () /*-{
 		if ("screen" in $wnd) {
 			var orientation = $wnd.screen.msOrientation || $wnd.screen.mozOrientation || ($wnd.screen.orientation || {}).type;
+			var isPortrait = this.@com.badlogic.gdx.backends.gwt.GwtInput::getNativeOrientation()() === @com.badlogic.gdx.Input.Orientation::Portrait;
 			if (orientation === "portrait-primary") {
-				return 0;
+				return isPortrait ? 0 : 270;
 			} else if (orientation === "landscape-primary") {
-				return 90;
+				return isPortrait ? 90 : 0;
 			} else if (orientation === "portrait-secondary") {
-				return 180;
+				return isPortrait ? 180 : 90;
 			} else if (orientation === "landscape-secondary") {
-				return 270;
+				return isPortrait ? 270 : 180;
 			}
 		}
 		return 0;
