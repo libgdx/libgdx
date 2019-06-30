@@ -16,6 +16,34 @@
 
 dependencies {
     compileOnly project(":extensions:gdx-controllers:gdx-controllers-core")
-    compileOnly project(":extensions:gdx-jnigen")
     compileOnly libraries.lwjgl
+}
+
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+jnigen {
+    sharedLibName = "gdx-controllers-desktop"
+    all {
+        headerDirs = ["ois-v1-4svn/includes", "dinput/"]
+    }
+    add(Windows, x32) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/win32/*.cpp"]
+        libraries = "-ldinput8 -ldxguid"
+    }
+    add(Windows, x64) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/win32/*.cpp"]
+        libraries = "-ldinput8 -ldxguid"
+    }
+    add(Linux, x32) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"]
+        libraries = "-lX11"
+    }
+    add(Linux, x64) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"]
+        libraries = "-lX11"
+    }
+    add(MacOsX, x64) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/mac/*.mm", "ois-v1-4svn/src/mac/MacHIDManager.cpp", "ois-v1-4svn/src/mac/MacJoyStick.cpp"]
+        cppFlags += " -x objective-c++"
+        libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa"
+    }
 }

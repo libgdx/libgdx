@@ -14,8 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply from: "gradle/dependencies.gradle"
+plugins {
+    id "com.badlogicgames.gdx.gdx-jnigen" version "1.9.11" apply false
+}
 
+apply from: "gradle/dependencies.gradle"
 
 allprojects {
     group = 'com.badlogicgames.gdx'
