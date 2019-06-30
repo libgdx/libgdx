@@ -374,7 +374,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public Orientation getNativeOrientation () {
-		return Orientation.Landscape;
+		return GwtApplication.isMobileDevice() ? Orientation.Portrait : Orientation.Landscape;
 	}
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
