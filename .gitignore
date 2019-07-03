@@ -36,6 +36,8 @@ x86_64/
 robovm-build/
 ipch/
 /dist
+/ios/IOSLauncher.app
+/ios/IOSLauncher.app.dSYM
 
 *.a
 *.a.tvos
