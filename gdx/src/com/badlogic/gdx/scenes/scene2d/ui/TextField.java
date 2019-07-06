@@ -426,8 +426,8 @@ public class TextField extends Widget implements Disableable {
 			fontOffset = 0;
 		glyphPositions.add(x);
 
-		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
-		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size);
+		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size - 1);
+		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size - 1);
 
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
