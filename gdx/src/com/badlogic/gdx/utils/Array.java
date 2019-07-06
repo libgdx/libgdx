@@ -290,20 +290,20 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
-		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		int n = size;
+		if (end >= n) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
 		T[] items = this.items;
-		int count = end - start + 1;
-		int lastIndex = size - count;
+		int count = end - start + 1, lastIndex = n - count;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(items, start + count, items, start, n - (start + count));
 		else {
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex + i];
+			int i = Math.max(lastIndex, end + 1);
+			System.arraycopy(items, i, items, start, n - i);
 		}
-		for (int i = lastIndex, n = size; i < n; i++)
+		for (int i = lastIndex; i < n; i++)
 			items[i] = null;
-		size -= count;
+		size = n - count;
 	}
 
 	/** Removes from this array all of elements contained in the specified array.
@@ -472,8 +472,8 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the array. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link ArrayIterator} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
 		if (Collections.allocateIterators) return new ArrayIterator(this, true);
 		if (iterable == null) iterable = new ArrayIterable(this);
@@ -482,8 +482,8 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next().
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterable instance is returned each time this method is called. Use the
-	 * {@link Predicate.PredicateIterable} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterable instance is returned each time this method is called.
+	 * Use the {@link Predicate.PredicateIterable} constructor for nested or multithreaded iteration. */
 	public Iterable<T> select (Predicate<T> predicate) {
 		if (Collections.allocateIterators) new Predicate.PredicateIterable<T>(this, predicate);
 		if (predicateIterable == null)
