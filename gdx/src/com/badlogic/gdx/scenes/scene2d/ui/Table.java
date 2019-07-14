@@ -691,7 +691,7 @@ public class Table extends WidgetGroup {
 			if (c.actorY + c.computedPadTop < y) break;
 			if (c.endRow) row++;
 		}
-		return row;
+		return Math.min(row, rows - 1);
 	}
 
 	public void setSkin (Skin skin) {
