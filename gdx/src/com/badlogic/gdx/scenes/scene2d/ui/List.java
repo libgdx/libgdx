@@ -102,7 +102,7 @@ public class List<T> extends Widget implements Cullable {
 					setSelectedIndex(index);
 					return true;
 				case Keys.ESCAPE:
-					getStage().setKeyboardFocus(null);
+					if (getStage() != null) getStage().setKeyboardFocus(null);
 					return true;
 				}
 				return false;
@@ -128,7 +128,7 @@ public class List<T> extends Widget implements Cullable {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return true;
 				if (selection.isDisabled()) return true;
-				getStage().setKeyboardFocus(List.this);
+				if (getStage() != null) getStage().setKeyboardFocus(List.this);
 				if (items.size == 0) return true;
 				int index = getItemIndexAt(y);
 				if (index == -1) return true;

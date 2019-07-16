@@ -133,7 +133,7 @@ public class Window extends Table {
 				float minWidth = getMinWidth(), maxWidth = getMaxWidth();
 				float minHeight = getMinHeight(), maxHeight = getMaxHeight();
 				Stage stage = getStage();
-				boolean clampPosition = keepWithinStage && getParent() == stage.getRoot();
+				boolean clampPosition = keepWithinStage && stage != null && getParent() == stage.getRoot();
 
 				if ((edge & MOVE) != 0) {
 					float amountX = x - startX, amountY = y - startY;
@@ -236,7 +236,7 @@ public class Window extends Table {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
-		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+		if (stage != null && stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
 		keepWithinStage();
 

@@ -110,7 +110,7 @@ public class ScrollPane extends WidgetGroup {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (draggingPointer != -1) return false;
 				if (pointer == 0 && button != 0) return false;
-				getStage().setScrollFocus(ScrollPane.this);
+				if (getStage() != null) getStage().setScrollFocus(ScrollPane.this);
 
 				if (!flickScroll) setScrollbarsVisible(true);
 

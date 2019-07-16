@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -243,6 +244,9 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage == null) return;
+
 		validate();
 
 		Color color = getColor();
@@ -251,7 +255,7 @@ public class SplitPane extends WidgetGroup {
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(firstWidgetBounds, tempScissors);
+			stage.calculateScissors(firstWidgetBounds, tempScissors);
 			if (ScissorStack.pushScissors(tempScissors)) {
 				firstWidget.draw(batch, alpha);
 				batch.flush();
@@ -260,7 +264,7 @@ public class SplitPane extends WidgetGroup {
 		}
 		if (secondWidget != null && secondWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(secondWidgetBounds, tempScissors);
+			stage.calculateScissors(secondWidgetBounds, tempScissors);
 			if (ScissorStack.pushScissors(tempScissors)) {
 				secondWidget.draw(batch, alpha);
 				batch.flush();

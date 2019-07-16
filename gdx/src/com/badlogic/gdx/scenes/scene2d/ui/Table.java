@@ -1242,7 +1242,7 @@ public class Table extends WidgetGroup {
 	private void drawDebugRects (ShapeRenderer shapes) {
 		if (debugRects == null || !getDebug()) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(getStage().getDebugColor());
+		if (getStage() != null) shapes.setColor(getStage().getDebugColor());
 		float x = 0, y = 0;
 		if (!isTransform()) {
 			x = getX();

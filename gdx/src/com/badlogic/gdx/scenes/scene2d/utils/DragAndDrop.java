@@ -63,7 +63,10 @@ public class DragAndDrop {
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
 
-				if (cancelTouchFocus && payload != null) source.getActor().getStage().cancelTouchFocusExcept(this, source.getActor());
+				if (cancelTouchFocus && payload != null) {
+					Stage stage = source.getActor().getStage();
+					if (stage != null) stage.cancelTouchFocusExcept(this, source.getActor());
+				}
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
@@ -172,7 +175,8 @@ public class DragAndDrop {
 	public void cancelTouchFocusExcept (Source except) {
 		DragListener listener = sourceListeners.get(except);
 		if (listener == null) return;
-		except.getActor().getStage().cancelTouchFocusExcept(listener, except.getActor());
+		Stage stage = except.getActor().getStage();
+		if (stage != null) stage.cancelTouchFocusExcept(listener, except.getActor());
 	}
 
 	/** Sets the distance a touch must travel before being considered a drag. */
