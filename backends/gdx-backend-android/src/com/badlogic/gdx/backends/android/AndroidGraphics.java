@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -28,8 +25,10 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 
@@ -55,7 +54,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -76,6 +74,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
@@ -305,6 +304,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		this.width = width;
 		this.height = height;
 		updatePpi();
+		updateSafeAreaInsets();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
 			app.getApplicationListener().create();
@@ -322,6 +322,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
+		updateSafeAreaInsets();
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
@@ -646,6 +647,43 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[] {getDisplayMode()};
+	}
+
+	protected void updateSafeAreaInsets() {
+		safeInsetLeft = 0;
+		safeInsetTop = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+			if (displayCutout != null) {
+				safeInsetRight = displayCutout.getSafeInsetRight();
+				safeInsetBottom = displayCutout.getSafeInsetBottom();
+				safeInsetTop = displayCutout.getSafeInsetTop();
+				safeInsetLeft = displayCutout.getSafeInsetLeft();
+			}
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
 	}
 
 	@Override
