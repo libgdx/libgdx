@@ -1,7 +1,7 @@
 package com.badlogic.gdx.setup;
 
 public enum Language {
-	JAVA ("java", "", "", "", "java;java;android;java,robovm;moe;gwt,war", true) ,
+	JAVA ("java", "", "", "", "java-library;java-library;android;java-library,robovm;java-library,moe;java-library,gwt,war", true) ,
 	KOTLIN ("kotlin", "ext.kotlinVersion = '1.2.71'",
 			"classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion\"", 
 			"compile \"org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion\"",
