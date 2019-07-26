@@ -23,7 +23,7 @@ ext {
 versions.robovm = "2.3.6"
 versions.moe = "1.4.0"
 versions.gwt = "2.8.2"
-versions.gwtPlugin = "1.0.6"
+versions.gwtPlugin = "1.0.9"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
 versions.lwjgl3 = "3.2.1"
