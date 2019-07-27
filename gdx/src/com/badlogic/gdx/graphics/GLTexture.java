@@ -170,18 +170,24 @@ public abstract class GLTexture implements Disposable {
 		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
 	}
 
-	/** Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	/**
+	 * Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	 *
 	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
-	 * @return The actual level set, which may be lower than the provided value due to device limitations. */
-	public float unsafeSetAnisotropicFilter (float level){
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float unsafeSetAnisotropicFilter (float level) {
 		return unsafeSetAnisotropicFilter(level, false);
 	}
 
-	/** Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	/**
+	 * Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	 *
 	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
 	 * @param force True to always set the value, even if it is the same as the current values.
-	 * @return The actual level set, which may be lower than the provided value due to device limitations. */
-	public float unsafeSetAnisotropicFilter (float level, boolean force){
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float unsafeSetAnisotropicFilter (float level, boolean force) {
 		float max = getMaxAnisotropicFilterLevel();
 		if (max == 1f)
 			return 1f;
@@ -192,10 +198,13 @@ public abstract class GLTexture implements Disposable {
 		return anisotropicFilterLevel = level;
 	}
 
-	/** Sets the anisotropic filter level for the texture. This will bind the texture!
+	/**
+	 * Sets the anisotropic filter level for the texture. This will bind the texture!
+	 *
 	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
-	 * @return The actual level set, which may be lower than the provided value due to device limitations. */
-	public float setAnisotropicFilter (float level){
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float setAnisotropicFilter (float level) {
 		float max = getMaxAnisotropicFilterLevel();
 		if (max == 1f)
 			return 1f;
@@ -207,13 +216,17 @@ public abstract class GLTexture implements Disposable {
 		return anisotropicFilterLevel = level;
 	}
 
-	/** @return The currently set anisotropic filtering level for the texture, or 1.0f if none has been set. */
-	public float getAnisotropicFilter (){
+	/**
+	 * @return The currently set anisotropic filtering level for the texture, or 1.0f if none has been set.
+	 */
+	public float getAnisotropicFilter () {
 		return anisotropicFilterLevel;
 	}
 
-	/** @return The maximum supported anisotropic filtering level supported by the device. */
-	public static float getMaxAnisotropicFilterLevel() {
+	/**
+	 * @return The maximum supported anisotropic filtering level supported by the device.
+	 */
+	public static float getMaxAnisotropicFilterLevel () {
 		if (maxAnisotropicFilterLevel > 0)
 			return maxAnisotropicFilterLevel;
 		if (Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")) {
