@@ -57,7 +57,7 @@ public class AnisotropyTest extends GdxTest {
 		targetAnisotropicLevel *= 2;
 		if (targetAnisotropicLevel > 16)
 			targetAnisotropicLevel = 1;
-		float value = brick.setAnisotropicFilteringLevel(targetAnisotropicLevel);
+		float value = brick.setAnisotropicFilter(targetAnisotropicLevel);
 		Gdx.app.log("anisotropic value", Float.toString(value));
 	}
 
