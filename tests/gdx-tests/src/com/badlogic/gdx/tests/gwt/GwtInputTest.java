@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.gwt;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +37,7 @@ public class GwtInputTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		Gdx.input.setInputProcessor(this);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.input.setCursorCatched(true);
 	}
 
 	@Override

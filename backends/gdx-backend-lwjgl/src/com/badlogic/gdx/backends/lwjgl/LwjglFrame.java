@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
@@ -41,6 +42,12 @@ public class LwjglFrame extends JFrame {
 
 	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		super(config.title);
+		construct(listener, config);
+	}
+
+	/** @param graphicsConfig May be null. */
+	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config, GraphicsConfiguration graphicsConfig) {
+		super(config.title, graphicsConfig);
 		construct(listener, config);
 	}
 

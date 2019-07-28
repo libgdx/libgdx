@@ -320,21 +320,21 @@ public class Actor {
 	public boolean isDescendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
-		while (true) {
+		do {
 			if (parent == actor) return true;
 			parent = parent.parent;
-			if (parent == null) return false;
-		}
+		} while (parent != null);
+		return false;
 	}
 
 	/** Returns true if this actor is the same as or is the ascendant of the specified actor. */
 	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
-		while (true) {
+		do {
 			if (actor == this) return true;
 			actor = actor.parent;
-			if (actor == null) return false;
-		}
+		} while (actor != null);
+		return false;
 	}
 
 	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type, or null if none were
@@ -730,7 +730,7 @@ public class Actor {
 	/** Adds the specified rotation to the current rotation. */
 	public void rotateBy (float amountInDegrees) {
 		if (amountInDegrees != 0) {
-			rotation += amountInDegrees;
+			rotation = (rotation + amountInDegrees) % 360;
 			rotationChanged();
 		}
 	}
@@ -808,12 +808,13 @@ public class Actor {
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {
 		if (width <= 0 || height <= 0) return false;
+		Stage stage = this.stage;
+		if (stage == null) return false;
 		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.x = x;
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Stage stage = this.stage;
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
@@ -940,7 +941,7 @@ public class Actor {
 	protected void drawDebugBounds (ShapeRenderer shapes) {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(stage.getDebugColor());
+		if (stage != null) shapes.setColor(stage.getDebugColor());
 		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 

@@ -32,7 +32,12 @@ public class AlphaAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		color.a = start + (end - start) * percent;
+		if (percent == 0)
+			color.a = start;
+		else if (percent == 1)
+			color.a = end;
+		else
+			color.a = start + (end - start) * percent;
 	}
 
 	public void reset () {

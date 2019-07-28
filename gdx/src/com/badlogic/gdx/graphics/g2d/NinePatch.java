@@ -25,16 +25,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** A 3x3 grid of texture regions. Any of the regions may be omitted. Padding may be set as a hint on how to inset content on top
  * of the ninepatch (by default the eight "edge" textures of the nine-patch define the padding). When drawn the eight "edge"
  * patches will not be scaled, only the interior patch will be scaled.
- * 
  * <p>
  * <b>NOTE</b>: This class expects a "post-processed" nine-patch, and not a raw ".9.png" texture. That is, the textures given to
  * this class should <em>not</em> include the meta-data pixels from a ".9.png" that describe the layout of the ninepatch over the
  * interior of the graphic. That information should be passed into the constructor either implicitly as the size of the individual
  * patch textures, or via the <code>left, right, top, bottom</code> parameters to {@link #NinePatch(Texture, int, int, int, int)}
  * or {@link #NinePatch(TextureRegion, int, int, int, int)}.
- * 
  * <p>
- * A correctly created {@link TextureAtlas} is one way to generate a post-processed nine-patch from a ".9.png" file. */
+ * {@link TextureAtlas} is one way to generate a post-processed nine-patch from a ".9.png" file. */
 public class NinePatch {
 	public static final int TOP_LEFT = 0;
 	public static final int TOP_CENTER = 1;
@@ -44,8 +42,7 @@ public class NinePatch {
 	public static final int MIDDLE_RIGHT = 5;
 	public static final int BOTTOM_LEFT = 6;
 	/** Indices for {@link #NinePatch(TextureRegion...)} constructor */
-	// alphabetically first in javadoc
-	public static final int BOTTOM_CENTER = 7;
+	public static final int BOTTOM_CENTER = 7; // alphabetically first in javadoc
 	public static final int BOTTOM_RIGHT = 8;
 
 	static private final Color tmpDrawColor = new Color();
@@ -62,7 +59,6 @@ public class NinePatch {
 
 	/** Create a ninepatch by cutting up the given texture into nine patches. The subsequent parameters define the 4 lines that
 	 * will cut the texture region into 9 pieces.
-	 * 
 	 * @param left Pixels from left edge.
 	 * @param right Pixels from right edge.
 	 * @param top Pixels from top edge.
@@ -73,7 +69,6 @@ public class NinePatch {
 
 	/** Create a ninepatch by cutting up the given texture region into nine patches. The subsequent parameters define the 4 lines
 	 * that will cut the texture region into 9 pieces.
-	 * 
 	 * @param left Pixels from left edge.
 	 * @param right Pixels from right edge.
 	 * @param top Pixels from top edge.

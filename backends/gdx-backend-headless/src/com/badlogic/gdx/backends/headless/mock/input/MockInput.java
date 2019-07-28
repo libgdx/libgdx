@@ -131,6 +131,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		return false;
+	}
+
+	@Override
 	public boolean isKeyPressed(int key) {
 		return false;
 	}
@@ -207,6 +212,16 @@ public class MockInput implements Input {
 	
 	@Override
 	public boolean isCatchMenuKey() {
+		return false;
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
 		return false;
 	}
 

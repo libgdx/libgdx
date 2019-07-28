@@ -54,6 +54,8 @@ public class GamepadSupport {
 				if (gamepad != null) {
 					if (!gamepadsTemp.containsKey(gamepad.getIndex())) {
 						onGamepadConnect(gamepad);
+					} else {
+						gamepads.put(gamepad.getIndex(), gamepad);
 					}
 					gamepadsTemp.remove(gamepad.getIndex());
 				}				

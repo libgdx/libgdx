@@ -51,6 +51,7 @@ import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
+import com.badlogic.gdx.tests.ClipboardTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -145,12 +146,12 @@ public class GwtTestWrapper extends GdxTest {
 		Arrays.sort(tests, new Comparator<Instancer>() {
 			@Override
 			public int compare (Instancer o1, Instancer o2) {
-				return o1.instance().getClass().getName().compareTo(o2.instance().getClass().getName());
+				return o1.instance().getClass().getSimpleName().compareTo(o2.instance().getClass().getSimpleName());
 			}
 		});
 		for (final Instancer instancer : tests) {
 			table.row();
-			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
+			TextButton button = new TextButton(instancer.instance().getClass().getSimpleName(), skin);
 			button.addListener(new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
@@ -357,6 +358,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isButtonJustPressed (int button) {
+			return false;
+		}
+
+		@Override
 		public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 			input.getTextInput(listener, title, text, hint);
 		}
@@ -424,6 +430,16 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public boolean isCatchMenuKey () {
 			return input.isCatchMenuKey();
+		}
+
+		@Override
+		public void setCatchKey(int keycode, boolean catchKey) {
+			input.setCatchKey(keycode, catchKey);
+		}
+
+		@Override
+		public boolean isCatchKey (int keycode) {
+			return input.isCatchKey(keycode);
 		}
 
 		@Override
@@ -542,6 +558,10 @@ public class GwtTestWrapper extends GdxTest {
 			return new BufferUtilsTest();
 		}
 	}, new Instancer() {
+		public GdxTest instance() {
+			return new ClipboardTest();
+		}
+	}, new Instancer() {
 		public GdxTest instance () {
 			return new ColorTest();
 		}
@@ -602,6 +622,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GroupFadeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new GwtInputTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

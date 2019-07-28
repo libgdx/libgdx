@@ -216,18 +216,17 @@ public class ByteArray {
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
-		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		int n = size;
+		if (end >= n) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
-		byte[] items = this.items;
-		int count = end - start + 1;
+		int count = end - start + 1, lastIndex = n - count;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(items, start + count, items, start, n - (start + count));
 		else {
-			int lastIndex = this.size - 1;
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+			int i = Math.max(lastIndex, end + 1);
+			System.arraycopy(items, i, items, start, n - i);
 		}
-		size -= count;
+		size = n - count;
 	}
 
 	/** Removes from this array all of elements contained in the specified array.
@@ -263,6 +262,11 @@ public class ByteArray {
 	public byte first () {
 		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
+	}
+
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
 	}
 
 	/** Returns true if the array is empty. */
@@ -360,6 +364,7 @@ public class ByteArray {
 		return h;
 	}
 
+	/** Returns false if either array is unordered. */
 	public boolean equals (Object object) {
 		if (object == this) return true;
 		if (!ordered) return false;
@@ -368,8 +373,7 @@ public class ByteArray {
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		byte[] items1 = this.items;
-		byte[] items2 = array.items;
+		byte[] items1 = this.items, items2 = array.items;
 		for (int i = 0; i < n; i++)
 			if (items1[i] != items2[i]) return false;
 		return true;

@@ -525,11 +525,6 @@ public class BitmapFont implements Disposable {
 					}
 				}
 
-				int shadowOffsetY = 0;
-				if (common.length > 7 && common[7].startsWith("shadowOffsetY=")) {
-					shadowOffsetY = Integer.parseInt(common[7].substring(14));
-				}
-
 				imagePaths = new String[pageCount];
 
 				// Read each page definition.
@@ -562,6 +557,7 @@ public class BitmapFont implements Disposable {
 					line = reader.readLine();
 					if (line == null) break; // EOF
 					if (line.startsWith("kernings ")) break; // Starting kernings block.
+					if (line.startsWith("metrics ")) break; // Starting metrics block.
 					if (!line.startsWith("char ")) continue;
 
 					Glyph glyph = new Glyph();
@@ -591,7 +587,7 @@ public class BitmapFont implements Disposable {
 					if (flip)
 						glyph.yoffset = Integer.parseInt(tokens.nextToken());
 					else
-						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken())) - shadowOffsetY;
+						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
 					tokens.nextToken();
 					glyph.xadvance = Integer.parseInt(tokens.nextToken());
 
@@ -604,7 +600,7 @@ public class BitmapFont implements Disposable {
 						}
 					}
 
-					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset + shadowOffsetY, descent);
+					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset, descent);
 				}
 				descent += padBottom;
 
@@ -628,6 +624,38 @@ public class BitmapFont implements Disposable {
 					}
 				}
 
+				boolean hasMetricsOverride = false;
+				float overrideAscent = 0;
+				float overrideDescent = 0;
+				float overrideDown = 0;
+				float overrideCapHeight = 0;
+				float overrideLineHeight = 0;
+				float overrideSpaceXAdvance = 0;
+				float overrideXHeight = 0;
+
+				// Metrics override
+				if (line != null && line.startsWith("metrics ")) {
+
+					hasMetricsOverride = true;
+
+					StringTokenizer tokens = new StringTokenizer(line, " =");
+					tokens.nextToken();
+					tokens.nextToken();
+					overrideAscent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDescent = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideDown = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideCapHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideLineHeight = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideSpaceXAdvance = Float.parseFloat(tokens.nextToken());
+					tokens.nextToken();
+					overrideXHeight = Float.parseFloat(tokens.nextToken());
+				}
+
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
@@ -649,7 +677,7 @@ public class BitmapFont implements Disposable {
 					if (xGlyph != null) break;
 				}
 				if (xGlyph == null) xGlyph = getFirstGlyph();
-				xHeight = xGlyph.height - padY - shadowOffsetY;
+				xHeight = xGlyph.height - padY;
 
 				Glyph capGlyph = null;
 				for (char capChar : capChars) {
@@ -674,6 +702,17 @@ public class BitmapFont implements Disposable {
 					ascent = -ascent;
 					down = -down;
 				}
+
+				if (hasMetricsOverride) {
+					this.ascent = overrideAscent;
+					this.descent = overrideDescent;
+					this.down = overrideDown;
+					this.capHeight = overrideCapHeight;
+					this.lineHeight = overrideLineHeight;
+					this.spaceXadvance = overrideSpaceXAdvance;
+					this.xHeight = overrideXHeight;
+				}
+
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 			} finally {
@@ -800,6 +839,7 @@ public class BitmapFont implements Disposable {
 
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
 				if (glyph == null) {
 					if (missingGlyph == null) continue;
@@ -828,12 +868,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			if (isWhitespace((char)glyphs.get(i).id)) return i;
-			for (; i > 0; i--)
-				if (!isWhitespace((char)glyphs.get(i).id)) break;
+			char ch = (char)glyphs.get(i).id;
+			if (isWhitespace(ch)) return i;
+			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				char ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
+				ch = (char)glyphs.get(i).id;
+				if (isBreakChar(ch)) return i + 1;
+				if (isWhitespace(ch)) return i + 1;
 			}
 			return 0;
 		}

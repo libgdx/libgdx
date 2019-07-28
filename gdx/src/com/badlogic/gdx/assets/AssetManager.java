@@ -119,7 +119,7 @@ public class AssetManager implements Disposable {
 			setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
 			setLoader(Cubemap.class, new CubemapLoader(resolver));
 		}
-		executor = new AsyncExecutor(1);
+		executor = new AsyncExecutor(1, "AssetManager");
 	}
 
 	/** Returns the {@link FileHandleResolver} for which this AssetManager was loaded with.
@@ -441,19 +441,34 @@ public class AssetManager implements Disposable {
 
 	/** Blocks until the specified asset is loaded.
 	 * @param assetDesc the AssetDescriptor of the asset */
-	public void finishLoadingAsset (AssetDescriptor assetDesc) {
-		finishLoadingAsset(assetDesc.fileName);
+	public <T> T finishLoadingAsset (AssetDescriptor assetDesc) {
+		return finishLoadingAsset(assetDesc.fileName);
 	}
 
 	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
-	public void finishLoadingAsset (String fileName) {
+	public <T> T finishLoadingAsset (String fileName) {
 		log.debug("Waiting for asset to be loaded: " + fileName);
-		while (!isLoaded(fileName)) {
-			update();
+		while (true) {
+			synchronized (this) {
+				Class<T> type = assetTypes.get(fileName);
+				if (type != null) {
+					ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+					if (assetsByType != null) {
+						RefCountedContainer assetContainer = assetsByType.get(fileName);
+						if (assetContainer != null) {
+							T asset = assetContainer.getObject(type);
+							if (asset != null) {
+								log.debug("Asset loaded: " + fileName);
+								return asset;
+							}
+						}
+					}
+				}
+				update();
+			}
 			ThreadUtils.yield();
 		}
-		log.debug("Asset loaded: " + fileName);
 	}
 
 	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
@@ -463,7 +478,7 @@ public class AssetManager implements Disposable {
 			injected.add(desc.fileName);
 			injectDependency(parentAssetFilename, desc);
 		}
-		injected.clear();
+		injected.clear(32);
 	}
 
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {

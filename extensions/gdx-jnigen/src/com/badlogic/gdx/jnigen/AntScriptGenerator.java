@@ -42,7 +42,7 @@ import com.badlogic.gdx.jnigen.FileDescriptor.FileType;
  * BuildConfig config = new BuildConfig("mysharedlibrary");
  * 
  * new AntScriptGenerator().generate(config, win32, win64, linux32, linux64, mac, android);
- * BuildExecutor.executeAnt("jni/build.xml", "clean all -v");
+ * BuildExecutor.executeAnt("jni/build.xml", "clean", "all", "-v");
  * 
  * // assuming the natives jar is on the classpath of the application 
  * new SharedLibraryLoader().load("mysharedlibrary)

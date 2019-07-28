@@ -33,6 +33,7 @@ public class Lwjgl3WindowConfiguration {
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	boolean windowMaximized = false;
+	Lwjgl3Graphics.Lwjgl3Monitor maximizedMonitor;
 	boolean autoIconify = false;
 	FileType windowIconFileType;
 	String[] windowIconPaths;

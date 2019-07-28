@@ -11,6 +11,9 @@
 	<!-- should we build natives? -->
 	<property name="build-natives" value="false"/>
 
+	<!-- should we build natives in release mode -->
+	<property name="release" value="true"/>
+
 	<!-- clean distribution/output directory -->
 	<target name="clean">
 		<delete dir="${distDir}"/>
@@ -177,6 +180,7 @@
 			<pathelement location="${distDir}/extensions/gdx-box2d/gdx-box2d.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/find-bugs.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
@@ -232,7 +236,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-android.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-7.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-9.0.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
@@ -249,6 +253,7 @@
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/find-bugs.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>

@@ -27,8 +27,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GwtWindowModeTest extends GdxTest {
 	private Stage stage;
-	private boolean isWindowed;
-	private TextButton changeModeButton;
+	boolean isWindowed;
+	TextButton changeModeButton;
 	private final String windowedInstructions = "click for Full screen Mode";
 	private final String fullScreenInstructions = "click for window Mode";
 

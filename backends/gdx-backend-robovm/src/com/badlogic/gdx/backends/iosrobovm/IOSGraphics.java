@@ -55,12 +55,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	private static final String tag = "IOSGraphics";
 
-	static class IOSUIViewController extends GLKViewController {
+	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
 		boolean created = false;
 
-		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
@@ -109,7 +109,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public UIRectEdge preferredScreenEdgesDeferringSystemGestures() {
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
 			return app.config.screenEdgesDeferringSystemGestures;
 		}
 
@@ -125,7 +125,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 				app.listener.resize(graphics.width, graphics.height);
 			}
 		}
-		
+
+		@Override
+		public boolean prefersStatusBarHidden () {
+			return !app.config.statusBarVisible;
+		}
+
 		@Override
 		public boolean prefersHomeIndicatorAutoHidden() {
 			return app.config.hideHomeIndicator;
@@ -232,7 +237,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = new IOSUIViewController(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
@@ -265,7 +270,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi/160f : scale;

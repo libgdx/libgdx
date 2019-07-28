@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered set that uses int keys. This implementation uses cuckoo hashing using 3 hashes, random walking, and a small stash
  * for problematic keys. No allocation is done except when growing the table size. <br>
@@ -324,6 +324,11 @@ public class IntSet {
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
 	}
 
+	/** Returns true if the set has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the set is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -443,6 +448,7 @@ public class IntSet {
 		IntSet other = (IntSet)obj;
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
+		int[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != EMPTY && !other.contains(keyTable[i])) return false;
 		return true;
@@ -474,9 +480,12 @@ public class IntSet {
 		return buffer.toString();
 	}
 
-	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link IntSetIterator} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the set. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link IntSetIterator} constructor for nested or multithreaded iteration. */
 	public IntSetIterator iterator () {
+		if (Collections.allocateIterators) return new IntSetIterator(this);
 		if (iterator1 == null) {
 			iterator1 = new IntSetIterator(this);
 			iterator2 = new IntSetIterator(this);

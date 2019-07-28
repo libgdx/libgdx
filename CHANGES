@@ -1,8 +1,39 @@
 [1.9.10]
+- API Addition: Allow target display for maximization LWJGL3 backend
+- API Addition: Accelerometer support on GWT
+- API Change: Set default behaviour of iOS audio to allow use of iPod
+- API Change: IOSDevice is no longer an enum to allow users to add their own new devices when LibGDX is not up to date
+- API Addition: Add statusBarVisible configuration to IOSApplicationConfiguration
+- Update GWT Backend to GWT 2.8.2
+- Update Android backend to build against API 28 (Android 9.0)
+- API Addition: Input.isButtonJustPressed
+- Update to LWJGL 2 backend to 2.9.3
+- Update to MobiVM 2.3.6 release
+- Update to LWJGL 3.2.1
 - API Addition: Input allows getting the maximum number of pointers supported by the backend
 - API Addition: Configuration option added to allow setting a max number of threads to use for net requests
 - API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
 - API Addition: New MathUtils norm and map methods
+- API Change: Pixmap blending was incorrect. Generated fonts may change for the better, but may require adjusting font settings.
+- API Change: Particle effects obtained from a ParticleEffectPool are now automatically started
+- Removed OSX 32-bit support
+- API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
+- API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
+- LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed.
+- AtlasTmxMapLoader supports group layers now (a positive side effect of the BaseTmxMapLoader refactoring).
+- API Change: TmxMapLoader and AtlasTmxMapLoader: load/loadAsync methods work exactly as before, but many methods of these classes had to change. This makes it possible implement new Tiled features.
+- API Addition: TextField#drawMessageText.
+- Fixed TextField rendering text outside the widget at small sizes.
+- API Addition: Group#getChild(int)
+- API Addition: notEmpty() for collections.
+- API Change: scene2d.ui Tree methods renamed for node set/getObject to set/getValue.
+- API Change: scene2d.ui Tree and Tree.Node require generics for the type of node, values, and actors.
+- API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
+- API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
+- API Addition: Support for InstancedRendering via Mesh
+- API Change: Cell#setLayout renamed to setTable.
+- API Addition: Added Collections#allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
@@ -38,6 +69,7 @@
 - API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 - API Change: List now handles more key presses.
 - API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
+
 
 [1.9.8]
 - Add iPhoneX images

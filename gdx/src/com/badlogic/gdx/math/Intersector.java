@@ -111,16 +111,15 @@ public final class Intersector {
 	 * @param point The point
 	 * @return true if the point is in the polygon */
 	public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
-		Vector2 lastVertice = polygon.peek();
+		Vector2 last = polygon.peek();
+		float x = point.x, y = point.y;
 		boolean oddNodes = false;
 		for (int i = 0; i < polygon.size; i++) {
-			Vector2 vertice = polygon.get(i);
-			if ((vertice.y < point.y && lastVertice.y >= point.y) || (lastVertice.y < point.y && vertice.y >= point.y)) {
-				if (vertice.x + (point.y - vertice.y) / (lastVertice.y - vertice.y) * (lastVertice.x - vertice.x) < point.x) {
-					oddNodes = !oddNodes;
-				}
+			Vector2 vertex = polygon.get(i);
+			if ((vertex.y < y && last.y >= y) || (last.y < y && vertex.y >= y)) {
+				if (vertex.x + (y - vertex.y) / (last.y - vertex.y) * (last.x - vertex.x) < x) oddNodes = !oddNodes;
 			}
-			lastVertice = vertice;
+			last = vertex;
 		}
 		return oddNodes;
 	}
@@ -130,15 +129,18 @@ public final class Intersector {
 	 * @param count Number of array indices to use after offset. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
 		boolean oddNodes = false;
-		int j = offset + count - 2;
-		for (int i = offset, n = j; i <= n; i += 2) {
-			float yi = polygon[i + 1];
-			float yj = polygon[j + 1];
-			if ((yi < y && yj >= y) || (yj < y && yi >= y)) {
-				float xi = polygon[i];
-				if (xi + (y - yi) / (yj - yi) * (polygon[j] - xi) < x) oddNodes = !oddNodes;
+		float sx = polygon[offset], sy = polygon[offset + 1], y1 = sy;
+		int yi = offset + 3;
+		for (int n = offset + count; yi < n; yi += 2) {
+			float y2 = polygon[yi];
+			if ((y2 < y && y1 >= y) || (y1 < y && y2 >= y)) {
+				float x2 = polygon[yi - 1];
+				if (x2 + (y - y2) / (y1 - y2) * (polygon[yi - 3] - x2) < x) oddNodes = !oddNodes;
 			}
-			j = i;
+			y1 = y2;
+		}
+		if ((sy < y && y1 >= y) || (y1 < y && sy >= y)) {
+			if (sx + (y - sy) / (y1 - sy) * (polygon[yi - 3] - sx) < x) oddNodes = !oddNodes;
 		}
 		return oddNodes;
 	}
@@ -159,27 +161,27 @@ public final class Intersector {
 		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
 			return false;
 		}
-		// reusable points to trace edges around polygon
-		floatArray2.clear();
+		Vector2 ip = Intersector.ip, ep1 = Intersector.ep1, ep2 = Intersector.ep2, s = Intersector.s, e = Intersector.e;
+		FloatArray floatArray = Intersector.floatArray, floatArray2 = Intersector.floatArray2;
 		floatArray.clear();
+		floatArray2.clear();
 		floatArray2.addAll(p1.getTransformedVertices());
-		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
-			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i + 1]);
+		float[] vertices2 = p2.getTransformedVertices();
+		for (int i = 0, last = vertices2.length - 2; i <= last; i += 2) {
+			ep1.set(vertices2[i], vertices2[i + 1]);
 			// wrap around to beginning of array if index points to end;
-			if (i < p2.getTransformedVertices().length - 2) {
-				ep2.set(p2.getTransformedVertices()[i + 2], p2.getTransformedVertices()[i + 3]);
-			} else {
-				ep2.set(p2.getTransformedVertices()[0], p2.getTransformedVertices()[1]);
-			}
-			if (floatArray2.size == 0) {
-				return false;
-			}
+			if (i < last)
+				ep2.set(vertices2[i + 2], vertices2[i + 3]);
+			else
+				ep2.set(vertices2[0], vertices2[1]);
+			if (floatArray2.size == 0) return false;
 			s.set(floatArray2.get(floatArray2.size - 2), floatArray2.get(floatArray2.size - 1));
 			for (int j = 0; j < floatArray2.size; j += 2) {
 				e.set(floatArray2.get(j), floatArray2.get(j + 1));
 				// determine if point is inside clip edge
+				boolean side = Intersector.pointLineSide(ep2, ep1, s) > 0;
 				if (Intersector.pointLineSide(ep2, ep1, e) > 0) {
-					if (!(Intersector.pointLineSide(ep2, ep1, s) > 0)) {
+					if (!side) {
 						Intersector.intersectLines(s, e, ep1, ep2, ip);
 						if (floatArray.size < 2 || floatArray.get(floatArray.size - 2) != ip.x
 							|| floatArray.get(floatArray.size - 1) != ip.y) {
@@ -189,7 +191,7 @@ public final class Intersector {
 					}
 					floatArray.add(e.x);
 					floatArray.add(e.y);
-				} else if (Intersector.pointLineSide(ep2, ep1, s) > 0) {
+				} else if (side) {
 					Intersector.intersectLines(s, e, ep1, ep2, ip);
 					floatArray.add(ip.x);
 					floatArray.add(ip.y);
@@ -208,9 +210,35 @@ public final class Intersector {
 					overlap.setVertices(floatArray2.toArray());
 			}
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+	}
+
+	/** Returns true if the specified poygons intersect. */
+	static public boolean intersectPolygons (FloatArray polygon1, FloatArray polygon2) {
+		if (Intersector.isPointInPolygon(polygon1.items, 0, polygon1.size, polygon2.items[0], polygon2.items[1])) return true;
+		if (Intersector.isPointInPolygon(polygon2.items, 0, polygon2.size, polygon1.items[0], polygon1.items[1])) return true;
+		return intersectPolygonEdges(polygon1, polygon2);
+	}
+
+	/** Returns true if the lines of the specified poygons intersect. */
+	static public boolean intersectPolygonEdges (FloatArray polygon1, FloatArray polygon2) {
+		int last1 = polygon1.size - 2, last2 = polygon2.size - 2;
+		float[] p1 = polygon1.items, p2 = polygon2.items;
+		float x1 = p1[last1], y1 = p1[last1 + 1];
+		for (int i = 0; i <= last1; i += 2) {
+			float x2 = p1[i], y2 = p1[i + 1];
+			float x3 = p2[last2], y3 = p2[last2 + 1];
+			for (int j = 0; j <= last2; j += 2) {
+				float x4 = p2[j], y4 = p2[j + 1];
+				if (intersectSegments(x1, y1, x2, y2, x3, y3, x4, y4, null)) return true;
+				x3 = x4;
+				y3 = y4;
+			}
+			x1 = x2;
+			y1 = y2;
+		}
+		return false;
 	}
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
@@ -813,11 +841,9 @@ public final class Intersector {
 		float rectangleEndX = rectangle.x + rectangle.width;
 		float rectangleEndY = rectangle.y + rectangle.height;
 
-		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null))
-		    return true;
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null)) return true;
 
-		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null))
-		    return true;
+		if (intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null)) return true;
 
 		if (intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, null))
 			return true;
@@ -828,9 +854,7 @@ public final class Intersector {
 		return rectangle.contains(startX, startY);
 	}
 
-	/**
-	 * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
-	 */
+	/** {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)} */
 	public static boolean intersectSegmentRectangle (Vector2 start, Vector2 end, Rectangle rectangle) {
 		return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
 	}

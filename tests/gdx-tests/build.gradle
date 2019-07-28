@@ -20,5 +20,5 @@ dependencies {
     compile project(":extensions:gdx-bullet")
     compile project(":extensions:gdx-controllers:gdx-controllers")
     compile project(":extensions:gdx-freetype")
-    compile project(":extensions:gdx-tools")
+    compileOnly project(":extensions:gdx-tools")
 }

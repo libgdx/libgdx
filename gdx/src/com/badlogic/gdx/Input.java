@@ -652,6 +652,13 @@ public interface Input {
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
+	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
+	 * constant is meaningful before version 4.0.
+	 *
+	 * @param button the button to check.
+	 * @return true or false. */
+	public boolean isButtonJustPressed (int button);
+
 	/** Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.
@@ -726,23 +733,55 @@ public interface Input {
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();
 
-	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.
-	 * 
+	 *
 	 * @param catchBack whether to catch the back button */
+	@Deprecated
 	public void setCatchBackKey (boolean catchBack);
 
-	/** @return whether the back button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the back button is currently being caught */
+	@Deprecated
 	public boolean isCatchBackKey ();
 
-	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
 	 * @param catchMenu whether to catch the menu button */
+	@Deprecated
 	public void setCatchMenuKey (boolean catchMenu);
 	
-	/** @return whether the menu button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the menu button is currently being caught */
+	@Deprecated
 	public boolean isCatchMenuKey ();
+
+	/**
+	 * Sets whether the given key on Android should be caught. No effect on other platforms.
+	 * All keys that are not caught may be handled by other apps or background processes. For example, media or volume
+	 * buttons are handled by background media players if present. If you use these keys to control your game, they
+	 * must be catched to prevent unintended behaviour.
+	 *
+	 * @param keycode  keycode to catch
+	 * @param catchKey whether to catch the given keycode
+	 */
+	public void setCatchKey (int keycode, boolean catchKey);
+
+	/**
+	 *
+	 * @param keycode keycode to check if caught
+	 * @return true if the given keycode is configured to be caught
+	 */
+	public boolean isCatchKey (int keycode);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.

@@ -84,11 +84,6 @@ public class ProjectBuilder {
 				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
 
-			//Add task here for now
-			buildBw.write("\n");
-			buildBw.write("tasks.eclipse.doLast {\n");
-			buildBw.write("    delete \".project\"\n");
-			buildBw.write("}");
 
 			buildBw.close();
 			buildWriter.close();

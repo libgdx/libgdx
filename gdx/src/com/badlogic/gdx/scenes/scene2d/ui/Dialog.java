@@ -200,8 +200,8 @@ public class Dialog extends Window {
 		actor = stage.getScrollFocus();
 		if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
-		pack();
 		stage.addActor(this);
+		pack();
 		stage.cancelTouchFocus();
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
