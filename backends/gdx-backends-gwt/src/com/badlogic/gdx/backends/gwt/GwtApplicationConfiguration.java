@@ -44,7 +44,7 @@ public class GwtApplicationConfiguration {
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
 	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
-	public boolean preferFlash = true;
+	public boolean preferFlash = false;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
@@ -58,6 +58,8 @@ public class GwtApplicationConfiguration {
 	/* Whether openURI will open page in new tab. By default it will, however if may be blocked by popup blocker. */
 	/* To prevent the page from being blocked you can redirect to the new page. However this will exit your game.  */
 	public boolean openURLInNewWindow = true;
+	/** whether to use the accelerometer. default: true **/
+	public boolean useAccelerometer = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

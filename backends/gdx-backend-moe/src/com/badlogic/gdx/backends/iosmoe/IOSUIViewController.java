@@ -59,6 +59,7 @@ class IOSUIViewController extends GLKViewController {
 
 	@Override
 	public void viewDidAppear (boolean animated) {
+		super.viewDidAppear(animated);
 		if (app.viewControllerListener != null)
 			app.viewControllerListener.viewDidAppear(animated);
 	}
@@ -104,7 +105,12 @@ class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public boolean prefersStatusBarHidden() {
+	public boolean prefersStatusBarHidden () {
 		return !app.config.statusBarVisible;
+	}
+	
+	@Override
+	public boolean prefersHomeIndicatorAutoHidden () {
+		return app.config.hideHomeIndicator;
 	}
 }

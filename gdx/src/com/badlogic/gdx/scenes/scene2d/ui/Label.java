@@ -217,10 +217,10 @@ public class Label extends Widget {
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		Color color = tempColor.set(getColor());
-		color.a *= a;
+		color.a *= parentAlpha;
 		if (style.background != null) {
 			batch.setColor(color.r, color.g, color.b, color.a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
@@ -345,7 +345,12 @@ public class Label extends Widget {
 	}
 
 	public String toString () {
-		return super.toString() + ": " + text;
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "Label " : "") + className + ": " + text;
 	}
 
 	/** The style for a label, see {@link Label}.

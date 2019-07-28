@@ -19,21 +19,19 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -46,23 +44,52 @@ public class GwtInput implements Input {
 	private int[] deltaY = new int[MAX_TOUCHES];
 	IntSet pressedButtons = new IntSet();
 	int pressedKeyCount = 0;
+	IntSet pressedKeySet = new IntSet();
 	boolean[] pressedKeys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
-	char lastKeyCharPressed;
-	float keyRepeatTimer;
 	long currentEventTimeStamp;
 	final CanvasElement canvas;
+	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
+	GwtAccelerometer accelerometer;
 
-	public GwtInput (CanvasElement canvas) {
+	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
+		this.config = config;
+		if (config.useAccelerometer) {
+			if (GwtApplication.agentInfo().isFirefox()) {
+				setupAccelerometer();
+			} else {
+				GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+					@Override
+					public void granted() {
+						setupAccelerometer();
+					}
+
+					@Override
+					public void denied() {
+					}
+
+					@Override
+					public void prompt() {
+						setupAccelerometer();
+					}
+				});
+			}
+		}
 		hookEvents();
 	}
 
 	void reset () {
-		justTouched = false;
+		if (justTouched) {
+			justTouched = false;
+			for (int i = 0; i < justPressedButtons.length; i++) {
+				justPressedButtons[i] = false;
+			}
+		}
 		if (keyJustPressed) {
 			keyJustPressed = false;
 			for (int i = 0; i < justPressedKeys.length; i++) {
@@ -71,21 +98,28 @@ public class GwtInput implements Input {
 		}
 	}
 
+	void setupAccelerometer () {
+		if (GwtAccelerometer.isSupported()) {
+			if (accelerometer == null) accelerometer = GwtAccelerometer.getInstance();
+			if (!accelerometer.activated()) accelerometer.start();
+		}
+	}
+
 	@Override
 	public float getAccelerometerX () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
 	}
 
 	@Override
 	public float getAccelerometerY () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.y() : 0;
 	}
 
 	@Override
 	public float getAccelerometerZ () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.z() : 0;
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		// TODO Auto-generated method stub
@@ -102,6 +136,11 @@ public class GwtInput implements Input {
 	public float getGyroscopeZ () {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
 	}
 
 	@Override
@@ -170,6 +209,22 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button >= justPressedButtons.length) return false;
+		return justPressedButtons[button];
+	}
+
+	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isKeyPressed (int key) {
 		if (key == Keys.ANY_KEY) {
 			return pressedKeyCount > 0;
@@ -210,7 +265,7 @@ public class GwtInput implements Input {
 			}
 		});
 	}
-	
+
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
@@ -270,6 +325,16 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
@@ -281,11 +346,11 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return false;
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported();
 		if (peripheral == Peripheral.Compass) return false;
-		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
-		if (peripheral == Peripheral.OnscreenKeyboard) return false;
+		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.Vibrator) return false;
 		return false;
 	}
@@ -302,9 +367,9 @@ public class GwtInput implements Input {
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
-	private native boolean isCursorCatchedJSNI () /*-{
+	private native boolean isCursorCatchedJSNI (CanvasElement canvas) /*-{
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		if (navigator.pointer) {
 			if (typeof (navigator.pointer.isLocked) === "boolean") {
@@ -318,6 +383,11 @@ public class GwtInput implements Input {
 				return navigator.pointer.islocked();
 			}
 		}
+
+		if ($doc.pointerLockElement === canvas || $doc.mozPointerLockElement === canvas) {
+			return true;
+		}
+
 		return false;
 	}-*/;
 
@@ -327,7 +397,7 @@ public class GwtInput implements Input {
 		// Navigator pointer is not the right interface according to spec.
 		// Here for backwards compatibility only
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		// element.requestPointerLock
 		if (!element.requestPointerLock) {
@@ -388,7 +458,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isCursorCatched () {
-		return isCursorCatchedJSNI();
+		return isCursorCatchedJSNI(canvas);
 	}
 
 	@Override
@@ -470,6 +540,10 @@ public class GwtInput implements Input {
 		return Math.round(yScaleRatio * touch.getRelativeY(target));
 	}
 
+	private static native JavaScriptObject getWindow () /*-{
+		return $wnd;
+	}-*/;
+
 	private void hookEvents () {
 		addEventListener(canvas, "mousedown", this, true);
 		addEventListener(Document.get(), "mousedown", this, true);
@@ -481,6 +555,7 @@ public class GwtInput implements Input {
 		addEventListener(Document.get(), "keydown", this, false);
 		addEventListener(Document.get(), "keyup", this, false);
 		addEventListener(Document.get(), "keypress", this, false);
+		addEventListener(getWindow(), "blur", this, false);
 
 		addEventListener(canvas, "touchstart", this, true);
 		addEventListener(canvas, "touchmove", this, true);
@@ -510,6 +585,7 @@ public class GwtInput implements Input {
 			this.justTouched = true;
 			this.touched[0] = true;
 			this.pressedButtons.add(getButton(e.getButton()));
+			justPressedButtons[e.getButton()] = true;
 			this.deltaX[0] = 0;
 			this.deltaY[0] = 0;
 			if (isCursorCatched()) {
@@ -570,43 +646,65 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("keydown") && hasFocus) {
-			// System.out.println("keydown");
-			int code = keyForCode(e.getKeyCode());
-			if (code == 67) {
-				e.preventDefault();
-				if (processor != null) {
-					processor.keyDown(code);
-					processor.keyTyped('\b');
-				}
-			} else {
-				if (!pressedKeys[code]) {
-					pressedKeyCount++;
-					pressedKeys[code] = true;
-					keyJustPressed = true;
-					justPressedKeys[code] = true;
+
+		if (hasFocus && !e.getType().equals("blur")) {
+			if (e.getType().equals("keydown")) {
+				// Gdx.app.log("GwtInput", "keydown");
+				int code = keyForCode(e.getKeyCode());
+				if (code == 67) {
+					e.preventDefault();
 					if (processor != null) {
 						processor.keyDown(code);
+						processor.keyTyped('\b');
+					}
+				} else {
+					if (!pressedKeys[code]) {
+						pressedKeySet.add(code);
+						pressedKeyCount++;
+						pressedKeys[code] = true;
+						keyJustPressed = true;
+						justPressedKeys[code] = true;
+						if (processor != null) {
+							processor.keyDown(code);
+						}
 					}
 				}
 			}
-		}
 
-		if (e.getType().equals("keypress") && hasFocus) {
-			// System.out.println("keypress");
-			char c = (char)e.getCharCode();
-			if (processor != null) processor.keyTyped(c);
-		}
-
-		if (e.getType().equals("keyup") && hasFocus) {
-			// System.out.println("keyup");
-			int code = keyForCode(e.getKeyCode());
-			if (pressedKeys[code]) {
-				pressedKeyCount--;
-				pressedKeys[code] = false;
+			if (e.getType().equals("keypress")) {
+				// Gdx.app.log("GwtInput", "keypress");
+				char c = (char)e.getCharCode();
+				if (processor != null) processor.keyTyped(c);
 			}
-			if (processor != null) {
-				processor.keyUp(code);
+
+			if (e.getType().equals("keyup")) {
+				// Gdx.app.log("GwtInput", "keyup");
+				int code = keyForCode(e.getKeyCode());
+				if (pressedKeys[code]) {
+					pressedKeySet.remove(code);
+					pressedKeyCount--;
+					pressedKeys[code] = false;
+				}
+				if (processor != null) {
+					processor.keyUp(code);
+				}
+			}
+		}
+		else if (pressedKeyCount > 0) {
+			// Gdx.app.log("GwtInput", "unfocused");
+			IntSetIterator iterator = pressedKeySet.iterator();
+
+			while (iterator.hasNext) {
+				int code = iterator.next();
+
+				if (pressedKeys[code]) {
+					pressedKeySet.remove(code);
+					pressedKeyCount--;
+					pressedKeys[code] = false;
+				}
+				if (processor != null) {
+					processor.keyUp(code);
+				}
 			}
 		}
 
@@ -687,7 +785,7 @@ public class GwtInput implements Input {
 		}
 // if(hasFocus) e.preventDefault();
 	}
-	
+
 	private int getAvailablePointer () {
 		for (int i = 0; i < MAX_TOUCHES; i++) {
 			if (!touchMap.containsValue(i, false)) return i;

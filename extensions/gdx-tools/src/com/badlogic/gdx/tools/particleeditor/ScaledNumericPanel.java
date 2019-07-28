@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 
 class ScaledNumericPanel extends EditorPanel {
@@ -38,6 +39,7 @@ class ScaledNumericPanel extends EditorPanel {
 	Slider lowMinSlider, lowMaxSlider;
 	Slider highMinSlider, highMaxSlider;
 	JCheckBox relativeCheckBox;
+	JCheckBox independentCheckbox;
 	Chart chart;
 	JPanel formPanel;
 	JButton expandButton;
@@ -48,7 +50,8 @@ class ScaledNumericPanel extends EditorPanel {
 		super(value, name, description);
 		this.value = value;
 
-		initializeComponents(chartTitle);
+		final boolean hasIndependent = value instanceof ParticleEmitter.IndependentScaledNumericValue;
+		initializeComponents(chartTitle, hasIndependent);
 
 		lowMinSlider.setValue(value.getLowMin());
 		lowMaxSlider.setValue(value.getLowMax());
@@ -56,7 +59,8 @@ class ScaledNumericPanel extends EditorPanel {
 		highMaxSlider.setValue(value.getHighMax());
 		chart.setValues(value.getTimeline(), value.getScaling());
 		relativeCheckBox.setSelected(value.isRelative());
-
+		if (hasIndependent)
+			independentCheckbox.setSelected(((ParticleEmitter.IndependentScaledNumericValue)value).isIndependent());
 		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				value.setLowMin((Float)lowMinSlider.getValue());
@@ -85,6 +89,13 @@ class ScaledNumericPanel extends EditorPanel {
 				value.setRelative(relativeCheckBox.isSelected());
 			}
 		});
+		if (hasIndependent) {
+			independentCheckbox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					((ParticleEmitter.IndependentScaledNumericValue) value).setIndependent(independentCheckbox.isSelected());
+				}
+			});
+		}
 
 		lowRangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
@@ -135,6 +146,8 @@ class ScaledNumericPanel extends EditorPanel {
 				layout.setConstraints(chart, chartConstraints);
 				layout.setConstraints(expandButton, expandButtonConstraints);
 				relativeCheckBox.setVisible(!expanded);
+				if (hasIndependent)
+					independentCheckbox.setVisible(!expanded);
 				formPanel.setVisible(!expanded);
 				chart.revalidate();
 			}
@@ -148,7 +161,7 @@ class ScaledNumericPanel extends EditorPanel {
 		return formPanel;
 	}
 
-	private void initializeComponents (String chartTitle) {
+	private void initializeComponents (String chartTitle, boolean hasIndependent) {
 		JPanel contentPanel = getContentPanel();
 		{
 			formPanel = new JPanel(new GridBagLayout());
@@ -210,14 +223,21 @@ class ScaledNumericPanel extends EditorPanel {
 		}
 		{
 			expandButton = new JButton("+");
-			contentPanel.add(expandButton, new GridBagConstraints(7, 5, 1, 1, 1, 0, GridBagConstraints.SOUTHWEST,
+			contentPanel.add(expandButton, new GridBagConstraints(7, 5, 1, 1, 0, 0, GridBagConstraints.SOUTHWEST,
 				GridBagConstraints.NONE, new Insets(0, 5, 0, 0), 0, 0));
 			expandButton.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
 		}
 		{
 			relativeCheckBox = new JCheckBox("Relative");
-			contentPanel.add(relativeCheckBox, new GridBagConstraints(7, 5, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+			contentPanel.add(relativeCheckBox, new GridBagConstraints(8, 5, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
+		}
+		{
+			if (hasIndependent) {
+				independentCheckbox = new JCheckBox("Independent");
+				contentPanel.add(independentCheckbox, new GridBagConstraints(8, 5, 1, 1, 1, 0, GridBagConstraints.WEST,
+						GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
+			}
 		}
 	}
 }

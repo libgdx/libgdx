@@ -135,6 +135,7 @@ public class Touchpad extends Widget {
 	@Override
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && this.getTouchable() != Touchable.enabled) return null;
+		if (!isVisible()) return null;
 		return touchBounds.contains(x, y) ? this : null;
 	}
 
@@ -154,11 +155,11 @@ public class Touchpad extends Widget {
 	}
 
 	@Override
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color c = getColor();
-		batch.setColor(c.r, c.g, c.b, c.a * a);
+		batch.setColor(c.r, c.g, c.b, c.a * parentAlpha);
 
 		float x = getX();
 		float y = getY();

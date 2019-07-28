@@ -72,7 +72,6 @@ public class WidgetGroup extends Group implements Layout {
 	}
 
 	public void setLayoutEnabled (boolean enabled) {
-		if (layoutEnabled == enabled) return;
 		layoutEnabled = enabled;
 		setLayoutEnabled(this, enabled);
 	}
@@ -116,10 +115,7 @@ public class WidgetGroup extends Group implements Layout {
 		// Widgets may call invalidateHierarchy during layout (eg, a wrapped label). The root-most widget group retries layout a
 		// reasonable number of times.
 		if (needsLayout) {
-			while (parent != null) {
-				if (parent instanceof WidgetGroup) return;
-				parent = parent.getParent();
-			}
+			if (parent instanceof WidgetGroup) return; // The parent widget will layout again.
 			for (int i = 0; i < 5; i++) {
 				needsLayout = false;
 				layout();
@@ -154,12 +150,10 @@ public class WidgetGroup extends Group implements Layout {
 	public void pack () {
 		setSize(getPrefWidth(), getPrefHeight());
 		validate();
-		// Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
-		// calls invalidateHierarchy() in layout() if its pref height has changed.
-		if (needsLayout) {
-			setSize(getPrefWidth(), getPrefHeight());
-			validate();
-		}
+		// Validating the layout may change the pref size. Eg, a wrapped label doesn't know its pref height until it knows its
+		// width, so it calls invalidateHierarchy() in layout() if its pref height has changed.
+		setSize(getPrefWidth(), getPrefHeight());
+		validate();
 	}
 
 	public void setFillParent (boolean fillParent) {
@@ -171,8 +165,8 @@ public class WidgetGroup extends Group implements Layout {
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
 	 * out. */
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 }

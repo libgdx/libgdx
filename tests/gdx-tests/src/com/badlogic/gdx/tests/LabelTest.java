@@ -40,6 +40,8 @@ public class LabelTest extends GdxTest {
 	Actor root;
 	ShapeRenderer renderer;
 
+	float scale = 1;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -47,36 +49,67 @@ public class LabelTest extends GdxTest {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		skin.getFont("default-font").getData().markupEnabled = true;
-		float scale = 1;
 		skin.getFont("default-font").getData().setScale(scale);
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
-		Table table = new Table();
-		stage.addActor(table);
-		table.setPosition(200, 65);
+		// skin.getFont("default-font").getData().getGlyph('T').xoffset = -20;
+		skin.getFont("default-font").getData().getGlyph('B').setKerning('B', -5);
 
-		table.debug();
-		table.add(new Label("This is regular text.", skin));
-		table.row();
-		table.add(new Label("This is regular text\nwith a newline.", skin));
-		table.row();
-		Label label3 = new Label("This is [RED]regular text\n\nwith newlines,\naligned bottom, right.", skin);
-		label3.setColor(Color.GREEN);
-		label3.setAlignment(Align.bottom | Align.right);
-		table.add(label3).minWidth(200 * scale).minHeight(110 * scale).fill();
-		table.row();
-		Label label4 = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
-		label4.setWrap(true);
-		label4.setAlignment(Align.bottom | Align.right);
-		table.add(label4).minWidth(200 * scale).minHeight(110 * scale).fill();
-		table.row();
-		Label label5 = new Label("This is regular text with\n\nnewlines, wrap\nenabled and aligned bottom, right.", skin);
-		label5.setWrap(true);
-		label5.setAlignment(Align.bottom | Align.right);
-		table.add(label5).minWidth(200 * scale).minHeight(110 * scale).fill();
+		Label label;
 
+		Table table = new Table().debug();
+
+		table.add(new Label("This is regular text.", skin)).row();
+		table.add(new Label("This is regular text\nwith a newline.", skin)).row();
+
+		label = new Label("This is [RED]regular text\n\nwith newlines,\naligned bottom, right.", skin);
+		label.setColor(Color.GREEN);
+		label.setAlignment(Align.bottom | Align.right);
+		table.add(label).minWidth(200 * scale).minHeight(110 * scale).fill().row();
+
+		label = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
+		label.setWrap(true);
+		label.setAlignment(Align.bottom | Align.right);
+		table.add(label).minWidth(200 * scale).minHeight(110 * scale).fill().row();
+
+		label = new Label("This is regular text with\n\nnewlines, wrap\nenabled and aligned bottom, right.", skin);
+		label.setWrap(true);
+		label.setAlignment(Align.bottom | Align.right);
+		table.add(label).minWidth(200 * scale).minHeight(110 * scale).fill().row();
+
+		table.setPosition(50, 40 + 25 * scale);
 		table.pack();
+		stage.addActor(table);
+
+		//
+
+		table = new Table().debug();
+		stage.addActor(table);
+
+		table.add(new Label("This is regular text.", skin)).minWidth(200 * scale).row();
+
+		// The color markup text should match the uncolored text exactly.
+		label = new Label("AAA BBB CCC DDD EEE", skin);
+		table.add(label).align(Align.left).row();
+
+		label = new Label("AAA B[RED]B[]B CCC DDD EEE", skin);
+		table.add(label).align(Align.left).row();
+
+		label = new Label("[RED]AAA [BLUE]BBB [RED]CCC [BLUE]DDD [RED]EEE", skin);
+		table.add(label).align(Align.left).row();
+
+		label = new Label("AAA BBB CCC DDD EEE", skin);
+		label.setWrap(true);
+		table.add(label).align(Align.left).width(150 * scale).row();
+
+		label = new Label("[RED]AAA [BLUE]BBB [RED]CCC [BLUE]DDD [RED]EEE", skin);
+		label.setWrap(true);
+		table.add(label).align(Align.left).width(150 * scale).row();
+
+		table.setPosition(50 + 250 * scale, 40 + 25 * scale);
+		table.pack();
+		stage.addActor(table);
 	}
 
 	@Override
@@ -93,7 +126,7 @@ public class LabelTest extends GdxTest {
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 
-		float x = 40, y = 40;
+		float x = 40, y = 15 + 20 * scale;
 
 		BitmapFont font = skin.getFont("default-font");
 		batch.begin();
@@ -114,5 +147,6 @@ public class LabelTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 }

@@ -145,8 +145,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
 
-		items.clear();
-		items.addAll(newItems);
+		if (newItems != items) {
+			items.clear();
+			items.addAll(newItems);
+		}
 		selection.validate();
 		selectBoxList.list.setItems(items);
 
@@ -201,7 +203,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	@Override
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Drawable background;
@@ -222,7 +224,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float x = getX(), y = getY();
 		float width = getWidth(), height = getHeight();
 
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (background != null) background.draw(batch, x, y, width, height);
 
 		T selected = selection.first();
@@ -235,7 +237,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			} else {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * a);
+			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			drawItem(batch, font, selected, x, y, width);
 		}
 	}
@@ -309,7 +311,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	public void showList () {
 		if (items.size == 0) return;
-		selectBoxList.show(getStage());
+		if (getStage() != null) selectBoxList.show(getStage());
 	}
 
 	public void hideList () {
@@ -361,11 +363,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list = new List<T>(selectBox.style.listStyle) {
 				@Override
-				protected String toString (T obj) {
+				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
 			};
 			list.setTouchable(Touchable.disabled);
+			list.setTypeToSelect(true);
 			setActor(list);
 
 			list.addListener(new ClickListener() {
@@ -375,7 +378,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 				}
 
 				public boolean mouseMoved (InputEvent event, float x, float y) {
-					list.setSelectedIndex(Math.min(selectBox.items.size - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
+					int index = list.getItemIndexAt(y);
+					if (index != -1) list.setSelectedIndex(index);
 					return true;
 				}
 			});
@@ -396,7 +400,15 @@ public class SelectBox<T> extends Widget implements Disableable {
 				}
 
 				public boolean keyDown (InputEvent event, int keycode) {
-					if (keycode == Keys.ESCAPE) hide();
+					switch (keycode) {
+					case Keys.ENTER:
+						selectBox.selection.choose(list.getSelected());
+						// Fall thru.
+					case Keys.ESCAPE:
+						hide();
+						event.stop();
+						return true;
+					}
 					return false;
 				}
 			};
@@ -405,9 +417,9 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public void show (Stage stage) {
 			if (list.isTouchable()) return;
 
-			stage.removeCaptureListener(hideListener);
-			stage.addCaptureListener(hideListener);
 			stage.addActor(this);
+			stage.addCaptureListener(hideListener);
+			stage.addListener(list.getKeyListener());
 
 			selectBox.localToStageCoordinates(screenPosition.set(0, 0));
 
@@ -463,6 +475,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			Stage stage = getStage();
 			if (stage != null) {
 				stage.removeCaptureListener(hideListener);
+				stage.removeListener(list.getKeyListener());
 				if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
 				Actor actor = stage.getScrollFocus();
 				if (actor == null || isAscendantOf(actor)) stage.setScrollFocus(previousScrollFocus);
@@ -481,6 +494,15 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public void act (float delta) {
 			super.act(delta);
 			toFront();
+		}
+
+		protected void setStage (Stage stage) {
+			Stage oldStage = getStage();
+			if (oldStage != null) {
+				oldStage.removeCaptureListener(hideListener);
+				oldStage.removeListener(list.getKeyListener());
+			}
+			super.setStage(stage);
 		}
 	}
 

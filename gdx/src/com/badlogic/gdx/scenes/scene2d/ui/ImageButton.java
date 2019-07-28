@@ -87,9 +87,9 @@ public class ImageButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 
 	public Image getImage () {
@@ -98,6 +98,15 @@ public class ImageButton extends Button {
 
 	public Cell getImageCell () {
 		return getCell(image);
+	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "ImageButton " : "") + className + ": " + image.getDrawable();
 	}
 
 	/** The style for an image button, see {@link ImageButton}.

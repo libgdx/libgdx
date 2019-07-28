@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered set that uses int keys. This implementation uses cuckoo hashing using 3 hashes, random walking, and a small stash
  * for problematic keys. No allocation is done except when growing the table size. <br>
@@ -139,7 +139,7 @@ public class IntSet {
 	}
 
 	public void addAll (IntArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (IntArray array, int offset, int length) {
@@ -262,7 +262,7 @@ public class IntSet {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			add(key);
+			addResize(key);
 			return;
 		}
 		// Store key in the stash.
@@ -322,6 +322,11 @@ public class IntSet {
 		stashSize--;
 		int lastIndex = capacity + stashSize;
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
+	}
+
+	/** Returns true if the set has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
 	}
 
 	/** Returns true if the set is empty. */
@@ -391,6 +396,7 @@ public class IntSet {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
@@ -442,6 +448,7 @@ public class IntSet {
 		IntSet other = (IntSet)obj;
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
+		int[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != EMPTY && !other.contains(keyTable[i])) return false;
 		return true;
@@ -473,9 +480,12 @@ public class IntSet {
 		return buffer.toString();
 	}
 
-	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link IntSetIterator} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the set. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link IntSetIterator} constructor for nested or multithreaded iteration. */
 	public IntSetIterator iterator () {
+		if (Collections.allocateIterators) return new IntSetIterator(this);
 		if (iterator1 == null) {
 			iterator1 = new IntSetIterator(this);
 			iterator2 = new IntSetIterator(this);

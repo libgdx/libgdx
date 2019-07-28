@@ -16,21 +16,16 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.utils.ObjectMap.Entries;
-
-/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead
- * for put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
- * unordered map. Keys can also be accessed and the order changed using {@link #orderedKeys()}.
+/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. Iteration over the
+ * {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an unordered map. Keys can also be
+ * accessed and the order changed using {@link #orderedKeys()}. There is some additional overhead for put and remove. When used
+ * for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly reduced by
+ * setting {@link Array#ordered} to false for {@link OrderedMap#orderedKeys()}.
  * @author Nathan Sweet */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;
-
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
 
 	public OrderedMap () {
 		keys = new Array();
@@ -61,6 +56,10 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return super.remove(key);
 	}
 
+	public V removeIndex (int index) {
+		return super.remove(keys.removeIndex(index));
+	}
+
 	public void clear (int maximumCapacity) {
 		keys.clear();
 		super.clear(maximumCapacity);
@@ -79,9 +78,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new OrderedMapEntries(this);
 			entries2 = new OrderedMapEntries(this);
@@ -98,9 +100,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new OrderedMapValues(this);
 			values2 = new OrderedMapValues(this);
@@ -117,9 +122,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new OrderedMapKeys(this);
 			keys2 = new OrderedMapKeys(this);
@@ -207,7 +215,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			map.remove(keys.get(nextIndex - 1));
+			((OrderedMap)map).removeIndex(nextIndex - 1);
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}
@@ -238,7 +246,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			map.remove(keys.get(currentIndex));
+			((OrderedMap)map).removeIndex(currentIndex);
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}

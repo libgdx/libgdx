@@ -36,6 +36,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -82,7 +83,6 @@ public class LwjglGraphics implements Graphics {
 		this.config = config;
 		this.canvas = canvas;
 	}
-
 
 	public int getHeight () {
 		if (canvas != null)
@@ -229,6 +229,7 @@ public class LwjglGraphics implements Graphics {
 					Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
 					if (pixmap.getFormat() != Format.RGBA8888) {
 						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+						rgba.setBlending(Blending.None);
 						rgba.drawPixmap(pixmap, 0, 0);
 						pixmap.dispose();
 						pixmap = rgba;

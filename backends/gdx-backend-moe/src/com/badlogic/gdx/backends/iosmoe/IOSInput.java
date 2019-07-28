@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import apple.uikit.*;
+import apple.uikit.enums.*;
 import org.moe.natj.general.ann.NInt;
 
 import com.badlogic.gdx.Gdx;
@@ -37,18 +39,6 @@ import apple.foundation.NSError;
 import apple.foundation.NSOperationQueue;
 import apple.foundation.NSSet;
 import apple.foundation.struct.NSRange;
-import apple.uikit.UIAlertView;
-import apple.uikit.UIDevice;
-import apple.uikit.UITextField;
-import apple.uikit.UITouch;
-import apple.uikit.enums.UIAlertViewStyle;
-import apple.uikit.enums.UIDeviceOrientation;
-import apple.uikit.enums.UIKeyboardType;
-import apple.uikit.enums.UIReturnKeyType;
-import apple.uikit.enums.UITextAutocapitalizationType;
-import apple.uikit.enums.UITextAutocorrectionType;
-import apple.uikit.enums.UITextSpellCheckingType;
-import apple.uikit.enums.UITouchPhase;
 import apple.uikit.protocol.UIAlertViewDelegate;
 import apple.uikit.protocol.UITextFieldDelegate;
 
@@ -61,6 +51,8 @@ public class IOSInput implements Input {
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
+	float[] pressures = new float[MAX_TOUCHES];
+	boolean pressureSupported;
 	// we store the pointer to the UITouch struct here, or 0
 	UITouch[] touchDown = new UITouch[MAX_TOUCHES];
 	int numTouched = 0;
@@ -72,7 +64,7 @@ public class IOSInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
-	TouchEvent currentEvent = null;
+	private long currentEventTimeStamp = 0;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
@@ -97,6 +89,11 @@ public class IOSInput implements Input {
 		setupCompass();
 		UIDevice device = UIDevice.currentDevice();
 		if (device.model().equalsIgnoreCase("iphone")) hasVibrator = true;
+
+		if (app.getIosVersion() >= 9){
+			long forceTouchCapability = UIScreen.mainScreen().traitCollection().forceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
+		}
 	}
 
 	private void setupCompass () {
@@ -226,6 +223,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		return touchX[0];
 	}
@@ -286,8 +288,23 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return pressures[pointer];
+	}
+
+	@Override
 	public boolean isButtonPressed (int button) {
 		return button == Buttons.LEFT && numTouched > 0;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button ==  Buttons.LEFT && justTouched;
 	}
 
 	@Override
@@ -446,7 +463,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public long getCurrentEventTime () {
-		return currentEvent.timestamp;
+		return currentEventTimeStamp;
 	}
 
 	@Override
@@ -468,6 +485,16 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.inputProcessor = processor;
 	}
@@ -483,7 +510,8 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		if (peripheral == Peripheral.Compass) return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.Pressure) return pressureSupported;
 		return false;
 	}
 
@@ -528,7 +556,7 @@ public class IOSInput implements Input {
 		synchronized (touchEvents) {
 			justTouched = false;
 			for (TouchEvent event : touchEvents) {
-				currentEvent = event;
+				currentEventTimeStamp = event.timestamp;
 				if (event.phase == UITouchPhase.Began) {
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
 					if (numTouched == 1) justTouched = true;
@@ -570,6 +598,12 @@ public class IOSInput implements Input {
 				// app.debug("IOSInput","pos= "+loc+" bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
+			// if its not supported, we will simply use 1.0f when touch is present
+			float pressure = 1.0f;
+			if (pressureSupported) {
+				pressure = (float)touch.force();
+			}
+
 			synchronized (touchEvents) {
 				long phase = touch.phase();
 				TouchEvent event = touchEventPool.obtain();
@@ -586,6 +620,7 @@ public class IOSInput implements Input {
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
 					deltaY[event.pointer] = 0;
+					pressures[event.pointer] = pressure;
 					numTouched++;
 				}
 
@@ -595,6 +630,7 @@ public class IOSInput implements Input {
 					deltaY[event.pointer] = event.y - touchY[event.pointer];
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
+					pressures[event.pointer] = pressure;
 				}
 
 				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
@@ -604,6 +640,7 @@ public class IOSInput implements Input {
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
 					deltaY[event.pointer] = 0;
+					pressures[event.pointer] = 0;
 					numTouched--;
 				}
 			}

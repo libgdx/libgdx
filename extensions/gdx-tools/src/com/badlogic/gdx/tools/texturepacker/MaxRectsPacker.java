@@ -83,8 +83,10 @@ public class MaxRectsPacker implements Packer {
 
 		Array<Page> pages = new Array();
 		while (inputRects.size > 0) {
-			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
-			Page result = packPage(progress, inputRects);
+			progress.count = n - inputRects.size + 1;
+			if (progress.update(progress.count, n)) break;
+
+			Page result = packPage(inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
@@ -92,20 +94,20 @@ public class MaxRectsPacker implements Packer {
 
 	}
 
-	private Page packPage (ProgressListener progress, Array<Rect> inputRects) {
+	private Page packPage (Array<Rect> inputRects) {
 		int paddingX = settings.paddingX, paddingY = settings.paddingY;
 		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
-		int edgePaddingX = 0, edgePaddingY = 0;
+		boolean edgePadX = false, edgePadY = false;
 		if (settings.edgePadding) {
-			if (settings.duplicatePadding) { // If duplicatePadding, edges get only half padding.
+			if (settings.duplicatePadding) {
 				maxWidth -= paddingX;
 				maxHeight -= paddingY;
 			} else {
 				maxWidth -= paddingX * 2;
 				maxHeight -= paddingY * 2;
-				edgePaddingX = paddingX;
-				edgePaddingY = paddingY;
 			}
+			edgePadX = paddingX > 0;
+			edgePadY = paddingY > 0;
 		}
 
 		// Find min size.
@@ -117,19 +119,18 @@ public class MaxRectsPacker implements Packer {
 			minHeight = Math.min(minHeight, height);
 			if (settings.rotation) {
 				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
-					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
-						: "";
+					String paddingMessage = (edgePadX || edgePadY) ? (" and edge padding " + paddingX + "*2," + paddingY + "*2") : "";
 					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
 						+ paddingMessage + ": " + rect.name + "[" + width + "," + height + "]");
 				}
 			} else {
 				if (width > maxWidth) {
-					String paddingMessage = edgePaddingX > 0 ? (" and X edge padding " + paddingX) : "";
+					String paddingMessage = edgePadX ? (" and X edge padding " + paddingX + "*2") : "";
 					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
 						+ rect.name + "[" + width + "," + height + "]");
 				}
 				if (height > maxHeight && (!settings.rotation || width > maxHeight)) {
-					String paddingMessage = edgePaddingY > 0 ? (" and Y edge padding " + paddingY) : "";
+					String paddingMessage = edgePadY ? (" and Y edge padding " + paddingY + "*2") : "";
 					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
 						+ rect.name + "[" + width + "," + height + "]");
 				}
@@ -138,20 +139,31 @@ public class MaxRectsPacker implements Packer {
 		minWidth = Math.max(minWidth, settings.minWidth);
 		minHeight = Math.max(minHeight, settings.minHeight);
 
-		if (!settings.silent) System.out.print("Packing");
+		// BinarySearch uses the max size. Rects are packed with right and top padding, so the max size is increased to match.
+		// After packing the padding is subtracted from the page size.
+		int adjustX = paddingX, adjustY = paddingY;
+		if (settings.edgePadding) {
+			if (settings.duplicatePadding) {
+				adjustX -= paddingX;
+				adjustY -= paddingY;
+			} else {
+				adjustX -= paddingX * 2;
+				adjustY -= paddingY * 2;
+			}
+		}
 
-		edgePaddingX -= settings.paddingX;
-		edgePaddingY -= settings.paddingY;
+		if (!settings.silent) System.out.print("Packing");
 
 		// Find the minimal page size that fits all rects.
 		Page bestResult = null;
 		if (settings.square) {
 			int minSize = Math.max(minWidth, minHeight);
 			int maxSize = Math.min(settings.maxWidth, settings.maxHeight);
-			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot);
+			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
 			int size = sizeSearch.reset(), i = 0;
 			while (size != -1) {
-				Page result = packAtSize(true, size - edgePaddingX, size - edgePaddingY, inputRects);
+				Page result = packAtSize(true, size + adjustX, size + adjustY, inputRects);
 				if (!settings.silent) {
 					if (++i % 70 == 0) System.out.println();
 					System.out.print(".");
@@ -161,20 +173,22 @@ public class MaxRectsPacker implements Packer {
 			}
 			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
-			if (bestResult == null) bestResult = packAtSize(false, maxSize - edgePaddingX, maxSize - edgePaddingY, inputRects);
+			if (bestResult == null) bestResult = packAtSize(false, maxSize + adjustX, maxSize + adjustY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
-			bestResult.width = Math.max(bestResult.width, bestResult.height);
-			bestResult.height = Math.max(bestResult.width, bestResult.height);
+			bestResult.width = Math.max(bestResult.width, bestResult.height) - paddingX;
+			bestResult.height = Math.max(bestResult.width, bestResult.height) - paddingY;
 			return bestResult;
 		} else {
-			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
-			BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot);
+			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
+			BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot,
+				settings.multipleOfFour);
 			int width = widthSearch.reset(), i = 0;
 			int height = settings.square ? width : heightSearch.reset();
 			while (true) {
 				Page bestWidthResult = null;
 				while (width != -1) {
-					Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
+					Page result = packAtSize(true, width + adjustX, height + adjustY, inputRects);
 					if (!settings.silent) {
 						if (++i % 70 == 0) System.out.println();
 						System.out.print(".");
@@ -192,8 +206,10 @@ public class MaxRectsPacker implements Packer {
 			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
 			if (bestResult == null)
-				bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
+				bestResult = packAtSize(false, settings.maxWidth + adjustX, settings.maxHeight + adjustY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
+			bestResult.width -= paddingX;
+			bestResult.height -= paddingY;
 			return bestResult;
 		}
 	}
@@ -233,22 +249,33 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	static class BinarySearch {
-		final boolean pot;
+		final boolean pot, mod4;
 		final int min, max, fuzziness;
 		int low, high, current;
 
-		public BinarySearch (int min, int max, int fuzziness, boolean pot) {
-			this.min = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2)) : min;
-			this.max = pot ? (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2)) : max;
+		public BinarySearch (int min, int max, int fuzziness, boolean pot, boolean mod4) {
+			if (pot) {
+				this.min = (int)(Math.log(MathUtils.nextPowerOfTwo(min)) / Math.log(2));
+				this.max = (int)(Math.log(MathUtils.nextPowerOfTwo(max)) / Math.log(2));
+			} else if (mod4) {
+				this.min = min % 4 == 0 ? min : min + 4 - (min % 4);
+				this.max = max % 4 == 0 ? max : max + 4 - (max % 4);
+			} else {
+				this.min = min;
+				this.max = max;
+			}
 			this.fuzziness = pot ? 0 : fuzziness;
 			this.pot = pot;
+			this.mod4 = mod4;
 		}
 
 		public int reset () {
 			low = min;
 			high = max;
 			current = (low + high) >>> 1;
-			return pot ? (int)Math.pow(2, current) : current;
+			if (pot) return (int)Math.pow(2, current);
+			if (mod4) return current % 4 == 0 ? current : current + 4 - (current % 4);
+			return current;
 		}
 
 		public int next (boolean result) {
@@ -259,7 +286,9 @@ public class MaxRectsPacker implements Packer {
 				high = current - 1;
 			current = (low + high) >>> 1;
 			if (Math.abs(low - high) < fuzziness) return -1;
-			return pot ? (int)Math.pow(2, current) : current;
+			if (pot) return (int)Math.pow(2, current);
+			if (mod4) return current % 4 == 0 ? current : current + 4 - (current % 4);
+			return current;
 		}
 	}
 

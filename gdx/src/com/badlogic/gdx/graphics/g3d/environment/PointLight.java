@@ -73,7 +73,7 @@ public class PointLight extends BaseLight<PointLight> {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof PointLight) ? equals((PointLight)obj) : false;
+		return (obj instanceof PointLight) && equals((PointLight) obj);
 	}
 
 	public boolean equals (PointLight other) {

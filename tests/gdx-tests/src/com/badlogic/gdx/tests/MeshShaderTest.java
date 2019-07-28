@@ -34,8 +34,6 @@ public class MeshShaderTest extends GdxTest {
 	Mesh mesh, meshCustomVA;
 	Texture texture;
 	Matrix4 matrix = new Matrix4();
-	
-	private static final float FLOAT_WHITE = Color.WHITE.toFloatBits();
 
 	@Override
 	public void create () {
@@ -64,10 +62,10 @@ public class MeshShaderTest extends GdxTest {
 		meshCustomVA = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorPacked(), 
 			new VertexAttribute(Usage.TextureCoordinates, 2, GL20.GL_UNSIGNED_SHORT, true, ShaderProgram.TEXCOORD_ATTRIBUTE + "0", 0));
 		meshCustomVA.setVertices(new float[] {
-			-0.5f, -0.5f, 0, FLOAT_WHITE, toSingleFloat(0, 1), 
-			0.5f, -0.5f, 0, FLOAT_WHITE, toSingleFloat(1, 1), 
-			0.5f, 0.5f, 0, FLOAT_WHITE, toSingleFloat(1, 0), 
-			-0.5f, 0.5f, 0, FLOAT_WHITE, toSingleFloat(0, 0)
+			-0.5f, -0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(0, 1),
+			0.5f, -0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(1, 1),
+			0.5f, 0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(1, 0),
+			-0.5f, 0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(0, 0)
 			});
 		meshCustomVA.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 		

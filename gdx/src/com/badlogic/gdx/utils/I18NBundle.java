@@ -265,10 +265,10 @@ public class I18NBundle {
 			locales.add(locale);
 		}
 		if (country.length() > 0) {
-			locales.add((locales.size() == 0) ? locale : new Locale(language, country));
+			locales.add(locales.isEmpty() ? locale : new Locale(language, country));
 		}
 		if (language.length() > 0) {
-			locales.add((locales.size() == 0) ? locale : new Locale(language));
+			locales.add(locales.isEmpty() ? locale : new Locale(language));
 		}
 		locales.add(ROOT_LOCALE);
 		return locales;
@@ -452,5 +452,17 @@ public class I18NBundle {
 	public String format (String key, Object... args) {
 		return formatter.format(get(key), args);
 	}
-
+	
+	/** Sets the value of all localized strings to String placeholder so hardcoded, unlocalized values can be easily spotted.
+	 *  The I18NBundle won't be able to reset values after calling debug and should only be using during testing.
+	 * 
+	 * @param placeholder */
+	public void debug(String placeholder) {
+		ObjectMap.Keys<String> keys = properties.keys();
+		if(keys == null) return;
+		
+		for(String s : keys) {
+		    properties.put(s, placeholder);
+		}	
+	}
 }

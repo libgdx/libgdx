@@ -33,7 +33,7 @@ public class GdxBuild {
 		// generate C/C++ code
 		new NativeCodeGenerator().generate("src", "bin", JNI_DIR, new String[] {"**/*"}, null);
 
-		String[] excludeCpp = {"android/**", "iosgl/**"};
+		String[] excludeCpp = {"iosgl/**"};
 
 		// generate build scripts, for win32 only
 		// custom target for testing purposes
@@ -51,16 +51,13 @@ public class GdxBuild {
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cppExcludes = excludeCpp;
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		android.linkerFlags += " -lGLESv2 -llog";
-		android.cppExcludes = new String[] {"iosgl/**"};
-		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
-		mac.cppExcludes = excludeCpp;
+		android.linkerFlags += " -llog";
+		android.cppExcludes = excludeCpp;
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.cppExcludes = excludeCpp;
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
-		ios.cppExcludes = new String[] {"android/**"};
 		ios.headerDirs = new String[] {"iosgl"};
-		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, mac64, win32home, win32,
+		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac64, win32home, win32,
 			win64, lin32, lin64, android, ios);
 
 		// build natives

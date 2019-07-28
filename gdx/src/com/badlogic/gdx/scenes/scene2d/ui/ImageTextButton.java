@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.Scaling;
  * @author Nathan Sweet */
 public class ImageTextButton extends Button {
 	private final Image image;
-	private final Label label;
+	private Label label;
 	private ImageTextButtonStyle style;
 
 	public ImageTextButton (String text, Skin skin) {
@@ -99,7 +99,7 @@ public class ImageTextButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		Color fontColor;
 		if (isDisabled() && style.disabledFontColor != null)
@@ -113,7 +113,7 @@ public class ImageTextButton extends Button {
 		else
 			fontColor = style.fontColor;
 		if (fontColor != null) label.getStyle().fontColor = fontColor;
-		super.draw(batch, a);
+		super.draw(batch, parentAlpha);
 	}
 
 	public Image getImage () {
@@ -122,6 +122,11 @@ public class ImageTextButton extends Button {
 
 	public Cell getImageCell () {
 		return getCell(image);
+	}
+
+	public void setLabel (Label label) {
+		getLabelCell().setActor(label);
+		this.label = label;
 	}
 
 	public Label getLabel () {
@@ -138,6 +143,16 @@ public class ImageTextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
+	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "ImageTextButton " : "") + className + ": " + image.getDrawable() + " "
+			+ label.getText();
 	}
 
 	/** The style for an image text button, see {@link ImageTextButton}.

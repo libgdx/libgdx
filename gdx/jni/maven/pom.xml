@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.9.9-SNAPSHOT</version>
+        <version>1.9.11-SNAPSHOT</version>
         <relativePath>../../..</relativePath>
     </parent>
     
@@ -158,7 +158,6 @@
                             <resources>
                                 <resource><directory>${basedir}/../../libs/linux32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
-                                <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>

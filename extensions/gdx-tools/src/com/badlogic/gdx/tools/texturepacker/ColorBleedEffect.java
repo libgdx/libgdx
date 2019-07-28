@@ -16,27 +16,25 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.texturepacker.ColorBleedEffect.Mask.MaskIterator;
+import java.util.NoSuchElementException;
 
 import java.awt.image.BufferedImage;
-import java.util.NoSuchElementException;
 
 /** @author Ruben Garat
  * @author Ariel Coppes
  * @author Nathan Sweet */
 public class ColorBleedEffect {
-	static int TO_PROCESS = 0;
-	static int IN_PROCESS = 1;
-	static int REALDATA = 2;
-	static int[][] offsets = { {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-
-	ARGBColor color = new ARGBColor();
+	static private final int[] offsets = {-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
 
 	public BufferedImage processImage (BufferedImage image, int maxIterations) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 
-		BufferedImage processedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage processedImage;
+		if (image.getType() == BufferedImage.TYPE_INT_ARGB)
+			processedImage = image;
+		else
+			processedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		int[] rgb = image.getRGB(0, 0, width, height, null, 0, width);
 		Mask mask = new Mask(rgb);
 
@@ -53,7 +51,7 @@ public class ColorBleedEffect {
 	}
 
 	private void executeIteration (int[] rgb, Mask mask, int width, int height) {
-		MaskIterator iterator = mask.new MaskIterator();
+		Mask.MaskIterator iterator = mask.new MaskIterator();
 		while (iterator.hasNext()) {
 			int pixelIndex = iterator.next();
 			int x = pixelIndex % width;
@@ -61,26 +59,27 @@ public class ColorBleedEffect {
 			int r = 0, g = 0, b = 0;
 			int count = 0;
 
-			for (int i = 0, n = offsets.length; i < n; i++) {
-				int[] offset = offsets[i];
-				int column = x + offset[0];
-				int row = y + offset[1];
-
-				if (column < 0 || column >= width || row < 0 || row >= height) continue;
+			for (int i = 0, n = offsets.length; i < n; i += 2) {
+				int column = x + offsets[i];
+				int row = y + offsets[i + 1];
+				if (column < 0 || column >= width || row < 0 || row >= height) {
+					column = x;
+					row = y;
+					continue;
+				}
 
 				int currentPixelIndex = getPixelIndex(width, column, row);
-				if (mask.getMask(currentPixelIndex) == REALDATA) {
-					color.argb = rgb[currentPixelIndex];
-					r += color.red();
-					g += color.green();
-					b += color.blue();
+				if (!mask.isBlank(currentPixelIndex)) {
+					int argb = rgb[currentPixelIndex];
+					r += red(argb);
+					g += green(argb);
+					b += blue(argb);
 					count++;
 				}
 			}
 
 			if (count != 0) {
-				color.setARGBA(0, r / count, g / count, b / count);
-				rgb[pixelIndex] = color.argb;
+				rgb[pixelIndex] = argb(0, r / count, g / count, b / count);
 				iterator.markAsInProgress();
 			}
 		}
@@ -88,32 +87,49 @@ public class ColorBleedEffect {
 		iterator.reset();
 	}
 
-	private int getPixelIndex (int width, int x, int y) {
+	static private int getPixelIndex (int width, int x, int y) {
 		return y * width + x;
 	}
 
-	static class Mask {
-		int[] data, pending, changing;
+	static private int red (int argb) {
+		return (argb >> 16) & 0xFF;
+	}
+
+	static private int green (int argb) {
+		return (argb >> 8) & 0xFF;
+	}
+
+	static private int blue (int argb) {
+		return (argb >> 0) & 0xFF;
+	}
+
+	static private int argb (int a, int r, int g, int b) {
+		if (a < 0 || a > 255 || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+			throw new IllegalArgumentException("Invalid RGBA: " + r + ", " + g + "," + b + "," + a);
+		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
+	}
+
+	static private class Mask {
+		final boolean[] blank;
+		final int[] pending, changing;
 		int pendingSize, changingSize;
 
 		Mask (int[] rgb) {
-			data = new int[rgb.length];
-			pending = new int[rgb.length];
-			changing = new int[rgb.length];
-			ARGBColor color = new ARGBColor();
-			for (int i = 0; i < rgb.length; i++) {
-				color.argb = rgb[i];
-				if (color.alpha() == 0) {
-					data[i] = TO_PROCESS;
+			int n = rgb.length;
+			blank = new boolean[n];
+			pending = new int[n];
+			changing = new int[n];
+			for (int i = 0; i < n; i++) {
+				if (alpha(rgb[i]) == 0) {
+					blank[i] = true;
 					pending[pendingSize] = i;
 					pendingSize++;
-				} else
-					data[i] = REALDATA;
+				}
 			}
 		}
 
-		int getMask (int index) {
-			return data[index];
+		boolean isBlank (int index) {
+			return blank[index];
 		}
 
 		int removeIndex (int index) {
@@ -144,38 +160,14 @@ public class ColorBleedEffect {
 
 			void reset () {
 				index = 0;
-				for (int i = 0; i < changingSize; i++) {
-					int index = changing[i];
-					data[index] = REALDATA;
-				}
+				for (int i = 0, n = changingSize; i < n; i++)
+					blank[changing[i]] = false;
 				changingSize = 0;
 			}
 		}
-	}
 
-	static class ARGBColor {
-		int argb = 0xff000000;
-
-		public int red () {
-			return (argb >> 16) & 0xFF;
-		}
-
-		public int green () {
-			return (argb >> 8) & 0xFF;
-		}
-
-		public int blue () {
-			return (argb >> 0) & 0xFF;
-		}
-
-		public int alpha () {
+		static private int alpha (int argb) {
 			return (argb >> 24) & 0xff;
-		}
-
-		public void setARGBA (int a, int r, int g, int b) {
-			if (a < 0 || a > 255 || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-				throw new IllegalArgumentException("Invalid RGBA: " + r + ", " + g + "," + b + "," + a);
-			argb = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
 		}
 	}
 }

@@ -183,7 +183,7 @@ public class Queue<T> implements Iterable<T> {
 		if (identity || value == null) {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (values[i] == value) return i;
+					if (values[i] == value) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (values[i] == value) return i - head;
@@ -193,7 +193,7 @@ public class Queue<T> implements Iterable<T> {
 		} else {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (value.equals(values[i])) return i;
+					if (value.equals(values[i])) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (value.equals(values[i])) return i - head;
@@ -244,6 +244,11 @@ public class Queue<T> implements Iterable<T> {
 		}
 		size--;
 		return value;
+	}
+
+	/** Returns true if the queue has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
 	}
 
 	/** Returns true if the queue is empty. */
@@ -323,9 +328,12 @@ public class Queue<T> implements Iterable<T> {
 		this.size = 0;
 	}
 
-	/** Returns an iterator for the items in the queue. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link QueueIterator} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the items in the queue. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link QueueIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
+		if (Collections.allocateIterators) return new QueueIterator(this, true);
 		if (iterable == null) iterable = new QueueIterable(this);
 		return iterable.iterator();
 	}
@@ -345,6 +353,19 @@ public class Queue<T> implements Iterable<T> {
 			sb.append(", ").append(values[i]);
 		}
 		sb.append(']');
+		return sb.toString();
+	}
+
+	public String toString (String separator) {
+		if (size == 0) return "";
+		final T[] values = this.values;
+		final int head = this.head;
+		final int tail = this.tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append(values[head]);
+		for (int i = (head + 1) % values.length; i != tail; i = (i + 1) % values.length)
+			sb.append(separator).append(values[i]);
 		return sb.toString();
 	}
 
@@ -389,6 +410,33 @@ public class Queue<T> implements Iterable<T> {
 			Object itsValue = itsValues[itsIndex];
 
 			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue))) return false;
+			myIndex++;
+			itsIndex++;
+			if (myIndex == myBackingLength) myIndex = 0;
+			if (itsIndex == itsBackingLength) itsIndex = 0;
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each item. */
+	public boolean equalsIdentity (Object o) {
+		if (this == o) return true;
+		if (o == null || !(o instanceof Queue)) return false;
+
+		Queue<?> q = (Queue<?>)o;
+		final int size = this.size;
+
+		if (q.size != size) return false;
+
+		final T[] myValues = this.values;
+		final int myBackingLength = myValues.length;
+		final Object[] itsValues = q.values;
+		final int itsBackingLength = itsValues.length;
+
+		int myIndex = head;
+		int itsIndex = q.head;
+		for (int s = 0; s < size; s++) {
+			if (myValues[myIndex] != itsValues[itsIndex]) return false;
 			myIndex++;
 			itsIndex++;
 			if (myIndex == myBackingLength) myIndex = 0;
@@ -462,7 +510,9 @@ public class Queue<T> implements Iterable<T> {
 			this.allowRemove = allowRemove;
 		}
 
+		/** @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
+			if (Collections.allocateIterators) return new QueueIterator(queue, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {

@@ -34,8 +34,10 @@ public class BuildScriptHelper {
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, "maven { url \"" + DependencyBank.gradlePlugins + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
@@ -59,8 +61,6 @@ public class BuildScriptHelper {
 
 	public static void addAllProjects(BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
-		write(wr, "apply plugin: \"eclipse\"");
-		write(wr, "apply plugin: \"idea\"");
 		space(wr);
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
@@ -75,6 +75,8 @@ public class BuildScriptHelper {
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
 		write(wr, "}");
@@ -97,7 +99,7 @@ public class BuildScriptHelper {
 	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
-			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
 		}
 		for (Dependency dep : dependencyList) {
 			if (dep.getDependencies(project) == null) continue;
@@ -106,7 +108,7 @@ public class BuildScriptHelper {
 				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
-					write(wr, "compile \"" + moduleDependency + "\"");
+					write(wr, "api \"" + moduleDependency + "\"");
 				}
 			}
 		}

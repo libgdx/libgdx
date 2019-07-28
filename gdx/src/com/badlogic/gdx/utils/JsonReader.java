@@ -657,6 +657,7 @@ public class JsonReader implements BaseJsonReader {
 	private final Array<JsonValue> lastChild = new Array(8);
 	private JsonValue root, current;
 
+	/** @param name May be null. */
 	private void addChild (String name, JsonValue child) {
 		child.setName(name);
 		if (current == null) {
@@ -677,6 +678,7 @@ public class JsonReader implements BaseJsonReader {
 			root = current;
 	}
 
+	/** @param name May be null. */
 	protected void startObject (String name) {
 		JsonValue value = new JsonValue(ValueType.object);
 		if (current != null) addChild(name, value);
@@ -684,6 +686,7 @@ public class JsonReader implements BaseJsonReader {
 		current = value;
 	}
 
+	/** @param name May be null. */
 	protected void startArray (String name) {
 		JsonValue value = new JsonValue(ValueType.array);
 		if (current != null) addChild(name, value);

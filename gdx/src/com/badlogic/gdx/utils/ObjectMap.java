@@ -26,12 +26,16 @@ import com.badlogic.gdx.math.MathUtils;
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
- * next higher POT size.
+ * next higher POT size.<br>
+ * <br>
+ * Iteration can be very slow for a map with a large capacity. {@link #clear(int)} and {@link #shrink(int)} can be used to reduce
+ * the capacity. {@link OrderedMap} provides much faster iteration.
  * @author Nathan Sweet */
 public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
+	static final Object dummy = new Object();
 
 	public int size;
 
@@ -44,9 +48,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private int stashCapacity;
 	private int pushIterations;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
+	Entries entries1, entries2;
+	Values values1, values2;
+	Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectMap () {
@@ -93,10 +97,6 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Returns the old value associated with the specified key, or null. */
 	public V put (K key, V value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
-		return put_internal(key, value);
-	}
-
-	private V put_internal (K key, V value) {
 		K[] keyTable = this.keyTable;
 
 		// Check for existing keys.
@@ -160,9 +160,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return null;
 	}
 
-	public void putAll (ObjectMap<K, V> map) {
+	public void putAll (ObjectMap<? extends K, ? extends V> map) {
 		ensureCapacity(map.size);
-		for (Entry<K, V> entry : map)
+		for (Entry<? extends K, ? extends V> entry : map)
 			put(entry.key, entry.value);
 	}
 
@@ -274,7 +274,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put_internal(key, value);
+			putResize(key, value);
 			return;
 		}
 		// Store key in the stash.
@@ -285,7 +285,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size++;
 	}
 
-	/** Returns the value for the specified key, or null if the key is not in the map. */
+	/** Returns the value (which may be null) for the specified key, or null if the key is not in the map. */
 	public V get (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -299,7 +299,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return valueTable[index];
 	}
 
-	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	/** Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. */
 	public V get (K key, V defaultValue) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -320,6 +320,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return defaultValue;
 	}
 
+	/** Returns the value associated with the key, or null. */
 	public V remove (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -372,9 +373,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (index < lastIndex) {
 			keyTable[index] = keyTable[lastIndex];
 			valueTable[index] = valueTable[lastIndex];
+			keyTable[lastIndex] = null;
 			valueTable[lastIndex] = null;
-		} else
+		} else {
+			keyTable[index] = null;
 			valueTable[index] = null;
+		}
+	}
+
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
 	}
 
 	/** Returns true if the map is empty. */
@@ -392,7 +401,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		resize(maximumCapacity);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity, if they are larger. The reduction
+	 * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array. */
 	public void clear (int maximumCapacity) {
 		if (capacity <= maximumCapacity) {
 			clear();
@@ -402,6 +412,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		resize(maximumCapacity);
 	}
 
+	/** Clears the map, leaving the backing arrays at the current capacity. When the capacity is high and the population is low,
+	 * iteration can be unnecessarily slow. {@link #clear(int)} can be used to reduce the capacity. */
 	public void clear () {
 		if (size == 0) return;
 		K[] keyTable = this.keyTable;
@@ -477,6 +489,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
@@ -539,7 +552,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof ObjectMap)) return false;
-		ObjectMap<K, V> other = (ObjectMap)obj;
+		ObjectMap other = (ObjectMap)obj;
 		if (other.size != size) return false;
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
@@ -548,15 +561,26 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (key != null) {
 				V value = valueTable[i];
 				if (value == null) {
-					if (!other.containsKey(key) || other.get(key) != null) {
-						return false;
-					}
+					if (other.get(key, dummy) != null) return false;
 				} else {
-					if (!value.equals(other.get(key))) {
-						return false;
-					}
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	/** Uses == for comparison of each value. */
+	public boolean equalsIdentity (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IdentityMap)) return false;
+		IdentityMap other = (IdentityMap)obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null && valueTable[i] != other.get(key, dummy)) return false;
 		}
 		return true;
 	}
@@ -600,9 +624,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -619,9 +646,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Values} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link Values} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -638,9 +668,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link Keys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);

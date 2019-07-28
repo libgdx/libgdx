@@ -225,7 +225,6 @@ public class ModelBatch implements Disposable {
 	 * @param renderable The {@link Renderable} to be added. */
 	public void render (final Renderable renderable) {
 		renderable.shader = shaderProvider.getShader(renderable);
-		renderable.meshPart.mesh.setAutoBind(false);
 		renderables.add(renderable);
 	}
 

@@ -112,11 +112,11 @@ public class Image extends Widget {
 			imageY = (int)(height / 2 - imageHeight / 2);
 	}
 
-	public void draw (Batch batch, float a) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * a);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		float x = getX();
 		float y = getY();
@@ -198,5 +198,14 @@ public class Image extends Widget {
 
 	public float getImageHeight () {
 		return imageHeight;
+	}
+
+	public String toString () {
+		String name = getName();
+		if (name != null) return name;
+		String className = getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		if (dotIndex != -1) className = className.substring(dotIndex + 1);
+		return (className.indexOf('$') != -1 ? "Image " : "") + className + ": " + drawable;
 	}
 }

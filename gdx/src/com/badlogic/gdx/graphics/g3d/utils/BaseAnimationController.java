@@ -158,14 +158,33 @@ public class BaseAnimationController {
 
 	private final static Transform tmpT = new Transform();
 
-	private final static <T> int getFirstKeyframeIndexAtTime (final Array<NodeKeyframe<T>> arr, final float time) {
-		final int n = arr.size - 1;
-		for (int i = 0; i < n; i++) {
-			if (time >= arr.get(i).keytime && time <= arr.get(i + 1).keytime) {
+	/** Find first key frame index just before a given time
+	 * @param arr Key frames ordered by time ascending
+	 * @param time Time to search
+	 * @return key frame index, 0 if time is out of key frames time range */
+	final static <T> int getFirstKeyframeIndexAtTime (final Array<NodeKeyframe<T>> arr, final float time) {
+		final int lastIndex = arr.size - 1;
+
+		// edges cases : time out of range always return first index
+		if (lastIndex <= 0 || time < arr.get(0).keytime || time > arr.get(lastIndex).keytime) {
+			return 0;
+		}
+
+		// binary search
+		int minIndex = 0;
+		int maxIndex = lastIndex;
+
+		while (minIndex < maxIndex) {
+			int i = (minIndex + maxIndex) / 2;
+			if (time > arr.get(i + 1).keytime) {
+				minIndex = i + 1;
+			} else if (time < arr.get(i).keytime) {
+				maxIndex = i - 1;
+			} else {
 				return i;
 			}
 		}
-		return 0;
+		return minIndex;
 	}
 
 	private final static Vector3 getTranslationAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {

@@ -22,25 +22,27 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.9.8";
+	static String libgdxVersion = "1.9.10";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.9.9-SNAPSHOT";
-	static String roboVMVersion = "2.3.3";
+	static String libgdxNightlyVersion = "1.9.11-SNAPSHOT";
+	static String roboVMVersion = "2.3.7";
 	static String moeVersion = "1.4.0";
-	static String buildToolsVersion = "25.0.3";
-	static String androidAPILevel = "25";
-	static String gwtVersion = "2.8.0";
+	static String buildToolsVersion = "28.0.3";
+	static String androidAPILevel = "28";
+	static String gwtVersion = "2.8.2";
 
 	//Repositories
 	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
+	static String google = "google()";
+	static String gradlePlugins = "https://plugins.gradle.org/m2/";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:2.2.0";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.9";
+	static String androidPluginImport = "com.android.tools.build:gradle:3.4.1";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
 	

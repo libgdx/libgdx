@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://www.gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
 	<source path="tests">
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
 		<exclude name="**/AudioDeviceTest.java"/> <!-- audio missing -->
 		<exclude name="**/AudioRecorderTest.java"/> <!-- audio missing -->
+		<exclude name="**/BitmapFontWriterTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/BobTest.java"/> <!-- GL ES 1.0 -->
 		<exclude name="**/bullet/"/> <!-- native -->
 		<exclude name="**/BulletTestCollection.java"/> <!-- native -->
@@ -28,6 +29,7 @@
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		<exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
+		<exclude name="**/PixmapPackerIOTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->

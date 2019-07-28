@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -48,6 +49,7 @@ public class MusicTest extends GdxTest {
 	Slider slider;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
+	TextButton btLoop;
 
 	enum Song {
 		MP3, OGG, WAV
@@ -79,13 +81,25 @@ public class MusicTest extends GdxTest {
 				setSong(musicBox.getSelected());
 			}
 		});
+
+		btLoop = new TextButton("loop", skin, "toggle");
+		btLoop.setChecked(true);
+		btLoop.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				if(music != null) music.setLooping(btLoop.isChecked());
+			}
+		});
+		
 		setSong(musicBox.getSelected());
 
+		
 		Table table = new Table(skin);
 		table.add(musicBox);
+		table.add(btLoop);
 		table.setFillParent(true);
 		stage.addActor(table);
-
+		
 		stage.addActor(slider);
 
 		Gdx.input.setInputProcessor(stage);
@@ -110,7 +124,7 @@ public class MusicTest extends GdxTest {
 			songDuration = 4;
 			break;
 		}
-		music.setLooping(true);
+		music.setLooping(btLoop.isChecked());
 		music.play();
 	}
 

@@ -12,7 +12,6 @@ android {
             jniLibs.srcDirs = ['libs']
         }
 
-        instrumentTest.setRoot('tests')
     }
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
@@ -36,27 +35,35 @@ android {
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
-task copyAndroidNatives() { 
-    file("libs/armeabi/").mkdirs();
-    file("libs/armeabi-v7a/").mkdirs();
-    file("libs/arm64-v8a/").mkdirs();
-    file("libs/x86_64/").mkdirs();
-    file("libs/x86/").mkdirs();
+task copyAndroidNatives {
+    doFirst {
+        file("libs/armeabi/").mkdirs()
+        file("libs/armeabi-v7a/").mkdirs()
+        file("libs/arm64-v8a/").mkdirs()
+        file("libs/x86_64/").mkdirs()
+        file("libs/x86/").mkdirs()
 
-    configurations.natives.files.each { jar ->
-        def outputDir = null
-        if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
-        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")        
-        if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-        if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-        if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-        if(outputDir != null) {
-            copy {
-                from zipTree(jar)
-                into outputDir
-                include "*.so"
+        configurations.natives.files.each { jar ->
+            def outputDir = null
+            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+            if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if(outputDir != null) {
+                copy {
+                    from zipTree(jar)
+                    into outputDir
+                    include "*.so"
+                }
             }
         }
+    }
+}
+
+tasks.whenTaskAdded { packageTask ->
+    if (packageTask.name.contains("package")) {
+        packageTask.dependsOn 'copyAndroidNatives'
     }
 }
 
@@ -80,58 +87,4 @@ task run(type: Exec) {
 
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', '%PACKAGE%/%PACKAGE%.AndroidLauncher'
-}
-
-// sets up the Android Eclipse project, using the old Ant based build.
-eclipse {
-    // need to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
-    // ignores any nodes added in classpath.file.withXml
-    sourceSets {
-        main {
-            java.srcDirs "src", 'gen'
-        }
-    }
-
-    jdt {
-        sourceCompatibility = 1.6
-        targetCompatibility = 1.6
-    }
-
-    classpath {
-        plusConfigurations += [ project.configurations.compile ]        
-        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'       
-    }
-
-    project {
-        name = appName + "-android"
-        natures 'com.android.ide.eclipse.adt.AndroidNature'
-        buildCommands.clear();
-        buildCommand "com.android.ide.eclipse.adt.ResourceManagerBuilder"
-        buildCommand "com.android.ide.eclipse.adt.PreCompilerBuilder"
-        buildCommand "org.eclipse.jdt.core.javabuilder"
-        buildCommand "com.android.ide.eclipse.adt.ApkBuilder"
-    }
-}
-
-// sets up the Android Idea project, using the old Ant based build.
-idea {
-    module {
-        sourceDirs += file("src");
-        scopes = [ COMPILE: [plus:[project.configurations.compile]]]        
-
-        iml {
-            withXml {
-                def node = it.asNode()
-                def builder = NodeBuilder.newInstance();
-                builder.current = node;
-                builder.component(name: "FacetManager") {
-                    facet(type: "android", name: "Android") {
-                        configuration {
-                            option(name: "UPDATE_PROPERTY_FILES", value:"true")
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

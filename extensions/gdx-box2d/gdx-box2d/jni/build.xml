@@ -23,7 +23,6 @@
 			<fileset dir="../libs/windows64" includes="gdx-box2d64.dll"/>
 			<fileset dir="../libs/linux32" includes="libgdx-box2d.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-box2d64.so"/>
-			<fileset dir="../libs/macosx32" includes="libgdx-box2d.dylib"/>
 			<fileset dir="../libs/macosx64" includes="libgdx-box2d64.dylib"/>
 
 		</jar>
