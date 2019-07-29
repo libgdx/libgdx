@@ -16,19 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Canvas;
-import java.awt.Toolkit;
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.graphics.glutils.GLVersion;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
@@ -38,9 +26,21 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.ContextAttribs;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.PixelFormat;
+
+import java.awt.Canvas;
+import java.awt.Toolkit;
+import java.nio.ByteBuffer;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
@@ -655,6 +655,15 @@ public class LwjglGraphics implements Graphics {
 		} catch (LWJGLException e) {
 			throw new GdxRuntimeException("Could not set cursor image.", e);
 		}
+	}
+
+	@Override
+	public Cursor newAndroidCursor(String drawableName, float xHotspot, float yHotspot) {
+		return null;
+	}
+
+	@Override
+	public void setAndroidCursor(Cursor cursor) {
 	}
 
 	@Override

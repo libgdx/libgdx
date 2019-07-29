@@ -16,6 +16,15 @@
 
 package com.badlogic.gdx.backends.android.surfaceview;
 
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.opengl.GLDebugHelper;
+import android.opengl.GLSurfaceView.EGLConfigChooser;
+import android.opengl.GLSurfaceView.Renderer;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.SurfaceHolder;
+
 import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -29,17 +38,8 @@ import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.Context;
 //import android.content.pm.ConfigurationInfo;
-import android.graphics.PixelFormat;
-import android.opengl.GLDebugHelper;
-import android.opengl.GLSurfaceView.EGLConfigChooser;
-import android.opengl.GLSurfaceView.Renderer;
 //import android.os.SystemProperties;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 /**
  * 
@@ -172,7 +172,7 @@ import android.view.SurfaceView;
  *
  */
 @SuppressWarnings("synthetic-access")
-public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Callback {
+public class GLSurfaceViewAPI18 extends AndroidSurfaceView implements SurfaceHolder.Callback {
     private final static String TAG = "GLSurfaceViewAPI18";
     private final static boolean LOG_ATTACH_DETACH = false;
     private final static boolean LOG_THREADS = false;

@@ -228,6 +228,15 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public Cursor newAndroidCursor (String drawableName, float xHotspot, float yHotspot) {
+		return null;
+	}
+
+	@Override
+	public void setAndroidCursor (Cursor cursor) {
+	}
+
+	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 

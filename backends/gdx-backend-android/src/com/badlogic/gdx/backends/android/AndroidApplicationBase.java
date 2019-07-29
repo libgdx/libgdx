@@ -24,9 +24,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -83,6 +80,10 @@ public interface AndroidApplicationBase extends Application {
 	/** Returns the WindowManager associated with the application
 	 * @return The {@link WindowManager} associated with the application */
 	WindowManager getWindowManager ();
+
+	/** Returns the Activity associated with the application
+	 * @return The {@link Activity} associated with the application */
+	Activity getActivity ();
 
 	/** Activates Android 4.4 KitKat's 'Immersive Mode' feature.
 	 * @param b Whether or not to use immersive mode */

@@ -16,20 +16,16 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
-
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.PointerIcon;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 
@@ -37,6 +33,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.android.surfaceview.AndroidGLSurfaceView;
+import com.badlogic.gdx.backends.android.surfaceview.AndroidSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
@@ -55,9 +53,14 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
 
 /** An implementation of {@link Graphics} for Android.
  *
@@ -107,6 +110,14 @@ public class AndroidGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
+	private PointerIcon pointerArrow;
+	private PointerIcon pointerIbeam;
+	private PointerIcon pointerHand;
+	private PointerIcon pointerHorizontalResize;
+	private PointerIcon pointerVerticalResize;
+	private PointerIcon pointerDefault;
+	private PointerIcon pointerCrossHair;
+
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this(application, config, resolutionStrategy, true);
@@ -117,6 +128,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
+		setupPointer(app.getContext());
 		preserveEGLContextOnPause();
 		if (focusableView) {
 			view.setFocusable(true);
@@ -655,7 +667,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setTitle (String title) {
-
 	}
 
 	@Override
@@ -718,9 +729,22 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public boolean isFullscreen () {
-		return true;
+		Activity activity = app.getActivity();
+		return activity == null || Build.VERSION.SDK_INT < 24 || !activity.isInMultiWindowMode();
 	}
 
+	private void setupPointer (Context c) {
+		if (Build.VERSION.SDK_INT >= 24) {
+			pointerArrow = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_ARROW);
+			pointerIbeam = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_TEXT);
+			pointerHand = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_HAND);
+			pointerCrossHair = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_CROSSHAIR);
+			pointerHorizontalResize = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_HORIZONTAL_DOUBLE_ARROW);
+			pointerVerticalResize = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_VERTICAL_DOUBLE_ARROW);
+			pointerDefault = PointerIcon.getSystemIcon(c,PointerIcon.TYPE_DEFAULT);
+			setCursorPointerIcon(pointerDefault);
+		}
+	}
 
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
@@ -733,6 +757,55 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+		if (Build.VERSION.SDK_INT >= 24) {
+			switch (systemCursor) {
+				case Arrow:
+					setCursorPointerIcon(pointerArrow);
+					break;
+				case Ibeam:
+					setCursorPointerIcon(pointerIbeam);
+					break;
+				case Hand:
+					setCursorPointerIcon(pointerHand);
+					break;
+				case Crosshair:
+					setCursorPointerIcon(pointerCrossHair);
+					break;
+				case HorizontalResize:
+					setCursorPointerIcon(pointerHorizontalResize);
+					break;
+				case VerticalResize:
+					setCursorPointerIcon(pointerVerticalResize);
+					break;
+				default:
+					setCursorPointerIcon(pointerDefault);
+					break;
+			}
+		}
+	}
+
+	@Override
+	public void setAndroidCursor (Cursor cursor) {
+		if (Build.VERSION.SDK_INT >= 24) {
+			setCursorPointerIcon(((AndroidCursor)cursor).pointerIcon);
+		}
+	}
+
+	@Override
+	public AndroidCursor newAndroidCursor(String drawableName, float xHotspot, float yHotspot) {
+		if (Build.VERSION.SDK_INT >= 24) {
+			return new AndroidCursor(drawableName, xHotspot, yHotspot, app.getContext());
+		}
+		return null;
+	}
+
+	@TargetApi(24)
+	private void setCursorPointerIcon (PointerIcon pointerIcon) {
+		if (view != null && pointerIcon != null) {
+			view.setPointerIcon(pointerIcon);
+			if (view instanceof AndroidSurfaceView) ((AndroidSurfaceView)view).currentPointer = pointerIcon;
+			if (view instanceof AndroidGLSurfaceView) ((AndroidGLSurfaceView)view).currentPointer = pointerIcon;
+		}
 	}
 
 	private class AndroidDisplayMode extends DisplayMode {

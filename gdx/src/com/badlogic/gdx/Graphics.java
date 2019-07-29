@@ -312,12 +312,25 @@ public interface Graphics {
 	 * @return a cursor object that can be used by calling {@link #setCursor(Cursor)} or null if not supported */
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
 
+	/** Only used on Android backend. Creates a mouse cursor from an Android drawable resource.
+	 *
+	 * @param drawableName the name of the Android drawable resource to use for the cursor
+	 * @param xHotspot x hotspot in a range of 0-1. 0 is the left side. 1 is the right side.
+	 * @param yHotspot y hotspot in a range of 0-1. 0 is the top side. 1 is the bottom side.
+	 * @return a cursor object that can be used by calling {@link #setAndroidCursor(Cursor)} or null if not supported */
+	public Cursor newAndroidCursor (String drawableName, float xHotspot, float yHotspot);
+
 	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
 	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
 	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
 	 *
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor} */
 	public void setCursor (Cursor cursor);
+
+	/** Only used on Android backend. Sets the mouse cursor to a drawable resource.
+	 *
+	 * @param cursor a cursor created with {@link #newAndroidCursor(String, float, float)} */
+	public void setAndroidCursor (Cursor cursor);
 
 	/**
 	 * Sets one of the predefined {@link SystemCursor}s

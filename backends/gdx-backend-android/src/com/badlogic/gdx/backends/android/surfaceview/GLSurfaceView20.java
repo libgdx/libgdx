@@ -13,10 +13,6 @@
 
 package com.badlogic.gdx.backends.android.surfaceview;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -29,6 +25,11 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+
 /** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
  * <p/>
@@ -40,7 +41,7 @@ import android.view.inputmethod.InputConnection;
  * <p/>
  * - The class must select the surface's format, then choose an EGLConfig that matches it exactly (with regards to
  * red/green/blue/alpha channels bit depths). Failure to do so would result in an EGL_BAD_MATCH error. */
-public class GLSurfaceView20 extends GLSurfaceView {
+public class GLSurfaceView20 extends AndroidGLSurfaceView {
 	static String TAG = "GL2JNIView";
 	private static final boolean DEBUG = false;
 

@@ -428,6 +428,11 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	@Override
+	public Activity getActivity() {
+		return null;
+	}
+
+	@Override
 	public Handler getHandler () {
 		return this.handler;
 	}

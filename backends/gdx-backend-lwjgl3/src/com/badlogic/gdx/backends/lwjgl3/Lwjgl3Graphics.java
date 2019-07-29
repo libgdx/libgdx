@@ -16,24 +16,24 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.nio.IntBuffer;
-
 import com.badlogic.gdx.Application;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
-
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.opengl.GL11;
+
+import java.nio.IntBuffer;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
 	private final Lwjgl3Window window;
@@ -437,6 +437,15 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public void setCursor(Cursor cursor) {
 		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor) cursor).glfwCursor);
+	}
+
+	@Override
+	public Cursor newAndroidCursor (String drawableName, float xHotspot, float yHotspot) {
+		return null;
+	}
+
+	@Override
+	public void setAndroidCursor (Cursor cursor) {
 	}
 
 	@Override

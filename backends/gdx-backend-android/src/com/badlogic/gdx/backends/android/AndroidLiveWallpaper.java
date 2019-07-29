@@ -16,16 +16,13 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -36,7 +33,6 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
@@ -188,6 +184,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	@Override
 	public WindowManager getWindowManager () {
 		return service.getWindowManager();
+	}
+
+	@Override
+	public Activity getActivity() {
+		return null;
 	}
 
 	public AndroidLiveWallpaperService getService () {

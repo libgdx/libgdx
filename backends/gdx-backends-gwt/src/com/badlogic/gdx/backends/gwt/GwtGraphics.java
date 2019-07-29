@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -504,6 +503,15 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public void setCursor (Cursor cursor) {
 		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", ((GwtCursor)cursor).cssCursorProperty);
+	}
+
+	@Override
+	public Cursor newAndroidCursor (String drawableName, float xHotspot, float yHotspot) {
+		return null;
+	}
+
+	@Override
+	public void setAndroidCursor (Cursor cursor) {
 	}
 
 	@Override
