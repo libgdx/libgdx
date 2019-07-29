@@ -527,4 +527,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Handler getHandler () {
 		return this.handler;
 	}
+
+	@Override
+	public Activity getActivity () {
+		return this;
+	}
 }

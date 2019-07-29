@@ -449,4 +449,9 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	public void useImmersiveMode (boolean b) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public Activity getActivity () {
+		return null;
+	}
 }
