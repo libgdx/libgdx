@@ -55,12 +55,15 @@ public class AndroidNdkScriptGenerator {
 		gatherSourceFiles(config.jniDir, includes, excludes, files);
 
 		// create Application.mk file
-		FileDescriptor application = config.jniDir.child("Application.mk");
-		application.writeString(new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Application.mk.template",
-			FileType.Classpath).readString(), false);
+		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Application.mk.template",
+			FileType.Classpath).readString();
+
+		template = template.replace("%androidABIs%", target.androidABIs);
+
+		config.jniDir.child("Application.mk").writeString(template, false);
 
 		// create Android.mk file
-		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Android.mk.template", FileType.Classpath)
+		template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Android.mk.template", FileType.Classpath)
 			.readString();
 
 		StringBuilder srcFiles = new StringBuilder();

@@ -61,6 +61,9 @@ public class BuildTarget {
 	/** The name used for the library file. This is a full file name, including file extension. Default is platform specific.
 	 *  E.g. "lib{sharedLibName}64.so" **/
 	public String libName; 
+	/** Space delimited list of ABIs we wish to build for Android. Defaults to all available in current NDK.
+	 * {@link "https://developer.android.com/ndk/guides/application_mk#app_abi"} **/
+	public String androidABIs = "all";
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,
