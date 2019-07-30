@@ -236,7 +236,10 @@ public class Label extends Widget {
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float width = prefSize.x;
 		Drawable background = style.background;
-		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
+		if (background != null) {
+			width += background.getLeftWidth() + background.getRightWidth();
+			width = Math.max(width, background.getMinWidth());
+		}
 		return width;
 	}
 
@@ -246,7 +249,10 @@ public class Label extends Widget {
 		if (fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();
 		float height = prefSize.y - style.font.getDescent() * descentScaleCorrection * 2;
 		Drawable background = style.background;
-		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+		if (background != null) {
+			height += background.getTopHeight() + background.getBottomHeight();
+			height = Math.max(height, background.getMinHeight());
+		}
 		return height;
 	}
 
