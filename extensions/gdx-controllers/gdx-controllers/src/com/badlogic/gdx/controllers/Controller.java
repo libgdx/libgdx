@@ -62,4 +62,16 @@ public interface Controller {
 	/** Removes the given {@link ControllerListener}
 	 * @param listener */
 	public void removeListener (ControllerListener listener);
+
+	/** @return if the controller supports vibration (only for Android) */
+	boolean hasVibrator ();
+
+	/** Make the controller vibrate if it supports vibration (only for Android) */
+	void setVibration (long milliseconds, float amplitude);
+
+	/** Make the controller stop vibrating (only for Android) */
+	void stopVibration ();
+
+	/** @return if the controller supports different amplitudes when vibrating (only for Android) */
+	boolean supportsVibrationAmplitude ();
 }

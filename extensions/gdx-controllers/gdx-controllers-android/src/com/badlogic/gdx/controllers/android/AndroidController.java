@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.controllers.android;
 
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.InputDevice;
 import android.view.InputDevice.MotionRange;
 import android.view.MotionEvent;
@@ -37,12 +40,20 @@ public class AndroidController implements Controller {
 	protected int pov = 0;
 	private boolean povAxis;
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
+	private boolean hasVibrator;
+	private Vibrator vib;
 	
 	public AndroidController(int deviceId, String name) {
 		this.deviceId = deviceId;
 		this.name = name;
 		
 		InputDevice device = InputDevice.getDevice(deviceId);
+		if (Build.VERSION.SDK_INT >= 16) {
+			vib = device.getVibrator();
+			hasVibrator = vib != null && vib.hasVibrator();
+		} else {
+			hasVibrator = false;
+		}
 		int numAxes = 0;
 		for (MotionRange range : device.getMotionRanges()) {
 			if ((range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
@@ -156,5 +167,34 @@ public class AndroidController implements Controller {
 	@Override
 	public String getName () {
 		return name;
+	}
+
+	@Override
+	public boolean hasVibrator () {
+		return hasVibrator;
+	}
+
+	@Override
+	public void setVibration (long milliseconds, float amplitude) {
+		if (hasVibrator) {
+			if (Build.VERSION.SDK_INT >= 26) {
+				vib.vibrate(VibrationEffect.createOneShot(milliseconds,
+						(int)(Math.min(1,Math.max(0,amplitude))*255)));
+			} else {
+				vib.vibrate(milliseconds);
+			}
+		}
+	}
+
+	@Override
+	public void stopVibration () {
+		if (hasVibrator) {
+			vib.cancel();
+		}
+	}
+
+	@Override
+	public boolean supportsVibrationAmplitude () {
+		return hasVibrator && Build.VERSION.SDK_INT >= 26 && vib.hasAmplitudeControl();
 	}
 }

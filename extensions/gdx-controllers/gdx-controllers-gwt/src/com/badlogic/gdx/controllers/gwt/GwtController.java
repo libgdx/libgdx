@@ -133,4 +133,22 @@ public class GwtController implements Controller {
 	public Array<ControllerListener> getListeners() {
 		return listeners;
 	}
+
+	@Override
+	public boolean hasVibrator () {
+		return false;
+	}
+
+	@Override
+	public void setVibration (long milliseconds, float amplitude) {
+	}
+
+	@Override
+	public void stopVibration () {
+	}
+
+	@Override
+	public boolean supportsVibrationAmplitude () {
+		return false;
+	}
 }

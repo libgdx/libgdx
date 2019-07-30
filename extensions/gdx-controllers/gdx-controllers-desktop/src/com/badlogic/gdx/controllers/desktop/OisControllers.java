@@ -239,6 +239,24 @@ public class OisControllers {
 		public String toString () {
 			return joystick.getName();
 		}
+
+		@Override
+		public boolean hasVibrator () {
+			return false;
+		}
+
+		@Override
+		public void setVibration (long milliseconds, float amplitude) {
+		}
+
+		@Override
+		public void stopVibration () {
+		}
+
+		@Override
+		public boolean supportsVibrationAmplitude () {
+			return false;
+		}
 	}
 
 	/** Returns the window handle from LWJGL needed by OIS. */
