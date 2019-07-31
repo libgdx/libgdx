@@ -124,22 +124,16 @@ public class BuildTarget {
 		}
 
 		if (type == TargetOs.MacOsX && !is64Bit) {
-			// Mac OS X x86 & x86_64
-			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, false, new String[] {"**/*.c"}, new String[0],
-				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch i386 -mmacosx-version-min=10.5");
-			return mac;
+			throw new RuntimeException("MacOsX i386 has is deprecated.");
 		}
 		
 		if (type == TargetOs.MacOsX && is64Bit) {
 			// Mac OS X x86 & x86_64
 			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, true, new String[] {"**/*.c"}, new String[0],
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch x86_64 -mmacosx-version-min=10.5");
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9",
+				"-shared -arch x86_64 -mmacosx-version-min=10.9");
 			return mac;
 		}
 
