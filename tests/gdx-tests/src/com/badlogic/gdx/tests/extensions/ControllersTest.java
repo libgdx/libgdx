@@ -100,7 +100,8 @@ public class ControllersTest extends GdxTest {
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
 		for (Controller controller : Controllers.getControllers()) {
-			print("#" + i++ + ": " + controller.getName());
+			print("#" + i + ": " + controller.getName());
+			print("#" + i++ + ": System ID " + controller.getSystemId());
 		}
 		if (Controllers.getControllers().size == 0) print("No controllers attached");
 
@@ -115,7 +116,8 @@ public class ControllersTest extends GdxTest {
 				print("connected " + controller.getName());
 				int i = 0;
 				for (Controller c : Controllers.getControllers()) {
-					print("#" + i++ + ": " + c.getName());
+					print("#" + i + ": " + c.getName());
+					print("#" + i++ + ": System ID " + c.getSystemId());
 				}
 			}
 
