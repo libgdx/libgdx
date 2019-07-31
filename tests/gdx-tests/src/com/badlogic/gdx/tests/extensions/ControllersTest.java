@@ -100,7 +100,8 @@ public class ControllersTest extends GdxTest {
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
 		for (Controller controller : Controllers.getControllers()) {
-			print("#" + i++ + ": " + controller.getName());
+			print("#" + i + ": " + controller.getName());
+			print("#" + i++ + ", Has Vibrator: " + controller.hasVibrator() + ", Has Amplitude: " + controller.supportsVibrationAmplitude());
 		}
 		if (Controllers.getControllers().size == 0) print("No controllers attached");
 
@@ -115,7 +116,8 @@ public class ControllersTest extends GdxTest {
 				print("connected " + controller.getName());
 				int i = 0;
 				for (Controller c : Controllers.getControllers()) {
-					print("#" + i++ + ": " + c.getName());
+					print("#" + i + ": " + c.getName());
+					print("#" + i++ + ", Has Vibrator: " + c.hasVibrator() + ", Has Amplitude: " + c.supportsVibrationAmplitude());
 				}
 			}
 
@@ -138,6 +140,7 @@ public class ControllersTest extends GdxTest {
 			@Override
 			public boolean buttonUp (Controller controller, int buttonIndex) {
 				print("#" + indexOf(controller) + ", button " + buttonIndex + " up");
+				controller.setVibration(100,.5f);
 				return false;
 			}
 
