@@ -129,8 +129,13 @@ public class GwtController implements Controller {
 	public void removeListener(ControllerListener listener) {
 		this.listeners.removeValue(listener, true);
 	}
-	
+
 	public Array<ControllerListener> getListeners() {
 		return listeners;
+	}
+
+	@Override
+	public long getSystemId() {
+		return index;
 	}
 }

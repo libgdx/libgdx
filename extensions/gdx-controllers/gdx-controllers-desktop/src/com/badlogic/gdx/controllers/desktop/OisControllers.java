@@ -239,6 +239,11 @@ public class OisControllers {
 		public String toString () {
 			return joystick.getName();
 		}
+
+		@Override
+		public long getSystemId () {
+			return joystick.getPointer();
+		}
 	}
 
 	/** Returns the window handle from LWJGL needed by OIS. */

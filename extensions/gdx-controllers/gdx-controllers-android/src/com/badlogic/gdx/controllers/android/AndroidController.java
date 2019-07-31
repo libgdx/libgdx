@@ -157,4 +157,9 @@ public class AndroidController implements Controller {
 	public String getName () {
 		return name;
 	}
+
+	@Override
+	public long getSystemId () {
+		return deviceId;
+	}
 }

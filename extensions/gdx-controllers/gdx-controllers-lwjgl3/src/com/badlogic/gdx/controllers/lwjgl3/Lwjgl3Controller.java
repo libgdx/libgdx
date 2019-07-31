@@ -1,15 +1,15 @@
 package com.badlogic.gdx.controllers.lwjgl3;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
-import org.lwjgl.glfw.GLFW;
-
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+
+import org.lwjgl.glfw.GLFW;
+
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 public class Lwjgl3Controller implements Controller {
 	final Lwjgl3ControllerManager manager;
@@ -97,7 +97,7 @@ public class Lwjgl3Controller implements Controller {
 	public void removeListener (ControllerListener listener) {
 		listeners.removeValue(listener, true);
 	}
-	
+
 	@Override
 	public boolean getButton (int buttonCode) {
 		if(buttonCode < 0 || buttonCode >= buttonState.length) {
@@ -161,5 +161,10 @@ public class Lwjgl3Controller implements Controller {
 	@Override
 	public String getName () {
 		return name;
-	}	
+	}
+
+	@Override
+	public long getSystemId () {
+		return index;
+	}
 }

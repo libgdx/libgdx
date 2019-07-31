@@ -62,4 +62,11 @@ public interface Controller {
 	/** Removes the given {@link ControllerListener}
 	 * @param listener */
 	public void removeListener (ControllerListener listener);
+
+	/** The ID of the controller assigned by the backend.
+	 * Javascript returns value of Gamepad.index
+	 * Android returns value of InputDevice.getId()
+	 * Lwjgl2 & Lwjgl3 return an index
+	 * @return the ID of the controller assigned by the backend. */
+	public long getSystemId();
 }

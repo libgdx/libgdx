@@ -154,6 +154,10 @@ public class OisJoystick {
 		return name;
 	}
 
+	public long getPointer () {
+		return joystickPtr;
+	}
+
 	// @off
 	/*JNI
 	#include <OISJoyStick.h>
