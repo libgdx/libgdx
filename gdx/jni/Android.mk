@@ -15,8 +15,6 @@ LOCAL_SRC_FILES := com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp\
 	memcpy_wrap.c\
 	com.badlogic.gdx.graphics.glutils.ETC1.cpp\
 	etc1/etc1_utils.cpp\
-	gdx2d/gdx2d.c\
-	gdx2d/jpgd_c.cpp\
-	gdx2d/jpgd.cpp
+	gdx2d/gdx2d.c
  
 include $(BUILD_SHARED_LIBRARY)
