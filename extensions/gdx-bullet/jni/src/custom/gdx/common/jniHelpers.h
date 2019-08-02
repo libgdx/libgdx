@@ -63,7 +63,7 @@ struct GdxPool {
 };
 
 struct GdxPooledObject {
-	GdxPool * const &pool;
+	GdxPool * const pool;
 	jobject obj;
 	const bool autoFree;
 
