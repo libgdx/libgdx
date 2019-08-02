@@ -23,6 +23,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.
 
 public class Lwjgl3WindowConfiguration {
 	int windowX = -1;
@@ -113,8 +114,8 @@ public class Lwjgl3WindowConfiguration {
 	/**
 	 * @param monitor what monitor the window should maximize to
 	 */
-	public void setMaximizedMonitor(Lwjgl3Graphics.Lwjgl3Monitor monitor) {
-		this.maximizedMonitor = monitor;
+	public void setMaximizedMonitor(Graphics.Monitor monitor) {
+		this.maximizedMonitor = (Lwjgl3Graphics.Lwjgl3Monitor) monitor;
 	}
 
 	/**
