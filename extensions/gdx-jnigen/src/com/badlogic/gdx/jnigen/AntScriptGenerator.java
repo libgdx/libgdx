@@ -252,6 +252,8 @@ public class AntScriptGenerator {
 		template = template.replace("%libsDir%", "../" + getLibsDirectory(config, target));
 		template = template.replace("%libName%", libName);
 		template = template.replace("%jniPlatform%", jniPlatform);
+		template = template.replace("%cCompiler%", target.cCompiler);
+		template = template.replace("%cppCompiler%", target.cppCompiler);
 		template = template.replace("%compilerPrefix%", target.compilerPrefix);
 		template = template.replace("%cFlags%", target.cFlags);
 		template = template.replace("%cppFlags%", target.cppFlags);

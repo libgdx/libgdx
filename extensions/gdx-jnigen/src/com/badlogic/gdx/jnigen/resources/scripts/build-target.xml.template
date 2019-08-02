@@ -9,13 +9,17 @@
 	<property name="libName" value="%libName%"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="%jniPlatform%"/>
+	<!-- the compiler to use when compiling c files -->
+	<property name="cCompiler" value="%cCompiler%"/>
+	<!--  the compiler to use when compiling c++ files -->
+	<property name="cppCompiler" value="%cppCompiler%"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
 	<property name="compilerPrefix" value="%compilerPrefix%"/>
 	<!--  the compilerSuffix for the C & C++ compilers -->	
 	<property name="compilerSuffix" value="" />	
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
+	<property name="gcc" value="${compilerPrefix}${cCompiler}${compilerSuffix}"/>
 	<property name="gcc-opts" value="%cFlags%"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
@@ -24,7 +28,7 @@
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="g++" value="${compilerPrefix}${cppCompiler}${compilerSuffix}"/>
 	<property name="g++-opts" value="%cppFlags%"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
@@ -33,7 +37,7 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="linker" value="${compilerPrefix}${cppCompiler}${compilerSuffix}"/>
 	<property name="linker-opts" value="%linkerFlags%"/>
 	<property name="libraries" value="%libraries%"/>
 

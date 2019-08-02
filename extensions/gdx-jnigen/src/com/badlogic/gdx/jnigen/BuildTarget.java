@@ -38,6 +38,10 @@ public class BuildTarget {
 	public String[] cppExcludes;
 	/** the directories containing headers for the build, must not be null **/
 	public String[] headerDirs;
+	/** the compiler to use when compiling c files. Usually gcc or clang, must not be null */
+	public String cCompiler = "gcc";
+	/** the compiler to use when compiling c++ files. Usually g++ or clang++, must not be null */
+	public String cppCompiler = "g++";
 	/** prefix for the compiler (g++, gcc), useful for cross compilation, must not be null **/
 	public String compilerPrefix;
 	/** the flags passed to the C compiler, must not be null **/
