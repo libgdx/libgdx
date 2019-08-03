@@ -160,6 +160,7 @@ public class Texture extends GLTexture {
 
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
+		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 
