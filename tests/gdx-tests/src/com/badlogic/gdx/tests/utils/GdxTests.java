@@ -248,6 +248,7 @@ public class GdxTests {
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,
+		TiledMapAnimationLoadingTest.class,
 		TiledMapAssetManagerTest.class,
 		TiledMapGroupLayerTest.class,
 		TiledMapAtlasAssetManagerTest.class,
