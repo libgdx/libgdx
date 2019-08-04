@@ -606,13 +606,13 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
-			
+
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
 				if (tile != null) {
 					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
-					if(animatedTile != null){
+					if (animatedTile != null) {
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
 					}
@@ -620,9 +620,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					addTileObjectGroup(tile, tileElement);
 				}
 			}
-			
+
 			// replace original static tiles by animated tiles
-			for(AnimatedTiledMapTile animatedTile : animatedTiles){
+			for (AnimatedTiledMapTile animatedTile : animatedTiles) {
 				tileSet.putTile(animatedTile.getId(), animatedTile);
 			}
 
