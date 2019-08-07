@@ -112,8 +112,6 @@ public class ScrollPane extends WidgetGroup {
 				if (pointer == 0 && button != 0) return false;
 				if (getStage() != null) getStage().setScrollFocus(ScrollPane.this);
 
-				if (!flickScroll) setScrollbarsVisible(true);
-
 				if (fadeAlpha == 0) return false;
 
 				if (scrollBarTouch && scrollX && hScrollBounds.contains(x, y)) {
@@ -173,8 +171,21 @@ public class ScrollPane extends WidgetGroup {
 				}
 			}
 
-			public boolean mouseMoved (InputEvent event, float x, float y) {
-				if (!flickScroll) setScrollbarsVisible(true);
+			public boolean mouseMoved (InputEvent event,float x, float y){
+				if (!flickScroll) {
+					boolean scx = scrollX && hKnobBounds.width > 0;
+					boolean scy = scrollY && vKnobBounds.height > 0;
+
+					if (scx) {
+						if (hScrollBounds.contains(x, y))
+							setScrollbarsVisible(true);
+					}
+					if (scy) {
+						if (vScrollBounds.contains(x, y))
+							setScrollbarsVisible(true);
+					}
+
+				}
 				return false;
 			}
 		});
