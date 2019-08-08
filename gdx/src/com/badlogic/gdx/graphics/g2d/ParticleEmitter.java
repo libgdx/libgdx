@@ -703,9 +703,10 @@ public class ParticleEmitter {
 		this.spriteMode = spriteMode;
 	}
 
-	/** Fills the pool of particles with new placeholder {@link Particle} instances. Useful to control when allocation occurs and avoid them mid game.
+	/** Fills the pool of particles with new placeholder {@link Particle} instances.
+	 * Allocates max particles emitter can hold. Useful to avoid allocation on updates
 	 * {@link #setSprites(Array)} must have been set before calling this method */
-	public void preFillParticlesPool () {
+	public void preAllocateParticles () {
 		if (sprites.isEmpty()) return;
 		for (int index = 0; index < particles.length; index++) {
 			Particle particle = particles[index];
