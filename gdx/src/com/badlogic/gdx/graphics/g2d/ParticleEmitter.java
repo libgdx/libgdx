@@ -709,7 +709,7 @@ public class ParticleEmitter {
 	 */
 	public void preAllocateParticles () {
 		if (sprites.isEmpty())
-			return;
+			throw new IllegalStateException("ParticleEmitter.setSprites() must have been called before preAllocateParticles()");
 		for (int index = 0; index < particles.length; index++) {
 			Particle particle = particles[index];
 			if (particle == null) {
