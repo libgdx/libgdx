@@ -704,7 +704,6 @@ public class ParticleEmitter {
 	}
 
 	/**
-	 * Fills the pool of particles with new placeholder {@link Particle} instances.
 	 * Allocates max particles emitter can hold. Usually called early on to avoid allocation on updates.
 	 * {@link #setSprites(Array)} must have been set before calling this method
 	 */

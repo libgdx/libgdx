@@ -141,7 +141,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	/**
-	 * Fills the pool of particles of all emmitters. See {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#preFillParticlesPool()}
+	 * Allocates all emitters particles. See {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#preFillParticlesPool()}
 	 */
 	public void preAllocateParticles () {
 		for (ParticleEmitter emitter : emitters) {
