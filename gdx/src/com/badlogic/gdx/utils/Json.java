@@ -1111,11 +1111,11 @@ public class Json {
 	 * object. The <code>to</code> object must have at least all the fields of the <code>from</code> object with the same name and
 	 * type. */
 	public void copyFields (Object from, Object to) {
-		OrderedMap<String, FieldMetadata> toFields = getFields(from.getClass());
+		OrderedMap<String, FieldMetadata> toFields = getFields(to.getClass());
 		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(from.getClass())) {
 			FieldMetadata toField = toFields.get(entry.key);
 			Field fromField = entry.value.field;
-			if (toField == null) throw new SerializationException("To object is missing field" + entry.key);
+			if (toField == null) throw new SerializationException("To object is missing field: " + entry.key);
 			try {
 				toField.field.set(to, fromField.get(from));
 			} catch (ReflectionException ex) {
