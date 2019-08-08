@@ -145,7 +145,7 @@ public class ParticleEffect implements Disposable {
 	 */
 	public void preAllocateParticles () {
 		for (ParticleEmitter emitter : emitters) {
-			emitter.preFillParticlesPool();
+			emitter.preAllocateParticles();
 		}
 	}
 
