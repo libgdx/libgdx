@@ -956,6 +956,66 @@ public class Table extends WidgetGroup {
 		tablePrefHeight = Math.max(tablePrefHeight + vpadding, tableMinHeight);
 	}
 
+	public void setX (float x) {
+		if (round) {
+			x = Math.round(x);
+		}
+		super.setX(x);
+	}
+
+	public void setY (float y) {
+		if (round) {
+			y = Math.round(y);
+		}
+		super.setY(y);
+	}
+
+	/** Sets the position of the Table's bottom left corner. */
+	public void setPosition (float x, float y) {
+		if (round) {
+			x = Math.round(x);
+			y = Math.round(y);
+		}
+		super.setPosition(x, y);
+	}
+
+	/** Sets the position using the specified {@link Align alignment}.
+	 * If round is set to false, this may set the position to non-integer coordinates. */
+	public void setPosition (float x, float y, int alignment) {
+		super.setPosition(x, y, alignment);
+		if (round) {
+			super.setPosition(Math.round(getX()), Math.round(getY()));
+		}
+	}
+
+	public void setWidth (float width) {
+		if (round) {
+			width = Math.round(width);
+		}
+		super.setWidth(width);
+	}
+
+	public void setHeight (float height) {
+		if (round) {
+			height = Math.round(height);
+		}
+		super.setHeight(height);
+	}
+
+	public void setSize (float width, float height) {
+		if (round) {
+			width = Math.round(width);
+			height = Math.round(height);
+		}
+		super.setSize(width, height);
+	}
+
+	/** Sets the position and size. */
+	public void setBounds (float x, float y, float width, float height) {
+		setPosition(x, y);
+		setSize(width, height);
+	}
+
 	/** Positions and sizes children of the table using the cell associated with each child. The values given are the position
 	 * within the parent and size of the table. */
 	private void layout (float layoutX, float layoutY, float layoutWidth, float layoutHeight) {
