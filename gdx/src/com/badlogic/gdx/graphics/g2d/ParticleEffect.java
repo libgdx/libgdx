@@ -140,6 +140,13 @@ public class ParticleEffect implements Disposable {
 		return null;
 	}
 
+	/** Fills the pool of particles of all emmitters. See {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#preFillParticlesPool()} */
+	public void preFillEmittersParticlesPool () {
+		for (ParticleEmitter emitter : emitters) {
+			emitter.preFillParticlesPool();
+		}
+	}
+
 	public void save (Writer output) throws IOException {
 		int index = 0;
 		for (int i = 0, n = emitters.size; i < n; i++) {

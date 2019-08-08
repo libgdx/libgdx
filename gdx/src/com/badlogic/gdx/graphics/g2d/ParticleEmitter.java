@@ -703,6 +703,20 @@ public class ParticleEmitter {
 		this.spriteMode = spriteMode;
 	}
 
+	/** Fills the pool of particles with new placeholder {@link Particle} instances. Useful to control when allocation occurs and avoid them mid game.
+	 * {@link #setSprites(Array)} must have been set before calling this method */
+	public void preFillParticlesPool () {
+		if (sprites.isEmpty()) return;
+		for (int index = 0; index < particles.length; index++) {
+			Particle particle = particles[index];
+			if (particle == null) {
+				particles[index] = particle = newParticle(sprites.first());
+				particle.flip(flipX, flipY);
+			}
+		}
+	}
+
+
 	/** Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
 	 * to stop smoothly. */
 	public void allowCompletion () {
