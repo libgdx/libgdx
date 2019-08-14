@@ -113,6 +113,10 @@ public class TextField extends Widget implements Disableable {
 	float blinkTime = 0.32f;
 	final Task blinkTask = new Task() {
 		public void run () {
+			if (getStage() == null) {
+				cancel();
+				return;
+			}
 			cursorOn = !cursorOn;
 			Gdx.graphics.requestRendering();
 		}
@@ -779,6 +783,10 @@ public class TextField extends Widget implements Disableable {
 		int keycode;
 
 		public void run () {
+			if (getStage() == null) {
+				cancel();
+				return;
+			}
 			inputListener.keyDown(null, keycode);
 		}
 	}
