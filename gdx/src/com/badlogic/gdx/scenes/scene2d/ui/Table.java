@@ -698,7 +698,7 @@ public class Table extends WidgetGroup {
 		this.skin = skin;
 	}
 
-	/** If true (the default), positions and sizes are rounded to integers. */
+	/** If true (the default), positions and sizes of child actors are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
 	}
