@@ -1254,6 +1254,14 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
+	public boolean isEmpty () {
+		return length == 0;
+	}
+
+	public boolean notEmpty () {
+		return length != 0;
+	}
+
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
