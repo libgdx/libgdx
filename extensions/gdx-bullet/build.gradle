@@ -60,7 +60,7 @@ jnigen {
     add(MacOsX, x64)
     add(Android) {
         cppFlags += " -fexceptions"
-        //TODO: Missing new FileHandle(new File("jni/Application.mk")).writeString("\nAPP_STL := stlport_static\n", true);
+        androidApplicationMk += "APP_STL := stlport_static";
     }
     add(IOS) {
         cppFlags += " -stdlib=libc++";
