@@ -25,6 +25,7 @@ public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
 		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320);
+		config.useGL30 = true;
 		//config.openURLInNewWindow = true;
 		return config;
 	}

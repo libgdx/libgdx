@@ -190,7 +190,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 	}
 
 	private void unbindAttributes (ShaderProgram shaderProgram) {
-		if (cachedLocations == null) {
+		if (cachedLocations.size == 0) {
 			return;
 		}
 		int numAttributes = attributes.size();
