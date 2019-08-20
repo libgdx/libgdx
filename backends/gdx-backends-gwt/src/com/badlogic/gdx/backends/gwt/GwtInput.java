@@ -168,6 +168,10 @@ public class GwtInput implements Input {
 		return this.gyroscope != null ? (float) this.gyroscope.z() : 0;
 	}
 
+	private boolean isGyroscopePresent() {
+		return getGyroscopeX() != 0 || getGyroscopeY() != 0 || getGyroscopeZ() != 0;
+	}
+
 	@Override
 	public int getMaxPointers () {
 		return MAX_TOUCHES;
@@ -377,7 +381,7 @@ public class GwtInput implements Input {
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
-		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported();
+		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
