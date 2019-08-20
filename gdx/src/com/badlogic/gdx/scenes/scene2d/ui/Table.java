@@ -42,11 +42,6 @@ public class Table extends WidgetGroup {
 	static public Color debugCellColor = new Color(1, 0, 0, 1);
 	static public Color debugActorColor = new Color(0, 1, 0, 1);
 
-	static final Pool<Cell> cellPool = new Pool<Cell>() {
-		protected Cell newObject () {
-			return new Cell();
-		}
-	};
 	static private float[] columnWeightedWidth, rowWeightedHeight;
 
 	private int columns, rows;
@@ -92,7 +87,7 @@ public class Table extends WidgetGroup {
 	}
 
 	private Cell obtainCell () {
-		Cell cell = cellPool.obtain();
+		Cell cell = Pools.obtain(Cell.class);
 		cell.setTable(this);
 		return cell;
 	}
@@ -310,11 +305,11 @@ public class Table extends WidgetGroup {
 			Actor actor = cell.actor;
 			if (actor != null) actor.remove();
 		}
-		cellPool.freeAll(cells);
+		Pools.freeAll(cells, true);
 		cells.clear();
 		rows = 0;
 		columns = 0;
-		if (rowDefaults != null) cellPool.free(rowDefaults);
+		if (rowDefaults != null) Pools.free(rowDefaults);
 		rowDefaults = null;
 		implicitEndRow = false;
 
@@ -334,7 +329,7 @@ public class Table extends WidgetGroup {
 		cellDefaults.reset();
 		for (int i = 0, n = columnDefaults.size; i < n; i++) {
 			Cell columnCell = columnDefaults.get(i);
-			if (columnCell != null) cellPool.free(columnCell);
+			if (columnCell != null) Pools.free(columnCell);
 		}
 		columnDefaults.clear();
 	}
@@ -350,7 +345,7 @@ public class Table extends WidgetGroup {
 			invalidate();
 		}
 		implicitEndRow = false;
-		if (rowDefaults != null) cellPool.free(rowDefaults);
+		if (rowDefaults != null) Pools.free(rowDefaults);
 		rowDefaults = obtainCell();
 		rowDefaults.clear();
 		return rowDefaults;
