@@ -51,7 +51,7 @@ public class List<T> extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	float itemHeight;
 	private int alignment = Align.left;
-	int touchDown = -1, overIndex = -1;
+	int pressedIndex = -1, overIndex = -1;
 	private InputListener keyListener;
 	boolean typeToSelect;
 
@@ -102,7 +102,7 @@ public class List<T> extends Widget implements Cullable {
 					setSelectedIndex(index);
 					return true;
 				case Keys.ESCAPE:
-					getStage().setKeyboardFocus(null);
+					if (getStage() != null) getStage().setKeyboardFocus(null);
 					return true;
 				}
 				return false;
@@ -128,18 +128,18 @@ public class List<T> extends Widget implements Cullable {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return true;
 				if (selection.isDisabled()) return true;
-				getStage().setKeyboardFocus(List.this);
+				if (getStage() != null) getStage().setKeyboardFocus(List.this);
 				if (items.size == 0) return true;
 				int index = getItemIndexAt(y);
 				if (index == -1) return true;
 				selection.choose(items.get(index));
-				touchDown = index;
+				pressedIndex = index;
 				return true;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return;
-				touchDown = -1;
+				pressedIndex = -1;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -152,7 +152,7 @@ public class List<T> extends Widget implements Cullable {
 			}
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-				if (pointer == 0) touchDown = -1;
+				if (pointer == 0) pressedIndex = -1;
 				if (pointer == -1) overIndex = -1;
 			}
 		});
@@ -229,7 +229,7 @@ public class List<T> extends Widget implements Cullable {
 				T item = items.get(i);
 				boolean selected = selection.contains(item);
 				Drawable drawable = null;
-				if (touchDown == i && style.down != null)
+				if (pressedIndex == i && style.down != null)
 					drawable = style.down;
 				else if (selected) {
 					drawable = selectedDrawable;
@@ -311,8 +311,8 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** @return May be null. */
-	public T getDownItem () {
-		return touchDown == -1 ? null : items.get(touchDown);
+	public T getPressedItem () {
+		return pressedIndex == -1 ? null : items.get(pressedIndex);
 	}
 
 	/** @return null if not over an item. */
@@ -342,7 +342,7 @@ public class List<T> extends Widget implements Cullable {
 		items.clear();
 		items.addAll(newItems);
 		overIndex = -1;
-		touchDown = -1;
+		pressedIndex = -1;
 		selection.validate();
 
 		invalidate();
@@ -361,7 +361,7 @@ public class List<T> extends Widget implements Cullable {
 			items.addAll(newItems);
 		}
 		overIndex = -1;
-		touchDown = -1;
+		pressedIndex = -1;
 		selection.validate();
 
 		invalidate();
@@ -372,7 +372,7 @@ public class List<T> extends Widget implements Cullable {
 		if (items.size == 0) return;
 		items.clear();
 		overIndex = -1;
-		touchDown = -1;
+		pressedIndex = -1;
 		selection.clear();
 		invalidateHierarchy();
 	}

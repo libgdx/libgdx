@@ -124,6 +124,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				return false;
 			}
 
+			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				super.enter(event, x, y, pointer, fromActor);
+				setOverNode(getNodeAt(y));
+			}
+
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
 				if (toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
@@ -245,7 +250,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		draw(batch, rootNodes, paddingLeft, plusMinusWidth());
-		super.draw(batch, parentAlpha); // Draw actors.
+		super.draw(batch, parentAlpha); // Draw node actors.
 	}
 
 	/** Called to draw the background. Default implementation draws the style background drawable. */
@@ -265,7 +270,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			cullBottom = cullingArea.y;
 			cullTop = cullBottom + cullingArea.height;
 		}
-		Drawable plus = style.plus, minus = style.minus, plusOver = style.plusOver, minusOver = style.minusOver;
+		TreeStyle style = this.style;
 		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
@@ -273,24 +278,22 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			float actorY = actor.getY(), height = node.height;
 			if (cullingArea == null || (actorY + height >= cullBottom && actorY <= cullTop)) {
 				if (selection.contains(node) && style.selection != null) {
-					style.selection.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+					drawSelection(node, style.selection, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
 				} else if (node == overNode && style.over != null) {
-					style.over.draw(batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
+					drawOver(node, style.over, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
 				}
 
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
 					batch.setColor(actor.getColor());
-					node.icon.draw(batch, iconX, iconY, node.icon.getMinWidth(), node.icon.getMinHeight());
+					drawIcon(node, node.icon, batch, iconX, iconY);
 					batch.setColor(1, 1, 1, 1);
 				}
 
 				if (node.children.size > 0) {
-					Drawable expandIcon = null;
-					if (node == overNode && canExpand(iconX)) expandIcon = node.expanded ? minusOver : plusOver;
-					if (expandIcon == null) expandIcon = node.expanded ? minus : plus;
+					Drawable expandIcon = getExpandIcon(node, iconX);
 					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
-					expandIcon.draw(batch, expandX, iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
+					drawExpandIcon(node, expandIcon, batch, expandX, iconY);
 				}
 			} else if (actorY < cullBottom) {
 				return;
@@ -299,14 +302,40 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 	}
 
-	/** Return true if {@link TreeStyle#plusOver} or {@link TreeStyle#minusOver} should be displayed for the {@link #getOverNode()
-	 * over node}. Default returns true on desktop if the mouse is left of iconX and clicking would expand the node.
+	protected void drawSelection (N node, Drawable selection, Batch batch, float x, float y, float width, float height) {
+		selection.draw(batch, x, y, width, height);
+	}
+
+	protected void drawOver (N node, Drawable over, Batch batch, float x, float y, float width, float height) {
+		over.draw(batch, x, y, width, height);
+	}
+
+	protected void drawExpandIcon (N node, Drawable expandIcon, Batch batch, float x, float y) {
+		expandIcon.draw(batch, x, y, expandIcon.getMinWidth(), expandIcon.getMinHeight());
+	}
+
+	protected void drawIcon (N node, Drawable icon, Batch batch, float x, float y) {
+		icon.draw(batch, x, y, icon.getMinWidth(), icon.getMinHeight());
+	}
+
+	/** Returns the drawable for the expand icon. The default implementation returns {@link TreeStyle#plusOver} or
+	 * {@link TreeStyle#minusOver} on the desktop if the node is the {@link #getOverNode() over node}, the mouse is left of
+	 * <code>iconX</code>, and clicking would expand the node.
 	 * @param iconX The X coordinate of the over node's icon. */
-	protected boolean canExpand (float iconX) {
-		if (Gdx.app.getType() != ApplicationType.Desktop) return true;
-		if (selection.getMultiple() && (UIUtils.ctrl() || UIUtils.shift())) return false;
-		float x = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
-		return x >= 0 && x < iconX;
+	protected Drawable getExpandIcon (N node, float iconX) {
+		boolean over = false;
+		if (node == overNode //
+			&& Gdx.app.getType() == ApplicationType.Desktop //
+			&& (!selection.getMultiple() || (!UIUtils.ctrl() && !UIUtils.shift())) //
+		) {
+			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
+			if (mouseX >= 0 && mouseX < iconX) over = true;
+		}
+		if (over) {
+			Drawable icon = node.expanded ? style.minusOver : style.plusOver;
+			if (icon != null) return icon;
+		}
+		return node.expanded ? style.minus : style.plus;
 	}
 
 	/** @return May be null. */
@@ -618,8 +647,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public void setActor (A newActor) {
 			if (actor != null) {
 				Tree<N, V> tree = getTree();
-				actor.remove();
-				if (tree != null) tree.addActor(newActor);
+				if (tree != null) {
+					actor.remove();
+					tree.addActor(newActor);
+				}
 			}
 			actor = newActor;
 		}

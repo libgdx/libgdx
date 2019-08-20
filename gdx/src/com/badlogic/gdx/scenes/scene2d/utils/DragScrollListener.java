@@ -42,6 +42,7 @@ public class DragScrollListener extends DragListener {
 	Interpolation interpolation = Interpolation.exp5In;
 	float minSpeed = 15, maxSpeed = 75, tickSecs = 0.05f;
 	long startTime, rampTime = 1750;
+	float padTop, padBottom;
 
 	public DragScrollListener (final ScrollPane scroll) {
 		this.scroll = scroll;
@@ -71,14 +72,14 @@ public class DragScrollListener extends DragListener {
 
 	public void drag (InputEvent event, float x, float y, int pointer) {
 		event.getListenerActor().localToActorCoordinates(scroll, tmpCoords.set(x, y));
-		if (tmpCoords.y >= scroll.getHeight()) {
+		if (isAbove(tmpCoords.y)) {
 			scrollDown.cancel();
 			if (!scrollUp.isScheduled()) {
 				startTime = System.currentTimeMillis();
 				Timer.schedule(scrollUp, tickSecs, tickSecs);
 			}
 			return;
-		} else if (tmpCoords.y < 0) {
+		} else if (isBelow(tmpCoords.y)) {
 			scrollUp.cancel();
 			if (!scrollDown.isScheduled()) {
 				startTime = System.currentTimeMillis();
@@ -95,7 +96,20 @@ public class DragScrollListener extends DragListener {
 		scrollDown.cancel();
 	}
 
+	protected boolean isAbove (float y) {
+		return y >= scroll.getHeight() - padTop;
+	}
+
+	protected boolean isBelow (float y) {
+		return y < padBottom;
+	}
+
 	protected void scroll (float y) {
 		scroll.setScrollY(y);
+	}
+
+	public void setPadding (float padTop, float padBottom) {
+		this.padTop = padTop;
+		this.padBottom = padBottom;
 	}
 }

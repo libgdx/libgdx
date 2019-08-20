@@ -691,14 +691,14 @@ public class Table extends WidgetGroup {
 			if (c.actorY + c.computedPadTop < y) break;
 			if (c.endRow) row++;
 		}
-		return row;
+		return Math.min(row, rows - 1);
 	}
 
 	public void setSkin (Skin skin) {
 		this.skin = skin;
 	}
 
-	/** If true (the default), positions and sizes are rounded to integers. */
+	/** If true (the default), positions and sizes of child actors are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
 	}
@@ -1242,7 +1242,7 @@ public class Table extends WidgetGroup {
 	private void drawDebugRects (ShapeRenderer shapes) {
 		if (debugRects == null || !getDebug()) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(getStage().getDebugColor());
+		if (getStage() != null) shapes.setColor(getStage().getDebugColor());
 		float x = 0, y = 0;
 		if (!isTransform()) {
 			x = getX();
