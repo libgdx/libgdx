@@ -335,6 +335,18 @@ public class FileHandle {
 	public long lastModified () {
 		throw new GdxRuntimeException("Stub");
 	}
+	
+	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map () {
+		throw new GdxRuntimeException("Stub");
+	}
+
+	/** Attempts to memory map this file. Android files must not be compressed.
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	public ByteBuffer map (FileChannel.MapMode mode) {
+		throw new GdxRuntimeException("Stub");
+	}
 
 	public String toString () {
 		throw new GdxRuntimeException("Stub");
