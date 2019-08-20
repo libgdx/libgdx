@@ -311,7 +311,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	public void showList () {
 		if (items.size == 0) return;
-		selectBoxList.show(getStage());
+		if (getStage() != null) selectBoxList.show(getStage());
 	}
 
 	public void hideList () {

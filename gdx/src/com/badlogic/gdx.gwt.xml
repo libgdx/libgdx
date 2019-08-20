@@ -403,6 +403,7 @@
 		<include name="utils/ByteArray.java"/>
 		<include name="utils/CharArray.java"/>
 		<include name="utils/Clipboard.java"/>
+		<include name="utils/Collections.java"/>
 		<include name="utils/ComparableTimSort.java"/>
 		<include name="utils/DataInput.java"/>
 		<include name="utils/DataOutput.java"/>

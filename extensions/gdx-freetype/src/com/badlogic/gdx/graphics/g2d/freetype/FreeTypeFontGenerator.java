@@ -377,7 +377,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
-		for (int i = 0, n = charactersLength; i < n; i++) {
+		for (int i = 0; i < charactersLength; i++) {
 			char c = characters[i];
 
 			int height = loadChar(c, flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;

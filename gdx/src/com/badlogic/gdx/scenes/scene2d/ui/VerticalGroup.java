@@ -549,7 +549,7 @@ public class VerticalGroup extends WidgetGroup {
 		super.drawDebugBounds(shapes);
 		if (!getDebug()) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(getStage().getDebugColor());
+		if (getStage() != null) shapes.setColor(getStage().getDebugColor());
 		shapes.rect(getX() + padLeft, getY() + padBottom, getOriginX(), getOriginY(), getWidth() - padLeft - padRight,
 			getHeight() - padBottom - padTop, getScaleX(), getScaleY(), getRotation());
 	}

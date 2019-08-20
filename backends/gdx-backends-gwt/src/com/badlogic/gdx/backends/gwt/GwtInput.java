@@ -149,6 +149,10 @@ public class GwtInput implements Input {
 		return this.accelerometer != null ? (float) this.accelerometer.z() : 0;
 	}
 
+	private boolean isAccelerometerPresent() {
+		return getAccelerometerX() != 0 || getAccelerometerY() != 0 || getAccelerometerZ() != 0;
+	}
+
 	@Override
 	public float getGyroscopeX () {
 		return this.gyroscope != null ? (float) this.gyroscope.x() : 0;
@@ -372,7 +376,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported();
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
 		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();

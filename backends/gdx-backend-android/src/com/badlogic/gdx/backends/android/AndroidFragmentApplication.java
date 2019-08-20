@@ -202,6 +202,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
+
+		// detect an already connected bluetooth keyboardAvailable
+		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
+			this.getInput().keyboardAvailable = true;
 		return graphics.getView();
 	}
 

@@ -110,7 +110,7 @@ public class ScrollPane extends WidgetGroup {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (draggingPointer != -1) return false;
 				if (pointer == 0 && button != 0) return false;
-				getStage().setScrollFocus(ScrollPane.this);
+				if (getStage() != null) getStage().setScrollFocus(ScrollPane.this);
 
 				if (!flickScroll) setScrollbarsVisible(true);
 
@@ -530,8 +530,10 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		updateWidgetPosition();
-		widget.setSize(widgetWidth, widgetHeight);
-		if (widget instanceof Layout) ((Layout)widget).validate();
+		if (widget instanceof Layout) {
+			widget.setSize(widgetWidth, widgetHeight);
+			((Layout)widget).validate();
+		}
 	}
 
 	private void updateWidgetPosition () {
@@ -647,10 +649,9 @@ public class ScrollPane extends WidgetGroup {
 
 	public float getPrefWidth () {
 		float width = 0;
-		if (widget instanceof Layout) {
-			validate();
+		if (widget instanceof Layout)
 			width = ((Layout)widget).getPrefWidth();
-		} else if (widget != null) //
+		else if (widget != null) //
 			width = widget.getWidth();
 		if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
 		if (scrollY) {
@@ -664,10 +665,9 @@ public class ScrollPane extends WidgetGroup {
 
 	public float getPrefHeight () {
 		float height = 0;
-		if (widget instanceof Layout) {
-			validate();
+		if (widget instanceof Layout)
 			height = ((Layout)widget).getPrefHeight();
-		} else if (widget != null) //
+		else if (widget != null) //
 			height = widget.getHeight();
 		if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
 		if (scrollX) {

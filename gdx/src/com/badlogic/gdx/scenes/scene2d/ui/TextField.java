@@ -113,6 +113,10 @@ public class TextField extends Widget implements Disableable {
 	float blinkTime = 0.32f;
 	final Task blinkTask = new Task() {
 		public void run () {
+			if (getStage() == null) {
+				cancel();
+				return;
+			}
 			cursorOn = !cursorOn;
 			Gdx.graphics.requestRendering();
 		}
@@ -426,8 +430,8 @@ public class TextField extends Widget implements Disableable {
 			fontOffset = 0;
 		glyphPositions.add(x);
 
-		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
-		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size);
+		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size - 1);
+		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size - 1);
 
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
@@ -779,6 +783,10 @@ public class TextField extends Widget implements Disableable {
 		int keycode;
 
 		public void run () {
+			if (getStage() == null) {
+				cancel();
+				return;
+			}
 			inputListener.keyDown(null, keycode);
 		}
 	}

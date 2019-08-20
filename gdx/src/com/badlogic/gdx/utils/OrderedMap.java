@@ -78,9 +78,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new OrderedMapEntries(this);
 			entries2 = new OrderedMapEntries(this);
@@ -97,9 +100,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new OrderedMapValues(this);
 			values2 = new OrderedMapValues(this);
@@ -116,9 +122,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
+	 * {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new OrderedMapKeys(this);
 			keys2 = new OrderedMapKeys(this);

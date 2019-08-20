@@ -118,6 +118,8 @@ Thumbs.db
 !/ios/xcode/*.xcodeproj/xcshareddata
 !/ios/xcode/*.xcodeproj/project.pbxproj
 /ios/xcode/native/
+/ios/IOSLauncher.app
+/ios/IOSLauncher.app.dSYM
 
 /ios-moe/xcode/*.xcodeproj/*
 !/ios-moe/xcode/*.xcodeproj/xcshareddata

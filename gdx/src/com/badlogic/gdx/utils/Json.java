@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.OrderedMap.OrderedMapValues;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
@@ -162,8 +161,7 @@ public class Json {
 	/** Sets the type of elements in a collection. When the element type is known, the class for each element in the collection
 	 * does not need to be written unless different from the element type. */
 	public void setElementType (Class type, String fieldName, Class elementType) {
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		metadata.elementType = elementType;
 	}
@@ -172,8 +170,7 @@ public class Json {
 	 * @see #setIgnoreDeprecated(boolean)
 	 * @see #setReadDeprecated(boolean) */
 	public void setDeprecated (Class type, String fieldName, boolean deprecated) {
-		OrderedMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		metadata.deprecated = deprecated;
 	}
@@ -299,14 +296,16 @@ public class Json {
 		Object[] defaultValues = getDefaultValues(type);
 
 		OrderedMap<String, FieldMetadata> fields = getFields(type);
-		int i = 0;
-		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
+		int defaultIndex = 0;
+		Array<String> fieldNames = fields.orderedKeys();
+		for (int i = 0, n = fieldNames.size; i < n; i++) {
+			FieldMetadata metadata = fields.get(fieldNames.get(i));
 			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {
-					Object defaultValue = defaultValues[i++];
+					Object defaultValue = defaultValues[defaultIndex++];
 					if (value == null && defaultValue == null) continue;
 					if (value != null && defaultValue != null) {
 						if (value.equals(defaultValue)) continue;
@@ -345,16 +344,18 @@ public class Json {
 			return null;
 		}
 
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		Object[] values = new Object[fields.size];
 		classToDefaultValues.put(type, values);
 
-		int i = 0;
-		for (FieldMetadata metadata : fields.values()) {
+		int defaultIndex = 0;
+		Array<String> fieldNames = fields.orderedKeys();
+		for (int i = 0, n = fieldNames.size; i < n; i++) {
+			FieldMetadata metadata = fields.get(fieldNames.get(i));
 			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
 			try {
-				values[i++] = field.get(object);
+				values[defaultIndex++] = field.get(object);
 			} catch (ReflectionException ex) {
 				throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
 			} catch (SerializationException ex) {
@@ -389,8 +390,7 @@ public class Json {
 	 * @param elementType May be null if the type is unknown. */
 	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
 		if (elementType == null) elementType = metadata.elementType;
@@ -810,8 +810,7 @@ public class Json {
 	/** @param elementType May be null if the type is unknown. */
 	public void readField (Object object, String fieldName, String jsonName, Class elementType, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
 		if (elementType == null) elementType = metadata.elementType;
@@ -841,7 +840,7 @@ public class Json {
 
 	public void readFields (Object object, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
 			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
@@ -1112,11 +1111,11 @@ public class Json {
 	 * object. The <code>to</code> object must have at least all the fields of the <code>from</code> object with the same name and
 	 * type. */
 	public void copyFields (Object from, Object to) {
-		ObjectMap<String, FieldMetadata> toFields = getFields(from.getClass());
+		OrderedMap<String, FieldMetadata> toFields = getFields(to.getClass());
 		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(from.getClass())) {
 			FieldMetadata toField = toFields.get(entry.key);
 			Field fromField = entry.value.field;
-			if (toField == null) throw new SerializationException("To object is missing field" + entry.key);
+			if (toField == null) throw new SerializationException("To object is missing field: " + entry.key);
 			try {
 				toField.field.set(to, fromField.get(from));
 			} catch (ReflectionException ex) {

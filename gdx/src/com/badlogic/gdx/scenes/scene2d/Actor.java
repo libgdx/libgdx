@@ -808,12 +808,13 @@ public class Actor {
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {
 		if (width <= 0 || height <= 0) return false;
+		Stage stage = this.stage;
+		if (stage == null) return false;
 		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.x = x;
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Stage stage = this.stage;
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
@@ -940,7 +941,7 @@ public class Actor {
 	protected void drawDebugBounds (ShapeRenderer shapes) {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(stage.getDebugColor());
+		if (stage != null) shapes.setColor(stage.getDebugColor());
 		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 

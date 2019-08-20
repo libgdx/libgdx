@@ -227,6 +227,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
+	/** @param item May be null (returns false). */
 	public boolean contains (T item) {
 		if (item == null) return false;
 		return selected.contains(item);

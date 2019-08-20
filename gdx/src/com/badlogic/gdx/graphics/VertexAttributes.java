@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
@@ -71,7 +73,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		if (vertexAttribute == null) return defaultIfNotFound;
 		return vertexAttribute.offset / 4;
 	}
-	
+
 	/** Returns the offset for the first VertexAttribute with the specified usage.
 	 * @param usage The usage of the VertexAttribute. */
 	public int getOffset (int usage) {
@@ -162,10 +164,8 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		return mask;
 	}
 
-	/**
-	 * Calculates the mask based on {@link VertexAttributes#getMask()} and packs the attributes count into the last 32 bits.
-	 * @return the mask with attributes count packed into the last 32 bits.
-	 */
+	/** Calculates the mask based on {@link VertexAttributes#getMask()} and packs the attributes count into the last 32 bits.
+	 * @return the mask with attributes count packed into the last 32 bits. */
 	public long getMaskWithSizePacked () {
 		return getMask() | ((long)attributes.length << 32);
 	}
@@ -188,6 +188,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		return 0;
 	}
 
+	/** @see Collections#allocateIterators */
 	@Override
 	public Iterator<VertexAttribute> iterator () {
 		if (iterable == null) iterable = new ReadonlyIterable<VertexAttribute>(attributes);
@@ -241,6 +242,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 
 		@Override
 		public Iterator<T> iterator () {
+			if (Collections.allocateIterators) return new ReadonlyIterator(array);
 			if (iterator1 == null) {
 				iterator1 = new ReadonlyIterator(array);
 				iterator2 = new ReadonlyIterator(array);
