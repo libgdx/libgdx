@@ -144,7 +144,6 @@ public class SplitPane extends WidgetGroup {
 		return style;
 	}
 
-	@Override
 	public void layout () {
 		clampSplitAmount();
 		if (!vertical)
@@ -166,7 +165,6 @@ public class SplitPane extends WidgetGroup {
 		}
 	}
 
-	@Override
 	public float getPrefWidth () {
 		float first = firstWidget == null ? 0
 			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth());
@@ -176,7 +174,6 @@ public class SplitPane extends WidgetGroup {
 		return first + style.handle.getMinWidth() + second;
 	}
 
-	@Override
 	public float getPrefHeight () {
 		float first = firstWidget == null ? 0
 			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight());
@@ -242,7 +239,6 @@ public class SplitPane extends WidgetGroup {
 		handleBounds.set(0, bottomAreaHeight, width, handleHeight);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
 		if (stage == null) return;

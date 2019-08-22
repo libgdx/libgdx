@@ -573,7 +573,6 @@ public class ScrollPane extends WidgetGroup {
 		}
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		if (widget == null) return;
 

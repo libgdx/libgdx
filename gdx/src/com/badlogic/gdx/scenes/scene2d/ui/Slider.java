@@ -90,12 +90,10 @@ public class Slider extends ProgressBar {
 				calculatePositionAndValue(x, y);
 			}
 
-			@Override
 			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			@Override
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}

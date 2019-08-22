@@ -168,7 +168,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return items;
 	}
 
-	@Override
 	public void layout () {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
@@ -203,7 +202,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
@@ -363,7 +361,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setScrollingDisabled(true, false);
 
 			list = new List<T>(selectBox.style.listStyle) {
-				@Override
 				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}

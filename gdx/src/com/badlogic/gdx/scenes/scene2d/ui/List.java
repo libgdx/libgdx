@@ -195,7 +195,6 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
