@@ -86,6 +86,7 @@ public class TextTooltip extends Tooltip<Label> {
 		public TextTooltipStyle (TextTooltipStyle style) {
 			this.label = new LabelStyle(style.label);
 			background = style.background;
+			wrapWidth = style.wrapWidth;
 		}
 	}
 }
