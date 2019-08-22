@@ -653,7 +653,11 @@ public class ScrollPane extends WidgetGroup {
 			width = ((Layout)widget).getPrefWidth();
 		else if (widget != null) //
 			width = widget.getWidth();
-		if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+
+		Drawable background = style.background;
+		if (background != null)
+			width = Math.max(width + background.getLeftWidth() + background.getRightWidth(), background.getMinWidth());
+
 		if (scrollY) {
 			float scrollbarWidth = 0;
 			if (style.vScrollKnob != null) scrollbarWidth = style.vScrollKnob.getMinWidth();
@@ -669,7 +673,11 @@ public class ScrollPane extends WidgetGroup {
 			height = ((Layout)widget).getPrefHeight();
 		else if (widget != null) //
 			height = widget.getHeight();
-		if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+
+		Drawable background = style.background;
+		if (background != null)
+			height = Math.max(height + background.getTopHeight() + background.getBottomHeight(), background.getMinHeight());
+
 		if (scrollX) {
 			float scrollbarHeight = 0;
 			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
