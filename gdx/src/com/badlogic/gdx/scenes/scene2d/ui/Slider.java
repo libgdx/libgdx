@@ -102,14 +102,8 @@ public class Slider extends ProgressBar {
 		});
 	}
 
-	public void setStyle (SliderStyle style) {
-		if (style == null) throw new NullPointerException("style cannot be null");
-		if (!(style instanceof SliderStyle)) throw new IllegalArgumentException("style must be a SliderStyle.");
-		super.setStyle(style);
-	}
-
-	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(SliderStyle)} is
-	 * called. */
+	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(ProgressBarStyle)}
+	 * is called. */
 	public SliderStyle getStyle () {
 		return (SliderStyle)super.getStyle();
 	}
