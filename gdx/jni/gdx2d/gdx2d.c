@@ -13,7 +13,8 @@
 #include "gdx2d.h"
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_NO_FAILURE_STRINGS
+#define STBI_FAILURE_USERMSG
+#define STBI_NO_STDIO
 #include "stb_image.h"
 
 
