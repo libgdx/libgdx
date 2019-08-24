@@ -274,7 +274,7 @@ public class TextField extends Widget implements Disableable {
 		visibleTextEnd = Math.max(0, end - 1);
 
 		if ((textHAlign & Align.left) == 0) {
-			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startX);
+			textOffset = visibleWidth - glyphPositions[visibleTextEnd] - fontOffset + startX;
 			if ((textHAlign & Align.center) != 0) textOffset = Math.round(textOffset * 0.5f);
 		} else
 			textOffset = startX + renderOffset;
