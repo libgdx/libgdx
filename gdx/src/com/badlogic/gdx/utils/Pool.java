@@ -29,18 +29,35 @@ abstract public class Pool<T> {
 
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool () {
-		this(16, Integer.MAX_VALUE);
+		this(16, Integer.MAX_VALUE, false);
 	}
 
 	/** Creates a pool with the specified initial capacity and no maximum. */
 	public Pool (int initialCapacity) {
-		this(initialCapacity, Integer.MAX_VALUE);
+		this(initialCapacity, Integer.MAX_VALUE, false);
 	}
 
 	/** @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
+		this(initialCapacity, max, false);
+	}
+
+	/**
+	 * @param initialCapacity The initial size of the array supporting the pool. No objects are created unless preFill is true.
+	 * @param max             The maximum number of free objects to store in this pool.
+	 * @param preFill         Whether to pre-fill the pool with objects. The number of pre-filled objects will be equal to the initial capacity.
+	 */
+	public Pool (int initialCapacity, int max, boolean preFill) {
+		if (initialCapacity > max && preFill)
+			throw new IllegalArgumentException("max must be larger than initialCapacity if preFill is set to true.");
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
+		if (preFill) {
+			for (int i = 0; i < initialCapacity; i++) {
+				freeObjects.add(newObject());
+			}
+			peak = freeObjects.size;
+		}
 	}
 
 	abstract protected T newObject ();
