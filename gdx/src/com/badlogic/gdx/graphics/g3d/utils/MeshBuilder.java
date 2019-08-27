@@ -564,13 +564,11 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertex[cpOffset] = Color.WHITE_FLOAT_BITS;
 			} else {
 				final int colIntBits = col.toIntBits();
-				if (colIntBits == lastColIntBits) {
-					vertex[cpOffset] = cacheFloatBits;
-				} else {
+				if (colIntBits != lastColIntBits) {
 					lastColIntBits = colIntBits;
 					cacheFloatBits = NumberUtils.intToFloatColor(colIntBits);
-					vertex[cpOffset] = cacheFloatBits;
 				}
+				vertex[cpOffset] = cacheFloatBits;
 			}
 		}
 
