@@ -534,6 +534,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	private final Vector3 tmpNormal = new Vector3();
+	
+	private float cacheFloatBits = Color.WHITE_FLOAT_BITS;
+	private int lastColIntBits = Color.WHITE.toIntBits();
 
 	@Override
 	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
@@ -557,8 +560,18 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex[colOffset + 2] = col.b;
 			if (colSize > 3) vertex[colOffset + 3] = col.a;
 		} else if (cpOffset > 0) {
-			if (col == null) col = Color.WHITE;
-			vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
+			if (col == null) {
+				vertex[cpOffset] = Color.WHITE_FLOAT_BITS;
+			} else {
+				final int colIntBits = col.toIntBits();
+				if (colIntBits == lastColIntBits) {
+					vertex[cpOffset] = cacheFloatBits;
+				} else {
+					lastColIntBits = colIntBits;
+					cacheFloatBits = NumberUtils.intToFloatColor(colIntBits);
+					vertex[cpOffset] = cacheFloatBits;
+				}
+			}
 		}
 
 		if (uv != null && uvOffset >= 0) {
