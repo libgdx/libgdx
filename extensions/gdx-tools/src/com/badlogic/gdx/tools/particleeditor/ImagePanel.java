@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.tools.particleeditor;
 
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.SpriteMode;
-import com.badlogic.gdx.utils.Array;
-
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,6 +35,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.ListSelectionModel;
+
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.SpriteMode;
+import com.badlogic.gdx.utils.Array;
 
 class ImagePanel extends EditorPanel {
 	JPanel imagesPanel;
