@@ -43,8 +43,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.NumberUtils;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ShortArray;
 
 /** Class to construct a mesh, optionally splitting it into one or more mesh parts. Before you can call any other method you must
@@ -557,8 +555,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex[colOffset + 2] = col.b;
 			if (colSize > 3) vertex[colOffset + 3] = col.a;
 		} else if (cpOffset > 0) {
-			if (col == null) col = Color.WHITE;
-			vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
+			if (col == null) vertex[cpOffset] = Color.WHITE_FLOAT_BITS;
+			else vertex[cpOffset] = col.toFloatBits();
 		}
 
 		if (uv != null && uvOffset >= 0) {
