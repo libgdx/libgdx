@@ -301,14 +301,15 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Adds an actor as a child of this group immediately after another child actor, removing it from its previous parent. If the
-	 * actor is already a child of this group, no changes are made. */
+	 * actor is already a child of this group, no changes are made. If <code>actorAfter</code> is not in this group, the actor is
+	 * added as the last child. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		if (actor.parent != null) {
 			if (actor.parent == this) return;
 			actor.parent.removeActor(actor, false);
 		}
 		int index = children.indexOf(actorAfter, true);
-		if (index == children.size)
+		if (index == children.size || index == -1)
 			children.add(actor);
 		else
 			children.insert(index + 1, actor);
