@@ -18,7 +18,7 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-/** A point in a 3D grid, with integer x and y coordinates
+/** A point in a 3D grid, with integer x, y and z coordinates
  * 
  * @author badlogic */
 public class GridPoint3 implements Serializable {
