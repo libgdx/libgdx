@@ -756,6 +756,12 @@ public class ScrollPane extends WidgetGroup {
 		return super.removeActor(actor, unfocus);
 	}
 
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		if (actor == widget) this.widget = null;
+		return actor;
+	}
+
 	public Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		if (touchable && getTouchable() == Touchable.enabled && isVisible()) {
