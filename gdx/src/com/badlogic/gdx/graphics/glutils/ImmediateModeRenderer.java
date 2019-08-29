@@ -18,8 +18,9 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 
-public interface ImmediateModeRenderer {
+public interface ImmediateModeRenderer extends Disposable {
 	public void begin (Matrix4 projModelView, int primitiveType);
 
 	public void flush ();
@@ -41,6 +42,4 @@ public interface ImmediateModeRenderer {
 	public int getNumVertices ();
 
 	public int getMaxVertices ();
-
-	public void dispose ();
 }
