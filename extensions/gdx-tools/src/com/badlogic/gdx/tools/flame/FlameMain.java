@@ -198,7 +198,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	AppRenderer renderer;
 	AssetManager assetManager;
 	JComboBox influencerBox;
-	
+	String atlasFilename;
+
 	private ParticleEffect effect;
 	/** READ only */
 	public Array<ControllerData> controllersData;
@@ -894,8 +895,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	public ModelInstanceParticleBatch getModelInstanceParticleBatch () {
 		return renderer.modelInstanceParticleBatch;
 	}
-	
-	public void setAtlas(TextureAtlas atlas){
+	public void setAtlas(TextureAtlas atlas, String atlasFilename) {
+                this.atlasFilename = atlasFilename;
 		//currentAtlas = atlas;
 		setTexture(atlas.getTextures().first());
 	}
@@ -921,6 +922,10 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	public TextureAtlas getAtlas(){
 		return getAtlas(renderer.billboardBatch.getTexture());
 	}
+
+        public String getAtlasFilename() {
+            return atlasFilename;
+        }
 	
 	public boolean isUsingDefaultTexture () {
 		return renderer.billboardBatch.getTexture() == assetManager.get(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
