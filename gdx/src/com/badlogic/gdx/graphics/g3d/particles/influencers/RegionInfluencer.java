@@ -262,7 +262,10 @@ public abstract class RegionInfluencer extends Influencer {
 	@Override
 	public void save (AssetManager manager, ResourceData resources) {
 		if (atlasName != null) {
-			SaveData data = resources.createSaveData("atlasAssetData");
+			SaveData data = resources.getSaveData("atlasAssetData");
+			if (data == null) {
+				data = resources.createSaveData("atlasAssetData");
+                        }
 			data.saveAsset(atlasName, TextureAtlas.class);
 		}
 		super.save(manager, resources);
