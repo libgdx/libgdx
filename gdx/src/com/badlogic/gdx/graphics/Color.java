@@ -312,8 +312,7 @@ public class Color {
 	 * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link NumberUtils#intToFloatColor(int)}).
 	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
-		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return NumberUtils.intToFloatColor(color);
+		return NumberUtils.intToFloatColor(toIntBits());
 	}
 
 	/** Packs the color components into a 32-bit integer with the format ABGR.
@@ -324,8 +323,7 @@ public class Color {
 
 	/** Returns the color encoded as hex string with the format RRGGBBAA. */
 	public String toString () {
-		String value = Integer
-			.toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a)));
+		String value = Integer.toHexString(toIntBits());
 		while (value.length() < 8)
 			value = "0" + value;
 		return value;
@@ -352,8 +350,7 @@ public class Color {
 	 * @see NumberUtils#intToFloatColor(int) */
 	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
-		float floatColor = NumberUtils.intToFloatColor(color);
-		return floatColor;
+		return NumberUtils.intToFloatColor(color);
 	}
 
 	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float.
