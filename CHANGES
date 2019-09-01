@@ -1,3 +1,6 @@
+[1.9.11]
+- Update to LWJGL 3.2.3
+
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
 - API Addition: Accelerometer support on GWT
