@@ -193,9 +193,13 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			// combined since combined directories must use the settings of the parent directory.
 			files = new FileProcessor(this) {
 				protected void processDir (Entry entryDir, ArrayList<Entry> files) {
-					if (!entryDir.inputFile.equals(inputDir.inputFile) && new File(entryDir.inputFile, "pack.json").exists()) {
-						files.clear();
-						return;
+					File file = entryDir.inputFile;
+					while (file != null && !file.equals(inputDir.inputFile)) {
+						if (new File(file, "pack.json").exists()) {
+							files.clear();
+							return;
+						}
+						file = file.getParentFile();
 					}
 					if (!countOnly) ignoreDirs.add(entryDir.inputFile);
 				}
