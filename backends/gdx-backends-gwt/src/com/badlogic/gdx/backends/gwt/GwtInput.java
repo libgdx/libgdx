@@ -59,7 +59,7 @@ public class GwtInput implements Input {
 	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
 		this.config = config;
-		if (config.useAccelerometer) {
+		if (config.useAccelerometer && GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION)) {
 			if (GwtApplication.agentInfo().isFirefox()) {
 				setupAccelerometer();
 			} else {
@@ -350,7 +350,8 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent()
+				&& GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION);
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
