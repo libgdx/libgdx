@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.utils.Disposable;
-
 /** <p>
  * Represents one of many application screens, such as a main menu, a settings menu, the game screen and so on.
  * </p>
@@ -25,7 +23,7 @@ import com.badlogic.gdx.utils.Disposable;
  * Note that {@link #dispose()} is not called automatically.
  * </p>
  * @see Game */
-public interface Screen extends Disposable {
+public interface Screen {
 	
 	/** Called when this screen becomes the current screen for a {@link Game}. */
 	public void show ();
@@ -47,6 +45,5 @@ public interface Screen extends Disposable {
 	public void hide ();
 
 	/** Called when this screen should release all resources. */
-	@Override
 	public void dispose ();
 }
