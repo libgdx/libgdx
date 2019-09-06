@@ -100,6 +100,20 @@ abstract public class Pool<T> {
 	}
 
 	/**
+	 * Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be used at any time.
+	 *
+	 * @param size the number of objects to be added
+	 */
+	public void fill (int size) {
+		for (int i = 0; i < size; i++) {
+			if (freeObjects.size < max) {
+				freeObjects.add(newObject());
+			}
+		}
+		peak = Math.max(peak, freeObjects.size);
+	}
+
+	/**
 	 * Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
 	 * {@link Poolable#reset()} if the object is {@link Poolable}.
 	 */
