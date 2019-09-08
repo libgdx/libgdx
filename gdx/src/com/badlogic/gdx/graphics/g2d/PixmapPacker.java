@@ -25,6 +25,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -174,6 +175,7 @@ public class PixmapPacker implements Disposable {
 		if (isPatch) {
 			rect = new PixmapPackerRectangle(0, 0, image.getWidth() - 2, image.getHeight() - 2);
 			pixmapToDispose = new Pixmap(image.getWidth() - 2, image.getHeight() - 2, image.getFormat());
+			pixmapToDispose.setBlending(Blending.None);
 			rect.splits = getSplits(image);
 			rect.pads = getPads(image, rect.splits);
 			pixmapToDispose.drawPixmap(image, 0, 0, 1, 1, image.getWidth() - 1, image.getHeight() - 1);
@@ -233,6 +235,7 @@ public class PixmapPacker implements Disposable {
 				int newHeight = bottom - top;
 
 				pixmapToDispose = new Pixmap(newWidth, newHeight, image.getFormat());
+				pixmapToDispose.setBlending(Blending.None);
 				pixmapToDispose.drawPixmap(image, 0, 0, left, top, newWidth, newHeight);
 				image = pixmapToDispose;
 
@@ -261,8 +264,6 @@ public class PixmapPacker implements Disposable {
 				image.getGLType(), image.getPixels());
 		} else
 			page.dirty = true;
-
-		page.image.setBlending(Blending.None);
 
 		page.image.drawPixmap(image, rectX, rectY);
 
@@ -475,9 +476,9 @@ public class PixmapPacker implements Disposable {
 		/** Creates a new page filled with the color provided by the {@link PixmapPacker#getTransparentColor()} */
 		public Page (PixmapPacker packer) {
 			image = new Pixmap(packer.pageWidth, packer.pageHeight, packer.pageFormat);
-			final Color transparentColor = packer.getTransparentColor();
-			this.image.setColor(transparentColor);
-			this.image.fill();
+			image.setBlending(Blending.None);
+			image.setColor(packer.getTransparentColor());
+			image.fill();
 		}
 
 		public Pixmap getPixmap () {

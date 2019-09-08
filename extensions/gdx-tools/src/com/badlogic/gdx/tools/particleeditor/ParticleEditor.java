@@ -33,11 +33,15 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -46,6 +50,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.GradientColorValue;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -55,10 +61,12 @@ public class ParticleEditor extends JFrame {
 
 	public static final String DEFAULT_PREMULT_PARTICLE = "pre_particle.png";
 
+	public Renderer renderer;
 	LwjglCanvas lwjglCanvas;
 	JPanel rowsPanel;
 	JPanel editRowsPanel;
 	EffectPanel effectPanel;
+	PreviewImagePanel previewImagePanel;
 	private JSplitPane splitPane;
 	OrthographicCamera worldCamera;
 	OrthographicCamera textCamera;
@@ -73,11 +81,13 @@ public class ParticleEditor extends JFrame {
 	ParticleEffect effect = new ParticleEffect();
 	File effectFile;
 	final HashMap<ParticleEmitter, ParticleData> particleData = new HashMap();
+	JCheckBox renderGridCheckBox;
 
 	public ParticleEditor () {
 		super("Particle Editor");
 
-		lwjglCanvas = new LwjglCanvas(new Renderer());
+		renderer = new Renderer();
+		lwjglCanvas = new LwjglCanvas(renderer);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
@@ -101,6 +111,16 @@ public class ParticleEditor extends JFrame {
 				addEditorRow(new NumericPanel(zoomLevel, "Zoom level", ""));
 				addEditorRow(new NumericPanel(deltaMultiplier, "Delta multiplier", ""));
 				addEditorRow(new GradientPanel(backgroundColor, "Background color", "", true));
+
+				previewImagePanel = new PreviewImagePanel(ParticleEditor.this, "Preview Image", "");
+				addEditorRow(previewImagePanel);
+
+				JPanel gridPanel = new JPanel(new GridLayout());
+				boolean previousSelected = renderGridCheckBox != null && renderGridCheckBox.isSelected();
+				renderGridCheckBox = new JCheckBox("Render Grid", previousSelected);
+				gridPanel.add(renderGridCheckBox, new GridBagConstraints());
+				addEditorRow(gridPanel);
+				addEditorRow(new CustomShadingPanel(ParticleEditor.this, "Shading", "Custom shader and multi-texture preview."));
 
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
@@ -274,12 +294,21 @@ public class ParticleEditor extends JFrame {
 		private int mouseX, mouseY;
 		private BitmapFont font;
 		private SpriteBatch spriteBatch;
-		private Sprite bgImage; // BOZO - Add setting background image to UI.
+
+		private ShapeRenderer shapeRenderer;
+		private com.badlogic.gdx.graphics.Color lineColor;
+
+		public Sprite bgImage; // BOZO - Add setting background image to UI.
+
+		public CustomShading customShading;
 
 		public void create () {
 			if (spriteBatch != null) return;
 
+			customShading = new CustomShading();
 			spriteBatch = new SpriteBatch();
+			shapeRenderer = new ShapeRenderer();
+			lineColor = com.badlogic.gdx.graphics.Color.valueOf("636363");
 
 			worldCamera = new OrthographicCamera();
 			textCamera = new OrthographicCamera();
@@ -303,7 +332,62 @@ public class ParticleEditor extends JFrame {
 				FileType.Internal), true);
 			effectPanel.newExampleEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
-			Gdx.input.setInputProcessor(this);
+
+			OrthoCamController orthoCamController = new OrthoCamController (worldCamera);
+			Gdx.input.setInputProcessor(new InputMultiplexer(orthoCamController, this));
+		}
+
+		private class OrthoCamController extends InputAdapter {
+			final OrthographicCamera camera;
+			final Vector3 curr = new Vector3();
+			final Vector3 last = new Vector3(-1, -1, -1);
+			final Vector3 delta = new Vector3();
+
+			boolean canDrag = false;
+
+			public OrthoCamController (OrthographicCamera camera) {
+				this.camera = camera;
+			}
+
+			@Override
+			public boolean scrolled (int amount) {
+				worldCamera.zoom += amount * 0.01f;
+				worldCamera.zoom = MathUtils.clamp(worldCamera.zoom, 0.01f, 5000);
+				worldCamera.update();
+				return super.scrolled(amount);
+			}
+
+			@Override
+			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+				if (button == Input.Buttons.LEFT) {
+					canDrag = true;
+				} else {
+					canDrag = false;
+				}
+				return super.touchDown(screenX, screenY, pointer, button);
+			}
+
+			@Override
+			public boolean touchDragged (int x, int y, int pointer) {
+				if (!canDrag) return false;
+
+				camera.unproject(curr.set(x, y, 0));
+				if (!(last.x == -1 && last.y == -1 && last.z == -1)) {
+					camera.unproject(delta.set(last.x, last.y, 0));
+					delta.sub(curr);
+					camera.position.add(delta.x, delta.y, 0);
+				}
+				last.set(x, y, 0);
+				camera.update();
+				return false;
+			}
+
+			@Override
+			public boolean touchUp (int x, int y, int pointer, int button) {
+				last.set(-1, -1, -1);
+				canDrag = false;
+				return false;
+			}
 		}
 
 		@Override
@@ -322,6 +406,18 @@ public class ParticleEditor extends JFrame {
 			effect.setPosition(worldCamera.viewportWidth / 2, worldCamera.viewportHeight / 2);
 		}
 
+		private void renderGrid (ShapeRenderer shapeRenderer, int minX, int maxX, int minY, int maxY) {
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+			shapeRenderer.setColor(this.lineColor);
+			for (int i = minX; i <= maxX; i++) {
+				shapeRenderer.line(i, minY, i, maxY);
+			}
+			for (int i = minY; i <= maxY; i++) {
+				shapeRenderer.line(minX, i, maxX, i);
+			}
+			shapeRenderer.end();
+		}
+
 		public void render () {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
@@ -331,6 +427,8 @@ public class ParticleEditor extends JFrame {
 			float[] colors = backgroundColor.getColors();
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 1.0f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+			previewImagePanel.updateSpritePosition();
 
 			if ((pixelsPerMeter.getValue() != pixelsPerMeterPrev) || (zoomLevel.getValue() != zoomLevelPrev)) {
 				if (pixelsPerMeter.getValue() <= 0) {
@@ -346,18 +444,27 @@ public class ParticleEditor extends JFrame {
 			}
 
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
+			shapeRenderer.setProjectionMatrix(ParticleEditor.this.worldCamera.combined);
+			if (renderGridCheckBox.isSelected()) {
+				renderGrid(shapeRenderer, -40, 40, -40, 40);
+			}
+
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+			shapeRenderer.line(-1000, 0, 1000, 0, com.badlogic.gdx.graphics.Color.GREEN, com.badlogic.gdx.graphics.Color.GREEN);
+			shapeRenderer.line(0, -1000, 0, 1000, com.badlogic.gdx.graphics.Color.RED, com.badlogic.gdx.graphics.Color.RED);
+			shapeRenderer.end();
 
 			spriteBatch.begin();
 			spriteBatch.enableBlending();
 			spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			if (bgImage != null) {
-				bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);
 				bgImage.draw(spriteBatch);
 			}
 
 			activeCount = 0;
 			boolean complete = true;
+			customShading.begin(spriteBatch);
 			for (ParticleEmitter emitter : effect.getEmitters()) {
 				if (emitter.getSprites().size == 0 && emitter.getImagePaths().size > 0) loadImages(emitter);
 				boolean enabled = isEnabled(emitter);
@@ -367,6 +474,7 @@ public class ParticleEditor extends JFrame {
 					if (!emitter.isComplete()) complete = false;
 				}
 			}
+			customShading.end(spriteBatch);
 			if (complete) effect.start();
 
 			maxActive = Math.max(maxActive, activeCount);
@@ -433,6 +541,10 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean keyDown (int keycode) {
+			if (keycode == Input.Keys.SPACE) {
+				effect.setPosition(previewImagePanel.valueX.getValue() + previewImagePanel.valueWidth.getValue()/2f,
+					previewImagePanel.valueY.getValue() + previewImagePanel.valueHeight.getValue()/2f);
+			}
 			return false;
 		}
 
@@ -445,9 +557,11 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDown (int x, int y, int pointer, int newParam) {
-			Vector3 touchPoint = new Vector3(x, y, 0);
-			worldCamera.unproject(touchPoint);
-			effect.setPosition(touchPoint.x, touchPoint.y);
+			if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+				Vector3 touchPoint = new Vector3(x, y, 0);
+				worldCamera.unproject(touchPoint);
+				effect.setPosition(touchPoint.x, touchPoint.y);
+			}
 			return false;
 		}
 
@@ -459,9 +573,11 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDragged (int x, int y, int pointer) {
-			Vector3 touchPoint = new Vector3(x, y, 0);
-			worldCamera.unproject(touchPoint);
-			effect.setPosition(touchPoint.x, touchPoint.y);
+			if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+				Vector3 touchPoint = new Vector3(x, y, 0);
+				worldCamera.unproject(touchPoint);
+				effect.setPosition(touchPoint.x, touchPoint.y);
+			}
 			return false;
 		}
 
@@ -485,6 +601,23 @@ public class ParticleEditor extends JFrame {
 		@Override
 		public boolean scrolled (int amount) {
 			return false;
+		}
+
+		public void setImageBackground (File file) {
+			if (bgImage != null) {
+				bgImage.getTexture().dispose();
+				bgImage = null;
+			}
+			if (file != null) {
+				bgImage = new Sprite(new Texture(Gdx.files.absolute(file.getAbsolutePath())));
+			}
+		}
+
+		public void updateImageBackgroundPosSize (float x, float y, float width, float height) {
+			if (bgImage != null) {
+				bgImage.setPosition(x, y);
+				bgImage.setSize(width, height);
+			}
 		}
 	}
 

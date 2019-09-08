@@ -170,8 +170,8 @@ public class PooledLinkedList<T> {
 			head = null;
 			tail = null;
 		} else {
-			tail.next = null;
 			tail = p;
+			tail.next = null;
 		}
 
 

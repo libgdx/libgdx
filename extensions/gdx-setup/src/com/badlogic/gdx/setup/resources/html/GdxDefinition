@@ -6,4 +6,6 @@
 	<entry-point class='%PACKAGE%.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../%ASSET_PATH%" />
+	<set-property name="user.agent" value="gecko1_8, safari"/>
+	<collapse-property name="user.agent" values="*" />
 </module>

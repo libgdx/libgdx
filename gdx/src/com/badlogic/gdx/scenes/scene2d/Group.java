@@ -216,6 +216,7 @@ public class Group extends Actor implements Cullable {
 	protected void applyTransform (ShapeRenderer shapes, Matrix4 transform) {
 		oldTransform.set(shapes.getTransformMatrix());
 		shapes.setTransformMatrix(transform);
+		shapes.flush();
 	}
 
 	/** Restores the shape renderer transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the
@@ -300,14 +301,15 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Adds an actor as a child of this group immediately after another child actor, removing it from its previous parent. If the
-	 * actor is already a child of this group, no changes are made. */
+	 * actor is already a child of this group, no changes are made. If <code>actorAfter</code> is not in this group, the actor is
+	 * added as the last child. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		if (actor.parent != null) {
 			if (actor.parent == this) return;
 			actor.parent.removeActor(actor, false);
 		}
 		int index = children.indexOf(actorAfter, true);
-		if (index == children.size)
+		if (index == children.size || index == -1)
 			children.add(actor);
 		else
 			children.insert(index + 1, actor);
@@ -321,13 +323,21 @@ public class Group extends Actor implements Cullable {
 		return removeActor(actor, true);
 	}
 
+	/** Removes an actor from this group. Calls {@link #removeActorAt(int, boolean)} with the actor's child index. */
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		int index = children.indexOf(actor, true);
+		if (index == -1) return false;
+		removeActorAt(index, unfocus);
+		return true;
+	}
+
 	/** Removes an actor from this group. If the actor will not be used again and has actions, they should be
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
 	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
 	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
-	 * @return true if the actor was removed from this group. */
-	public boolean removeActor (Actor actor, boolean unfocus) {
-		if (!children.removeValue(actor, true)) return false;
+	 * @return the actor removed from this group or null. */
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = children.removeIndex(index);
 		if (unfocus) {
 			Stage stage = getStage();
 			if (stage != null) stage.unfocus(actor);
@@ -335,7 +345,7 @@ public class Group extends Actor implements Cullable {
 		actor.setParent(null);
 		actor.setStage(null);
 		childrenChanged();
-		return true;
+		return actor;
 	}
 
 	/** Removes all actors from this group. */
@@ -396,6 +406,11 @@ public class Group extends Actor implements Cullable {
 		if (firstIndex == -1 || secondIndex == -1) return false;
 		children.swap(firstIndex, secondIndex);
 		return true;
+	}
+
+	/** Returns the child at the specified index. */
+	public Actor getChild (int index) {
+		return children.get(index);
 	}
 
 	/** Returns an ordered list of child actors in this group. */

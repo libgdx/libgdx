@@ -50,6 +50,7 @@ import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
+import com.badlogic.gdx.tests.g3d.AnisotropyTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
@@ -91,6 +92,7 @@ public class GdxTests {
 		AlphaTest.class,
 		Animation3DTest.class,
 		AnimationTest.class,
+		AnisotropyTest.class,
 		AnnotationTest.class,
 		AssetManagerTest.class,
 		AtlasIssueTest.class,
@@ -111,20 +113,22 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		ClipboardTest.class,
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
 		CpuSpriteBatchTest.class,
 		CullTest.class,
 		CursorTest.class,
+		DecalTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
+		DisplayModeTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
 //		EarClippingTriangulatorTest.class,
 		EdgeDetectionTest.class,
-		DisplayModeTest.class,
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
@@ -204,6 +208,7 @@ public class GdxTests {
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
 		ScrollPaneTextAreaTest.class,
+		ScrollPaneWithDynamicScrolling.class,
 		SelectTest.class,
 		SensorTest.class,
 		ShaderCollectionTest.class,
@@ -243,6 +248,7 @@ public class GdxTests {
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,
+		TiledMapAnimationLoadingTest.class,
 		TiledMapAssetManagerTest.class,
 		TiledMapGroupLayerTest.class,
 		TiledMapAtlasAssetManagerTest.class,

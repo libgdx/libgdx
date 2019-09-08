@@ -84,13 +84,6 @@ public class FreetypeBuild {
 		lin64.cFlags += "  -DFT2_BUILD_LIBRARY";
 		lin64.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
-		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
-		mac.headerDirs = headers;
-		mac.cIncludes = sources;
-		mac.cFlags += " -DFT2_BUILD_LIBRARY";
-		mac.cppFlags += " -DFT2_BUILD_LIBRARY";
-		mac.linkerFlags += " -framework CoreServices -framework Carbon";
-
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.headerDirs = headers;
 		mac64.cIncludes = sources;
@@ -111,7 +104,7 @@ public class FreetypeBuild {
 		ios.cppFlags += " -DFT2_BUILD_LIBRARY";
 
 		new NativeCodeGenerator().generate("src", "bin:../../gdx/bin", "jni");
-		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, mac64,
+		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac64,
 			android, ios);
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v clean");
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

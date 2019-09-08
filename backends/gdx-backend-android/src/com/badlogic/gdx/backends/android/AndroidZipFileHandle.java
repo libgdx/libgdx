@@ -108,25 +108,31 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	@Override
 	public FileHandle[] list() {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-		FileHandle[] handles = new FileHandle[zipEntries.length];
-		for (int i = 0, n = handles.length; i < n; i++)
-			handles[i] = new AndroidZipFileHandle(zipEntries[i].mFileName);
+		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
+		int count = 0;
+		for (int i = 0, n = zipEntries.length; i < n; i++) {
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+				continue;
+			handles[count++] = new AndroidZipFileHandle(zipEntries[i].mFileName);
+		}
 		return handles;
 	}
 
 	@Override
 	public FileHandle[] list(FileFilter filter) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-		FileHandle[] handles = new FileHandle[zipEntries.length];
+		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
-		for (int i = 0, n = handles.length; i < n; i++) {
+		for (int i = 0, n = zipEntries.length; i < n; i++) {
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+				continue;
 			FileHandle child = new AndroidZipFileHandle(zipEntries[i].mFileName);
 			if (!filter.accept(child.file()))
 				continue;
 			handles[count] = child;
 			count++;
 		}
-		if (count < zipEntries.length) {
+		if (count < handles.length) {
 			FileHandle[] newHandles = new FileHandle[count];
 			System.arraycopy(handles, 0, newHandles, 0, count);
 			handles = newHandles;
@@ -137,16 +143,18 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	@Override
 	public FileHandle[] list(FilenameFilter filter) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-		FileHandle[] handles = new FileHandle[zipEntries.length];
+		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
-		for (int i = 0, n = handles.length; i < n; i++) {
+		for (int i = 0, n = zipEntries.length; i < n; i++) {
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+				continue;
 			String path = zipEntries[i].mFileName;
 			if (!filter.accept(file, path))
 				continue;
 			handles[count] = new AndroidZipFileHandle(path);
 			count++;
 		}
-		if (count < zipEntries.length) {
+		if (count < handles.length) {
 			FileHandle[] newHandles = new FileHandle[count];
 			System.arraycopy(handles, 0, newHandles, 0, count);
 			handles = newHandles;
@@ -157,16 +165,18 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	@Override
 	public FileHandle[] list(String suffix) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-		FileHandle[] handles = new FileHandle[zipEntries.length];
+		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
-		for (int i = 0, n = handles.length; i < n; i++) {
+		for (int i = 0, n = zipEntries.length; i < n; i++) {
+			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+				continue;
 			String path = zipEntries[i].mFileName;
 			if (!path.endsWith(suffix))
 				continue;
 			handles[count] = new AndroidZipFileHandle(path);
 			count++;
 		}
-		if (count < zipEntries.length) {
+		if (count < handles.length) {
 			FileHandle[] newHandles = new FileHandle[count];
 			System.arraycopy(handles, 0, newHandles, 0, count);
 			handles = newHandles;

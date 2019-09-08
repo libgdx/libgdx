@@ -431,7 +431,7 @@ public class Skin implements Disposable {
 
 			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+				if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
 					return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
@@ -553,6 +553,7 @@ public class Skin implements Disposable {
 			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
+				if (color == null) throw new SerializationException("TintedDrawable missing color: " + jsonData);
 				Drawable drawable = newDrawable(name, color);
 				if (drawable instanceof BaseDrawable) {
 					BaseDrawable named = (BaseDrawable)drawable;

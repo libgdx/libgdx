@@ -90,26 +90,18 @@ public class Slider extends ProgressBar {
 				calculatePositionAndValue(x, y);
 			}
 
-			@Override
 			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			@Override
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}
 		});
 	}
 
-	public void setStyle (SliderStyle style) {
-		if (style == null) throw new NullPointerException("style cannot be null");
-		if (!(style instanceof SliderStyle)) throw new IllegalArgumentException("style must be a SliderStyle.");
-		super.setStyle(style);
-	}
-
-	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(SliderStyle)} is
-	 * called. */
+	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(ProgressBarStyle)}
+	 * is called. */
 	public SliderStyle getStyle () {
 		return (SliderStyle)super.getStyle();
 	}

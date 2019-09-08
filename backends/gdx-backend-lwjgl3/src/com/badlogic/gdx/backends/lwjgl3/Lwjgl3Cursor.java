@@ -24,6 +24,7 @@ import org.lwjgl.glfw.GLFWImage;
 
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -63,6 +64,7 @@ public class Lwjgl3Cursor implements Cursor {
 		}
 
 		this.pixmapCopy = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+		this.pixmapCopy.setBlending(Blending.None);
 		this.pixmapCopy.drawPixmap(pixmap, 0, 0);
 
 		glfwImage = GLFWImage.malloc();

@@ -30,10 +30,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.OrderedMap.OrderedMapValues;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
@@ -55,6 +55,7 @@ public class Json {
 	private boolean ignoreDeprecated;
 	private boolean readDeprecated;
 	private boolean enumNames = true;
+	private boolean sortFields;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
@@ -81,23 +82,28 @@ public class Json {
 		return ignoreUnknownFields;
 	}
 
-	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
+	/** When true, fields with the {@link Deprecated} annotation will not be read or written. Default is false.
+	 * @see #setReadDeprecated(boolean)
+	 * @see #setDeprecated(Class, String, boolean) */
 	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
 		this.ignoreDeprecated = ignoreDeprecated;
 	}
 
 	/** When true, fields with the {@link Deprecated} annotation will be read (but not written) when
-	 * {@link #setIgnoreDeprecated(boolean)} is true. */
+	 * {@link #setIgnoreDeprecated(boolean)} is true. Default is false.
+	 * @see #setDeprecated(Class, String, boolean) */
 	public void setReadDeprecated (boolean readDeprecated) {
 		this.readDeprecated = readDeprecated;
 	}
 
-	/** @see JsonWriter#setOutputType(OutputType) */
+	/** Default is {@link OutputType#minimal}.
+	 * @see JsonWriter#setOutputType(OutputType) */
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
 	}
 
-	/** @see JsonWriter#setQuoteLongValues(boolean) */
+	/** Default is false.
+	 * @see JsonWriter#setQuoteLongValues(boolean) */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
 	}
@@ -155,10 +161,23 @@ public class Json {
 	/** Sets the type of elements in a collection. When the element type is known, the class for each element in the collection
 	 * does not need to be written unless different from the element type. */
 	public void setElementType (Class type, String fieldName, Class elementType) {
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		metadata.elementType = elementType;
+	}
+
+	/** The specified field will be treated as if it has or does not have the {@link Deprecated} annotation.
+	 * @see #setIgnoreDeprecated(boolean)
+	 * @see #setReadDeprecated(boolean) */
+	public void setDeprecated (Class type, String fieldName, boolean deprecated) {
+		FieldMetadata metadata = getFields(type).get(fieldName);
+		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
+		metadata.deprecated = deprecated;
+	}
+
+	/** When true, fields are sorted alphabetically when written, otherwise the source code order is used. Default is false. */
+	public void setSortFields (boolean sortFields) {
+		this.sortFields = sortFields;
 	}
 
 	private OrderedMap<String, FieldMetadata> getFields (Class type) {
@@ -191,10 +210,9 @@ public class Json {
 				}
 			}
 
-			if (ignoreDeprecated && !readDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
-
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
+		if (sortFields) nameToField.keys.sort();
 		typeToFields.put(type, nameToField);
 		return nameToField;
 	}
@@ -278,14 +296,16 @@ public class Json {
 		Object[] defaultValues = getDefaultValues(type);
 
 		OrderedMap<String, FieldMetadata> fields = getFields(type);
-		int i = 0;
-		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
+		int defaultIndex = 0;
+		Array<String> fieldNames = fields.orderedKeys();
+		for (int i = 0, n = fieldNames.size; i < n; i++) {
+			FieldMetadata metadata = fields.get(fieldNames.get(i));
+			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
-			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {
-					Object defaultValue = defaultValues[i++];
+					Object defaultValue = defaultValues[defaultIndex++];
 					if (value == null && defaultValue == null) continue;
 					if (value != null && defaultValue != null) {
 						if (value.equals(defaultValue)) continue;
@@ -324,16 +344,18 @@ public class Json {
 			return null;
 		}
 
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		Object[] values = new Object[fields.size];
 		classToDefaultValues.put(type, values);
 
-		int i = 0;
-		for (FieldMetadata metadata : fields.values()) {
+		int defaultIndex = 0;
+		Array<String> fieldNames = fields.orderedKeys();
+		for (int i = 0, n = fieldNames.size; i < n; i++) {
+			FieldMetadata metadata = fields.get(fieldNames.get(i));
+			if (ignoreDeprecated && metadata.deprecated) continue;
 			Field field = metadata.field;
-			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
-				values[i++] = field.get(object);
+				values[defaultIndex++] = field.get(object);
 			} catch (ReflectionException ex) {
 				throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
 			} catch (SerializationException ex) {
@@ -368,8 +390,7 @@ public class Json {
 	 * @param elementType May be null if the type is unknown. */
 	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
 		if (elementType == null) elementType = metadata.elementType;
@@ -548,6 +569,28 @@ public class Json {
 					writer.name(convertToString(entry.key));
 					writeValue(entry.value, elementType, null);
 				}
+				writeObjectEnd();
+				return;
+			}
+			if (value instanceof ObjectSet) {
+				if (knownType == null) knownType = ObjectSet.class;
+				writeObjectStart(actualType, knownType);
+				writer.name("values");
+				writeArrayStart();
+				for (Object entry : (ObjectSet)value)
+					writeValue(entry, elementType, null);
+				writeArrayEnd();
+				writeObjectEnd();
+				return;
+			}
+			if (value instanceof IntSet) {
+				if (knownType == null) knownType = IntSet.class;
+				writeObjectStart(actualType, knownType);
+				writer.name("values");
+				writeArrayStart();
+				for (IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext;)
+					writeValue(Integer.valueOf(iter.next()), Integer.class, null);
+				writeArrayEnd();
 				writeObjectEnd();
 				return;
 			}
@@ -767,8 +810,7 @@ public class Json {
 	/** @param elementType May be null if the type is unknown. */
 	public void readField (Object object, String fieldName, String jsonName, Class elementType, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
-		FieldMetadata metadata = fields.get(fieldName);
+		FieldMetadata metadata = getFields(type).get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
 		if (elementType == null) elementType = metadata.elementType;
@@ -798,7 +840,7 @@ public class Json {
 
 	public void readFields (Object object, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = getFields(type);
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
 			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
@@ -812,6 +854,8 @@ public class Json {
 					ex.addTrace(child.trace());
 					throw ex;
 				}
+			} else {
+				if (ignoreDeprecated && !readDeprecated && metadata.deprecated) continue;
 			}
 			Field field = metadata.field;
 			try {
@@ -934,22 +978,30 @@ public class Json {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-
+					return (T)result;
+				}
+				if (object instanceof ObjectSet) {
+					ObjectSet result = (ObjectSet)object;
+					for (JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+						result.add(readValue(elementType, null, child));
+					return (T)result;
+				}
+				if (object instanceof IntSet) {
+					IntSet result = (IntSet)object;
+					for (JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+						result.add(child.asInt());
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-
 					return (T)result;
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next) {
-						if (child.name.equals(typeName)) {
-							continue;
-						}
+						if (child.name.equals(typeName)) continue;
 						result.put(child.name, readValue(elementType, null, child));
 					}
 					return (T)result;
@@ -1059,11 +1111,11 @@ public class Json {
 	 * object. The <code>to</code> object must have at least all the fields of the <code>from</code> object with the same name and
 	 * type. */
 	public void copyFields (Object from, Object to) {
-		ObjectMap<String, FieldMetadata> toFields = getFields(from.getClass());
-		for (ObjectMap.Entry<String, FieldMetadata> entry: getFields(from.getClass())) {
+		OrderedMap<String, FieldMetadata> toFields = getFields(to.getClass());
+		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(from.getClass())) {
 			FieldMetadata toField = toFields.get(entry.key);
 			Field fromField = entry.value.field;
-			if (toField == null) throw new SerializationException("To object is missing field" + entry.key);
+			if (toField == null) throw new SerializationException("To object is missing field: " + entry.key);
 			try {
 				toField.field.set(to, fromField.get(from));
 			} catch (ReflectionException ex) {
@@ -1137,12 +1189,14 @@ public class Json {
 	static private class FieldMetadata {
 		final Field field;
 		Class elementType;
+		boolean deprecated;
 
 		public FieldMetadata (Field field) {
 			this.field = field;
 			int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType())
 				|| ClassReflection.isAssignableFrom(Map.class, field.getType())) ? 1 : 0;
 			this.elementType = field.getElementType(index);
+			deprecated = field.isAnnotationPresent(Deprecated.class);
 		}
 	}
 

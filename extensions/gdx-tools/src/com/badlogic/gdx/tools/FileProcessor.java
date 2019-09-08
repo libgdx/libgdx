@@ -191,7 +191,7 @@ public class FileProcessor {
 					for (Pattern pattern : inputRegex) {
 						if (pattern.matcher(file.getName()).matches()) {
 							found = true;
-							continue;
+							break;
 						}
 					}
 					if (!found) continue;

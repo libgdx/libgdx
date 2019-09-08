@@ -95,7 +95,6 @@ public class ProgressBar extends Widget implements Disableable {
 		return style;
 	}
 
-	@Override
 	public void act (float delta) {
 		super.act(delta);
 		if (animateTime > 0) {
@@ -105,7 +104,6 @@ public class ProgressBar extends Widget implements Disableable {
 		}
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		ProgressBarStyle style = this.style;
 		boolean disabled = this.disabled;

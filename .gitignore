@@ -72,6 +72,10 @@ libgdx-*.zip.MD5
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war
 
+#assets generated in tests
+tests/gdx-tests-android/assets/bitmapWrittenFont.fnt
+tests/gdx-tests-android/assets/bitmapWrittenFont.png
+
 #directories created by fetch.xml
 /tests/gdx-tests-android/libs
 /tmp/

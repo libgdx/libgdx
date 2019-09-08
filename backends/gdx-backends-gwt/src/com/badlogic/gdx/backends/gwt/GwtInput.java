@@ -52,20 +52,41 @@ public class GwtInput implements Input {
 	boolean[] pressedKeys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
-	char lastKeyCharPressed;
-	float keyRepeatTimer;
 	long currentEventTimeStamp;
 	final CanvasElement canvas;
-	GwtApplicationConfiguration config;
+	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
 	Geolocation geolocation;
 	boolean geolocationSupported;
 	float[] geolocationValues = new float[4];
+	GwtAccelerometer accelerometer;
 
 	public GwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
 		this.config = config;
+		if (config.useAccelerometer) {
+			if (GwtApplication.agentInfo().isFirefox()) {
+				setupAccelerometer();
+			} else {
+				GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+					@Override
+					public void granted() {
+						setupAccelerometer();
+					}
+
+					@Override
+					public void denied() {
+					}
+
+					@Override
+					public void prompt() {
+						setupAccelerometer();
+					}
+				});
+			}
+		}
 		hookEvents();
 		setupGeolocation();
 	}
@@ -94,7 +115,12 @@ public class GwtInput implements Input {
 	}
 
 	void reset () {
-		justTouched = false;
+		if (justTouched) {
+			justTouched = false;
+			for (int i = 0; i < justPressedButtons.length; i++) {
+				justPressedButtons[i] = false;
+			}
+		}
 		if (keyJustPressed) {
 			keyJustPressed = false;
 			for (int i = 0; i < justPressedKeys.length; i++) {
@@ -103,21 +129,32 @@ public class GwtInput implements Input {
 		}
 	}
 
+	void setupAccelerometer () {
+		if (GwtAccelerometer.isSupported()) {
+			if (accelerometer == null) accelerometer = GwtAccelerometer.getInstance();
+			if (!accelerometer.activated()) accelerometer.start();
+		}
+	}
+
 	@Override
 	public float getAccelerometerX () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
 	}
 
 	@Override
 	public float getAccelerometerY () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.y() : 0;
 	}
 
 	@Override
 	public float getAccelerometerZ () {
-		return 0;
+		return this.accelerometer != null ? (float) this.accelerometer.z() : 0;
 	}
-	
+
+	private boolean isAccelerometerPresent() {
+		return getAccelerometerX() != 0 || getAccelerometerY() != 0 || getAccelerometerZ() != 0;
+	}
+
 	@Override
 	public float getGyroscopeX () {
 		// TODO Auto-generated method stub
@@ -156,6 +193,7 @@ public class GwtInput implements Input {
 		return geolocationValues[3];
 	}
 
+	@Override
 	public int getMaxPointers () {
 		return MAX_TOUCHES;
 	}
@@ -226,6 +264,12 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button >= justPressedButtons.length) return false;
+		return justPressedButtons[button];
+	}
+
+	@Override
 	public float getPressure () {
 		return getPressure(0);
 	}
@@ -276,7 +320,7 @@ public class GwtInput implements Input {
 			}
 		});
 	}
-	
+
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
@@ -336,6 +380,16 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
@@ -347,7 +401,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return false;
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
@@ -369,9 +423,9 @@ public class GwtInput implements Input {
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
-	private native boolean isCursorCatchedJSNI () /*-{
+	private native boolean isCursorCatchedJSNI (CanvasElement canvas) /*-{
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		if (navigator.pointer) {
 			if (typeof (navigator.pointer.isLocked) === "boolean") {
@@ -385,6 +439,11 @@ public class GwtInput implements Input {
 				return navigator.pointer.islocked();
 			}
 		}
+
+		if ($doc.pointerLockElement === canvas || $doc.mozPointerLockElement === canvas) {
+			return true;
+		}
+
 		return false;
 	}-*/;
 
@@ -394,7 +453,7 @@ public class GwtInput implements Input {
 		// Navigator pointer is not the right interface according to spec.
 		// Here for backwards compatibility only
 		if (!navigator.pointer) {
-			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+			navigator.pointer = navigator.pointer || navigator.webkitPointer || navigator.mozPointer;
 		}
 		// element.requestPointerLock
 		if (!element.requestPointerLock) {
@@ -455,7 +514,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isCursorCatched () {
-		return isCursorCatchedJSNI();
+		return isCursorCatchedJSNI(canvas);
 	}
 
 	@Override
@@ -582,6 +641,7 @@ public class GwtInput implements Input {
 			this.justTouched = true;
 			this.touched[0] = true;
 			this.pressedButtons.add(getButton(e.getButton()));
+			justPressedButtons[e.getButton()] = true;
 			this.deltaX[0] = 0;
 			this.deltaY[0] = 0;
 			if (isCursorCatched()) {
@@ -642,7 +702,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		
+
 		if (hasFocus && !e.getType().equals("blur")) {
 			if (e.getType().equals("keydown")) {
 				// Gdx.app.log("GwtInput", "keydown");
@@ -692,7 +752,7 @@ public class GwtInput implements Input {
 
 			while (iterator.hasNext) {
 				int code = iterator.next();
-				
+
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
@@ -781,7 +841,7 @@ public class GwtInput implements Input {
 		}
 // if(hasFocus) e.preventDefault();
 	}
-	
+
 	private int getAvailablePointer () {
 		for (int i = 0; i < MAX_TOUCHES; i++) {
 			if (!touchMap.containsValue(i, false)) return i;

@@ -32,3 +32,9 @@ dependencies {
     compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}

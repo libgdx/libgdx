@@ -72,6 +72,12 @@ public class ActorGestureListener implements EventListener {
 				return true;
 			}
 
+			public boolean panStop (float stageX, float stageY, int pointer, int button) {
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.panStop(event, tmpCoords.x, tmpCoords.y, pointer, button);
+				return true;
+			}
+
 			public boolean zoom (float initialDistance, float distance) {
 				ActorGestureListener.this.zoom(event, initialDistance, distance);
 				return true;
@@ -146,6 +152,9 @@ public class ActorGestureListener implements EventListener {
 
 	/** The delta is the difference in stage coordinates since the last pan. */
 	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
+	}
+
+	public void panStop (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
 	public void zoom (InputEvent event, float initialDistance, float distance) {

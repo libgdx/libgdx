@@ -2,10 +2,10 @@
 <project name="fetch-natives" default="all">
 	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
     <property name="robovm" value="https://oss.sonatype.org/content/repositories/releases/com/mobidevelop/robovm"/>
-    <property name="robovm-version" value="2.3.3"/>
+    <property name="robovm-version" value="2.3.6"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
-    <property name="lwjgl-version" value="3.2.0"/>
+    <property name="lwjgl-version" value="3.2.1"/>
 
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
@@ -86,8 +86,8 @@
         <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
 		<!-- core -->		
-		<get src="https://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>
-		<get src="https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="gdx/libs/hamcrest-core-1.3.jar"/>
+		<get src="https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>
+		<get src="https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="gdx/libs/hamcrest-core-1.3.jar"/>
 		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
 		<get src="${domain}/armeabi/libgdx.so" dest="tmp/armeabi"/>
         <get src="${domain}/armeabi/libgdx.so" dest="gdx/libs/armeabi"/>

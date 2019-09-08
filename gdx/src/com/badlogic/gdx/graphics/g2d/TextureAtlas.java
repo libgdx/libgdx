@@ -87,6 +87,7 @@ public class TextureAtlas implements Disposable {
 			public int originalWidth;
 			public int originalHeight;
 			public boolean rotate;
+			public int degrees;
 			public int left;
 			public int top;
 			public int width;
@@ -138,7 +139,14 @@ public class TextureAtlas implements Disposable {
 						pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
 						pages.add(pageImage);
 					} else {
-						boolean rotate = Boolean.valueOf(readValue(reader));
+						String rotateValue = readValue(reader);
+						int degrees;
+						if (rotateValue.equalsIgnoreCase("true"))
+							degrees = 90;
+						else if (rotateValue.equalsIgnoreCase("false"))
+							degrees = 0;
+						else
+							degrees = Integer.valueOf(rotateValue);
 
 						readTuple(reader);
 						int left = Integer.parseInt(tuple[0]);
@@ -155,7 +163,8 @@ public class TextureAtlas implements Disposable {
 						region.width = width;
 						region.height = height;
 						region.name = line;
-						region.rotate = rotate;
+						region.rotate = degrees == 90;
+						region.degrees = degrees;
 
 						if (readTuple(reader) == 4) { // split is optional
 							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
@@ -265,6 +274,7 @@ public class TextureAtlas implements Disposable {
 			atlasRegion.originalHeight = region.originalHeight;
 			atlasRegion.originalWidth = region.originalWidth;
 			atlasRegion.rotate = region.rotate;
+			atlasRegion.degrees = region.degrees;
 			atlasRegion.splits = region.splits;
 			atlasRegion.pads = region.pads;
 			if (region.flip) atlasRegion.flip(false, true);
@@ -418,7 +428,7 @@ public class TextureAtlas implements Disposable {
 	public void dispose () {
 		for (Texture texture : textures)
 			texture.dispose();
-		textures.clear();
+		textures.clear(0);
 	}
 
 	static final Comparator<Region> indexComparator = new Comparator<Region>() {
@@ -489,6 +499,11 @@ public class TextureAtlas implements Disposable {
 		/** If true, the region has been rotated 90 degrees counter clockwise. */
 		public boolean rotate;
 
+		/** The degrees the region has been rotated, counter clockwise between 0 and 359. Most atlas region handling deals only with
+		 * 0 or 90 degree rotation (enough to handle rectangles). More advanced texture packing may support other rotations (eg, for
+		 * tightly packing polygons). */
+		public int degrees;
+
 		/** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
 		public int[] splits;
 
@@ -514,9 +529,10 @@ public class TextureAtlas implements Disposable {
 			originalWidth = region.originalWidth;
 			originalHeight = region.originalHeight;
 			rotate = region.rotate;
+			degrees = region.degrees;
 			splits = region.splits;
 		}
-		
+
 		public AtlasRegion (TextureRegion region) {
 			setRegion(region);
 			packedWidth = region.getRegionWidth();
@@ -533,14 +549,14 @@ public class TextureAtlas implements Disposable {
 			if (y) offsetY = originalHeight - offsetY - getRotatedPackedHeight();
 		}
 
-		/** Returns the packed width considering the rotate value, if it is true then it returns the packedHeight, otherwise it
-		 * returns the packedWidth. */
+		/** Returns the packed width considering the {@link #rotate} value, if it is true then it returns the packedHeight,
+		 * otherwise it returns the packedWidth. */
 		public float getRotatedPackedWidth () {
 			return rotate ? packedHeight : packedWidth;
 		}
 
-		/** Returns the packed height considering the rotate value, if it is true then it returns the packedWidth, otherwise it
-		 * returns the packedHeight. */
+		/** Returns the packed height considering the {@link #rotate} value, if it is true then it returns the packedWidth,
+		 * otherwise it returns the packedHeight. */
 		public float getRotatedPackedHeight () {
 			return rotate ? packedWidth : packedHeight;
 		}

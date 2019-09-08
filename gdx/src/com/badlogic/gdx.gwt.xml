@@ -255,6 +255,8 @@
 		<include name="graphics/glutils/IndexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/IndexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/IndexData.java"/>
+		<include name="graphics/glutils/InstanceData.java"/>
+		<include name="graphics/glutils/InstanceBufferObject.java"/>  <!-- Emulated -->
 		<exclude name="graphics/glutils/KTXTextureData.java"/>  <!-- Rely on ETC1 -->
 		<include name="graphics/glutils/MipMapGenerator.java"/>
 		<include name="graphics/glutils/PixmapTextureData.java"/>
@@ -391,7 +393,7 @@
 	<!-- utils -->
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
-		<exclude name="utils/AtomicQueue.java"/> <!-- Reason: No atomic support -->
+		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>
 		<include name="utils/BinaryHeap.java"/>
@@ -401,6 +403,7 @@
 		<include name="utils/ByteArray.java"/>
 		<include name="utils/CharArray.java"/>
 		<include name="utils/Clipboard.java"/>
+		<include name="utils/Collections.java"/>
 		<include name="utils/ComparableTimSort.java"/>
 		<include name="utils/DataInput.java"/>
 		<include name="utils/DataOutput.java"/>

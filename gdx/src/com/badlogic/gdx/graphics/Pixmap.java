@@ -24,23 +24,18 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/** <p>
+/**
+ * <p>
  * A Pixmap represents an image in memory. It has a width and height expressed in pixels as well as a {@link Format} specifying
  * the number and order of color components per pixel. Coordinates of pixels are specified with respect to the top left corner of
  * the image, with the x-axis pointing to the right and the y-axis pointing downwards.
- * </p>
- * 
  * <p>
- * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
- * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
- * target image. There either nearest neighbour or bilinear filtering can be used.
- * </p>
- * 
+ * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}, which may reduce
+ * blitting time by ~30%. The {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and
+ * stretch the source image to a target image. There either nearest neighbour or bilinear filtering can be used.
  * <p>
  * A Pixmap stores its data in native heap memory. It is mandatory to call {@link Pixmap#dispose()} when the pixmap is no longer
  * needed, otherwise memory leaks will result
- * </p>
- * 
  * @author badlogicgames@gmail.com */
 public class Pixmap implements Disposable {
 	/** Different pixel formats.

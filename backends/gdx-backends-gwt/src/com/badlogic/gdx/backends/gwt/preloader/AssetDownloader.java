@@ -71,7 +71,7 @@ public class AssetDownloader {
 			loadBinary(url, (AssetLoaderListener<Blob>)listener);
 			break;
 		case Audio:
-			loadAudio(url, (AssetLoaderListener<Void>)listener);
+			loadAudio(url, (AssetLoaderListener<Blob>)listener);
 			break;
 		case Directory:
 			listener.onSuccess(null);
@@ -122,28 +122,24 @@ public class AssetDownloader {
 		request.send();
 	}
 
-	public void loadAudio (String url, final AssetLoaderListener<Void> listener) {
-		if (useBrowserCache) {
-			loadBinary(url, new AssetLoaderListener<Blob>() {
-				@Override
-				public void onProgress (double amount) {
-					listener.onProgress(amount);
-				}
+	public void loadAudio (String url, final AssetLoaderListener<Blob> listener) {
+		loadBinary(url, new AssetLoaderListener<Blob>() {
+			@Override
+			public void onProgress (double amount) {
+				listener.onProgress(amount);
+			}
 
-				@Override
-				public void onFailure () {
-					listener.onFailure();
-				}
+			@Override
+			public void onFailure () {
+				listener.onFailure();
+			}
 
-				@Override
-				public void onSuccess (Blob result) {
-					listener.onSuccess(null);
-				}
+			@Override
+			public void onSuccess (Blob result) {
+				listener.onSuccess(result);
+			}
 
-			});
-		} else {
-			listener.onSuccess(null);
-		}
+		});
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {

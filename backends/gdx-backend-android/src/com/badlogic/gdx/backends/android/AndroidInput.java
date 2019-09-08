@@ -31,6 +31,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -114,6 +115,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private boolean[] keys = new boolean[SUPPORTED_KEYS];
 	private boolean keyJustPressed = false;
 	private boolean[] justPressedKeys = new boolean[SUPPORTED_KEYS];
+	private boolean[] justPressedButtons = new boolean[NUM_TOUCHES];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	protected final float[] accelerometerValues = new float[3];
@@ -130,8 +132,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
-	private boolean catchBack = false;
-	private boolean catchMenu = false;
+	private IntSet keysToCatch = new IntSet();
 	protected final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
@@ -146,7 +147,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private InputProcessor processor;
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
-	private long currentEventTimeStamp = System.nanoTime();
+	private long currentEventTimeStamp = 0;
 	private final AndroidOnscreenKeyboard onscreenKeyboard;
 
 	private SensorEventListener accelerometerListener;
@@ -188,6 +189,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		} else {
 			nativeOrientation = Orientation.Portrait;
 		}
+
+		// this is for backward compatibility: libGDX always caught the circle button, original comment:
+		// circle button on Xperia Play shouldn't need catchBack == true
+		keysToCatch.add(Keys.BUTTON_CIRCLE);
 	}
 
 	@Override
@@ -380,7 +385,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	void processEvents () {
 		synchronized (this) {
-			justTouched = false;
+			if (justTouched) {
+				justTouched = false;
+				for (int i = 0; i < justPressedButtons.length; i++) {
+					justPressedButtons[i] = false;
+				}
+			}
 			if (keyJustPressed) {
 				keyJustPressed = false;
 				for (int i = 0; i < justPressedKeys.length; i++) {
@@ -418,6 +428,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, e.button);
 						justTouched = true;
+						justPressedButtons[e.button] = true;
 						break;
 					case TouchEvent.TOUCH_UP:
 						processor.touchUp(e.x, e.y, e.pointer, e.button);
@@ -521,6 +532,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		for (int i = 0, n = keyListeners.size(); i < n; i++)
 			if (keyListeners.get(i).onKey(v, keyCode, e)) return true;
 
+		// If the key is held sufficiently long that it repeats, then the initial down is followed
+		// additional key events with ACTION_DOWN and a non-zero value for getRepeatCount().
+		// We are only interested in the first key down event here and must ignore all others
+		if (e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0)
+			return keysToCatch.contains(keyCode);
+
 		synchronized (this) {
 			KeyEvent event = null;
 
@@ -600,11 +617,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			app.getGraphics().requestRendering();
 		}
 
-		// circle button on Xperia Play shouldn't need catchBack == true
-		if (keyCode == Keys.BUTTON_CIRCLE) return true;
-		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
-		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
-		return false;
+		return keysToCatch.contains(keyCode);
 	}
 
 	@Override
@@ -626,32 +639,52 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
-		this.catchBack = catchBack;
+		setCatchKey(Keys.BACK, catchBack);
 	}
 
 	@Override
 	public boolean isCatchBackKey() {
-		return catchBack;
+		return keysToCatch.contains(Keys.BACK);
 	}
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
-		this.catchMenu = catchMenu;
+		setCatchKey(Keys.MENU, catchMenu);
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey () {
-		return catchMenu;
+		return keysToCatch.contains(Keys.MENU);
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+		if (!catchKey) {
+			keysToCatch.remove(keycode);
+		} else if (catchKey) {
+			keysToCatch.add(keycode);
+		}
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return keysToCatch.contains(keyCount);
 	}
 
 	@Override
 	public void vibrate (int milliseconds) {
-		vibrator.vibrate(milliseconds);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
+		else
+			vibrator.vibrate(milliseconds);
 	}
 
 	@Override
 	public void vibrate (long[] pattern, int repeat) {
-		vibrator.vibrate(pattern, repeat);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
+		else
+			vibrator.vibrate(pattern, repeat);
 	}
 
 	@Override
@@ -676,6 +709,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 			return (touched[0] && (this.button[0] == button));
 		}
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		if(button < 0 || button > NUM_TOUCHES) return false;
+		return justPressedButtons[button];
 	}
 
 	final float[] R = new float[9];
