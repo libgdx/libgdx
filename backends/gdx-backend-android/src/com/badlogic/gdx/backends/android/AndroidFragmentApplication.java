@@ -93,17 +93,13 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
-		
-		try {
-			View view = this.graphics.getView();
 
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
-				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			view.setSystemUiVisibility(code);
-		} catch (Exception e) {
-			log("AndroidApplication", "Failed to setup immersive mode, a throwable has occurred.", e);
-		}
+		View view = this.graphics.getView();
+
+		int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+			| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+			| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+		view.setSystemUiVisibility(code);
 	}
 
 	/** This method has to be called in the
@@ -175,12 +171,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(config.useImmersiveMode);
 		if (config.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
-			try {
-				AndroidVisibilityListener vlistener =new AndroidVisibilityListener();
-				vlistener.createListener(this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
+			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
+			vlistener.createListener(this);
 		}
 
 		// detect an already connected bluetooth keyboardAvailable

@@ -170,12 +170,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
-			try {
-				AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
-				vlistener.createListener(this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
+			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
+			vlistener.createListener(this);
 		}
 		
 		// detect an already connected bluetooth keyboardAvailable
@@ -202,12 +198,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		View rootView = getWindow().getDecorView();
 
-		try {
-			if (getVersion() <= 13) rootView.setSystemUiVisibility(0x0);
-			rootView.setSystemUiVisibility(0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
-		}
+		if (getVersion() <= 13) rootView.setSystemUiVisibility(0x0);
+		rootView.setSystemUiVisibility(0x1);
 	}
 
 	@Override
@@ -232,14 +224,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
 
 		View view = getWindow().getDecorView();
-		try {
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
-				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			view.setSystemUiVisibility(code);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
-		}
+		int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+			| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+			| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+		view.setSystemUiVisibility(code);
 	}
 
 	@Override
