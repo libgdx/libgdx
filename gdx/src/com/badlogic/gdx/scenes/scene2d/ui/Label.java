@@ -149,7 +149,10 @@ public class Label extends Widget {
 		GlyphLayout prefSizeLayout = Label.prefSizeLayout;
 		if (wrap && ellipsis == null) {
 			float width = getWidth();
-			if (style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
+			if (style.background != null) {
+				width = Math.max(width, style.background.getMinWidth()) - style.background.getLeftWidth()
+					- style.background.getRightWidth();
+			}
 			prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
 		} else
 			prefSizeLayout.setText(cache.getFont(), text);
@@ -236,7 +239,8 @@ public class Label extends Widget {
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float width = prefSize.x;
 		Drawable background = style.background;
-		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
+		if (background != null)
+			width = Math.max(width + background.getLeftWidth() + background.getRightWidth(), background.getMinWidth());
 		return width;
 	}
 
@@ -246,7 +250,8 @@ public class Label extends Widget {
 		if (fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();
 		float height = prefSize.y - style.font.getDescent() * descentScaleCorrection * 2;
 		Drawable background = style.background;
-		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+		if (background != null)
+			height = Math.max(height + background.getTopHeight() + background.getBottomHeight(), background.getMinHeight());
 		return height;
 	}
 

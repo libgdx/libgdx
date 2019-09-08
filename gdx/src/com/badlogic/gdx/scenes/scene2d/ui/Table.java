@@ -302,6 +302,13 @@ public class Table extends WidgetGroup {
 		return true;
 	}
 
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		Cell cell = getCell(actor);
+		if (cell != null) cell.actor = null;
+		return actor;
+	}
+
 	/** Removes all actors and cells from the table. */
 	public void clearChildren () {
 		Array<Cell> cells = this.cells;

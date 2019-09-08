@@ -543,21 +543,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
-			String name = element.get("name", null);
 			int firstgid = element.getIntAttribute("firstgid", 1);
-			int tilewidth = element.getIntAttribute("tilewidth", 0);
-			int tileheight = element.getIntAttribute("tileheight", 0);
-			int spacing = element.getIntAttribute("spacing", 0);
-			int margin = element.getIntAttribute("margin", 0);
-
-			Element offset = element.getChildByName("tileoffset");
-			int offsetX = 0;
-			int offsetY = 0;
-			if (offset != null) {
-				offsetX = offset.getIntAttribute("x", 0);
-				offsetY = offset.getIntAttribute("y", 0);
-			}
-
 			String imageSource = "";
 			int imageWidth = 0;
 			int imageHeight = 0;
@@ -587,7 +573,19 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					image = getRelativeFileHandle(tmxFile, imageSource);
 				}
 			}
+			String name = element.get("name", null);
+			int tilewidth = element.getIntAttribute("tilewidth", 0);
+			int tileheight = element.getIntAttribute("tileheight", 0);
+			int spacing = element.getIntAttribute("spacing", 0);
+			int margin = element.getIntAttribute("margin", 0);
 
+			Element offset = element.getChildByName("tileoffset");
+			int offsetX = 0;
+			int offsetY = 0;
+			if (offset != null) {
+				offsetX = offset.getIntAttribute("x", 0);
+				offsetY = offset.getIntAttribute("y", 0);
+			}
 			TiledMapTileSet tileSet = new TiledMapTileSet();
 
 			// TileSet

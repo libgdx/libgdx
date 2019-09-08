@@ -42,12 +42,10 @@ public class RotateToAction extends TemporalAction {
 		this.useShortestDirection = useShortestDirection;
 	}
 
-	@Override
 	protected void begin () {
 		start = target.getRotation();
 	}
 
-	@Override
 	protected void update (float percent) {
 		float rotation;
 		if (percent == 0)

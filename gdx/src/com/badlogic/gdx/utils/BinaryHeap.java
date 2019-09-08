@@ -185,7 +185,6 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		node.index = index;
 	}
 
-	@Override
 	public boolean equals (Object obj) {
 		if (!(obj instanceof BinaryHeap)) return false;
 		BinaryHeap other = (BinaryHeap)obj;

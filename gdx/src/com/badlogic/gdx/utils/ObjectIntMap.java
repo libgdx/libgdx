@@ -63,13 +63,13 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectIntMap (int initialCapacity, float loadFactor) {
+		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		this.loadFactor = loadFactor;
+
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
-		this.loadFactor = loadFactor;
 
 		threshold = (int)(capacity * loadFactor);
 		mask = capacity - 1;
@@ -570,8 +570,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	/** Returns an iterator for the entries in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K> entries () {
 		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
@@ -592,8 +592,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values values () {
 		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
@@ -614,8 +614,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {

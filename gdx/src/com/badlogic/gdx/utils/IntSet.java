@@ -61,13 +61,13 @@ public class IntSet {
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IntSet (int initialCapacity, float loadFactor) {
+		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		this.loadFactor = loadFactor;
+
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
-		this.loadFactor = loadFactor;
 
 		threshold = (int)(capacity * loadFactor);
 		mask = capacity - 1;
@@ -482,8 +482,8 @@ public class IntSet {
 
 	/** Returns an iterator for the keys in the set. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link IntSetIterator} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link IntSetIterator} constructor for nested or multithreaded iteration. */
 	public IntSetIterator iterator () {
 		if (Collections.allocateIterators) return new IntSetIterator(this);
 		if (iterator1 == null) {

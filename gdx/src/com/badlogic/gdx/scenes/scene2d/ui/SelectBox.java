@@ -168,7 +168,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return items;
 	}
 
-	@Override
 	public void layout () {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
@@ -189,20 +188,20 @@ public class SelectBox<T> extends Widget implements Disableable {
 		layoutPool.free(layout);
 
 		prefWidth = maxItemWidth;
-		if (bg != null) prefWidth += bg.getLeftWidth() + bg.getRightWidth();
+		if (bg != null) prefWidth = Math.max(prefWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
 		float listWidth = maxItemWidth + listStyle.selection.getLeftWidth() + listStyle.selection.getRightWidth();
-		if (scrollStyle.background != null)
-			listWidth += scrollStyle.background.getLeftWidth() + scrollStyle.background.getRightWidth();
-		if (selectBoxList == null || !selectBoxList.disableY)
+		bg = scrollStyle.background;
+		if (bg != null) listWidth = Math.max(listWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
+		if (selectBoxList == null || !selectBoxList.disableY) {
 			listWidth += Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
 				style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0);
+		}
 		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
@@ -362,7 +361,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setScrollingDisabled(true, false);
 
 			list = new List<T>(selectBox.style.listStyle) {
-				@Override
 				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}

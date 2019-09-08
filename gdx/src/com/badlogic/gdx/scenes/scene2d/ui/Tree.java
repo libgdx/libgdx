@@ -231,11 +231,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 	private float layout (Array<N> nodes, float indent, float y, float plusMinusWidth) {
 		float ySpacing = this.ySpacing;
+		float iconSpacingLeft = this.iconSpacingLeft;
 		float spacing = iconSpacingLeft + iconSpacingRight;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
 			float x = indent + plusMinusWidth;
-			if (node.icon != null) x += spacing + node.icon.getMinWidth();
+			if (node.icon != null)
+				x += spacing + node.icon.getMinWidth();
+			else
+				x += iconSpacingLeft;
 			if (node.actor instanceof Layout) ((Layout)node.actor).pack();
 			y -= node.getHeight();
 			node.actor.setPosition(x, y);
@@ -452,7 +456,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		return ySpacing;
 	}
 
-	/** Sets the amount of horizontal space left and right of the node's icon. */
+	/** Sets the amount of horizontal space left and right of the node's icon. If a node has no icon, the left spacing is used
+	 * between the plus/minus drawable and the node's actor. */
 	public void setIconSpacing (float left, float right) {
 		this.iconSpacingLeft = left;
 		this.iconSpacingRight = right;
