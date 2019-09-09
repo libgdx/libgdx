@@ -23,7 +23,6 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.
 
 public class Lwjgl3WindowConfiguration {
 	int windowX = -1;
