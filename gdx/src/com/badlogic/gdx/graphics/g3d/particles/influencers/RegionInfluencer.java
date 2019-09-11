@@ -250,6 +250,7 @@ public abstract class RegionInfluencer extends Influencer {
 	private final static String ASSET_DATA = "atlasAssetData";
 	@Override
 	public void load (AssetManager manager, ResourceData resources) {
+		super.load(manager, resources);
 		SaveData data = resources.getSaveData(ASSET_DATA);
 		if (data == null) {
 			return;
@@ -259,10 +260,10 @@ public abstract class RegionInfluencer extends Influencer {
 		for (AspectTextureRegion atr : regions) {
 			atr.updateUV(atlas);
 		}
-		super.load(manager, resources);
 	}
 	@Override
 	public void save (AssetManager manager, ResourceData resources) {
+		super.save(manager, resources);
 		if (atlasName != null) {
 			SaveData data = resources.getSaveData(ASSET_DATA);
 			if (data == null) {
@@ -270,7 +271,6 @@ public abstract class RegionInfluencer extends Influencer {
                         }
 			data.saveAsset(atlasName, TextureAtlas.class);
 		}
-		super.save(manager, resources);
 	}
 	@Override
 	public void allocateChannels () {
