@@ -53,7 +53,7 @@ public class TextureLoaderPanel extends EditorPanel {
 				if(file != null){
 					TextureAtlas atlas = editor.load(file.getAbsolutePath(), TextureAtlas.class, null,  null);
 					if(atlas != null){
-						editor.setAtlas(atlas, file.getAbsolutePath());
+						editor.setAtlas(atlas);
 					}
 				}
 			}
