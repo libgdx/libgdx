@@ -217,9 +217,9 @@ public abstract class RegionInfluencer extends Influencer {
 
 	/** All the regions must be defined on the same Texture */
 	public RegionInfluencer (TextureRegion... regions) {
+		setAtlasName(null);
 		this.regions = new Array<AspectTextureRegion>(false, regions.length, AspectTextureRegion.class);
-		String atlasName = null;
-		add(atlasName, regions);
+		add(regions);
 	}
 
 	public RegionInfluencer (Texture texture) {
@@ -233,9 +233,10 @@ public abstract class RegionInfluencer extends Influencer {
 			regions.add(new AspectTextureRegion((AspectTextureRegion)regionInfluencer.regions.get(i)));
 		}
 	}
-
-	public void add (String atlasName, TextureRegion... regions) {
+	public void setAtlasName (String atlasName) {
 		this.atlasName = atlasName;
+	}
+	public void add (TextureRegion... regions) {
 		this.regions.ensureCapacity(regions.length);
 		for (TextureRegion region : regions) {
 			this.regions.add(new AspectTextureRegion(region));
@@ -243,12 +244,13 @@ public abstract class RegionInfluencer extends Influencer {
 	}
 
 	public void clear () {
+		atlasName = null;
 		regions.clear();
 	}
-
+	private final static String ASSET_DATA = "atlasAssetData";
 	@Override
 	public void load (AssetManager manager, ResourceData resources) {
-		SaveData data = resources.getSaveData("atlasAssetData");
+		SaveData data = resources.getSaveData(ASSET_DATA);
 		if (data == null) {
 			return;
 		}
@@ -262,9 +264,9 @@ public abstract class RegionInfluencer extends Influencer {
 	@Override
 	public void save (AssetManager manager, ResourceData resources) {
 		if (atlasName != null) {
-			SaveData data = resources.getSaveData("atlasAssetData");
+			SaveData data = resources.getSaveData(ASSET_DATA);
 			if (data == null) {
-				data = resources.createSaveData("atlasAssetData");
+				data = resources.createSaveData(ASSET_DATA);
                         }
 			data.saveAsset(atlasName, TextureAtlas.class);
 		}
