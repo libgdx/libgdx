@@ -189,7 +189,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean supportsDisplayModeChange () {
-		return supportsFullscreenJSNI() && GwtFeaturePolicy.allowsFeature("fullscreen");
+		return GwtFeaturePolicy.allowsFeature("fullscreen") && supportsFullscreenJSNI();
 	}
 
 	private native boolean supportsFullscreenJSNI () /*-{

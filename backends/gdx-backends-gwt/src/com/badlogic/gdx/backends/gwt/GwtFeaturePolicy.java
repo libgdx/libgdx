@@ -40,29 +40,35 @@ class GwtFeaturePolicy {
 	}-*/;
 
 	static private native JsArrayString JSfeatures() /*-{
-		if (!@com.badlogic.gdx.backends.gwt.GwtFeaturePolicy::isSupported()()) return [];
 		return $wnd.document.featurePolicy.features();
 	}-*/;
 
 	static String[] features() {
-		return toStringArray(JSfeatures());
+		if (GwtFeaturePolicy.isSupported())
+			return toStringArray(JSfeatures());
+		else
+			return null;
 	}
 
 	static private native JsArrayString JSallowedFeatures() /*-{
-		if (!@com.badlogic.gdx.backends.gwt.GwtFeaturePolicy::isSupported()()) return [];
 		return $wnd.document.featurePolicy.allowedFeatures();
 	}-*/;
 
 	static String[] allowedFeatures() {
-		return toStringArray(JSallowedFeatures());
+		if (GwtFeaturePolicy.isSupported())
+			return toStringArray(JSallowedFeatures());
+		else
+			return null;
 	}
 
 	static private native JsArrayString JSgetAllowlistForFeature(String feature) /*-{
-		if (!@com.badlogic.gdx.backends.gwt.GwtFeaturePolicy::isSupported()()) return [];
 		return $wnd.document.featurePolicy.getAllowlistForFeature(feature);
 	}-*/;
 
 	static String[] getAllowlistForFeature(String feature) {
-		return toStringArray(JSgetAllowlistForFeature(feature));
+		if (GwtFeaturePolicy.isSupported())
+			return toStringArray(JSgetAllowlistForFeature(feature));
+		else
+			return null;
 	}
 }
