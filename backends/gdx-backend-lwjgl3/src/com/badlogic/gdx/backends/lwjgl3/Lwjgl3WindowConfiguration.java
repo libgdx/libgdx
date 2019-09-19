@@ -167,7 +167,7 @@ public class Lwjgl3WindowConfiguration {
 
 	/**
 	 * Sets the app to use fullscreen mode. Use the static methods like
-	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
+	 * {@link Lwjgl3ApplicationConfiguration#getDisplayMode()} on this class to enumerate connected monitors
 	 * and their fullscreen display modes.
 	 */
 	public void setFullscreenMode(DisplayMode mode) {
