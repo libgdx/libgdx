@@ -69,12 +69,12 @@ public final class MathUtils {
 		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in degrees from a lookup table. */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in degrees from a lookup table. */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
