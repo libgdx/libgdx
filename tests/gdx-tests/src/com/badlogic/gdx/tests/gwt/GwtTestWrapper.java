@@ -359,7 +359,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public boolean isButtonJustPressed (int button) {
-			return false;
+			return input.isButtonJustPressed(button);
 		}
 
 		@Override
