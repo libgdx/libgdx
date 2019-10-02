@@ -59,22 +59,26 @@ public final class MathUtils {
 		}
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in radians from a lookup table. For optimal precision, use radians that are not drastically more positive
+	 * or negative than {@link #PI2} */
 	static public float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in radians from a lookup table. For optimal precision, use radians that are not drastically more
+	 * positive or negative than {@link #PI2} */
 	static public float cos (float radians) {
 		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in degrees from a lookup table. */
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use degrees that are not drastically more positive
+	 * or negative than 360 */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in degrees from a lookup table. */
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use degrees that are not drastically more
+	 * positive or negative than 360 */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
