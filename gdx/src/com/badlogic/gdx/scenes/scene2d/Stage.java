@@ -46,7 +46,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A 2D scene graph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributes input events.
@@ -98,7 +97,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch} which will be disposed when the stage
 	 * is disposed. */
-	public Stage (@NotNull Viewport viewport) {
+	public Stage (Viewport viewport) {
 		this(viewport, new SpriteBatch());
 		ownsBatch = true;
 	}
@@ -106,7 +105,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Creates a stage with the specified viewport and batch. This can be used to avoid creating a new batch (which can be
 	 * somewhat slow) if multiple stages are used during an application's life time.
 	 * @param batch Will not be disposed if {@link #dispose()} is called, handle disposal yourself. */
-	public Stage (@NotNull Viewport viewport, @NotNull Batch batch) {
+	public Stage (Viewport viewport, Batch batch) {
 		if (viewport == null) throw new IllegalArgumentException("viewport cannot be null.");
 		if (batch == null) throw new IllegalArgumentException("batch cannot be null.");
 		this.viewport = viewport;
@@ -173,7 +172,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Disables debug on all actors recursively except the specified actor and any children. */
-	private void disableDebug (@NotNull Actor actor, @NotNull Actor except) {
+	private void disableDebug (Actor actor, Actor except) {
 		if (actor == except) return;
 		actor.setDebug(false);
 		if (actor instanceof Group) {
@@ -451,8 +450,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * is added automatically when true is returned from {@link InputListener#touchDown(InputEvent, float, float, int, int)
 	 * touchDown}. The specified actors will be used as the {@link Event#getListenerActor() listener actor} and
 	 * {@link Event#getTarget() target} for the touchDragged and touchUp events. */
-	public void addTouchFocus (@NotNull EventListener listener, @NotNull Actor listenerActor,
-		@NotNull Actor target, int pointer, int button) {
+	public void addTouchFocus (EventListener listener, Actor listenerActor,
+		Actor target, int pointer, int button) {
 		TouchFocus focus = Pools.obtain(TouchFocus.class);
 		focus.listenerActor = listenerActor;
 		focus.target = target;
@@ -464,8 +463,8 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Removes touch focus for the specified listener, pointer, and button. Note the listener will not receive a touchUp event
 	 * when this method is used. */
-	public void removeTouchFocus (@NotNull EventListener listener,
-		@NotNull Actor listenerActor, Actor target, int pointer, int button) {
+	public void removeTouchFocus (EventListener listener,
+		Actor listenerActor, Actor target, int pointer, int button) {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
@@ -479,7 +478,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Cancels touch focus for all listeners with the specified listener actor.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocus (@NotNull Actor listenerActor) {
+	public void cancelTouchFocus (Actor listenerActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -515,7 +514,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Cancels touch focus for all listeners except the specified listener.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocusExcept (@NotNull EventListener exceptListener, @NotNull Actor exceptActor) {
+	public void cancelTouchFocusExcept (EventListener exceptListener, Actor exceptActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -544,44 +543,43 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Adds an actor to the root of the stage.
 	 * @see Group#addActor(Actor) */
-	public void addActor (@NotNull Actor actor) {
+	public void addActor (Actor actor) {
 		root.addActor(actor);
 	}
 
 	/** Adds an action to the root of the stage.
 	 * @see Group#addAction(Action) */
-	public void addAction (@NotNull Action action) {
+	public void addAction (Action action) {
 		root.addAction(action);
 	}
 
 	/** Returns the root's child actors.
 	 * @see Group#getChildren() */
-	@NotNull
 	public Array<Actor> getActors () {
 		return root.children;
 	}
 
 	/** Adds a listener to the root.
 	 * @see Actor#addListener(EventListener) */
-	public boolean addListener (@NotNull EventListener listener) {
+	public boolean addListener (EventListener listener) {
 		return root.addListener(listener);
 	}
 
 	/** Removes a listener from the root.
 	 * @see Actor#removeListener(EventListener) */
-	public boolean removeListener (@NotNull EventListener listener) {
+	public boolean removeListener (EventListener listener) {
 		return root.removeListener(listener);
 	}
 
 	/** Adds a capture listener to the root.
 	 * @see Actor#addCaptureListener(EventListener) */
-	public boolean addCaptureListener (@NotNull EventListener listener) {
+	public boolean addCaptureListener (EventListener listener) {
 		return root.addCaptureListener(listener);
 	}
 
 	/** Removes a listener from the root.
 	 * @see Actor#removeCaptureListener(EventListener) */
-	public boolean removeCaptureListener (@NotNull EventListener listener) {
+	public boolean removeCaptureListener (EventListener listener) {
 		return root.removeCaptureListener(listener);
 	}
 
@@ -599,7 +597,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Removes the touch, keyboard, and scroll focus for the specified actor and any descendants. */
-	public void unfocus (@NotNull Actor actor) {
+	public void unfocus (Actor actor) {
 		cancelTouchFocus(actor);
 		if (scrollFocus != null && scrollFocus.isDescendantOf(actor)) setScrollFocus(null);
 		if (keyboardFocus != null && keyboardFocus.isDescendantOf(actor)) setKeyboardFocus(null);
@@ -677,17 +675,15 @@ public class Stage extends InputAdapter implements Disposable {
 		return scrollFocus;
 	}
 
-	@NotNull
 	public Batch getBatch () {
 		return batch;
 	}
 
-	@NotNull
 	public Viewport getViewport () {
 		return viewport;
 	}
 
-	public void setViewport (@NotNull Viewport viewport) {
+	public void setViewport (Viewport viewport) {
 		this.viewport = viewport;
 	}
 
@@ -702,20 +698,18 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** The viewport's camera. */
-	@NotNull
 	public Camera getCamera () {
 		return viewport.getCamera();
 	}
 
 	/** Returns the root group which holds all actors in the stage. */
-	@NotNull
 	public Group getRoot () {
 		return root;
 	}
 
 	/** Replaces the root group. This can be useful, for example, to subclass the root group to be notified by
 	 * {@link Group#childrenChanged()}. */
-	public void setRoot (@NotNull Group root) {
+	public void setRoot (Group root) {
 		if (root.parent != null) root.parent.removeActor(root, false);
 		this.root = root;
 		root.setParent(null);
@@ -735,16 +729,14 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Transforms the screen coordinates to stage coordinates.
 	 * @param screenCoords Input screen coordinates and output for resulting stage coordinates. */
-	@NotNull
-	public Vector2 screenToStageCoordinates (@NotNull Vector2 screenCoords) {
+	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
 		viewport.unproject(screenCoords);
 		return screenCoords;
 	}
 
 	/** Transforms the stage coordinates to screen coordinates.
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
-	@NotNull
-	public Vector2 stageToScreenCoordinates (@NotNull Vector2 stageCoords) {
+	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
 		stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
 		return stageCoords;
@@ -754,14 +746,13 @@ public class Stage extends InputAdapter implements Disposable {
 	 * describes how to convert them. The transform matrix is typically obtained from {@link Batch#getTransformMatrix()} during
 	 * {@link Actor#draw(Batch, float)}.
 	 * @see Actor#localToStageCoordinates(Vector2) */
-	@NotNull
-	public Vector2 toScreenCoordinates (@NotNull Vector2 coords, @NotNull Matrix4 transformMatrix) {
+	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		return viewport.toScreenCoordinates(coords, transformMatrix);
 	}
 
 	/** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix.
 	 * @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
-	public void calculateScissors (@NotNull Rectangle localRect, @NotNull Rectangle scissorRect) {
+	public void calculateScissors (Rectangle localRect, Rectangle scissorRect) {
 		Matrix4 transformMatrix;
 		if (debugShapes != null && debugShapes.isDrawing())
 			transformMatrix = debugShapes.getTransformMatrix();
@@ -782,7 +773,6 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** The default color that can be used by actors to draw debug lines. */
-	@NotNull
 	public Color getDebugColor () {
 		return debugColor;
 	}

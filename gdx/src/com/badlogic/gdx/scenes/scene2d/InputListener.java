@@ -17,7 +17,6 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** EventListener for low-level input events. Unpacks {@link InputEvent}s and calls the appropriate method. By default the methods
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 public class InputListener implements EventListener {
 	static private final Vector2 tmpCoords = new Vector2();
 
-	public boolean handle (@NotNull Event e) {
+	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
 
@@ -82,26 +81,26 @@ public class InputListener implements EventListener {
 	 * touchUp events, even those not over this actor, until touchUp is received. Also when true is returned, the event is
 	 * {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		return false;
 	}
 
 	/** Called when a mouse button or a finger touch goes up anywhere, but only if touchDown previously returned true for the mouse
 	 * button or touch. The touchUp event is always {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
 	/** Called when a mouse button or a finger touch is moved anywhere, but only if touchDown previously returned true for the
 	 * mouse button or touch. The touchDragged event is always {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 	}
 
 	/** Called any time the mouse is moved when a button is not down. This event only occurs on the desktop. When true is returned,
 	 * the event is {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
+	public boolean mouseMoved (InputEvent event, float x, float y) {
 		return false;
 	}
 
@@ -109,34 +108,34 @@ public class InputListener implements EventListener {
 	 * mouse buttons are pressed (pointer will be -1).
 	 * @param fromActor May be null.
 	 * @see InputEvent */
-	public void enter (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
+	public void enter (InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
 	}
 
 	/** Called any time the mouse cursor or a finger touch is moved out of an actor. On the desktop, this event occurs even when no
 	 * mouse buttons are pressed (pointer will be -1).
 	 * @param toActor May be null.
 	 * @see InputEvent */
-	public void exit (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
+	public void exit (InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
 	}
 
 	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean scrolled (@NotNull InputEvent event, float x, float y, int amount) {
+	public boolean scrolled (InputEvent event, float x, float y, int amount) {
 		return false;
 	}
 
 	/** Called when a key goes down. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean keyDown (@NotNull InputEvent event, int keycode) {
+	public boolean keyDown (InputEvent event, int keycode) {
 		return false;
 	}
 
 	/** Called when a key goes up. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean keyUp (@NotNull InputEvent event, int keycode) {
+	public boolean keyUp (InputEvent event, int keycode) {
 		return false;
 	}
 
 	/** Called when a key is typed. When true is returned, the event is {@link Event#handle() handled}.
 	 * @param character May be 0 for key typed events that don't map to a character (ctrl, shift, etc). */
-	public boolean keyTyped (@NotNull InputEvent event, char character) {
+	public boolean keyTyped (InputEvent event, char character) {
 		return false;
 	}
 }

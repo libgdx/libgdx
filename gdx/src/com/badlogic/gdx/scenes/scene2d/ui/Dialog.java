@@ -34,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Displays a dialog, which is a modal window containing a content table with a button table underneath it. Methods are provided
@@ -50,27 +49,27 @@ public class Dialog extends Window {
 	FocusListener focusListener;
 
 	protected InputListener ignoreTouchDown = new InputListener() {
-		public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 			event.cancel();
 			return false;
 		}
 	};
 
-	public Dialog (@NotNull String title, @NotNull Skin skin) {
+	public Dialog (String title, Skin skin) {
 		super(title, skin.get(WindowStyle.class));
 		setSkin(skin);
 		this.skin = skin;
 		initialize();
 	}
 
-	public Dialog (@NotNull String title, @NotNull Skin skin, @NotNull String windowStyleName) {
+	public Dialog (String title, Skin skin, String windowStyleName) {
 		super(title, skin.get(windowStyleName, WindowStyle.class));
 		setSkin(skin);
 		this.skin = skin;
 		initialize();
 	}
 
-	public Dialog (@NotNull String title, @NotNull WindowStyle windowStyle) {
+	public Dialog (String title, WindowStyle windowStyle) {
 		super(title, windowStyle);
 		initialize();
 	}
@@ -87,7 +86,7 @@ public class Dialog extends Window {
 		buttonTable.defaults().space(6);
 
 		buttonTable.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				if (!values.containsKey(actor)) return;
 				while (actor.getParent() != buttonTable) {
 					actor = actor.getParent();
@@ -100,11 +99,11 @@ public class Dialog extends Window {
 		});
 
 		focusListener = new FocusListener() {
-			public void keyboardFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 				if (!focused) focusChanged(event);
 			}
 
-			public void scrollFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
+			public void scrollFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 				if (!focused) focusChanged(event);
 			}
 
@@ -129,12 +128,10 @@ public class Dialog extends Window {
 		super.setStage(stage);
 	}
 
-	@NotNull
 	public Table getContentTable () {
 		return contentTable;
 	}
 
-	@NotNull
 	public Table getButtonTable () {
 		return buttonTable;
 	}
@@ -147,12 +144,12 @@ public class Dialog extends Window {
 	}
 
 	/** Adds a label to the content table. */
-	public Dialog text (@Nullable String text, @NotNull LabelStyle labelStyle) {
+	public Dialog text (@Nullable String text, LabelStyle labelStyle) {
 		return text(new Label(text, labelStyle));
 	}
 
 	/** Adds the given Label to the content table */
-	public Dialog text (@NotNull Label label) {
+	public Dialog text (Label label) {
 		contentTable.add(label);
 		return this;
 	}
@@ -173,18 +170,18 @@ public class Dialog extends Window {
 
 	/** Adds a text button to the button table.
 	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
-	public Dialog button (@Nullable String text, @Nullable Object object, @NotNull TextButtonStyle buttonStyle) {
+	public Dialog button (@Nullable String text, @Nullable Object object, TextButtonStyle buttonStyle) {
 		return button(new TextButton(text, buttonStyle), object);
 	}
 
 	/** Adds the given button to the button table. */
-	public Dialog button (@NotNull Button button) {
+	public Dialog button (Button button) {
 		return button(button, null);
 	}
 
 	/** Adds the given button to the button table.
 	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
-	public Dialog button (@NotNull Button button, @Nullable Object object) {
+	public Dialog button (Button button, @Nullable Object object) {
 		buttonTable.add(button);
 		setObject(button, object);
 		return this;
@@ -194,7 +191,7 @@ public class Dialog extends Window {
 	 * focus, clears any actions on the dialog, and adds the specified action to it. The previous keyboard and scroll focus are
 	 * remembered so they can be restored when the dialog is hidden.
 	 * @param action May be null. */
-	public Dialog show (@NotNull Stage stage, @Nullable Action action) {
+	public Dialog show (Stage stage, @Nullable Action action) {
 		clearActions();
 		removeCaptureListener(ignoreTouchDown);
 
@@ -218,7 +215,7 @@ public class Dialog extends Window {
 
 	/** Centers the dialog in the stage and calls {@link #show(Stage, Action)} with a {@link Actions#fadeIn(float, Interpolation)}
 	 * action. */
-	public Dialog show (@NotNull Stage stage) {
+	public Dialog show (Stage stage) {
 		show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		return this;
@@ -253,7 +250,7 @@ public class Dialog extends Window {
 		hide(fadeOut(0.4f, Interpolation.fade));
 	}
 
-	public void setObject (@NotNull Actor actor, @Nullable Object object) {
+	public void setObject (Actor actor, @Nullable Object object) {
 		values.put(actor, object);
 	}
 
@@ -261,7 +258,7 @@ public class Dialog extends Window {
 	 * @see Keys */
 	public Dialog key (final int keycode, @Nullable final Object object) {
 		addListener(new InputListener() {
-			public boolean keyDown (@NotNull InputEvent event, int keycode2) {
+			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {
 					// Delay a frame to eat the keyTyped event.
 					Gdx.app.postRunnable(new Runnable() {

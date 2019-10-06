@@ -43,8 +43,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import org.jetbrains.annotations.NotNull;
-
 public class ParticleEmittersTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	ParticleEffect effect;
@@ -160,7 +158,7 @@ public class ParticleEmittersTest extends GdxTest {
 	ChangeListener listener = new ChangeListener() {
 
 		@Override
-		public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+		public void changed (ChangeEvent event, Actor actor) {
 			if (actor == skipCleanup) {
 				updateSkipCleanupState();
 			} else if (actor == clearEmitters) {

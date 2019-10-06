@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Actions attach to an {@link Actor} and perform some task, often over time.
@@ -106,7 +105,6 @@ abstract public class Action implements Poolable {
 		this.pool = pool;
 	}
 
-	@NotNull
 	public String toString () {
 		String name = getClass().getName();
 		int dotIndex = name.lastIndexOf('.');

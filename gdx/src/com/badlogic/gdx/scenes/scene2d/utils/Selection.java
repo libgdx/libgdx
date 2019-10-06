@@ -6,8 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -33,7 +31,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 
 	/** Selects or deselects the specified item based on how the selection is configured, whether ctrl is currently pressed, etc.
 	 * This is typically invoked by user interaction. */
-	public void choose (@NotNull T item) {
+	public void choose (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		snapshot();
@@ -79,7 +77,6 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.size;
 	}
 
-	@NotNull
 	public OrderedSet<T> items () {
 		return selected;
 	}
@@ -105,7 +102,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Sets the selection to only the specified item. */
-	public void set (@NotNull T item) {
+	public void set (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();
@@ -120,7 +117,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	public void setAll (@NotNull Array<T> items) {
+	public void setAll (Array<T> items) {
 		boolean added = false;
 		snapshot();
 		lastSelected = null;
@@ -142,7 +139,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Adds the item to the selection. */
-	public void add (@NotNull T item) {
+	public void add (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.add(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
@@ -153,7 +150,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
-	public void addAll (@NotNull Array<T> items) {
+	public void addAll (Array<T> items) {
 		boolean added = false;
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
@@ -172,7 +169,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	public void remove (@NotNull T item) {
+	public void remove (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.remove(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
@@ -183,7 +180,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
-	public void removeAll (@NotNull Array<T> items) {
+	public void removeAll (Array<T> items) {
 		boolean removed = false;
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
@@ -249,17 +246,14 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return null;
 	}
 
-	@NotNull
 	public Iterator<T> iterator () {
 		return selected.iterator();
 	}
 
-	@NotNull
 	public Array<T> toArray () {
 		return selected.iterator().toArray();
 	}
 
-	@NotNull
 	public Array<T> toArray (Array<T> array) {
 		return selected.iterator().toArray(array);
 	}
@@ -305,7 +299,6 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
-	@NotNull
 	public String toString () {
 		return selected.toString();
 	}

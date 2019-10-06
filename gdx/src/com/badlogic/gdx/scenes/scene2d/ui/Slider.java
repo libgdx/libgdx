@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A slider is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between
@@ -43,15 +42,15 @@ import org.jetbrains.annotations.Nullable;
 public class Slider extends ProgressBar {
 	int draggingPointer = -1;
 	boolean mouseOver;
-	@NotNull private Interpolation visualInterpolationInverse = Interpolation.linear;
+	private Interpolation visualInterpolationInverse = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
 
-	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin) {
+	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
 	}
 
-	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin, @NotNull String styleName) {
+	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
 		this(min, max, stepSize, vertical, skin.get(styleName, SliderStyle.class));
 	}
 
@@ -64,11 +63,11 @@ public class Slider extends ProgressBar {
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
 	 * @param style the {@link SliderStyle} */
-	public Slider (float min, float max, float stepSize, boolean vertical, @NotNull SliderStyle style) {
+	public Slider (float min, float max, float stepSize, boolean vertical, SliderStyle style) {
 		super(min, max, stepSize, vertical, style);
 
 		addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (disabled) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
@@ -76,7 +75,7 @@ public class Slider extends ProgressBar {
 				return true;
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != draggingPointer) return;
 				draggingPointer = -1;
 				// The position is invalid when focus is cancelled
@@ -88,15 +87,15 @@ public class Slider extends ProgressBar {
 				}
 			}
 
-			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y);
 			}
 
-			public void enter (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
+			public void enter (InputEvent event, float x, float y, int pointer, @Nullable Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			public void exit (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
+			public void exit (InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}
 		});
@@ -104,7 +103,6 @@ public class Slider extends ProgressBar {
 
 	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(ProgressBarStyle)}
 	 * is called. */
-	@NotNull
 	public SliderStyle getStyle () {
 		return (SliderStyle)super.getStyle();
 	}
@@ -182,7 +180,7 @@ public class Slider extends ProgressBar {
 
 	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
 	 * {@link #setVisualInterpolation(Interpolation) visual interpolation}. */
-	public void setVisualInterpolationInverse (@NotNull Interpolation interpolation) {
+	public void setVisualInterpolationInverse (Interpolation interpolation) {
 		this.visualInterpolationInverse = interpolation;
 	}
 
@@ -200,7 +198,7 @@ public class Slider extends ProgressBar {
 			super(background, knob);
 		}
 
-		public SliderStyle (@NotNull SliderStyle style) {
+		public SliderStyle (SliderStyle style) {
 			super(style);
 			this.knobOver = style.knobOver;
 			this.knobDown = style.knobDown;

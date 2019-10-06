@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A container that contains two widgets and is divided either horizontally or vertically. The user may resize the widgets. The
@@ -61,19 +60,19 @@ public class SplitPane extends WidgetGroup {
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, @NotNull Skin skin) {
+	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, Skin skin) {
 		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "vertical" : "horizontal"));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, @NotNull Skin skin, @NotNull String styleName) {
+	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, Skin skin, String styleName) {
 		this(firstWidget, secondWidget, vertical, skin.get(styleName, SplitPaneStyle.class));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, @NotNull SplitPaneStyle style) {
+	public SplitPane (@Nullable Actor firstWidget, @Nullable Actor secondWidget, boolean vertical, SplitPaneStyle style) {
 		this.vertical = vertical;
 		setStyle(style);
 		setFirstWidget(firstWidget);
@@ -86,7 +85,7 @@ public class SplitPane extends WidgetGroup {
 		addListener(new InputListener() {
 			int draggingPointer = -1;
 
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (draggingPointer != -1) return false;
 				if (pointer == 0 && button != 0) return false;
 				if (handleBounds.contains(x, y)) {
@@ -98,11 +97,11 @@ public class SplitPane extends WidgetGroup {
 				return false;
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == draggingPointer) draggingPointer = -1;
 			}
 
-			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (pointer != draggingPointer) return;
 
 				Drawable handle = style.handle;
@@ -128,21 +127,20 @@ public class SplitPane extends WidgetGroup {
 				invalidate();
 			}
 
-			public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
+			public boolean mouseMoved (InputEvent event, float x, float y) {
 				cursorOverHandle = handleBounds.contains(x, y);
 				return false;
 			}
 		});
 	}
 
-	public void setStyle (@NotNull SplitPaneStyle style) {
+	public void setStyle (SplitPaneStyle style) {
 		this.style = style;
 		invalidateHierarchy();
 	}
 
 	/** Returns the split pane's style. Modifying the returned style may not have an effect until {@link #setStyle(SplitPaneStyle)}
 	 * is called. */
-	@NotNull
 	public SplitPaneStyle getStyle () {
 		return style;
 	}
@@ -241,7 +239,7 @@ public class SplitPane extends WidgetGroup {
 		handleBounds.set(0, bottomAreaHeight, width, handleHeight);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
 		if (stage == null) return;
 
@@ -345,19 +343,19 @@ public class SplitPane extends WidgetGroup {
 		invalidate();
 	}
 
-	public void addActor (@NotNull Actor actor) {
+	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
-	public void addActorAt (int index, @NotNull Actor actor) {
+	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
-	public void addActorBefore (@NotNull Actor actorBefore, @NotNull Actor actor) {
+	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
-	public boolean removeActor (@NotNull Actor actor) {
+	public boolean removeActor (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		if (actor == firstWidget) {
 			setFirstWidget(null);
@@ -370,7 +368,7 @@ public class SplitPane extends WidgetGroup {
 		return true;
 	}
 
-	public boolean removeActor (@NotNull Actor actor, boolean unfocus) {
+	public boolean removeActor (Actor actor, boolean unfocus) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		if (actor == firstWidget) {
 			super.removeActor(actor, unfocus);
@@ -414,11 +412,11 @@ public class SplitPane extends WidgetGroup {
 		public SplitPaneStyle () {
 		}
 
-		public SplitPaneStyle (@NotNull Drawable handle) {
+		public SplitPaneStyle (Drawable handle) {
 			this.handle = handle;
 		}
 
-		public SplitPaneStyle (@NotNull SplitPaneStyle style) {
+		public SplitPaneStyle (SplitPaneStyle style) {
 			this.handle = style.handle;
 		}
 	}

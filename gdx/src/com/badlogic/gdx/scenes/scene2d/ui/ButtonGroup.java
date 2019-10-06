@@ -18,8 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.utils.Array;
 
-import org.jetbrains.annotations.NotNull;
-
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
  * functionality and more. A button may only be in one group at a time.
  * <p>
@@ -36,13 +34,13 @@ public class ButtonGroup<T extends Button> {
 		minCheckCount = 1;
 	}
 
-	public ButtonGroup (@NotNull T... buttons) {
+	public ButtonGroup (T... buttons) {
 		minCheckCount = 0;
 		add(buttons);
 		minCheckCount = 1;
 	}
 
-	public void add (@NotNull T button) {
+	public void add (T button) {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
 		button.buttonGroup = null;
 		boolean shouldCheck = button.isChecked() || buttons.size < minCheckCount;
@@ -52,20 +50,20 @@ public class ButtonGroup<T extends Button> {
 		button.setChecked(shouldCheck);
 	}
 
-	public void add (@NotNull T... buttons) {
+	public void add (T... buttons) {
 		if (buttons == null) throw new IllegalArgumentException("buttons cannot be null.");
 		for (int i = 0, n = buttons.length; i < n; i++)
 			add(buttons[i]);
 	}
 
-	public void remove (@NotNull T button) {
+	public void remove (T button) {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
 		button.buttonGroup = null;
 		buttons.removeValue(button, true);
 		checkedButtons.removeValue(button, true);
 	}
 
-	public void remove (@NotNull T... buttons) {
+	public void remove (T... buttons) {
 		if (buttons == null) throw new IllegalArgumentException("buttons cannot be null.");
 		for (int i = 0, n = buttons.length; i < n; i++)
 			remove(buttons[i]);
@@ -77,7 +75,7 @@ public class ButtonGroup<T extends Button> {
 	}
 
 	/** Sets the first {@link TextButton} with the specified text to checked. */
-	public void setChecked (@NotNull String text) {
+	public void setChecked (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		for (int i = 0, n = buttons.size; i < n; i++) {
 			T button = buttons.get(i);
@@ -91,7 +89,7 @@ public class ButtonGroup<T extends Button> {
 	/** Called when a button is checked or unchecked. If overridden, generally changing button checked states should not be done
 	 * from within this method.
 	 * @return True if the new state should be allowed. */
-	protected boolean canCheck (@NotNull T button, boolean newState) {
+	protected boolean canCheck (T button, boolean newState) {
 		if (button.isChecked == newState) return false;
 
 		if (!newState) {
@@ -139,12 +137,10 @@ public class ButtonGroup<T extends Button> {
 		return -1;
 	}
 
-	@NotNull
 	public Array<T> getAllChecked () {
 		return checkedButtons;
 	}
 
-	@NotNull
 	public Array<T> getButtons () {
 		return buttons;
 	}

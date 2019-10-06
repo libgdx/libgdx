@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
@@ -50,16 +49,16 @@ public class ProgressBar extends Widget implements Disableable {
 	float position;
 	final boolean vertical;
 	private float animateDuration, animateTime;
-	@NotNull private Interpolation animateInterpolation = Interpolation.linear;
+	private Interpolation animateInterpolation = Interpolation.linear;
 	boolean disabled;
-	@NotNull private Interpolation visualInterpolation = Interpolation.linear;
+	private Interpolation visualInterpolation = Interpolation.linear;
 	private boolean round = true;
 
-	public ProgressBar (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin) {
+	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
 	}
 
-	public ProgressBar (float min, float max, float stepSize, boolean vertical, @NotNull Skin skin, @NotNull String styleName) {
+	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
 		this(min, max, stepSize, vertical, skin.get(styleName, ProgressBarStyle.class));
 	}
 
@@ -73,7 +72,7 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
 	 * @param style the {@link ProgressBarStyle} */
-	public ProgressBar (float min, float max, float stepSize, boolean vertical, @NotNull ProgressBarStyle style) {
+	public ProgressBar (float min, float max, float stepSize, boolean vertical, ProgressBarStyle style) {
 		if (min > max) throw new IllegalArgumentException("max must be > min. min,max: " + min + ", " + max);
 		if (stepSize <= 0) throw new IllegalArgumentException("stepSize must be > 0: " + stepSize);
 		setStyle(style);
@@ -85,7 +84,7 @@ public class ProgressBar extends Widget implements Disableable {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void setStyle (@NotNull ProgressBarStyle style) {
+	public void setStyle (ProgressBarStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
@@ -93,7 +92,6 @@ public class ProgressBar extends Widget implements Disableable {
 
 	/** Returns the progress bar's style. Modifying the returned style may not have an effect until
 	 * {@link #setStyle(ProgressBarStyle)} is called. */
-	@NotNull
 	public ProgressBarStyle getStyle () {
 		return style;
 	}
@@ -107,7 +105,7 @@ public class ProgressBar extends Widget implements Disableable {
 		}
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		ProgressBarStyle style = this.style;
 		boolean disabled = this.disabled;
 		final Drawable knob = getKnobDrawable();
@@ -343,13 +341,13 @@ public class ProgressBar extends Widget implements Disableable {
 	}
 
 	/** Sets the interpolation to use for {@link #setAnimateDuration(float)}. */
-	public void setAnimateInterpolation (@NotNull Interpolation animateInterpolation) {
+	public void setAnimateInterpolation (Interpolation animateInterpolation) {
 		if (animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
 		this.animateInterpolation = animateInterpolation;
 	}
 
 	/** Sets the interpolation to use for display. */
-	public void setVisualInterpolation (@NotNull Interpolation interpolation) {
+	public void setVisualInterpolation (Interpolation interpolation) {
 		this.visualInterpolation = interpolation;
 	}
 
@@ -392,7 +390,7 @@ public class ProgressBar extends Widget implements Disableable {
 			this.knob = knob;
 		}
 
-		public ProgressBarStyle (@NotNull ProgressBarStyle style) {
+		public ProgressBarStyle (ProgressBarStyle style) {
 			this.background = style.background;
 			this.disabledBackground = style.disabledBackground;
 			this.knob = style.knob;

@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -51,33 +50,33 @@ public class Button extends Table implements Disableable {
 	private ClickListener clickListener;
 	private boolean programmaticChangeEvents = true;
 
-	public Button (@NotNull Skin skin) {
+	public Button (Skin skin) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (@NotNull Skin skin, @NotNull String styleName) {
+	public Button (Skin skin, String styleName) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(styleName, ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (@NotNull Actor child, @NotNull Skin skin, @NotNull String styleName) {
+	public Button (Actor child, Skin skin, String styleName) {
 		this(child, skin.get(styleName, ButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public Button (@NotNull Actor child, @NotNull ButtonStyle style) {
+	public Button (Actor child, ButtonStyle style) {
 		initialize();
 		add(child);
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public Button (@NotNull ButtonStyle style) {
+	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
@@ -91,13 +90,13 @@ public class Button extends Table implements Disableable {
 	private void initialize () {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
-			public void clicked (@NotNull InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				if (isDisabled()) return;
 				setChecked(!isChecked, true);
 			}
 		});
 		addListener(new FocusListener() {
-			public void keyboardFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 				Button.this.focused = focused;
 			}
 		});
@@ -115,7 +114,7 @@ public class Button extends Table implements Disableable {
 		this(new ButtonStyle(up, down, checked));
 	}
 
-	public Button (@NotNull Actor child, @NotNull Skin skin) {
+	public Button (Actor child, Skin skin) {
 		this(child, skin.get(ButtonStyle.class));
 	}
 
@@ -172,7 +171,7 @@ public class Button extends Table implements Disableable {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
-	public void setStyle (@NotNull ButtonStyle style) {
+	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
@@ -201,7 +200,6 @@ public class Button extends Table implements Disableable {
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
 	 * called. */
-	@NotNull
 	public ButtonStyle getStyle () {
 		return style;
 	}
@@ -212,7 +210,7 @@ public class Button extends Table implements Disableable {
 		return buttonGroup;
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		boolean isDisabled = isDisabled();

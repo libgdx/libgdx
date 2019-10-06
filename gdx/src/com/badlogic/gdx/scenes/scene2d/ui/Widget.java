@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import org.jetbrains.annotations.NotNull;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
@@ -119,7 +118,7 @@ public class Widget extends Actor implements Layout {
 	}
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out. */
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 	}
 

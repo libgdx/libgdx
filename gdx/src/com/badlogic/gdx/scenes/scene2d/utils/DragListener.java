@@ -20,7 +20,6 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import org.jetbrains.annotations.NotNull;
 
 /** Detects mouse or finger touch drags on an actor. A touch must go down over the actor and a drag won't start until it is moved
  * outside the {@link #setTapSquareSize(float) tap square}. Any touch (not just the first) will trigger this listener. While
@@ -33,7 +32,7 @@ public class DragListener extends InputListener {
 	private int button;
 	private boolean dragging;
 
-	public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pressedPointer != -1) return false;
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;
 		pressedPointer = pointer;
@@ -44,7 +43,7 @@ public class DragListener extends InputListener {
 		return true;
 	}
 
-	public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 		if (pointer != pressedPointer) return;
 		if (!dragging && (Math.abs(touchDownX - x) > tapSquareSize || Math.abs(touchDownY - y) > tapSquareSize)) {
 			dragging = true;
@@ -63,20 +62,20 @@ public class DragListener extends InputListener {
 		}
 	}
 
-	public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (dragging) dragStop(event, x, y, pointer);
 			cancel();
 		}
 	}
 
-	public void dragStart (@NotNull InputEvent event, float x, float y, int pointer) {
+	public void dragStart (InputEvent event, float x, float y, int pointer) {
 	}
 
-	public void drag (@NotNull InputEvent event, float x, float y, int pointer) {
+	public void drag (InputEvent event, float x, float y, int pointer) {
 	}
 
-	public void dragStop (@NotNull InputEvent event, float x, float y, int pointer) {
+	public void dragStop (InputEvent event, float x, float y, int pointer) {
 	}
 
 	/* If a drag is in progress, no further drag methods will be called until a new drag is started. */

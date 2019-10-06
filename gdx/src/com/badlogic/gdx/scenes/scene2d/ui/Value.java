@@ -18,8 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Value placeholder, allowing the value to be computed on request. Values are provided an actor for context which reduces the
@@ -137,7 +135,7 @@ abstract public class Value {
 	}
 
 	/** Returns a value that is a percentage of the specified actor's width. The context actor is ignored. */
-	static public Value percentWidth (final float percent, @NotNull final Actor actor) {
+	static public Value percentWidth (final float percent, final Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		return new Value() {
 			public float get (@Nullable Actor context) {
@@ -147,7 +145,7 @@ abstract public class Value {
 	}
 
 	/** Returns a value that is a percentage of the specified actor's height. The context actor is ignored. */
-	static public Value percentHeight (final float percent, @NotNull final Actor actor) {
+	static public Value percentHeight (final float percent, final Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		return new Value() {
 			public float get (@Nullable Actor context) {

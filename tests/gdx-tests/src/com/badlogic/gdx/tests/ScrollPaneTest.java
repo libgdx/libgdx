@@ -32,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import org.jetbrains.annotations.NotNull;
 
 public class ScrollPaneTest extends GdxTest {
 	private Stage stage;
@@ -55,7 +54,7 @@ public class ScrollPaneTest extends GdxTest {
 		final ScrollPane scroll = new ScrollPane(table, skin);
 
 		InputListener stopTouchDown = new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				event.stop();
 				return false;
 			}
@@ -69,7 +68,7 @@ public class ScrollPaneTest extends GdxTest {
 			TextButton button = new TextButton(i + "dos", skin);
 			table.add(button);
 			button.addListener(new ClickListener() {
-				public void clicked (@NotNull InputEvent event, float x, float y) {
+				public void clicked (InputEvent event, float x, float y) {
 					System.out.println("click " + x + ", " + y);
 				}
 			});
@@ -84,7 +83,7 @@ public class ScrollPaneTest extends GdxTest {
 		final TextButton flickButton = new TextButton("Flick Scroll", skin.get("toggle", TextButtonStyle.class));
 		flickButton.setChecked(true);
 		flickButton.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				scroll.setFlickScroll(flickButton.isChecked());
 			}
 		});
@@ -92,7 +91,7 @@ public class ScrollPaneTest extends GdxTest {
 		final TextButton fadeButton = new TextButton("Fade Scrollbars", skin.get("toggle", TextButtonStyle.class));
 		fadeButton.setChecked(true);
 		fadeButton.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				scroll.setFadeScrollBars(fadeButton.isChecked());
 			}
 		});
@@ -100,14 +99,14 @@ public class ScrollPaneTest extends GdxTest {
 		final TextButton smoothButton = new TextButton("Smooth Scrolling", skin.get("toggle", TextButtonStyle.class));
 		smoothButton.setChecked(true);
 		smoothButton.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				scroll.setSmoothScrolling(smoothButton.isChecked());
 			}
 		});
 
 		final TextButton onTopButton = new TextButton("Scrollbars On Top", skin.get("toggle", TextButtonStyle.class));
 		onTopButton.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				scroll.setScrollbarsOnTop(onTopButton.isChecked());
 			}
 		});

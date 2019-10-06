@@ -35,7 +35,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
@@ -57,15 +56,15 @@ public class List<T> extends Widget implements Cullable {
 	private InputListener keyListener;
 	boolean typeToSelect;
 
-	public List (@NotNull Skin skin) {
+	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
 	}
 
-	public List (@NotNull Skin skin, @NotNull String styleName) {
+	public List (Skin skin, String styleName) {
 		this(skin.get(styleName, ListStyle.class));
 	}
 
-	public List (@NotNull ListStyle style) {
+	public List (ListStyle style) {
 		selection.setActor(this);
 		selection.setRequired(true);
 
@@ -76,7 +75,7 @@ public class List<T> extends Widget implements Cullable {
 			long typeTimeout;
 			String prefix;
 
-			public boolean keyDown (@NotNull InputEvent event, int keycode) {
+			public boolean keyDown (InputEvent event, int keycode) {
 				if (items.isEmpty()) return false;
 				int index;
 				switch (keycode) {
@@ -110,7 +109,7 @@ public class List<T> extends Widget implements Cullable {
 				return false;
 			}
 
-			public boolean keyTyped (@NotNull InputEvent event, char character) {
+			public boolean keyTyped (InputEvent event, char character) {
 				if (!typeToSelect) return false;
 				long time = System.currentTimeMillis();
 				if (time > typeTimeout) prefix = "";
@@ -127,7 +126,7 @@ public class List<T> extends Widget implements Cullable {
 		});
 
 		addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return true;
 				if (selection.isDisabled()) return true;
 				if (getStage() != null) getStage().setKeyboardFocus(List.this);
@@ -139,28 +138,28 @@ public class List<T> extends Widget implements Cullable {
 				return true;
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return;
 				pressedIndex = -1;
 			}
 
-			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				overIndex = getItemIndexAt(y);
 			}
 
-			public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
+			public boolean mouseMoved (InputEvent event, float x, float y) {
 				overIndex = getItemIndexAt(y);
 				return false;
 			}
 
-			public void exit (@NotNull InputEvent event, float x, float y, int pointer, Actor toActor) {
+			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				if (pointer == 0) pressedIndex = -1;
 				if (pointer == -1) overIndex = -1;
 			}
 		});
 	}
 
-	public void setStyle (@NotNull ListStyle style) {
+	public void setStyle (ListStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
@@ -168,7 +167,6 @@ public class List<T> extends Widget implements Cullable {
 
 	/** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(ListStyle)} is
 	 * called. */
-	@NotNull
 	public ListStyle getStyle () {
 		return style;
 	}
@@ -198,7 +196,7 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		drawBackground(batch, parentAlpha);
@@ -252,7 +250,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Called to draw the background. Default implementation draws the style background drawable. */
-	protected void drawBackground (@NotNull Batch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float parentAlpha) {
 		if (style.background != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
@@ -260,12 +258,11 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-	protected GlyphLayout drawItem (@NotNull Batch batch, @NotNull BitmapFont font, int index, T item, float x, float y, float width) {
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y, float width) {
 		String string = toString(item);
 		return font.draw(batch, string, x, y, 0, string.length(), width, alignment, false, "...");
 	}
 
-	@NotNull
 	public ArraySelection<T> getSelection () {
 		return selection;
 	}
@@ -342,7 +339,7 @@ public class List<T> extends Widget implements Cullable {
 		return index;
 	}
 
-	public void setItems (@NotNull T... newItems) {
+	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
@@ -359,7 +356,7 @@ public class List<T> extends Widget implements Cullable {
 	/** Sets the items visible in the list, clearing the selection if it is no longer valid. If a selection is
 	 * {@link ArraySelection#getRequired()}, the first item is selected. This can safely be called with a (modified) array returned
 	 * from {@link #getItems()}. */
-	public void setItems (@NotNull Array newItems) {
+	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
@@ -385,7 +382,6 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
-	@NotNull
 	public Array<T> getItems () {
 		return items;
 	}
@@ -404,8 +400,7 @@ public class List<T> extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	@NotNull
-	public String toString (@NotNull T object) {
+	public String toString (T object) {
 		return object.toString();
 	}
 
@@ -429,7 +424,6 @@ public class List<T> extends Widget implements Cullable {
 		this.typeToSelect = typeToSelect;
 	}
 
-	@NotNull
 	public InputListener getKeyListener () {
 		return keyListener;
 	}
@@ -439,8 +433,8 @@ public class List<T> extends Widget implements Cullable {
 	 * @author Nathan Sweet */
 	static public class ListStyle {
 		public BitmapFont font;
-		@NotNull public Color fontColorSelected = new Color(1, 1, 1, 1);
-		@NotNull public Color fontColorUnselected = new Color(1, 1, 1, 1);
+		public Color fontColorSelected = new Color(1, 1, 1, 1);
+		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
 		/** Optional. */
 		@Nullable public Drawable down, over, background;
@@ -448,15 +442,15 @@ public class List<T> extends Widget implements Cullable {
 		public ListStyle () {
 		}
 
-		public ListStyle (@NotNull BitmapFont font, @NotNull Color fontColorSelected,
-						  @NotNull Color fontColorUnselected, @NotNull Drawable selection) {
+		public ListStyle (BitmapFont font, Color fontColorSelected,
+						  Color fontColorUnselected, Drawable selection) {
 			this.font = font;
 			this.fontColorSelected.set(fontColorSelected);
 			this.fontColorUnselected.set(fontColorUnselected);
 			this.selection = selection;
 		}
 
-		public ListStyle (@NotNull ListStyle style) {
+		public ListStyle (ListStyle style) {
 			this.font = style.font;
 			this.fontColorSelected.set(style.fontColorSelected);
 			this.fontColorUnselected.set(style.fontColorUnselected);

@@ -19,13 +19,12 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Listener for {@link FocusEvent}.
  * @author Nathan Sweet */
 abstract public class FocusListener implements EventListener {
-	public boolean handle (@NotNull Event event) {
+	public boolean handle (Event event) {
 		if (!(event instanceof FocusEvent)) return false;
 		FocusEvent focusEvent = (FocusEvent)event;
 		switch (focusEvent.getType()) {
@@ -40,11 +39,11 @@ abstract public class FocusListener implements EventListener {
 	}
 
 	/** @param actor The event target, which is the actor that emitted the focus event. */
-	public void keyboardFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
+	public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 	}
 
 	/** @param actor The event target, which is the actor that emitted the focus event. */
-	public void scrollFocusChanged (@NotNull FocusEvent event, @NotNull Actor actor, boolean focused) {
+	public void scrollFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 	}
 
 	/** Fired when an actor gains or loses keyboard or scroll focus. Can be cancelled to prevent losing or gaining focus.

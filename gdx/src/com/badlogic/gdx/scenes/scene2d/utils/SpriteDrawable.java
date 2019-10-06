@@ -21,8 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 
-import org.jetbrains.annotations.NotNull;
-
 /** Drawable for a {@link Sprite}.
  * @author Nathan Sweet */
 public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
@@ -34,16 +32,16 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	public SpriteDrawable () {
 	}
 
-	public SpriteDrawable (@NotNull Sprite sprite) {
+	public SpriteDrawable (Sprite sprite) {
 		setSprite(sprite);
 	}
 
-	public SpriteDrawable (@NotNull SpriteDrawable drawable) {
+	public SpriteDrawable (SpriteDrawable drawable) {
 		super(drawable);
 		setSprite(drawable.sprite);
 	}
 
-	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		Color spriteColor = sprite.getColor();
 		temp.set(spriteColor);
 		sprite.setColor(spriteColor.mul(batch.getColor()));
@@ -56,7 +54,7 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 		sprite.setColor(temp);
 	}
 
-	public void draw (@NotNull Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
 
 		Color spriteColor = sprite.getColor();
@@ -72,7 +70,7 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 		sprite.setColor(temp);
 	}
 
-	public void setSprite (@NotNull Sprite sprite) {
+	public void setSprite (Sprite sprite) {
 		this.sprite = sprite;
 		setMinWidth(sprite.getWidth());
 		setMinHeight(sprite.getHeight());
@@ -83,7 +81,7 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	}
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
-	public SpriteDrawable tint (@NotNull Color tint) {
+	public SpriteDrawable tint (Color tint) {
 		Sprite newSprite;
 		if (sprite instanceof AtlasSprite)
 			newSprite = new AtlasSprite((AtlasSprite)sprite);

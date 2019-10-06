@@ -35,8 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import org.jetbrains.annotations.NotNull;
-
 public class MusicTest extends GdxTest {
 
 	Music music;
@@ -72,7 +70,7 @@ public class MusicTest extends GdxTest {
 		slider.setPosition(200, 20);
 		slider.addListener(new ChangeListener() {
 			@Override
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				if (!sliderUpdating && slider.isDragging()) music.setPosition((slider.getValue() / 100f) * songDuration);
 			}
 		});
@@ -81,7 +79,7 @@ public class MusicTest extends GdxTest {
 		musicBox.setItems(Song.values());
 		musicBox.addListener(new ChangeListener() {
 			@Override
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				setSong(musicBox.getSelected());
 			}
 		});
@@ -90,7 +88,7 @@ public class MusicTest extends GdxTest {
 		btLoop.setChecked(true);
 		btLoop.addListener(new ChangeListener() {
 			@Override
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				if(music != null) music.setLooping(btLoop.isChecked());
 			}
 		});

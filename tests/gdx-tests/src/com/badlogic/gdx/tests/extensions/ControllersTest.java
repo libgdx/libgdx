@@ -33,8 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import org.jetbrains.annotations.NotNull;
-
 /** Test for the gdx-controllers extension. */
 public class ControllersTest extends GdxTest {
 	String descriptor;
@@ -80,7 +78,7 @@ public class ControllersTest extends GdxTest {
 		stage.addActor(ui);
 		clear.addListener(new ClickListener() {
 			@Override
-			public void clicked (@NotNull InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				clear();
 			}
 		});

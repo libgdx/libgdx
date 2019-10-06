@@ -18,8 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Drawable that stores the size information but doesn't draw anything.
@@ -32,7 +30,7 @@ public class BaseDrawable implements Drawable {
 	}
 
 	/** Creates a new empty drawable with the same sizing information as the specified drawable. */
-	public BaseDrawable (@NotNull Drawable drawable) {
+	public BaseDrawable (Drawable drawable) {
 		if (drawable instanceof BaseDrawable) name = ((BaseDrawable)drawable).getName();
 		leftWidth = drawable.getLeftWidth();
 		rightWidth = drawable.getRightWidth();
@@ -42,7 +40,7 @@ public class BaseDrawable implements Drawable {
 		minHeight = drawable.getMinHeight();
 	}
 
-	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 	}
 
 	public float getLeftWidth () {

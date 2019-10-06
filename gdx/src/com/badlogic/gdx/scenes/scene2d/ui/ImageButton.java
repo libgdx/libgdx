@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A button with a child {@link Image} to display an image. This is useful when the button must be larger than the image and the
@@ -31,17 +30,17 @@ public class ImageButton extends Button {
 	private final Image image;
 	private ImageButtonStyle style;
 
-	public ImageButton (@NotNull Skin skin) {
+	public ImageButton (Skin skin) {
 		this(skin.get(ImageButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageButton (@NotNull Skin skin, @NotNull String styleName) {
+	public ImageButton (Skin skin, String styleName) {
 		this(skin.get(styleName, ImageButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageButton (@NotNull ImageButtonStyle style) {
+	public ImageButton (ImageButtonStyle style) {
 		super(style);
 		image = new Image();
 		image.setScaling(Scaling.fit);
@@ -62,14 +61,13 @@ public class ImageButton extends Button {
 		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
 	}
 
-	public void setStyle (@NotNull ButtonStyle style) {
+	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof ImageButtonStyle)) throw new IllegalArgumentException("style must be an ImageButtonStyle.");
 		super.setStyle(style);
 		this.style = (ImageButtonStyle)style;
 		if (image != null) updateImage();
 	}
 
-	@NotNull
 	public ImageButtonStyle getStyle () {
 		return style;
 	}
@@ -90,24 +88,21 @@ public class ImageButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		super.draw(batch, parentAlpha);
 	}
 
-	@NotNull
 	public Image getImage () {
 		return image;
 	}
 
-	@NotNull
 	public Cell getImageCell () {
 		Cell cell = getCell(image);
 		assert cell != null;
 		return cell;
 	}
 
-	@NotNull
 	public String toString () {
 		String name = getName();
 		if (name != null) return name;
@@ -134,7 +129,7 @@ public class ImageButton extends Button {
 			this.imageChecked = imageChecked;
 		}
 
-		public ImageButtonStyle (@NotNull ImageButtonStyle style) {
+		public ImageButtonStyle (ImageButtonStyle style) {
 			super(style);
 			this.imageUp = style.imageUp;
 			this.imageDown = style.imageDown;
@@ -144,7 +139,7 @@ public class ImageButton extends Button {
 			this.imageDisabled = style.imageDisabled;
 		}
 
-		public ImageButtonStyle (@NotNull ButtonStyle style) {
+		public ImageButtonStyle (ButtonStyle style) {
 			super(style);
 		}
 	}

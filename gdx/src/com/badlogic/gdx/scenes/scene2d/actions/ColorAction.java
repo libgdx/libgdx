@@ -18,8 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Sets the actor's color (or a specified color), from the current to the new color. Note this action transitions from the color
@@ -69,13 +67,12 @@ public class ColorAction extends TemporalAction {
 		this.color = color;
 	}
 
-	@NotNull
 	public Color getEndColor () {
 		return end;
 	}
 
 	/** Sets the color to transition to. Required. */
-	public void setEndColor (@NotNull Color color) {
+	public void setEndColor (Color color) {
 		end.set(color);
 	}
 }

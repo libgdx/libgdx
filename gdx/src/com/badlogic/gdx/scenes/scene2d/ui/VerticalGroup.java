@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.SnapshotArray;
-import org.jetbrains.annotations.NotNull;
 
 /** A group that lays out its children top to bottom vertically, with optional wrapping. {@link #getChildren()} can be sorted to
  * change the order of the actors (eg {@link Actor#setZIndex(int)}). This can be easier than using {@link Table} when actors need
@@ -546,7 +545,7 @@ public class VerticalGroup extends WidgetGroup {
 		return this;
 	}
 
-	protected void drawDebugBounds (@NotNull ShapeRenderer shapes) {
+	protected void drawDebugBounds (ShapeRenderer shapes) {
 		super.drawDebugBounds(shapes);
 		if (!getDebug()) return;
 		shapes.set(ShapeType.Line);

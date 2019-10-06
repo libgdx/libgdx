@@ -117,8 +117,6 @@ import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -156,7 +154,7 @@ public class GwtTestWrapper extends GdxTest {
 			TextButton button = new TextButton(instancer.instance().getClass().getSimpleName(), skin);
 			button.addListener(new ClickListener() {
 				@Override
-				public void clicked (@NotNull InputEvent event, float x, float y) {
+				public void clicked (InputEvent event, float x, float y) {
 					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
 					Gdx.app.log("GdxTestGwt", "Clicked on " + test.getClass().getName());

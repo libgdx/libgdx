@@ -30,7 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
@@ -54,17 +53,17 @@ public class Window extends Table {
 	protected int edge;
 	protected boolean dragging;
 
-	public Window (@NotNull String title, @NotNull Skin skin) {
+	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
 		setSkin(skin);
 	}
 
-	public Window (@NotNull String title, @NotNull Skin skin, @NotNull String styleName) {
+	public Window (String title, Skin skin, String styleName) {
 		this(title, skin.get(styleName, WindowStyle.class));
 		setSkin(skin);
 	}
 
-	public Window (@NotNull String title, @NotNull  WindowStyle style) {
+	public Window (String title, WindowStyle style) {
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		setTouchable(Touchable.enabled);
 		setClip(true);
@@ -73,7 +72,7 @@ public class Window extends Table {
 		titleLabel.setEllipsis(true);
 
 		titleTable = new Table() {
-			public void draw (@NotNull Batch batch, float parentAlpha) {
+			public void draw (Batch batch, float parentAlpha) {
 				if (drawTitleTable) super.draw(batch, parentAlpha);
 			}
 		};
@@ -85,7 +84,7 @@ public class Window extends Table {
 		setHeight(150);
 
 		addCaptureListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				toFront();
 				return false;
 			}
@@ -111,7 +110,7 @@ public class Window extends Table {
 				if (isMovable && edge == 0 && y <= height && y >= height - padTop && x >= left && x <= right) edge = MOVE;
 			}
 
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
 					updateEdge(x, y);
 					dragging = edge != 0;
@@ -123,11 +122,11 @@ public class Window extends Table {
 				return edge != 0 || isModal;
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				dragging = false;
 			}
 
-			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
 				float width = getWidth(), height = getHeight();
 				float windowX = getX(), windowY = getY();
@@ -172,30 +171,30 @@ public class Window extends Table {
 				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
 			}
 
-			public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
+			public boolean mouseMoved (InputEvent event, float x, float y) {
 				updateEdge(x, y);
 				return isModal;
 			}
 
-			public boolean scrolled (@NotNull InputEvent event, float x, float y, int amount) {
+			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				return isModal;
 			}
 
-			public boolean keyDown (@NotNull InputEvent event, int keycode) {
+			public boolean keyDown (InputEvent event, int keycode) {
 				return isModal;
 			}
 
-			public boolean keyUp (@NotNull InputEvent event, int keycode) {
+			public boolean keyUp (InputEvent event, int keycode) {
 				return isModal;
 			}
 
-			public boolean keyTyped (@NotNull InputEvent event, char character) {
+			public boolean keyTyped (InputEvent event, char character) {
 				return isModal;
 			}
 		});
 	}
 
-	public void setStyle (@NotNull WindowStyle style) {
+	public void setStyle (WindowStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setBackground(style.background);
@@ -205,7 +204,6 @@ public class Window extends Table {
 
 	/** Returns the window's style. Modifying the returned style may not have an effect until {@link #setStyle(WindowStyle)} is
 	 * called. */
-	@NotNull
 	public WindowStyle getStyle () {
 		return style;
 	}
@@ -237,7 +235,7 @@ public class Window extends Table {
 		}
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
 		if (stage != null && stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
@@ -253,13 +251,13 @@ public class Window extends Table {
 		super.draw(batch, parentAlpha);
 	}
 
-	protected void drawStageBackground (@NotNull Batch batch, float parentAlpha, float x, float y, float width, float height) {
+	protected void drawStageBackground (Batch batch, float parentAlpha, float x, float y, float width, float height) {
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		style.stageBackground.draw(batch, x, y, width, height);
 	}
 
-	protected void drawBackground (@NotNull Batch batch, float parentAlpha, float x, float y) {
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
 		super.drawBackground(batch, parentAlpha, x, y);
 
 		// Manually draw the title table before clipping is done.
@@ -329,12 +327,10 @@ public class Window extends Table {
 		return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getPadLeft() + getPadRight());
 	}
 
-	@NotNull
 	public Table getTitleTable () {
 		return titleTable;
 	}
 
-	@NotNull
 	public Label getTitleLabel () {
 		return titleLabel;
 	}
@@ -346,20 +342,20 @@ public class Window extends Table {
 		@Nullable public Drawable background;
 		public BitmapFont titleFont;
 		/** Optional. */
-		@NotNull public Color titleFontColor = new Color(1, 1, 1, 1);
+		public Color titleFontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
 		@Nullable public Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
-		public WindowStyle (@NotNull BitmapFont titleFont, @NotNull Color titleFontColor, @Nullable Drawable background) {
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Nullable Drawable background) {
 			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
 		}
 
-		public WindowStyle (@NotNull WindowStyle style) {
+		public WindowStyle (WindowStyle style) {
 			this.background = style.background;
 			this.titleFont = style.titleFont;
 			this.titleFontColor = new Color(style.titleFontColor);

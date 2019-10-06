@@ -19,8 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Drawable for a {@link NinePatch}.
@@ -43,16 +41,16 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 		setPatch(patch);
 	}
 
-	public NinePatchDrawable (@NotNull NinePatchDrawable drawable) {
+	public NinePatchDrawable (NinePatchDrawable drawable) {
 		super(drawable);
 		this.patch = drawable.patch;
 	}
 
-	public void draw (@NotNull Batch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		patch.draw(batch, x, y, width, height);
 	}
 
-	public void draw (@NotNull Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
 		patch.draw(batch, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
@@ -76,8 +74,7 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 	}
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
-	@NotNull
-	public NinePatchDrawable tint (@NotNull Color tint) {
+	public NinePatchDrawable tint (Color tint) {
 		NinePatchDrawable drawable = new NinePatchDrawable(this);
 		drawable.patch = new NinePatch(drawable.getPatch(), tint);
 		return drawable;

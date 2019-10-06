@@ -46,8 +46,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import org.jetbrains.annotations.NotNull;
-
 public class ProjectiveTextureTest extends GdxTest {
 
 	PerspectiveCamera cam;
@@ -120,7 +118,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		ui.addActor(table);
 
 		reload.addListener(new ClickListener() {
-			public void clicked (@NotNull InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
 					.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {

@@ -46,8 +46,6 @@ import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can
@@ -74,7 +72,7 @@ public class Skin implements Disposable {
 	/** Creates a skin containing the resources in the specified skin JSON file. If a file in the same directory with a ".atlas"
 	 * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
 	 * automatically disposed when the skin is disposed. */
-	public Skin (@NotNull FileHandle skinFile) {
+	public Skin (FileHandle skinFile) {
 		FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
 		if (atlasFile.exists()) {
 			atlas = new TextureAtlas(atlasFile);
@@ -86,7 +84,7 @@ public class Skin implements Disposable {
 
 	/** Creates a skin containing the resources in the specified skin JSON file and the texture regions from the specified atlas.
 	 * The atlas is automatically disposed when the skin is disposed. */
-	public Skin (@NotNull FileHandle skinFile, @NotNull TextureAtlas atlas) {
+	public Skin (FileHandle skinFile, TextureAtlas atlas) {
 		this.atlas = atlas;
 		addRegions(atlas);
 		load(skinFile);
@@ -94,13 +92,13 @@ public class Skin implements Disposable {
 
 	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin
 	 * is disposed. */
-	public Skin (@NotNull TextureAtlas atlas) {
+	public Skin (TextureAtlas atlas) {
 		this.atlas = atlas;
 		addRegions(atlas);
 	}
 
 	/** Adds all resources in the specified skin JSON file. */
-	public void load (@NotNull FileHandle skinFile) {
+	public void load (FileHandle skinFile) {
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {
@@ -109,7 +107,7 @@ public class Skin implements Disposable {
 	}
 
 	/** Adds all named texture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
-	public void addRegions (@NotNull TextureAtlas atlas) {
+	public void addRegions (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
@@ -121,11 +119,11 @@ public class Skin implements Disposable {
 		}
 	}
 
-	public void add (@NotNull String name, @NotNull Object resource) {
+	public void add (String name, Object resource) {
 		add(name, resource, resource.getClass());
 	}
 
-	public void add (@NotNull String name, @NotNull Object resource, @NotNull Class type) {
+	public void add (String name, Object resource, Class type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
@@ -136,7 +134,7 @@ public class Skin implements Disposable {
 		typeResources.put(name, resource);
 	}
 
-	public void remove (@NotNull String name, @NotNull Class type) {
+	public void remove (String name, Class type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		typeResources.remove(name);
@@ -144,15 +142,13 @@ public class Skin implements Disposable {
 
 	/** Returns a resource named "default" for the specified type.
 	 * @throws GdxRuntimeException if the resource was not found. */
-	@NotNull
-	public <T> T get (@NotNull Class<T> type) {
+	public <T> T get (Class<T> type) {
 		return get("default", type);
 	}
 
 	/** Returns a named resource of the specified type.
 	 * @throws GdxRuntimeException if the resource was not found. */
-	@NotNull
-	public <T> T get (@NotNull String name, @NotNull Class<T> type) {
+	public <T> T get (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 
@@ -171,7 +167,7 @@ public class Skin implements Disposable {
 	/** Returns a named resource of the specified type.
 	 * @return null if not found. */
 	@Nullable
-	public <T> T optional (@NotNull String name, @NotNull Class<T> type) {
+	public <T> T optional (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
@@ -179,7 +175,7 @@ public class Skin implements Disposable {
 		return (T)typeResources.get(name);
 	}
 
-	public boolean has (@NotNull String name, @NotNull Class type) {
+	public boolean has (String name, Class type) {
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) return false;
 		return typeResources.containsKey(name);
@@ -187,24 +183,21 @@ public class Skin implements Disposable {
 
 	/** Returns the name to resource mapping for the specified type, or null if no resources of that type exist. */
 	@Nullable
-	public <T> ObjectMap<String, T> getAll (@NotNull Class<T> type) {
+	public <T> ObjectMap<String, T> getAll (Class<T> type) {
 		return (ObjectMap<String, T>)resources.get(type);
 	}
 
-	@NotNull
-	public Color getColor (@NotNull String name) {
+	public Color getColor (String name) {
 		return get(name, Color.class);
 	}
 
-	@NotNull
-	public BitmapFont getFont (@NotNull String name) {
+	public BitmapFont getFont (String name) {
 		return get(name, BitmapFont.class);
 	}
 
 	/** Returns a registered texture region. If no region is found but a texture exists with the name, a region is created from the
 	 * texture and stored in the skin. */
-	@NotNull
-	public TextureRegion getRegion (@NotNull String name) {
+	public TextureRegion getRegion (String name) {
 		TextureRegion region = optional(name, TextureRegion.class);
 		if (region != null) return region;
 
@@ -217,7 +210,7 @@ public class Skin implements Disposable {
 
 	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
 	@Nullable
-	public Array<TextureRegion> getRegions (@NotNull String regionName) {
+	public Array<TextureRegion> getRegions (String regionName) {
 		Array<TextureRegion> regions = null;
 		int i = 0;
 		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
@@ -233,8 +226,7 @@ public class Skin implements Disposable {
 
 	/** Returns a registered tiled drawable. If no tiled drawable is found but a region exists with the name, a tiled drawable is
 	 * created from the region and stored in the skin. */
-	@NotNull
-	public TiledDrawable getTiledDrawable (@NotNull String name) {
+	public TiledDrawable getTiledDrawable (String name) {
 		TiledDrawable tiled = optional(name, TiledDrawable.class);
 		if (tiled != null) return tiled;
 
@@ -247,8 +239,7 @@ public class Skin implements Disposable {
 	/** Returns a registered ninepatch. If no ninepatch is found but a region exists with the name, a ninepatch is created from the
 	 * region and stored in the skin. If the region is an {@link AtlasRegion} then the {@link AtlasRegion#splits} are used,
 	 * otherwise the ninepatch will have the region as the center patch. */
-	@NotNull
-	public NinePatch getPatch (@NotNull String name) {
+	public NinePatch getPatch (String name) {
 		NinePatch patch = optional(name, NinePatch.class);
 		if (patch != null) return patch;
 
@@ -273,8 +264,7 @@ public class Skin implements Disposable {
 	/** Returns a registered sprite. If no sprite is found but a region exists with the name, a sprite is created from the region
 	 * and stored in the skin. If the region is an {@link AtlasRegion} then an {@link AtlasSprite} is used if the region has been
 	 * whitespace stripped or packed rotated 90 degrees. */
-	@NotNull
-	public Sprite getSprite (@NotNull String name) {
+	public Sprite getSprite (String name) {
 		Sprite sprite = optional(name, Sprite.class);
 		if (sprite != null) return sprite;
 
@@ -295,8 +285,7 @@ public class Skin implements Disposable {
 
 	/** Returns a registered drawable. If no drawable is found but a region, ninepatch, or sprite exists with the name, then the
 	 * appropriate drawable is created and stored in the skin. */
-	@NotNull
-	public Drawable getDrawable (@NotNull String name) {
+	public Drawable getDrawable (String name) {
 		Drawable drawable = optional(name, Drawable.class);
 		if (drawable != null) return drawable;
 
@@ -338,7 +327,7 @@ public class Skin implements Disposable {
 	/** Returns the name of the specified style object, or null if it is not in the skin. This compares potentially every style
 	 * object in the skin of the same type as the specified style, which may be a somewhat expensive operation. */
 	@Nullable
-	public String find (@NotNull Object resource) {
+	public String find (Object resource) {
 		if (resource == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
 		if (typeResources == null) return null;
@@ -346,26 +335,22 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns a copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	@NotNull
-	public Drawable newDrawable (@NotNull String name) {
+	public Drawable newDrawable (String name) {
 		return newDrawable(getDrawable(name));
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	@NotNull
-	public Drawable newDrawable (@NotNull String name, float r, float g, float b, float a) {
+	public Drawable newDrawable (String name, float r, float g, float b, float a) {
 		return newDrawable(getDrawable(name), new Color(r, g, b, a));
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	@NotNull
-	public Drawable newDrawable (@NotNull String name, Color tint) {
+	public Drawable newDrawable (String name, Color tint) {
 		return newDrawable(getDrawable(name), tint);
 	}
 
 	/** Returns a copy of the specified drawable. */
-	@NotNull
-	public Drawable newDrawable (@NotNull Drawable drawable) {
+	public Drawable newDrawable (Drawable drawable) {
 		if (drawable instanceof TiledDrawable) return new TiledDrawable((TiledDrawable)drawable);
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
@@ -374,14 +359,12 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	@NotNull
-	public Drawable newDrawable (@NotNull Drawable drawable, float r, float g, float b, float a) {
+	public Drawable newDrawable (Drawable drawable, float r, float g, float b, float a) {
 		return newDrawable(drawable, new Color(r, g, b, a));
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	@NotNull
-	public Drawable newDrawable (@NotNull Drawable drawable, Color tint) {
+	public Drawable newDrawable (Drawable drawable, Color tint) {
 		Drawable newDrawable;
 		if (drawable instanceof TextureRegionDrawable)
 			newDrawable = ((TextureRegionDrawable)drawable).tint(tint);
@@ -407,7 +390,7 @@ public class Skin implements Disposable {
 	 * false, and removing "-disabled" from the style name when enabled is true. A method named "getStyle" is called the actor via
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
 	 * not found in the skin, no exception is thrown and the actor is left unchanged. */
-	public void setEnabled (@NotNull Actor actor, boolean enabled) {
+	public void setEnabled (Actor actor, boolean enabled) {
 		// Get current style.
 		Method method = findMethod(actor.getClass(), "getStyle");
 		if (method == null) return;
@@ -446,8 +429,7 @@ public class Skin implements Disposable {
 		}
 	}
 
-	@NotNull
-	protected Json getJsonLoader (@NotNull final FileHandle skinFile) {
+	protected Json getJsonLoader (final FileHandle skinFile) {
 		final Skin skin = this;
 
 		final Json json = new Json() {
@@ -596,7 +578,6 @@ public class Skin implements Disposable {
 	/** Returns a map of {@link Json#addClassTag(String, Class) class tags} that will be used when loading skin JSON. The map can
 	 * be modified before calling {@link #load(FileHandle)}. By default the map is populated with the simple class names of libGDX
 	 * classes commonly used in skins. */
-	@NotNull
 	public ObjectMap<String, Class> getJsonClassTags () {
 		return jsonClassTags;
 	}

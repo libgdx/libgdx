@@ -33,8 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DragAndDropTest extends GdxTest {
@@ -63,7 +61,7 @@ public class DragAndDropTest extends GdxTest {
 		DragAndDrop dragAndDrop = new DragAndDrop();
 		dragAndDrop.addSource(new Source(sourceImage) {
 			@Nullable
-			public Payload dragStart (@NotNull InputEvent event, float x, float y, int pointer) {
+			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
 				Payload payload = new Payload();
 				payload.setObject("Some payload!");
 
@@ -81,30 +79,30 @@ public class DragAndDropTest extends GdxTest {
 			}
 		});
 		dragAndDrop.addTarget(new Target(validTargetImage) {
-			public boolean drag (@NotNull Source source, @NotNull Payload payload, float x, float y, int pointer) {
+			public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
 				getActor().setColor(Color.GREEN);
 				return true;
 			}
 
-			public void reset (@NotNull Source source, @NotNull Payload payload) {
+			public void reset (Source source, Payload payload) {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void drop (@NotNull Source source, @NotNull Payload payload, float x, float y, int pointer) {
+			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 				System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
 			}
 		});
 		dragAndDrop.addTarget(new Target(invalidTargetImage) {
-			public boolean drag (@NotNull Source source, @NotNull Payload payload, float x, float y, int pointer) {
+			public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
 				getActor().setColor(Color.RED);
 				return false;
 			}
 
-			public void reset (@NotNull Source source, @NotNull Payload payload) {
+			public void reset (Source source, Payload payload) {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void drop (@NotNull Source source, @NotNull Payload payload, float x, float y, int pointer) {
+			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 			}
 		});
 	}

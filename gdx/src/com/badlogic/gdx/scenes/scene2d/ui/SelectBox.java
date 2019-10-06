@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
@@ -66,15 +65,15 @@ public class SelectBox<T> extends Widget implements Disableable {
 	boolean disabled;
 	private int alignment = Align.left;
 
-	public SelectBox (@NotNull Skin skin) {
+	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
 	}
 
-	public SelectBox (@NotNull Skin skin, @NotNull String styleName) {
+	public SelectBox (Skin skin, String styleName) {
 		this(skin.get(styleName, SelectBoxStyle.class));
 	}
 
-	public SelectBox (@NotNull SelectBoxStyle style) {
+	public SelectBox (SelectBoxStyle style) {
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 
@@ -84,7 +83,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		selectBoxList = new SelectBoxList(this);
 
 		addListener(clickListener = new ClickListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				if (disabled) return false;
 				if (selectBoxList.hasParent())
@@ -112,7 +111,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		super.setStage(stage);
 	}
 
-	public void setStyle (@NotNull SelectBoxStyle style) {
+	public void setStyle (SelectBoxStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		if (selectBoxList != null) {
@@ -124,13 +123,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Returns the select box's style. Modifying the returned style may not have an effect until {@link #setStyle(SelectBoxStyle)}
 	 * is called. */
-	@NotNull
 	public SelectBoxStyle getStyle () {
 		return style;
 	}
 
 	/** Set the backing Array that makes up the choices available in the SelectBox */
-	public void setItems (@NotNull T... newItems) {
+	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
 
@@ -144,7 +142,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Sets the items visible in the select box. */
-	public void setItems (@NotNull Array<T> newItems) {
+	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
 
@@ -167,7 +165,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
-	@NotNull
 	public Array<T> getItems () {
 		return items;
 	}
@@ -206,7 +203,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Drawable background;
@@ -245,7 +242,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		}
 	}
 
-	protected GlyphLayout drawItem (@NotNull Batch batch, @NotNull BitmapFont font, @NotNull T item, float x, float y, float width) {
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, T item, float x, float y, float width) {
 		String string = toString(item);
 		return font.draw(batch, string, x, y, 0, string.length(), width, alignment, false, "...");
 	}
@@ -259,7 +256,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Get the set of selected items, useful when multiple items are selected
 	 * @return a Selection object containing the selected elements */
-	@NotNull
 	public ArraySelection<T> getSelection () {
 		return selection;
 	}
@@ -312,8 +308,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return prefHeight;
 	}
 
-	@NotNull
-	protected String toString (@NotNull T item) {
+	protected String toString (T item) {
 		return item.toString();
 	}
 
@@ -327,7 +322,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the list shown when the select box is open. */
-	@NotNull
 	public List<T> getList () {
 		return selectBoxList.list;
 	}
@@ -339,31 +333,30 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the scroll pane containing the list that is shown when the select box is open. */
-	@NotNull
 	public ScrollPane getScrollPane () {
 		return selectBoxList;
 	}
 
-	protected void onShow (@NotNull Actor selectBoxList, boolean below) {
+	protected void onShow (Actor selectBoxList, boolean below) {
 		selectBoxList.getColor().a = 0;
 		selectBoxList.addAction(fadeIn(0.3f, Interpolation.fade));
 	}
 
-	protected void onHide (@NotNull Actor selectBoxList) {
+	protected void onHide (Actor selectBoxList) {
 		selectBoxList.getColor().a = 1;
 		selectBoxList.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
 	/** @author Nathan Sweet */
 	static class SelectBoxList<T> extends ScrollPane {
-		@NotNull private final SelectBox<T> selectBox;
+		private final SelectBox<T> selectBox;
 		int maxListCount;
 		private final Vector2 screenPosition = new Vector2();
-		@NotNull final List<T> list;
+		final List<T> list;
 		private InputListener hideListener;
 		private Actor previousScrollFocus;
 
-		public SelectBoxList (@NotNull final SelectBox<T> selectBox) {
+		public SelectBoxList (final SelectBox<T> selectBox) {
 			super(null, selectBox.style.scrollStyle);
 			this.selectBox = selectBox;
 
@@ -372,8 +365,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setScrollingDisabled(true, false);
 
 			list = new List<T>(selectBox.style.listStyle) {
-                @NotNull
-                public String toString (@NotNull T obj) {
+                public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
 			};
@@ -382,14 +374,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setActor(list);
 
 			list.addListener(new ClickListener() {
-				public void clicked (@NotNull InputEvent event, float x, float y) {
+				public void clicked (InputEvent event, float x, float y) {
 					T selected = list.getSelected();
 					assert selected != null;
 					selectBox.selection.choose(selected);
 					hide();
 				}
 
-				public boolean mouseMoved (@NotNull InputEvent event, float x, float y) {
+				public boolean mouseMoved (InputEvent event, float x, float y) {
 					int index = list.getItemIndexAt(y);
 					if (index != -1) list.setSelectedIndex(index);
 					return true;
@@ -397,7 +389,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			});
 
 			addListener(new InputListener() {
-				public void exit (@NotNull InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
+				public void exit (InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
 					if (toActor == null || !isAscendantOf(toActor)) {
 						T selected = list.getSelected();
 						assert selected != null;
@@ -407,7 +399,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			});
 
 			hideListener = new InputListener() {
-				public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					Actor target = event.getTarget();
 					if (isAscendantOf(target)) return false;
 					T selected = list.getSelected();
@@ -417,7 +409,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 					return false;
 				}
 
-				public boolean keyDown (@NotNull InputEvent event, int keycode) {
+				public boolean keyDown (InputEvent event, int keycode) {
 					switch (keycode) {
 					case Keys.ENTER:
 						T selected = list.getSelected();
@@ -434,7 +426,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			};
 		}
 
-		public void show (@NotNull Stage stage) {
+		public void show (Stage stage) {
 			if (list.isTouchable()) return;
 
 			stage.addActor(this);
@@ -507,7 +499,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			selectBox.onHide(this);
 		}
 
-		public void draw (@NotNull Batch batch, float parentAlpha) {
+		public void draw (Batch batch, float parentAlpha) {
 			selectBox.localToStageCoordinates(temp.set(0, 0));
 			if (!temp.equals(screenPosition)) hide();
 			super.draw(batch, parentAlpha);
@@ -533,7 +525,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	 * @author Nathan Sweet */
 	static public class SelectBoxStyle {
 		public BitmapFont font;
-		@NotNull public Color fontColor = new Color(1, 1, 1, 1);
+		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
 		@Nullable public Color disabledFontColor;
 		/** Optional. */
@@ -546,8 +538,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public SelectBoxStyle () {
 		}
 
-		public SelectBoxStyle (@NotNull BitmapFont font, @NotNull Color fontColor, @Nullable Drawable background,
-			@NotNull ScrollPaneStyle scrollStyle, @NotNull ListStyle listStyle) {
+		public SelectBoxStyle (BitmapFont font, Color fontColor, @Nullable Drawable background,
+			ScrollPaneStyle scrollStyle, ListStyle listStyle) {
 			this.font = font;
 			this.fontColor.set(fontColor);
 			this.background = background;
@@ -555,7 +547,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			this.listStyle = listStyle;
 		}
 
-		public SelectBoxStyle (@NotNull SelectBoxStyle style) {
+		public SelectBoxStyle (SelectBoxStyle style) {
 			this.font = style.font;
 			this.fontColor.set(style.fontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);

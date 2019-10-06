@@ -40,7 +40,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import org.jetbrains.annotations.NotNull;
 
 public class StageTest extends GdxTest implements InputProcessor {
 	private static final int NUM_GROUPS = 4;
@@ -88,7 +87,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		blend.setAlign(Align.center);
 		blend.setScaling(Scaling.none);
 		blend.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (stage.getBatch().isBlendingEnabled())
 					stage.getBatch().disableBlending();
 				else
@@ -102,7 +101,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		rotate.setAlign(Align.center);
 		rotate.setScaling(Scaling.none);
 		rotate.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				rotateSprites = !rotateSprites;
 				return true;
 			}
@@ -113,7 +112,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		scale.setAlign(Align.center);
 		scale.setScaling(Scaling.none);
 		scale.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				scaleSprites = !scaleSprites;
 				return true;
 			}
@@ -122,7 +121,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		{
 			Actor shapeActor = new Actor() {
-				public void drawDebug (@NotNull ShapeRenderer shapes) {
+				public void drawDebug (ShapeRenderer shapes) {
 					shapes.set(ShapeType.Filled);
 					shapes.setColor(getColor());
 					shapes.rect(getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),

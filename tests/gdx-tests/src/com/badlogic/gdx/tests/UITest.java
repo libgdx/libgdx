@@ -51,8 +51,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import org.jetbrains.annotations.NotNull;
-
 public class UITest extends GdxTest {
 	Object[] listEntries = {"This is a list entry1", "And another one1", "The meaning of life1", "Is hard to come by1",
 		"This is a list entry2", "And another one2", "The meaning of life2", "Is hard to come by2", "This is a list entry3",
@@ -112,7 +110,7 @@ public class UITest extends GdxTest {
 		selectBox.getStyle().listStyle.selection.setRightWidth(10);
 		selectBox.getStyle().listStyle.selection.setLeftWidth(20);
 		selectBox.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println(selectBox.getSelected());
 			}
 		});
@@ -186,13 +184,13 @@ public class UITest extends GdxTest {
 		});
 
 		slider.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Gdx.app.log("UITest", "slider: " + slider.getValue());
 			}
 		});
 
 		iconButton.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				new Dialog("Some Dialog", skin, "dialog") {
 					protected void result (Object object) {
 						System.out.println("Chosen: " + object);
@@ -203,7 +201,7 @@ public class UITest extends GdxTest {
 		});
 
 		checkBox.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Gdx.graphics.setContinuousRendering(checkBox.isChecked());
 			}
 		});

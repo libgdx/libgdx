@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import org.jetbrains.annotations.NotNull;
 
 public class TableLayoutTest extends GdxTest {
 	Stage stage;
@@ -60,7 +59,7 @@ public class TableLayoutTest extends GdxTest {
 
 		TextButton button = new TextButton("Button 1", skin);
 		button.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("touchDown 1");
 				return false;
 			}
@@ -75,12 +74,12 @@ public class TableLayoutTest extends GdxTest {
 
 		TextButton button2 = new TextButton("Button 2", skin);
 		button2.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println("2!");
 			}
 		});
 		button2.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("touchDown 2");
 				return false;
 			}

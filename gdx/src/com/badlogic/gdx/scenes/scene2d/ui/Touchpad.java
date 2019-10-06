@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
@@ -50,17 +49,17 @@ public class Touchpad extends Widget {
 	private final Vector2 knobPercent = new Vector2();
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
-	public Touchpad (float deadzoneRadius, @NotNull Skin skin) {
+	public Touchpad (float deadzoneRadius, Skin skin) {
 		this(deadzoneRadius, skin.get(TouchpadStyle.class));
 	}
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
-	public Touchpad (float deadzoneRadius, @NotNull Skin skin, @NotNull String styleName) {
+	public Touchpad (float deadzoneRadius, Skin skin, String styleName) {
 		this(deadzoneRadius, skin.get(styleName, TouchpadStyle.class));
 	}
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
-	public Touchpad (float deadzoneRadius, @NotNull TouchpadStyle style) {
+	public Touchpad (float deadzoneRadius, TouchpadStyle style) {
 		if (deadzoneRadius < 0) throw new IllegalArgumentException("deadzoneRadius must be > 0");
 		this.deadzoneRadius = deadzoneRadius;
 
@@ -70,18 +69,18 @@ public class Touchpad extends Widget {
 		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (touched) return false;
 				touched = true;
 				calculatePositionAndValue(x, y, false);
 				return true;
 			}
 
-			public void touchDragged (@NotNull InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
 				calculatePositionAndValue(x, y, resetOnTouchUp);
 			}
@@ -119,7 +118,7 @@ public class Touchpad extends Widget {
 		}
 	}
 
-	public void setStyle (@NotNull TouchpadStyle style) {
+	public void setStyle (TouchpadStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null");
 		this.style = style;
 		invalidateHierarchy();
@@ -127,7 +126,6 @@ public class Touchpad extends Widget {
 
 	/** Returns the touchpad's style. Modifying the returned style may not have an effect until {@link #setStyle(TouchpadStyle)} is
 	 * called. */
-	@NotNull
 	public TouchpadStyle getStyle () {
 		return style;
 	}
@@ -152,7 +150,7 @@ public class Touchpad extends Widget {
 		knobPercent.set(0, 0);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color c = getColor();
@@ -241,7 +239,7 @@ public class Touchpad extends Widget {
 			this.knob = knob;
 		}
 
-		public TouchpadStyle (@NotNull TouchpadStyle style) {
+		public TouchpadStyle (TouchpadStyle style) {
 			this.background = style.background;
 			this.knob = style.knob;
 		}

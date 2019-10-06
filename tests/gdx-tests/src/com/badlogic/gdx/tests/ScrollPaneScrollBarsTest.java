@@ -30,8 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
-import org.jetbrains.annotations.NotNull;
-
 /** Test switch of scroll bars + knobs from right to left, and bottom to top */
 public class ScrollPaneScrollBarsTest extends GdxTest {
 	private Stage stage;
@@ -55,7 +53,7 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		stage.addActor(fadeBtn);
 		fadeBtn.addListener(new ChangeListener() {
 			@Override
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				doFade = !doFade;
 				fadeBtn.setText("Fade: " + doFade);
 				for (ScrollPane pane : scrollPanes) {
@@ -70,7 +68,7 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		stage.addActor(onTopBtn);
 		onTopBtn.addListener(new ChangeListener() {
 			@Override
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				doOnTop = !doOnTop;
 				onTopBtn.setText("ScrollbarOnTop: " + doOnTop);
 				onTopBtn.invalidate();

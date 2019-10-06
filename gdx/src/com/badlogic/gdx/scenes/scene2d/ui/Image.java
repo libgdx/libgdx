@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
@@ -58,12 +57,12 @@ public class Image extends Widget {
 	}
 
 	/** Creates an image stretched, and aligned center. */
-	public Image (@NotNull Texture texture) {
+	public Image (Texture texture) {
 		this(new TextureRegionDrawable(new TextureRegion(texture)));
 	}
 
 	/** Creates an image stretched, and aligned center. */
-	public Image (@NotNull Skin skin, @NotNull String drawableName) {
+	public Image (Skin skin, String drawableName) {
 		this(skin.getDrawable(drawableName), Scaling.stretch, Align.center);
 	}
 
@@ -75,12 +74,12 @@ public class Image extends Widget {
 
 	/** Creates an image aligned center.
 	 * @param drawable May be null. */
-	public Image (@Nullable Drawable drawable, @NotNull Scaling scaling) {
+	public Image (@Nullable Drawable drawable, Scaling scaling) {
 		this(drawable, scaling, Align.center);
 	}
 
 	/** @param drawable May be null. */
-	public Image (@Nullable Drawable drawable, @NotNull Scaling scaling, int align) {
+	public Image (@Nullable Drawable drawable, Scaling scaling, int align) {
 		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
@@ -114,7 +113,7 @@ public class Image extends Widget {
 			imageY = (int)(height / 2 - imageHeight / 2);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color color = getColor();
@@ -136,7 +135,7 @@ public class Image extends Widget {
 		if (drawable != null) drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 	}
 
-	public void setDrawable (@NotNull Skin skin, @NotNull String drawableName) {
+	public void setDrawable (Skin skin, String drawableName) {
 		setDrawable(skin.getDrawable(drawableName));
 	}
 
@@ -158,7 +157,7 @@ public class Image extends Widget {
 		return drawable;
 	}
 
-	public void setScaling (@NotNull Scaling scaling) {
+	public void setScaling (Scaling scaling) {
 		if (scaling == null) throw new IllegalArgumentException("scaling cannot be null.");
 		this.scaling = scaling;
 		invalidate();
@@ -203,7 +202,6 @@ public class Image extends Widget {
 		return imageHeight;
 	}
 
-	@NotNull
 	public String toString () {
 		String name = getName();
 		if (name != null) return name;

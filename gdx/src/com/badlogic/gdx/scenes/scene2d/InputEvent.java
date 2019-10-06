@@ -18,7 +18,6 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Event for actor input: touch, mouse, keyboard, and scroll.
@@ -55,12 +54,11 @@ public class InputEvent extends Event {
 	}
 
 	/** The type of input event. */
-	@NotNull
 	public Type getType () {
 		return type;
 	}
 
-	public void setType (@NotNull Type type) {
+	public void setType (Type type) {
 		this.type = type;
 	}
 
@@ -125,8 +123,7 @@ public class InputEvent extends Event {
 
 	/** Sets actorCoords to this event's coordinates relative to the specified actor.
 	 * @param actorCoords Output for resulting coordinates. */
-	@NotNull
-	public Vector2 toCoordinates (@NotNull Actor actor, @NotNull Vector2 actorCoords) {
+	public Vector2 toCoordinates (Actor actor, Vector2 actorCoords) {
 		actorCoords.set(stageX, stageY);
 		actor.stageToLocalCoordinates(actorCoords);
 		return actorCoords;
@@ -137,7 +134,6 @@ public class InputEvent extends Event {
 		return stageX == Integer.MIN_VALUE || stageY == Integer.MIN_VALUE;
 	}
 
-	@NotNull
 	public String toString () {
 		return type.toString();
 	}

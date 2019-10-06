@@ -33,8 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import org.jetbrains.annotations.NotNull;
-
 /** A stack is a container that sizes its children to its size and positions them at 0,0 on top of each other.
  * <p>
  * The preferred and min size of the stack is the largest preferred and min size of any children. The max size of the stack is the
@@ -51,7 +49,7 @@ public class Stack extends WidgetGroup {
 		setTouchable(Touchable.childrenOnly);
 	}
 
-	public Stack (@NotNull Actor... actors) {
+	public Stack (Actor... actors) {
 		this();
 		for (Actor actor : actors)
 			addActor(actor);
@@ -95,7 +93,7 @@ public class Stack extends WidgetGroup {
 		}
 	}
 
-	public void add (@NotNull Actor actor) {
+	public void add (Actor actor) {
 		addActor(actor);
 	}
 

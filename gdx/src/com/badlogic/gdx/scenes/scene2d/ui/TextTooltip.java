@@ -19,34 +19,32 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A tooltip that shows a label.
  * @author Nathan Sweet */
 public class TextTooltip extends Tooltip<Label> {
-	public TextTooltip (@Nullable String text, @NotNull Skin skin) {
+	public TextTooltip (@Nullable String text, Skin skin) {
 		this(text, TooltipManager.getInstance(), skin.get(TextTooltipStyle.class));
 	}
 
-	public TextTooltip (@Nullable String text, @NotNull Skin skin, @NotNull String styleName) {
+	public TextTooltip (@Nullable String text, Skin skin, String styleName) {
 		this(text, TooltipManager.getInstance(), skin.get(styleName, TextTooltipStyle.class));
 	}
 
-	public TextTooltip (@Nullable String text, @NotNull TextTooltipStyle style) {
+	public TextTooltip (@Nullable String text, TextTooltipStyle style) {
 		this(text, TooltipManager.getInstance(), style);
 	}
 
-	public TextTooltip (@Nullable String text, @NotNull TooltipManager manager, @NotNull Skin skin) {
+	public TextTooltip (@Nullable String text, TooltipManager manager, Skin skin) {
 		this(text, manager, skin.get(TextTooltipStyle.class));
 	}
 
-	public TextTooltip (@Nullable String text, @NotNull TooltipManager manager, @NotNull Skin skin, @NotNull String styleName) {
+	public TextTooltip (@Nullable String text, TooltipManager manager, Skin skin, String styleName) {
 		this(text, manager, skin.get(styleName, TextTooltipStyle.class));
 	}
 
-	public TextTooltip (@Nullable String text, @NotNull final TooltipManager manager, @NotNull TextTooltipStyle style) {
+	public TextTooltip (@Nullable String text, final TooltipManager manager, TextTooltipStyle style) {
 		super(null, manager);
 
 		final Label label = new Label(text, style.label);
@@ -62,7 +60,7 @@ public class TextTooltip extends Tooltip<Label> {
 		setStyle(style);
 	}
 
-	public void setStyle (@NotNull TextTooltipStyle style) {
+	public void setStyle (TextTooltipStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
 		container.getActor().setStyle(style.label);
 		container.setBackground(style.background);
@@ -81,12 +79,12 @@ public class TextTooltip extends Tooltip<Label> {
 		public TextTooltipStyle () {
 		}
 
-		public TextTooltipStyle (@NotNull LabelStyle label, @Nullable Drawable background) {
+		public TextTooltipStyle (LabelStyle label, @Nullable Drawable background) {
 			this.label = label;
 			this.background = background;
 		}
 
-		public TextTooltipStyle (@NotNull TextTooltipStyle style) {
+		public TextTooltipStyle (TextTooltipStyle style) {
 			this.label = new LabelStyle(style.label);
 			background = style.background;
 			wrapWidth = style.wrapWidth;

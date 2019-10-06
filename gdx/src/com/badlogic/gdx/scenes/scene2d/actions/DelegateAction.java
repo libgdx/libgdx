@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Base class for an action that wraps another action.
@@ -67,7 +66,6 @@ abstract public class DelegateAction extends Action {
 		super.setTarget(target);
 	}
 
-	@NotNull
 	public String toString () {
 		return super.toString() + (action == null ? "" : "(" + action + ")");
 	}

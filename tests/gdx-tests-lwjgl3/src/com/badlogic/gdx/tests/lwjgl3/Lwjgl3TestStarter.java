@@ -36,8 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTests;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Lwjgl3TestStarter {
 	public static void main (String[] argv) {
 		System.setProperty("java.awt.headless", "true");
@@ -78,7 +76,7 @@ public class Lwjgl3TestStarter {
 				table.add(testButton).fillX();
 				table.row();
 				testButton.addListener(new ClickListener() {
-					public void clicked (@NotNull InputEvent event, float x, float y) {
+					public void clicked (InputEvent event, float x, float y) {
 						ApplicationListener test = GdxTests.newTest(testName);
 						Lwjgl3WindowConfiguration winConfig = new Lwjgl3WindowConfiguration();
 						winConfig.setTitle(testName);

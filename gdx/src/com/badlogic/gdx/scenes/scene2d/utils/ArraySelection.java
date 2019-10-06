@@ -5,20 +5,18 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
 
-import org.jetbrains.annotations.NotNull;
-
 /** A selection that supports range selection by knowing about the array of items being selected.
  * @author Nathan Sweet */
 public class ArraySelection<T> extends Selection<T> {
-	@NotNull private Array<T> array;
+	private Array<T> array;
 	private boolean rangeSelect = true;
 	private T rangeStart;
 
-	public ArraySelection (@NotNull Array<T> array) {
+	public ArraySelection (Array<T> array) {
 		this.array = array;
 	}
 
-	public void choose (@NotNull T item) {
+	public void choose (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 

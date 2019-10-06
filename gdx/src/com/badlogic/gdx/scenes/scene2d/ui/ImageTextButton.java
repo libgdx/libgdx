@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** A button with a child {@link Image} and {@link Label}.
@@ -37,17 +36,17 @@ public class ImageTextButton extends Button {
 	private Label label;
 	private ImageTextButtonStyle style;
 
-	public ImageTextButton (@Nullable String text, @NotNull Skin skin) {
+	public ImageTextButton (@Nullable String text, Skin skin) {
 		this(text, skin.get(ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (@Nullable String text, @NotNull Skin skin, @NotNull String styleName) {
+	public ImageTextButton (@Nullable String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (@Nullable String text, @NotNull ImageTextButtonStyle style) {
+	public ImageTextButton (@Nullable String text, ImageTextButtonStyle style) {
 		super(style);
 		this.style = style;
 
@@ -67,7 +66,7 @@ public class ImageTextButton extends Button {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void setStyle (@NotNull ButtonStyle style) {
+	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof ImageTextButtonStyle)) throw new IllegalArgumentException("style must be a ImageTextButtonStyle.");
 		super.setStyle(style);
 		this.style = (ImageTextButtonStyle)style;
@@ -81,7 +80,6 @@ public class ImageTextButton extends Button {
 		}
 	}
 
-	@NotNull
 	public ImageTextButtonStyle getStyle () {
 		return style;
 	}
@@ -102,7 +100,7 @@ public class ImageTextButton extends Button {
 		image.setDrawable(drawable);
 	}
 
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		Color fontColor;
 		if (isDisabled() && style.disabledFontColor != null)
@@ -119,45 +117,39 @@ public class ImageTextButton extends Button {
 		super.draw(batch, parentAlpha);
 	}
 
-	@NotNull
 	public Image getImage () {
 		return image;
 	}
 
-	@NotNull
 	public Cell getImageCell () {
 		Cell cell = getCell(image);
 		assert cell != null;
 		return cell;
 	}
 
-	public void setLabel (@NotNull Label label) {
+	public void setLabel (Label label) {
 		getLabelCell().setActor(label);
 		this.label = label;
 	}
 
-	@NotNull
 	public Label getLabel () {
 		return label;
 	}
 
-	@NotNull
 	public Cell getLabelCell () {
 		Cell cell = getCell(label);
 		assert cell != null;
 		return cell;
 	}
 
-	public void setText (@NotNull CharSequence text) {
+	public void setText (CharSequence text) {
 		label.setText(text);
 	}
 
-	@NotNull
 	public CharSequence getText () {
 		return label.getText();
 	}
 
-	@NotNull
 	public String toString () {
 		String name = getName();
 		if (name != null) return name;
@@ -177,11 +169,11 @@ public class ImageTextButton extends Button {
 		public ImageTextButtonStyle () {
 		}
 
-		public ImageTextButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable Drawable checked, @NotNull BitmapFont font) {
+		public ImageTextButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable Drawable checked, BitmapFont font) {
 			super(up, down, checked, font);
 		}
 
-		public ImageTextButtonStyle (@NotNull ImageTextButtonStyle style) {
+		public ImageTextButtonStyle (ImageTextButtonStyle style) {
 			super(style);
 			if (style.imageUp != null) this.imageUp = style.imageUp;
 			if (style.imageDown != null) this.imageDown = style.imageDown;
@@ -191,7 +183,7 @@ public class ImageTextButton extends Button {
 			if (style.imageDisabled != null) this.imageDisabled = style.imageDisabled;
 		}
 
-		public ImageTextButtonStyle (@NotNull TextButtonStyle style) {
+		public ImageTextButtonStyle (TextButtonStyle style) {
 			super(style);
 		}
 	}

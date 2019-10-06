@@ -34,8 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import org.jetbrains.annotations.NotNull;
-
 public class UISimpleTest extends GdxTest {
 	Skin skin;
 	Stage stage;
@@ -83,7 +81,7 @@ public class UISimpleTest extends GdxTest {
 		// ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
 		// revert the checked state.
 		button.addListener(new ChangeListener() {
-			public void changed (@NotNull ChangeEvent event, @NotNull Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println("Clicked! Is checked: " + button.isChecked());
 				button.setText("Good job!");
 			}

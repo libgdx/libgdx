@@ -34,7 +34,6 @@ import com.badlogic.gdx.tests.utils.OrthoCamController;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import org.jetbrains.annotations.NotNull;
 
 /** This is a simple demonstration of how to perform VERY basic culling on hierarchies of stage actors that do not scale or rotate.
  * It is not a general solution as it assumes that actors and groups are only translated (moved, change their x/y coordinates).
@@ -60,7 +59,7 @@ public class SimpleStageCullingTest extends GdxTest {
 			this.camera = camera;
 		}
 
-		public void draw (@NotNull Batch batch, float parentAlpha) {
+		public void draw (Batch batch, float parentAlpha) {
 			// if this actor is not within the view of the camera we don't draw it.
 			if (isCulled()) return;
 

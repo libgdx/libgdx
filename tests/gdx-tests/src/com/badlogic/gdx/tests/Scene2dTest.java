@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import org.jetbrains.annotations.NotNull;
 
 public class Scene2dTest extends GdxTest {
 	Stage stage;
@@ -56,7 +55,7 @@ public class Scene2dTest extends GdxTest {
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		final Actor actor = new Actor() {
-			public void draw (@NotNull Batch batch, float parentAlpha) {
+			public void draw (Batch batch, float parentAlpha) {
 				Color color = getColor();
 				batch.setColor(color.r, color.g, color.b, parentAlpha);
 				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
@@ -67,12 +66,12 @@ public class Scene2dTest extends GdxTest {
 		actor.setOrigin(50, 50);
 		stage.addActor(actor);
 		actor.addListener(new InputListener() {
-			public boolean touchDown (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
 				return true;
 			}
 
-			public void touchUp (@NotNull InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up " + event.getTarget());
 			}
 		});
@@ -109,20 +108,20 @@ public class Scene2dTest extends GdxTest {
 // });
 
 		button.addListener(new ActorGestureListener() {
-			public boolean longPress (@NotNull Actor actor, float x, float y) {
+			public boolean longPress (Actor actor, float x, float y) {
 				System.out.println("long press " + x + ", " + y);
 				return true;
 			}
 
-			public void fling (@NotNull InputEvent event, float velocityX, float velocityY, int button) {
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
 				System.out.println("fling " + velocityX + ", " + velocityY);
 			}
 
-			public void zoom (@NotNull InputEvent event, float initialDistance, float distance) {
+			public void zoom (InputEvent event, float initialDistance, float distance) {
 				System.out.println("zoom " + initialDistance + ", " + distance);
 			}
 
-			public void pan (@NotNull InputEvent event, float x, float y, float deltaX, float deltaY) {
+			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				event.getListenerActor().moveBy(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}

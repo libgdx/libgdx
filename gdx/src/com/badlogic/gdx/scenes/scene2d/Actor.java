@@ -35,7 +35,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
@@ -83,7 +82,7 @@ public class Actor {
 	 * The default implementation does nothing.
 	 * @param parentAlpha The parent alpha, to be multiplied with this actor's alpha, allowing the parent's alpha to affect all
 	 *           children. */
-	public void draw (@NotNull Batch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 	}
 
 	/** Updates the actor based on time. Typically this is called each frame by {@link Stage#act(float)}.
@@ -125,7 +124,7 @@ public class Actor {
 	 * </ol>
 	 * If the event is {@link Event#stop() stopped} at any time, it will not propagate to the next actor.
 	 * @return true if the event was {@link Event#cancel() cancelled}. */
-	public boolean fire (@NotNull Event event) {
+	public boolean fire (Event event) {
 		if (event.getStage() == null) event.setStage(getStage());
 		event.setTarget(this);
 
@@ -173,7 +172,7 @@ public class Actor {
 	 * must be set before calling this method. If this actor is not in the stage, the stage must be set before calling this method.
 	 * @param capture If true, the capture listeners will be notified instead of the regular listeners.
 	 * @return true of the event was {@link Event#cancel() cancelled}. */
-	public boolean notify (@NotNull Event event, boolean capture) {
+	public boolean notify (Event event, boolean capture) {
 		if (event.getTarget() == null) throw new IllegalArgumentException("The event target cannot be null.");
 
 		DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
@@ -234,7 +233,7 @@ public class Actor {
 	/** Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
 	 * @see InputListener
 	 * @see ClickListener */
-	public boolean addListener (@NotNull EventListener listener) {
+	public boolean addListener (EventListener listener) {
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		if (!listeners.contains(listener, true)) {
 			listeners.add(listener);
@@ -243,35 +242,33 @@ public class Actor {
 		return false;
 	}
 
-	public boolean removeListener (@NotNull EventListener listener) {
+	public boolean removeListener (EventListener listener) {
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		return listeners.removeValue(listener, true);
 	}
 
-	@NotNull
 	public DelayedRemovalArray<EventListener> getListeners () {
 		return listeners;
 	}
 
 	/** Adds a listener that is only notified during the capture phase.
 	 * @see #fire(Event) */
-	public boolean addCaptureListener (@NotNull EventListener listener) {
+	public boolean addCaptureListener (EventListener listener) {
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		if (!captureListeners.contains(listener, true)) captureListeners.add(listener);
 		return true;
 	}
 
-	public boolean removeCaptureListener (@NotNull EventListener listener) {
+	public boolean removeCaptureListener (EventListener listener) {
 		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		return captureListeners.removeValue(listener, true);
 	}
 
-	@NotNull
 	public DelayedRemovalArray<EventListener> getCaptureListeners () {
 		return captureListeners;
 	}
 
-	public void addAction (@NotNull Action action) {
+	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
 
@@ -285,7 +282,6 @@ public class Actor {
 		}
 	}
 
-	@NotNull
 	public Array<Action> getActions () {
 		return actions;
 	}
@@ -326,7 +322,7 @@ public class Actor {
 	}
 
 	/** Returns true if this actor is the same as or is the descendant of the specified actor. */
-	public boolean isDescendantOf (@NotNull Actor actor) {
+	public boolean isDescendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
 		do {
@@ -337,7 +333,7 @@ public class Actor {
 	}
 
 	/** Returns true if this actor is the same as or is the ascendant of the specified actor. */
-	public boolean isAscendantOf (@NotNull Actor actor) {
+	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		do {
 			if (actor == this) return true;
@@ -349,7 +345,7 @@ public class Actor {
 	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type, or null if none were
 	 * found. */
 	@Nullable
-	public <T extends Actor> T firstAscendant (@NotNull Class<T> type) {
+	public <T extends Actor> T firstAscendant (Class<T> type) {
 		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor actor = this;
 		do {
@@ -381,13 +377,12 @@ public class Actor {
 		return touchable == Touchable.enabled;
 	}
 
-	@NotNull
 	public Touchable getTouchable () {
 		return touchable;
 	}
 
 	/** Determines how touch events are distributed to this actor. Default is {@link Touchable#enabled}. */
-	public void setTouchable (@NotNull Touchable touchable) {
+	public void setTouchable (Touchable touchable) {
 		this.touchable = touchable;
 	}
 
@@ -748,7 +743,7 @@ public class Actor {
 		}
 	}
 
-	public void setColor (@NotNull Color color) {
+	public void setColor (Color color) {
 		this.color.set(color);
 	}
 
@@ -757,7 +752,6 @@ public class Actor {
 	}
 
 	/** Returns the color the actor will be tinted when drawn. The returned instance can be modified to change the color. */
-	@NotNull
 	public Color getColor () {
 		return color;
 	}
@@ -844,24 +838,21 @@ public class Actor {
 
 	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.
 	 * @see Stage#screenToStageCoordinates(Vector2) */
-	@NotNull
-	public Vector2 screenToLocalCoordinates (@NotNull Vector2 screenCoords) {
+	public Vector2 screenToLocalCoordinates (Vector2 screenCoords) {
 		Stage stage = this.stage;
 		if (stage == null) return screenCoords;
 		return stageToLocalCoordinates(stage.screenToStageCoordinates(screenCoords));
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
-	@NotNull
-	public Vector2 stageToLocalCoordinates (@NotNull Vector2 stageCoords) {
+	public Vector2 stageToLocalCoordinates (Vector2 stageCoords) {
 		if (parent != null) parent.stageToLocalCoordinates(stageCoords);
 		parentToLocalCoordinates(stageCoords);
 		return stageCoords;
 	}
 
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
-	@NotNull
-	public Vector2 parentToLocalCoordinates (@NotNull Vector2 parentCoords) {
+	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
 		final float rotation = this.rotation;
 		final float scaleX = this.scaleX;
 		final float scaleY = this.scaleY;
@@ -892,22 +883,19 @@ public class Actor {
 
 	/** Transforms the specified point in the actor's coordinates to be in screen coordinates.
 	 * @see Stage#stageToScreenCoordinates(Vector2) */
-	@NotNull
-	public Vector2 localToScreenCoordinates (@NotNull Vector2 localCoords) {
+	public Vector2 localToScreenCoordinates (Vector2 localCoords) {
 		Stage stage = this.stage;
 		if (stage == null) return localCoords;
 		return stage.stageToScreenCoordinates(localToAscendantCoordinates(null, localCoords));
 	}
 
 	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. */
-	@NotNull
-	public Vector2 localToStageCoordinates (@NotNull Vector2 localCoords) {
+	public Vector2 localToStageCoordinates (Vector2 localCoords) {
 		return localToAscendantCoordinates(null, localCoords);
 	}
 
 	/** Transforms the specified point in the actor's coordinates to be in the parent's coordinates. */
-	@NotNull
-	public Vector2 localToParentCoordinates (@NotNull Vector2 localCoords) {
+	public Vector2 localToParentCoordinates (Vector2 localCoords) {
 		final float rotation = -this.rotation;
 		final float scaleX = this.scaleX;
 		final float scaleY = this.scaleY;
@@ -937,7 +925,7 @@ public class Actor {
 	}
 
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
-	public Vector2 localToAscendantCoordinates (@Nullable Actor ascendant, @NotNull Vector2 localCoords) {
+	public Vector2 localToAscendantCoordinates (@Nullable Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
 		do {
 			actor.localToParentCoordinates(localCoords);
@@ -948,19 +936,18 @@ public class Actor {
 	}
 
 	/** Converts coordinates for this actor to those of another actor, which can be anywhere in the stage. */
-	@NotNull
-	public Vector2 localToActorCoordinates (@NotNull Actor actor, @NotNull Vector2 localCoords) {
+	public Vector2 localToActorCoordinates (Actor actor, Vector2 localCoords) {
 		localToStageCoordinates(localCoords);
 		return actor.stageToLocalCoordinates(localCoords);
 	}
 
 	/** Draws this actor's debug lines if {@link #getDebug()} is true. */
-	public void drawDebug (@NotNull ShapeRenderer shapes) {
+	public void drawDebug (ShapeRenderer shapes) {
 		drawDebugBounds(shapes);
 	}
 
 	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
-	protected void drawDebugBounds (@NotNull ShapeRenderer shapes) {
+	protected void drawDebugBounds (ShapeRenderer shapes) {
 		if (!debug) return;
 		assert stage != null;
 		shapes.set(ShapeType.Line);
@@ -984,7 +971,6 @@ public class Actor {
 		return this;
 	}
 
-	@NotNull
 	public String toString () {
 		String name = this.name;
 		if (name == null) {
