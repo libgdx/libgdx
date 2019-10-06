@@ -17,7 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
-import org.jetbrains.annotations.Nullable;
+import com.badlogic.gdx.annotation.Nullable;
 
 /** The base class for all events.
  * <p>

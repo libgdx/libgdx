@@ -31,8 +31,6 @@ compileJava {
 dependencies {
     compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
-
-    compile 'org.jetbrains:annotations:16.0.2'
 }
 
 test {

@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import org.jetbrains.annotations.Nullable;
+import com.badlogic.gdx.annotation.Nullable;
 
 /** Drawable that stores the size information but doesn't draw anything.
  * @author Nathan Sweet */

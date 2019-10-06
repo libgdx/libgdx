@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import org.jetbrains.annotations.Nullable;
+import com.badlogic.gdx.annotation.Nullable;
 
 /** Value placeholder, allowing the value to be computed on request. Values are provided an actor for context which reduces the
  * number of value instances that need to be created and reduces verbosity in code that specifies values.

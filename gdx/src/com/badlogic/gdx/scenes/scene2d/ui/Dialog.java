@@ -34,7 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.jetbrains.annotations.Nullable;
+import com.badlogic.gdx.annotation.Nullable;
 
 /** Displays a dialog, which is a modal window containing a content table with a button table underneath it. Methods are provided
  * to add a label to the content table and buttons to the button table, but any widgets can be added. When a button is clicked,

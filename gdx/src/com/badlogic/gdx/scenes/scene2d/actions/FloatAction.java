@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 
-import org.jetbrains.annotations.Nullable;
+import com.badlogic.gdx.annotation.Nullable;
 
 /** An action that has a float, whose value is transitioned over time.
  * @author Nathan Sweet */
