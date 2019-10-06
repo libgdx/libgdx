@@ -427,7 +427,7 @@ public class I18NBundle {
 	 *               returns {@code true}
 	 * @return the string for the given key or the key surrounded by {@code ???} if it cannot be found and
 	 *         {@link #getExceptionOnMissingKey()} returns {@code false} */
-	public final String get (String key) {
+	public String get (String key) {
 		String result = properties.get(key);
 		if (result == null) {
 			if (parent != null) result = parent.get(key);
