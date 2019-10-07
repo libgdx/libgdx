@@ -326,7 +326,7 @@ public class BitmapFontCache {
 	private void requirePageGlyphs (int page, int glyphCount) {
 		if (pageGlyphIndices != null) {
 			if (glyphCount > pageGlyphIndices[page].items.length)
-				pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].items.length);
+				pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].size);
 		}
 
 		int vertexCount = idx[page] + glyphCount * 20;
