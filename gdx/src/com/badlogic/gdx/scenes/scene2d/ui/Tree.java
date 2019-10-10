@@ -153,8 +153,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		remove(node);
 		node.parent = null;
 		rootNodes.insert(index, node);
-		node.addToTree(this);
-		invalidateHierarchy();
+
+		int actorIndex = 0;
+		if (rootNodes.size > 1 && index > 0) actorIndex = rootNodes.get(index - 1).actor.getZIndex() + 1;
+		node.addToTree(this, actorIndex);
 	}
 
 	public void remove (N node) {
@@ -162,9 +164,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			node.parent.remove(node);
 			return;
 		}
-		rootNodes.removeValue(node, true);
-		node.removeFromTree(this);
-		invalidateHierarchy();
+		if (!rootNodes.removeValue(node, true)) return;
+		int actorIndex = node.actor.getZIndex();
+		if (actorIndex != -1) node.removeFromTree(this, actorIndex);
 	}
 
 	/** Removes all tree nodes. */
@@ -404,10 +406,13 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * {@link #getRootNodes()}.
 	 * @see Node#updateChildren() */
 	public void updateRootNodes () {
-		for (int i = rootNodes.size - 1; i >= 0; i--)
-			rootNodes.get(i).removeFromTree(this);
-		for (int i = 0, n = rootNodes.size; i < n; i++)
-			rootNodes.get(i).addToTree(this);
+		for (int i = 0, n = rootNodes.size; i < n; i++) {
+			N node = rootNodes.get(i);
+			int actorIndex = node.actor.getZIndex();
+			if (actorIndex != -1) node.removeFromTree(this, actorIndex);
+		}
+		for (int i = 0, n = rootNodes.size, actorIndex = 0; i < n; i++)
+			actorIndex += rootNodes.get(i).addToTree(this, actorIndex);
 	}
 
 	/** @return May be null. */
@@ -573,32 +578,36 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (children.size == 0) return;
 			Tree tree = getTree();
 			if (tree == null) return;
+			Object[] children = this.children.items;
+			int actorIndex = actor.getZIndex() + 1;
 			if (expanded) {
-				for (int i = 0, n = children.size; i < n; i++)
-					children.get(i).addToTree(tree);
+				for (int i = 0, n = this.children.size; i < n; i++)
+					actorIndex += ((N)children[i]).addToTree(tree, actorIndex);
 			} else {
-				for (int i = children.size - 1; i >= 0; i--)
-					children.get(i).removeFromTree(tree);
+				for (int i = 0, n = this.children.size; i < n; i++)
+					((N)children[i]).removeFromTree(tree, actorIndex);
 			}
-			tree.invalidateHierarchy();
 		}
 
-		/** Called to add the actor to the tree when the node's parent is expanded. */
-		protected void addToTree (Tree<N, V> tree) {
-			tree.addActor(actor);
-			if (!expanded) return;
+		/** Called to add the actor to the tree when the node's parent is expanded.
+		 * @return The number of node actors added to the tree. */
+		protected int addToTree (Tree<N, V> tree, int actorIndex) {
+			tree.addActorAt(actorIndex, actor);
+			if (!expanded) return 1;
+			int added = 1;
 			Object[] children = this.children.items;
-			for (int i = this.children.size - 1; i >= 0; i--)
-				((N)children[i]).addToTree(tree);
+			for (int i = 0, n = this.children.size; i < n; i++)
+				added += ((N)children[i]).addToTree(tree, actorIndex + added);
+			return added;
 		}
 
 		/** Called to remove the actor from the tree when the node's parent is collapsed. */
-		protected void removeFromTree (Tree<N, V> tree) {
-			tree.removeActor(actor);
+		protected void removeFromTree (Tree<N, V> tree, int actorIndex) {
+			Actor removeActorAt = tree.removeActorAt(actorIndex, true);
 			if (!expanded) return;
 			Object[] children = this.children.items;
-			for (int i = this.children.size - 1; i >= 0; i--)
-				((N)children[i]).removeFromTree(tree);
+			for (int i = 0, n = this.children.size; i < n; i++)
+				((N)children[i]).removeFromTree(tree, actorIndex);
 		}
 
 		public void add (N node) {
@@ -610,12 +619,35 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				insert(children.size, nodes.get(i));
 		}
 
-		public void insert (int index, N node) {
+		public void insert (int childIndex, N node) {
 			node.parent = this;
-			children.insert(index, node);
-			updateChildren();
+			children.insert(childIndex, node);
+			if (!expanded) return;
+			Tree tree = getTree();
+			if (tree != null) {
+				int actorIndex;
+				if (childIndex == 0)
+					actorIndex = actor.getZIndex() + 1;
+				else if (childIndex < children.size - 1)
+					actorIndex = children.get(childIndex + 1).actor.getZIndex();
+				else {
+					N before = children.get(childIndex - 1);
+					actorIndex = before.actor.getZIndex() + before.countActors();
+				}
+				node.addToTree(tree, actorIndex);
+			}
 		}
 
+		int countActors () {
+			if (!expanded) return 1;
+			int count = 1;
+			Object[] children = this.children.items;
+			for (int i = 0, n = this.children.size; i < n; i++)
+				count += ((N)children[i]).countActors();
+			return count;
+		}
+
+		/** Remove this node from the tree. */
 		public void remove () {
 			Tree tree = getTree();
 			if (tree != null)
@@ -624,19 +656,24 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				parent.remove(this);
 		}
 
+		/** Remove the specified child node from the tree. */
 		public void remove (N node) {
-			children.removeValue(node, true);
+			if (!children.removeValue(node, true)) return;
 			if (!expanded) return;
 			Tree tree = getTree();
-			if (tree != null) node.removeFromTree(tree);
+			if (tree != null) node.removeFromTree(tree, node.actor.getZIndex());
 		}
 
+		/** Remove all child nodes from the tree. */
 		public void removeAll () {
-			Tree tree = getTree();
-			if (tree != null) {
-				Object[] children = this.children.items;
-				for (int i = this.children.size - 1; i >= 0; i--)
-					((N)children[i]).removeFromTree(tree);
+			if (expanded) {
+				Tree tree = getTree();
+				if (tree != null) {
+					int actorIndex = actor.getZIndex() + 1;
+					Object[] children = this.children.items;
+					for (int i = 0, n = this.children.size; i < n; i++)
+						((N)children[i]).removeFromTree(tree, actorIndex);
+				}
 			}
 			children.clear();
 		}
@@ -684,10 +721,13 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (!expanded) return;
 			Tree tree = getTree();
 			if (tree == null) return;
-			for (int i = children.size - 1; i >= 0; i--)
-				children.get(i).removeFromTree(tree);
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).addToTree(tree);
+			Object[] children = this.children.items;
+			int n = this.children.size;
+			int actorIndex = actor.getZIndex() + 1;
+			for (int i = 0; i < n; i++)
+				((N)children[i]).removeFromTree(tree, actorIndex);
+			for (int i = 0; i < n; i++)
+				actorIndex += ((N)children[i]).addToTree(tree, actorIndex);
 		}
 
 		/** @return May be null. */
