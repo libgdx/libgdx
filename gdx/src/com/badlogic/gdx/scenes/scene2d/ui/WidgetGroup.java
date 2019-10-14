@@ -159,6 +159,10 @@ public class WidgetGroup extends Group implements Layout {
 	public void setFillParent (boolean fillParent) {
 		this.fillParent = fillParent;
 	}
+	
+	public boolean isFillParent() {
+		return fillParent;
+	}
 
 	public void layout () {
 	}
