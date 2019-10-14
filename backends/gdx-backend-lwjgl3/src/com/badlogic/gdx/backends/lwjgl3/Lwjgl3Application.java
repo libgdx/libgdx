@@ -22,6 +22,8 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -460,7 +462,14 @@ public class Lwjgl3Application implements Application {
 				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
 				if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
 				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - windowWidth / 2, vidMode.height() / 2 - windowHeight / 2);
+				
+				IntBuffer tmp = BufferUtils.createIntBuffer(1);
+				IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
+				GLFW.glfwGetMonitorPos(GLFW.glfwGetPrimaryMonitor(), tmp, tmp2);
+				int virtualX = tmp.get(0);
+				int virtualY = tmp2.get(0);
+				
+				GLFW.glfwSetWindowPos(windowHandle, virtualX + (vidMode.width() / 2 - windowWidth / 2), virtualY + (vidMode.height() / 2 - windowHeight / 2));
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
