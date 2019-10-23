@@ -98,7 +98,7 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public int getFramesPerSecond() {
-		return 0;
+		return fps;
 	}
 
 	@Override
