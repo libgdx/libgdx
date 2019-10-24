@@ -161,11 +161,15 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
-		BitmapFont font = new BitmapFont(data, data.regions, true);
+		BitmapFont font = newBitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
 	}
-
+	
+	protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		return new BitmapFont(data, pageRegions, true);
+	}
+	
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
 	public int scaleForPixelHeight (int height) {
