@@ -166,8 +166,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		return font;
 	}
 	
+	/** Create a new {@link BitmapFont} instance for inject customized {@link BitmapFont} (ex. support RTL fonts). */
 	protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
-		return new BitmapFont(data, pageRegions, true);
+		return new BitmapFont(data, pageRegions, integer);
 	}
 	
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
