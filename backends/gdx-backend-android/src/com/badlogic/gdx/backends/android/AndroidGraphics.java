@@ -664,7 +664,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 					safeInsetTop = displayCutout.getSafeInsetTop();
 					safeInsetLeft = displayCutout.getSafeInsetLeft();
 				}
-			} catch (UnsupportedOperationException e) {
+			} // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
+			catch (UnsupportedOperationException e) {
 				Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
 			}
 		}
