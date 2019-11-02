@@ -656,12 +656,16 @@ public class AndroidGraphics implements Graphics, Renderer {
 		safeInsetBottom = 0;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
-			if (displayCutout != null) {
-				safeInsetRight = displayCutout.getSafeInsetRight();
-				safeInsetBottom = displayCutout.getSafeInsetBottom();
-				safeInsetTop = displayCutout.getSafeInsetTop();
-				safeInsetLeft = displayCutout.getSafeInsetLeft();
+			try {
+				DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+				if (displayCutout != null) {
+					safeInsetRight = displayCutout.getSafeInsetRight();
+					safeInsetBottom = displayCutout.getSafeInsetBottom();
+					safeInsetTop = displayCutout.getSafeInsetTop();
+					safeInsetLeft = displayCutout.getSafeInsetLeft();
+				}
+			} catch (UnsupportedOperationException e) {
+				Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
 			}
 		}
 	}
