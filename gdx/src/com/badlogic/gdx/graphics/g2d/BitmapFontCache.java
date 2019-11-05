@@ -187,7 +187,7 @@ public class BitmapFontCache {
 	public void setColors (float color, int start, int end) {
 		if (pageVertices.length == 1) { // One page.
 			float[] vertices = pageVertices[0];
-			for (int i = start * 20 + 2, n = end * 20; i < n; i += 5)
+			for (int i = start * 20 + 2, n = Math.min(end * 20, idx[0]); i < n; i += 5)
 				vertices[i] = color;
 			return;
 		}
