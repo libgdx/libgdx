@@ -422,6 +422,11 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
+	}
+
+	@Override
 	public boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyCount > 0;
@@ -502,6 +507,15 @@ public class RemoteInput implements Runnable, Input {
 		return false;
 	}
 
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
 
 	@Override
 	public void setInputProcessor (InputProcessor processor) {

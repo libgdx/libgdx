@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -143,7 +144,6 @@ public class SplitPane extends WidgetGroup {
 		return style;
 	}
 
-	@Override
 	public void layout () {
 		clampSplitAmount();
 		if (!vertical)
@@ -165,7 +165,6 @@ public class SplitPane extends WidgetGroup {
 		}
 	}
 
-	@Override
 	public float getPrefWidth () {
 		float first = firstWidget == null ? 0
 			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth());
@@ -175,7 +174,6 @@ public class SplitPane extends WidgetGroup {
 		return first + style.handle.getMinWidth() + second;
 	}
 
-	@Override
 	public float getPrefHeight () {
 		float first = firstWidget == null ? 0
 			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight());
@@ -200,8 +198,7 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	public void setVertical (boolean vertical) {
-		if (this.vertical == vertical)
-			return;
+		if (this.vertical == vertical) return;
 		this.vertical = vertical;
 		invalidateHierarchy();
 	}
@@ -241,8 +238,10 @@ public class SplitPane extends WidgetGroup {
 		handleBounds.set(0, bottomAreaHeight, width, handleHeight);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage == null) return;
+
 		validate();
 
 		Color color = getColor();
@@ -251,7 +250,7 @@ public class SplitPane extends WidgetGroup {
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(firstWidgetBounds, tempScissors);
+			stage.calculateScissors(firstWidgetBounds, tempScissors);
 			if (ScissorStack.pushScissors(tempScissors)) {
 				firstWidget.draw(batch, alpha);
 				batch.flush();
@@ -260,7 +259,7 @@ public class SplitPane extends WidgetGroup {
 		}
 		if (secondWidget != null && secondWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(secondWidgetBounds, tempScissors);
+			stage.calculateScissors(secondWidgetBounds, tempScissors);
 			if (ScissorStack.pushScissors(tempScissors)) {
 				secondWidget.draw(batch, alpha);
 				batch.flush();
@@ -272,8 +271,8 @@ public class SplitPane extends WidgetGroup {
 		resetTransform(batch);
 	}
 
-	/** @param splitAmount The split amount between the min and max amount. This parameter is clamped during
-	 * layout. See {@link #clampSplitAmount()}.*/
+	/** @param splitAmount The split amount between the min and max amount. This parameter is clamped during layout. See
+	 *           {@link #clampSplitAmount()}. */
 	public void setSplitAmount (float splitAmount) {
 		this.splitAmount = splitAmount; // will be clamped during layout
 		invalidate();
@@ -284,29 +283,29 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	/** Called during layout to clamp the {@link #splitAmount} within the set limits. By default it imposes the limits of the
-	 * {@linkplain #getMinSplitAmount() min amount}, {@linkplain #getMaxSplitAmount() max amount}, and min sizes of the children. This
-	 * method is internally called in response to layout, so it should not call {@link #invalidate()}. */
+	 * {@linkplain #getMinSplitAmount() min amount}, {@linkplain #getMaxSplitAmount() max amount}, and min sizes of the children.
+	 * This method is internally called in response to layout, so it should not call {@link #invalidate()}. */
 	protected void clampSplitAmount () {
 		float effectiveMinAmount = minAmount, effectiveMaxAmount = maxAmount;
-		
-		if (vertical){
+
+		if (vertical) {
 			float availableHeight = getHeight() - style.handle.getMinHeight();
-			if (firstWidget instanceof Layout)
-				effectiveMinAmount = Math.max(effectiveMinAmount, Math.min(((Layout)firstWidget).getMinHeight() / availableHeight, 1));
-			if (secondWidget instanceof Layout)
-				effectiveMaxAmount = Math.min(effectiveMaxAmount, 1 - Math.min(((Layout)secondWidget).getMinHeight() / availableHeight, 1));
+			if (firstWidget instanceof Layout) effectiveMinAmount = Math.max(effectiveMinAmount,
+				Math.min(((Layout)firstWidget).getMinHeight() / availableHeight, 1));
+			if (secondWidget instanceof Layout) effectiveMaxAmount = Math.min(effectiveMaxAmount,
+				1 - Math.min(((Layout)secondWidget).getMinHeight() / availableHeight, 1));
 		} else {
 			float availableWidth = getWidth() - style.handle.getMinWidth();
 			if (firstWidget instanceof Layout)
 				effectiveMinAmount = Math.max(effectiveMinAmount, Math.min(((Layout)firstWidget).getMinWidth() / availableWidth, 1));
-			if (secondWidget instanceof Layout)
-				effectiveMaxAmount = Math.min(effectiveMaxAmount, 1 - Math.min(((Layout)secondWidget).getMinWidth() / availableWidth, 1));
+			if (secondWidget instanceof Layout) effectiveMaxAmount = Math.min(effectiveMaxAmount,
+				1 - Math.min(((Layout)secondWidget).getMinWidth() / availableWidth, 1));
 		}
-		
+
 		if (effectiveMinAmount > effectiveMaxAmount) // Locked handle. Average the position.
 			splitAmount = 0.5f * (effectiveMinAmount + effectiveMaxAmount);
 		else
-			splitAmount =  Math.max(Math.min(splitAmount, effectiveMaxAmount), effectiveMinAmount);
+			splitAmount = Math.max(Math.min(splitAmount, effectiveMaxAmount), effectiveMinAmount);
 	}
 
 	public float getMinSplitAmount () {
@@ -384,7 +383,21 @@ public class SplitPane extends WidgetGroup {
 		}
 		return false;
 	}
-	
+
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		if (actor == firstWidget) {
+			super.removeActor(actor, unfocus);
+			firstWidget = null;
+			invalidate();
+		} else if (actor == secondWidget) {
+			super.removeActor(actor, unfocus);
+			secondWidget = null;
+			invalidate();
+		}
+		return actor;
+	}
+
 	public boolean isCursorOverHandle () {
 		return cursorOverHandle;
 	}

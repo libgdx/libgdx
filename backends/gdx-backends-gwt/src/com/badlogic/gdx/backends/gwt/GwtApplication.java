@@ -212,7 +212,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = Gdx.gl20;
 		Gdx.files = new GwtFiles(preloader);
-		this.input = new GwtInput(graphics.canvas);
+		this.input = new GwtInput(graphics.canvas, this.config);
 		Gdx.input = this.input;
 		this.net = new GwtNet(config);
 		Gdx.net = this.net;
@@ -272,18 +272,35 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return new Preloader(getPreloaderBaseURL());
 	}
 
+	/**
+	 * This procedure creates the preloader panel and returns a preloader callback to update it.
+	 * <br />
+	 * You can override it to construct your own preloader animation. You can adjust the progress bar
+	 * colors to your needs by overriding {@link #adjustMeterPanel(Panel, Style)}.
+	 * <br />
+	 * Example to use an own image (width should be around 300px) placed in webapp folder:
+	 * <pre>
+	 *  public PreloaderCallback getPreloaderCallback () {
+	 *    return createPreloaderPanel(GWT.getHostPageBaseURL() + "logo_preload.png");
+	 *  }
+	 * </pre>
+	 * @return PreloaderCallback to use for preload()
+	 */
 	public PreloaderCallback getPreloaderCallback () {
+		return createPreloaderPanel(GWT.getModuleBaseURL() + "logo.png");
+	}
+
+	protected PreloaderCallback createPreloaderPanel(String logoUrl) {
 		final Panel preloaderPanel = new VerticalPanel();
 		preloaderPanel.setStyleName("gdx-preloader");
-		final Image logo = new Image(GWT.getModuleBaseURL() + "logo.png");
-		logo.setStyleName("logo");		
+		final Image logo = new Image(logoUrl);
+		logo.setStyleName("logo");
 		preloaderPanel.add(logo);
 		final Panel meterPanel = new SimplePanel();
-		meterPanel.setStyleName("gdx-meter");
-		meterPanel.addStyleName("red");
 		final InlineHTML meter = new InlineHTML();
 		final Style meterStyle = meter.getElement().getStyle();
 		meterStyle.setWidth(0, Unit.PCT);
+		adjustMeterPanel(meterPanel, meterStyle);
 		meterPanel.add(meter);
 		preloaderPanel.add(meterPanel);
 		getRootPanel().add(preloaderPanel);
@@ -293,13 +310,33 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void error (String file) {
 				System.out.println("error: " + file);
 			}
-			
+
 			@Override
 			public void update (PreloaderState state) {
 				meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
-			}			
-			
+			}
+
 		};
+	}
+
+	/**
+	 * called by {@link #createPreloaderPanel(String)} for overriding purpose.
+	 * override this method to adjust the styles of the loading progress bar. Example for changing
+	 * the bars padding and color:
+	 * <pre>
+	 *  meterPanel.setStyleName("gdx-meter");
+	 *  meterPanel.addStyleName("nostripes");
+	 *  Style meterPanelStyle = meterPanel.getElement().getStyle();
+	 *  meterPanelStyle.setProperty("backgroundColor", "#ff0000");
+	 *  meterPanelStyle.setProperty("padding", "0px");
+	 *  meterStyle.setProperty("backgroundColor", "#ffffff");
+	 *  meterStyle.setProperty("backgroundImage", "none");
+	 * </pre>
+	 */
+	protected void adjustMeterPanel(Panel meterPanel, Style meterStyle) {
+		meterPanel.setStyleName("gdx-meter");
+		meterPanel.addStyleName("red");
+
 	}
 
 	@Override

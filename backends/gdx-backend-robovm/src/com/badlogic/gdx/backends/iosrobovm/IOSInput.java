@@ -86,7 +86,7 @@ public class IOSInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
-	TouchEvent currentEvent = null;
+	private long currentEventTimeStamp = 0;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
@@ -341,6 +341,11 @@ public class IOSInput implements Input {
 	}
 
 	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
+	}
+
+	@Override
 	public boolean isKeyPressed (int key) {
 		return false;
 	}
@@ -523,7 +528,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public long getCurrentEventTime () {
-		return currentEvent.timestamp;
+		return currentEventTimeStamp;
 	}
 
 	@Override
@@ -541,6 +546,16 @@ public class IOSInput implements Input {
 	
 	@Override
 	public boolean isCatchMenuKey() {
+		return false;
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
 		return false;
 	}
 
@@ -614,7 +629,7 @@ public class IOSInput implements Input {
 		synchronized (touchEvents) {
 			justTouched = false;
 			for (TouchEvent event : touchEvents) {
-				currentEvent = event;
+				currentEventTimeStamp = event.timestamp;
 				switch (event.phase) {
 				case Began:
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);

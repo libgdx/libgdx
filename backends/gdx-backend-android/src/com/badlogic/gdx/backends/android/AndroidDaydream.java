@@ -169,6 +169,10 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 		createWakeLock(config.useWakelock);
 		hideStatusBar(config);
+
+		// detect an already connected bluetooth keyboardAvailable
+		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
+			this.getInput().keyboardAvailable = true;
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {

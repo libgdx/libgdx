@@ -5,6 +5,7 @@
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
 		<exclude name="**/AudioDeviceTest.java"/> <!-- audio missing -->
 		<exclude name="**/AudioRecorderTest.java"/> <!-- audio missing -->
+		<exclude name="**/BitmapFontWriterTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/BobTest.java"/> <!-- GL ES 1.0 -->
 		<exclude name="**/bullet/"/> <!-- native -->
 		<exclude name="**/BulletTestCollection.java"/> <!-- native -->
@@ -28,6 +29,7 @@
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		<exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
+		<exclude name="**/PixmapPackerIOTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->

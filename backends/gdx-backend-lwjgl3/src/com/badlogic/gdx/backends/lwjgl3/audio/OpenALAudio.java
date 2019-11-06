@@ -66,12 +66,12 @@ public class OpenALAudio implements Audio {
 	private LongMap<Integer> soundIdToSource;
 	private IntMap<Long> sourceToSoundId;
 	private long nextSoundId = 0;
-	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap<>();
-	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap<>();
+	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
+	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 	private OpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
 
-	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
+	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 	long device;
 	long context;
 	boolean noDevice = false;

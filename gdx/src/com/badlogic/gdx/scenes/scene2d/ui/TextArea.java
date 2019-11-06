@@ -65,7 +65,6 @@ public class TextArea extends TextField {
 		super(text, style);
 	}
 
-	@Override
 	protected void initialize () {
 		super.initialize();
 		writeEnters = true;
@@ -101,7 +100,6 @@ public class TextArea extends TextField {
 		this.prefRows = prefRows;
 	}
 
-	@Override
 	public float getPrefHeight () {
 		if (prefRows <= 0) {
 			return super.getPrefHeight();
@@ -196,7 +194,6 @@ public class TextArea extends TextField {
 
 	// OVERRIDE from TextField
 
-	@Override
 	protected void sizeChanged () {
 		lastText = null; // Cause calculateOffsets to recalculate the line breaks.
 
@@ -207,7 +204,6 @@ public class TextArea extends TextField {
 		linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
 	}
 
-	@Override
 	protected float getTextY (BitmapFont font, Drawable background) {
 		float textY = getHeight();
 		if (background != null) {
@@ -216,7 +212,6 @@ public class TextArea extends TextField {
 		return textY;
 	}
 
-	@Override
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
 		int i = firstLineShowing * 2;
 		float offsetY = 0;
@@ -245,7 +240,6 @@ public class TextArea extends TextField {
 		}
 	}
 
-	@Override
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		float offsetY = 0;
 		for (int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
@@ -254,7 +248,6 @@ public class TextArea extends TextField {
 		}
 	}
 
-	@Override
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
 			: glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
@@ -263,7 +256,6 @@ public class TextArea extends TextField {
 			font.getLineHeight());
 	}
 
-	@Override
 	protected void calculateOffsets () {
 		super.calculateOffsets();
 		if (!this.text.equals(lastText)) {
@@ -307,18 +299,15 @@ public class TextArea extends TextField {
 		}
 	}
 
-	@Override
 	protected InputListener createInputListener () {
 		return new TextAreaListener();
 	}
 
-	@Override
 	public void setSelection (int selectionStart, int selectionEnd) {
 		super.setSelection(selectionStart, selectionEnd);
 		updateCurrentLine();
 	}
 
-	@Override
 	protected void moveCursor (boolean forward, boolean jump) {
 		int count = forward ? 1 : -1;
 		int index = (cursorLine * 2) + count;
@@ -336,7 +325,6 @@ public class TextArea extends TextField {
 
 	}
 
-	@Override
 	protected boolean continueCursor (int index, int offset) {
 		int pos = calculateCurrentLineIndex(index + offset);
 		return super.continueCursor(index, offset) && (pos < 0 || pos >= linesBreak.size - 2 || (linesBreak.items[pos + 1] != index)
@@ -366,8 +354,6 @@ public class TextArea extends TextField {
 
 	/** Input listener for the text area **/
 	public class TextAreaListener extends TextFieldClickListener {
-
-		@Override
 		protected void setCursorPosition (float x, float y) {
 			moveOffset = -1;
 
@@ -392,7 +378,6 @@ public class TextArea extends TextField {
 			updateCurrentLine();
 		}
 
-		@Override
 		public boolean keyDown (InputEvent event, int keycode) {
 			boolean result = super.keyDown(event, keycode);
 			if (hasKeyboardFocus()) {
@@ -434,14 +419,12 @@ public class TextArea extends TextField {
 			return result;
 		}
 
-		@Override
 		public boolean keyTyped (InputEvent event, char character) {
 			boolean result = super.keyTyped(event, character);
 			showCursor();
 			return result;
 		}
 
-		@Override
 		protected void goHome (boolean jump) {
 			if (jump) {
 				cursor = 0;
@@ -450,7 +433,6 @@ public class TextArea extends TextField {
 			}
 		}
 
-		@Override
 		protected void goEnd (boolean jump) {
 			if (jump || cursorLine >= getLines()) {
 				cursor = text.length();

@@ -50,6 +50,7 @@ import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
+import com.badlogic.gdx.tests.g3d.AnisotropyTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
@@ -63,11 +64,14 @@ import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
+import com.badlogic.gdx.tests.g3d.ParticleControllerInfluencerSingleTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
+import com.badlogic.gdx.tests.g3d.PolarAccelerationTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.TangentialAccelerationTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
@@ -91,6 +95,7 @@ public class GdxTests {
 		AlphaTest.class,
 		Animation3DTest.class,
 		AnimationTest.class,
+		AnisotropyTest.class,
 		AnnotationTest.class,
 		AssetManagerTest.class,
 		AtlasIssueTest.class,
@@ -111,20 +116,22 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		ClipboardTest.class,
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
 		CpuSpriteBatchTest.class,
 		CullTest.class,
 		CursorTest.class,
+		DecalTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
+		DisplayModeTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
 //		EarClippingTriangulatorTest.class,
 		EdgeDetectionTest.class,
-		DisplayModeTest.class,
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
@@ -181,6 +188,7 @@ public class GdxTests {
 		OnscreenKeyboardTest.class,
 		PathTest.class,
 		ParallaxTest.class,
+		ParticleControllerInfluencerSingleTest.class,
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
@@ -190,6 +198,7 @@ public class GdxTests {
 		PixmapPackerTest.class,
 		PixmapPackerIOTest.class,
 		PixmapTest.class,
+		PolarAccelerationTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
 		PreferencesTest.class,
@@ -204,6 +213,7 @@ public class GdxTests {
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
 		ScrollPaneTextAreaTest.class,
+		ScrollPaneWithDynamicScrolling.class,
 		SelectTest.class,
 		SensorTest.class,
 		ShaderCollectionTest.class,
@@ -230,6 +240,7 @@ public class GdxTests {
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
+		TangentialAccelerationTest.class,
 		TextAreaTest.class,
 		TextAreaTest2.class,		
 		TextButtonTest.class,
@@ -243,6 +254,7 @@ public class GdxTests {
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,
+		TiledMapAnimationLoadingTest.class,
 		TiledMapAssetManagerTest.class,
 		TiledMapGroupLayerTest.class,
 		TiledMapAtlasAssetManagerTest.class,

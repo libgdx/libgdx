@@ -32,6 +32,7 @@ dependencies {
 	compile project(":extensions:gdx-freetype")
 	compile project(":backends:gdx-backend-android")
 	compile libraries.android
+	compile "com.android.support:multidex:${versions.multiDex}"
 }
 
 android {
@@ -47,6 +48,10 @@ android {
 			assets.srcDirs = ['assets']
 			jniLibs.srcDirs = ['libs']
 		}		
+	}
+
+	defaultConfig {
+		multiDexEnabled true
 	}
 
 	lintOptions {

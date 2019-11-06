@@ -42,7 +42,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		items = new Array(capacity);
 	}
 
-	public OrderedSet (OrderedSet set) {
+	public OrderedSet (OrderedSet<? extends T> set) {
 		super(set);
 		items = new Array(capacity);
 		items.addAll(set.items);
@@ -91,6 +91,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 	}
 
 	public OrderedSetIterator<T> iterator () {
+		if (Collections.allocateIterators) return new OrderedSetIterator(this);
 		if (iterator1 == null) {
 			iterator1 = new OrderedSetIterator(this);
 			iterator2 = new OrderedSetIterator(this);

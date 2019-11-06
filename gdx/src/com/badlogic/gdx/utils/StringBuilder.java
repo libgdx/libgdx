@@ -497,7 +497,6 @@ public class StringBuilder implements Appendable, CharSequence {
 	/** Returns the current String representation.
 	 * 
 	 * @return a String containing the characters in this instance. */
-	@Override
 	public String toString () {
 		if (length == 0) return "";
 		return new String(chars, 0, length);
@@ -1252,6 +1251,14 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder reverse () {
 		reverse0();
 		return this;
+	}
+
+	public boolean isEmpty () {
+		return length == 0;
+	}
+
+	public boolean notEmpty () {
+		return length != 0;
 	}
 
 	public int hashCode () {

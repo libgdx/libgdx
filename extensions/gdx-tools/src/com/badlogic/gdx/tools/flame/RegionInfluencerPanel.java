@@ -47,8 +47,9 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 				}
 				
 				TextureAtlas atlas = editor.getAtlas();
+				String atlasFilename = editor.getAtlasFilename();
 				if(atlas != null)
-					regionPickerPanel.setAtlas(atlas);
+					regionPickerPanel.setAtlas(atlas, atlasFilename);
 				else 
 					regionPickerPanel.setTexture(editor.getTexture());
 				
@@ -63,10 +64,11 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 	}
 
 	@Override
-	public void onRegionsSelected (Array<TextureRegion> regions) {
+	public void onRegionsSelected (Array<TextureRegion> regions, String atlasName) {
 		regionSelectDialog.setVisible(false);
 		if(regions.size == 0) return;
 		value.clear();
+		value.setAtlasName(atlasName);
 		value.add((TextureRegion[])regions.toArray(TextureRegion.class));
 		editor.setTexture(regions.get(0).getTexture());
 		editor.restart();

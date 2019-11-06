@@ -40,6 +40,9 @@ import com.google.gwt.core.ext.typeinfo.*;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class ReflectionCacheSourceCreator {
 	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList("char", "int",
 			"long", "byte", "short", "float", "double", "boolean"));
@@ -717,7 +720,10 @@ public class ReflectionCacheSourceCreator {
 	private String getAnnotations (Annotation[] annotations) {
 		if (annotations != null && annotations.length > 0) {
 			int numValidAnnotations = 0;
-			final Class<?>[] ignoredAnnotations = {Deprecated.class, Retention.class};
+			final Class<?>[] ignoredAnnotations = {
+				Nonnull.class, Nullable.class,
+				Deprecated.class, Retention.class,
+			};
 			StringBuilder b = new StringBuilder();
 			b.append("new java.lang.annotation.Annotation[] {");
 			for (Annotation annotation : annotations) {

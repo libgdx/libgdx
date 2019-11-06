@@ -68,7 +68,6 @@ public class Touchpad extends Widget {
 		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
-			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (touched) return false;
 				touched = true;
@@ -76,12 +75,10 @@ public class Touchpad extends Widget {
 				return true;
 			}
 
-			@Override
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
 			}
 
-			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
 				calculatePositionAndValue(x, y, resetOnTouchUp);
@@ -132,14 +129,12 @@ public class Touchpad extends Widget {
 		return style;
 	}
 
-	@Override
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && this.getTouchable() != Touchable.enabled) return null;
 		if (!isVisible()) return null;
 		return touchBounds.contains(x, y) ? this : null;
 	}
 
-	@Override
 	public void layout () {
 		// Recalc pad and deadzone bounds
 		float halfWidth = getWidth() / 2;
@@ -154,7 +149,6 @@ public class Touchpad extends Widget {
 		knobPercent.set(0, 0);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
@@ -177,12 +171,10 @@ public class Touchpad extends Widget {
 		}
 	}
 
-	@Override
 	public float getPrefWidth () {
 		return style.background != null ? style.background.getMinWidth() : 0;
 	}
 
-	@Override
 	public float getPrefHeight () {
 		return style.background != null ? style.background.getMinHeight() : 0;
 	}

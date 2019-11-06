@@ -64,7 +64,13 @@ public class ImageProcessor {
 		}
 		if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
-		String name = file.getAbsolutePath().replace('\\', '/');
+		String name;
+		try {
+			name = file.getCanonicalPath();
+		} catch (IOException ex) {
+			name = file.getAbsolutePath();
+		}
+		name = name.replace('\\', '/');
 
 		// Strip root dir off front of image path.
 		if (rootPath != null) {
@@ -112,6 +118,10 @@ public class ImageProcessor {
 
 	public void setScale (float scale) {
 		this.scale = scale;
+	}
+
+	public float getScale () {
+		return scale;
 	}
 
 	public void setResampling (Resampling resampling) {

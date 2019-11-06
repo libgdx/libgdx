@@ -233,8 +233,7 @@ public class Button extends Table implements Disableable {
 			background = style.over;
 		} else if (focused && style.focused != null) {
 			background = style.focused;
-		} else if (style.up != null) //
-		{
+		} else if (style.up != null) {
 			background = style.up;
 		}
 		setBackground(background);

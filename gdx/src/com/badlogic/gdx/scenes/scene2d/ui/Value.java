@@ -37,6 +37,8 @@ abstract public class Value {
 	/** A fixed value that is not computed each time it is used.
 	 * @author Nathan Sweet */
 	static public class Fixed extends Value {
+		static final Fixed[] cache = new Fixed[111];
+
 		private final float value;
 
 		public Fixed (float value) {
@@ -49,6 +51,16 @@ abstract public class Value {
 
 		public String toString () {
 			return Float.toString(value);
+		}
+
+		static public Fixed valueOf (float value) {
+			if (value == 0) return zero;
+			if (value >= -10 && value <= 100 && value == (int)value) {
+				Fixed fixed = cache[(int)value + 10];
+				if (fixed == null) cache[(int)value + 10] = fixed = new Fixed(value);
+				return fixed;
+			}
+			return new Fixed(value);
 		}
 	}
 

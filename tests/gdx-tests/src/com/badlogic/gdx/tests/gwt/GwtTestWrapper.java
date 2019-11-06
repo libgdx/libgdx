@@ -51,6 +51,7 @@ import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
+import com.badlogic.gdx.tests.ClipboardTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -103,6 +104,7 @@ import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -144,12 +146,12 @@ public class GwtTestWrapper extends GdxTest {
 		Arrays.sort(tests, new Comparator<Instancer>() {
 			@Override
 			public int compare (Instancer o1, Instancer o2) {
-				return o1.instance().getClass().getName().compareTo(o2.instance().getClass().getName());
+				return o1.instance().getClass().getSimpleName().compareTo(o2.instance().getClass().getSimpleName());
 			}
 		});
 		for (final Instancer instancer : tests) {
 			table.row();
-			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
+			TextButton button = new TextButton(instancer.instance().getClass().getSimpleName(), skin);
 			button.addListener(new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
@@ -356,6 +358,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isButtonJustPressed (int button) {
+			return input.isButtonJustPressed(button);
+		}
+
+		@Override
 		public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 			input.getTextInput(listener, title, text, hint);
 		}
@@ -426,6 +433,16 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void setCatchKey(int keycode, boolean catchKey) {
+			input.setCatchKey(keycode, catchKey);
+		}
+
+		@Override
+		public boolean isCatchKey (int keycode) {
+			return input.isCatchKey(keycode);
+		}
+
+		@Override
 		public void setInputProcessor (InputProcessor processor) {
 			multiplexer.removeProcessor(lastProcessor);
 			multiplexer.addProcessor(processor);
@@ -464,7 +481,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public void setCursorPosition (int x, int y) {
-			setCursorPosition(x, y);
+			input.setCursorPosition(x, y);
 		}
 	}
 
@@ -541,6 +558,10 @@ public class GwtTestWrapper extends GdxTest {
 			return new BufferUtilsTest();
 		}
 	}, new Instancer() {
+		public GdxTest instance() {
+			return new ClipboardTest();
+		}
+	}, new Instancer() {
 		public GdxTest instance () {
 			return new ColorTest();
 		}
@@ -601,6 +622,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GroupFadeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new GwtInputTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
@@ -777,6 +802,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TextureAtlasTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TiledMapObjectLoadingTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

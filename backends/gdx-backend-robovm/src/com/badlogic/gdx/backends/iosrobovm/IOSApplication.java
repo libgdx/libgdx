@@ -178,6 +178,10 @@ public class IOSApplication implements Application {
 		 return new IOSGraphics(scale, this, config, input, config.useGL30);
 	}
 
+	protected IOSGraphics.IOSUIViewController createUIViewController(IOSGraphics graphics) {
+		return new IOSGraphics.IOSUIViewController(this, graphics);
+	}
+
 	protected IOSInput createInput() {
 		 return new IOSInput(this);
 	}

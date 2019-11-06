@@ -42,7 +42,7 @@ public class DragAndDrop {
 	private int button;
 	float dragActorX = 0, dragActorY = 0;
 	float touchOffsetX, touchOffsetY;
-	long dragStartTime;
+	long dragValidTime;
 	int dragTime = 250;
 	int activePointer = -1;
 	boolean cancelTouchFocus = true;
@@ -58,12 +58,15 @@ public class DragAndDrop {
 
 				activePointer = pointer;
 
-				dragStartTime = System.currentTimeMillis();
+				dragValidTime = System.currentTimeMillis() + dragTime;
 				dragSource = source;
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
 
-				if (cancelTouchFocus && payload != null) source.getActor().getStage().cancelTouchFocusExcept(this, source.getActor());
+				if (cancelTouchFocus && payload != null) {
+					Stage stage = source.getActor().getStage();
+					if (stage != null) stage.cancelTouchFocusExcept(this, source.getActor());
+				}
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
@@ -125,7 +128,7 @@ public class DragAndDrop {
 				activePointer = -1;
 				if (payload == null) return;
 
-				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
+				if (System.currentTimeMillis() < dragValidTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) {
 					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
@@ -172,7 +175,8 @@ public class DragAndDrop {
 	public void cancelTouchFocusExcept (Source except) {
 		DragListener listener = sourceListeners.get(except);
 		if (listener == null) return;
-		except.getActor().getStage().cancelTouchFocusExcept(listener, except.getActor());
+		Stage stage = except.getActor().getStage();
+		if (stage != null) stage.cancelTouchFocusExcept(listener, except.getActor());
 	}
 
 	/** Sets the distance a touch must travel before being considered a drag. */
@@ -220,6 +224,15 @@ public class DragAndDrop {
 	 * that was meant to be a click. Default is 250. */
 	public void setDragTime (int dragMillis) {
 		this.dragTime = dragMillis;
+	}
+
+	public int getDragTime () {
+		return dragTime;
+	}
+
+	/** Returns true if a drag is in progress and the {@link #setDragTime(int) drag time} has elapsed since the drag started. */
+	public boolean isDragValid () {
+		return payload != null && System.currentTimeMillis() >= dragValidTime;
 	}
 
 	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled if
