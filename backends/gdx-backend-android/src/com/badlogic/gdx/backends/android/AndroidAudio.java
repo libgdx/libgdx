@@ -46,6 +46,7 @@ public final class AndroidAudio implements Audio {
 	private final SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
+	private final boolean loopingFix;
 
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio) {
@@ -66,6 +67,7 @@ public final class AndroidAudio implements Audio {
 			soundPool = null;
 			manager = null;
 		}
+		loopingFix = config.musicLoopingFix;
 	}
 
 	protected void pause () {
@@ -113,37 +115,49 @@ public final class AndroidAudio implements Audio {
 		}
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
-		MediaPlayer mediaPlayer = new MediaPlayer();
+		if(loopingFix) {
+            try {
+                AndroidMusicLoopingFix music = new AndroidMusicLoopingFix(this, aHandle, aHandle.type() == FileType.Internal ? AndroidMusicLoopingFix.INTERNAL : AndroidMusicLoopingFix.PATH);
+                synchronized (musics) {
+                    musics.add(music);
+                }
+                return music;
+            } catch (Exception ex) {
+                throw new GdxRuntimeException("Error loading audio file: " + file
+                        + "\nNote: Internal audio files must be placed in the assets directory.", ex);
+            }
+        } else {
+            MediaPlayer mediaPlayer = new MediaPlayer();
 
-		if (aHandle.type() == FileType.Internal) {
-			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-				mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-				descriptor.close();
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error loading audio file: " + file
-					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
-			}
-		} else {
-			try {
-				mediaPlayer.setDataSource(aHandle.file().getPath());
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
-			}
-		}
-
+            if (aHandle.type() == FileType.Internal) {
+                try {
+                    AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
+                    mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                    descriptor.close();
+                    mediaPlayer.prepare();
+                    AndroidMusic music = new AndroidMusic(this, mediaPlayer);
+                    synchronized (musics) {
+                        musics.add(music);
+                    }
+                    return music;
+                } catch (Exception ex) {
+                    throw new GdxRuntimeException("Error loading audio file: " + file
+                            + "\nNote: Internal audio files must be placed in the assets directory.", ex);
+                }
+            } else {
+                try {
+                    mediaPlayer.setDataSource(aHandle.file().getPath());
+                    mediaPlayer.prepare();
+                    AndroidMusic music = new AndroidMusic(this, mediaPlayer);
+                    synchronized (musics) {
+                        musics.add(music);
+                    }
+                    return music;
+                } catch (Exception ex) {
+                    throw new GdxRuntimeException("Error loading audio file: " + file, ex);
+                }
+            }
+        }
 	}
 
 	/** Creates a new Music instance from the provided FileDescriptor. It is the caller's responsibility to close the file

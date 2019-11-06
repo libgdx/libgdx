@@ -24,12 +24,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
-	private final AndroidAudio audio;
+	private AndroidAudio audio;
 	private MediaPlayer player;
 	private boolean isPrepared = true;
 	protected boolean wasPlaying = false;
 	private float volume = 1f;
 	protected OnCompletionListener onCompletionListener;
+
+	protected AndroidMusic() {}
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
 		this.audio = audio;
