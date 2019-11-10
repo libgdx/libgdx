@@ -30,16 +30,18 @@ public class GwtPreferences implements Preferences {
 	GwtPreferences (String prefix) {
 		this.prefix = prefix + ":";
 		int prefixLength = this.prefix.length();
-		try {
-			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
-				String key = GwtFiles.LocalStorage.key(i);
-				if (key.startsWith(prefix)) {
-					String value = GwtFiles.LocalStorage.getItem(key);
-					values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
+		if (GwtFiles.LocalStorage != null) {
+			try {
+				for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+					String key = GwtFiles.LocalStorage.key(i);
+					if (key.startsWith(prefix)) {
+						String value = GwtFiles.LocalStorage.getItem(key);
+						values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
+					}
 				}
+			} catch (Exception e) {
+				values.clear();
 			}
-		} catch (Exception e) {
-			values.clear();
 		}
 	}
 
@@ -61,22 +63,24 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		try {
-			// remove all old values
-			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
-				String key = GwtFiles.LocalStorage.key(i);
-				if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
-			}
+		if (GwtFiles.LocalStorage != null) {
+			try {
+				// remove all old values
+				for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+					String key = GwtFiles.LocalStorage.key(i);
+					if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
+				}
 
-			// push new values to LocalStorage
-			for (String key : values.keys()) {
-				String storageKey = toStorageKey(key, values.get(key));
-				String storageValue = "" + values.get(key).toString();
-				GwtFiles.LocalStorage.setItem(storageKey, storageValue);
-			}
+				// push new values to LocalStorage
+				for (String key : values.keys()) {
+					String storageKey = toStorageKey(key, values.get(key));
+					String storageValue = "" + values.get(key).toString();
+					GwtFiles.LocalStorage.setItem(storageKey, storageValue);
+				}
 
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't flush preferences", e);
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't flush preferences", e);
+			}
 		}
 	}
 
