@@ -190,12 +190,11 @@ public class List<T> extends Widget implements Cullable {
 
 		Drawable background = style.background;
 		if (background != null) {
-			prefWidth += background.getLeftWidth() + background.getRightWidth();
-			prefHeight += background.getTopHeight() + background.getBottomHeight();
+			prefWidth = Math.max(prefWidth + background.getLeftWidth() + background.getRightWidth(), background.getMinWidth());
+			prefHeight = Math.max(prefHeight + background.getTopHeight() + background.getBottomHeight(), background.getMinHeight());
 		}
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 

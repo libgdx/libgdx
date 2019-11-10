@@ -23,6 +23,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 
@@ -74,6 +75,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
@@ -303,6 +305,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		this.width = width;
 		this.height = height;
 		updatePpi();
+		updateSafeAreaInsets();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
 			app.getApplicationListener().create();
@@ -320,6 +323,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
+		updateSafeAreaInsets();
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
@@ -644,6 +648,48 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[] {getDisplayMode()};
+	}
+
+	protected void updateSafeAreaInsets() {
+		safeInsetLeft = 0;
+		safeInsetTop = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			try {
+				DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+				if (displayCutout != null) {
+					safeInsetRight = displayCutout.getSafeInsetRight();
+					safeInsetBottom = displayCutout.getSafeInsetBottom();
+					safeInsetTop = displayCutout.getSafeInsetTop();
+					safeInsetLeft = displayCutout.getSafeInsetLeft();
+				}
+			} // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
+			catch (UnsupportedOperationException e) {
+				Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
+			}
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
 	}
 
 	@Override

@@ -99,7 +99,7 @@ public class BaseDrawable implements Drawable {
 
 	public void setMinSize (float minWidth, float minHeight) {
 		setMinWidth(minWidth);
-		setMinHeight(minWidth);
+		setMinHeight(minHeight);
 	}
 
 	public String getName () {

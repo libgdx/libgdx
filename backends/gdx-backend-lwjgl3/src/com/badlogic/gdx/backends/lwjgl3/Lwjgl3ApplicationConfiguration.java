@@ -114,6 +114,13 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/**
+	 * Sets the maximum number of threads to use for network requests.
+	 */
+	public void setMaxNetThreads(int maxNetThreads) {
+		this.maxNetThreads = maxNetThreads;
+	}
+
+	/**
 	 * Sets the audio device configuration.
 	 * 
 	 * @param simultaniousSources

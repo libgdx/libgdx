@@ -41,7 +41,6 @@ public class Mp3 {
 			if (audio.noDevice) return;
 			bitstream = new Bitstream(file.read());
 			decoder = new MP3Decoder();
-			bufferOverhead = 4096;
 			try {
 				Header header = bitstream.readFrame();
 				if (header == null) throw new GdxRuntimeException("Empty MP3");

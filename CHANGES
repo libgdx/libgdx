@@ -1,5 +1,9 @@
 [1.9.11]
+- Update to LWJGL 3.2.3
+- API Change: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
+- API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
 - isFullscreen() now returns false when in multi-window mode on Android
+
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
 - API Addition: Accelerometer support on GWT
@@ -36,6 +40,8 @@
 - API Addition: Support for InstancedRendering via Mesh
 - API Change: Cell#setLayout renamed to setTable.
 - API Addition: Added Collections#allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
+- API Addition: Added Group#removeActorAt(int,boolean) to avoid looking up the actor index. Subclasses intending to take action when an actor is removed may need to override this new method.
+- API Change: If Group#addActorAfter is called with an afterActor not in the group, the actor is added as the last child (not the first).
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker

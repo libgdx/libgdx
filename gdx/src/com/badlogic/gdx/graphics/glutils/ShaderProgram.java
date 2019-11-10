@@ -305,7 +305,10 @@ public class ShaderProgram implements Disposable {
 		int location;
 		if ((location = uniforms.get(name, -2)) == -2) {
 			location = gl.glGetUniformLocation(program, name);
-			if (location == -1 && pedantic) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
+			if (location == -1 && pedantic) {
+				if (isCompiled) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
+				throw new IllegalStateException("An attempted fetch uniform from uncompiled shader \n" + getLog());
+			}
 			uniforms.put(name, location);
 		}
 		return location;

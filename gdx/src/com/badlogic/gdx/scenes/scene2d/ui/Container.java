@@ -209,6 +209,12 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return super.removeActor(actor, unfocus);
 	}
 
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		if (actor == this.actor) this.actor = null;
+		return actor;
+	}
+
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> size (Value size) {
 		if (size == null) throw new IllegalArgumentException("size cannot be null.");

@@ -142,9 +142,21 @@ public class ByteArray {
 		items[index] += value;
 	}
 
+	public void incr (byte value) {
+		byte[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, byte value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (byte value) {
+		byte[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, byte value) {

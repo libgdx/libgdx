@@ -371,6 +371,12 @@ public abstract class DynamicsModifier extends Influencer {
 				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi), sinPhi = MathUtils
 					.sinDeg(phi);
 				TMP_V3.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi).nor().scl(strength);
+
+				if (!isGlobal) {
+					controller.transform.getRotation(TMP_Q, true);
+					TMP_V3.mul(TMP_Q);
+				}
+
 				directionalVelocityChannel.data[i + ParticleChannels.XOffset] += TMP_V3.x;
 				directionalVelocityChannel.data[i + ParticleChannels.YOffset] += TMP_V3.y;
 				directionalVelocityChannel.data[i + ParticleChannels.ZOffset] += TMP_V3.z;
@@ -415,11 +421,17 @@ public abstract class DynamicsModifier extends Influencer {
 
 				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi), sinPhi = MathUtils
 					.sinDeg(phi);
-				TMP_V3
-					.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi)
-					.crs(positionChannel.data[positionOffset + ParticleChannels.XOffset],
-						positionChannel.data[positionOffset + ParticleChannels.YOffset],
-						positionChannel.data[positionOffset + ParticleChannels.ZOffset]).nor().scl(strength);
+				TMP_V3.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi);
+				TMP_V1.set(positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					positionChannel.data[positionOffset + ParticleChannels.YOffset],
+					positionChannel.data[positionOffset + ParticleChannels.ZOffset]);
+				if (!isGlobal) {
+					controller.transform.getTranslation(TMP_V2);
+					TMP_V1.sub(TMP_V2);
+					controller.transform.getRotation(TMP_Q, true);
+					TMP_V3.mul(TMP_Q);
+				}
+				TMP_V3.crs(TMP_V1).nor().scl(strength);
 				directionalVelocityChannel.data[i + ParticleChannels.XOffset] += TMP_V3.x;
 				directionalVelocityChannel.data[i + ParticleChannels.YOffset] += TMP_V3.y;
 				directionalVelocityChannel.data[i + ParticleChannels.ZOffset] += TMP_V3.z;

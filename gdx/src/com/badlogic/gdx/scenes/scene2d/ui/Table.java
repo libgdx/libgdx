@@ -302,6 +302,13 @@ public class Table extends WidgetGroup {
 		return true;
 	}
 
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		Cell cell = getCell(actor);
+		if (cell != null) cell.actor = null;
+		return actor;
+	}
+
 	/** Removes all actors and cells from the table. */
 	public void clearChildren () {
 		Array<Cell> cells = this.cells;
@@ -677,7 +684,7 @@ public class Table extends WidgetGroup {
 		return align;
 	}
 
-	/** Returns the row index for the y coordinate, or -1 if there are no cells.
+	/** Returns the row index for the y coordinate, or -1 if not over a row.
 	 * @param y The y coordinate, where 0 is the top of the table. */
 	public int getRow (float y) {
 		Array<Cell> cells = this.cells;
@@ -685,20 +692,19 @@ public class Table extends WidgetGroup {
 		y += getPadTop();
 		int i = 0, n = cells.size;
 		if (n == 0) return -1;
-		if (n == 1) return 0;
 		while (i < n) {
 			Cell c = cells.get(i++);
-			if (c.actorY + c.computedPadTop < y) break;
+			if (c.actorY + c.computedPadTop < y) return row;
 			if (c.endRow) row++;
 		}
-		return Math.min(row, rows - 1);
+		return -1;
 	}
 
 	public void setSkin (Skin skin) {
 		this.skin = skin;
 	}
 
-	/** If true (the default), positions and sizes are rounded to integers. */
+	/** If true (the default), positions and sizes of child actors are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
 	}
