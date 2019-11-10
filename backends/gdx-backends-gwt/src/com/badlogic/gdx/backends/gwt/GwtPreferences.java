@@ -44,10 +44,10 @@ public class GwtPreferences implements Preferences {
 	}
 
 	private Object toObject (String key, String value) {
-		if (key.endsWith("b")) return new Boolean(Boolean.parseBoolean(value));
-		if (key.endsWith("i")) return new Integer(Integer.parseInt(value));
-		if (key.endsWith("l")) return new Long(Long.parseLong(value));
-		if (key.endsWith("f")) return new Float(Float.parseFloat(value));
+		if (key.endsWith("b")) return Boolean.parseBoolean(value);
+		if (key.endsWith("i")) return Integer.parseInt(value);
+		if (key.endsWith("l")) return Long.parseLong(value);
+		if (key.endsWith("f")) return Float.parseFloat(value);
 		return value;
 	}
 
@@ -76,7 +76,7 @@ public class GwtPreferences implements Preferences {
 			}
 
 		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't flush preferences");
+			throw new GdxRuntimeException("Couldn't flush preferences", e);
 		}
 	}
 
