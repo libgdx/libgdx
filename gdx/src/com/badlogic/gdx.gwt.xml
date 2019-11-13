@@ -429,6 +429,7 @@
 		<include name="utils/Logger.java"/>
 		<include name="utils/LongArray.java"/>
 		<include name="utils/LongMap.java"/>
+		<include name="utils/LongQueue.java"/>
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
