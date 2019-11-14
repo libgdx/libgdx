@@ -67,6 +67,7 @@ public class LwjglGraphics implements Graphics {
 	volatile boolean requestRendering = false;
 	boolean softwareMode;
 	boolean usingGL30;
+	Thread glThread;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -186,6 +187,7 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	void setupDisplay () throws LWJGLException {
+		this.glThread = Thread.currentThread();
 		if (config.useHDPI) {
 			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
 		}
@@ -687,6 +689,11 @@ public class LwjglGraphics implements Graphics {
 		} catch (LWJGLException e) {
 			throw new GdxRuntimeException("Couldn't set system cursor");
 		}
+	}
+
+	@Override
+	public boolean isGLThread () {
+		return glThread == Thread.currentThread();
 	}
 
 	private class LwjglDisplayMode extends DisplayMode {

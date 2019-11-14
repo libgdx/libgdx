@@ -105,6 +105,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	protected final AndroidApplicationConfiguration config;
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
+	private Thread glThread;
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
@@ -113,6 +114,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy, boolean focusableView) {
+    this.glThread = Thread.currentThread();
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
@@ -776,6 +778,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+	}
+
+	@Override
+	public boolean isGLThread () {
+		return glThread == Thread.currentThread();
 	}
 
 	private class AndroidDisplayMode extends DisplayMode {

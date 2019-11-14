@@ -29,6 +29,7 @@ dependencies {
 }
 
 task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
+    enableAssertions = true
     main = mainTestClass
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in

@@ -181,6 +181,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private long frameId = -1;
 	private boolean isContinuous = true;
 	private boolean isFrameRequested = true;
+	private Thread glThread;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -189,6 +190,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	IOSUIViewController viewController;
 
 	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+		this.glThread = Thread.currentThread();
 		this.config = config;
 
 		final CGRect bounds = app.getBounds();
@@ -652,6 +654,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
+
+	@Override
+	public boolean isGLThread () {
+		return glThread == Thread.currentThread();
+  }
 
 	private class IOSDisplayMode extends DisplayMode {
 		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {

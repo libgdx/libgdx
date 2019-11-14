@@ -90,6 +90,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	IOSGLKView view;
 	IOSUIViewController viewController;
 
+	private Thread glThread;
+
 	@Selector("alloc")
 	public static native IOSGraphics alloc ();
 
@@ -102,6 +104,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
 		boolean useGLES30, IOSGLKView view) {
+    this.glThread = Thread.currentThread();
 		this.view = view;
 
 		init();
@@ -522,6 +525,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+	}
+
+	@Override
+	public boolean isGLThread () {
+		return glThread == Thread.currentThread();
 	}
 
 	@Override

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -70,12 +71,14 @@ public class Label extends Widget {
 	}
 
 	public Label (CharSequence text, LabelStyle style) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (text != null) this.text.append(text);
 		setStyle(style);
 		if (text != null && text.length() > 0) setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (LabelStyle style) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
@@ -93,6 +96,7 @@ public class Label extends Widget {
 	 * allocated.
 	 * @return true if the text was changed. */
 	public boolean setText (int value) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (this.intValue == value) return false;
 		setText(Integer.toString(value));
 		intValue = value;
@@ -101,6 +105,7 @@ public class Label extends Widget {
 
 	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (newText == null) newText = "";
 		if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
@@ -134,6 +139,7 @@ public class Label extends Widget {
 	}
 
 	private void scaleAndComputePrefSize () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
@@ -145,6 +151,7 @@ public class Label extends Widget {
 	}
 
 	private void computePrefSize () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		prefSizeInvalid = false;
 		GlyphLayout prefSizeLayout = Label.prefSizeLayout;
 		if (wrap && ellipsis == null) {
@@ -160,6 +167,7 @@ public class Label extends Widget {
 	}
 
 	public void layout () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
@@ -221,6 +229,7 @@ public class Label extends Widget {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		validate();
 		Color color = tempColor.set(getColor());
 		color.a *= parentAlpha;
@@ -235,6 +244,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefWidth () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (wrap) return 0;
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float width = prefSize.x;
@@ -245,6 +255,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefHeight () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float descentScaleCorrection = 1;
 		if (fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();
@@ -267,6 +278,7 @@ public class Label extends Widget {
 	 * will need to layout twice: once to set the width of the label and a second time to adjust to the label's new preferred
 	 * height. */
 	public void setWrap (boolean wrap) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.wrap = wrap;
 		invalidateHierarchy();
 	}
@@ -283,6 +295,7 @@ public class Label extends Widget {
 	 *           left).
 	 * @see Align */
 	public void setAlignment (int alignment) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setAlignment(alignment, alignment);
 	}
 
@@ -290,6 +303,7 @@ public class Label extends Widget {
 	 * @param lineAlign Aligns each line of text horizontally (default left).
 	 * @see Align */
 	public void setAlignment (int labelAlign, int lineAlign) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.labelAlign = labelAlign;
 
 		if ((lineAlign & Align.left) != 0)
@@ -303,10 +317,12 @@ public class Label extends Widget {
 	}
 
 	public void setFontScale (float fontScale) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setFontScale(fontScale, fontScale);
 	}
 
 	public void setFontScale (float fontScaleX, float fontScaleY) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		fontScaleChanged = true;
 		this.fontScaleX = fontScaleX;
 		this.fontScaleY = fontScaleY;
@@ -318,6 +334,7 @@ public class Label extends Widget {
 	}
 
 	public void setFontScaleX (float fontScaleX) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setFontScale(fontScaleX, fontScaleY);
 	}
 
@@ -326,6 +343,7 @@ public class Label extends Widget {
 	}
 
 	public void setFontScaleY (float fontScaleY) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setFontScale(fontScaleX, fontScaleY);
 	}
 

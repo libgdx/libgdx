@@ -55,6 +55,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private int windowPosXBeforeFullscreen;
 	private int windowPosYBeforeFullscreen;
 	private DisplayMode displayModeBeforeFullscreen = null;
+	private Thread glThread;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
@@ -75,6 +76,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	};
 
 	public Lwjgl3Graphics(Lwjgl3Window window) {
+		this.glThread = Thread.currentThread();
 		this.window = window;
 		if (window.getConfig().useGL30) {
 			this.gl30 = new Lwjgl3GL30();
@@ -462,6 +464,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public void setSystemCursor(SystemCursor systemCursor) {
 		Lwjgl3Cursor.setSystemCursor(getWindow().getWindowHandle(), systemCursor);
+	}
+
+	@Override
+	public boolean isGLThread () {
+		return glThread == Thread.currentThread();
 	}
 
 	@Override

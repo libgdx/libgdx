@@ -531,6 +531,11 @@ public class GwtGraphics implements Graphics {
 		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", GwtCursor.getNameForSystemCursor(systemCursor));
 	}
 
+	@Override
+	public boolean isGLThread () {
+		return true;
+	}
+
 	static class GwtMonitor extends Monitor {
 		protected GwtMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);

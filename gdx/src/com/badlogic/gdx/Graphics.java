@@ -343,4 +343,10 @@ public interface Graphics {
 	 * Sets one of the predefined {@link SystemCursor}s
 	 */
 	public void setSystemCursor(SystemCursor systemCursor);
+
+	/**
+	 * Returns true if the current thread is the GL thread
+	 */
+	public boolean isGLThread ();
+
 }

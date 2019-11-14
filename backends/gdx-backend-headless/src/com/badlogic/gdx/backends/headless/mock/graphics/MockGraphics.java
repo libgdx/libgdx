@@ -252,6 +252,11 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isGLThread () {
+		return true;
+	}
+
+	@Override
 	public Monitor getPrimaryMonitor() {
 		return null;
 	}

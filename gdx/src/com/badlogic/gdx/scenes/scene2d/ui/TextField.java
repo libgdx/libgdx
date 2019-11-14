@@ -134,6 +134,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public TextField (String text, TextFieldStyle style) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setStyle(style);
 		clipboard = Gdx.app.getClipboard();
 		initialize();
@@ -150,6 +151,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected int letterUnderCursor (float x) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		x -= textOffset + fontOffset - style.font.getData().cursorX - glyphPositions.get(visibleTextStart);
 		Drawable background = getBackgroundDrawable();
 		if (background != null) x -= style.background.getLeftWidth();
@@ -169,6 +171,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected int[] wordUnderCursor (int at) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
 		if (at >= text.length()) {
@@ -215,6 +218,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void setStyle (TextFieldStyle style) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
@@ -228,6 +232,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void calculateOffsets () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		float visibleWidth = getWidth();
 		Drawable background = getBackgroundDrawable();
 		if (background != null) visibleWidth -= background.getLeftWidth() + background.getRightWidth();
@@ -297,6 +302,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		boolean focused = hasKeyboardFocus();
 		if (focused != this.focused) {
 			this.focused = focused;
@@ -358,6 +364,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected float getTextY (BitmapFont font, Drawable background) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		float height = getHeight();
 		float textY = textHeight / 2 + font.getDescent();
 		if (background != null) {
@@ -372,25 +379,30 @@ public class TextField extends Widget implements Disableable {
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
 			textHeight);
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
 	}
 
 	protected void drawMessageText (Batch batch, BitmapFont font, float x, float y, float maxWidth) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		font.draw(batch, messageText, x, y, 0, messageText.length(), maxWidth, textHAlign, false, "...");
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		cursorPatch.draw(batch,
 			x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
 			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		BitmapFont font = style.font;
 		BitmapFontData data = font.getData();
 		String text = this.text;
@@ -438,6 +450,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
 	public void copy () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (hasSelection && !passwordMode) {
 			clipboard.setContents(text.substring(Math.min(cursor, selectionStart), Math.max(cursor, selectionStart)));
 		}
@@ -446,10 +459,12 @@ public class TextField extends Widget implements Disableable {
 	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
 	 * it. */
 	public void cut () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		cut(programmaticChangeEvents);
 	}
 
 	void cut (boolean fireChangeEvent) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (hasSelection && !passwordMode) {
 			copy();
 			cursor = delete(fireChangeEvent);
@@ -458,6 +473,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	void paste (String content, boolean fireChangeEvent) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
@@ -485,11 +501,13 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	String insert (int position, CharSequence text, String to) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (to.length() == 0) return text.toString();
 		return to.substring(0, position) + text + to.substring(position, to.length());
 	}
 
 	int delete (boolean fireChangeEvent) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		int from = selectionStart;
 		int to = cursor;
 		int minIndex = Math.min(from, to);
@@ -507,6 +525,7 @@ public class TextField extends Widget implements Disableable {
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		Stage stage = getStage();
 		if (stage == null) return;
 		TextField current = this;
@@ -537,6 +556,7 @@ public class TextField extends Widget implements Disableable {
 	/** @return May be null. */
 	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
 		boolean up) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof TextField) {
@@ -565,11 +585,13 @@ public class TextField extends Widget implements Disableable {
 
 	/** @param listener May be null. */
 	public void setTextFieldListener (TextFieldListener listener) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.listener = listener;
 	}
 
 	/** @param filter May be null. */
 	public void setTextFieldFilter (TextFieldFilter filter) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.filter = filter;
 	}
 
@@ -579,6 +601,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** If true (the default), tab/shift+tab will move to the next text field. */
 	public void setFocusTraversal (boolean focusTraversal) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.focusTraversal = focusTraversal;
 	}
 
@@ -590,11 +613,13 @@ public class TextField extends Widget implements Disableable {
 	/** Sets the text that will be drawn in the text field if no text has been entered.
 	 * @param messageText may be null. */
 	public void setMessageText (String messageText) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.messageText = messageText;
 	}
 
 	/** @param str If null, "" is used. */
 	public void appendText (String str) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (str == null) str = "";
 
 		clearSelection();
@@ -604,6 +629,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** @param str If null, "" is used. */
 	public void setText (String str) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (str == null) str = "";
 		if (str.equals(text)) return;
 
@@ -623,6 +649,7 @@ public class TextField extends Widget implements Disableable {
 	/** @param oldText May be null.
 	 * @return True if the text was changed. */
 	boolean changeText (String oldText, String newText) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (newText.equals(oldText)) return false;
 		text = newText;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -647,11 +674,13 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public String getSelection () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		return hasSelection ? text.substring(Math.min(selectionStart, cursor), Math.max(selectionStart, cursor)) : "";
 	}
 
 	/** Sets the selected text. */
 	public void setSelection (int selectionStart, int selectionEnd) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
 		if (selectionEnd < 0) throw new IllegalArgumentException("selectionEnd must be >= 0");
 		selectionStart = Math.min(text.length(), selectionStart);
@@ -672,15 +701,18 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void selectAll () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		setSelection(0, text.length());
 	}
 
 	public void clearSelection () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		hasSelection = false;
 	}
 
 	/** Sets the cursor position and clears any selection. */
 	public void setCursorPosition (int cursorPosition) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
 		clearSelection();
 		cursor = Math.min(cursorPosition, text.length());
@@ -696,10 +728,12 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public void setOnscreenKeyboard (OnscreenKeyboard keyboard) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.keyboard = keyboard;
 	}
 
 	public void setClipboard (Clipboard clipboard) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.clipboard = clipboard;
 	}
 
@@ -708,6 +742,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public float getPrefHeight () {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		float topAndBottom = 0, minHeight = 0;
 		if (style.background != null) {
 			topAndBottom = Math.max(topAndBottom, style.background.getBottomHeight() + style.background.getTopHeight());
@@ -729,6 +764,7 @@ public class TextField extends Widget implements Disableable {
 	/** Sets text horizontal alignment (left, center or right).
 	 * @see Align */
 	public void setAlignment (int alignment) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.textHAlign = alignment;
 	}
 
@@ -739,6 +775,7 @@ public class TextField extends Widget implements Disableable {
 	/** If true, the text in this text field will be shown as bullet characters.
 	 * @see #setPasswordCharacter(char) */
 	public void setPasswordMode (boolean passwordMode) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.passwordMode = passwordMode;
 		updateDisplayText();
 	}
@@ -750,6 +787,7 @@ public class TextField extends Widget implements Disableable {
 	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont}. Default is 149
 	 * (bullet). */
 	public void setPasswordCharacter (char passwordCharacter) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		this.passwordCharacter = passwordCharacter;
 		if (passwordMode) updateDisplayText();
 	}
@@ -767,6 +805,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void moveCursor (boolean forward, boolean jump) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		int limit = forward ? text.length() : 0;
 		int charOffset = forward ? 0 : -1;
 		while ((forward ? ++cursor < limit : --cursor > limit) && jump) {
@@ -775,6 +814,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected boolean continueCursor (int index, int offset) {
+		assert Gdx.graphics.isGLThread() : "Not on the GL thread";
 		char c = text.charAt(index + offset);
 		return isWordCharacter(c);
 	}
