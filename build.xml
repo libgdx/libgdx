@@ -165,7 +165,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-core">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d"/>
@@ -195,7 +195,7 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-core">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers"/>

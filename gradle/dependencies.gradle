@@ -33,6 +33,7 @@ versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "3.1.0"
 versions.multiDex = "1.0.3"
+versions.minAndroidSdk = 14
 versions.androidSdk = 29
 versions.androidBuildTools = "29.0.2"
 versions.androidSupport = "25.+"

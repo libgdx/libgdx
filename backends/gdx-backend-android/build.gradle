@@ -14,17 +14,22 @@
  * limitations under the License.
  ******************************************************************************/
 
+apply plugin: "com.android.library"
+
 buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
     }
 }
 
-apply plugin: "com.android.library"
-
 android {
-    buildToolsVersion versions.androidBuildTools
     compileSdkVersion versions.androidSdk
+    buildToolsVersion versions.androidBuildTools
+
+    defaultConfig {
+        minSdkVersion versions.minAndroidSdk
+        targetSdkVersion versions.androidSdk
+    }
 }
 
 dependencies {
