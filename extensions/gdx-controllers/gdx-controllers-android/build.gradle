@@ -14,8 +14,40 @@
  * limitations under the License.
  ******************************************************************************/
 
+apply plugin: "com.android.library"
+
+buildscript {
+	dependencies {
+		classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
+	}
+}
+
+android {
+	compileSdkVersion versions.androidSdk
+	buildToolsVersion versions.androidBuildTools
+
+	defaultConfig {
+		minSdkVersion versions.minAndroidSdk
+		targetSdkVersion versions.androidSdk
+	}
+
+	sourceSets {
+		main {
+			manifest.srcFile 'AndroidManifest.xml'
+			java.srcDirs = ["src"]
+			resources.srcDirs = ["src"]
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility = 1.6
+		targetCompatibility = 1.6
+	}
+}
+
 dependencies {
-    compileOnly project(":backends:gdx-backend-android")
-    compileOnly fileTree(dir: '../../../backends/gdx-backend-android/libs', include: ['*.jar'])
-    compileOnly project(":extensions:gdx-controllers:gdx-controllers")
+	compile project(":gdx")
+	compileOnly project(":backends:gdx-backend-android")
+	compileOnly fileTree(dir: '../../../backends/gdx-backend-android/libs', include: ['*.jar'])
+	compileOnly project(":extensions:gdx-controllers:gdx-controllers-core")
 }

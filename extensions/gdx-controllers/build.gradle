@@ -16,7 +16,7 @@
 
 group = "controllers-parent"
 
-subprojects {
+configure(subprojects - project(":extensions:gdx-controllers:gdx-controllers-android")) {
     dependencies {
         compileOnly project(":gdx")
     }

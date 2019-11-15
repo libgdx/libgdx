@@ -30,8 +30,22 @@ android {
         minSdkVersion versions.minAndroidSdk
         targetSdkVersion versions.androidSdk
     }
+
+    sourceSets {
+        main{
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ["src"]
+            resources.srcDirs = ["src"]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.6
+        targetCompatibility = 1.6
+    }
 }
 
 dependencies {
+    compile project(":gdx")
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -19,7 +19,7 @@ apply from: "gradle/dependencies.gradle"
 
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.9.9-SNAPSHOT'
+    version = '1.9.11-SNAPSHOT'
 
     buildscript {
         repositories {
@@ -38,7 +38,7 @@ allprojects {
     }
 }
 
-configure(subprojects - project(":tests:gdx-tests-android")) {
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android") - project(":extensions:gdx-controllers:gdx-controllers-android")) {
     apply plugin: "idea"
     apply plugin: "java"
 

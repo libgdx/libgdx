@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-subprojects {
+configure(subprojects - project(":extensions:gdx-controllers:gdx-controllers-android")) {
     apply plugin: "java"
 
     sourceCompatibility = 1.6
