@@ -46,6 +46,6 @@ android {
 }
 
 dependencies {
-    compile project(":gdx")
+    implementation project(":gdx")
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
