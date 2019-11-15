@@ -9,7 +9,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
