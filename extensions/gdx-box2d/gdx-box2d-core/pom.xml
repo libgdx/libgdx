@@ -8,7 +8,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>gdx-box2d</artifactId>
+	<artifactId>gdx-box2d-core</artifactId>
 	<packaging>jar</packaging>
 	<name>libGDX Box2D</name>
 

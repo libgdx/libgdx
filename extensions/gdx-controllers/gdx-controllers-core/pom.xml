@@ -8,7 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>gdx-controllers</artifactId>
+  <artifactId>gdx-controllers-core</artifactId>
   <packaging>jar</packaging>
   <name>libGDX Controllers</name>
 
