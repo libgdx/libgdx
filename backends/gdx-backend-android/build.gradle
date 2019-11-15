@@ -14,6 +14,19 @@
  * limitations under the License.
  ******************************************************************************/
 
+buildscript {
+    dependencies {
+        classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
+    }
+}
+
+apply plugin: "com.android.library"
+
+android {
+    buildToolsVersion versions.androidBuildTools
+    compileSdkVersion versions.androidSdk
+}
+
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
