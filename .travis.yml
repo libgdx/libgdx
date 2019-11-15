@@ -1,9 +1,6 @@
 sudo: true
 git:
   depth: 1
-branches:
-  only:
-    - master
 
 matrix:
   include:
@@ -22,8 +19,8 @@ matrix:
       language: android
       android:
         components:
-          - build-tools-25.0.3
-          - android-25
+          - build-tools-29.0.2
+          - android-29
         licenses:
           - 'android-sdk-license-.+'
       before_install:
