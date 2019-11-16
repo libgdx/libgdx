@@ -11,6 +11,13 @@
   <artifactId>gdx-backend-android</artifactId>
   <packaging>jar</packaging>
   <name>libGDX Android Backend</name>
+
+  <repositories>
+    <repository>
+      <id>google-repo</id>
+      <url>https://maven.google.com/</url>
+    </repository>
+  </repositories>
   
   <dependencies>
     <dependency>
