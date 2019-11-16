@@ -29,11 +29,9 @@
     </dependency>
     
     <dependency>
-	    <groupId>com.android.support</groupId>
-	    <artifactId>support-v4</artifactId>
-	    <version>19.0.1</version>
-	    <scope>system</scope>
-		<systemPath>${basedir}/libs/support-v4-19.0.1.jar</systemPath>
+	    <groupId>androidx.legacy</groupId>
+	    <artifactId>legacy-support-v4</artifactId>
+	    <version>1.0.0-alpha1</version>
 		<optional>true</optional>
 	  </dependency>
   </dependencies>
