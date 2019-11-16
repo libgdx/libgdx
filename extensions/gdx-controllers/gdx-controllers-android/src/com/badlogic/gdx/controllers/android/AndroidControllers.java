@@ -58,12 +58,7 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 		
 		// use InputManager on Android +4.1 to receive (dis-)connect events
 		if(Gdx.app.getVersion() >= 16) {
-			try {
-				String className = "com.badlogic.gdx.controllers.android.ControllerLifeCycleListener";
-				Class.forName(className).getConstructor(AndroidControllers.class).newInstance(this);
-			} catch(Exception e) {
-				Gdx.app.log(TAG, "Couldn't register controller life-cycle listener");
-			}
+			new ControllerLifeCycleListener(this);
 		}
 	}
 	
