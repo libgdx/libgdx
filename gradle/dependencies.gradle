@@ -36,7 +36,6 @@ versions.multiDex = "1.0.3"
 versions.minAndroidSdk = 14
 versions.androidSdk = 29
 versions.androidBuildTools = "29.0.2"
-versions.androidSupport = "25.+"
 versions.javaparser = "2.3.0"
 
 libraries.lwjgl = [
@@ -106,7 +105,7 @@ libraries.robovm = [
 ]
 
 libraries.android = [
-        "androidx.legacy:legacy-support-v4:1.0.0"
+        "androidx.fragment:fragment:1.1.0"
 ]
 
 libraries.gwt = [

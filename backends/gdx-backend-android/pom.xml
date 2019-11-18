@@ -36,9 +36,9 @@
     </dependency>
     
     <dependency>
-        <groupId>androidx.legacy</groupId>
-        <artifactId>legacy-support-v4</artifactId>
-        <version>1.0.0</version>
+        <groupId>androidx.fragment</groupId>
+        <artifactId>fragment</artifactId>
+        <version>1.1.0</version>
         <optional>true</optional>
     </dependency>
   </dependencies>
