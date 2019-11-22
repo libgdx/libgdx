@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 
 /** A resizable, ordered array of longs with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
- * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
+ * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(long)}. */
 public class LongQueue {
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
 	protected long[] values;
@@ -63,7 +63,7 @@ public class LongQueue {
 	}
 
 	/** Prepend given value to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
-	 * @see #addLast(Object) */
+	 * @see #addLast(long) */
 	public void addFirst (long value) {
 		long[] values = this.values;
 
@@ -136,7 +136,7 @@ public class LongQueue {
 
 	/** Remove the last item from the queue. (dequeue from tail) Always O(1).
 	 * @see #removeFirst()
-	 * @return removed 
+	 * @return removed
 	 * @throws NoSuchElementException when queue is empty */
 	public long removeLast () {
 		if (size == 0) {
@@ -224,7 +224,7 @@ public class LongQueue {
 	}
 
 	/** Returns the first (head) item in the queue (without removing it).
-	 * @see #addFirst(Object)
+	 * @see #addFirst(long)
 	 * @see #removeFirst()
 	 * @throws NoSuchElementException when queue is empty */
 	public long first () {
@@ -236,7 +236,7 @@ public class LongQueue {
 	}
 
 	/** Returns the last (tail) item in the queue (without removing it).
-	 * @see #addLast(Object)
+	 * @see #addLast(long)
 	 * @see #removeLast()
 	 * @throws NoSuchElementException when queue is empty */
 	public long last () {

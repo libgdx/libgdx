@@ -601,7 +601,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			return added;
 		}
 
-		/** Called to remove the actor from the tree when the node's parent is collapsed. */
+		/** Called to remove the actor from the tree, eg when the node is removed or the node's parent is collapsed. */
 		protected void removeFromTree (Tree<N, V> tree, int actorIndex) {
 			Actor removeActorAt = tree.removeActorAt(actorIndex, true);
 			if (!expanded) return;
