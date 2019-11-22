@@ -475,20 +475,24 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Cancels touch focus for all listeners with the specified listener actor.
 	 * @see #cancelTouchFocus() */
 	public void cancelTouchFocus (Actor listenerActor) {
-		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
-		event.setType(InputEvent.Type.touchUp);
-		event.setStageX(Integer.MIN_VALUE);
-		event.setStageY(Integer.MIN_VALUE);
-
 		// Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
 		// same focus twice.
+		InputEvent event = null;
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = items[i];
 			if (focus.listenerActor != listenerActor) continue;
 			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+
+			if (event == null) {
+				event = Pools.obtain(InputEvent.class);
+				event.setStage(this);
+				event.setType(InputEvent.Type.touchUp);
+				event.setStageX(Integer.MIN_VALUE);
+				event.setStageY(Integer.MIN_VALUE);
+			}
+
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
 			event.setPointer(focus.pointer);
@@ -498,7 +502,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		touchFocuses.end();
 
-		Pools.free(event);
+		if (event != null) Pools.free(event);
 	}
 
 	/** Removes all touch focus listeners, sending a touchUp event to each listener. Listeners typically expect to receive a
