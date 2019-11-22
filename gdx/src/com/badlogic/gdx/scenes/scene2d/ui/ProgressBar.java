@@ -358,6 +358,10 @@ public class ProgressBar extends Widget implements Disableable {
 		this.disabled = disabled;
 	}
 
+	public boolean isAnimating () {
+		return animateTime > 0;
+	}
+
 	public boolean isDisabled () {
 		return disabled;
 	}
