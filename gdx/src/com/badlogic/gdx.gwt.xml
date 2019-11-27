@@ -391,6 +391,7 @@
 		<include name="scenes/scene2d/**/*.java"/>
 
 	<!-- utils -->
+		<include name="utils/Align.java"/>
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/AtomicQueue.java"/>
