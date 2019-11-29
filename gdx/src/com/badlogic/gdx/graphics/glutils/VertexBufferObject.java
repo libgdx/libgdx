@@ -147,6 +147,11 @@ public class VertexBufferObject implements VertexData {
 		buffer.position(0);
 		bufferChanged();
 	}
+	
+	/** @return The GL handle for this vertex buffer. */
+	protected int getBufferHandle () {
+		return bufferHandle;
+	}
 
 	/** @return The GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, e.g. GL_STATIC_DRAW or
 	 *         GL_DYNAMIC_DRAW */
