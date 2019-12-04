@@ -1,8 +1,17 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
-
+  
 [![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) (Jenkins)
-
 [![Travis build status](https://travis-ci.org/libgdx/libgdx.svg?branch=master)](https://travis-ci.org/libgdx/libgdx) (Travis)
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/libgdx/libgdx/blob/master/LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/libgdx/libgdx/total.svg)](https://github.com/libgdx/libgdx/releases)
+
+[![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://discord.gg/7c6Wg8H)
+[![Forum](https://img.shields.io/badge/community-forum-green.svg)](https://www.badlogicgames.com/forum/)
+[![Forum](https://img.shields.io/badge/website-start-green.svg)](https://libgdx.badlogicgames.com/)
+
+[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/donate/?token=-L6zcRVjpBngDd8OXVud6GVfmLw5J7rCWQN5FYIGpKMhQhhpoRCVDrZURRF6lHTTZIRMd0&country.x=US&locale.x=US)
+[![Patreon](https://img.shields.io/badge/patreon-support-yellow.svg)](https://www.patreon.com/libgdx)
 
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
