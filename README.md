@@ -10,7 +10,7 @@
 [![Forum](https://img.shields.io/badge/community-forum-green.svg)](https://www.badlogicgames.com/forum/)
 [![Forum](https://img.shields.io/badge/website-start-green.svg)](https://libgdx.badlogicgames.com/)
 
-[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/donate/?token=-L6zcRVjpBngDd8OXVud6GVfmLw5J7rCWQN5FYIGpKMhQhhpoRCVDrZURRF6lHTTZIRMd0&country.x=US&locale.x=US)
+[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AB7YCDCVWWABC)
 [![Patreon](https://img.shields.io/badge/patreon-support-yellow.svg)](https://www.patreon.com/libgdx)
 
 libGDX is a cross-platform Java game development framework based on 
