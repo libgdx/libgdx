@@ -474,7 +474,7 @@ public class Array<T> implements Iterable<T> {
 	 * <p>
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
 	 * Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
-	public Iterator<T> iterator () {
+	public ArrayIterator<T> iterator () {
 		if (Collections.allocateIterators) return new ArrayIterator(this, true);
 		if (iterable == null) iterable = new ArrayIterable(this);
 		return iterable.iterator();
@@ -650,7 +650,7 @@ public class Array<T> implements Iterable<T> {
 			index = 0;
 		}
 
-		public Iterator<T> iterator () {
+		public ArrayIterator<T> iterator () {
 			return this;
 		}
 	}
@@ -672,7 +672,7 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		/** @see Collections#allocateIterators */
-		public Iterator<T> iterator () {
+		public ArrayIterator<T> iterator () {
 			if (Collections.allocateIterators) return new ArrayIterator(array, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
