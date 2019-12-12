@@ -219,6 +219,18 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}
+
+		public Array<K> toArray (Array<K> array) {
+			if (!hasNext) throw new NoSuchElementException();
+			array.addAll(keys, nextIndex, keys.size - nextIndex);
+			nextIndex = keys.size;
+			hasNext = false;
+			return array;
+		}
+
+		public Array<K> toArray () {
+			return toArray(new Array(true, keys.size - nextIndex));
+		}
 	}
 
 	static public class OrderedMapValues<V> extends Values<V> {
@@ -237,7 +249,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			V value = (V)map.get(keys.get(nextIndex));
+			V value = map.get(keys.get(nextIndex));
 			currentIndex = nextIndex;
 			nextIndex++;
 			hasNext = nextIndex < map.size;
@@ -249,6 +261,23 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			((OrderedMap)map).removeIndex(currentIndex);
 			nextIndex = currentIndex;
 			currentIndex = -1;
+		}
+
+		public Array<V> toArray (Array<V> array) {
+			if (!hasNext) throw new NoSuchElementException();
+			int n = keys.size;
+			array.ensureCapacity(n - nextIndex);
+			Object[] keys = this.keys.items;
+			for (int i = nextIndex; i < n; i++)
+				array.add(map.get(keys[i]));
+			currentIndex = n - 1;
+			nextIndex = n;
+			hasNext = false;
+			return array;
+		}
+
+		public Array<V> toArray () {
+			return toArray(new Array(true, keys.size - nextIndex));
 		}
 	}
 }
