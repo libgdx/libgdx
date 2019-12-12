@@ -221,7 +221,6 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		}
 
 		public Array<K> toArray (Array<K> array) {
-			if (!hasNext) throw new NoSuchElementException();
 			array.addAll(keys, nextIndex, keys.size - nextIndex);
 			nextIndex = keys.size;
 			hasNext = false;
@@ -264,7 +263,6 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		}
 
 		public Array<V> toArray (Array<V> array) {
-			if (!hasNext) throw new NoSuchElementException();
 			int n = keys.size;
 			array.ensureCapacity(n - nextIndex);
 			Object[] keys = this.keys.items;

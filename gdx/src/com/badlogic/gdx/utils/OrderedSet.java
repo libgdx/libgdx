@@ -157,7 +157,6 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		}
 
 		public Array<K> toArray (Array<K> array) {
-			if (!hasNext) throw new NoSuchElementException();
 			array.addAll(items, nextIndex, items.size - nextIndex);
 			nextIndex = items.size;
 			hasNext = false;
