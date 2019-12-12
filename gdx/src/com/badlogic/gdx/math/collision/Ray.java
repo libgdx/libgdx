@@ -75,7 +75,7 @@ public class Ray implements Serializable {
 	/** Sets the starting position and the direction of this ray.
 	 * 
 	 * @param origin The starting position
-	 * @param direction The direction
+	 * @param direction The direction (Vector must be normalized before, use vector.nor())
 	 * @return this ray for chaining */
 	public Ray set (Vector3 origin, Vector3 direction) {
 		this.origin.set(origin);
@@ -94,7 +94,7 @@ public class Ray implements Serializable {
 	 * @return this ray for chaining */
 	public Ray set (float x, float y, float z, float dx, float dy, float dz) {
 		this.origin.set(x, y, z);
-		this.direction.set(dx, dy, dz);
+		this.direction.set(dx, dy, dz).nor();
 		return this;
 	}
 
