@@ -3,7 +3,7 @@
 - Update to LWJGL 3.2.3
 - API Change: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
-- API Addition: Convenience method Action#targeting(Actor, Action) to set an action's target.
+- API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
