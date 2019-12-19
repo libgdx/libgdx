@@ -3,7 +3,9 @@
 - Update to LWJGL 3.2.3
 - API Change: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
-- API Change: Ray#set(float x, float y, float z, float dx, float dy, float dz) normalize direction vector after set.
+- API Change: Ray#Ray(Vector3, Vector3) not normalize direction vector.
+- API addition: Ray#Ray(Vector3, Vector3, boolean) for get a constructor who normalize the direction vector. 
+- API addition: Ray#setAndNormalizeDirection(Vector3, Vector3) and Ray#setAndNormalizeDirection(float, float, float, float, float, float) for set ray and normalize the direction vector. 
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
