@@ -41,8 +41,8 @@ public class Ray implements Serializable {
 	}
 
 	/** Constructor, sets the starting position of the ray and the direction. */
-	public Ray (Vector3 origin, Vector3 direction, boolean normalize) {
-		this(origin, normalize ? direction.nor() : direction);
+	public Ray (Vector3 origin, Vector3 direction, boolean normalizeDirection) {
+		this(origin, normalizeDirection ? direction.nor() : direction);
 	}
 
 	/** @return a copy of this ray. */
@@ -78,6 +78,7 @@ public class Ray implements Serializable {
 	}
 
 	/** Sets the starting position and the direction of this ray.
+	 * 
 	 * @param origin The starting position
 	 * @param direction The direction (Vector must be normalized before, use vector.nor() or
 	 *           {@link Ray#setAndNormalizeDirection(Vector3, Vector3)})
@@ -94,7 +95,7 @@ public class Ray implements Serializable {
 	 * @param direction The direction
 	 * @return this ray for chaining */
 	public Ray setAndNormalizeDirection (Vector3 origin, Vector3 direction) {
-		set(origin, direction.nor());
+		this.set(origin, direction.nor());
 		return this;
 	}
 
@@ -123,8 +124,8 @@ public class Ray implements Serializable {
 	 * @param dz The z-component of the direction
 	 * @return this ray for chaining */
 	public Ray setAndNormalizeDirection (float x, float y, float z, float dx, float dy, float dz) {
-		set(x, y, z, dx, dy, dz);
-		direction.set(direction.nor());
+		this.set(x, y, z, dx, dy, dz);
+		this.direction.set(direction.nor());
 		return this;
 	}
 
