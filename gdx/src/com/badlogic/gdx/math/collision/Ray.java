@@ -21,7 +21,8 @@ import java.io.Serializable;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-/** Encapsulates a ray having a starting position and a unit length direction.
+/** Encapsulates a ray having a starting position and a unit length direction
+ * The direction vector must be a normalized vector for the proper functioning of this object.
  * 
  * @author badlogicgames@gmail.com */
 public class Ray implements Serializable {
