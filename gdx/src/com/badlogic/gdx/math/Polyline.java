@@ -60,8 +60,8 @@ public class Polyline implements Shape2D {
 		final float scaleY = this.scaleY;
 		final boolean scale = scaleX != 1 || scaleY != 1;
 		final float rotation = this.rotation;
-		final float cos = MathUtils.cosDeg(rotation);
-		final float sin = MathUtils.sinDeg(rotation);
+		final float cos = (rotation != 0) ? MathUtils.cosDeg(rotation) : 0;
+		final float sin = (rotation != 0) ? MathUtils.sinDeg(rotation) : 0;
 
 		for (int i = 0, n = localVertices.length; i < n; i += 2) {
 			float x = localVertices[i] - originX;
@@ -209,8 +209,28 @@ public class Polyline implements Shape2D {
 		return false;
 	}
 
+	/** check if the point is on one segment */
 	@Override
 	public boolean contains (float x, float y) {
+		final float[] vertices = getTransformedVertices();
+		for (int i = 0, n = vertices.length; i < n - 2; i += 2) {
+			if (Vector2.dst(vertices[i], vertices[i + 1], x, y) + Vector2.dst(vertices[i + 2], vertices[i + 3], x, y) == Vector2
+				.dst(vertices[i], vertices[i + 1], vertices[i + 2], vertices[i + 3])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** check if point is nearnest than approximation on one segment */
+	public boolean contains (float x, float y, float approximation) {
+		final float[] vertices = getTransformedVertices();
+		for (int i = 0, n = vertices.length; i < n - 2; i += 2) {
+			if (Intersector.distanceSegmentPoint(vertices[i], vertices[i + 1], vertices[i + 2], vertices[i + 3], x,
+				y) <= approximation) {
+				return true;
+			}
+		}
 		return false;
 	}
 }

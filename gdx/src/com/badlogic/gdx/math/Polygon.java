@@ -68,8 +68,8 @@ public class Polygon implements Shape2D {
 		final float scaleY = this.scaleY;
 		final boolean scale = scaleX != 1 || scaleY != 1;
 		final float rotation = this.rotation;
-		final float cos = MathUtils.cosDeg(rotation);
-		final float sin = MathUtils.sinDeg(rotation);
+		final float cos = (rotation != 0) ? MathUtils.cosDeg(rotation) : 0;
+		final float sin = (rotation != 0) ? MathUtils.sinDeg(rotation) : 0;
 
 		for (int i = 0, n = localVertices.length; i < n; i += 2) {
 			float x = localVertices[i] - originX;
