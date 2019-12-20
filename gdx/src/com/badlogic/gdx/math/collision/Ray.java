@@ -82,7 +82,7 @@ public class Ray implements Serializable {
 	 * 
 	 * @param origin The starting position
 	 * @param direction The direction (Vector must be normalized before, use vector.nor() or
-	 *           {@link Ray#setAndNormalizeDirection(Vector3, Vector3)})
+	 *           {@link Ray#setNormalize(Vector3, Vector3)})
 	 * @return this ray for chaining */
 	public Ray set (Vector3 origin, Vector3 direction) {
 		this.origin.set(origin);
@@ -91,18 +91,18 @@ public class Ray implements Serializable {
 	}
 
 	/** Sets the starting position and the direction of this ray.
-	 * 
+	 * The direction vector will be normalized
 	 * @param origin The starting position
 	 * @param direction The direction
 	 * @return this ray for chaining */
-	public Ray setAndNormalizeDirection (Vector3 origin, Vector3 direction) {
+	public Ray setNormalize (Vector3 origin, Vector3 direction) {
 		this.set(origin, direction.nor());
 		return this;
 	}
 
 	/** Sets this ray from the given starting position and direction.
 	 * dx, dy, dz must give a Vector3 normalized (instead use
-	 * {@link Ray#setAndNormalizeDirection(float, float, float, float, float, float)})
+	 * {@link Ray#setNormalize(float, float, float, float, float, float)})
 	 * @param x The x-component of the starting position
 	 * @param y The y-component of the starting position
 	 * @param z The z-component of the starting position
@@ -117,6 +117,7 @@ public class Ray implements Serializable {
 	}
 
 	/** Sets this ray from the given starting position and direction.
+	 * the direction vector will be normalized
 	 * @param x The x-component of the starting position
 	 * @param y The y-component of the starting position
 	 * @param z The z-component of the starting position
@@ -124,9 +125,9 @@ public class Ray implements Serializable {
 	 * @param dy The y-component of the direction
 	 * @param dz The z-component of the direction
 	 * @return this ray for chaining */
-	public Ray setAndNormalizeDirection (float x, float y, float z, float dx, float dy, float dz) {
-		this.set(x, y, z, dx, dy, dz);
-		this.direction.set(direction.nor());
+	public Ray setNormalize (float x, float y, float z, float dx, float dy, float dz) {
+		this.origin.set(x, y, z);
+		this.direction.set(dx, dy, dz).nor();
 		return this;
 	}
 
