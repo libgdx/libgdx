@@ -21,7 +21,8 @@ import java.io.Serializable;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-/** Encapsulates a ray having a starting position and a unit length direction.
+/** Encapsulates a ray having a starting position and a unit length direction
+ * The direction vector must be a normalized vector for the proper functioning of this object.
  * 
  * @author badlogicgames@gmail.com */
 public class Ray implements Serializable {
@@ -34,10 +35,16 @@ public class Ray implements Serializable {
 	/** Constructor, sets the starting position of the ray and the direction.
 	 * 
 	 * @param origin The starting position
-	 * @param direction The direction */
+	 * @param direction The direction(must be normalized before) */
 	public Ray (Vector3 origin, Vector3 direction) {
 		this.origin.set(origin);
-		this.direction.set(direction).nor();
+		this.direction.set(direction);
+	}
+
+	/** Constructor, sets the starting position of the ray and the direction. */
+	public Ray (Vector3 origin, Vector3 direction, boolean normalizeDirection) {
+		this(origin, direction);
+		if (normalizeDirection) this.direction.nor();
 	}
 
 	/** @return a copy of this ray. */
@@ -75,7 +82,8 @@ public class Ray implements Serializable {
 	/** Sets the starting position and the direction of this ray.
 	 * 
 	 * @param origin The starting position
-	 * @param direction The direction
+	 * @param direction The direction (Vector must be normalized before, use vector.nor() or
+	 *           {@link Ray#setNormalize(Vector3, Vector3)})
 	 * @return this ray for chaining */
 	public Ray set (Vector3 origin, Vector3 direction) {
 		this.origin.set(origin);
@@ -83,8 +91,20 @@ public class Ray implements Serializable {
 		return this;
 	}
 
+	/** Sets the starting position and the direction of this ray.
+	 * The direction vector will be normalized
+	 * @param origin The starting position
+	 * @param direction The direction
+	 * @return this ray for chaining */
+	public Ray setNormalize (Vector3 origin, Vector3 direction) {
+		this.set(origin, direction);
+		this.direction.nor();
+		return this;
+	}
+
 	/** Sets this ray from the given starting position and direction.
-	 * 
+	 * dx, dy, dz must give a Vector3 normalized (instead use
+	 * {@link Ray#setNormalize(float, float, float, float, float, float)})
 	 * @param x The x-component of the starting position
 	 * @param y The y-component of the starting position
 	 * @param z The z-component of the starting position
@@ -95,6 +115,21 @@ public class Ray implements Serializable {
 	public Ray set (float x, float y, float z, float dx, float dy, float dz) {
 		this.origin.set(x, y, z);
 		this.direction.set(dx, dy, dz);
+		return this;
+	}
+
+	/** Sets this ray from the given starting position and direction.
+	 * the direction vector will be normalized
+	 * @param x The x-component of the starting position
+	 * @param y The y-component of the starting position
+	 * @param z The z-component of the starting position
+	 * @param dx The x-component of the direction
+	 * @param dy The y-component of the direction
+	 * @param dz The z-component of the direction
+	 * @return this ray for chaining */
+	public Ray setNormalize (float x, float y, float z, float dx, float dy, float dz) {
+		this.origin.set(x, y, z);
+		this.direction.set(dx, dy, dz).nor();
 		return this;
 	}
 
