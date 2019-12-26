@@ -714,10 +714,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 	
 	@Override
-	public Vector3 invert () {
-		this.x = 0f - x;
-		this.y = 0f - y;
-		this.z = 0f - z;
+	public Vector3 inv () {
+		this.x = -x;
+		this.y = -y;
+		this.z = -z;
 		return this;
 	}
 

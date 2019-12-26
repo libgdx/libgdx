@@ -189,7 +189,7 @@ public interface Vector<T extends Vector<T>> {
 	
 	/** Invert this vector.
 	 * @return This vector for chaining */
-	T invert ();
+	T inv ();
 
 	/** Sets the components of this vector to 0
 	 * @return This vector for chaining */

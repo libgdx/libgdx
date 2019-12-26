@@ -546,9 +546,9 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 	
 	@Override
-	public Vector2 invert () {
-		this.x = 0f - x;
-		this.y = 0f - y;
+	public Vector2 inv () {
+		this.x = -x;
+		this.y = -y;
 		return this;
 	}
 
