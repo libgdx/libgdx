@@ -186,6 +186,10 @@ public interface Vector<T extends Vector<T>> {
 	 * @param v addition vector
 	 * @param mulVec vector by whose values the addition vector will be scaled */
 	T mulAdd (T v, T mulVec);
+	
+	/** Invert this vector.
+	 * @return This vector for chaining */
+	T invert ();
 
 	/** Sets the components of this vector to 0
 	 * @return This vector for chaining */
