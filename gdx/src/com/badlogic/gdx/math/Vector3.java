@@ -712,6 +712,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public boolean epsilonEquals (float x, float y, float z) {
 		return epsilonEquals(x, y, z, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
+	
+	@Override
+	public Vector3 invert () {
+		this.x = 0f - x;
+		this.y = 0f - y;
+		this.z = 0f - z;
+		return this;
+	}
 
 	@Override
 	public Vector3 setZero () {
