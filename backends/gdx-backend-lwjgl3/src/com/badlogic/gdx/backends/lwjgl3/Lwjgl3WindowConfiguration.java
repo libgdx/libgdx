@@ -39,7 +39,7 @@ public class Lwjgl3WindowConfiguration {
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
 	boolean vSyncEnabled = true;
