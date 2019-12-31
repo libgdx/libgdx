@@ -79,3 +79,5 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 </table>
 
 Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
+
+[Open list of apps and games built with LibGDX/RoboVM](https://github.com/vminc/made-with-robovm-libgdx)
