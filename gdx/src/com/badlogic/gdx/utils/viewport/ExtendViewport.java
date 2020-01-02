@@ -54,6 +54,15 @@ public class ExtendViewport extends Viewport {
 		this.maxWorldWidth = maxWorldWidth;
 		this.maxWorldHeight = maxWorldHeight;
 		setCamera(camera);
+		
+		//This fixes the Viewport re-sizing issue from 1.9.10 and before, concerning ExtendViewport 
+		//      and OrthographicCamera.
+        	if ( super.getCamera() instanceof OrthographicCamera ) {
+            		( ( OrthographicCamera ) super.getCamera() ).setToOrtho(
+                    		false,
+                    		super.getWorldWidth(),
+                    		super.getWorldHeight() );
+        	}
 	}
 
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
