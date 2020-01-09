@@ -1360,7 +1360,6 @@ public class Matrix4 implements Serializable {
 	 * @param values the matrix values.
 	 * @return false in case the inverse could not be calculated, true otherwise. */
 	public static boolean inv (float[] values) {
-		float tmp[] = new float[16];
 		float l_det = det(values);
 		if (l_det == 0) return false;
 		tmp[M00] = values[M12] * values[M23] * values[M31] - values[M13] * values[M22] * values[M31] + values[M13] * values[M21] * values[M32] - values[M11]
