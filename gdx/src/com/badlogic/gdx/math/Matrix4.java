@@ -1226,6 +1226,64 @@ public class Matrix4 implements Serializable {
 	}
 	 */
 
+	/** Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
+	 * from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset specifies the offset into the
+	 * array where the x-component of the first vector is located. The numVecs parameter specifies the number of vectors stored in
+	 * the vectors array. The stride parameter specifies the number of floats between subsequent vectors and must be >= 3. This is
+	 * the same as {@link Vector3#mul(Matrix4)} applied to multiple vectors.
+	 * 
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats */
+	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+		float* vecPtr = vecs + offset;
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_mulVec(mat, vecPtr);
+			vecPtr += stride;
+		}
+	*/
+
+	/** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
+	 * major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset
+	 * specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter specifies
+	 * the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between subsequent
+	 * vectors and must be >= 3. This is the same as {@link Vector3#prj(Matrix4)} applied to multiple vectors.
+	 * 
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats */
+	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+		float* vecPtr = vecs + offset;
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_proj(mat, vecPtr);
+			vecPtr += stride;
+		}
+	*/
+
+	/** Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors.
+	 * Offset specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter
+	 * specifies the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between
+	 * subsequent vectors and must be >= 3. This is the same as {@link Vector3#rot(Matrix4)} applied to multiple vectors.
+	 * 
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats */
+	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+		float* vecPtr = vecs + offset;
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_rot(mat, vecPtr);
+			vecPtr += stride;
+		}
+	*/
+	// @on
+
 	/** Multiplies the matrix mata with matrix matb, storing the result in mata. The arrays are assumed to hold 4x4 column major
 	 * matrices as you can get from {@link Matrix4#val}. This is the same as {@link Matrix4#mul(Matrix4)}.
 	 *
@@ -1266,25 +1324,6 @@ public class Matrix4 implements Serializable {
 		vec[2] = z;
 	}
 
-	/** Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
-	 * from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset specifies the offset into the
-	 * array where the x-component of the first vector is located. The numVecs parameter specifies the number of vectors stored in
-	 * the vectors array. The stride parameter specifies the number of floats between subsequent vectors and must be >= 3. This is
-	 * the same as {@link Vector3#mul(Matrix4)} applied to multiple vectors.
-	 * 
-	 * @param mat the matrix
-	 * @param vecs the vectors
-	 * @param offset the offset into the vectors array
-	 * @param numVecs the number of vectors
-	 * @param stride the stride between vectors in floats */
-	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
-		float* vecPtr = vecs + offset;
-		for(int i = 0; i < numVecs; i++) {
-			matrix4_mulVec(mat, vecPtr);
-			vecPtr += stride;
-		}
-	*/
-
 	/** Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
 	 * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
 	 * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
@@ -1301,25 +1340,6 @@ public class Matrix4 implements Serializable {
 		vec[2] = z;
 	}
 
-	/** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
-	 * major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset
-	 * specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter specifies
-	 * the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between subsequent
-	 * vectors and must be >= 3. This is the same as {@link Vector3#prj(Matrix4)} applied to multiple vectors.
-	 * 
-	 * @param mat the matrix
-	 * @param vecs the vectors
-	 * @param offset the offset into the vectors array
-	 * @param numVecs the number of vectors
-	 * @param stride the stride between vectors in floats */
-	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
-		float* vecPtr = vecs + offset;
-		for(int i = 0; i < numVecs; i++) {
-			matrix4_proj(mat, vecPtr);
-			vecPtr += stride;
-		}
-	*/
-
 	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
 	 * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
 	 * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
@@ -1334,25 +1354,6 @@ public class Matrix4 implements Serializable {
 		vec[1] = y;
 		vec[2] = z;
 	}
-
-	/** Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
-	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors.
-	 * Offset specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter
-	 * specifies the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between
-	 * subsequent vectors and must be >= 3. This is the same as {@link Vector3#rot(Matrix4)} applied to multiple vectors.
-	 * 
-	 * @param mat the matrix
-	 * @param vecs the vectors
-	 * @param offset the offset into the vectors array
-	 * @param numVecs the number of vectors
-	 * @param stride the stride between vectors in floats */
-	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
-		float* vecPtr = vecs + offset;
-		for(int i = 0; i < numVecs; i++) {
-			matrix4_rot(mat, vecPtr);
-			vecPtr += stride;
-		}
-	*/
 
 	/** Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get from
 	 * {@link Matrix4#val}.
@@ -1432,7 +1433,6 @@ public class Matrix4 implements Serializable {
 		
 	}
 
-	// @on
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
 	 * @param translation
