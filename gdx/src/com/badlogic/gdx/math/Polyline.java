@@ -204,9 +204,10 @@ public class Polyline implements Shape2D {
 		dirty = true;
 	}
 
+	/** check if the point is on one segment */
 	@Override
 	public boolean contains (Vector2 point) {
-		return false;
+		return contains(point.x, point.y);
 	}
 
 	/** check if the point is on one segment */
