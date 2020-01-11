@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -33,25 +29,25 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
  * 
@@ -861,6 +857,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (realId[i] == -1) return i;
 		}
 
+		pressure = resize(pressure);
 		realId = resize(realId);
 		touchX = resize(touchX);
 		touchY = resize(touchY);
@@ -880,6 +877,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	private boolean[] resize (boolean[] orig) {
 		boolean[] tmp = new boolean[orig.length + 2];
+		System.arraycopy(orig, 0, tmp, 0, orig.length);
+		return tmp;
+	}
+
+	private float[] resize (float[] orig) {
+		float[] tmp = new float[orig.length + 2];
 		System.arraycopy(orig, 0, tmp, 0, orig.length);
 		return tmp;
 	}

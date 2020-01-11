@@ -87,8 +87,8 @@ public class Lwjgl3Application implements Application {
 	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		initializeGlfw();
 		setApplicationLogger(new Lwjgl3ApplicationLogger());
-		this.config = Lwjgl3ApplicationConfiguration.copy(config);
-		if (this.config.title == null) this.config.title = listener.getClass().getSimpleName();
+		if (config.title == null) config.title = listener.getClass().getSimpleName();
+		this.config = config = Lwjgl3ApplicationConfiguration.copy(config);
 		Gdx.app = this;
 		if (!config.disableAudio) {
 			try {
