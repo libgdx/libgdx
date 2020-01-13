@@ -361,7 +361,7 @@ public interface Net {
 	 * @param port the port
 	 * @param hints additional {@link SocketHints} used to create the socket. Input null to use the default setting provided by the
 	 *           system.
-	 * @return GdxRuntimeException in case the socket couldn't be opened */
+	 * @throws GdxRuntimeException in case the socket couldn't be opened */
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints);
 
 	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the
