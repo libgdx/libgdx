@@ -101,7 +101,8 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id */
 	public void resume (long soundId);
 
-	/** Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
+	/** Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.
+	 * <p><b>Note: </b>Due to a bug in SoundPool, the sound will not loop if this method is called after play(). The sound can be still looped using the loop() method.</p>
 	 * @param soundId the sound id
 	 * @param looping whether to loop or not. */
 	public void setLooping (long soundId, boolean looping);
