@@ -79,6 +79,7 @@ public class Animation<T> {
 	 *
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the objects representing the frames.
+	 * @param playMode indicates playback mode
 	 * Create an animation with the given frame duration, keyframes and playmode
 	 */
 	public Animation (float frameDuration, T[] keyFrames, PlayMode playMode) {
