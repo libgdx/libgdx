@@ -76,6 +76,15 @@ public class Animation<T> {
 	}
 
 	/** Constructor, storing the frame duration and key frames.
+	 *
+	 * @param frameDuration the time between frames in seconds.
+	 * @param keyFrames the objects representing the frames.
+	 * return the correct type of array. Otherwise, it returns an Object[].*/
+	public Animation (float frameDuration, T[] keyFrames, PlayMode playMode) {
+		this(frameDuration, new Array<T>(keyFrames), playMode);
+	}
+
+	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the objects representing the frames. */
