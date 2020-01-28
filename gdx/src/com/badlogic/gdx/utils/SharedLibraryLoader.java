@@ -46,10 +46,22 @@ public class SharedLibraryLoader {
 	// JDK 8 only.
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
+	//Since Android 5 multiple checks are necessary
+	private static boolean performIsAndroidCheck() {
+		String property = System.getProperty("java.runtime.name");
+		boolean isAndroid = (property != null && property.contains("Android Runtime"));
+
+		property = System.getProperty("java.vm.vendor");
+		isAndroid = isAndroid || (property != null && property.contains("The Android Project"));
+
+		property = System.getProperty("java.vendor");
+		isAndroid = isAndroid || (property != null && property.contains("The Android Project"));
+		return isAndroid;
+	}
+
 	static {
 		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
-		String vm = System.getProperty("java.runtime.name");
-		if (vm != null && vm.contains("Android Runtime")) {
+		if (performIsAndroidCheck()) {
 			isAndroid = true;
 			isWindows = false;
 			isLinux = false;
