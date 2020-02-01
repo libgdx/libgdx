@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.Iterator;
-import java.util.Random;
-
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -48,6 +44,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Method;
 
+import java.util.Iterator;
+
 /** Tests for the collection classes. Currently, only equals() and hashCode() methods are tested. */
 public class CollectionsTest extends GdxTest {
 	// Objects to use for test keys/values; no duplicates may exist. All arrays are 10 elements.
@@ -59,6 +57,15 @@ public class CollectionsTest extends GdxTest {
 	private Byte[] byteValues = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	private Short[] shortValues = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	private Character[] charValues = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+	
+	// 49 String keys that all have the same two hashCode() results
+	// It is extremely easy to generate String keys that have colliding hashCode()s, so we check to make
+	// sure ObjectSet and OrderedSet can tolerate them in case of low-complexity malicious use.
+	// If they can tolerate these problem values, then ObjectMap and others should too.
+	private String[] problemValues = 
+		("21oo 0oq1 0opP 0ooo 0pPo 21pP 21q1 1Poo 1Pq1 1PpP 0q31 0pR1 0q2P 0q1o 232P 231o 2331 0pQP 22QP" 
+			+ " 22Po 22R1 1QQP 1R1o 1QR1 1R2P 1R31 1QPo 1Qup 1S7p 0r8Q 0r7p 0r92 23X2 2492 248Q 247p 22vQ" 
+			+ " 22up 1S92 1S8Q 23WQ 23Vp 22w2 1QvQ 1Qw2 1RVp 1RWQ 1RX2 0qX2").split(" ");
 
 	/** Checks that the two values are equal, and that their hashcodes are equal. */
 	private void assertEquals (Object a, Object b) {
@@ -228,6 +235,9 @@ public class CollectionsTest extends GdxTest {
 		testSet(IntSet.class, intValues);
 		testSet(ObjectSet.class, values);
 		testSet(OrderedSet.class, values);
+
+		testSet(ObjectSet.class, problemValues);
+		testSet(OrderedSet.class, problemValues);
 
 		System.out.println("Success!");
 	}
