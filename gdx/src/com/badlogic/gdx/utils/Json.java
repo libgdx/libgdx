@@ -16,6 +16,17 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
+import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,17 +39,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.IntSet.IntSetIterator;
-import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Constructor;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
  * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
@@ -572,6 +572,26 @@ public class Json {
 				writeObjectEnd();
 				return;
 			}
+			if (value instanceof ObjectIntMap) {
+				if (knownType == null) knownType = ObjectIntMap.class;
+				writeObjectStart(actualType, knownType);
+				for (ObjectIntMap.Entry entry : ((ObjectIntMap<?>)value).entries()) {
+					writer.name(convertToString(entry.key));
+					writeValue(entry.value, Integer.class);
+				}
+				writeObjectEnd();
+				return;
+			}
+			if (value instanceof ObjectFloatMap) {
+				if (knownType == null) knownType = ObjectFloatMap.class;
+				writeObjectStart(actualType, knownType);
+				for (ObjectFloatMap.Entry entry : ((ObjectFloatMap<?>)value).entries()) {
+					writer.name(convertToString(entry.key));
+					writeValue(entry.value, Float.class);
+				}
+				writeObjectEnd();
+				return;
+			}
 			if (value instanceof ObjectSet) {
 				if (knownType == null) knownType = ObjectSet.class;
 				writeObjectStart(actualType, knownType);
@@ -583,13 +603,34 @@ public class Json {
 				writeObjectEnd();
 				return;
 			}
+			if (value instanceof IntMap) {
+				if (knownType == null) knownType = IntMap.class;
+				writeObjectStart(actualType, knownType);
+				for (IntMap.Entry entry : ((IntMap<?>)value).entries()) {
+					writer.name(String.valueOf(entry.key));
+					writeValue(entry.value, elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+			if (value instanceof LongMap) {
+				if (knownType == null) knownType = LongMap.class;
+				writeObjectStart(actualType, knownType);
+				for (LongMap.Entry entry : ((LongMap<?>)value).entries()) {
+					writer.name(String.valueOf(entry.key));
+					writeValue(entry.value, elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+
 			if (value instanceof IntSet) {
 				if (knownType == null) knownType = IntSet.class;
 				writeObjectStart(actualType, knownType);
 				writer.name("values");
 				writeArrayStart();
 				for (IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext;)
-					writeValue(Integer.valueOf(iter.next()), Integer.class, null);
+					writeValue(iter.next(), Integer.class, null);
 				writeArrayEnd();
 				writeObjectEnd();
 				return;
@@ -980,10 +1021,34 @@ public class Json {
 						result.put(child.name, readValue(elementType, null, child));
 					return (T)result;
 				}
+				if (object instanceof ObjectIntMap) {
+					ObjectIntMap result = (ObjectIntMap)object;
+					for (JsonValue child = jsonData.child; child != null; child = child.next)
+						result.put(child.name, readValue(Integer.class, null, child));
+					return (T)result;
+				}
+				if (object instanceof ObjectFloatMap) {
+					ObjectFloatMap result = (ObjectFloatMap)object;
+					for (JsonValue child = jsonData.child; child != null; child = child.next)
+						result.put(child.name, readValue(Float.class, null, child));
+					return (T)result;
+				}
 				if (object instanceof ObjectSet) {
 					ObjectSet result = (ObjectSet)object;
 					for (JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
 						result.add(readValue(elementType, null, child));
+					return (T)result;
+				}
+				if (object instanceof IntMap) {
+					IntMap result = (IntMap)object;
+					for (JsonValue child = jsonData.child; child != null; child = child.next)
+						result.put(Integer.parseInt(child.name), readValue(elementType, null, child));
+					return (T)result;
+				}
+				if (object instanceof LongMap) {
+					LongMap result = (LongMap)object;
+					for (JsonValue child = jsonData.child; child != null; child = child.next)
+						result.put(Long.parseLong(child.name), readValue(elementType, null, child));
 					return (T)result;
 				}
 				if (object instanceof IntSet) {

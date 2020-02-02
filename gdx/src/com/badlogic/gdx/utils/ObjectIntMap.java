@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
  * @author Tommy Ettinger
  * @author Nathan Sweet
  */
-public class ObjectIntMap<K> implements Json.Serializable, Iterable<ObjectIntMap.Entry<K>> {
+public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	public int size;
 
@@ -546,41 +546,6 @@ public class ObjectIntMap<K> implements Json.Serializable, Iterable<ObjectIntMap
 		keys2.valid = true;
 		keys1.valid = false;
 		return keys2;
-	}
-
-	public void write (Json json) {
-		if (isEmpty())
-			return;
-		if (keys().next() instanceof String) {
-			json.writeObjectStart("entries");
-			for (Entry<K> entry : entries()) {
-				json.writeValue(String.valueOf(entry.key), entry.value, Integer.class);
-			}
-			json.writeObjectEnd();
-		} else {
-			json.writeArrayStart("entries");
-			for (Entry<K> entry : entries()) {
-				json.writeValue(entry.key, null);
-				json.writeValue(entry.value, Integer.class);
-			}
-			json.writeArrayEnd();
-		}
-	}
-
-	public void read (Json json, JsonValue jsonData) {
-		if (jsonData.isEmpty())
-			return;
-		JsonValue entries = jsonData.get("entries");
-		if (entries.isObject()) {
-			for (JsonValue child = entries.child; child != null; child = child.next)
-				put((K)child.name, child.asInt());
-		} else if (entries.isArray()) {
-			for (JsonValue child = entries.child; child != null; child = child.next) {
-				K key = json.readValue(null, child);
-				int value = (child = child.next).asInt();
-				put(key, value);
-			}
-		}
 	}
 
 	static public class Entry<K> {

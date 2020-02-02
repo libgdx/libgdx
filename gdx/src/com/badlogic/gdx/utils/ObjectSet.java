@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
  * @author Tommy Ettinger
  * @author Nathan Sweet
  */
-public class ObjectSet<T> implements Json.Serializable, Iterable<T> {
+public class ObjectSet<T> implements Iterable<T> {
 	public int size;
 
 	T[] keyTable;
@@ -462,16 +462,7 @@ public class ObjectSet<T> implements Json.Serializable, Iterable<T> {
 		set.addAll(array);
 		return set;
 	}
-
-	public void write (Json json) {
-		Array<T> items = iterator().toArray();
-		json.writeValue("items", items, Array.class);
-	}
-
-	public void read (Json json, JsonValue jsonData) {
-		addAll(json.readValue("items", Array.class, jsonData));
-	}
-
+	
 	static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K> {
 		public boolean hasNext;
 

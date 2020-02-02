@@ -22,10 +22,7 @@ package com.badlogic.gdx.utils;
  * Null keys are not allowed. Null values are allowed. No allocation is done except when growing the table size. It uses
  * {@link System#identityHashCode(Object)} to hash keys, which may be slower than the hashCode() on some types that have it
  * already computed, like String; for String keys in particular, identity comparison is a challenge and some other map should be
- * used instead. This class implements {@link Json.Serializable}, but the behavior of Json serialization
- * with identity equality is uncertain at best. You may want to get separate key and value Arrays with {@link ObjectMap.Keys#toArray()} and
- * {@link ObjectMap.Values#toArray()} and serialize those, though even that technique may fail with some key types ({@code int[]} and other
- * primitive arrays can be used as keys here, but not serialized).
+ * used instead.
  * <br>
  * This map uses Fibonacci hashing to help distribute what may be very bad hashCode() results across the
  * whole capacity. See <a href="https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte Skarupke's blog post</a>

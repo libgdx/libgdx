@@ -47,7 +47,7 @@ import java.util.NoSuchElementException;
  * @author Tommy Ettinger
  * @author Nathan Sweet
  */
-public class IntSet implements Json.Serializable {
+public class IntSet {
 	public int size;
 
 	private int[] keyTable;
@@ -444,19 +444,6 @@ public class IntSet implements Json.Serializable {
 		IntSet set = new IntSet();
 		set.addAll(array);
 		return set;
-	}
-
-	public void write (Json json) {
-		json.writeArrayStart("items");
-		IntSetIterator it = iterator();
-		while (it.hasNext) {
-			json.writeValue(it.next(), Integer.class);
-		}
-		json.writeArrayEnd();
-	}
-
-	public void read (Json json, JsonValue jsonData) {
-		addAll(jsonData.get("items").asIntArray());
 	}
 
 	static public class IntSetIterator {
