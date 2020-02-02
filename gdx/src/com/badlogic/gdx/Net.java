@@ -93,16 +93,38 @@ public interface Net {
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
 	 * <ul>
-	 * <li>HEAD</li>
-	 * <li>GET</li>
-	 * <li>POST</li>
-	 * <li>PUT</li>
-	 * <li>PATCH</li>
-	 * <li>DELETE</li>
-	 * <li>OPTIONS</li>
-	 * <li>CONNECT</li>
-	 * <li>TRACE</li>
-	 * </ul> */
+	 * <li>
+	 * <b>HEAD</b> Asks for a response identical to that of a GET request but without the response body.
+	 * </li>
+	 * <li>
+	 * <b>GET</b> requests a representation of the specified resource.
+	 * Requests using GET should only retrieve data.
+	 * </li>
+	 * <li>
+	 * <b>POST</b> is used to submit an entity to the specified resource,
+	 * often causing a change in state or side effects on the server.
+	 * </li>
+	 * <li>
+	 * <b>PUT</b> replaces all current representations of the target resource with the request payload.
+	 * </li>
+	 * <li>
+	 * <b>PATCH</b> method is used to apply partial modifications to a resource.
+	 * </li>
+	 * <li>
+	 * <b>DELETE</b> deletes the specified resource.
+	 * </li>
+	 * <li>
+	 * <b>OPTIONS</b> is used to describe the communication options for the target resource.
+	 * </li>
+	 * <li>
+	 * <b>CONNECT</b> establishes a tunnel to the server identified by the target resource.
+	 * </li>
+	 * <li>
+	 * <b>TRACE</b> performs a message loop-back test along the path to the target resource.
+	 * </li>
+	 * </ul>
+	 * @author Monarchis
+	 * */
 	public static interface HttpMethods {
 		/**
 		 * The HEAD method asks for a response identical to that of a GET request,
