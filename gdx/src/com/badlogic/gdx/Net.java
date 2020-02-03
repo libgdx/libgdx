@@ -113,15 +113,6 @@ public interface Net {
 	 * <li>
 	 * <b>DELETE</b> deletes the specified resource.
 	 * </li>
-	 * <li>
-	 * <b>OPTIONS</b> is used to describe the communication options for the target resource.
-	 * </li>
-	 * <li>
-	 * <b>CONNECT</b> establishes a tunnel to the server identified by the target resource.
-	 * </li>
-	 * <li>
-	 * <b>TRACE</b> performs a message loop-back test along the path to the target resource.
-	 * </li>
 	 * </ul>
 	 * @author Monarchis
 	 * */
