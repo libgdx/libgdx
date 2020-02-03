@@ -33,6 +33,6 @@ public class DeviceInfoTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 	}
 }

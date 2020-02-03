@@ -138,7 +138,13 @@ public class InterpolationTest extends GdxTest {
 		}));
 	}
 
-	public void render () {
+	@Override
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		float bottomLeftX = Gdx.graphics.getWidth() / 2 - graphSize / 2, bottomLeftY = Gdx.graphics.getHeight() / 2 - graphSize / 2;
@@ -163,7 +169,7 @@ public class InterpolationTest extends GdxTest {
 			lastX = x;
 			lastY = y;
 		}
-		time += Gdx.graphics.getDeltaTime();
+		time += delta;
 		if (time > duration) {
 			time = Float.NaN; // stop "walking"
 			startPosition.set(targetPosition); // set startPosition to targetPosition for next click
@@ -184,8 +190,7 @@ public class InterpolationTest extends GdxTest {
 		renderer.circle(position.x, position.y, 7);
 		renderer.end();
 
-		stage.act();
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	public void resize (int width, int height) {

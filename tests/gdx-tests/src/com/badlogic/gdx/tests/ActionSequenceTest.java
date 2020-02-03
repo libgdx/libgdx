@@ -68,11 +68,14 @@ public class ActionSequenceTest extends GdxTest implements Runnable {
 	}
 
 	@Override
-	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void update(float delta) {
+		stage.act(delta);
+	}
 
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		stage.draw();
+	@Override
+	public void render (final float delta) {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.draw(delta);
 	}
 
 	@Override

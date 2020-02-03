@@ -55,12 +55,12 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	private CameraInputController cameraController;
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if ((loading > 0) && (++loading > 2)) loadnext();
 
-		tests[testIndex].render();
+		tests[testIndex].render(delta);
 		fpsLabel.setText(tests[testIndex].performance);
-		hud.draw();
+		hud.draw(delta);
 	}
 
 	@Override

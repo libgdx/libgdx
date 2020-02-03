@@ -160,7 +160,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		render(true);
 	}
 

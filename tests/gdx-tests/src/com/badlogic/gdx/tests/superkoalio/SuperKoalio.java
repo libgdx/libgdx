@@ -119,40 +119,13 @@ public class SuperKoalio extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		// clear the screen
-		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void update(float delta) {
+		if (delta == 0) return;
 
-		// get the delta time
-		float deltaTime = Gdx.graphics.getDeltaTime();
+		if (delta > 0.1f)
+			delta = 0.1f;
 
-		// update the koala (process input, collision detection, position update)
-		updateKoala(deltaTime);
-
-		// let the camera follow the koala, x-axis only
-		camera.position.x = koala.position.x;
-		camera.update();
-
-		// set the TiledMapRenderer view based on what the
-		// camera sees, and render the map
-		renderer.setView(camera);
-		renderer.render();
-
-		// render the koala
-		renderKoala(deltaTime);
-
-		// render debug rectangles
-		if (debug) renderDebug();
-	}
-
-	private void updateKoala (float deltaTime) {
-		if (deltaTime == 0) return;
-
-		if (deltaTime > 0.1f)
-			deltaTime = 0.1f;
-
-		koala.stateTime += deltaTime;
+		koala.stateTime += delta;
 
 		// check input and apply to velocity & state
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || isTouched(0.5f, 1)) && koala.grounded) {
@@ -191,7 +164,7 @@ public class SuperKoalio extends GdxTest {
 
 		// multiply by delta time so we know how far we go
 		// in this frame
-		koala.velocity.scl(deltaTime);
+		koala.velocity.scl(delta);
 
 		// perform collision detection & response, on each axis, separately
 		// if the koala is moving right, check the tiles to the right of it's
@@ -251,11 +224,56 @@ public class SuperKoalio extends GdxTest {
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
 		koala.position.add(koala.velocity);
-		koala.velocity.scl(1 / deltaTime);
+		koala.velocity.scl(1 / delta);
 
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
+	}
+
+	@Override
+	public void render(float delta) {
+		// clear the screen
+		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// let the camera follow the koala, x-axis only
+		camera.position.x = koala.position.x;
+		camera.update();
+
+		// set the TiledMapRenderer view based on what the
+		// camera sees, and render the map
+		renderer.setView(camera);
+		renderer.render();
+
+		// based on the koala state, get the animation frame
+		TextureRegion frame = null;
+		switch (koala.state) {
+			case Standing:
+				frame = stand.getKeyFrame(koala.stateTime);
+				break;
+			case Walking:
+				frame = walk.getKeyFrame(koala.stateTime);
+				break;
+			case Jumping:
+				frame = jump.getKeyFrame(koala.stateTime);
+				break;
+		}
+
+		// draw the koala, depending on the current velocity
+		// on the x-axis, draw the koala facing either right
+		// or left
+		Batch batch = renderer.getBatch();
+		batch.begin();
+		if (koala.facesRight) {
+			batch.draw(frame, koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
+		} else {
+			batch.draw(frame, koala.position.x + Koala.WIDTH, koala.position.y, -Koala.WIDTH, Koala.HEIGHT);
+		}
+		batch.end();
+
+		// render debug rectangles
+		if (debug) renderDebug();
 	}
 
 	private boolean isTouched (float startX, float endX) {
@@ -284,34 +302,6 @@ public class SuperKoalio extends GdxTest {
 				}
 			}
 		}
-	}
-
-	private void renderKoala (float deltaTime) {
-		// based on the koala state, get the animation frame
-		TextureRegion frame = null;
-		switch (koala.state) {
-		case Standing:
-			frame = stand.getKeyFrame(koala.stateTime);
-			break;
-		case Walking:
-			frame = walk.getKeyFrame(koala.stateTime);
-			break;
-		case Jumping:
-			frame = jump.getKeyFrame(koala.stateTime);
-			break;
-		}
-
-		// draw the koala, depending on the current velocity
-		// on the x-axis, draw the koala facing either right
-		// or left
-		Batch batch = renderer.getBatch();
-		batch.begin();
-		if (koala.facesRight) {
-			batch.draw(frame, koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
-		} else {
-			batch.draw(frame, koala.position.x + Koala.WIDTH, koala.position.y, -Koala.WIDTH, Koala.HEIGHT);
-		}
-		batch.end();
 	}
 
 	private void renderDebug () {

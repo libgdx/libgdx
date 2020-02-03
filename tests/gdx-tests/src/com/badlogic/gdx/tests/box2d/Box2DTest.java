@@ -73,19 +73,28 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	/** a hit body **/
 	protected Body hitBody = null;
 
+	/** Time measurement startTime **/
+	private long startTime;
+	/** Time measurement updateTime **/
+	private float updateTime;
+
 	protected abstract void createWorld (World world);
 
 	/** temp vector **/
 	protected Vector2 tmp = new Vector2();
 
 	@Override
-	public void render () {
+	public void update(float delta) {
 		// update the world with a fixed time step
-		long startTime = TimeUtils.nanoTime();
-		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-		float updateTime = (TimeUtils.nanoTime() - startTime) / 1000000000.0f;
+		startTime = TimeUtils.nanoTime();
+		world.step(delta, 3, 3);
+		updateTime = (TimeUtils.nanoTime() - startTime) / 1000000000.0f;
 
 		startTime = TimeUtils.nanoTime();
+	}
+
+	@Override
+	public void render (final float delta) {
 		// clear the screen and setup the projection matrix
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();

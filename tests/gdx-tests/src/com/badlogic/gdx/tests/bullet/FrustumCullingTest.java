@@ -190,12 +190,11 @@ public class FrustumCullingTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		final float dt = Gdx.graphics.getDeltaTime();
+	public void render (final float delta) {
 		frustumEntity.transform.idt();
-		frustumEntity.transform.rotate(Vector3.X, angleX = (angleX + dt * SPEED_X) % 360);
-		frustumEntity.transform.rotate(Vector3.Y, angleY = (angleY + dt * SPEED_Y) % 360);
-		frustumEntity.transform.rotate(Vector3.Z, angleZ = (angleZ + dt * SPEED_Z) % 360);
+		frustumEntity.transform.rotate(Vector3.X, angleX = (angleX + delta * SPEED_X) % 360);
+		frustumEntity.transform.rotate(Vector3.Y, angleY = (angleY + delta * SPEED_Y) % 360);
+		frustumEntity.transform.rotate(Vector3.Z, angleZ = (angleZ + delta * SPEED_Z) % 360);
 
 		// Transform the ghost object
 		frustumEntity.body.setWorldTransform(frustumEntity.transform);
@@ -206,7 +205,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		frustumCam.rotate(frustumEntity.transform);
 		frustumCam.update();
 
-		super.render();
+		super.render(delta);
 
 		performance.append(" visible: ").append(visibleEntities.size);
 	}

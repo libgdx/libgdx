@@ -60,9 +60,9 @@ public class SkeletonTest extends BaseG3dHudTest {
 	private final static Quaternion tmpQ = new Quaternion();
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
-			e.value.update(Gdx.graphics.getDeltaTime());
+			e.value.update(delta);
 		for (final ModelInstance instance : instances)
 			renderSkeleton(instance);
 		batch.render(instances);

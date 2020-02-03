@@ -63,9 +63,9 @@ public class SimpleAnimationTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		currentFrameTime += Gdx.graphics.getDeltaTime();
+		currentFrameTime += delta;
 
 		spriteBatch.begin();
 		TextureRegion frame = currentWalk.getKeyFrame(currentFrameTime, true);

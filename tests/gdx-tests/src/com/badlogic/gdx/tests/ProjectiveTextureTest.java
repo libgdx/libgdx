@@ -139,7 +139,7 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
@@ -168,8 +168,8 @@ public class ProjectiveTextureTest extends GdxTest {
 		projTexShader.end();
 
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
-		ui.act();
-		ui.draw();
+		ui.act(delta);
+		ui.draw(delta);
 	}
 
 	Vector3 position = new Vector3();

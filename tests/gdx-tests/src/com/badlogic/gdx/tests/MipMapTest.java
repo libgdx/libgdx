@@ -112,7 +112,12 @@ public class MipMapTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		ui.act(delta);
+	}
+
+	@Override
+	public void render (float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
@@ -128,8 +133,7 @@ public class MipMapTest extends GdxTest {
 		mesh.render(shader, GL20.GL_TRIANGLE_FAN);
 		shader.end();
 
-		ui.act();
-		ui.draw();
+		ui.draw(delta);
 	}
 
 	@Override

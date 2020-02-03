@@ -262,7 +262,8 @@ public class LwjglCanvas implements Application {
 					if (shouldRender) {
 						graphics.updateTime();
 						graphics.frameId++;
-						listener.render();
+						listener.update(Gdx.graphics.getDeltaTime());
+						listener.render(Gdx.graphics.getDeltaTime());
 						Display.update(false);
 					}
 

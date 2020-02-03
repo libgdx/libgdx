@@ -66,8 +66,7 @@ public class LightsTest extends ModelTest {
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
-		final float delta = Gdx.graphics.getDeltaTime();
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		dirLight.direction.rotate(Vector3.X, delta * 45f);
 		dirLight.direction.rotate(Vector3.Y, delta * 25f);
 		dirLight.direction.rotate(Vector3.Z, delta * 33f);
@@ -81,7 +80,7 @@ public class LightsTest extends ModelTest {
 		pLight.worldTransform.setTranslation(pointLight.position);
 		batch.render(pLight);
 
-		super.render(batch, instances);
+		super.render(delta, batch, instances);
 	}
 
 	@Override

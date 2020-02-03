@@ -41,8 +41,13 @@ public class MultiWindowCursorTest {
 		}
 
 		@Override
-		public void render() {
-			listener.render();
+		public void update(float delta) {
+			listener.update(delta);
+		}
+
+		@Override
+		public void render(final float delta) {
+			listener.render(delta);
 		}
 
 		@Override

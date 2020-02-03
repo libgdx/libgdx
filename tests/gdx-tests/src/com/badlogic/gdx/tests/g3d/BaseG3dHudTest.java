@@ -139,7 +139,12 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected float rotation, movement;
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		super.update(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		transform.idt();
 		if (rotateCheckBox.isChecked())
 			transform.rotate(Vector3.Y, rotation = (rotation + rotationSpeed * Gdx.graphics.getRawDeltaTime()) % 360);
@@ -150,13 +155,13 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 			transform.trn(0, moveRadius * cm, moveRadius * sm);
 		}
 
-		super.render();
+		super.render(delta);
 
 		stringBuilder.setLength(0);
 		getStatus(stringBuilder);
 		fpsLabel.setText(stringBuilder);
-		hud.act(Gdx.graphics.getDeltaTime());
-		hud.draw();
+		hud.act(delta);
+		hud.draw(delta);
 	}
 
 	@Override

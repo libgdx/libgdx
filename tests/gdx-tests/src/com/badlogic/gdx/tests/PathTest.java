@@ -92,16 +92,16 @@ public class PathTest extends GdxTest {
 	float avg_speed;
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		GL20 gl = Gdx.gl20;
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (wait > 0)
-			wait -= Gdx.graphics.getDeltaTime();
+			wait -= delta;
 		else {
-			t += speed * Gdx.graphics.getDeltaTime();
-			zt += zspeed * Gdx.graphics.getDeltaTime();
+			t += speed * delta;
+			zt += zspeed * delta;
 			while (t >= 1f) {
 				currentPath = (currentPath + 1) % paths.size;
 				pathLength = paths.get(currentPath).approxLength(500);
@@ -124,7 +124,7 @@ public class PathTest extends GdxTest {
 			paths.get(currentPath).derivativeAt(tmpV2, t);
 
 			paths.get(currentPath).derivativeAt(tmpV3, t2);
-			t2 += avg_speed * Gdx.graphics.getDeltaTime() / tmpV3.len();
+			t2 += avg_speed * delta / tmpV3.len();
 
 			paths.get(currentPath).valueAt(tmpV4, t2);
 			// obj.setRotation(tmpV2.angle());

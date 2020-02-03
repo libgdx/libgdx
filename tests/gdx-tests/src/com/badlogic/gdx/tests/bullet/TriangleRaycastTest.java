@@ -134,8 +134,8 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		super.render();
+	public void render (final float delta) {
+		super.render(delta);
 		Gdx.gl.glLineWidth(5);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

@@ -87,10 +87,15 @@ public class TableLayoutTest extends GdxTest {
 		table2.add(button2);
 	}
 
-	public void render () {
+	@Override
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	public void resize (int width, int height) {

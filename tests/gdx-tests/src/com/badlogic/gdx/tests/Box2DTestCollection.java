@@ -55,8 +55,8 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	private Application app = null;
 
 	@Override
-	public void render () {
-		tests[testIndex].render();
+	public void render (final float delta) {
+		tests[testIndex].render(delta);
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class CullTest extends GdxTest implements ApplicationListener {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		GL20 gl = Gdx.gl20;
 
 		gl.glClearColor(0, 0, 0, 0);

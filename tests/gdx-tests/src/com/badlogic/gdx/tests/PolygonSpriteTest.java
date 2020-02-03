@@ -71,7 +71,7 @@ public class PolygonSpriteTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -82,8 +82,8 @@ public class PolygonSpriteTest extends GdxTest {
 
 		for (int i = 0; i < sprites.size; i++) {
 			PolygonSprite sprite = sprites.get(i);
-			sprite.rotate(45 * Gdx.graphics.getDeltaTime());
-			sprite.translateX(10 * Gdx.graphics.getDeltaTime());
+			sprite.rotate(45 * delta);
+			sprite.translateX(10 * delta);
 
 			if (sprite.getX() > 450) sprite.setX(-50);
 

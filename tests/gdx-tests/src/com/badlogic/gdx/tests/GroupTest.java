@@ -121,7 +121,8 @@ public class GroupTest extends GdxTest {
 		stage.addActor(vertWrap);
 	}
 
-	public void render () {
+	@Override
+	public void render (final float delta) {
 
 		horiz.setVisible(true);
 		horiz.setWidth(Gdx.input.getX() - horiz.getX());
@@ -158,7 +159,7 @@ public class GroupTest extends GdxTest {
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.draw();
+		stage.draw(delta);
 
 		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 		renderer.begin(ShapeType.Filled);

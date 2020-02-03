@@ -43,7 +43,7 @@ public class AlphaTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(texture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -57,7 +57,7 @@ public class FrameBufferTest extends GdxTest {
 	SpriteBatch spriteBatch;
 
 	@Override
-	public void render () {
+	public void render (final float render) {
 		frameBuffer.begin();
 		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 		Gdx.gl20.glClearColor(0f, 1f, 0f, 1);

@@ -97,7 +97,7 @@ public class I18NSimpleMessageTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch, message, 20, Gdx.graphics.getHeight() - 20);

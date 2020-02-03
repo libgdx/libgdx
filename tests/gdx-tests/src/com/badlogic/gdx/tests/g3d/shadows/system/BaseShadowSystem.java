@@ -233,7 +233,7 @@ public abstract class BaseShadowSystem implements ShadowSystem, Disposable {
 	}
 
 	@Override
-	public void update () {
+	public void update (final float delta) {
 		for (ObjectMap.Entry<SpotLight, LightProperties> e : spotCameras) {
 			e.value.camera.position.set(e.key.position);
 			e.value.camera.direction.set(e.key.direction);

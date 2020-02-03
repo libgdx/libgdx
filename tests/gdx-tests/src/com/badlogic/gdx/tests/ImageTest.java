@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Scaling;
+import com.sun.org.apache.xerces.internal.impl.xs.XSAttributeUseImpl;
 
 public class ImageTest extends GdxTest {
 	Skin skin;
@@ -58,11 +59,15 @@ public class ImageTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		ui.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		ui.draw();
+		ui.draw(delta);
 	}
 
 	@Override

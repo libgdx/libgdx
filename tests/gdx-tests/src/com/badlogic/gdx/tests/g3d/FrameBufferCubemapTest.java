@@ -57,17 +57,17 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 	}
 	
 	@Override
-	public void render () {
-		renderScene();
-		renderCube();
+	public void render (final float delta) {
+		renderScene(delta);
+		renderCube(delta);
 	}
 	
-	public void renderScene() {
+	public void renderScene(final float delta) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		
 		// Render scene to screen
-		super.render();
+		super.render(delta);
 		
 		// Render scene to cubemap
 		camFb.position.set(cam.position);
@@ -92,7 +92,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 	}
 	
 	float yaw, pitch, roll;
-	public void renderCube() {
+	public void renderCube(final float delta) {
 		int w = Gdx.graphics.getBackBufferWidth();
 		int h = Gdx.graphics.getBackBufferHeight();
 		int x = (int)(w - w*0.5f);
@@ -106,8 +106,8 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		pitch += 25 * Gdx.graphics.getDeltaTime();
-		yaw += 45 * Gdx.graphics.getDeltaTime();
+		pitch += 25 * delta;
+		yaw += 45 * delta;
 		cubeInstance.transform.setFromEulerAngles(yaw, pitch, roll);
 		cubeBatch.begin(camCube);
 		cubeBatch.render(cubeInstance);

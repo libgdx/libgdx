@@ -77,10 +77,6 @@ public class FirstPersonCameraController extends InputAdapter {
 		return true;
 	}
 
-	public void update () {
-		update(Gdx.graphics.getDeltaTime());
-	}
-
 	public void update (float deltaTime) {
 		if (keys.containsKey(FORWARD)) {
 			tmp.set(camera.direction).nor().scl(deltaTime * velocity);

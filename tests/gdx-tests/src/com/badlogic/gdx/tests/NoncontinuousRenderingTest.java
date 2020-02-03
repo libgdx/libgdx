@@ -81,8 +81,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		float delta = Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f);
+	public void render (final float delta) {
 		elapsed += delta;
 		float value = elapsed % 1f;
 		value = value < 0.5f ? 
@@ -113,7 +112,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		batch.end();
 		
 		stage.act(delta);
-		stage.draw();
+		stage.draw(delta);
 	}
 	
 	private void populateTable (){

@@ -62,7 +62,7 @@ public class AnisotropyTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
 			changeAnisotropy();
 

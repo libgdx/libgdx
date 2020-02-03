@@ -132,9 +132,8 @@ public class CameraInputController extends GestureDetector {
 		this(new CameraGestureListener(), camera);
 	}
 
-	public void update () {
+	public void update (float delta) {
 		if (rotateRightPressed || rotateLeftPressed || forwardPressed || backwardPressed) {
-			final float delta = Gdx.graphics.getDeltaTime();
 			if (rotateRightPressed) camera.rotate(camera.up, -delta * rotateAngle);
 			if (rotateLeftPressed) camera.rotate(camera.up, delta * rotateAngle);
 			if (forwardPressed) {

@@ -117,12 +117,17 @@ public class CpuSpriteBatchTest extends GdxTest {
 		return group;
 	}
 
-	public void render () {
+	@Override
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 
 		long now = TimeUtils.nanoTime();
 		sampleFrames++;

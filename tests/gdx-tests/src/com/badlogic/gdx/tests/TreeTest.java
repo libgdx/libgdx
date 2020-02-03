@@ -98,11 +98,16 @@ public class TreeTest extends GdxTest {
 		table.add(tree).fill().expand();
 	}
 
-	public void render () {
+	@Override
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		// System.out.println(meow.getValue());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 
 		label.setText(tree.toString());
 		label.pack();

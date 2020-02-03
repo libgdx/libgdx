@@ -42,8 +42,13 @@ public abstract class Game implements ApplicationListener {
 	}
 
 	@Override
-	public void render () {
-		if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
+	public void update (float delta) {
+		if (screen != null) screen.update(delta);
+	}
+
+	@Override
+	public void render (float delta) {
+		if (screen != null) screen.render(delta);
 	}
 
 	@Override

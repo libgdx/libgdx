@@ -418,11 +418,17 @@ public class ParticleEditor extends JFrame {
 			shapeRenderer.end();
 		}
 
-		public void render () {
+		@Override
+		public void update(final float delta) {
+
+		}
+
+		@Override
+		public void render(final float delta) {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 
-			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
+			float renderDelta = Math.max(0, delta * deltaMultiplier.getValue());
 
 			float[] colors = backgroundColor.getColors();
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 1.0f);
@@ -469,7 +475,7 @@ public class ParticleEditor extends JFrame {
 				if (emitter.getSprites().size == 0 && emitter.getImagePaths().size > 0) loadImages(emitter);
 				boolean enabled = isEnabled(emitter);
 				if (enabled) {
-					if (emitter.getSprites().size > 0) emitter.draw(spriteBatch, delta);
+					if (emitter.getSprites().size > 0) emitter.draw(spriteBatch, renderDelta);
 					activeCount += emitter.getActiveCount();
 					if (!emitter.isComplete()) complete = false;
 				}
@@ -478,7 +484,7 @@ public class ParticleEditor extends JFrame {
 			if (complete) effect.start();
 
 			maxActive = Math.max(maxActive, activeCount);
-			maxActiveTimer += delta;
+			maxActiveTimer += renderDelta;
 			if (maxActiveTimer > 3) {
 				maxActiveTimer = 0;
 				lastMaxActive = maxActive;

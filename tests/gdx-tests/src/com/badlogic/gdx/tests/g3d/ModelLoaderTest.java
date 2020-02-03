@@ -55,7 +55,7 @@ public class ModelLoaderTest extends GdxTest {
 	float counter;
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if ((instance != null) && ((counter += Gdx.graphics.getDeltaTime()) >= 1f)) {
 			counter = 0f;
 			instance = null;

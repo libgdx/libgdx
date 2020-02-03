@@ -22,7 +22,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class ExitTest extends GdxTest {
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		if (Gdx.input.justTouched()) Gdx.app.exit();
 	}
 

@@ -90,7 +90,7 @@ public class YDownTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		// clear the screen, update the camera and make the sprite batch
 		// use its matrices.
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -116,8 +116,8 @@ public class YDownTest extends GdxTest {
 		batch.end();
 
 		// tell the stage to act and draw itself
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.act(delta);
+		stage.draw(delta);
 	}
 
 	/** A very simple actor implementation that does not obey rotation/scale/origin set on the actor. Allows dragging of the actor.

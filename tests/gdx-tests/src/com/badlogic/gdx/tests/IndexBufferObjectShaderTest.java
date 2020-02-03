@@ -42,7 +42,7 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 // System.out.println( "render");
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());

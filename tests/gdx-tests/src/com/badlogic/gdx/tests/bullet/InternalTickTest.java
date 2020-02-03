@@ -87,10 +87,10 @@ public class InternalTickTest extends BaseBulletTest {
 	boolean toggleAttach = false;
 
 	@Override
-	public void render () {
-		super.render();
+	public void render (final float delta) {
+		super.render(delta);
 		if (internalTickCallback == null) return;
-		if ((toggleTime += Gdx.graphics.getDeltaTime()) > 1.0f) {
+		if ((toggleTime += delta) > 1.0f) {
 			toggleTime -= 1.0f;
 			if (toggleAttach)
 				internalTickCallback.detach();

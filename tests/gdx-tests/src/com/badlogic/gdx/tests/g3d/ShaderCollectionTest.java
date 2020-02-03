@@ -215,16 +215,16 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	private final BoundingBox bounds = new BoundingBox();
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 	}
 
 	final Vector3 dirLightRotAxis = new Vector3(-1, -1, -1).nor();
 
 	@Override
-	public void render (Array<ModelInstance> instances) {
+	public void render (final float delta, Array<ModelInstance> instances) {
 		dirLight.direction.rotate(dirLightRotAxis, Gdx.graphics.getDeltaTime() * 45f);
 
-		super.render(null);
+		super.render(delta, null);
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
 			e.value.update(Gdx.graphics.getDeltaTime());
 		shaderBatch.begin(cam);

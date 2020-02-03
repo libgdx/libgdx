@@ -92,11 +92,15 @@ public class UISimpleTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	@Override

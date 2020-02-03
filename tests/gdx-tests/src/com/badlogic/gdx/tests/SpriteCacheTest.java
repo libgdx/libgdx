@@ -46,7 +46,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	private float[] sprites2;
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();

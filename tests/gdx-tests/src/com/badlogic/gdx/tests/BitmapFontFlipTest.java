@@ -96,8 +96,8 @@ public class BitmapFontFlipTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
+	public void render (final float delta) {
+		red.a = (red.a + delta * 0.1f) % 1;
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();

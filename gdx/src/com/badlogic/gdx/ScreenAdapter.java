@@ -19,9 +19,6 @@ package com.badlogic.gdx;
 /** Convenience implementation of {@link Screen}. Derive from this and only override what you need.
  * @author semtiko */
 public class ScreenAdapter implements Screen {
-	@Override
-	public void render (float delta) {
-	}
 
 	@Override
 	public void resize (int width, int height) {
@@ -29,6 +26,14 @@ public class ScreenAdapter implements Screen {
 
 	@Override
 	public void show () {
+	}
+
+	@Override
+	public void update(float delta) {
+	}
+
+	@Override
+	public void render (float delta) {
 	}
 
 	@Override

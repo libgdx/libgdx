@@ -261,7 +261,12 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -274,9 +279,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			font.draw(batch, text, 10, Gdx.graphics.getHeight() - 10);
 			batch.end();
 		}
-
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	@Override

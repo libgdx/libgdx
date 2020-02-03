@@ -108,7 +108,7 @@ public class TextureArrayTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
@@ -116,7 +116,7 @@ public class TextureArrayTest extends GdxTest {
 
 		modelView.translate(10f, 0, 10f).rotate(0, 1f, 0, 2f * Gdx.graphics.getDeltaTime()).translate(-10f, 0, -10f);
 
-		cameraController.update();
+		cameraController.update(delta);
 
 		textureArray.bind();
 

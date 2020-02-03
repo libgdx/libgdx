@@ -81,20 +81,24 @@ public class DecalTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		float elapsed = Gdx.graphics.getDeltaTime();
 		float scale = timePassed > 0.5 ? 1 - timePassed / 2 : 0.5f + timePassed / 2;
 
 		for (Decal decal : toRender) {
-			decal.rotateZ(elapsed * 45);
+			decal.rotateZ(delta * 45);
 			decal.setScale(scale);
 			batch.add(decal);
 		}
 		batch.flush();
 
-		timePassed += elapsed;
+		timePassed += delta;
 		frames++;
 		if (timePassed > 1.0f) {
 			System.out.println("DecalPerformanceTest2 fps: " + frames + " at spritecount: " + toRender.size());

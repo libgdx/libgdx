@@ -171,7 +171,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	private final Vector2 stageCoords = new Vector2();
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -187,10 +187,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 		int len = actors.size;
 		if (rotateSprites) {
 			for (int i = 0; i < len; i++)
-				actors.get(i).rotateBy(Gdx.graphics.getDeltaTime() * 10);
+				actors.get(i).rotateBy(delta * 10);
 		}
 
-		scale += vScale * Gdx.graphics.getDeltaTime();
+		scale += vScale * delta;
 		if (scale > 1) {
 			scale = 1;
 			vScale = -vScale;
@@ -204,7 +204,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < len; i++) {
 			Actor sprite = sprites.get(i);
 			if (rotateSprites)
-				sprite.rotateBy(-40 * Gdx.graphics.getDeltaTime());
+				sprite.rotateBy(-40 * delta);
 			else
 				sprite.setRotation(0);
 
@@ -215,7 +215,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 			}
 		}
 
-		stage.draw();
+		stage.draw(delta);
 
 		renderer.begin(ShapeType.Point);
 		renderer.setColor(1, 0, 0, 1);
@@ -227,7 +227,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		renderer.end();
 
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + sprites.size + ", groups " + sprites.size);
-		ui.draw();
+		ui.draw(delta);
 	}
 
 	@Override

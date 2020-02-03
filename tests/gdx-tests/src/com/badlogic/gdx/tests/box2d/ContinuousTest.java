@@ -84,8 +84,9 @@ public class ContinuousTest extends Box2DTest {
 		m_body.setAngularVelocity(m_angularVelocity);
 	}
 
-	public void render () {
-		super.render();
+	@Override
+	public void render (final float delta) {
+		super.render(delta);
 
 		m_stepCount++;
 		if (m_stepCount % 60 == 0) launch();

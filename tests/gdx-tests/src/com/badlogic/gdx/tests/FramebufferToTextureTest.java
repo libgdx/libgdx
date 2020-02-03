@@ -65,7 +65,7 @@ public class FramebufferToTextureTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -73,7 +73,7 @@ public class FramebufferToTextureTest extends GdxTest {
 
 		cam.update();
 
-		modelInstance.transform.rotate(Vector3.Y, 45 * Gdx.graphics.getDeltaTime());
+		modelInstance.transform.rotate(Vector3.Y, 45 * delta);
 		modelBatch.begin(cam);
 		modelBatch.render(modelInstance);
 		modelBatch.end();

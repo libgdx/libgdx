@@ -61,7 +61,7 @@ public class TiledMapGroupLayerTest extends GdxTest {
 		assetManager.load(fileName, TiledMap.class);
 	}
 
-	@Override public void render () {
+	@Override public void render (final float delta) {
 		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();

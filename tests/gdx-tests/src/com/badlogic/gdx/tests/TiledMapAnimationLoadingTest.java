@@ -81,7 +81,7 @@ public class TiledMapAnimationLoadingTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.55f, 0.55f, 0.55f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();

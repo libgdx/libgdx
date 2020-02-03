@@ -360,8 +360,8 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		super.render();
+	public void render (final float delta) {
+		super.render(delta);
 		if ((state & SHOW_DEBUG_IMAGE) == SHOW_DEBUG_IMAGE) renderOclDebugImage();
 		performance.append(", Culling: ").append(cullingPolicy.name());
 		performance.append(", Visible: ").append(visibleEntities.size).append("/").append(world.entities.size);

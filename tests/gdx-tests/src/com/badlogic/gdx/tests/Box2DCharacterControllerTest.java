@@ -182,7 +182,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cam.position.set(player.getPosition().x, player.getPosition().y, 0);
 		cam.update();
@@ -190,7 +190,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 
 		Vector2 vel = player.getLinearVelocity();
 		Vector2 pos = player.getPosition();
-		boolean grounded = isPlayerGrounded(Gdx.graphics.getDeltaTime());
+		boolean grounded = isPlayerGrounded(delta);
 		if (grounded) {
 			lastGroundTime = TimeUtils.nanoTime();
 		} else {
@@ -266,7 +266,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		// update platforms
 		for (int i = 0; i < platforms.size; i++) {
 			Platform platform = platforms.get(i);
-			platform.update(Math.max(1 / 30.0f, Gdx.graphics.getDeltaTime()));
+			platform.update(delta);
 		}
 
 		// le step...

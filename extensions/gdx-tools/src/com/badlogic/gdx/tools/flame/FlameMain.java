@@ -750,18 +750,16 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			ui.getViewport().update(width, height, true);
 		}
 
-		public void render () {
-			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
-			update(delta);
-			renderWorld();
+		@Override
+		public void update(final float delta) {
 		}
 
-		private void update (float delta) {
+		public void render (final float delta) {
 			worldCamera.fieldOfView = fovValue.getValue();
 			worldCamera.update();
-			cameraInputController.update();
+			cameraInputController.update(delta);
 			if(isUpdate){
-				particleSystem.update(delta);
+				particleSystem.update(Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue()));
 				//Update ui
 				stringBuilder.delete(0, stringBuilder.length);
 				stringBuilder.append("Point Sprites : ").append(pointSpriteBatch.getBufferedCount());
@@ -776,10 +774,11 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			stringBuilder.delete(0, stringBuilder.length);
 			stringBuilder.append("FPS : ").append(Gdx.graphics.getFramesPerSecond());
 			fpsLabel.setText(stringBuilder);
-			ui.act(Gdx.graphics.getDeltaTime());
+			ui.act(delta);
+			renderWorld(delta);
 		}
 
-		private void renderWorld () {
+		private void renderWorld (final float delta) {
 			float[] colors = backgroundColor.getColors();
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 0);
@@ -794,7 +793,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			//Draw
 			modelBatch.render(particleSystem, environment);
 			modelBatch.end();
-			ui.draw();
+			ui.draw(delta);
 		}
 
 		@Override

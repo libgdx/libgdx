@@ -125,9 +125,10 @@ public class HeadlessApplication implements Application {
 					t = n + renderInterval;
 				
 				executeRunnables();
-				graphics.incrementFrameId();
-				listener.render();
 				graphics.updateTime();
+				graphics.incrementFrameId();
+				listener.update(graphics.getDeltaTime());
+				//listener.render(graphics.getDeltaTime());
 	
 				// If one of the runnables set running to false, for example after an exit().
 				if (!running) break;

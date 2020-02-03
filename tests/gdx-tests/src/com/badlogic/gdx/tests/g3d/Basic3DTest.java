@@ -66,8 +66,8 @@ public class Basic3DTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		inputController.update();
+	public void render (final float delta) {
+		inputController.update(delta);
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

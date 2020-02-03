@@ -112,12 +112,11 @@ public class PairCacheTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		final float dt = Gdx.graphics.getDeltaTime();
+	public void render (final float delta) {
 		ghostEntity.transform.idt();
-		ghostEntity.transform.rotate(Vector3.X, angleX = (angleX + dt * SPEED_X) % 360);
-		ghostEntity.transform.rotate(Vector3.Y, angleY = (angleY + dt * SPEED_Y) % 360);
-		ghostEntity.transform.rotate(Vector3.Z, angleZ = (angleZ + dt * SPEED_Z) % 360);
+		ghostEntity.transform.rotate(Vector3.X, angleX = (angleX + delta * SPEED_X) % 360);
+		ghostEntity.transform.rotate(Vector3.Y, angleY = (angleY + delta * SPEED_Y) % 360);
+		ghostEntity.transform.rotate(Vector3.Z, angleZ = (angleZ + delta * SPEED_Z) % 360);
 
 		// Transform the ghost object
 		ghostEntity.body.setWorldTransform(ghostEntity.transform);
@@ -129,7 +128,7 @@ public class PairCacheTest extends BaseBulletTest {
 		frustumCam.rotate(ghostEntity.transform);
 		frustumCam.update();
 
-		super.render();
+		super.render(delta);
 
 		// Find all overlapping pairs which contain the ghost object and draw lines between the collision points.
 		shapeRenderer.setProjectionMatrix(camera.combined);

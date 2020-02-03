@@ -86,7 +86,7 @@ public class TiledMapLayerOffsetTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			if (mapType != 0) {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();

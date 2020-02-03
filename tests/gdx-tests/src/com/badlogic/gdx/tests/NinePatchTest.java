@@ -159,14 +159,14 @@ public class NinePatchTest extends GdxTest {
 	private final Color oldColor = new Color();
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		final int screenWidth = Gdx.graphics.getWidth();
 		final int screenHeight = Gdx.graphics.getHeight();
 
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		timePassed += Gdx.graphics.getDeltaTime();
+		timePassed += delta;
 
 		b.begin();
 		final int sz = ninePatches.size;

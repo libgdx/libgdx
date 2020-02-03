@@ -83,7 +83,11 @@ public class BulletTest implements ApplicationListener, InputProcessor, GestureL
 	}
 
 	@Override
-	public void render () {
+	public void update(final float delta) {
+	}
+
+	@Override
+	public void render (final float render) {
 	}
 
 	@Override

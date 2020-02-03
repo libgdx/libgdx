@@ -133,7 +133,7 @@ public interface ShadowSystem {
 	public boolean hasLight (PointLight point);
 
 	/** Update shadowSystem */
-	public void update ();
+	public void update (final float delta);
 
 	/** Begin shadow system with main camera and renderable providers.
 	 * @param camera

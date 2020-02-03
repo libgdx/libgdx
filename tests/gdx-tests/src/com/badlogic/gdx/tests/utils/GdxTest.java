@@ -38,7 +38,10 @@ public abstract class GdxTest extends InputAdapter implements ApplicationListene
 	public void resume () {
 	}
 
-	public void render () {
+	public void update (float delta) {
+	}
+
+	public void render (float delta) {
 	}
 
 	public void resize (int width, int height) {

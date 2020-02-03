@@ -475,7 +475,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 			}
 			app.getInput().processEvents();
 			frameId++;
-			app.getApplicationListener().render();
+			app.getApplicationListener().update(Gdx.graphics.getDeltaTime());
+			app.getApplicationListener().render(Gdx.graphics.getDeltaTime());
 		}
 
 		if (lpause) {

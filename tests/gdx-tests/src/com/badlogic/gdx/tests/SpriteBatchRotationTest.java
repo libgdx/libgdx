@@ -34,7 +34,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 	IntBuffer pixelBuffer;
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
@@ -50,8 +50,8 @@ public class SpriteBatchRotationTest extends GdxTest {
 			false);
 
 		spriteBatch.end();
-		angle += 20 * Gdx.graphics.getDeltaTime();
-		scale += vScale * Gdx.graphics.getDeltaTime();
+		angle += 20 * delta;
+		scale += vScale * delta;
 		if (scale > 2) {
 			vScale = -vScale;
 			scale = 2;

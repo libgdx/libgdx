@@ -169,7 +169,7 @@ public class BasicBulletTest extends BulletTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -177,7 +177,7 @@ public class BasicBulletTest extends BulletTest {
 
 		performanceCounter.tick();
 		performanceCounter.start();
-		((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), 5);
+		((btDynamicsWorld)collisionWorld).stepSimulation(delta, 5);
 		performanceCounter.stop();
 
 		int c = motionStates.size;

@@ -206,7 +206,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		if (lighting) {
 			batch.render(instances, environment);
 		} else {

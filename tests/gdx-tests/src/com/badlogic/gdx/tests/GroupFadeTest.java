@@ -51,10 +51,14 @@ public class GroupFadeTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	@Override

@@ -79,16 +79,20 @@ public class ScrollPaneTextAreaTest extends GdxTest {
       container.debugAll();
    }
 
-   @Override
-   public void render () {
+    @Override
+    public void update(float delta) {
+        stage.act(delta);
+    }
+
+    @Override
+   public void render (final float delta) {
    	if (textArea.getHeight() != textArea.getPrefHeight()) {
    		scrollPane.invalidate();
    		scrollPane.scrollTo(0, textArea.getHeight() - textArea.getCursorY(), 0, textArea.getStyle().font.getLineHeight());
    	}
 
       Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-      stage.act(Gdx.graphics.getDeltaTime());
-      stage.draw();
+      stage.draw(delta);
    }
 
    @Override

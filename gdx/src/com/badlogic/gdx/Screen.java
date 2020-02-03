@@ -27,6 +27,10 @@ public interface Screen {
 	
 	/** Called when this screen becomes the current screen for a {@link Game}. */
 	public void show ();
+
+	/** Called when the screen should update itself.
+	 * @param delta The time in seconds since the last render. */
+	public void update (float delta);
 	
 	/** Called when the screen should render itself.
 	 * @param delta The time in seconds since the last render. */

@@ -42,7 +42,7 @@ public class RunnablePostTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (Gdx.input.justTouched()) {
 			expectIt = true;
 			Gdx.app.postRunnable(new Runnable() {

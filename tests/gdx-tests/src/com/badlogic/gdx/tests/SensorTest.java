@@ -90,7 +90,7 @@ public class SensorTest extends BaseG3dTest {
 	}
 
 	@Override
-	public void render (final Array<ModelInstance> instances) {
+	public void render (final float delta, final Array<ModelInstance> instances) {
 		tmpUp.set(cam.up);
 		tmpDirection.set(cam.direction);
 
@@ -103,11 +103,11 @@ public class SensorTest extends BaseG3dTest {
 		cam.rotate(tmpRotation);
 		cam.update();
 
-		super.render(instances);
+		super.render(delta, instances);
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		batch.render(instances, lights);
 		if (skydome != null) batch.render(skydome);
 	}

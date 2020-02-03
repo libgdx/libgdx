@@ -77,7 +77,7 @@ public class CollisionTest extends ShootTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		process();
 	}
 

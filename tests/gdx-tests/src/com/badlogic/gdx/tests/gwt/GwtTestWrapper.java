@@ -196,13 +196,14 @@ public class GwtTestWrapper extends GdxTest {
 		Gdx.app.log("GdxTestGwt", "Test picker UI setup complete.");
 	}
 
-	public void render () {
+	@Override
+	public void render (final float delta) {
 		if (test == null) {
 			Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			Gdx.gl.glClearColor(0, 0, 0, 0);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			ui.act(Gdx.graphics.getDeltaTime());
-			ui.draw();
+			ui.act(delta);
+			ui.draw(delta);
 		} else {
 			if (dispose) {
 				test.pause();
@@ -215,7 +216,7 @@ public class GwtTestWrapper extends GdxTest {
 				wrapper.lastProcessor = null;
 				dispose = false;
 			} else {
-				test.render();
+				test.render(delta);
 			}
 		}
 	}

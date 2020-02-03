@@ -70,8 +70,12 @@ public class ClipboardTest extends GdxTest {
 	}
 
 	@Override
-	public void render() {
-		stage.act();
-		stage.draw();
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render(final float delta) {
+		stage.draw(delta);
 	}
 }

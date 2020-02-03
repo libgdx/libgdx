@@ -64,7 +64,7 @@ public class HeightMapTest extends BaseG3dTest {
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		batch.render(instances);
 		batch.render(ground);
 	}

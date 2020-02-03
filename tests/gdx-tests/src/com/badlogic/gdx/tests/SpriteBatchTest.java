@@ -48,7 +48,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	int renderMethod = 0;
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();

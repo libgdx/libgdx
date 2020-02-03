@@ -165,7 +165,7 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Update any animations currently being played.
 	 * @param delta The time elapsed since last update, change this to alter the overall speed (can be negative). */
-	public void update (float delta) {
+	public void update (final float delta) {
 		if (paused) return;
 		if (previous != null && ((transitionCurrentTime += delta) >= transitionTargetTime)) {
 			removeAnimation(previous.animation);

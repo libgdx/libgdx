@@ -133,7 +133,7 @@ public class PixmapPackerTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -149,7 +149,7 @@ public class PixmapPackerTest extends GdxTest {
 		shapeRenderer.rect(0, 0, size, size);
 		shapeRenderer.end();
 
-		stateTime += Gdx.graphics.getDeltaTime();
+		stateTime += delta;
 	}
 
 	@Override

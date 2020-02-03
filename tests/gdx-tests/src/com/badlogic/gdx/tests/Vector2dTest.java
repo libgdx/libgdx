@@ -60,7 +60,7 @@ public class Vector2dTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -83,11 +83,10 @@ public class Vector2dTest extends GdxTest {
 		renderer.setColor(Color.YELLOW);
 		renderVectorAt(0, 0, sum);
 
-		final float changeRate = Gdx.graphics.getDeltaTime();
 		renderer.setColor(Color.WHITE);
 
 		renderVectorAt(2, 2, rotating);
-		rotating.rotate(93 * changeRate);
+		rotating.rotate(93 * delta);
 
 		renderVectorAt(2, -2, scalingX);
 		scalingX.set(0, MathUtils.sin((System.currentTimeMillis() - start) / 520.0f));

@@ -74,18 +74,23 @@ public class StagePerformanceTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		if (useStage)
+			stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (useStage) {
-			stage.act(Gdx.graphics.getDeltaTime());
 			stage.getBatch().disableBlending();
 			Group root = stage.getRoot();
 			Array<Actor> actors = root.getChildren();
 // for(int i = 0; i < actors.size(); i++) {
 // actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
 // }
-			stage.draw();
+			stage.draw(delta);
 		} else {
 			batch.getProjectionMatrix().setToOrtho2D(0, 0, 24, 12);
 			batch.getTransformMatrix().idt();

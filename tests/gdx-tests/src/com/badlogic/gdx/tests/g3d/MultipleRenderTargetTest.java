@@ -206,13 +206,13 @@ public class MultipleRenderTargetTest extends GdxTest {
 	float track;
 
 	@Override
-	public void render () {
-		track += Gdx.graphics.getDeltaTime();
+	public void render (final float delta) {
+		track += delta;
 
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		cameraController.update(Gdx.graphics.getDeltaTime());
+		cameraController.update(delta);
 
 		renderContext.begin();
 
@@ -226,7 +226,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		modelCache.add(cannon);
 		modelCache.add(floorInstance);
 		for (Light light : lights) {
-			light.update(Gdx.graphics.getDeltaTime());
+			light.update(delta);
 			modelCache.add(light.lightInstance);
 		}
 		modelCache.end();

@@ -83,7 +83,7 @@ public class AnimationTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(0.1f, 0f, 0.25f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -96,7 +96,7 @@ public class AnimationTest extends GdxTest {
 		batch.end();
 
 		for (int i = 0; i < cavemen.length; i++) {
-			cavemen[i].update(Gdx.graphics.getDeltaTime());
+			cavemen[i].update(delta);
 		}
 
 		fpsLog.log();

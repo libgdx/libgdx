@@ -146,7 +146,7 @@ public class MusicTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		currentPosition = music.getPosition();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -157,8 +157,8 @@ public class MusicTest extends GdxTest {
 		sliderUpdating = true;
 		slider.setValue((currentPosition / songDuration) * 100f);
 		sliderUpdating = false;
-		stage.act();
-		stage.draw();
+		stage.act(delta);
+		stage.draw(delta);
 
 		if (Gdx.input.justTouched()) {
 			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {

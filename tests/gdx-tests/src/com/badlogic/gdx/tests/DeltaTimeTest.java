@@ -30,11 +30,11 @@ public class DeltaTimeTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		long frameTime = TimeUtils.nanoTime();
 		float deltaTime = (frameTime - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = frameTime;
 
-		Gdx.app.log("DeltaTimeTest", "delta: " + deltaTime + ", gdx delta: " + Gdx.graphics.getDeltaTime());
+		Gdx.app.log("DeltaTimeTest", "delta: " + deltaTime + ", gdx delta: " + Gdx.graphics.getDeltaTime() + ", gdx cycle delta:" + delta);
 	}
 }

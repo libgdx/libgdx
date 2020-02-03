@@ -60,8 +60,8 @@ public class KinematicTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		angle = angle + Gdx.graphics.getDeltaTime() * 360f / 5f;
+	public void render (final float delta) {
+		angle = angle + delta * 360f / 5f;
 		kinematicBox3.transform.idt().rotate(Vector3.Y, 360f - 2f * angle).translate(position3);
 
 		if (angle >= 360f) {
@@ -73,7 +73,7 @@ public class KinematicTest extends BaseBulletTest {
 		// This makes bullet call btMotionState#getWorldTransform once:
 		kinematicBox.body.setActivationState(Collision.ACTIVE_TAG);
 
-		super.render();
+		super.render(delta);
 	}
 
 	@Override

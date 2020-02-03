@@ -38,11 +38,14 @@ public class TouchpadTest extends GdxTest {
 		stage.addActor(touchpad);
 	}
 
-	public void render () {
+	public void update(final float delta) {
+		stage.act(delta);
+	}
+
+	public void render (final float delta) {
 		// System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	public void resize (int width, int height) {

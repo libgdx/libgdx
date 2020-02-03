@@ -152,10 +152,14 @@ public class ParticleControllerInfluencerSingleTest extends BaseG3dTest {
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	public void update(float delta) {
+		super.update(delta);
+	}
+
+	@Override
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		if (emitters.size > 0) {
 			// Update
-			float delta = Gdx.graphics.getDeltaTime();
 			builder.delete(0, builder.length());
 			builder.append(Gdx.graphics.getFramesPerSecond());
 			fpsLabel.setText(builder);
@@ -170,6 +174,6 @@ public class ParticleControllerInfluencerSingleTest extends BaseG3dTest {
 			batch.render(billboardParticleBatch, environment);
 		}
 		batch.render(instances, environment);
-		ui.draw();
+		ui.draw(delta);
 	}
 }

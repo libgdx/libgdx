@@ -24,7 +24,7 @@ public class ModelCacheTest extends Benchmark3DTest {
 	}
 	
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		if (cacheCheckBox.isChecked()) {
 			modelCache.begin();
 			modelCache.add(instances);

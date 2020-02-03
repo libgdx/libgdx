@@ -146,7 +146,7 @@ public class BodyTypes extends Box2DTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (m_platform.getType() == BodyType.KinematicBody) {
 			Vector2 p = m_platform.getTransform().getPosition();
 			Vector2 v = m_platform.getLinearVelocity();
@@ -157,7 +157,7 @@ public class BodyTypes extends Box2DTest {
 			}
 		}
 
-		super.render();
+		super.render(delta);
 
 		// if (renderer.batch != null) {
 		// renderer.batch.begin();

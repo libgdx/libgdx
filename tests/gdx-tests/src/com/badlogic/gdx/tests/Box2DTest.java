@@ -84,6 +84,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	/** a hit body **/
 	Body hitBody = null;
 
+	/** Time messurement updateTime **/
+	private float updateTime;
+
 	@Override
 	public void create () {
 		// setup the camera. In Box2D we operate on a
@@ -231,15 +234,19 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
 		// first we update the world. For simplicity
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time
 		// step.
 		long start = TimeUtils.nanoTime();
-		world.step(Gdx.graphics.getDeltaTime(), 8, 3);
-		float updateTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
+		world.step(delta, 8, 3);
+		updateTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
+	}
+
+	@Override
+	public void render (final float delta) {
 		// next we clear the color buffer and set the camera
 		// matrices
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

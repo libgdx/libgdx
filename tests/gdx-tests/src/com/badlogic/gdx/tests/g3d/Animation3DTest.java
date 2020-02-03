@@ -116,12 +116,12 @@ public class Animation3DTest extends BaseG3dHudTest {
 	float angle = 0f;
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (character != null) {
-			animation.update(Gdx.graphics.getDeltaTime());
+			animation.update(delta);
 			if (Gdx.input.isKeyPressed(Keys.UP)) {
 				if (!animation.inAction) {
-					trTmp.idt().lerp(trForward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
+					trTmp.idt().lerp(trForward, delta / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 				}
 				if (status != walk) {
@@ -130,7 +130,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 				}
 			} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 				if (!animation.inAction) {
-					trTmp.idt().lerp(trBackward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
+					trTmp.idt().lerp(trBackward, delta / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 				}
 				if (status != back) {
@@ -142,10 +142,10 @@ public class Animation3DTest extends BaseG3dHudTest {
 				status = idle;
 			}
 			if (Gdx.input.isKeyPressed(Keys.RIGHT) && (status == walk || status == back) && !animation.inAction) {
-				trTmp.idt().lerp(trRight, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
+				trTmp.idt().lerp(trRight, delta / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 			} else if (Gdx.input.isKeyPressed(Keys.LEFT) && (status == walk || status == back) && !animation.inAction) {
-				trTmp.idt().lerp(trLeft, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
+				trTmp.idt().lerp(trLeft, delta / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 			}
 			if (Gdx.input.isKeyPressed(Keys.SPACE) && !animation.inAction) {
@@ -163,11 +163,11 @@ public class Animation3DTest extends BaseG3dHudTest {
 			shadowBatch.end();
 			shadowLight.end();
 		}
-		super.render();
+		super.render(delta);
 	}
 
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	protected void render (final float delta, ModelBatch batch, Array<ModelInstance> instances) {
 		batch.render(instances, lights);
 		if (skydome != null) batch.render(skydome);
 	}

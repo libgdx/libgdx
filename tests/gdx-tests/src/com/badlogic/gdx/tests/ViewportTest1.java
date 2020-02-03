@@ -81,11 +81,14 @@ public class ViewportTest1 extends GdxTest {
 		}, stage));
 	}
 
-	public void render () {
-		stage.act();
+	@Override
+	public void update(final float delta) {
+		stage.act(delta);
+	}
 
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	public void resize (int width, int height) {

@@ -94,8 +94,8 @@ public class Prismatic extends Box2DTest {
 
 	}
 
-	public void render () {
-		super.render();
+	public void render (final float delta) {
+		super.render(delta);
 
 		// if (renderer.batch != null) {
 		// renderer.batch.begin();

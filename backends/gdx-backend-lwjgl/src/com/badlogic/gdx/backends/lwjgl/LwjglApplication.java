@@ -230,7 +230,8 @@ public class LwjglApplication implements Application {
 			if (shouldRender) {
 				graphics.updateTime();
 				graphics.frameId++;
-				listener.render();
+				listener.update(Gdx.graphics.getDeltaTime());
+				listener.render(Gdx.graphics.getDeltaTime());
 				Display.update(false);
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.

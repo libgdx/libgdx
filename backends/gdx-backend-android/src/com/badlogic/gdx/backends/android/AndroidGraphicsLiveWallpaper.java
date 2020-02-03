@@ -214,7 +214,8 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
 			app.getInput().processEvents();
 			frameId++;
-			app.getApplicationListener().render();
+			app.getApplicationListener().update(Gdx.graphics.getDeltaTime());
+			app.getApplicationListener().render(Gdx.graphics.getDeltaTime());
 		}
 
 		// jw: never called on lvp, why? see description in AndroidLiveWallpaper.onPause

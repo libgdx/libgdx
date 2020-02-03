@@ -175,10 +175,14 @@ public class ControllersTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(final float delta) {
 		initialize();
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 }

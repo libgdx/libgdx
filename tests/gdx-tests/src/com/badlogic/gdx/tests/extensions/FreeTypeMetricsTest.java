@@ -55,7 +55,7 @@ public class FreeTypeMetricsTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 		// red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
 		int viewHeight = Gdx.graphics.getHeight();

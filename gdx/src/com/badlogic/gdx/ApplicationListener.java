@@ -39,8 +39,13 @@ public interface ApplicationListener {
 	 * @param height the new height in pixels */
 	public void resize (int width, int height);
 
-	/** Called when the {@link Application} should render itself. */
-	public void render ();
+	/** Called when the {@link Application} should update itself.
+	 * @param delta The time in seconds since the last render. */
+	public void update (final float delta);
+
+	/** Called when the {@link Application} should render itself.
+	 * @param delta The time in seconds since the last render. */
+	public void render (final float delta);
 
 	/** Called when the {@link Application} is paused, usually when it's not active or visible on-screen. An Application is also
 	 * paused before it is destroyed. */

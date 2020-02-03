@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -69,7 +70,8 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			window.makeCurrent();
 			gl20.glViewport(0, 0, width, height);
 			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
+			window.getListener().update(Gdx.graphics.getDeltaTime());
+			window.getListener().render(Gdx.graphics.getDeltaTime());
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
 	};

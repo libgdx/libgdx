@@ -70,8 +70,8 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
-		super.render();
+	public void render (final float delta) {
+		super.render(delta);
 
 		// Draw the lines of the distances
 

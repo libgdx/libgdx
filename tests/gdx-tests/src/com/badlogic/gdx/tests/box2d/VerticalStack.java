@@ -127,8 +127,9 @@ public class VerticalStack extends Box2DTest {
 		return false;
 	}
 
-	public void render () {
-		super.render();
+	@Override
+	public void render (final float delta) {
+		super.render(delta);
 
 		// if (renderer.batch != null) {
 		// renderer.batch.begin();

@@ -86,7 +86,12 @@ public class BitmapFontTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(final float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		// red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
 		int viewHeight = Gdx.graphics.getHeight();
@@ -224,9 +229,7 @@ public class BitmapFontTest extends GdxTest {
 			renderer.rect(x, viewHeight - y - 200, alignmentWidth, 200);
 			renderer.end();
 		}
-
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	public void resize (int width, int height) {

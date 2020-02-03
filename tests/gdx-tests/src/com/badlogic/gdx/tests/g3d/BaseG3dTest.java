@@ -86,33 +86,33 @@ public abstract class BaseG3dTest extends GdxTest {
 		axesInstance = new ModelInstance(axesModel);
 	}
 
-	protected abstract void render (final ModelBatch batch, final Array<ModelInstance> instances);
+	protected abstract void render (final float delta, final ModelBatch batch, final Array<ModelInstance> instances);
 
 	protected boolean loading = false;
 
 	protected void onLoaded () {
 	}
 
-	public void render (final Array<ModelInstance> instances) {
+	public void render (final float delta, final Array<ModelInstance> instances) {
 		modelBatch.begin(cam);
 		if (showAxes) modelBatch.render(axesInstance);
-		if (instances != null) render(modelBatch, instances);
+		if (instances != null) render(delta, modelBatch, instances);
 		modelBatch.end();
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		if (loading && assets.update()) {
 			loading = false;
 			onLoaded();
 		}
 
-		inputController.update();
+		inputController.update(delta);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
-		render(instances);
+		render(delta, instances);
 	}
 
 	@Override

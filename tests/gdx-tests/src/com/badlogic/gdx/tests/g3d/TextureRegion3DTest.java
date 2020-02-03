@@ -69,9 +69,9 @@ public class TextureRegion3DTest extends GdxTest {
 	}
 	
 	@Override
-	public void render () {
-		inputController.update();
-		if ((time += Gdx.graphics.getDeltaTime()) >= 1f) {
+	public void render (final float delta) {
+		inputController.update(delta);
+		if ((time += delta) >= 1f) {
 			time -= 1f;
 			index = (index + 1) % regions.size;
 			attribute.set(regions.get(index));

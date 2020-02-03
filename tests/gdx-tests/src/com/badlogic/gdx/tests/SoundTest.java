@@ -114,10 +114,14 @@ public class SoundTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(final float delta) {
+		ui.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		ui.act(Gdx.graphics.getDeltaTime());
-		ui.draw();
+		ui.draw(delta);
 	}
 
 	@Override

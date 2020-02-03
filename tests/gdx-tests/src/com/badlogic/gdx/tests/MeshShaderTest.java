@@ -81,8 +81,8 @@ public class MeshShaderTest extends GdxTest {
 	float angle = 0;
 
 	@Override
-	public void render () {
-		angle += Gdx.graphics.getDeltaTime() * 45;
+	public void render (final float delta) {
+		angle += delta * 45;
 		matrix.setToRotation(axis, angle);
 		
 		Mesh meshToDraw = Gdx.input.isButtonPressed(0) ? meshCustomVA : mesh;

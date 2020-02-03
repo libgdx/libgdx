@@ -79,8 +79,8 @@ public class ShadowMappingTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		camController.update();
+	public void render (final float delta) {
+		camController.update(delta);
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 1);

@@ -208,11 +208,16 @@ public class Scene2dTest extends GdxTest {
 		checkBoxRight.debug();
 	}
 
-	public void render () {
+	@Override
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		// System.out.println(meow.getValue());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		stage.draw(delta);
 
 		stage.getBatch().begin();
 		patch.draw(stage.getBatch(), 300, 100, 126, 126);

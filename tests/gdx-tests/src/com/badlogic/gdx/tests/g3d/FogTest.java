@@ -66,11 +66,11 @@ public class FogTest extends GdxTest implements ApplicationListener {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 
 		animate();
 
-		inputController.update();
+		inputController.update(delta);
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

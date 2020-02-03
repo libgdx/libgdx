@@ -155,9 +155,9 @@ public class KTXTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
-		time += Gdx.graphics.getDeltaTime();
-		inputController.update();
+	public void render (final float delta) {
+		time += delta;
+		inputController.update(delta);
 		int gw = Gdx.graphics.getWidth(), gh = Gdx.graphics.getHeight();
 		int pw = gw > gh ? gw / 2 : gw, ph = gw > gh ? gh : gh / 2;
 

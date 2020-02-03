@@ -193,7 +193,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void render (final float delta) {
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

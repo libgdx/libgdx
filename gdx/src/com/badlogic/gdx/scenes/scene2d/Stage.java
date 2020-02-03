@@ -116,7 +116,7 @@ public class Stage extends InputAdapter implements Disposable {
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 
-	public void draw () {
+	public void draw (final float delta) {
 		Camera camera = viewport.getCamera();
 		camera.update();
 
@@ -181,15 +181,10 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
-	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}, limited to a minimum of 30fps. */
-	public void act () {
-		act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-	}
-
 	/** Calls the {@link Actor#act(float)} method on each actor in the stage. Typically called each frame. This method also fires
 	 * enter and exit events.
 	 * @param delta Time in seconds since the last frame. */
-	public void act (float delta) {
+	public void act (final float delta) {
 		// Update over actors. Done in act() because actors may change position, which can fire enter/exit without an input event.
 		for (int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++) {
 			Actor overLast = pointerOverActors[pointer];

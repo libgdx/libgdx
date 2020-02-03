@@ -102,10 +102,12 @@ public class ParticleEmittersTest extends GdxTest {
 		ui.getViewport().update(width, height);
 	}
 
-	public void render () {
-		ui.act();
+	public void update(final float delta) {
+		ui.act(delta);
+	}
+
+	public void render (final float delta) {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		float delta = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		for (ParticleEffect e : effects)
@@ -119,7 +121,7 @@ public class ParticleEmittersTest extends GdxTest {
 			Gdx.app.log("libgdx", log);
 			logLabel.setText(log);
 		}
-		ui.draw();
+		ui.draw(delta);
 	}
 
 	public boolean needsGL20 () {

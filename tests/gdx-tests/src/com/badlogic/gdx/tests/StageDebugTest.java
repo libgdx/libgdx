@@ -100,10 +100,14 @@ public class StageDebugTest extends GdxTest {
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		stage.act();
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	@Override
