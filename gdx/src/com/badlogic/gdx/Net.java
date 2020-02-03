@@ -114,7 +114,6 @@ public interface Net {
 	 * <b>DELETE</b> deletes the specified resource.
 	 * </li>
 	 * </ul>
-	 * @author Monarchis
 	 * */
 	public static interface HttpMethods {
 		/**
