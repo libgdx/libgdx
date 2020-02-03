@@ -253,8 +253,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		final int[] keyTable = this.keyTable;
 		final float[] valueTable = this.valueTable;
 		
-		int b = place(key);
-		for (int i = b; ; i = (i + 1) & mask) {
+		for (int i = place(key); ; i = (i + 1) & mask) {
 			// space is available so we insert and break (resize is later)
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;

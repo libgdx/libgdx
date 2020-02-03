@@ -208,8 +208,7 @@ public class IntSet {
 		}
 
 		final int[] keyTable = this.keyTable;
-		int b = place(key);
-		for (int i = b; ; i = (i + 1) & mask) {
+		for (int i = place(key); ; i = (i + 1) & mask) {
 			// space is available so we insert and break (resize is later)
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
