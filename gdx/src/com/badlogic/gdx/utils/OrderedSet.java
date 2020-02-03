@@ -38,11 +38,7 @@ import java.util.NoSuchElementException;
  * Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
- * The <a href="http://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/">backward-shift algorithm</a>
- * used during removal apparently is key to the good performance of this implementation, even though this doesn't use Robin Hood
- * hashing; the performance of {@link #remove(Object)} has improved considerably over the previous libGDX version.
- * <br>
- * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
+* Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
  * quick iteration.
  *
  * @author Tommy Ettinger
@@ -121,15 +117,15 @@ public class OrderedSet<T> extends ObjectSet<T> {
 	 * returns false if {@code after} is already present or {@code before} is not present. If you are iterating
 	 * over an OrderedSet and have an index, you should prefer {@link #alterIndex(int, Object)}, which doesn't
 	 * need to search for an index like this does and so can be faster.
+	 *
 	 * @param before an item that must be present for this to succeed
-	 * @param after an item that must not be in this set for this to succeed
+	 * @param after  an item that must not be in this set for this to succeed
 	 * @return true if {@code before} was removed and {@code after} was added, false otherwise
 	 */
-	public boolean alter(T before, T after)
-	{
-		if(contains(after))
+	public boolean alter (T before, T after) {
+		if (contains(after))
 			return false;
-		if(!super.remove(before))
+		if (!super.remove(before))
 			return false;
 		super.add(after);
 		items.set(items.indexOf(before, false), after);
@@ -140,13 +136,13 @@ public class OrderedSet<T> extends ObjectSet<T> {
 	 * Changes the item at the given {@code index} in the order to {@code after}, without changing the ordering of other items.
 	 * If {@code after} is already present, this returns false; it will also return false if {@code index} is invalid for the size
 	 * of this set. Otherwise, it returns true. Unlike {@link #alter(Object, Object)}, this operates in constant time.
- 	 * @param index the index in the order of the item to change; must be non-negative and less than {@link #size}
+	 *
+	 * @param index the index in the order of the item to change; must be non-negative and less than {@link #size}
 	 * @param after the item that will replace the contents at {@code index}; this item must not be present for this to succeed
 	 * @return true if {@code after} successfully replaced the contents at {@code index}, false otherwise
 	 */
-	public boolean alterIndex(int index, T after)
-	{
-		if(index < 0 || index >= size || contains(after))
+	public boolean alterIndex (int index, T after) {
+		if (index < 0 || index >= size || contains(after))
 			return false;
 		super.remove(items.get(index));
 		super.add(after);

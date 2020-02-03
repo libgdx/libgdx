@@ -39,12 +39,7 @@ import java.util.NoSuchElementException;
  * Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
- * The <a href="http://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/">backward-shift algorithm</a>
- * used during removal apparently is key to the good performance of this implementation, even though this doesn't use Robin Hood
- * hashing; the performance of {@link #remove(Object, int)} has improved considerably over the previous libGDX version.
- * <br>
- * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
- * quick iteration.
+ * Iteration won't be as fast here as with OrderedSet and OrderedMap.
  *
  * @author Tommy Ettinger
  * @author Nathan Sweet
@@ -146,7 +141,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	 * {@code return (int) (item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);}
 	 * <br>
 	 * This can be overridden by subclasses, which you may want to do if your key type needs special consideration for
-	 * its hash (such as if you use arrays as keys, which still requires that the arrays are not modified). Subclasses
+	 * its hash (such as if you can't modify or extend a particular class that has an incorrect hashCode()). Subclasses
 	 * that don't need the collision decrease of Fibonacci Hashing (assuming the key class has a good hashCode()) may do
 	 * fine with a simple implementation:
 	 * {@code return (item.hashCode() & mask);}

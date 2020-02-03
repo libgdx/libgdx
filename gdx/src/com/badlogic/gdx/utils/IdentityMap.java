@@ -37,12 +37,7 @@ package com.badlogic.gdx.utils;
  * Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
- * The <a href="http://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/">backward-shift algorithm</a>
- * used during removal apparently is key to the good performance of this implementation, even though this doesn't use Robin Hood
- * hashing; the performance of {@link #remove(Object)} has improved considerably over the previous libGDX version.
- * <br>
- * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
- * quick iteration.
+* Iteration won't be as fast here as with OrderedSet and OrderedMap.
  *
  * @author Tommy Ettinger
  * @author Nathan Sweet

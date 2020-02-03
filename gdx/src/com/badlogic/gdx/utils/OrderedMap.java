@@ -38,11 +38,7 @@ import java.util.NoSuchElementException;
  * Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
- * The <a href="http://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/">backward-shift algorithm</a>
- * used during removal apparently is key to the good performance of this implementation, even though this doesn't use Robin Hood
- * hashing; the performance of {@link #remove(Object)} has improved considerably over the previous libGDX version.
- * <br>
- * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
+* Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
  * quick iteration.
  *
  * @author Tommy Ettinger
@@ -122,16 +118,16 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * returns false if {@code after} is already present or {@code before} is not present. If you are iterating
 	 * over an OrderedMap and have an index, you should prefer {@link #alterIndex(int, Object)}, which doesn't
 	 * need to search for an index like this does and so can be faster.
+	 *
 	 * @param before a key that must be present for this to succeed
-	 * @param after a key that must not be in this map for this to succeed
+	 * @param after  a key that must not be in this map for this to succeed
 	 * @return true if {@code before} was removed and {@code after} was added, false otherwise
 	 */
-	public boolean alter(K before, K after)
-	{
-		if(containsKey(after))
+	public boolean alter (K before, K after) {
+		if (containsKey(after))
 			return false;
 		final int index = keys.indexOf(before, false);
-		if(index == -1)
+		if (index == -1)
 			return false;
 		super.put(after, super.remove(before));
 		keys.set(index, after);
@@ -143,13 +139,13 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * any values If {@code after} is already present, this returns false; it will also return false if {@code index} is invalid
 	 * for the size of this map. Otherwise, it returns true. Unlike {@link #alter(Object, Object)}, this operates in constant
 	 * time.
+	 *
 	 * @param index the index in the order of the key to change; must be non-negative and less than {@link #size}
 	 * @param after the key that will replace the contents at {@code index}; this key must not be present for this to succeed
 	 * @return true if {@code after} successfully replaced the key at {@code index}, false otherwise
 	 */
-	public boolean alterIndex(int index, K after)
-	{
-		if(index < 0 || index >= size || containsKey(after))
+	public boolean alterIndex (int index, K after) {
+		if (index < 0 || index >= size || containsKey(after))
 			return false;
 		super.put(after, super.remove(keys.get(index)));
 		keys.set(index, after);
