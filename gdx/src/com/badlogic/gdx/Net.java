@@ -159,27 +159,6 @@ public interface Net {
 		 * The DELETE method deletes the specified resource.
 		 **/
 		public static final String DELETE = "DELETE";
-
-		/**
-		 * The OPTIONS method is used to describe the communication
-		 * options for the target resource.
-		 * <b>Caution: OPTIONS is not supported by Gwt.</b>
-		 **/
-		public static final String OPTIONS = "OPTIONS";
-
-		/**
-		 * The CONNECT method establishes a tunnel to the server
-		 * identified by the target resource.
-		 * <b>Caution: CONNECT is not supported by Gdx yet.</b>
-		 **/
-		public static final String CONNECT = "CONNECT";
-
-		/**
-		 * The TRACE method performs a message loop-back test along
-		 * the path to the target resource.
-		 * <b>Caution: CONNECT is not supported by Gdx yet.</b>
-		 **/
-		public static final String TRACE = "TRACE";
 	}
 
 	/** Contains getters and setters for the following parameters:
