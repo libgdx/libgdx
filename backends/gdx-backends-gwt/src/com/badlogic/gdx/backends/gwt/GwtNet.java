@@ -42,8 +42,11 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+import org.w3c.dom.html.HTMLTableCaptionElement;
 
 public class GwtNet implements Net {
+
+	protected static final RequestBuilder.Method PATCH = new RequestBuilder.Method(HttpMethods.PATCH);
 
 	ObjectMap<HttpRequest, Request> requests;
 	ObjectMap<HttpRequest, HttpResponseListener> listeners;
@@ -126,10 +129,16 @@ public class GwtNet implements Net {
 		RequestBuilder builder;
 		
 		String url = httpRequest.getUrl();
-		if (method.equalsIgnoreCase(HttpMethods.GET)) {
+		if (method.equalsIgnoreCase(HttpMethods.HEAD)) {
 			if (value != null) {
 				url += "?" + value;
-			}			
+			}
+			builder = new RequestBuilder(RequestBuilder.HEAD, url);
+		}
+		else if (method.equalsIgnoreCase(HttpMethods.GET)) {
+			if (value != null) {
+				url += "?" + value;
+			}
 			builder = new RequestBuilder(RequestBuilder.GET, url);
 		} else if (method.equalsIgnoreCase(HttpMethods.POST)) {
 			builder = new RequestBuilder(RequestBuilder.POST, url);
