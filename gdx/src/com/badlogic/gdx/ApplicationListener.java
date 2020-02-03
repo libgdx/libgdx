@@ -48,6 +48,7 @@ public interface ApplicationListener {
 	 * </ul>
 	 * The {@link ApplicationListener#update(float)} is used for updating purposes.
 	 * Especially the {@link HeadlessApplication} requires this loop to update game objects.
+	 * Should be used to update server and client objects only.
 	 * @param delta The time in seconds since the last update. */
 	public void update(float delta);
 
@@ -58,7 +59,7 @@ public interface ApplicationListener {
 	 * <li>{@link ApplicationListener#render(float)}</li>
 	 * <li>{@link ApplicationListener#render()}</li>
 	 * </ul>
-	 * The {@link ApplicationListener#render(float)} is used for all drawing purposes.
+	 * The {@link ApplicationListener#render(float)} should be used for all drawing purposes and ui updates.
 	 * It is not used by {@link HeadlessApplication}!
 	 * @param delta The time in seconds since the last render.
 	 */

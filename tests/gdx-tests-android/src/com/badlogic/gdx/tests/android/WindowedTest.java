@@ -88,10 +88,17 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 	}
 
 	@Override
-	public void render () {
+	public void update(float delta) {
+	}
+
+	@Override
+	public void render(float delta) {
 		Gdx.gl.glClearColor(color.r, color.g, color.g, color.a);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	}
 
+	@Override
+	public void render () {
 	}
 
 	@Override
