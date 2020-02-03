@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -24,6 +25,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
  * 
  * @author mzechner */
 public class LifeCycleTest extends GdxTest {
+
+	private FPSLogger fpsLogger;
 
 	@Override
 	public void dispose () {
@@ -41,12 +44,18 @@ public class LifeCycleTest extends GdxTest {
 	}
 
 	@Override
+	public void update(float delta) {
+		fpsLogger.log();
+	}
+
+	@Override
 	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override
 	public void create () {
+		fpsLogger = new FPSLogger();
 		Gdx.app.log("Test", "app created: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
 	}
 

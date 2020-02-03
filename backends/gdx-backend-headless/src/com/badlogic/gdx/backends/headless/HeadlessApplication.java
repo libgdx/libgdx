@@ -128,7 +128,9 @@ public class HeadlessApplication implements Application {
 				graphics.updateTime();
 				graphics.incrementFrameId();
 				listener.update(graphics.getDeltaTime());
-				//listener.render(graphics.getDeltaTime());
+
+				//Leaving update for better support updating an old application to this version (only adding the float value is required)
+				listener.render(graphics.getDeltaTime());
 	
 				// If one of the runnables set running to false, for example after an exit().
 				if (!running) break;
