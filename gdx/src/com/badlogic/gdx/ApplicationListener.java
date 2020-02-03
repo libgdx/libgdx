@@ -70,7 +70,7 @@ public interface ApplicationListener {
 	 * <ul>
  	 * <li>{@link ApplicationListener#update(float)}</li>
 	 * <li>{@link ApplicationListener#render(float)}</li>
-     * <li>{@link ApplicationListener#render()}</li>
+	 * <li>{@link ApplicationListener#render()}</li>
 	 * </ul>
 	 * @deprecated use the {@link ApplicationListener#update(float)} and {@link ApplicationListener#render(float)}
 	 * in newer implementations of you application instead of {@link ApplicationListener#render()}.
