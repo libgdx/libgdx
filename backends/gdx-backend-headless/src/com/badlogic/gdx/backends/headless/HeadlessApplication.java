@@ -126,6 +126,7 @@ public class HeadlessApplication implements Application {
 				
 				executeRunnables();
 				graphics.incrementFrameId();
+				listener.update(Gdx.graphics.getDeltaTime());
 				listener.render();
 				graphics.updateTime();
 	

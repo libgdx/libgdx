@@ -396,6 +396,8 @@ public class Lwjgl3Window implements Disposable {
 		
 		if (shouldRender) {
 			graphics.update();
+			listener.update(graphics.getDeltaTime());
+			listener.render(graphics.getDeltaTime());
 			listener.render();
 			GLFW.glfwSwapBuffers(windowHandle);
 		}

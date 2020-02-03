@@ -28,6 +28,14 @@ public abstract class ApplicationAdapter implements ApplicationListener {
 	}
 
 	@Override
+	public void update(float delta) {
+	}
+
+	@Override
+	public void render(float delta) {
+	}
+
+	@Override
 	public void render () {
 	}
 

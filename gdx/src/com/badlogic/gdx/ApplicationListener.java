@@ -39,7 +39,24 @@ public interface ApplicationListener {
 	 * @param height the new height in pixels */
 	public void resize (int width, int height);
 
-	/** Called when the {@link Application} should render itself. */
+	/** Called when the {@link Application} should update itself.
+	 * The {@link ApplicationListener#update(float)} is used for updating purposes.
+	 * Especially the {@link HeadlessApplication} requires this loop to update game objects.
+	 * @param delta The time in seconds since the last render. */
+	public void update(float delta);
+
+	/** Called when the {@link Application} should render itself.
+	 * The {@link ApplicationListener#render(float)} is used for all drawing purposes.
+	 * It is not used by {@link HeadlessApplication}.
+	 * @param delta The time in seconds since the last render.
+	 */
+	public void render(float delta);
+
+	/** Called when the {@link Application} should render itself.
+	 * @deprecated use the {@link ApplicationListener#update(float)} and {@link ApplicationListener#render(float)}
+	 * in newer implementations of you application instead of {@link ApplicationListener#render()}.
+	 **/
+	@Deprecated
 	public void render ();
 
 	/** Called when the {@link Application} is paused, usually when it's not active or visible on-screen. An Application is also

@@ -750,13 +750,21 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			ui.getViewport().update(width, height, true);
 		}
 
+		@Override
+		public void update(float delta) {
+		}
+
+		@Override
+		public void render(float delta) {
+		}
+
 		public void render () {
 			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
-			update(delta);
+			updating(delta);
 			renderWorld();
 		}
 
-		private void update (float delta) {
+		private void updating(float delta) {
 			worldCamera.fieldOfView = fovValue.getValue();
 			worldCamera.update();
 			cameraInputController.update();

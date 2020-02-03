@@ -258,6 +258,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 		runnablesHelper.clear();
 		graphics.frameId++;
+		listener.update(graphics.getDeltaTime());
+		listener.render(graphics.getDeltaTime());
 		listener.render();
 		input.reset();
 	}

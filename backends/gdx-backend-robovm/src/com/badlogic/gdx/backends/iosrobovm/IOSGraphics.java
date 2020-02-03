@@ -358,6 +358,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		input.processEvents();
 		frameId++;
+		app.listener.update(getDeltaTime());
+		app.listener.render(getDeltaTime());
 		app.listener.render();
 	}
 

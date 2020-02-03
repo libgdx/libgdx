@@ -418,6 +418,14 @@ public class ParticleEditor extends JFrame {
 			shapeRenderer.end();
 		}
 
+		@Override
+		public void update(float delta) {
+		}
+
+		@Override
+		public void render(float delta) {
+		}
+
 		public void render () {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
