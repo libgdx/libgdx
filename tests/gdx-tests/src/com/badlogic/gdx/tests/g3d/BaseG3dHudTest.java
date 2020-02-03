@@ -139,7 +139,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected float rotation, movement;
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		super.update(delta);
 	}
 

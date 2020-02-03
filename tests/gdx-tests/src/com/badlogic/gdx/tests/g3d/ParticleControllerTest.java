@@ -62,7 +62,7 @@ public class ParticleControllerTest extends BaseG3dTest{
 		}
 
 		@Override
-		public boolean act (float delta) {
+		public boolean act (final float delta) {
 			emitter.getTransform(tmpMatrix);
 			tmpQuaternion.set(axis, angle*delta).toMatrix(tmpMatrix4.val);
 			tmpMatrix4.mul(tmpMatrix);

@@ -41,7 +41,7 @@ public class MultiWindowCursorTest {
 		}
 
 		@Override
-		public void update(float delta) {
+		public void update(final float delta) {
 			listener.update(delta);
 		}
 

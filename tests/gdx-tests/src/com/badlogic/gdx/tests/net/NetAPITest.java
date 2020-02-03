@@ -261,7 +261,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		stage.act(delta);
 	}
 

@@ -46,7 +46,7 @@ public class SpriteBatchShaderTest extends GdxTest {
 	float vertices[] = new float[SPRITES * 6 * (2 + 2 + 4)];
 
 	@Override
-	public void render (float delta) {
+	public void render (final float delta) {
 		GL20 gl = Gdx.gl20;
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

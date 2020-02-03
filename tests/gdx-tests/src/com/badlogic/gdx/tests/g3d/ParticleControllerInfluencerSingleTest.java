@@ -152,7 +152,7 @@ public class ParticleControllerInfluencerSingleTest extends BaseG3dTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		super.update(delta);
 	}
 

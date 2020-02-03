@@ -61,7 +61,7 @@ public class SimpleVertexShader extends GdxTest {
 	}
 
 	@Override
-	public void render (float delta) {
+	public void render (final float delta) {
 		angle += delta * 40.0f;
 		float aspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
 		projection.setToProjection(1.0f, 20.0f, 60.0f, aspect);

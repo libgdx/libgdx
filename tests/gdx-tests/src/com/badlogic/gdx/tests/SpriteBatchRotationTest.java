@@ -34,7 +34,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 	IntBuffer pixelBuffer;
 
 	@Override
-	public void render (float delta) {
+	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);

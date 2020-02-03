@@ -52,14 +52,17 @@ public class DragNDropTest extends GdxTest {
       root.align(Align.left | Align.top);
       stage.addActor(root);
 	}
-		
+
 	@Override
-	public void render () {
+	public void update(final float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void render (final float delta) {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		stage.act();
-		stage.draw();
+		stage.draw(delta);
 	}
 
 	@Override

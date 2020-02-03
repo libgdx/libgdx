@@ -112,7 +112,7 @@ public class MipMapTest extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		ui.act(delta);
 	}
 

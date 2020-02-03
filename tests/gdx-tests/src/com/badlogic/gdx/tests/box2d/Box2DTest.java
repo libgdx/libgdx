@@ -84,7 +84,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	protected Vector2 tmp = new Vector2();
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		// update the world with a fixed time step
 		startTime = TimeUtils.nanoTime();
 		world.step(delta, 3, 3);

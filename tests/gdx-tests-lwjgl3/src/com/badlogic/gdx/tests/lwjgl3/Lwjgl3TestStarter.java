@@ -112,16 +112,20 @@ public class Lwjgl3TestStarter {
 				// Since ScrollPane takes some time for scrolling to a position, we just "fake" time
 				stage.act(1f);
 				stage.act(1f);
-				stage.draw();
+				stage.draw(1f);
 			}
 		}
 
 		@Override
-		public void render () {
+		public void update(final float delta) {
+			stage.act(delta);
+		}
+
+		@Override
+		public void render (final float delta) {
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			stage.act();
-			stage.draw();
+			stage.draw(delta);
 		}
 
 		@Override

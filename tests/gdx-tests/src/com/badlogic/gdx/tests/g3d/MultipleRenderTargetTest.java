@@ -343,7 +343,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		float vx;
 		float vz;
 
-		public void update (float deltaTime) {
+		public void update (final float deltaTime) {
 			vy += -30f * deltaTime;
 
 			position.y += vy * deltaTime;

@@ -73,14 +73,14 @@ public class GroupCullingTest extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
+		drawn = 0;
 		stage.act(delta);
 	}
 
 	@Override
 	public void render (final float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		drawn = 0;
 		stage.draw(delta);
 		drawnLabel.setText("Drawn: " + drawn + "/" + count);
 		drawnLabel.invalidateHierarchy();

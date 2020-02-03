@@ -284,7 +284,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		batch.end();
 	}
 
-	private boolean isPlayerGrounded (float deltaTime) {
+	private boolean isPlayerGrounded (final float deltaTime) {
 		groundedPlatform = null;
 		Array<Contact> contactList = world.getContactList();
 		for (int i = 0; i < contactList.size; i++) {
@@ -350,7 +350,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 	}
 
 	abstract class Platform {
-		abstract void update (float deltatime);
+		abstract void update (final float deltatime);
 	}
 
 	class CirclePlatform extends Platform {
@@ -365,7 +365,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		}
 
 		@Override
-		void update (float deltatime) {
+		void update (final float deltatime) {
 		}
 	}
 
@@ -389,7 +389,8 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			platform.setUserData(this);
 		}
 
-		public void update (float deltaTime) {
+		@Override
+		public void update (final float deltaTime) {
 			dist += dir.len() * deltaTime;
 			if (dist > maxDist) {
 				dir.scl(-1);

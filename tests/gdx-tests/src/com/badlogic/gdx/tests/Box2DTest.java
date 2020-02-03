@@ -234,7 +234,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		// first we update the world. For simplicity
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time

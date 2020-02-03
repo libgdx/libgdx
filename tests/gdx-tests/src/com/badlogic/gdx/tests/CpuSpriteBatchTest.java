@@ -88,7 +88,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 
 		Actor hat = new DrawableActor(bob) {
 			@Override
-			public void act (float delta) {
+			public void act (final float delta) {
 				rotateBy(delta * -300);
 			}
 		};
@@ -98,7 +98,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 
 		Group group = new Group() {
 			@Override
-			public void act (float delta) {
+			public void act (final float delta) {
 				rotateBy(delta * 120);
 				setScale(0.9f + 0.2f * MathUtils.cos(MathUtils.degreesToRadians * getRotation()));
 				super.act(delta);
@@ -118,7 +118,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		stage.act(delta);
 	}
 

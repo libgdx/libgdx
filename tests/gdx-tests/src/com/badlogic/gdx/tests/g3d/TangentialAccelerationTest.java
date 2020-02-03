@@ -134,7 +134,7 @@ public class TangentialAccelerationTest extends BaseG3dTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (emitters.size > 0) {
 			ui.act(delta);
 		}

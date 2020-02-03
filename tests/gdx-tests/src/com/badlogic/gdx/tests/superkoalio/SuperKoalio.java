@@ -119,11 +119,8 @@ public class SuperKoalio extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (delta == 0) return;
-
-		if (delta > 0.1f)
-			delta = 0.1f;
 
 		koala.stateTime += delta;
 
@@ -232,7 +229,7 @@ public class SuperKoalio extends GdxTest {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(final float delta) {
 		// clear the screen
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

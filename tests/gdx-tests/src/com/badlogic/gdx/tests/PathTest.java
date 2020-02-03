@@ -92,7 +92,7 @@ public class PathTest extends GdxTest {
 	float avg_speed;
 
 	@Override
-	public void render (float delta) {
+	public void render (final float delta) {
 		GL20 gl = Gdx.gl20;
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

@@ -41,7 +41,7 @@ public class AnimationTest extends GdxTest {
 			this.stateTime = (float)Math.random();
 		}
 
-		public void update (float deltaTime) {
+		public void update (final float deltaTime) {
 			stateTime += deltaTime;
 			pos.x = pos.x + (headsLeft ? -VELOCITY * deltaTime : VELOCITY * deltaTime);
 			if (pos.x < -64) pos.x = Gdx.graphics.getWidth();

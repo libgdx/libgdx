@@ -68,7 +68,7 @@ public class ActionSequenceTest extends GdxTest implements Runnable {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		stage.act(delta);
 	}
 

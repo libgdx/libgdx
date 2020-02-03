@@ -74,7 +74,7 @@ public class StagePerformanceTest extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (useStage)
 			stage.act(delta);
 	}

@@ -88,7 +88,7 @@ public class TableLayoutTest extends GdxTest {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		stage.act(delta);
 	}
 

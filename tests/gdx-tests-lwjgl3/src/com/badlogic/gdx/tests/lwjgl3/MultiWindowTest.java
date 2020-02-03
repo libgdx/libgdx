@@ -39,7 +39,7 @@ public class MultiWindowTest {
 		}
 
 		@Override		
-		public void render () {
+		public void render (final float delta) {
 			Gdx.gl.glClearColor(1, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			sharedSpriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
