@@ -169,14 +169,14 @@ public interface Net {
 		/**
 		 * The CONNECT method establishes a tunnel to the server
 		 * identified by the target resource.
-		 * Supported by libgdx yet.
+		 * Not Supported by libgdx yet.
 		 **/
 		public static final String CONNECT = "CONNECT";
 
 		/**
 		 * The TRACE method performs a message loop-back test along
 		 * the path to the target resource.
-		 * Supported by libgdx yet.
+		 * Not Supported by libgdx yet.
 		 **/
 		public static final String TRACE = "TRACE";
 	}
