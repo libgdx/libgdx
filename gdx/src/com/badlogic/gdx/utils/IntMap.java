@@ -317,9 +317,12 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			return null;
 		}
 		V oldValue = valueTable[loc];
-		while ((key = keyTable[loc + 1 & mask]) != 0 && (loc + 1 & mask) != place(key)) {
+		int nl = (loc + 1 & mask);
+		while ((key = keyTable[nl]) != 0 && nl != place(key)) {
 			keyTable[loc] = key;
-			valueTable[loc] = valueTable[++loc & mask];
+			valueTable[loc] = valueTable[nl];
+			loc = nl;
+			nl = loc + 1 & mask;
 		}
 		keyTable[loc] = 0;
 		valueTable[loc] = null;
@@ -738,12 +741,13 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			} else {
 				int[] keyTable = map.keyTable;
 				V[] valueTable = map.valueTable;
-				int loc = currentIndex, key;
 				final int mask = map.mask;
-				while ((key = keyTable[loc + 1 & mask]) != 0 && (loc + 1 & mask) != map.place(key)) {
+				int loc = currentIndex, nl = (loc + 1 & mask), key;
+				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {
 					keyTable[loc] = key;
-					valueTable[loc] = valueTable[loc + 1 & mask];
-					++loc;
+					valueTable[loc] = valueTable[nl];
+					loc = nl;
+					nl = loc + 1 & mask;
 				}
 				if(loc != currentIndex) --nextIndex;
 				keyTable[loc] = 0;

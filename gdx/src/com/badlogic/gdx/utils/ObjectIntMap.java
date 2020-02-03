@@ -275,9 +275,12 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		final K[] keyTable = this.keyTable;
 		final int[] valueTable = this.valueTable;
 		final int oldValue = valueTable[loc];
-		while ((key = keyTable[loc + 1 & mask]) != null && (loc + 1 & mask) != place(key)) {
+		int nl = (loc + 1 & mask);
+		while ((key = keyTable[nl]) != null && nl != place(key)) {
 			keyTable[loc] = key;
-			valueTable[loc] = valueTable[++loc & mask];
+			valueTable[loc] = valueTable[nl];
+			loc = nl;
+			nl = loc + 1 & mask;
 		}
 		keyTable[loc] = null;
 		--size;
@@ -586,13 +589,14 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 				throw new IllegalStateException("next must be called before remove.");
 			final K[] keyTable = map.keyTable;
 			final int[] valueTable = map.valueTable;
-			int loc = currentIndex;
 			final int mask = map.mask;
+			int loc = currentIndex, nl = (loc + 1 & mask);
 			K key;
-			while ((key = keyTable[loc + 1 & mask]) != null && (loc + 1 & mask) != map.place(key)) {
+			while ((key = keyTable[nl]) != null && nl != map.place(key)) {
 				keyTable[loc] = key;
-				valueTable[loc] = valueTable[loc + 1 & mask];
-				++loc;
+				valueTable[loc] = valueTable[nl];
+				loc = nl;
+				nl = loc + 1 & mask;
 			}
 			if(loc != currentIndex) --nextIndex;
 			keyTable[loc] = null;

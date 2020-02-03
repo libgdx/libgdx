@@ -320,11 +320,14 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		final long[] keyTable = this.keyTable;
 		final V[] valueTable = this.valueTable;
 		V oldValue = valueTable[loc];
-		while ((key = keyTable[loc + 1 & mask]) != 0L && (loc + 1 & mask) != place(key)) {
+		int nl = (loc + 1 & mask);
+		while ((key = keyTable[nl]) != 0L && nl != place(key)) {
 			keyTable[loc] = key;
-			valueTable[loc] = valueTable[++loc & mask];
+			valueTable[loc] = valueTable[nl];
+			loc = nl;
+			nl = loc + 1 & mask;
 		}
-		keyTable[loc] = 0;
+		keyTable[loc] = 0L;
 		valueTable[loc] = null;
 		--size;
 		return oldValue;
@@ -741,13 +744,14 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			} else {
 				final long[] keyTable = map.keyTable;
 				final V[] valueTable = map.valueTable;
-				int loc = currentIndex;
-				long key;
 				final int mask = map.mask;
-				while ((key = keyTable[loc + 1 & mask]) != 0 && (loc + 1 & mask) != map.place(key)) {
+				int loc = currentIndex, nl = (loc + 1 & mask);
+				long key;
+				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {
 					keyTable[loc] = key;
-					valueTable[loc] = valueTable[loc + 1 & mask];
-					++loc;
+					valueTable[loc] = valueTable[nl];
+					loc = nl;
+					nl = loc + 1 & mask;
 				}
 				if(loc != currentIndex) --nextIndex;
 				keyTable[loc] = 0;

@@ -238,9 +238,11 @@ public class IntSet {
 		if (loc == -1) {
 			return false;
 		}
-		while ((key = keyTable[loc + 1 & mask]) != 0 && (loc + 1 & mask) != place(key)) {
+		int nl = (loc + 1 & mask);
+		while ((key = keyTable[nl]) != 0 && nl != place(key)) {
 			keyTable[loc] = key;
-			++loc;
+			loc = nl;
+			nl = loc + 1 & mask;
 		}
 		keyTable[loc] = 0;
 		--size;
@@ -483,15 +485,13 @@ public class IntSet {
 			} else if (currentIndex < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
-				set.keyTable[currentIndex] = 0;
-
 				int[] keyTable = set.keyTable;
 				final int mask = set.mask;
-				int loc = currentIndex;
-				int key;
-				while ((key = keyTable[loc + 1 & mask]) != 0 && (loc + 1 & mask) != set.place(key)) {
+				int loc = currentIndex, nl = (loc + 1 & mask), key;
+				while ((key = keyTable[nl]) != 0 && nl != set.place(key)) {
 					keyTable[loc] = key;
-					++loc;
+					loc = nl;
+					nl = loc + 1 & mask;
 				}
 				if(loc != currentIndex) --nextIndex;
 				keyTable[loc] = 0;
