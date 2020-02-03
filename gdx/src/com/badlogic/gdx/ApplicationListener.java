@@ -40,19 +40,37 @@ public interface ApplicationListener {
 	public void resize (int width, int height);
 
 	/** Called when the {@link Application} should update itself.
+	 * The order of calling loop-methods is:
+	 * <ul>
+	 * <li>{@link ApplicationListener#update(float)}</li>
+	 * <li>{@link ApplicationListener#render(float)}</li>
+	 * <li>{@link ApplicationListener#render()}</li>
+	 * </ul>
 	 * The {@link ApplicationListener#update(float)} is used for updating purposes.
 	 * Especially the {@link HeadlessApplication} requires this loop to update game objects.
-	 * @param delta The time in seconds since the last render. */
+	 * @param delta The time in seconds since the last update. */
 	public void update(float delta);
 
 	/** Called when the {@link Application} should render itself.
+	 * The order of calling loop-methods is:
+	 * <ul>
+	 * <li>{@link ApplicationListener#update(float)}</li>
+	 * <li>{@link ApplicationListener#render(float)}</li>
+	 * <li>{@link ApplicationListener#render()}</li>
+	 * </ul>
 	 * The {@link ApplicationListener#render(float)} is used for all drawing purposes.
-	 * It is not used by {@link HeadlessApplication}.
+	 * It is not used by {@link HeadlessApplication}!
 	 * @param delta The time in seconds since the last render.
 	 */
 	public void render(float delta);
 
 	/** Called when the {@link Application} should render itself.
+	 * The order of calling loop-methods is:
+	 * <ul>
+ 	 * <li>{@link ApplicationListener#update(float)}</li>
+	 * <li>{@link ApplicationListener#render(float)}</li>
+     * <li>{@link ApplicationListener#render()}</li>
+	 * </ul>
 	 * @deprecated use the {@link ApplicationListener#update(float)} and {@link ApplicationListener#render(float)}
 	 * in newer implementations of you application instead of {@link ApplicationListener#render()}.
 	 **/

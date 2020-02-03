@@ -29,7 +29,7 @@ public interface Screen {
 	public void show ();
 
 	/** Called when the screen should update itself.
-	 * @param delta The time in seconds since the last render. */
+	 * @param delta The time in seconds since the last update. */
 	public void update(float delta);
 
 	/** Called when the screen should render itself.
