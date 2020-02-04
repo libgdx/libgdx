@@ -171,6 +171,95 @@ public class CollectionsTest extends GdxTest {
 		}
 	}
 
+	private void testEmptyMaps () {
+		{
+			System.out.println(IntIntMap.class);
+			Object map = new IntIntMap(0);
+			Integer[] keys = intValues, values = intValues;
+			Object otherMap = new IntIntMap(0);
+			assertEquals(map, map);
+			for (int i = 0, n = keys.length; i < n; ++i) {
+				Object anotherMap = copy(map);
+				assertEquals(map, anotherMap);
+				assertEquals(((IntIntMap)map).get(keys[n - 1], 0), 0);
+				((IntIntMap)map).put(keys[i], values[i]);
+				((IntIntMap)otherMap).put(keys[i], values[i]);
+				assertEquals(map, otherMap);
+				assertNotEquals(map, anotherMap);
+				((IntIntMap)anotherMap).put(keys[(i + 1) % n], values[i]);
+				assertNotEquals(map, anotherMap);
+			}
+
+			// perform an iteration test
+			Object anotherMap = copy(map);
+			Iterator it = ((Iterable)anotherMap).iterator();
+			int iterationCount = 0;
+			while (it.hasNext()) {
+				it.next();
+				iterationCount++;
+			}
+			assertEquals(iterationCount, keys.length);
+
+			// perform an iteration and remove test for every index
+			for (int i = 0, n = keys.length; i < n; ++i) {
+				anotherMap = copy(map);
+				it = ((Iterable)anotherMap).iterator();
+				iterationCount = 0;
+				while (it.hasNext()) {
+					it.next();
+					if (iterationCount == i) {
+						it.remove();
+					}
+					iterationCount++;
+				}
+				assertEquals(iterationCount, keys.length);
+			}
+		}
+		{
+			System.out.println(IntMap.class);
+			Object map = new IntMap(0);
+			Integer[] keys = intValues, values = intValues;
+			Object otherMap = new IntMap(0);
+			assertEquals(map, map);
+			for (int i = 0, n = keys.length; i < n; ++i) {
+				Object anotherMap = copy(map);
+				assertEquals(map, anotherMap);
+				if(((IntMap)map).get(keys[n - 1]) != null) throw new GdxRuntimeException("get() on an impossible key returned non-null");
+				((IntMap)map).put(keys[i], values[i]);
+				((IntMap)otherMap).put(keys[i], values[i]);
+				assertEquals(map, otherMap);
+				assertNotEquals(map, anotherMap);
+				((IntMap)anotherMap).put(keys[(i + 1) % n], values[i]);
+				assertNotEquals(map, anotherMap);
+			}
+
+			// perform an iteration test
+			Object anotherMap = copy(map);
+			Iterator it = ((Iterable)anotherMap).iterator();
+			int iterationCount = 0;
+			while (it.hasNext()) {
+				it.next();
+				iterationCount++;
+			}
+			assertEquals(iterationCount, keys.length);
+
+			// perform an iteration and remove test for every index
+			for (int i = 0, n = keys.length; i < n; ++i) {
+				anotherMap = copy(map);
+				it = ((Iterable)anotherMap).iterator();
+				iterationCount = 0;
+				while (it.hasNext()) {
+					it.next();
+					if (iterationCount == i) {
+						it.remove();
+					}
+					iterationCount++;
+				}
+				assertEquals(iterationCount, keys.length);
+			}
+		}
+	}
+
 	private void testArray (Class<?> arrayClass, Object[] values) {
 		System.out.println(arrayClass);
 		Object array = newInstance(arrayClass);
@@ -221,7 +310,9 @@ public class CollectionsTest extends GdxTest {
 		testMap(ObjectIntMap.class, values, intValues);
 		testMap(ObjectMap.class, values, valuesWithNulls);
 		testMap(OrderedMap.class, values, valuesWithNulls);
-
+		
+		testEmptyMaps();
+		
 		testArray(Array.class, valuesWithNulls);
 		testArray(BooleanArray.class, new Boolean[] {true, false});
 		testArray(ByteArray.class, byteValues);

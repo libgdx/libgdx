@@ -105,7 +105,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
-		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(Math.max(1, initialCapacity) / loadFactor));
 		if (initialCapacity > 1 << 30)
 			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 
@@ -484,7 +484,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		valueTable = (V[])new Object[newSize];
 
 		int oldSize = size;
-		size = 0;
+		size = hasZeroValue ? 1 : 0;
 		if (oldSize > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				long key = oldKeyTable[i];
