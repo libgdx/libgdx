@@ -194,11 +194,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void hideStatusBar (boolean hide) {
-		if (!hide || getVersion() < 11) return;
+		if (!hide) return;
 
 		View rootView = getWindow().getDecorView();
-
-		if (getVersion() <= 13) rootView.setSystemUiVisibility(0x0);
 		rootView.setSystemUiVisibility(0x1);
 	}
 
