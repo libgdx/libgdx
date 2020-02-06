@@ -32,6 +32,7 @@ import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
@@ -53,7 +54,8 @@ import java.util.List;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
+public class AndroidInput implements Input, OnKeyListener, OnTouchListener, OnGenericMotionListener
+{
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -148,6 +150,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private SensorEventListener compassListener;
 	private SensorEventListener rotationVectorListener;
 
+	ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
+	private final AndroidMouseHandler mouseHandler;
+
 	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
@@ -185,6 +190,14 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		keysToCatch.add(Keys.BUTTON_CIRCLE);
+
+		// we hook into View, for LWPs we call onTouch below directly from
+		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
+		if (view instanceof View) {
+			View v = (View)view;
+			v.setOnGenericMotionListener(this);
+		}
+		mouseHandler = new AndroidMouseHandler();
 	}
 
 	@Override
@@ -978,6 +991,18 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	public void onResume () {
 		registerSensorListeners();
+	}
+
+	@Override
+	public boolean onGenericMotion (View view, MotionEvent event) {
+		if (mouseHandler.onGenericMotion(event, this)) return true;
+		for (int i = 0, n = genericMotionListeners.size(); i < n; i++)
+			if (genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
+		return false;
+	}
+
+	public void addGenericMotionListener (OnGenericMotionListener listener) {
+		genericMotionListeners.add(listener);
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
