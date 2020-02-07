@@ -76,6 +76,14 @@
           <systemPath>${basedir}/libs/fragment-1.2.3.jar</systemPath>
           <optional>true</optional>
       </dependency>
+      <dependency>
+          <groupId>com.google.android.support</groupId>
+          <artifactId>wearable</artifactId>
+          <version>2.7.0</version>
+          <scope>system</scope>
+          <systemPath>${basedir}/libs/wearable-2.7.0.jar</systemPath>
+          <optional>true</optional>
+      </dependency>
   </dependencies>
 
   <build>

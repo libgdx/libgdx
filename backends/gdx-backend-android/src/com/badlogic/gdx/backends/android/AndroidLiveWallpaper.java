@@ -23,6 +23,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 import com.badlogic.gdx.*;
@@ -34,7 +35,7 @@ import com.badlogic.gdx.utils.*;
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
  * 
  * @author mzechner */
-public class AndroidLiveWallpaper implements AndroidApplicationBase {
+public class AndroidLiveWallpaper implements AndroidServiceApplication {
 	static {
 		GdxNativesLoader.load();
 	}
@@ -395,5 +396,14 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		AndroidLiveWallpaperService.AndroidWallpaperEngine engine = service.linkedEngine;
 		if (engine != null)
 			engine.notifyColorsChanged();
+	}
+	@Override
+	public SurfaceHolder getSurfaceHolder () {
+		return service.getSurfaceHolder();
+	}
+
+	@Override
+	public boolean isDebug () {
+		return AndroidLiveWallpaperService.DEBUG;
 	}
 }

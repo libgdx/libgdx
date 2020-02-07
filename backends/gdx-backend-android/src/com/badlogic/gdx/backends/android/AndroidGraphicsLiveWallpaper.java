@@ -30,24 +30,32 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
-	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper lwp, AndroidApplicationConfiguration config,
-		ResolutionStrategy resolutionStrategy) {
-		super(lwp, config, resolutionStrategy, false);
+	private static final String TAG = "AndroidLwpGraphics";
+
+	public AndroidGraphicsLiveWallpaper (AndroidServiceApplication app, AndroidApplicationConfiguration config, ResolutionStrategy resolutionStrategy) {
+		super(app, config, resolutionStrategy, false);
 	}
 
 	// jw: I replaced GL..SurfaceViewLW classes with their original counterparts, if it will work
 	// on known devices, on opengl 1.0 and 2.0, and all possible SDK versions.. You can remove
 	// GL..SurfaceViewLW family of classes completely (there is no use for them).
 
-	// -> specific for live wallpapers
-	// jw: synchronized access to current wallpaper surface holder
+	/**
+	 * Synchronized access to current android engine surface holder.<br/>
+	 * Already synchronized internally in {@link AndroidServiceApplication#getSurfaceHolder()}
+	 */
 	SurfaceHolder getSurfaceHolder () {
-		synchronized (((AndroidLiveWallpaper)app).service.sync) {
-			return ((AndroidLiveWallpaper)app).service.getSurfaceHolder();
-		}
+		return ((AndroidServiceApplication)app).getSurfaceHolder();
 	}
 
-	// <- specific for live wallpapers
+	private boolean isDebug () {
+		if (app != null) {
+			return ((AndroidServiceApplication)app).isDebug();
+		} else {
+			// It should never happen, just in case.
+			return false;
+		}
+	}
 
 	// Grabbed from AndroidGraphics superclass and modified to override
 	// getHolder in created GLSurfaceView20 instances
@@ -78,14 +86,12 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			try {
 				// onDetachedFromWindow stops GLThread by calling mGLThread.requestExitAndWait()
 				view.onDetachedFromWindow();
-				if (AndroidLiveWallpaperService.DEBUG)
-					Log.d(AndroidLiveWallpaperService.TAG,
-						" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
+				if (isDebug())
+					Log.d(TAG, " > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
 			} catch (Throwable t) {
 				// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service
 				// wouldn't be able to shutdown completely
-				Log.e(AndroidLiveWallpaperService.TAG,
-					"failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
+				Log.e(TAG, "failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
 				t.printStackTrace();
 			}
 		}
@@ -102,7 +108,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 					requestRendering();
 					synch.wait();
 				} catch (InterruptedException ignored) {
-					Gdx.app.log("AndroidGraphics", "waiting for resume synchronization failed!");
+					Gdx.app.log(TAG, "waiting for resume synchronization failed!");
 				}
 			}
 		}
@@ -151,7 +157,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 		if (lresume) {
 			// ((AndroidAudio)app.getAudio()).resume(); // jw: moved to AndroidLiveWallpaper.onResume
 			app.getApplicationListener().resume();
-			Gdx.app.log("AndroidGraphics", "resumed");
+			Gdx.app.log(TAG, "resumed");
 		}
 
 		// HACK: added null check to handle set wallpaper from preview null
@@ -188,14 +194,14 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 		if (lpause) {
 			app.getApplicationListener().pause();
 			// ((AndroidAudio)app.getAudio()).pause(); jw: moved to AndroidLiveWallpaper.onPause
-			Gdx.app.log("AndroidGraphics", "paused");
+			Gdx.app.log(TAG, "paused");
 		}
 
 		// jw: never called on lwp, why? see description in AndroidLiveWallpaper.onPause
 		if (ldestroy) {
 			app.getApplicationListener().dispose();
 			// ((AndroidAudio)app.getAudio()).dispose(); jw: moved to AndroidLiveWallpaper.onDestroy
-			Gdx.app.log("AndroidGraphics", "destroyed");
+			Gdx.app.log(TAG, "destroyed");
 		}
 
 		if (time - frameStart > 1000000000) {
@@ -209,7 +215,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	@Override
 	protected void logManagedCachesStatus() {
 		// to prevent creating too many string buffers in live wallpapers
-		if (AndroidLiveWallpaperService.DEBUG) {
+		if (isDebug()) {
 			super.logManagedCachesStatus();
 		}
 	}

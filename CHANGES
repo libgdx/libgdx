@@ -40,6 +40,7 @@
 - API Addition: Added getBackgroundDrawable() to Button.
 - API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
 - API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
+- API Addition: Watch face support for WearOS in android bakcend
 
 [1.9.11]
 - Update to MobiVM 2.3.8
