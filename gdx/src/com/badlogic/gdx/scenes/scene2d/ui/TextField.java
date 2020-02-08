@@ -1025,13 +1025,12 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if ( focusTraversal && (character == TAB
-					|| ( (UIUtils.isAndroid || UIUtils.isIos) && (character == NEWLINE || character == CARRIAGE_RETURN) )) ) {
+			boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
+			if ( focusTraversal && (character == TAB || ( (UIUtils.isAndroid || UIUtils.isIos) && enter )) ) {
 				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {
