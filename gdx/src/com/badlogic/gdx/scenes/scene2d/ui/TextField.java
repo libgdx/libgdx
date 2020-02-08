@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -64,8 +63,10 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
-	static protected final char ENTER_DESKTOP = '\r';
-	static protected final char ENTER_ANDROID = '\n';
+	//Windows and Mac before OS X as Enter
+	static protected final char CARRIAGE_RETURN_CHAR = '\r';
+	//Unix based systems as Enter
+	static protected final char NEWLINE_CHAR = '\n';
 	static private final char TAB = '\t';
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
@@ -466,7 +467,7 @@ public class TextField extends Widget implements Disableable {
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
-			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
+			if (!(writeEnters && (c == NEWLINE_CHAR || c == CARRIAGE_RETURN_CHAR))) {
 				if (c == '\r' || c == '\n') continue;
 				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
@@ -1013,23 +1014,24 @@ public class TextField extends Widget implements Disableable {
 			switch (character) {
 			case BACKSPACE:
 			case TAB:
-			case ENTER_ANDROID:
-			case ENTER_DESKTOP:
+			case NEWLINE_CHAR:
+			case CARRIAGE_RETURN_CHAR:
 				break;
 			default:
-				if (character < 32) return false;
+				if (character < 32 && character != 13) return false;
 			}
 
 			if (!hasKeyboardFocus()) return false;
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
+			if ( focusTraversal && (character == TAB
+					|| ( (UIUtils.isAndroid || UIUtils.isIos || UIUtils.isMoeIos) && (character == NEWLINE_CHAR || character == CARRIAGE_RETURN_CHAR) )) ) {
 				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean enter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
+				boolean enter = character == CARRIAGE_RETURN_CHAR || character == NEWLINE_CHAR;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {
