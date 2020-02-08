@@ -12,7 +12,7 @@ public class UIUtils {
 	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
 	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux");
 	static public boolean isMoeIos = !isAndroid && "iOS".equals(System.getProperty("moe.platform.name"));
-	static public boolean isIos = isMoeIos || (!isAndroid && !isWindows && !isLinux && !isMac);
+	static public boolean isIos = isMoeIos || !(isAndroid || isWindows || isLinux || isMac);
 
 	static public boolean left () {
 		return Gdx.input.isButtonPressed(Buttons.LEFT);

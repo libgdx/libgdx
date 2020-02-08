@@ -1026,7 +1026,7 @@ public class TextField extends Widget implements Disableable {
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
 			if ( focusTraversal && (character == TAB
-					|| ( (UIUtils.isAndroid || UIUtils.isIos || UIUtils.isMoeIos) && (character == NEWLINE || character == CARRIAGE_RETURN) )) ) {
+					|| ( (UIUtils.isAndroid || UIUtils.isIos) && (character == NEWLINE || character == CARRIAGE_RETURN) )) ) {
 				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
