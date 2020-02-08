@@ -121,7 +121,7 @@ public class TextArea extends TextField {
 	/** Returns if there's a new line at then end of the text **/
 	public boolean newLineAtEnd () {
 		return text.length() != 0
-			&& (text.charAt(text.length() - 1) == NEWLINE_CHAR || text.charAt(text.length() - 1) == CARRIAGE_RETURN_CHAR);
+			&& (text.charAt(text.length() - 1) == NEWLINE || text.charAt(text.length() - 1) == CARRIAGE_RETURN);
 	}
 
 	/** Moves the cursor to the given number line **/
@@ -160,8 +160,8 @@ public class TextArea extends TextField {
 		// wider than the box
 		if (index % 2 == 0 || index + 1 >= linesBreak.size || cursor != linesBreak.items[index]
 			|| linesBreak.items[index + 1] != linesBreak.items[index]) {
-			if (line < linesBreak.size / 2 || text.length() == 0 || text.charAt(text.length() - 1) == NEWLINE_CHAR
-				|| text.charAt(text.length() - 1) == CARRIAGE_RETURN_CHAR) {
+			if (line < linesBreak.size / 2 || text.length() == 0 || text.charAt(text.length() - 1) == NEWLINE
+				|| text.charAt(text.length() - 1) == CARRIAGE_RETURN) {
 				cursorLine = line;
 			}
 		}
@@ -271,7 +271,7 @@ public class TextArea extends TextField {
 			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);
-				if (lastCharacter == CARRIAGE_RETURN_CHAR || lastCharacter == NEWLINE_CHAR) {
+				if (lastCharacter == CARRIAGE_RETURN || lastCharacter == NEWLINE) {
 					linesBreak.add(lineStart);
 					linesBreak.add(i);
 					lineStart = i + 1;

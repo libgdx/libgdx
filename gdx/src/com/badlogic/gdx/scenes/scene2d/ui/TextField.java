@@ -64,9 +64,9 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
 	//Windows and Mac before OS X as Enter
-	static protected final char CARRIAGE_RETURN_CHAR = '\r';
+	static protected final char CARRIAGE_RETURN = '\r';
 	//Unix based systems as Enter
-	static protected final char NEWLINE_CHAR = '\n';
+	static protected final char NEWLINE = '\n';
 	static private final char TAB = '\t';
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
@@ -467,7 +467,7 @@ public class TextField extends Widget implements Disableable {
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
-			if (!(writeEnters && (c == NEWLINE_CHAR || c == CARRIAGE_RETURN_CHAR))) {
+			if (!(writeEnters && (c == NEWLINE || c == CARRIAGE_RETURN))) {
 				if (c == '\r' || c == '\n') continue;
 				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
@@ -1014,8 +1014,8 @@ public class TextField extends Widget implements Disableable {
 			switch (character) {
 			case BACKSPACE:
 			case TAB:
-			case NEWLINE_CHAR:
-			case CARRIAGE_RETURN_CHAR:
+			case NEWLINE:
+			case CARRIAGE_RETURN:
 				break;
 			default:
 				if (character < 32) return false;
@@ -1026,12 +1026,12 @@ public class TextField extends Widget implements Disableable {
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
 			if ( focusTraversal && (character == TAB
-					|| ( (UIUtils.isAndroid || UIUtils.isIos || UIUtils.isMoeIos) && (character == NEWLINE_CHAR || character == CARRIAGE_RETURN_CHAR) )) ) {
+					|| ( (UIUtils.isAndroid || UIUtils.isIos || UIUtils.isMoeIos) && (character == NEWLINE || character == CARRIAGE_RETURN) )) ) {
 				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean enter = character == CARRIAGE_RETURN_CHAR || character == NEWLINE_CHAR;
+				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {
