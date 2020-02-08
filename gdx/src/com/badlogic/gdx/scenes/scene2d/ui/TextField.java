@@ -1018,7 +1018,7 @@ public class TextField extends Widget implements Disableable {
 			case CARRIAGE_RETURN_CHAR:
 				break;
 			default:
-				if (character < 32 && character != 13) return false;
+				if (character < 32) return false;
 			}
 
 			if (!hasKeyboardFocus()) return false;
