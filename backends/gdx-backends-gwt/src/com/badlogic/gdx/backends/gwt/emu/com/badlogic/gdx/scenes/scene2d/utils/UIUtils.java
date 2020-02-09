@@ -7,13 +7,13 @@ import com.badlogic.gdx.Input.Keys;
 import com.google.gwt.user.client.Window.Navigator;
 
 public class UIUtils {
-	//Adapted system checks from com.badlogic.gdx.utils.SharedLibraryLoader
-	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
-	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
-	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Win");
-	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux");
-	static public boolean isMoeIos = !isAndroid && "iOS".equals(System.getProperty("moe.platform.name"));
-	static public boolean isIos = isMoeIos || !(isAndroid || isWindows || isLinux || isMac);
+	static public boolean isAndroid = Navigator.getPlatform().contains("Android");
+	static public boolean isMac = Navigator.getPlatform().contains("Mac");
+	static public boolean isWindows = Navigator.getPlatform().contains("Win");
+	static public boolean isLinux = Navigator.getPlatform().contains("Linux");
+	static public boolean isIos = Navigator.getPlatform().contains("iPhone")
+			|| Navigator.getPlatform().contains("iPod")
+			|| Navigator.getPlatform().contains("iPad");
 
 	static public boolean left () {
 		return Gdx.input.isButtonPressed(Buttons.LEFT);
