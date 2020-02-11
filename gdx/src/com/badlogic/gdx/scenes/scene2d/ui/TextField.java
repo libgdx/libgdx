@@ -1007,6 +1007,12 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
+		/**
+		 * Checks if focus traversal should be triggered. Depends on {@link TextField#focusTraversal} and
+		 * the typed {@link char}, given as parameter.
+		 * @param character - the character that is checked to trigger focus traversal.
+		 * @return <b>true</b>, if the focus should jump to the next input field. <b>false</b> if not.
+		 */
 		protected boolean checkFocusTraverse(char character) {
 			return focusTraversal && (character == TAB || (
 							(character == CARRIAGE_RETURN || character == NEWLINE)
