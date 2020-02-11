@@ -1008,7 +1008,9 @@ public class TextField extends Widget implements Disableable {
 		}
 
 		protected boolean checkFocusTraverse(char character) {
-			return focusTraversal && (character == TAB || ( (character == CARRIAGE_RETURN || character == NEWLINE) && (UIUtils.isAndroid || UIUtils.isIos) ));
+			return focusTraversal && (character == TAB || (
+							(character == CARRIAGE_RETURN || character == NEWLINE)
+							&& (UIUtils.isAndroid || UIUtils.isIos) ));
 		}
 
 		public boolean keyTyped (InputEvent event, char character) {
