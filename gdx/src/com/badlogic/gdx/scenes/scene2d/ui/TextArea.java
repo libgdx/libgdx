@@ -72,7 +72,6 @@ public class TextArea extends TextField {
 		firstLineShowing = 0;
 		moveOffset = -1;
 		linesShowing = 0;
-		focusTraversal = false;
 	}
 
 	protected int letterUnderCursor (float x) {
@@ -378,6 +377,7 @@ public class TextArea extends TextField {
 			updateCurrentLine();
 		}
 
+		@Override
 		public boolean keyDown (InputEvent event, int keycode) {
 			boolean result = super.keyDown(event, keycode);
 			if (hasKeyboardFocus()) {
@@ -419,6 +419,12 @@ public class TextArea extends TextField {
 			return result;
 		}
 
+        @Override
+        protected boolean checkFocusTraverse(char character) {
+            return focusTraversal && character == TAB;
+        }
+
+        @Override
 		public boolean keyTyped (InputEvent event, char character) {
 			boolean result = super.keyTyped(event, character);
 			showCursor();

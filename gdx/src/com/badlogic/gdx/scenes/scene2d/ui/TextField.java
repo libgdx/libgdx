@@ -67,7 +67,7 @@ public class TextField extends Widget implements Disableable {
 	static protected final char CARRIAGE_RETURN = '\r';
 	//Unix based systems as Enter
 	static protected final char NEWLINE = '\n';
-	static private final char TAB = '\t';
+	static protected final char TAB = '\t';
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
@@ -1007,6 +1007,10 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
+		protected boolean checkFocusTraverse(char character) {
+			return focusTraversal && (character == TAB || ( (character == CARRIAGE_RETURN || character == NEWLINE) && (UIUtils.isAndroid || UIUtils.isIos) ));
+		}
+
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
 
@@ -1025,10 +1029,10 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
-			if ( focusTraversal && (character == TAB || ( (UIUtils.isAndroid || UIUtils.isIos) && enter )) ) {
+			if ( checkFocusTraverse(character) ) {
 				next(UIUtils.shift());
 			} else {
+				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
