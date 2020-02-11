@@ -377,7 +377,6 @@ public class TextArea extends TextField {
 			updateCurrentLine();
 		}
 
-		@Override
 		public boolean keyDown (InputEvent event, int keycode) {
 			boolean result = super.keyDown(event, keycode);
 			if (hasKeyboardFocus()) {
@@ -424,7 +423,6 @@ public class TextArea extends TextField {
             return focusTraversal && character == TAB;
         }
 
-        @Override
 		public boolean keyTyped (InputEvent event, char character) {
 			boolean result = super.keyTyped(event, character);
 			showCursor();
