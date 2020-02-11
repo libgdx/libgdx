@@ -62,14 +62,14 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static private final char BACKSPACE = 8;
+	static protected final char BACKSPACE = 8;
 	//Windows and Mac before OS X as Enter
 	static protected final char CARRIAGE_RETURN = '\r';
 	//Unix based systems as Enter
 	static protected final char NEWLINE = '\n';
 	static protected final char TAB = '\t';
-	static private final char DELETE = 127;
-	static private final char BULLET = 149;
+	static protected final char DELETE = 127;
+	static protected final char BULLET = 149;
 
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
