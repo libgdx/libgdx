@@ -418,10 +418,10 @@ public class TextArea extends TextField {
 			return result;
 		}
 
-        @Override
-        protected boolean checkFocusTraverse(char character) {
-            return focusTraversal && character == TAB;
-        }
+		@Override
+		protected boolean checkFocusTraverse(char character) {
+			return focusTraversal && character == TAB;
+		}
 
 		public boolean keyTyped (InputEvent event, char character) {
 			boolean result = super.keyTyped(event, character);
