@@ -5,6 +5,9 @@
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
 - Fixed AndroidInput crashes due to missing array resize (pressure array).
 - API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- Changed the internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide; this helps resistance against malicious users who can choose problematic names
+- API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this
+- More of the LibGDX data structures can now be passed to Json, to read and write things like a LongMap or an IntIntMap
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
