@@ -112,7 +112,6 @@ public class Queue<T> implements Iterable<T> {
 		final int head = this.head;
 		final int tail = this.tail;
 
-		@SuppressWarnings("unchecked")
 		final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
 		if (head < tail) {
 			// Continuous
