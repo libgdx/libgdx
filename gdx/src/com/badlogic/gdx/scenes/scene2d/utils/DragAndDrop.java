@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
@@ -207,19 +207,19 @@ public class DragAndDrop {
 	}
 
 	/** Returns the current drag actor, or null. */
-	@Nullable
+	@Null
 	public Actor getDragActor () {
 		return dragActor;
 	}
 
 	/** Returns the current drag payload, or null. */
-	@Nullable
+	@Null
 	public Payload getDragPayload () {
 		return payload;
 	}
 
 	/** Returns the current drag source, or null. */
-	@Nullable
+	@Null
 	public Source getDragSource () {
 		return dragSource;
 	}
@@ -262,7 +262,7 @@ public class DragAndDrop {
 
 		/** Called when a drag is started on the source. The coordinates are in the source's local coordinate system.
 		 * @return If null the drag will not affect any targets. */
-		@Nullable
+		@Null
 		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
 
 		/** Called repeatedly during a drag which started on this source. */
@@ -273,7 +273,7 @@ public class DragAndDrop {
 		 * @param payload null if dragStart returned null.
 		 * @param target null if not dropped on a valid target. */
 		public void dragStop (InputEvent event, float x, float y, int pointer,
-							  @Nullable Payload payload, @Nullable Target target) {
+							  @Null Payload payload, @Null Target target) {
 		}
 
 		public Actor getActor () {
@@ -316,42 +316,42 @@ public class DragAndDrop {
 	 * target. Such Actors will be added and removed from the stage automatically during the drag operation. Care should be taken
 	 * when using the source Actor as a payload drag actor. */
 	static public class Payload {
-		@Nullable Actor dragActor, validDragActor, invalidDragActor;
-		@Nullable Object object;
+		@Null Actor dragActor, validDragActor, invalidDragActor;
+		@Null Object object;
 
-		public void setDragActor (@Nullable Actor dragActor) {
+		public void setDragActor (@Null Actor dragActor) {
 			this.dragActor = dragActor;
 		}
 
-		@Nullable
+		@Null
 		public Actor getDragActor () {
 			return dragActor;
 		}
 
-		public void setValidDragActor (@Nullable Actor validDragActor) {
+		public void setValidDragActor (@Null Actor validDragActor) {
 			this.validDragActor = validDragActor;
 		}
 
-		@Nullable
+		@Null
 		public Actor getValidDragActor () {
 			return validDragActor;
 		}
 
-		public void setInvalidDragActor (@Nullable Actor invalidDragActor) {
+		public void setInvalidDragActor (@Null Actor invalidDragActor) {
 			this.invalidDragActor = invalidDragActor;
 		}
 
-		@Nullable
+		@Null
 		public Actor getInvalidDragActor () {
 			return invalidDragActor;
 		}
 
-		@Nullable
+		@Null
 		public Object getObject () {
 			return object;
 		}
 
-		public void setObject (@Nullable Object object) {
+		public void setObject (@Null Object object) {
 			this.object = object;
 		}
 	}

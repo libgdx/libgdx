@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** 2D scene graph node that may contain other actors.
  * <p>
@@ -41,7 +41,7 @@ public class Group extends Actor implements Cullable {
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
-	@Nullable private Rectangle cullingArea;
+	@Null private Rectangle cullingArea;
 
 	public void act (float delta) {
 		super.act(delta);
@@ -229,18 +229,18 @@ public class Group extends Actor implements Cullable {
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
 	 * actors.
 	 * @param cullingArea May be null. */
-	public void setCullingArea (@Nullable Rectangle cullingArea) {
+	public void setCullingArea (@Null Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
 	/** @return May be null.
 	 * @see #setCullingArea(Rectangle) */
-	@Nullable
+	@Null
 	public Rectangle getCullingArea () {
 		return cullingArea;
 	}
 
-	@Nullable
+	@Null
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
 		if (!isVisible()) return null;

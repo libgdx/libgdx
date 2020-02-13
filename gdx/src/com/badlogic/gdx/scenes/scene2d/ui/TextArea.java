@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField {
@@ -205,7 +205,7 @@ public class TextArea extends TextField {
 		linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
 	}
 
-	protected float getTextY (BitmapFont font, @Nullable Drawable background) {
+	protected float getTextY (BitmapFont font, @Null Drawable background) {
 		float textY = getHeight();
 		if (background != null) {
 			textY = (int)(textY - background.getTopHeight());

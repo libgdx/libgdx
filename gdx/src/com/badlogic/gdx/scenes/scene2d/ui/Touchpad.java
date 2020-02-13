@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
  * smaller touchpad dimension.
@@ -226,15 +226,15 @@ public class Touchpad extends Widget {
 	 * @author Josh Street */
 	public static class TouchpadStyle {
 		/** Stretched in both directions. Optional. */
-		@Nullable public Drawable background;
+		@Null public Drawable background;
 
 		/** Optional. */
-		@Nullable public Drawable knob;
+		@Null public Drawable knob;
 
 		public TouchpadStyle () {
 		}
 
-		public TouchpadStyle (@Nullable Drawable background, @Nullable Drawable knob) {
+		public TouchpadStyle (@Null Drawable background, @Null Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}

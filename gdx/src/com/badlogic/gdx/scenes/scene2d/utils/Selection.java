@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 import java.util.Iterator;
 
@@ -14,7 +14,7 @@ import java.util.Iterator;
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	@Nullable private Actor actor;
+	@Null private Actor actor;
 	final OrderedSet<T> selected = new OrderedSet();
 	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
@@ -22,10 +22,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean multiple;
 	boolean required;
 	private boolean programmaticChangeEvents = true;
-	@Nullable T lastSelected;
+	@Null T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
-	public void setActor (@Nullable Actor actor) {
+	public void setActor (@Null Actor actor) {
 		this.actor = actor;
 	}
 
@@ -82,7 +82,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Returns the first selected item, or null. */
-	@Nullable
+	@Null
 	public T first () {
 		return selected.size == 0 ? null : selected.first();
 	}
@@ -230,13 +230,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** @param item May be null (returns false). */
-	public boolean contains (@Nullable T item) {
+	public boolean contains (@Null T item) {
 		if (item == null) return false;
 		return selected.contains(item);
 	}
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
-	@Nullable
+	@Null
 	public T getLastSelected () {
 		if (lastSelected != null) {
 			return lastSelected;

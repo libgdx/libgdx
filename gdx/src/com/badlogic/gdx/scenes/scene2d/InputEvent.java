@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** Event for actor input: touch, mouse, keyboard, and scroll.
  * @see InputListener */
@@ -27,7 +27,7 @@ public class InputEvent extends Event {
 	private float stageX, stageY;
 	private int pointer, button, keyCode, scrollAmount;
 	private char character;
-	@Nullable private Actor relatedActor;
+	@Null private Actor relatedActor;
 
 	public void reset () {
 		super.reset();
@@ -111,13 +111,13 @@ public class InputEvent extends Event {
 
 	/** The actor related to the event. Valid for: enter and exit. For enter, this is the actor being exited, or null. For exit,
 	 * this is the actor being entered, or null. */
-	@Nullable
+	@Null
 	public Actor getRelatedActor () {
 		return relatedActor;
 	}
 
 	/** @param relatedActor May be null. */
-	public void setRelatedActor (@Nullable Actor relatedActor) {
+	public void setRelatedActor (@Null Actor relatedActor) {
 		this.relatedActor = relatedActor;
 	}
 

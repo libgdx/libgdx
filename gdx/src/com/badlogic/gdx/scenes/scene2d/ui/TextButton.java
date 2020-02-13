@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** A button with a child {@link Label} to display text.
  * @author Nathan Sweet */
@@ -30,17 +30,17 @@ public class TextButton extends Button {
 	private Label label;
 	private TextButtonStyle style;
 
-	public TextButton (@Nullable String text, Skin skin) {
+	public TextButton (@Null String text, Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (@Nullable String text, Skin skin, String styleName) {
+	public TextButton (@Null String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (@Nullable String text, TextButtonStyle style) {
+	public TextButton (@Null String text, TextButtonStyle style) {
 		super();
 		setStyle(style);
 		this.style = style;
@@ -99,7 +99,7 @@ public class TextButton extends Button {
 		return cell;
 	}
 
-	public void setText (@Nullable String text) {
+	public void setText (@Null String text) {
 		label.setText(text);
 	}
 
@@ -121,12 +121,12 @@ public class TextButton extends Button {
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
 		/** Optional. */
-		@Nullable public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		@Null public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
 
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable  Drawable checked, @Nullable BitmapFont font) {
+		public TextButtonStyle (@Null Drawable up, @Null Drawable down, @Null  Drawable checked, @Null BitmapFont font) {
 			super(up, down, checked);
 			this.font = font;
 		}

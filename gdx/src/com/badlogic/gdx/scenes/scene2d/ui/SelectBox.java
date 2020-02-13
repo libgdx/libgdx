@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.annotation.Nullable;
+import com.badlogic.gdx.annotation.Null;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -261,13 +261,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}. */
-	@Nullable
+	@Null
 	public T getSelected () {
 		return selection.first();
 	}
 
 	/** Sets the selection to only the passed item, if it is a possible choice, else selects the first item. */
-	public void setSelected (@Nullable T item) {
+	public void setSelected (@Null T item) {
 		if (items.contains(item, false)) {
 			assert item != null;
 			selection.set(item);
@@ -389,7 +389,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			});
 
 			addListener(new InputListener() {
-				public void exit (InputEvent event, float x, float y, int pointer, @Nullable Actor toActor) {
+				public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 					if (toActor == null || !isAscendantOf(toActor)) {
 						T selected = list.getSelected();
 						assert selected != null;
@@ -527,18 +527,18 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		@Nullable public Color disabledFontColor;
+		@Null public Color disabledFontColor;
 		/** Optional. */
-		@Nullable public Drawable background;
+		@Null public Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;
 		/** Optional. */
-		@Nullable public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
+		@Null public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
 
 		public SelectBoxStyle () {
 		}
 
-		public SelectBoxStyle (BitmapFont font, Color fontColor, @Nullable Drawable background,
+		public SelectBoxStyle (BitmapFont font, Color fontColor, @Null Drawable background,
 			ScrollPaneStyle scrollStyle, ListStyle listStyle) {
 			this.font = font;
 			this.fontColor.set(fontColor);
