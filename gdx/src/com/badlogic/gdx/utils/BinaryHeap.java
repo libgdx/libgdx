@@ -176,7 +176,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			} else {
 				if (rightValue == value || (rightValue > value ^ isMaxHeap)) break;
 				nodes[index] = rightNode;
-				rightNode.index = index;
+				if (rightNode != null) rightNode.index = index;
 				index = rightIndex;
 			}
 		}

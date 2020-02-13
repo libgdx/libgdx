@@ -237,17 +237,18 @@ public class Window extends Table {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
-		if (stage != null && stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+		if (stage != null) {
+			if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
-		keepWithinStage();
+			keepWithinStage();
 
-		if (style.stageBackground != null) {
-			stageToLocalCoordinates(tmpPosition.set(0, 0));
-			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
-				getY() + tmpSize.y);
+			if (style.stageBackground != null) {
+				stageToLocalCoordinates(tmpPosition.set(0, 0));
+				stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
+				drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+					getY() + tmpSize.y);
+			}
 		}
-
 		super.draw(batch, parentAlpha);
 	}
 
@@ -271,7 +272,7 @@ public class Window extends Table {
 	}
 
 	@Null
-    public Actor hit (float x, float y, boolean touchable) {
+	public Actor hit (float x, float y, boolean touchable) {
 		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
