@@ -34,7 +34,6 @@ public class AlphaAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		assert color != null;
 		if (percent == 0)
 			color.a = start;
 		else if (percent == 1)

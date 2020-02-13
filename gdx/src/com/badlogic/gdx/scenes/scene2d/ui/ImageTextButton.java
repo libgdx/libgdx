@@ -122,9 +122,7 @@ public class ImageTextButton extends Button {
 	}
 
 	public Cell getImageCell () {
-		Cell cell = getCell(image);
-		assert cell != null;
-		return cell;
+		return getCell(image);
 	}
 
 	public void setLabel (Label label) {
@@ -137,9 +135,7 @@ public class ImageTextButton extends Button {
 	}
 
 	public Cell getLabelCell () {
-		Cell cell = getCell(label);
-		assert cell != null;
-		return cell;
+		return getCell(label);
 	}
 
 	public void setText (CharSequence text) {

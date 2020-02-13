@@ -280,14 +280,12 @@ public class List<T> extends Widget implements Cullable {
 	/** Sets the selection to only the passed item, if it is a possible choice.
 	 * @param item May be null. */
 	public void setSelected (@Null T item) {
-		if (items.contains(item, false)) {
-			assert item != null;
+		if (items.contains(item, false))
 			selection.set(item);
-		} else if (selection.getRequired() && items.size > 0) {
+		else if (selection.getRequired() && items.size > 0)
 			selection.set(items.first());
-		} else {
+		else
 			selection.clear();
-		}
 	}
 
 	/** @return The index of the first selected item. The top item has an index of 0. Nothing selected has an index of -1. */
@@ -442,8 +440,7 @@ public class List<T> extends Widget implements Cullable {
 		public ListStyle () {
 		}
 
-		public ListStyle (BitmapFont font, Color fontColorSelected,
-						  Color fontColorUnselected, Drawable selection) {
+		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, Drawable selection) {
 			this.font = font;
 			this.fontColorSelected.set(fontColorSelected);
 			this.fontColorUnselected.set(fontColorUnselected);

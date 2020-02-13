@@ -118,7 +118,6 @@ abstract public class Value {
 	static public Value percentWidth (final float percent) {
 		return new Value() {
 			public float get (@Null Actor actor) {
-				assert actor != null;
 				return actor.getWidth() * percent;
 			}
 		};
@@ -128,7 +127,6 @@ abstract public class Value {
 	static public Value percentHeight (final float percent) {
 		return new Value() {
 			public float get (@Null Actor actor) {
-				assert actor != null;
 				return actor.getHeight() * percent;
 			}
 		};

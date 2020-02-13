@@ -37,7 +37,6 @@ public class ColorAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		assert color != null;
 		if (percent == 0)
 			color.set(startR, startG, startB, startA);
 		else if (percent == 1)

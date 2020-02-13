@@ -1286,7 +1286,6 @@ public class Table extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public Value backgroundTop = new Value() {
 		public float get (@Null Actor context) {
-			assert context != null;
 			Drawable background = ((Table)context).background;
 			return background == null ? 0 : background.getTopHeight();
 		}
@@ -1296,7 +1295,6 @@ public class Table extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public Value backgroundLeft = new Value() {
 		public float get (@Null Actor context) {
-			assert context != null;
 			Drawable background = ((Table)context).background;
 			return background == null ? 0 : background.getLeftWidth();
 		}
@@ -1306,7 +1304,6 @@ public class Table extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public Value backgroundBottom = new Value() {
 		public float get (@Null Actor context) {
-			assert context != null;
 			Drawable background = ((Table)context).background;
 			return background == null ? 0 : background.getBottomHeight();
 		}
@@ -1316,7 +1313,6 @@ public class Table extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public Value backgroundRight = new Value() {
 		public float get (@Null Actor context) {
-			assert context != null;
 			Drawable background = ((Table)context).background;
 			return background == null ? 0 : background.getRightWidth();
 		}

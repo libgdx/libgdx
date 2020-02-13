@@ -94,9 +94,7 @@ public class TextButton extends Button {
 	}
 
 	public Cell<Label> getLabelCell () {
-		Cell cell = getCell(label);
-		assert cell != null;
-		return cell;
+		return getCell(label);
 	}
 
 	public void setText (@Null String text) {

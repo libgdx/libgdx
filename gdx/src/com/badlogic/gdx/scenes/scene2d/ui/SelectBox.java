@@ -268,14 +268,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Sets the selection to only the passed item, if it is a possible choice, else selects the first item. */
 	public void setSelected (@Null T item) {
-		if (items.contains(item, false)) {
-			assert item != null;
+		if (items.contains(item, false))
 			selection.set(item);
-		} else if (items.size > 0) {
+		else if (items.size > 0)
 			selection.set(items.first());
-		} else {
+		else
 			selection.clear();
-		}
 	}
 
 	/** @return The index of the first selected item. The top item has an index of 0. Nothing selected has an index of -1. */
@@ -365,7 +363,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setScrollingDisabled(true, false);
 
 			list = new List<T>(selectBox.style.listStyle) {
-                public String toString (T obj) {
+				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
 			};
@@ -375,9 +373,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list.addListener(new ClickListener() {
 				public void clicked (InputEvent event, float x, float y) {
-					T selected = list.getSelected();
-					assert selected != null;
-					selectBox.selection.choose(selected);
+					selectBox.selection.choose(list.getSelected());
 					hide();
 				}
 
@@ -391,9 +387,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			addListener(new InputListener() {
 				public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 					if (toActor == null || !isAscendantOf(toActor)) {
-						T selected = list.getSelected();
-						assert selected != null;
-						list.selection.set(selected);
+						list.selection.set(list.getSelected());
 					}
 				}
 			});
@@ -402,9 +396,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					Actor target = event.getTarget();
 					if (isAscendantOf(target)) return false;
-					T selected = list.getSelected();
-					assert selected != null;
-					list.selection.set(selected);
+					list.selection.set(list.getSelected());
 					hide();
 					return false;
 				}
@@ -412,9 +404,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				public boolean keyDown (InputEvent event, int keycode) {
 					switch (keycode) {
 					case Keys.ENTER:
-						T selected = list.getSelected();
-						assert selected != null;
-						selectBox.selection.choose(selected);
+						selectBox.selection.choose(list.getSelected());
 						// Fall thru.
 					case Keys.ESCAPE:
 						hide();
@@ -474,9 +464,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 			stage.setScrollFocus(this);
 
-			T selected = selectBox.getSelected();
-			assert selected != null;
-			list.selection.set(selected);
+			list.selection.set(selectBox.getSelected());
 			list.setTouchable(Touchable.enabled);
 			clearActions();
 			selectBox.onShow(this, below);
@@ -538,8 +526,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public SelectBoxStyle () {
 		}
 
-		public SelectBoxStyle (BitmapFont font, Color fontColor, @Null Drawable background,
-			ScrollPaneStyle scrollStyle, ListStyle listStyle) {
+		public SelectBoxStyle (BitmapFont font, Color fontColor, @Null Drawable background, ScrollPaneStyle scrollStyle,
+			ListStyle listStyle) {
 			this.font = font;
 			this.fontColor.set(fontColor);
 			this.background = background;

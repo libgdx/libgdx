@@ -98,9 +98,7 @@ public class ImageButton extends Button {
 	}
 
 	public Cell getImageCell () {
-		Cell cell = getCell(image);
-		assert cell != null;
-		return cell;
+		return getCell(image);
 	}
 
 	public String toString () {
