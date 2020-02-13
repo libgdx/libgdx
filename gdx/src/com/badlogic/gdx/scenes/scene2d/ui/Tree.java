@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.annotation.Null;
 
 /** A tree widget where each node has an icon, actor, and child nodes.
  * <p>
@@ -129,7 +130,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				setOverNode(getNodeAt(y));
 			}
 
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+			public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
 				if (toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
 			}
@@ -345,6 +346,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
+	@Null
 	public N getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
@@ -384,17 +386,19 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the first selected node, or null. */
+    @Null
 	public N getSelectedNode () {
 		return selection.first();
 	}
 
 	/** Returns the first selected value, or null. */
+	@Null
 	public V getSelectedValue () {
 		N node = selection.first();
 		return node == null ? null : (V)node.getValue();
 	}
 
-	public TreeStyle getStyle () {
+    public TreeStyle getStyle () {
 		return style;
 	}
 
@@ -416,18 +420,20 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
+	@Null
 	public N getOverNode () {
 		return overNode;
 	}
 
 	/** @return May be null. */
+	@Null
 	public V getOverValue () {
 		if (overNode == null) return null;
 		return (V)overNode.getValue();
 	}
 
 	/** @param overNode May be null. */
-	public void setOverNode (N overNode) {
+	public void setOverNode (@Null N overNode) {
 		this.overNode = overNode;
 	}
 
@@ -502,6 +508,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the node with the specified value, or null. */
+    @Null
 	public N findNode (V value) {
 		if (value == null) throw new IllegalArgumentException("value cannot be null.");
 		return (N)findNode(rootNodes, value);
@@ -680,6 +687,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 		/** Returns the tree this node's actor is currently in, or null. The actor is only in the tree when all of its parent nodes
 		 * are expanded. */
+		@Null
 		public Tree<N, V> getTree () {
 			Group parent = actor.getParent();
 			if (parent instanceof Tree) return (Tree)parent;
@@ -731,24 +739,27 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** @return May be null. */
+		@Null
 		public N getParent () {
 			return parent;
 		}
 
 		/** Sets an icon that will be drawn to the left of the actor. */
-		public void setIcon (Drawable icon) {
+		public void setIcon (@Null Drawable icon) {
 			this.icon = icon;
 		}
 
+		@Null
 		public V getValue () {
 			return value;
 		}
 
 		/** Sets an application specific value for this node. */
-		public void setValue (V value) {
+		public void setValue (@Null V value) {
 			this.value = value;
 		}
 
+		@Null
 		public Drawable getIcon () {
 			return icon;
 		}
@@ -764,6 +775,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** Returns this node or the child node with the specified value, or null. */
+		@Null
 		public N findNode (V value) {
 			if (value == null) throw new IllegalArgumentException("value cannot be null.");
 			if (value.equals(this.value)) return (N)this;
@@ -847,13 +859,13 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	static public class TreeStyle {
 		public Drawable plus, minus;
 		/** Optional. */
-		public Drawable plusOver, minusOver;
-		public Drawable over, selection, background;
+		@Null public Drawable plusOver, minusOver;
+        @Null public Drawable over, selection, background;
 
 		public TreeStyle () {
 		}
 
-		public TreeStyle (Drawable plus, Drawable minus, Drawable selection) {
+		public TreeStyle (Drawable plus, Drawable minus, @Null Drawable selection) {
 			this.plus = plus;
 			this.minus = minus;
 			this.selection = selection;

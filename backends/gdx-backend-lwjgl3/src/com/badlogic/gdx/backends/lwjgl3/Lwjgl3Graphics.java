@@ -36,8 +36,8 @@ import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
-	private final Lwjgl3Window window;
-	private GL20 gl20;
+	final Lwjgl3Window window;
+	GL20 gl20;
 	private GL30 gl30;
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
@@ -99,7 +99,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		return window;
 	}
 
-	private void updateFramebufferInfo() {
+	void updateFramebufferInfo() {
 		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		this.backBufferWidth = tmpBuffer.get(0);
 		this.backBufferHeight = tmpBuffer2.get(0);

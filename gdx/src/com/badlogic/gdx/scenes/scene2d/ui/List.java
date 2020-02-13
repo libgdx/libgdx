@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.annotation.Null;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -271,13 +272,14 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Returns the first selected item, or null. */
+	@Null
 	public T getSelected () {
 		return selection.first();
 	}
 
 	/** Sets the selection to only the passed item, if it is a possible choice.
 	 * @param item May be null. */
-	public void setSelected (T item) {
+	public void setSelected (@Null T item) {
 		if (items.contains(item, false))
 			selection.set(item);
 		else if (selection.getRequired() && items.size > 0)
@@ -315,6 +317,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** @return null if not over an item. */
+	@Null
 	public T getItemAt (float y) {
 		int index = getItemIndexAt(y);
 		if (index == -1) return null;
@@ -399,7 +402,7 @@ public class List<T> extends Widget implements Cullable {
 		return object.toString();
 	}
 
-	public void setCullingArea (Rectangle cullingArea) {
+	public void setCullingArea (@Null Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
@@ -432,7 +435,7 @@ public class List<T> extends Widget implements Cullable {
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
 		/** Optional. */
-		public Drawable down, over, background;
+		@Null public Drawable down, over, background;
 
 		public ListStyle () {
 		}
