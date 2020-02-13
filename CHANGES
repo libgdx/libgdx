@@ -5,6 +5,11 @@
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
 - Fixed AndroidInput crashes due to missing array resize (pressure array).
 - API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
+- API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
+- API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
+- API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
+- Bugfix: TextFields and TextAreas behaving of focus traversal works like intended on all platforms now.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
