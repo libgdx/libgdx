@@ -33,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.annotation.Null;
+import com.badlogic.gdx.utils.Null;
 
 public class DragAndDropTest extends GdxTest {
 	Stage stage;

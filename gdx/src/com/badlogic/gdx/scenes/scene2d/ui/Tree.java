@@ -33,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.annotation.Null;
+import com.badlogic.gdx.utils.Null;
 
 /** A tree widget where each node has an icon, actor, and child nodes.
  * <p>

@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.annotation.Null;
 
 /** A text label, with optional word wrapping.
  * <p>

@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.annotation.Null;
+import com.badlogic.gdx.utils.Null;
 
 /** A listener that shows a tooltip actor when another actor is hovered over with the mouse.
  * @author Nathan Sweet */
