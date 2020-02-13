@@ -294,7 +294,7 @@ public class Button extends Table implements Disableable {
 		/** Optional. */
 		@Null public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
 		/** Optional. */
-		@Null public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}

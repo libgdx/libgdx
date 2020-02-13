@@ -995,7 +995,6 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Returns the defaults to use for all cells. This can be used to avoid needing to set the same defaults for every table (eg,
 	 * for spacing). */
-	@Null
 	static public Cell defaults () {
 		if (files == null || files != Gdx.files) {
 			files = Gdx.files;

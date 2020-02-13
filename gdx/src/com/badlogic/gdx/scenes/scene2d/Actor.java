@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d;
 import static com.badlogic.gdx.utils.Align.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.annotation.Null;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -35,7 +36,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.annotation.Null;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
  * corresponds to the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The
@@ -275,11 +275,9 @@ public class Actor {
 		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
 
-	public void removeAction (@Null Action action) {
-		if (actions.removeValue(action, true)) {
-			assert action != null;
-			action.setActor(null);
-		}
+	public void removeAction (Action action) {
+		if (action == null) throw new IllegalArgumentException("action cannot be null.");
+		if (actions.removeValue(action, true)) action.setActor(null);
 	}
 
 	public Array<Action> getActions () {
