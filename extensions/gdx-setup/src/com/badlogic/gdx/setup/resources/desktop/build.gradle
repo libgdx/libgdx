@@ -28,11 +28,14 @@ task dist(type: Jar) {
     manifest {
         attributes 'Main-Class': project.mainClassName
     }
+    dependsOn configurations.runtimeClasspath
     from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
 }
 
 
 dist.dependsOn classes
+
+eclipse.project.name = appName + "-desktop"

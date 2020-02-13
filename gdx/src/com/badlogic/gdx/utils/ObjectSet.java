@@ -88,8 +88,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		size = set.size;
 	}
 
-	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
-	 * and returns false. */
+	/** Returns true if the key was not already in the set. If this set already contains the key, the set is left unchanged and
+	 * false is returned. */
 	public boolean add (T key) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
 		T[] keyTable = this.keyTable;
@@ -145,14 +145,16 @@ public class ObjectSet<T> implements Iterable<T> {
 		addAll((T[])array.items, offset, length);
 	}
 
-	public void addAll (T... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll (T... array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll (T[] array, int offset, int length) {
+	public boolean addAll (T[] array, int offset, int length) {
 		ensureCapacity(length);
+		int oldSize = size;
 		for (int i = offset, n = i + length; i < n; i++)
 			add(array[i]);
+		return oldSize != size;
 	}
 
 	public void addAll (ObjectSet<T> set) {

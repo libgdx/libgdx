@@ -80,10 +80,10 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 	/** Returns an iterator for the entries in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
-		if (Collections.allocateIterators) return new Entries(this);
+		if (Collections.allocateIterators) return new OrderedMapEntries(this);
 		if (entries1 == null) {
 			entries1 = new OrderedMapEntries(this);
 			entries2 = new OrderedMapEntries(this);
@@ -102,10 +102,10 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
-		if (Collections.allocateIterators) return new Values(this);
+		if (Collections.allocateIterators) return new OrderedMapValues(this);
 		if (values1 == null) {
 			values1 = new OrderedMapValues(this);
 			values2 = new OrderedMapValues(this);
@@ -124,10 +124,10 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
-		if (Collections.allocateIterators) return new Keys(this);
+		if (Collections.allocateIterators) return new OrderedMapKeys(this);
 		if (keys1 == null) {
 			keys1 = new OrderedMapKeys(this);
 			keys2 = new OrderedMapKeys(this);
@@ -219,6 +219,17 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			nextIndex = currentIndex;
 			currentIndex = -1;
 		}
+
+		public Array<K> toArray (Array<K> array) {
+			array.addAll(keys, nextIndex, keys.size - nextIndex);
+			nextIndex = keys.size;
+			hasNext = false;
+			return array;
+		}
+
+		public Array<K> toArray () {
+			return toArray(new Array(true, keys.size - nextIndex));
+		}
 	}
 
 	static public class OrderedMapValues<V> extends Values<V> {
@@ -237,7 +248,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			V value = (V)map.get(keys.get(nextIndex));
+			V value = map.get(keys.get(nextIndex));
 			currentIndex = nextIndex;
 			nextIndex++;
 			hasNext = nextIndex < map.size;
@@ -249,6 +260,22 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			((OrderedMap)map).removeIndex(currentIndex);
 			nextIndex = currentIndex;
 			currentIndex = -1;
+		}
+
+		public Array<V> toArray (Array<V> array) {
+			int n = keys.size;
+			array.ensureCapacity(n - nextIndex);
+			Object[] keys = this.keys.items;
+			for (int i = nextIndex; i < n; i++)
+				array.add(map.get(keys[i]));
+			currentIndex = n - 1;
+			nextIndex = n;
+			hasNext = false;
+			return array;
+		}
+
+		public Array<V> toArray () {
+			return toArray(new Array(true, keys.size - nextIndex));
 		}
 	}
 }

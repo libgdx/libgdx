@@ -797,7 +797,7 @@ public class Actor {
 		return true;
 	}
 
-	/** Returns the z-index of this actor.
+	/** Returns the z-index of this actor, or -1 if the actor is not in a group.
 	 * @see #setZIndex(int) */
 	public int getZIndex () {
 		Group parent = this.parent;
