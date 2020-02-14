@@ -211,7 +211,7 @@ public class TextureArraySpriteBatch implements Batch {
 	}
 
 	/** Returns a new instance of the default shader used by TextureArraySpriteBatch for GL2 when no shader is specified. */
-	static public ShaderProgram createDefaultShader (int maxTextureUnits) {
+	public static ShaderProgram createDefaultShader (int maxTextureUnits) {
 
 		// The texture index is just passed to the fragment shader, maybe there's an more elegant way.
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
@@ -1241,7 +1241,7 @@ public class TextureArraySpriteBatch implements Batch {
 		return currentTextureLFUSize;
 	}
 
-	/** @return The maximum number of textures that the LFU cache can hold. This limit is imposed by the the driver. */
+	/** @return The maximum number of textures that the LFU cache can hold. This limit is imposed by the driver. */
 	public int getTextureLFUCapacity () {
 		return maxTextureUnits;
 	}
