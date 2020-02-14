@@ -5,6 +5,7 @@
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
 - Fixed AndroidInput crashes due to missing array resize (pressure array).
 - API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- Added TextureArraySpriteBatch that batches drawing operations with different textures into one draw call.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
