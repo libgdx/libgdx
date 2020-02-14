@@ -53,7 +53,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	private V zeroValue;
 	private boolean hasZeroValue;
 
-	private float loadFactor;
+	private final float loadFactor;
 	private int threshold;
 	/**
 	 * Used by {@link #place(long)} to bit-shift the upper bits of a {@code long} into a usable range (less than or
@@ -248,14 +248,12 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		final long[] keyTable = this.keyTable;
 		final V[] valueTable = this.valueTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
+				++size;
 				return;
 			}
 		}
@@ -748,7 +746,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 					loc = nl;
 					nl = loc + 1 & mask;
 				}
-				if(loc != currentIndex) --nextIndex;
+				if (loc != currentIndex)
+					--nextIndex;
 				keyTable[loc] = 0;
 				valueTable[loc] = null;
 			}
@@ -758,7 +757,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	static public class Entries<V> extends MapIterator<V> implements Iterable<Entry<V>>, Iterator<Entry<V>> {
-		private Entry<V> entry = new Entry();
+		private final Entry<V> entry = new Entry();
 
 		public Entries (LongMap map) {
 			super(map);

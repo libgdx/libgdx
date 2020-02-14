@@ -49,7 +49,7 @@ public class IntSet {
 	private int[] keyTable;
 	boolean hasZeroValue;
 
-	private float loadFactor;
+	private final float loadFactor;
 	private int shift, mask, threshold;
 
 	private IntSetIterator iterator1, iterator2;
@@ -149,7 +149,7 @@ public class IntSet {
 			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
-				
+
 				if (++size >= threshold) {
 					resize(keyTable.length << 1);
 				}
@@ -205,13 +205,11 @@ public class IntSet {
 
 		final int[] keyTable = this.keyTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
+				++size;
 				return;
 			}
 		}
@@ -342,7 +340,7 @@ public class IntSet {
 		final int[] oldKeyTable = keyTable;
 
 		keyTable = new int[newSize];
-		
+
 		int oldSize = size;
 		size = hasZeroValue ? 1 : 0;
 		if (oldSize > 0) {
@@ -488,7 +486,8 @@ public class IntSet {
 					loc = nl;
 					nl = loc + 1 & mask;
 				}
-				if(loc != currentIndex) --nextIndex;
+				if (loc != currentIndex)
+					--nextIndex;
 				keyTable[loc] = 0;
 			}
 			currentIndex = INDEX_ILLEGAL;

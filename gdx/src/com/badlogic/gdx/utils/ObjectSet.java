@@ -39,7 +39,7 @@ import java.util.NoSuchElementException;
  * Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
-* Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
+ * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
  * quick iteration.
  *
  * @author Tommy Ettinger
@@ -239,15 +239,13 @@ public class ObjectSet<T> implements Iterable<T> {
 	private void addResize (T key) {
 		T[] keyTable = this.keyTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				break;
 			}
 		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		++size;
 	}
 
 	/**
@@ -458,7 +456,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		set.addAll(array);
 		return set;
 	}
-	
+
 	static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K> {
 		public boolean hasNext;
 
@@ -501,7 +499,8 @@ public class ObjectSet<T> implements Iterable<T> {
 				loc = nl;
 				nl = loc + 1 & mask;
 			}
-			if(loc != currentIndex) --nextIndex;
+			if (loc != currentIndex)
+				--nextIndex;
 			keyTable[loc] = null;
 			currentIndex = -1;
 			set.size--;

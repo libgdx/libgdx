@@ -39,7 +39,7 @@ import java.util.NoSuchElementException;
  * Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size.
  * Memory usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
  * <br>
-* Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
+ * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
  * quick iteration.
  *
  * @author Tommy Ettinger
@@ -229,16 +229,14 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 				break;
 			}
 		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		++size;
 	}
 
 	/**
@@ -590,7 +588,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		keys1.valid = false;
 		return keys2;
 	}
-	
+
 	static public class Entry<K, V> {
 		public K key;
 		public V value;
@@ -643,7 +641,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				loc = nl;
 				nl = loc + 1 & mask;
 			}
-			if(loc != currentIndex) --nextIndex;
+			if (loc != currentIndex)
+				--nextIndex;
 			keyTable[loc] = null;
 			valueTable[loc] = null;
 			--map.size;

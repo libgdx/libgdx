@@ -225,16 +225,14 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 				break;
 			}
 		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		++size;
 	}
 
 	/**

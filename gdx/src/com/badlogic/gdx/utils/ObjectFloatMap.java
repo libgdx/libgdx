@@ -193,7 +193,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			throw new IllegalArgumentException("key cannot be null.");
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		
+
 		int b = place(key);
 		int loc = locateKey(key, b);
 		// an identical key already exists
@@ -233,16 +233,14 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		float[] valueTable = this.valueTable;
 
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 				break;
 			}
 		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		++size;
 	}
 
 	/**
@@ -393,7 +391,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 		keyTable = (K[])new Object[newSize];
 		valueTable = new float[newSize];
-		
+
 		int oldSize = size;
 		size = 0;
 		if (oldSize > 0) {
@@ -603,7 +601,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 				loc = nl;
 				nl = loc + 1 & mask;
 			}
-			if(loc != currentIndex) --nextIndex;
+			if (loc != currentIndex)
+				--nextIndex;
 			keyTable[loc] = null;
 			--map.size;
 			currentIndex = -1;
@@ -642,6 +641,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		public Entries<K> iterator () {
 			return this;
 		}
+
 		public void remove () {
 			super.remove();
 		}

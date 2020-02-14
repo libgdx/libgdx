@@ -53,7 +53,7 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 	private int zeroValue;
 	private boolean hasZeroValue;
 
-	private float loadFactor;
+	private final float loadFactor;
 	private int threshold;
 	/**
 	 * Used by {@link #place(int)} to bit-shift the upper bits of a {@code long} into a usable range (less than or
@@ -232,7 +232,7 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 				put(k, valueTable[i]);
 		}
 	}
-	
+
 	/**
 	 * Skips checks for existing keys.
 	 */
@@ -248,14 +248,12 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 		final int[] keyTable = this.keyTable;
 		final int[] valueTable = this.valueTable;
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
+				++size;
 				return;
 			}
 		}
@@ -437,7 +435,7 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 
 		keyTable = new int[newSize];
 		valueTable = new int[newSize];
-		
+
 		int oldSize = size;
 		size = hasZeroValue ? 1 : 0;
 		if (oldSize > 0) {
@@ -686,7 +684,8 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 					loc = nl;
 					nl = loc + 1 & mask;
 				}
-				if(loc != currentIndex) --nextIndex;
+				if (loc != currentIndex)
+					--nextIndex;
 				keyTable[loc] = 0;
 			}
 			currentIndex = INDEX_ILLEGAL;
@@ -695,7 +694,7 @@ public class IntIntMap implements Json.Serializable, Iterable<IntIntMap.Entry> {
 	}
 
 	static public class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry> {
-		private Entry entry = new Entry();
+		private final Entry entry = new Entry();
 
 		public Entries (IntIntMap map) {
 			super(map);

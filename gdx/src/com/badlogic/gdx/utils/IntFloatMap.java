@@ -53,7 +53,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 	private float zeroValue;
 	private boolean hasZeroValue;
 
-	private float loadFactor;
+	private final float loadFactor;
 	private int threshold;
 	/**
 	 * Used by {@link #place(int)} to bit-shift the upper bits of a {@code long} into a usable range (less than or
@@ -248,16 +248,14 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		}
 		final int[] keyTable = this.keyTable;
 		final float[] valueTable = this.valueTable;
-		
+
 		for (int i = place(key); ; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
+			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
-				
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
+
+				++size;
 				return;
 			}
 		}
@@ -690,7 +688,8 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 					loc = nl;
 					nl = loc + 1 & mask;
 				}
-				if(loc != currentIndex) --nextIndex;
+				if (loc != currentIndex)
+					--nextIndex;
 				keyTable[loc] = 0;
 			}
 			currentIndex = INDEX_ILLEGAL;
@@ -699,7 +698,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 	}
 
 	static public class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry> {
-		private Entry entry = new Entry();
+		private final Entry entry = new Entry();
 
 		public Entries (IntFloatMap map) {
 			super(map);
