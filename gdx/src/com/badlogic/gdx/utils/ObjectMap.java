@@ -211,11 +211,6 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return null;
 	}
 
-	//	public void putAll (ObjectMap<K, V> map) {
-//		ensureCapacity(map.size);
-//		for (Entry<K, V> entry : map)
-//			put(entry.key, entry.value);
-//	}
 	public void putAll (ObjectMap<K, V> map) {
 		ensureCapacity(map.size);
 		final K[] keyTable = map.keyTable;
@@ -472,9 +467,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public boolean equalsIdentity (Object obj) {
 		if (obj == this)
 			return true;
-		if (!(obj instanceof IdentityMap))
+		if (!(obj instanceof ObjectMap))
 			return false;
-		IdentityMap other = (IdentityMap)obj;
+		ObjectMap other = (ObjectMap)obj;
 		if (other.size != size)
 			return false;
 		K[] keyTable = this.keyTable;

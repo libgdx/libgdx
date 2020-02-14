@@ -232,10 +232,6 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 				put(k, valueTable[i]);
 		}
 	}
-	// the old version; I think the new way avoids a little work
-//	   ensureCapacity(map.size);
-//		for (Entry<? extends V> entry : map.entries())
-//			put(entry.key, entry.value);
 
 	/**
 	 * Skips checks for existing keys.

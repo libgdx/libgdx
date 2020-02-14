@@ -233,10 +233,6 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 				put(k, valueTable[i]);
 		}
 	}
-	// the old version; I think the new way avoids a little work
-//	   ensureCapacity(map.size);
-//		for (Entry entry : map.entries())
-//			put(entry.key, entry.value);
 
 	/**
 	 * Skips checks for existing keys.

@@ -224,10 +224,6 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 				put(k, valueTable[i]);
 		}
 	}
-//		ensureCapacity(map.size);
-//		for (Entry<K> entry : map)
-//			put(entry.key, entry.value);
-//	}
 
 	/**
 	 * Skips checks for existing keys.

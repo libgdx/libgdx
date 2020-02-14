@@ -231,8 +231,6 @@ public class ObjectSet<T> implements Iterable<T> {
 			if ((t = keyTable[i]) != null)
 				add(t);
 		}
-//		for (T key : set)
-//			add(key);
 	}
 
 	/**

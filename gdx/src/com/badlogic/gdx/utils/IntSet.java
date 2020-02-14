@@ -190,10 +190,6 @@ public class IntSet {
 				add(k);
 		}
 
-//		ensureCapacity(set.size);
-//		IntSetIterator iterator = set.iterator();
-//		while (iterator.hasNext)
-//			add(iterator.next());
 	}
 
 	/**
