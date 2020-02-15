@@ -57,19 +57,19 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).start();
 	}
 
-	/** Resets the effect so it can be started again like a new effect. Any changes to 
-	 * scale are reverted. See {@link #reset(boolean)}.*/
+	/** Resets the effect so it can be started again like a new effect. Any changes to scale are reverted. See
+	 * {@link #reset(boolean)}. */
 	public void reset () {
 		reset(true);
 	}
-	
+
 	/** Resets the effect so it can be started again like a new effect.
-	 * @param resetScaling Whether to restore the original size and motion parameters if they were scaled. Repeated scaling
-	 * and resetting may introduce error. */
-	public void reset (boolean resetScaling){
+	 * @param resetScaling Whether to restore the original size and motion parameters if they were scaled. Repeated scaling and
+	 *           resetting may introduce error. */
+	public void reset (boolean resetScaling) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).reset();
-		if (resetScaling && (xSizeScale != 1f || ySizeScale != 1f || motionScale != 1f)){
+		if (resetScaling && (xSizeScale != 1f || ySizeScale != 1f || motionScale != 1f)) {
 			scaleEffect(1f / xSizeScale, 1f / ySizeScale, 1f / motionScale);
 			xSizeScale = ySizeScale = motionScale = 1f;
 		}
@@ -140,9 +140,7 @@ public class ParticleEffect implements Disposable {
 		return null;
 	}
 
-	/**
-	 * Allocates all emitters particles. See {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#preFillParticlesPool()}
-	 */
+	/** Allocates all emitters particles. See {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#preAllocateParticles()} */
 	public void preAllocateParticles () {
 		for (ParticleEmitter emitter : emitters) {
 			emitter.preAllocateParticles();
@@ -271,7 +269,7 @@ public class ParticleEffect implements Disposable {
 	public void scaleEffect (float scaleFactor) {
 		scaleEffect(scaleFactor, scaleFactor, scaleFactor);
 	}
-	
+
 	/** Permanently scales all the size and motion parameters of all the emitters in this effect. If this effect originated from a
 	 * {@link ParticleEffectPool}, the scale will be reset when it is returned to the pool. */
 	public void scaleEffect (float scaleFactor, float motionScaleFactor) {

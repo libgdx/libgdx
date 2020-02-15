@@ -98,7 +98,6 @@ abstract public class Pool<T> {
 	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times.
-	 *
 	 * @see #free(Object) */
 	public void freeAll (Array<T> objects) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
