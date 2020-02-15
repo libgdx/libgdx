@@ -236,14 +236,11 @@ public class BitmapFontWriter {
 
 		buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
 
-		int padLeft = 0, padRight = 0, padTop = 0, padX = 0, padY = 0;
-		if (info != null) {
-			padTop = info.padding.up;
-			padLeft = info.padding.left;
-			padRight = info.padding.right;
-			padX = padLeft + padRight;
-			padY = info.padding.up + info.padding.down;
-		}
+		int padTop = info.padding.up;
+		int padLeft = info.padding.left;
+		int padRight = info.padding.right;
+		int padX = padLeft + padRight;
+		int padY = info.padding.up + info.padding.down;
 
 		// CHAR definitions
 		for (int i = 0; i < glyphs.size; i++) {

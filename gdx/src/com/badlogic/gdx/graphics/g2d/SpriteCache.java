@@ -125,12 +125,12 @@ public class SpriteCache implements Disposable {
 			short[] indices = new short[length];
 			short j = 0;
 			for (int i = 0; i < length; i += 6, j += 4) {
-				indices[i + 0] = (short)j;
+				indices[i + 0] = j;
 				indices[i + 1] = (short)(j + 1);
 				indices[i + 2] = (short)(j + 2);
 				indices[i + 3] = (short)(j + 2);
 				indices[i + 4] = (short)(j + 3);
-				indices[i + 5] = (short)j;
+				indices[i + 5] = j;
 			}
 			mesh.setIndices(indices);
 		}

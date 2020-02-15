@@ -18,7 +18,7 @@ android {
     }
     defaultConfig {
         applicationId "%PACKAGE%"
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion %API_LEVEL%
         versionCode 1
         versionName "1.0"
@@ -88,3 +88,5 @@ task run(type: Exec) {
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', '%PACKAGE%/%PACKAGE%.AndroidLauncher'
 }
+
+eclipse.project.name = appName + "-android"

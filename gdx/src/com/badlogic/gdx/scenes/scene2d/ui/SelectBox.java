@@ -39,6 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -168,7 +169,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return items;
 	}
 
-	@Override
 	public void layout () {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
@@ -189,20 +189,20 @@ public class SelectBox<T> extends Widget implements Disableable {
 		layoutPool.free(layout);
 
 		prefWidth = maxItemWidth;
-		if (bg != null) prefWidth += bg.getLeftWidth() + bg.getRightWidth();
+		if (bg != null) prefWidth = Math.max(prefWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
 		float listWidth = maxItemWidth + listStyle.selection.getLeftWidth() + listStyle.selection.getRightWidth();
-		if (scrollStyle.background != null)
-			listWidth += scrollStyle.background.getLeftWidth() + scrollStyle.background.getRightWidth();
-		if (selectBoxList == null || !selectBoxList.disableY)
+		bg = scrollStyle.background;
+		if (bg != null) listWidth = Math.max(listWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
+		if (selectBoxList == null || !selectBoxList.disableY) {
 			listWidth += Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
 				style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0);
+		}
 		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
@@ -261,12 +261,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}. */
+	@Null
 	public T getSelected () {
 		return selection.first();
 	}
 
 	/** Sets the selection to only the passed item, if it is a possible choice, else selects the first item. */
-	public void setSelected (T item) {
+	public void setSelected (@Null T item) {
 		if (items.contains(item, false))
 			selection.set(item);
 		else if (items.size > 0)
@@ -362,7 +363,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setScrollingDisabled(true, false);
 
 			list = new List<T>(selectBox.style.listStyle) {
-				@Override
 				public String toString (T obj) {
 					return selectBox.toString(obj);
 				}
@@ -385,8 +385,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			});
 
 			addListener(new InputListener() {
-				public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-					if (toActor == null || !isAscendantOf(toActor)) list.selection.set(selectBox.getSelected());
+				public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
+					if (toActor == null || !isAscendantOf(toActor)) {
+						list.selection.set(list.getSelected());
+					}
 				}
 			});
 
@@ -394,7 +396,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					Actor target = event.getTarget();
 					if (isAscendantOf(target)) return false;
-					list.selection.set(selectBox.getSelected());
+					list.selection.set(list.getSelected());
 					hide();
 					return false;
 				}
@@ -513,18 +515,18 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		public Color disabledFontColor;
+		@Null public Color disabledFontColor;
 		/** Optional. */
-		public Drawable background;
+		@Null public Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;
 		/** Optional. */
-		public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
+		@Null public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
 
 		public SelectBoxStyle () {
 		}
 
-		public SelectBoxStyle (BitmapFont font, Color fontColor, Drawable background, ScrollPaneStyle scrollStyle,
+		public SelectBoxStyle (BitmapFont font, Color fontColor, @Null Drawable background, ScrollPaneStyle scrollStyle,
 			ListStyle listStyle) {
 			this.font = font;
 			this.fontColor.set(fontColor);

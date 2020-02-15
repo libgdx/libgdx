@@ -124,6 +124,7 @@ public abstract class Viewport {
 		return worldCoords;
 	}
 
+
 	public Camera getCamera () {
 		return camera;
 	}
