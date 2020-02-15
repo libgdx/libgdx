@@ -10,6 +10,7 @@
 - API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
 - API Change: Actor#removeAction no longer accepts null.
 - API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
+- API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
