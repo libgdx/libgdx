@@ -1,3 +1,16 @@
+[1.9.11]
+- Update to MobiVM 2.3.8
+- Update to LWJGL 3.2.3
+- API Change: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
+- API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
+- Fixed AndroidInput crashes due to missing array resize (pressure array).
+- API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide; this helps resistance against malicious users who can choose problematic names
+- API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this
+- API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
+- API Change: Actor#removeAction no longer accepts null.
+- API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
+
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
 - API Addition: Accelerometer support on GWT
@@ -34,6 +47,8 @@
 - API Addition: Support for InstancedRendering via Mesh
 - API Change: Cell#setLayout renamed to setTable.
 - API Addition: Added Collections#allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
+- API Addition: Added Group#removeActorAt(int,boolean) to avoid looking up the actor index. Subclasses intending to take action when an actor is removed may need to override this new method.
+- API Change: If Group#addActorAfter is called with an afterActor not in the group, the actor is added as the last child (not the first).
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker

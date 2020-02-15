@@ -268,14 +268,9 @@ public class GdxSetupUI extends JFrame {
 					}
 				}, ui.settings.getGradleArgs());
 				log("Done!");
-				if (ui.settings.getGradleArgs().contains("eclipse") || ui.settings.getGradleArgs().contains("idea")) {
-					log("To import in Eclipse: File -> Import -> General -> Existing Projects into Workspace");
-					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
-				} else {
-					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-					log("To import to Intellij IDEA: File -> Open -> build.gradle");
-					log("To import to NetBeans: File -> Open Project...");
-				}
+				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
+				log("To import to Intellij IDEA: File -> Open -> build.gradle");
+				log("To import to NetBeans: File -> Open Project...");
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {

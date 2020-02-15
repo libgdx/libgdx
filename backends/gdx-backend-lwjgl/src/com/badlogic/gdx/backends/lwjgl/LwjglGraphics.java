@@ -447,6 +447,26 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	@Override
+	public int getSafeInsetLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return 0;
+	}
+
+	@Override
 	public boolean setFullscreenMode (DisplayMode displayMode) {
 		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;
 		try {

@@ -147,7 +147,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 * 
 	 * @see <a href=
 	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
-	 *      LWJGL OSX ContextAttribs note
+	 *      LWJGL OSX ContextAttribs note</a>
 	 * 
 	 * @param useGL30
 	 *            whether to use OpenGL ES 3.0

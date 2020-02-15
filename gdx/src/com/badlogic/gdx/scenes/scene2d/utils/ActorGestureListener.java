@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.Null;
 
 /** Detects tap, long press, fling, pan, zoom, and pinch gestures on an actor. If there is only a need to detect tap, use
  * {@link ClickListener}.
@@ -69,6 +70,12 @@ public class ActorGestureListener implements EventListener {
 				deltaY = tmpCoords.y;
 				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
 				ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
+				return true;
+			}
+
+			public boolean panStop (float stageX, float stageY, int pointer, int button) {
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.panStop(event, tmpCoords.x, tmpCoords.y, pointer, button);
 				return true;
 			}
 
@@ -148,16 +155,21 @@ public class ActorGestureListener implements EventListener {
 	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
 
+    public void panStop (InputEvent event, float x, float y, int pointer, int button) {
+    }
+
 	public void zoom (InputEvent event, float initialDistance, float distance) {
 	}
 
-	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2,
+					   Vector2 pointer1, Vector2 pointer2) {
 	}
 
 	public GestureDetector getGestureDetector () {
 		return detector;
 	}
 
+	@Null
 	public Actor getTouchDownTarget () {
 		return touchDownTarget;
 	}

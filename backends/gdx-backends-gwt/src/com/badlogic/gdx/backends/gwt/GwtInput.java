@@ -588,8 +588,9 @@ public class GwtInput implements Input {
 			hasFocus = true;
 			this.justTouched = true;
 			this.touched[0] = true;
-			this.pressedButtons.add(getButton(e.getButton()));
-			justPressedButtons[e.getButton()] = true;
+			final int button = getButton(e.getButton());
+			this.pressedButtons.add(button);
+			justPressedButtons[button] = true;
 			this.deltaX[0] = 0;
 			this.deltaY[0] = 0;
 			if (isCursorCatched()) {
