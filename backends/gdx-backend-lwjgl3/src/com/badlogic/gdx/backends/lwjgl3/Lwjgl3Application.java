@@ -55,7 +55,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Application implements Application {
 	private final Lwjgl3ApplicationConfiguration config;
-	private final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
+	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	private Audio audio;
 	private final Files files;
@@ -390,7 +390,7 @@ public class Lwjgl3Application implements Application {
 		return window;
 	}
 
-	private void createWindow(Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext) {
+	void createWindow(Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		window.create(windowHandle);
 		window.setVisible(config.initialVisible);
