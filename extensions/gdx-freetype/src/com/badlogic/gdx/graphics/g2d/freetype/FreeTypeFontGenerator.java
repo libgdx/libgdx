@@ -165,12 +165,14 @@ public class FreeTypeFontGenerator implements Disposable {
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
 	}
-	
-	/** Create a new {@link BitmapFont} instance for inject customized {@link BitmapFont} (ex. support RTL fonts). */
-	protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+
+	/** Called by generateFont to create a new {@link BitmapFont} instance. This allows injecting a customized {@link BitmapFont},
+	 * eg for a RTL font.
+	 * @see BitmapFont#BitmapFont(BitmapFontData, Array, boolean) */
+	protected BitmapFont newBitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
 		return new BitmapFont(data, pageRegions, integer);
 	}
-	
+
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
 	public int scaleForPixelHeight (int height) {
