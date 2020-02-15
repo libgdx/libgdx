@@ -147,7 +147,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	public void addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+		addAll(array.items, offset, length);
 	}
 
 	public boolean addAll (T... array) {

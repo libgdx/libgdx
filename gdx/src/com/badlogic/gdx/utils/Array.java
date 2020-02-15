@@ -91,7 +91,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public Array (boolean ordered, T[] array, int start, int count) {
-		this(ordered, count, (Class)array.getClass().getComponentType());
+		this(ordered, count, array.getClass().getComponentType());
 		size = count;
 		System.arraycopy(array, start, items, 0, size);
 	}
@@ -136,7 +136,7 @@ public class Array<T> implements Iterable<T> {
 	public void addAll (Array<? extends T> array, int start, int count) {
 		if (start + count > array.size)
 			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
-		addAll((T[])array.items, start, count);
+		addAll(array.items, start, count);
 	}
 
 	public void addAll (T... array) {
@@ -279,7 +279,7 @@ public class Array<T> implements Iterable<T> {
 	public T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		T[] items = this.items;
-		T value = (T)items[index];
+		T value = items[index];
 		size--;
 		if (ordered)
 			System.arraycopy(items, index + 1, items, index, size - index);

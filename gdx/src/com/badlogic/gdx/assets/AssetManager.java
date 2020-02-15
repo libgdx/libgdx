@@ -673,11 +673,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		float fractionalLoaded = (float)loaded;
+		float fractionalLoaded = loaded;
 		if (peakTasks > 0) {
 			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
 		}
-		return Math.min(1, fractionalLoaded / (float)toLoad);
+		return Math.min(1, fractionalLoaded / toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
