@@ -659,7 +659,7 @@ public class BitmapFont implements Disposable {
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
-					spaceGlyph.id = (int)' ';
+					spaceGlyph.id = ' ';
 					Glyph xadvanceGlyph = getGlyph('l');
 					if (xadvanceGlyph == null) xadvanceGlyph = getFirstGlyph();
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;

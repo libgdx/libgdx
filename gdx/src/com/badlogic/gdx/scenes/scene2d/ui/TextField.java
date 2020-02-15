@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -90,8 +91,8 @@ public class TextField extends Widget implements Disableable {
 	protected CharSequence displayText;
 	Clipboard clipboard;
 	InputListener inputListener;
-	TextFieldListener listener;
-	TextFieldFilter filter;
+	@Null TextFieldListener listener;
+	@Null TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	boolean focusTraversal = true, onlyFontChars = true, disabled;
 	private int textHAlign = Align.left;
@@ -126,15 +127,15 @@ public class TextField extends Widget implements Disableable {
 	final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
-	public TextField (String text, Skin skin) {
+	public TextField (@Null String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
 
-	public TextField (String text, Skin skin, String styleName) {
+	public TextField (@Null String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, TextFieldStyle.class));
 	}
 
-	public TextField (String text, TextFieldStyle style) {
+	public TextField (@Null String text, TextFieldStyle style) {
 		setStyle(style);
 		clipboard = Gdx.app.getClipboard();
 		initialize();
@@ -291,6 +292,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
+	@Null
 	private Drawable getBackgroundDrawable () {
 		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
@@ -358,7 +360,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	protected float getTextY (BitmapFont font, Drawable background) {
+	protected float getTextY (BitmapFont font, @Null Drawable background) {
 		float height = getHeight();
 		float textY = textHeight / 2 + font.getDescent();
 		if (background != null) {
@@ -374,7 +376,7 @@ public class TextField extends Widget implements Disableable {
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
 		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
-			textHeight);
+				textHeight);
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
@@ -387,8 +389,8 @@ public class TextField extends Widget implements Disableable {
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		cursorPatch.draw(batch,
-			x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
-			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
+				x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
+				y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
@@ -458,7 +460,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	void paste (String content, boolean fireChangeEvent) {
+	void paste (@Null String content, boolean fireChangeEvent) {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
@@ -536,7 +538,9 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
-	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
+	@Null
+	private TextField findNextTextField (Array<Actor> actors, @Null TextField best,
+		Vector2 bestCoords, Vector2 currentCoords,
 		boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
@@ -565,15 +569,16 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @param listener May be null. */
-	public void setTextFieldListener (TextFieldListener listener) {
+	public void setTextFieldListener (@Null TextFieldListener listener) {
 		this.listener = listener;
 	}
 
 	/** @param filter May be null. */
-	public void setTextFieldFilter (TextFieldFilter filter) {
+	public void setTextFieldFilter (@Null TextFieldFilter filter) {
 		this.filter = filter;
 	}
 
+	@Null
 	public TextFieldFilter getTextFieldFilter () {
 		return filter;
 	}
@@ -584,18 +589,19 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
+	@Null
 	public String getMessageText () {
 		return messageText;
 	}
 
 	/** Sets the text that will be drawn in the text field if no text has been entered.
 	 * @param messageText may be null. */
-	public void setMessageText (String messageText) {
+	public void setMessageText (@Null String messageText) {
 		this.messageText = messageText;
 	}
 
 	/** @param str If null, "" is used. */
-	public void appendText (String str) {
+	public void appendText (@Null String str) {
 		if (str == null) str = "";
 
 		clearSelection();
@@ -604,7 +610,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @param str If null, "" is used. */
-	public void setText (String str) {
+	public void setText (@Null String str) {
 		if (str == null) str = "";
 		if (str.equals(text)) return;
 
@@ -623,7 +629,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** @param oldText May be null.
 	 * @return True if the text was changed. */
-	boolean changeText (String oldText, String newText) {
+	boolean changeText (String oldText, @Null String newText) {
 		if (newText.equals(oldText)) return false;
 		text = newText;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -1091,18 +1097,19 @@ public class TextField extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor;
 		/** Optional. */
-		public Color focusedFontColor, disabledFontColor;
+		@Null public Color focusedFontColor, disabledFontColor;
 		/** Optional. */
-		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
+		@Null public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */
-		public BitmapFont messageFont;
+		@Null public BitmapFont messageFont;
 		/** Optional. */
-		public Color messageFontColor;
+		@Null public Color messageFontColor;
 
 		public TextFieldStyle () {
 		}
 
-		public TextFieldStyle (BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background) {
+		public TextFieldStyle (BitmapFont font, Color fontColor, @Null Drawable cursor,
+			@Null Drawable selection, @Null Drawable background) {
 			this.background = background;
 			this.cursor = cursor;
 			this.font = font;

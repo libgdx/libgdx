@@ -5,6 +5,11 @@
 - API Change: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
 - Fixed AndroidInput crashes due to missing array resize (pressure array).
 - API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide; this helps resistance against malicious users who can choose problematic names
+- API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this
+- API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
+- API Change: Actor#removeAction no longer accepts null.
+- API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
 - API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
 - API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
 - API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
