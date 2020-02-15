@@ -22,25 +22,20 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/** An unordered map where the keys are unboxed ints and values are objects. This implementation uses linear probing with the
- * backward-shift algorithm for removal, and finds space for keys using Fibonacci hashing instead of the more-common power-of-two
- * mask. Null keys are not allowed. No allocation is done except when growing the table size.
+/** An unordered map where the keys are unboxed ints and values are objects. No allocation is done except when growing the table
+ * size.
  * <p>
- * This map uses Fibonacci hashing to help distribute what may be very bad hashCode() results across the whole capacity. See
- * <a href=
+ * This class performs fast contains and remove (typically O(1), worst case O(n) but that is rare in practice). Add may be
+ * slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce collisions and the need to resize. Load factors
+ * greater than 0.91 greatly increase the chances to resize to the next higher POT size.
+ * <p>
+ * Unordered sets and maps are not designed to provide especially fast iteration. Iteration is faster with OrderedSet and
+ * OrderedMap.
+ * <p>
+ * This implementation uses linear probing with the backward shift algorithm for removal. Hashcodes are rehashed using Fibonacci
+ * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
- * Skarupke's blog post</a> for more information on Fibonacci hashing. It uses linear probing to resolve collisions, which is far
- * from the academically optimal algorithm, but performs considerably better in practice than most alternatives, and combined with
- * Fibonacci hashing, it can handle "normal" generated hashCode() implementations, and not just theoretically optimal hashing
- * functions. Even if all hashCode()s this is given collide, it will still work, just slowly; the older libGDX implementation
- * using cuckoo hashing would crash with an OutOfMemoryError with under 50 collisions.
- * <p>
- * This map performs very fast contains and remove (typically O(1), worst case O(n) due to occasional probing, but still very
- * fast). Add may be a bit slower, depending on hash collisions, but this data structure is somewhat collision-resistant. Load
- * factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size. Memory usage is
- * excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
- * <p>
- * Iteration won't be as fast here as with OrderedSet and OrderedMap.
+ * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
  * @author Tommy Ettinger
  * @author Nathan Sweet */
 public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
@@ -55,21 +50,20 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 	private final float loadFactor;
 	private int threshold;
 
-	/** Used by {@link #place(int)} to bit-shift the upper bits of a {@code long} into a usable range (less than or equal to
-	 * {@link #mask}, greater than or equal to 0). If you're setting it in a subclass, this shift can be negative, which is a
-	 * convenient way to match the number of bits in mask; if mask is a 7-bit number, then a shift of -7 will correctly shift the
-	 * upper 7 bits into the lowest 7 positions. If using what this class sets, shift will be greater than 32 and less than 64; if
-	 * you use this shift with an int, it will still correctly move the upper bits of an int to the lower bits, thanks to Java's
-	 * implicit modulus on shifts.
+	/** Used by {@link #place(int)} to bit shift the upper bits of a {@code long} into a usable range (&gt;= 0 and &lt;=
+	 * {@link #mask}). The shift can be negative, which is convenient to match the number of bits in mask: if mask is a 7-bit
+	 * number, a shift of -7 shifts the upper 7 bits into the lowest 7 positions. This class sets the shift &gt; 32 and &lt; 64,
+	 * which if used with an int will still move the upper bits of an int to the lower bits due to Java's implicit modulus on
+	 * shifts.
 	 * <p>
-	 * You can also use {@link #mask} to mask the low bits of a number, which may be faster for some hashCode()s, if you
-	 * reimplement {@link #place(int)}. */
-	private int shift;
+	 * {@link #mask} can also be used to mask the low bits of a number, which may be faster for some hashcodes, if
+	 * {@link #place(int)} is overridden. */
+	protected int shift;
 
-	/** The bitmask used to contain hashCode()s to the indices that can be fit into the key array this uses. This should always be
-	 * all-1-bits in its low positions; that is, it must be a power of two minus 1. If you subclass and change {@link #place(int)},
-	 * you may want to use this instead of {@link #shift} to isolate usable bits of a hash. */
-	int mask;
+	/** A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
+	 * minus 1. If {@link #place(int)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
+	 * hash. */
+	protected int mask;
 
 	private Entries entries1, entries2;
 	private Values values1, values2;
@@ -117,26 +111,21 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		hasZeroValue = map.hasZeroValue;
 	}
 
-	/** Finds an array index between 0 and {@link #mask}, both inclusive, corresponding to the hash code of {@code item}. By
-	 * default, this uses "Fibonacci Hashing" on the int {@code item} directly; this multiplies {@code item} by a long constant (2
-	 * to the 64, divided by the golden ratio) and shifts the high-quality uppermost bits into the lowest positions so they can be
-	 * used as array indices. The multiplication by a long may be somewhat slow on GWT, but it will be correct across all platforms
-	 * and won't lose precision. Using Fibonacci Hashing allows even very poor hashCode() implementations, such as those that only
-	 * differ in their upper bits, to work in a hash table without heavy collision rates. It has known problems when all or most
-	 * hashCode()s are multiples of larger Fibonacci numbers; see <a href=
-	 * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">this
-	 * blog post by Malte Skarupke</a> for more details. In the unlikely event that most of your hashCode()s are Fibonacci numbers,
-	 * you can subclass this to change this method, which is a one-liner in this form:
-	 * {@code return (int) (item * 0x9E3779B97F4A7C15L >>> shift);}
+	/** Returns an index >= 0 and <= {@link #mask} for the specified {@code item}.
 	 * <p>
-	 * This can be overridden by subclasses, which you may want to do if your key type needs special consideration for its hash
-	 * (such as if you can't modify or extend a particular class that has an incorrect hashCode()). Subclasses that don't need the
-	 * collision decrease of Fibonacci Hashing (assuming the keys are well-distributed) may do fine with a simple implementation:
-	 * {@code return (item & mask);}
-	 * @param item a key that this method will use to get a hashed position
-	 * @return an int between 0 and {@link #mask}, both inclusive */
+	 * The default implementation uses Fibonacci hashing on the item's {@link Object#hashCode()}: the hashcode is multiplied by a
+	 * long constant (2 to the 64th, divided by the golden ratio) then the uppermost bits are shifted into the lowest positions to
+	 * obtain an index in the desired range. Multiplication by a long may be slower than int (eg on GWT) but greatly improves
+	 * rehashing, allowing even very poor hashcodes, such as those that only differ in their upper bits, to be used without high
+	 * collision rates. Fibonacci hashing has increased collision rates when all or most hashcodes are multiples of larger
+	 * Fibonacci numbers (see <a href=
+	 * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
+	 * Skarupke's blog post</a>).
+	 * <p>
+	 * This method can be overriden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
+	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
+	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
 	protected int place (int item) {
-		// shift is always greater than 32, less than 64
 		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
 	}
 

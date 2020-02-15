@@ -16,28 +16,20 @@
 
 package com.badlogic.gdx.utils;
 
-/** An unordered map that uses identity comparison for its object keys. This implementation uses linear probing with the
- * backward-shift algorithm for removal, and finds space for keys using Fibonacci hashing instead of the more-common power-of-two
- * mask. Null keys are not allowed. Null values are allowed. No allocation is done except when growing the table size. It uses
- * {@link System#identityHashCode(Object)} to hash keys, which may be slower than the hashCode() on some types that have it
- * already computed, like String; for String keys in particular, identity comparison is a challenge and some other map should be
- * used instead.
+/** An unordered map that uses identity comparison for the object keys. Null keys are not allowed. No allocation is done except
+ * when growing the table size.
  * <p>
- * This map uses Fibonacci hashing to help distribute what may be very bad hashCode() results across the whole capacity. See
- * <a href=
+ * This class performs fast contains and remove (typically O(1), worst case O(n) but that is rare in practice). Add may be
+ * slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce collisions and the need to resize. Load factors
+ * greater than 0.91 greatly increase the chances to resize to the next higher POT size.
+ * <p>
+ * Unordered sets and maps are not designed to provide especially fast iteration. Iteration is faster with OrderedSet and
+ * OrderedMap.
+ * <p>
+ * This implementation uses linear probing with the backward shift algorithm for removal. Hashcodes are rehashed using Fibonacci
+ * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
- * Skarupke's blog post</a> for more information on Fibonacci hashing. It uses linear probing to resolve collisions, which is far
- * from the academically optimal algorithm, but performs considerably better in practice than most alternatives, and combined with
- * Fibonacci hashing, it can handle "normal" generated hashCode() implementations, and not just theoretically optimal hashing
- * functions. Even if all hashCode()s this is given collide, it will still work, just slowly; the older libGDX implementation
- * using cuckoo hashing would crash with an OutOfMemoryError with under 50 collisions.
- * <p>
- * This map performs very fast contains and remove (typically O(1), worst case O(n) due to occasional probing, but still very
- * fast). Add may be a bit slower, depending on hash collisions, but this data structure is somewhat collision-resistant. Load
- * factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size. Memory usage is
- * excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
- * <p>
- * Iteration won't be as fast here as with OrderedSet and OrderedMap.
+ * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
  * @author Tommy Ettinger
  * @author Nathan Sweet */
 public class IdentityMap<K, V> extends ObjectMap<K, V> {

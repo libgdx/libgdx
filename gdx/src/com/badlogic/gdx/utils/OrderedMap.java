@@ -18,28 +18,26 @@ package com.badlogic.gdx.utils;
 
 import java.util.NoSuchElementException;
 
-/** A {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. Iteration over the
- * {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an unordered map. Keys can also be
- * accessed and the order changed using {@link #orderedKeys()}. There is some additional overhead for put and remove. When used
- * for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly reduced by
- * setting {@link Array#ordered} to false for {@link OrderedMap#orderedKeys()}.
+/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. Null keys are not allowed. No
+ * allocation is done except when growing the table size.
  * <p>
- * This map uses Fibonacci hashing to help distribute what may be very bad hashCode() results across the whole capacity. See
- * <a href=
+ * Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an unordered map. Keys
+ * can also be accessed and the order changed using {@link #orderedKeys()}. There is some additional overhead for put and remove.
+ * When used for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly
+ * reduced by setting {@link Array#ordered} to false for {@link OrderedMap#orderedKeys()}.
+ * <p>
+ * This class performs fast contains (typically O(1), worst case O(n) but that is rare in practice). Remove is somewhat slower due
+ * to {@link #orderedKeys()}. Add may be slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce
+ * collisions and the need to resize. Load factors greater than 0.91 greatly increase the chances to resize to the next higher POT
+ * size.
+ * <p>
+ * Unordered sets and maps are not designed to provide especially fast iteration. Iteration is faster with OrderedSet and
+ * OrderedMap.
+ * <p>
+ * This implementation uses linear probing with the backward shift algorithm for removal. Hashcodes are rehashed using Fibonacci
+ * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
- * Skarupke's blog post</a> for more information on Fibonacci hashing. It uses linear probing to resolve collisions, which is far
- * from the academically optimal algorithm, but performs considerably better in practice than most alternatives, and combined with
- * Fibonacci hashing, it can handle "normal" generated hashCode() implementations, and not just theoretically optimal hashing
- * functions. Even if all hashCode()s this is given collide, it will still work, just slowly; the older libGDX implementation
- * using cuckoo hashing would crash with an OutOfMemoryError with under 50 collisions.
- * <p>
- * This map performs very fast contains and remove (typically O(1), worst case O(n) due to moving items in an Array, but still
- * very fast). Add may be a bit slower, depending on hash collisions, but this data structure is somewhat collision-resistant.
- * Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT size. Memory
- * usage is excellent, and the aforementioned collision-resistance helps avoid too much capacity resizing.
- * <p>
- * Iteration should be fast with OrderedSet and OrderedMap, whereas ObjectSet and ObjectMap aren't designed to provide especially
- * quick iteration.
+ * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
  * @author Tommy Ettinger
  * @author Nathan Sweet */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
