@@ -168,6 +168,9 @@ public class CollectionsTest extends GdxTest {
 			}
 			assertEquals(iterationCount, keys.length);
 		}
+
+		invoke("clear", map);
+		assertEquals(map, newInstance(mapClass));
 	}
 
 	private void testEmptyMaps () {
@@ -300,16 +303,16 @@ public class CollectionsTest extends GdxTest {
 	}
 
 	public void create () {
-		testMap(ArrayMap.class, values, valuesWithNulls);
+		testMap(ObjectMap.class, values, valuesWithNulls);
+		testMap(OrderedMap.class, values, valuesWithNulls);
 		testMap(IdentityMap.class, values, valuesWithNulls);
+		testMap(ArrayMap.class, values, valuesWithNulls);
+		testMap(ObjectFloatMap.class, values, floatValues);
+		testMap(ObjectIntMap.class, values, intValues);
 		testMap(IntFloatMap.class, intValues, floatValues);
 		testMap(IntIntMap.class, intValues, intValues);
 		testMap(IntMap.class, intValues, valuesWithNulls);
 		testMap(LongMap.class, longValues, valuesWithNulls);
-		testMap(ObjectFloatMap.class, values, floatValues);
-		testMap(ObjectIntMap.class, values, intValues);
-		testMap(ObjectMap.class, values, valuesWithNulls);
-		testMap(OrderedMap.class, values, valuesWithNulls);
 
 		testEmptyMaps();
 
@@ -323,9 +326,9 @@ public class CollectionsTest extends GdxTest {
 		testArray(ShortArray.class, shortValues);
 		testArray(SnapshotArray.class, values);
 
-		testSet(IntSet.class, intValues);
 		testSet(ObjectSet.class, values);
 		testSet(OrderedSet.class, values);
+		testSet(IntSet.class, intValues);
 
 		testSet(ObjectSet.class, problemValues);
 		testSet(OrderedSet.class, problemValues);

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -344,12 +345,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	public void clear () {
-		K[] keys = this.keys;
-		V[] values = this.values;
-		for (int i = 0, n = size; i < n; i++) {
-			keys[i] = null;
-			values[i] = null;
-		}
+		Arrays.fill(keys, 0, size, null);
+		Arrays.fill(values, 0, size, null);
 		size = 0;
 	}
 
@@ -485,8 +482,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	/** Returns an iterator for the entries in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration.
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 * @see Collections#allocateIterators */
 	public Entries<K, V> entries () {
 		if (Collections.allocateIterators) return new Entries(this);
@@ -508,9 +505,9 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration.
-	 * @see Collections#allocateIterators  */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Values<V> values () {
 		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
@@ -531,8 +528,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link Entries} constructor for nested or multithreaded iteration.
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 * @see Collections#allocateIterators */
 	public Keys<K> keys () {
 		if (Collections.allocateIterators) return new Keys(this);

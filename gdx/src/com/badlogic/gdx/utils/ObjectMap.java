@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -131,113 +132,89 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * implementation: {@code return (item.hashCode() & mask);}
 	 * @param item a key that this method will hash, by default by calling {@link Object#hashCode()} on it; non-null
 	 * @return an int between 0 and {@link #mask}, both inclusive */
-	protected int place (final K item) {
+	protected int place (K item) {
 		// shift is always greater than 32, less than 64
 		return (int)(item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	private int locateKey (final K key) {
-		return locateKey(key, place(key));
-	}
-
-	/** Given a key and its initial placement to try in an array, this finds the actual location of the key in the array if it is
-	 * present, or -1 if the key is not present. This can be overridden if a subclass needs to compare for equality differently
-	 * than just by calling {@link Object#equals(Object)}, but only within the same package.
-	 * @param key a K key that will be checked for equality if a similar-seeming key is found
-	 * @param placement as calculated by {@link #place(Object)}, almost always with {@code place(key)}
-	 * @return the location in the key array of key, if found, or -1 if it was not found. */
-	int locateKey (final K key, final int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == null) {
-				return -1;
-			}
-			if (key.equals(keyTable[i])) {
-				return i;
-			}
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
+	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	int locateKey (K key) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		K[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			K other = keyTable[i];
+			if (other == null) return -(i + 1); // Empty space is available.
+			if (other.equals(key)) return i; // Same key was found.
 		}
 	}
 
 	/** Returns the old value associated with the specified key, or null. */
 	public V put (K key, V value) {
-		if (key == null) throw new IllegalArgumentException("key cannot be null.");
-		K[] keyTable = this.keyTable;
-		V[] valueTable = this.valueTable;
-		int b = place(key);
-		int loc = locateKey(key, b);
-		// an identical key already exists
-		if (loc != -1) {
-			V tv = valueTable[loc];
-			valueTable[loc] = value;
-			return tv;
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			V oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
 		}
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
-			if (keyTable[i] == null) {
-				keyTable[i] = key;
-				valueTable[i] = value;
-				break;
-			}
-		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return null;
 	}
 
-	public void putAll (ObjectMap<K, V> map) {
+	public void putAll (ObjectMap<? extends K, ? extends V> map) {
 		ensureCapacity(map.size);
-		final K[] keyTable = map.keyTable;
-		final V[] valueTable = map.valueTable;
-		K k;
+		K[] keyTable = map.keyTable;
+		V[] valueTable = map.valueTable;
+		K key;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if ((k = keyTable[i]) != null) put(k, valueTable[i]);
+			key = keyTable[i];
+			if (key != null) put(key, valueTable[i]);
 		}
 	}
 
-	/** Skips checks for existing keys. */
+	/** Skips checks for existing keys, doesn't increment size. */
 	private void putResize (K key, V value) {
 		K[] keyTable = this.keyTable;
-		V[] valueTable = this.valueTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				valueTable[i] = value;
-				break;
+				return;
 			}
 		}
-		++size;
 	}
 
 	/** Returns the value for the specified key, or null if the key is not in the map. */
-	public V get (K key) {
-		final int loc = locateKey(key);
-		return loc == -1 ? null : valueTable[loc];
+	public <T extends K> V get (T key) {
+		int i = locateKey(key);
+		return i < 0 ? null : valueTable[i];
 	}
 
 	/** Returns the value for the specified key, or the default value if the key is not in the map. */
 	public V get (K key, V defaultValue) {
-		final int loc = locateKey(key);
-		return loc == -1 ? defaultValue : valueTable[loc];
+		int i = locateKey(key);
+		return i < 0 ? defaultValue : valueTable[i];
 	}
 
 	public V remove (K key) {
-		int loc = locateKey(key);
-		if (loc == -1) {
-			return null;
+		int i = locateKey(key);
+		if (i < 0) return null;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		V oldValue = valueTable[i];
+		int next = i + 1 & mask;
+		while ((key = keyTable[next]) != null && next != place(key)) {
+			keyTable[i] = key;
+			valueTable[i] = valueTable[next];
+			i = next;
+			next = next + 1 & mask;
 		}
-		V oldValue = valueTable[loc];
-		int nl = (loc + 1 & mask);
-		while ((key = keyTable[nl]) != null && nl != place(key)) {
-			keyTable[loc] = key;
-			valueTable[loc] = valueTable[nl];
-			loc = nl;
-			nl = loc + 1 & mask;
-		}
-		keyTable[loc] = null;
-		valueTable[loc] = null;
-		--size;
+		keyTable[i] = null;
+		valueTable[i] = null;
+		size--;
 		return oldValue;
 	}
 
@@ -272,13 +249,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	public void clear () {
 		if (size == 0) return;
-		K[] keyTable = this.keyTable;
-		V[] valueTable = this.valueTable;
-		for (int i = keyTable.length; i > 0;) {
-			keyTable[--i] = null;
-			valueTable[i] = null;
-		}
 		size = 0;
+		Arrays.fill(keyTable, null);
+		Arrays.fill(valueTable, null);
 	}
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
@@ -289,20 +262,20 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return true;
 		} else if (identity) {
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (valueTable[i] == value) return true;
 		} else {
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (value.equals(valueTable[i])) return true;
 		}
 		return false;
 	}
 
 	public boolean containsKey (K key) {
-		return locateKey(key) != -1;
+		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
@@ -313,13 +286,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return keyTable[i];
 		} else if (identity) {
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (valueTable[i] == value) return keyTable[i];
 		} else {
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (value.equals(valueTable[i])) return keyTable[i];
 		}
 		return null;
@@ -344,9 +317,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		keyTable = (K[])new Object[newSize];
 		valueTable = (V[])new Object[newSize];
 
-		int oldSize = size;
-		size = 0;
-		if (oldSize > 0) {
+		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				K key = oldKeyTable[i];
 				if (key != null) putResize(key, oldValueTable[i]);
@@ -362,11 +333,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			K key = keyTable[i];
 			if (key != null) {
 				h ^= key.hashCode();
-
 				V value = valueTable[i];
-				if (value != null) {
-					h += value.hashCode();
-				}
+				if (value != null) h += value.hashCode();
 			}
 		}
 		return h;
@@ -548,7 +516,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			K[] keyTable = map.keyTable;
 			V[] valueTable = map.valueTable;
-			final int mask = map.mask;
+			int mask = map.mask;
 			int loc = currentIndex, nl = (loc + 1 & mask);
 			K key;
 			while ((key = keyTable[nl]) != null && nl != map.place(key)) {

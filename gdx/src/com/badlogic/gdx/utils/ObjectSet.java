@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -123,54 +124,31 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * implementation: {@code return (item.hashCode() & mask);}
 	 * @param item a key that this method will hash, by default by calling {@link Object#hashCode()} on it; non-null
 	 * @return an int between 0 and {@link #mask}, both inclusive */
-	protected int place (final T item) {
+	protected int place (T item) {
 		// shift is always greater than 32, less than 64
 		return (int)(item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	private int locateKey (final T key) {
-
-		return locateKey(key, place(key));
-	}
-
-	/** Given a key and its initial placement to try in an array, this finds the actual location of the key in the array if it is
-	 * present, or -1 if the key is not present. This can be overridden if a subclass needs to compare for equality differently
-	 * than just by calling {@link Object#equals(Object)}, but only within the same package.
-	 * @param key a K key that will be checked for equality if a similar-seeming key is found
-	 * @param placement as calculated by {@link #place(Object)}, almost always with {@code place(key)}
-	 * @return the location in the key array of key, if found, or -1 if it was not found. */
-	int locateKey (final T key, final int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == null) {
-				return -1;
-			}
-			if (key.equals(keyTable[i])) {
-				return i;
-			}
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
+	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	int locateKey (T key) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		T[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			T other = keyTable[i];
+			if (other == null) return -(i + 1); // Empty space is available.
+			if (other.equals(key)) return i; // Same key was found.
 		}
 	}
 
 	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
 	 * and returns false. */
 	public boolean add (T key) {
-		if (key == null) throw new IllegalArgumentException("key cannot be null.");
-		T[] keyTable = this.keyTable;
-		int b = place(key);
-		// an identical key already exists
-		if (locateKey(key, b) != -1) {
-			return false;
-		}
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
-			if (keyTable[i] == null) {
-				keyTable[i] = key;
-				break;
-			}
-		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		int i = locateKey(key);
+		if (i >= 0) return false; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return true;
 	}
 
@@ -198,41 +176,37 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	public void addAll (ObjectSet<T> set) {
 		ensureCapacity(set.size);
-		final T[] keyTable = set.keyTable;
-		T t;
+		T[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if ((t = keyTable[i]) != null) add(t);
+			T key = keyTable[i];
+			if (key != null) add(key);
 		}
 	}
 
-	/** Skips checks for existing keys. */
+	/** Skips checks for existing keys, doesn't increment size. */
 	private void addResize (T key) {
 		T[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			// space is available so we insert and break
 			if (keyTable[i] == null) {
 				keyTable[i] = key;
-				break;
+				return;
 			}
 		}
-		++size;
 	}
 
 	/** Returns true if the key was removed. */
 	public boolean remove (T key) {
-		int loc = locateKey(key);
-		if (loc == -1) {
-			return false;
+		int i = locateKey(key);
+		if (i < 0) return false;
+		T[] keyTable = this.keyTable;
+		int next = i + 1 & mask;
+		while ((key = keyTable[next]) != null && next != place(key)) {
+			keyTable[i] = key;
+			i = next;
+			next = next + 1 & mask;
 		}
-
-		int nl = (loc + 1 & mask);
-		while ((key = keyTable[nl]) != null && nl != place(key)) {
-			keyTable[loc] = key;
-			loc = nl;
-			nl = loc + 1 & mask;
-		}
-		keyTable[loc] = null;
-		--size;
+		keyTable[i] = null;
+		size--;
 		return true;
 	}
 
@@ -271,21 +245,18 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * iteration can be unnecessarily slow. {@link #clear(int)} can be used to reduce the capacity. */
 	public void clear () {
 		if (size == 0) return;
-		T[] keyTable = this.keyTable;
-		for (int i = keyTable.length; i > 0;) {
-			keyTable[--i] = null;
-		}
 		size = 0;
+		Arrays.fill(keyTable, null);
 	}
 
 	public boolean contains (T key) {
-		return locateKey(key) != -1;
+		return locateKey(key) >= 0;
 	}
 
 	/** @return May be null. */
 	public T get (T key) {
-		final int loc = locateKey(key);
-		return loc == -1 ? null : keyTable[loc];
+		int i = locateKey(key);
+		return i < 0 ? null : keyTable[i];
 	}
 
 	public T first () {
@@ -312,9 +283,7 @@ public class ObjectSet<T> implements Iterable<T> {
 
 		keyTable = (T[])(new Object[newSize]);
 
-		int oldSize = size;
-		size = 0;
-		if (oldSize > 0) {
+		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				T key = oldKeyTable[i];
 				if (key != null) addResize(key);
@@ -324,11 +293,9 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	public int hashCode () {
 		int h = size;
-		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if (keyTable[i] != null) {
-				h += keyTable[i].hashCode();
-			}
-		}
+		T[] keyTable = this.keyTable;
+		for (int i = 0, n = keyTable.length; i < n; i++)
+			if (keyTable[i] != null) h += keyTable[i].hashCode();
 		return h;
 	}
 
@@ -427,7 +394,7 @@ public class ObjectSet<T> implements Iterable<T> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 
 			K[] keyTable = set.keyTable;
-			final int mask = set.mask;
+			int mask = set.mask;
 			int loc = currentIndex, nl = (loc + 1 & mask);
 			K key;
 			while ((key = keyTable[nl]) != null && nl != set.place(key)) {

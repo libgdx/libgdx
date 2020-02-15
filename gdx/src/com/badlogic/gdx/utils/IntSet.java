@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -44,11 +45,12 @@ import com.badlogic.gdx.math.MathUtils;
 public class IntSet {
 	public int size;
 
-	private int[] keyTable;
+	int[] keyTable;
 	boolean hasZeroValue;
 
 	private final float loadFactor;
-	private int shift, mask, threshold;
+	int mask;
+	private int shift, threshold;
 
 	private IntSetIterator iterator1, iterator2;
 
@@ -90,24 +92,19 @@ public class IntSet {
 		hasZeroValue = set.hasZeroValue;
 	}
 
-	private int place (final int item) {
+	protected int place (int item) {
 		// shift is always greater than 32, less than 64
 		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	private int locateKey (final int key) {
-		return locateKey(key, place(key));
-	}
-
-	private int locateKey (final int key, final int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return -1;
-			}
-			if (key == (keyTable[i])) {
-				return i;
-			}
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
+	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	private int locateKey (int key) {
+		int[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			int other = keyTable[i];
+			if (other == 0) return -(i + 1); // Empty space is available.
+			if (other == key) return i; // Same key was found.
 		}
 	}
 
@@ -119,26 +116,12 @@ public class IntSet {
 			size++;
 			return true;
 		}
-
-		int b = place(key);
-		int loc = locateKey(key, b);
-		// an identical key already exists
-		if (loc != -1) {
-			return false;
-		}
-		final int[] keyTable = this.keyTable;
-
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break
-			if (keyTable[i] == 0) {
-				keyTable[i] = key;
-
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
-				return true;
-			}
-		}
+		int i = locateKey(key);
+		if (i >= 0) return false; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return true;
 	}
 
 	public void addAll (IntArray array) {
@@ -164,29 +147,19 @@ public class IntSet {
 	public void addAll (IntSet set) {
 		ensureCapacity(set.size);
 		if (set.hasZeroValue) add(0);
-		final int[] keyTable = set.keyTable;
-		int k;
+		int[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if ((k = keyTable[i]) != 0) add(k);
+			int key = keyTable[i];
+			if (key != 0) add(key);
 		}
-
 	}
 
-	/** Skips checks for existing keys. */
+	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
 	private void addResize (int key) {
-		if (key == 0) {
-			if (!hasZeroValue && size++ >= threshold) resize(keyTable.length << 1);
-			hasZeroValue = true;
-			return;
-		}
-
-		final int[] keyTable = this.keyTable;
+		int[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
-
-				++size;
 				return;
 			}
 		}
@@ -201,18 +174,17 @@ public class IntSet {
 			return true;
 		}
 
-		int loc = locateKey(key);
-		if (loc == -1) {
-			return false;
+		int i = locateKey(key);
+		if (i < 0) return false;
+		int[] keyTable = this.keyTable;
+		int next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0 && next != place(key)) {
+			keyTable[i] = key;
+			i = next;
+			next = next + 1 & mask;
 		}
-		int nl = (loc + 1 & mask);
-		while ((key = keyTable[nl]) != 0 && nl != place(key)) {
-			keyTable[loc] = key;
-			loc = nl;
-			nl = loc + 1 & mask;
-		}
-		keyTable[loc] = 0;
-		--size;
+		keyTable[i] = 0;
+		size--;
 		return true;
 	}
 
@@ -248,26 +220,14 @@ public class IntSet {
 
 	public void clear () {
 		if (size == 0) return;
-		final int[] keyTable = this.keyTable;
-		for (int i = keyTable.length; i > 0;) {
-			keyTable[--i] = 0;
-		}
 		size = 0;
+		Arrays.fill(keyTable, 0);
 		hasZeroValue = false;
 	}
 
 	public boolean contains (int key) {
 		if (key == 0) return hasZeroValue;
-		// inlined locateKey()
-		for (int i = (int)(key * 0x9E3779B97F4A7C15L >>> shift);; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return false;
-			}
-			if (key == (keyTable[i])) {
-				return true;
-			}
-		}
+		return locateKey(key) != -1;
 	}
 
 	public int first () {
@@ -292,13 +252,11 @@ public class IntSet {
 		mask = newSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		final int[] oldKeyTable = keyTable;
+		int[] oldKeyTable = keyTable;
 
 		keyTable = new int[newSize];
 
-		int oldSize = size;
-		size = hasZeroValue ? 1 : 0;
-		if (oldSize > 0) {
+		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				int key = oldKeyTable[i];
 				if (key != 0) addResize(key);
@@ -308,11 +266,9 @@ public class IntSet {
 
 	public int hashCode () {
 		int h = size;
-		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if (keyTable[i] != 0) {
-				h += keyTable[i];
-			}
-		}
+		int[] keyTable = this.keyTable;
+		for (int i = 0, n = keyTable.length; i < n; i++)
+			if (keyTable[i] != 0) h += keyTable[i];
 		return h;
 	}
 
@@ -423,7 +379,7 @@ public class IntSet {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
 				int[] keyTable = set.keyTable;
-				final int mask = set.mask;
+				int mask = set.mask;
 				int loc = currentIndex, nl = (loc + 1 & mask), key;
 				while ((key = keyTable[nl]) != 0 && nl != set.place(key)) {
 					keyTable[loc] = key;

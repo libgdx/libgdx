@@ -623,7 +623,6 @@ public class Json {
 				writeObjectEnd();
 				return;
 			}
-
 			if (value instanceof IntSet) {
 				if (knownType == null) knownType = IntSet.class;
 				writeObjectStart(actualType, knownType);

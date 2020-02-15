@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -42,14 +43,14 @@ import com.badlogic.gdx.math.MathUtils;
  * Iteration won't be as fast here as with OrderedSet and OrderedMap.
  * @author Tommy Ettinger
  * @author Nathan Sweet */
-public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entry> {
+public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	public int size;
 
-	private int[] keyTable;
-	private float[] valueTable;
+	int[] keyTable;
+	float[] valueTable;
 
-	private float zeroValue;
-	private boolean hasZeroValue;
+	float zeroValue;
+	boolean hasZeroValue;
 
 	private final float loadFactor;
 	private int threshold;
@@ -68,7 +69,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 	/** The bitmask used to contain hashCode()s to the indices that can be fit into the key array this uses. This should always be
 	 * all-1-bits in its low positions; that is, it must be a power of two minus 1. If you subclass and change {@link #place(int)},
 	 * you may want to use this instead of {@link #shift} to isolate usable bits of a hash. */
-	private int mask;
+	int mask;
 
 	private Entries entries1, entries2;
 	private Values values1, values2;
@@ -134,34 +135,22 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 	 * {@code return (item & mask);}
 	 * @param item a key that this method will use to get a hashed position
 	 * @return an int between 0 and {@link #mask}, both inclusive */
-	private int place (final int item) {
+	protected int place (int item) {
 		// shift is always greater than 32, less than 64
 		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	private int locateKey (final int key) {
-		return locateKey(key, place(key));
-	}
-
-	/** Given a key and its initial placement to try in an array, this finds the actual location of the key in the array if it is
-	 * present, or -1 if the key is not present. This can be overridden if a subclass needs to compare for equality differently
-	 * than just by using == with int keys, but only within the same package.
-	 * @param key a K key that will be checked for equality if a similar-seeming key is found
-	 * @param placement as calculated by {@link #place(int)}, almost always with {@code place(key)}
-	 * @return the location in the key array of key, if found, or -1 if it was not found. */
-	private int locateKey (final int key, final int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return -1;
-			}
-			if (key == (keyTable[i])) {
-				return i;
-			}
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
+	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	private int locateKey (int key) {
+		int[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			int other = keyTable[i];
+			if (other == 0) return -(i + 1); // Empty space is available.
+			if (other == key) return i; // Same key was found.
 		}
 	}
 
-	/** Doesn't return a value, unlike other maps. */
 	public void put (int key, float value) {
 		if (key == 0) {
 			zeroValue = value;
@@ -171,125 +160,95 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 			}
 			return;
 		}
-
-		int b = place(key);
-		int loc = locateKey(key, b);
-		// an identical key already exists
-		if (loc != -1) {
-			valueTable[loc] = value;
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			valueTable[i] = value;
 			return;
 		}
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
-
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break
-			if (keyTable[i] == 0) {
-				keyTable[i] = key;
-				valueTable[i] = value;
-
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
-				return;
-			}
-		}
-		// never reached
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
 	public void putAll (IntFloatMap map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);
-		final int[] keyTable = map.keyTable;
-		final float[] valueTable = map.valueTable;
-		int k;
+		int[] keyTable = map.keyTable;
+		float[] valueTable = map.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if ((k = keyTable[i]) != 0) put(k, valueTable[i]);
+			int key = keyTable[i];
+			if (key != 0) put(key, valueTable[i]);
 		}
 	}
 
-	/** Skips checks for existing keys. */
+	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
 	private void putResize (int key, float value) {
-		if (key == 0) {
-			zeroValue = value;
-			if (!hasZeroValue) {
-				hasZeroValue = true;
-				size++;
-			}
-			return;
-		}
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
-
+		int[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
-
-				++size;
 				return;
 			}
 		}
 	}
 
 	public float get (int key, float defaultValue) {
-		if (key == 0) {
-			if (!hasZeroValue) return defaultValue;
-			return zeroValue;
-		}
-		final int placement = place(key);
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return defaultValue;
-			}
-			if (key == (keyTable[i])) {
-				return valueTable[i];
-			}
-		}
+		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
+		int i = locateKey(key);
+		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
 	/** Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
-	 * put into the map. */
+	 * put into the map and defaultValue is returned. */
 	public float getAndIncrement (int key, int defaultValue, int increment) {
-		final int loc = locateKey(key);
-		// key was not found
-		if (loc == -1) {
-			// because we know there's no existing duplicate key, we can use putResize().
-			putResize(key, defaultValue + increment);
-			return defaultValue;
+		if (key == 0) {
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				zeroValue = defaultValue + increment;
+				size++;
+				return defaultValue;
+			}
+			float oldValue = zeroValue;
+			zeroValue += increment;
+			return oldValue;
 		}
-		final float oldValue = valueTable[loc];
-		valueTable[loc] += increment;
-		return oldValue;
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			float oldValue = valueTable[i];
+			valueTable[i] += increment;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = defaultValue + increment;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public float remove (int key, float defaultValue) {
 		if (key == 0) {
 			if (!hasZeroValue) return defaultValue;
-			float oldValue = zeroValue;
 			hasZeroValue = false;
 			size--;
-			return oldValue;
+			return zeroValue;
 		}
 
-		int loc = locateKey(key);
-		if (loc == -1) {
-			return defaultValue;
+		int i = locateKey(key);
+		if (i < 0) return defaultValue;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		float oldValue = valueTable[i];
+		int next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0 && next != place(key)) {
+			keyTable[i] = key;
+			valueTable[i] = valueTable[next];
+			i = next;
+			next = next + 1 & mask;
 		}
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
-		final float oldValue = valueTable[loc];
-		int nl = (loc + 1 & mask);
-		while ((key = keyTable[nl]) != 0 && nl != place(key)) {
-			keyTable[loc] = key;
-			valueTable[loc] = valueTable[nl];
-			loc = nl;
-			nl = loc + 1 & mask;
-		}
-		keyTable[loc] = 0;
-		--size;
+		keyTable[i] = 0;
+		size--;
 		return oldValue;
 	}
 
@@ -325,10 +284,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 
 	public void clear () {
 		if (size == 0) return;
-		final int[] keyTable = this.keyTable;
-		for (int i = keyTable.length; i > 0;) {
-			keyTable[--i] = 0;
-		}
+		Arrays.fill(keyTable, 0);
 		size = 0;
 		hasZeroValue = false;
 	}
@@ -337,25 +293,25 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 	 * be an expensive operation. */
 	public boolean containsValue (int value) {
 		if (hasZeroValue && zeroValue == value) return true;
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
-		for (int i = valueTable.length; i-- > 0;)
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i > 0; i--)
 			if (keyTable[i] != 0 && valueTable[i] == value) return true;
 		return false;
 	}
 
 	public boolean containsKey (int key) {
 		if (key == 0) return hasZeroValue;
-		return locateKey(key) != -1;
+		return locateKey(key) < 0;
 	}
 
-	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
-	 * every value, which may be an expensive operation. */
+	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
+	 * compares every value, which may be an expensive operation. */
 	public int findKey (int value, int notFound) {
 		if (hasZeroValue && zeroValue == value) return 0;
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
-		for (int i = valueTable.length; i-- > 0;) {
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i > 0; i--) {
 			int key = keyTable[i];
 			if (key != 0 && valueTable[i] == value) return key;
 		}
@@ -376,15 +332,13 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		mask = newSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		final int[] oldKeyTable = keyTable;
-		final float[] oldValueTable = valueTable;
+		int[] oldKeyTable = keyTable;
+		float[] oldValueTable = valueTable;
 
 		keyTable = new int[newSize];
 		valueTable = new float[newSize];
 
-		int oldSize = size;
-		size = hasZeroValue ? 1 : 0;
-		if (oldSize > 0) {
+		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				int key = oldKeyTable[i];
 				if (key != 0) putResize(key, oldValueTable[i]);
@@ -394,9 +348,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 
 	public int hashCode () {
 		int h = size;
-		if (hasZeroValue) {
-			h += NumberUtils.floatToRawIntBits(zeroValue);
-		}
+		if (hasZeroValue) h += NumberUtils.floatToRawIntBits(zeroValue);
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
@@ -419,8 +371,8 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		if (hasZeroValue) {
 			if (other.zeroValue != zeroValue) return false;
 		}
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			int key = keyTable[i];
 			if (key != 0) {
@@ -436,8 +388,8 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		if (size == 0) return "[]";
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
 		buffer.append('[');
-		final int[] keyTable = this.keyTable;
-		final float[] valueTable = this.valueTable;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
 		int i = keyTable.length;
 		if (hasZeroValue) {
 			buffer.append("0=");
@@ -534,23 +486,6 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 		return keys2;
 	}
 
-	public void write (Json json) {
-		json.writeArrayStart("entries");
-		for (Entry entry : entries()) {
-			json.writeValue(entry.key, Integer.class);
-			json.writeValue(entry.value, Float.class);
-		}
-		json.writeArrayEnd();
-	}
-
-	public void read (Json json, JsonValue jsonData) {
-		for (JsonValue child = jsonData.get("entries").child; child != null; child = child.next) {
-			int key = child.asInt();
-			float value = (child = child.next).asFloat();
-			put(key, value);
-		}
-	}
-
 	static public class Entry {
 		public int key;
 		public float value;
@@ -603,7 +538,7 @@ public class IntFloatMap implements Json.Serializable, Iterable<IntFloatMap.Entr
 			} else {
 				int[] keyTable = map.keyTable;
 				float[] valueTable = map.valueTable;
-				final int mask = map.mask;
+				int mask = map.mask;
 				int loc = currentIndex, nl = (loc + 1 & mask), key;
 				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {
 					keyTable[loc] = key;

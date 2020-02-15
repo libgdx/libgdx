@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -45,11 +46,11 @@ import com.badlogic.gdx.math.MathUtils;
 public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	public int size;
 
-	private long[] keyTable;
-	private V[] valueTable;
+	long[] keyTable;
+	V[] valueTable;
 
-	private V zeroValue;
-	private boolean hasZeroValue;
+	V zeroValue;
+	boolean hasZeroValue;
 
 	private final float loadFactor;
 	private int threshold;
@@ -68,7 +69,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	/** The bitmask used to contain hashCode()s to the indices that can be fit into the key array this uses. This should always be
 	 * all-1-bits in its low positions; that is, it must be a power of two minus 1. If you subclass and change
 	 * {@link #place(long)}, you may want to use this instead of {@link #shift} to isolate usable bits of a hash. */
-	private int mask;
+	int mask;
 
 	private Entries entries1, entries2;
 	private Values values1, values2;
@@ -133,30 +134,19 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * {@code return ((int)(item ^ item >>> 32) & mask);}
 	 * @param item a key that this method will use to get a hashed position
 	 * @return an int between 0 and {@link #mask}, both inclusive */
-	private int place (final long item) {
+	protected int place (long item) {
 		// shift is always greater than 32, less than 64
 		return (int)((item ^ item >>> 32) * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	private int locateKey (final long key) {
-		return locateKey(key, place(key));
-	}
-
-	/** Given a key and its initial placement to try in an array, this finds the actual location of the key in the array if it is
-	 * present, or -1 if the key is not present. This can be overridden if a subclass needs to compare for equality differently
-	 * than just by using == with int keys, but only within the same package.
-	 * @param key a K key that will be checked for equality if a similar-seeming key is found
-	 * @param placement as calculated by {@link #place(long)}, almost always with {@code place(key)}
-	 * @return the location in the key array of key, if found, or -1 if it was not found. */
-	private int locateKey (final long key, final int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return -1;
-			}
-			if (key == (keyTable[i])) {
-				return i;
-			}
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
+	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	private int locateKey (long key) {
+		long[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			long other = keyTable[i];
+			if (other == 0) return -(i + 1); // Empty space is available.
+			if (other == key) return i; // Same key was found.
 		}
 	}
 
@@ -170,129 +160,77 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			}
 			return oldValue;
 		}
-
-		int b = place(key);
-		int loc = locateKey(key, b);
-		// an identical key already exists
-		if (loc != -1) {
-			V tv = valueTable[loc];
-			valueTable[loc] = value;
-			return tv;
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			V oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
 		}
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
-
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break
-			if (keyTable[i] == 0) {
-				keyTable[i] = key;
-				valueTable[i] = value;
-
-				if (++size >= threshold) {
-					resize(keyTable.length << 1);
-				}
-				return null;
-			}
-		}
-		// never reached
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
 	}
 
 	public void putAll (LongMap<? extends V> map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);
-		final long[] keyTable = map.keyTable;
-		final V[] valueTable = map.valueTable;
-		long k;
+		long[] keyTable = map.keyTable;
+		V[] valueTable = map.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			if ((k = keyTable[i]) != 0) put(k, valueTable[i]);
+			long key = keyTable[i];
+			if (key != 0) put(key, valueTable[i]);
 		}
 	}
 
-	/** Skips checks for existing keys. */
+	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
 	private void putResize (long key, V value) {
-		if (key == 0) {
-			zeroValue = value;
-			if (!hasZeroValue) {
-				hasZeroValue = true;
-				size++;
-			}
-			return;
-		}
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
+		long[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			// space is available so we insert and break
 			if (keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
-
-				++size;
 				return;
 			}
 		}
 	}
 
 	public V get (long key) {
-		if (key == 0) {
-			if (!hasZeroValue) return null;
-			return zeroValue;
-		}
-		final int placement = place(key);
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return null;
-			}
-			if (key == (keyTable[i])) {
-				return valueTable[i];
-			}
-		}
+		if (key == 0) return hasZeroValue ? zeroValue : null;
+		int i = locateKey(key);
+		return i >= 0 ? valueTable[i] : null;
 	}
 
 	public V get (long key, V defaultValue) {
-		if (key == 0) {
-			if (!hasZeroValue) return defaultValue;
-			return zeroValue;
-		}
-		final int placement = place(key);
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == 0) {
-				return defaultValue;
-			}
-			if (key == (keyTable[i])) {
-				return valueTable[i];
-			}
-		}
+		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
+		int i = locateKey(key);
+		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
 	public V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
-			V oldValue = zeroValue;
-			zeroValue = null;
 			hasZeroValue = false;
+			zeroValue = null;
 			size--;
-			return oldValue;
+			return zeroValue;
 		}
 
-		int loc = locateKey(key);
-		if (loc == -1) {
-			return null;
+		int i = locateKey(key);
+		if (i < 0) return null;
+		long[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		V oldValue = valueTable[i];
+		int next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0 && next != place(key)) {
+			keyTable[i] = key;
+			valueTable[i] = valueTable[next];
+			i = next;
+			next = next + 1 & mask;
 		}
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
-		V oldValue = valueTable[loc];
-		int nl = (loc + 1 & mask);
-		while ((key = keyTable[nl]) != 0L && nl != place(key)) {
-			keyTable[loc] = key;
-			valueTable[loc] = valueTable[nl];
-			loc = nl;
-			nl = loc + 1 & mask;
-		}
-		keyTable[loc] = 0L;
-		valueTable[loc] = null;
-		--size;
+		keyTable[i] = 0;
+		size--;
 		return oldValue;
 	}
 
@@ -329,13 +267,9 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	public void clear () {
 		if (size == 0) return;
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
-		for (int i = keyTable.length; i > 0;) {
-			keyTable[--i] = 0;
-			valueTable[i] = null;
-		}
 		size = 0;
+		Arrays.fill(keyTable, 0);
+		Arrays.fill(valueTable, null);
 		zeroValue = null;
 		hasZeroValue = false;
 	}
@@ -345,19 +279,19 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
 	public boolean containsValue (Object value, boolean identity) {
-		final V[] valueTable = this.valueTable;
+		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return true;
 			long[] keyTable = this.keyTable;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (keyTable[i] != 0 && valueTable[i] == null) return true;
 		} else if (identity) {
 			if (value == zeroValue) return true;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (valueTable[i] == value) return true;
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return true;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (value.equals(valueTable[i])) return true;
 		}
 		return false;
@@ -366,7 +300,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	public boolean containsKey (long key) {
 		if (key == 0) return hasZeroValue;
-		return locateKey(key) != -1;
+		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or <tt>notFound</tt> if it is not in the map. Note this traverses the entire map
@@ -374,19 +308,19 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
 	public long findKey (Object value, boolean identity, long notFound) {
-		final V[] valueTable = this.valueTable;
+		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return 0;
 			long[] keyTable = this.keyTable;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (keyTable[i] != 0 && valueTable[i] == null) return keyTable[i];
 		} else if (identity) {
 			if (value == zeroValue) return 0;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (valueTable[i] == value) return keyTable[i];
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return 0;
-			for (int i = valueTable.length; i-- > 0;)
+			for (int i = valueTable.length - 1; i > 0; i--)
 				if (value.equals(valueTable[i])) return keyTable[i];
 		}
 		return notFound;
@@ -406,15 +340,13 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		mask = newSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		final long[] oldKeyTable = keyTable;
-		final V[] oldValueTable = valueTable;
+		long[] oldKeyTable = keyTable;
+		V[] oldValueTable = valueTable;
 
 		keyTable = new long[newSize];
 		valueTable = (V[])new Object[newSize];
 
-		int oldSize = size;
-		size = hasZeroValue ? 1 : 0;
-		if (oldSize > 0) {
+		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
 				long key = oldKeyTable[i];
 				if (key != 0) putResize(key, oldValueTable[i]);
@@ -424,9 +356,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	public int hashCode () {
 		int h = size;
-		if (hasZeroValue && zeroValue != null) {
-			h = zeroValue.hashCode();
-		}
+		if (hasZeroValue && zeroValue != null) h = zeroValue.hashCode();
 		long[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
@@ -434,9 +364,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			if (key != 0) {
 				h ^= key ^ key >>> 32;
 				V value = valueTable[i];
-				if (value != null) {
-					h += value.hashCode();
-				}
+				if (value != null) h += value.hashCode();
 			}
 		}
 		return h;
@@ -455,8 +383,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 				if (!other.zeroValue.equals(zeroValue)) return false;
 			}
 		}
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
+		long[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			long key = keyTable[i];
 			if (key != 0) {
@@ -479,8 +407,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
 		if (hasZeroValue && zeroValue != other.zeroValue) return false;
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
+		long[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			long key = keyTable[i];
 			if (key != 0 && valueTable[i] != other.get(key, ObjectMap.dummy)) return false;
@@ -492,8 +420,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (size == 0) return "[]";
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
 		buffer.append('[');
-		final long[] keyTable = this.keyTable;
-		final V[] valueTable = this.valueTable;
+		long[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
 		int i = keyTable.length;
 		if (hasZeroValue) {
 			buffer.append("0=");
@@ -641,9 +569,9 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			} else if (currentIndex < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
-				final long[] keyTable = map.keyTable;
-				final V[] valueTable = map.valueTable;
-				final int mask = map.mask;
+				long[] keyTable = map.keyTable;
+				V[] valueTable = map.valueTable;
+				int mask = map.mask;
 				int loc = currentIndex, nl = (loc + 1 & mask);
 				long key;
 				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {

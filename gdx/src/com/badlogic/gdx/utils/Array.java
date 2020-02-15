@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -371,9 +372,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void clear () {
-		T[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
-			items[i] = null;
+		Arrays.fill(items, null);
 		size = 0;
 	}
 

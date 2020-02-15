@@ -65,38 +65,26 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	public V put (K key, V value) {
-		if (key == null) throw new IllegalArgumentException("key cannot be null.");
-		V[] valueTable = this.valueTable;
-		int b = place(key);
-		int loc = locateKey(key, b);
-		// an identical key already exists
-		if (loc != -1) {
-			V tv = valueTable[loc];
-			valueTable[loc] = value;
-			return tv;
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			V oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
 		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
 		keys.add(key);
-		K[] keyTable = this.keyTable;
-		for (int i = b;; i = (i + 1) & mask) {
-			// space is available so we insert and break (resize is later)
-			if (keyTable[i] == null) {
-				keyTable[i] = key;
-				valueTable[i] = value;
-				break;
-			}
-		}
-		if (++size >= threshold) {
-			resize(keyTable.length << 1);
-		}
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return null;
 	}
 
-	public void putAll (OrderedMap<K, V> map) {
+	public <T extends K> void putAll (OrderedMap<T, ? extends V> map) {
 		ensureCapacity(map.size);
-		final K[] keys = map.keys.items;
-		K k;
+		K[] keys = map.keys.items;
 		for (int i = 0, n = map.keys.size; i < n; i++) {
-			put((k = keys[i]), map.get(k));
+			K key = keys[i];
+			put(key, map.get((T)key));
 		}
 	}
 
@@ -118,7 +106,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * @return true if {@code before} was removed and {@code after} was added, false otherwise */
 	public boolean alter (K before, K after) {
 		if (containsKey(after)) return false;
-		final int index = keys.indexOf(before, false);
+		int index = keys.indexOf(before, false);
 		if (index == -1) return false;
 		super.put(after, super.remove(before));
 		keys.set(index, after);

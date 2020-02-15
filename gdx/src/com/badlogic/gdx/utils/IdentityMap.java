@@ -41,7 +41,6 @@ package com.badlogic.gdx.utils;
  * @author Tommy Ettinger
  * @author Nathan Sweet */
 public class IdentityMap<K, V> extends ObjectMap<K, V> {
-
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public IdentityMap () {
 		super();
@@ -61,25 +60,21 @@ public class IdentityMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	/** Creates a new map identical to the specified map. */
-	public IdentityMap (IdentityMap<? extends K, ? extends V> map) {
+	public IdentityMap (IdentityMap<K, V> map) {
 		super(map);
 	}
 
-	@Override
 	protected int place (K item) {
 		return (int)(System.identityHashCode(item) * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	@Override
-	int locateKey (K key, int placement) {
-		for (int i = placement;; i = i + 1 & mask) {
-			// empty space is available
-			if (keyTable[i] == null) {
-				return -1;
-			}
-			if (key == (keyTable[i])) {
-				return i;
-			}
+	int locateKey (K key) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		K[] keyTable = this.keyTable;
+		for (int i = place(key);; i = i + 1 & mask) {
+			K other = keyTable[i];
+			if (other == null) return -(i + 1); // Empty space is available.
+			if (other == key) return i; // Same key was found.
 		}
 	}
 }
