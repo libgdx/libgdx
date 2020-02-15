@@ -139,7 +139,8 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
-	public V put (long key, V value) {
+	@Null
+	public V put (long key, @Null V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
@@ -174,7 +175,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
-	private void putResize (long key, V value) {
+	private void putResize (long key, @Null V value) {
 		long[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
 			if (keyTable[i] == 0) {
@@ -185,18 +186,20 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
+	@Null
 	public V get (long key) {
 		if (key == 0) return hasZeroValue ? zeroValue : null;
 		int i = locateKey(key);
 		return i >= 0 ? valueTable[i] : null;
 	}
 
-	public V get (long key, V defaultValue) {
+	public V get (long key, @Null V defaultValue) {
 		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
 		int i = locateKey(key);
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
+	@Null
 	public V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
@@ -267,7 +270,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public boolean containsValue (Object value, boolean identity) {
+	public boolean containsValue (@Null Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return true;
@@ -296,7 +299,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * and compares every value, which may be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public long findKey (Object value, boolean identity, long notFound) {
+	public long findKey (@Null Object value, boolean identity, long notFound) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return 0;
@@ -389,7 +392,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	/** Uses == for comparison of each value. */
-	public boolean equalsIdentity (Object obj) {
+	public boolean equalsIdentity (@Null Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof LongMap)) return false;
 		LongMap other = (LongMap)obj;
@@ -509,7 +512,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	static public class Entry<V> {
 		public long key;
-		public V value;
+		public @Null V value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -626,6 +629,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			return hasNext;
 		}
 
+		@Null
 		public V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");

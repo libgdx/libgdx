@@ -138,7 +138,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the old value associated with the specified key, or null. */
-	public V put (K key, V value) {
+	@Null
+	public V put (K key, @Null V value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			V oldValue = valueTable[i];
@@ -164,7 +165,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Skips checks for existing keys, doesn't increment size. */
-	private void putResize (K key, V value) {
+	private void putResize (K key, @Null V value) {
 		K[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
 			if (keyTable[i] == null) {
@@ -176,17 +177,19 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the value for the specified key, or null if the key is not in the map. */
+	@Null
 	public <T extends K> V get (T key) {
 		int i = locateKey(key);
 		return i < 0 ? null : valueTable[i];
 	}
 
 	/** Returns the value for the specified key, or the default value if the key is not in the map. */
-	public V get (K key, V defaultValue) {
+	public V get (K key, @Null V defaultValue) {
 		int i = locateKey(key);
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
+	@Null
 	public V remove (K key) {
 		int i = locateKey(key);
 		if (i < 0) return null;
@@ -246,7 +249,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public boolean containsValue (Object value, boolean identity) {
+	public boolean containsValue (@Null Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
@@ -270,7 +273,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * every value, which may be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public K findKey (Object value, boolean identity) {
+	public K findKey (@Null Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
@@ -350,7 +353,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Uses == for comparison of each value. */
-	public boolean equalsIdentity (Object obj) {
+	public boolean equalsIdentity (@Null Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof ObjectMap)) return false;
 		ObjectMap other = (ObjectMap)obj;
@@ -464,7 +467,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	static public class Entry<K, V> {
 		public K key;
-		public V value;
+		@Null public V value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -564,6 +567,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return hasNext;
 		}
 
+		@Null
 		public V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");

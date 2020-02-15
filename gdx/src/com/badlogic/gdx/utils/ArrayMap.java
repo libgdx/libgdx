@@ -125,13 +125,15 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	/** Returns the value (which may be null) for the specified key, or null if the key is not in the map. Note this does a
 	 * .equals() comparison of each key in reverse order until the specified key is found. */
+	@Null
 	public V get (K key) {
 		return get(key, null);
 	}
 
 	/** Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. Note this
 	 * does a .equals() comparison of each key in reverse order until the specified key is found. */
-	public V get (K key, V defaultValue) {
+	@Null
+	public V get (K key, @Null V defaultValue) {
 		Object[] keys = this.keys;
 		int i = size - 1;
 		if (key == null) {

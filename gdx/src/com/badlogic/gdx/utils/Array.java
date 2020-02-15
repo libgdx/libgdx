@@ -185,7 +185,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
-	public boolean contains (T value, boolean identity) {
+	public boolean contains (@Null T value, boolean identity) {
 		T[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
@@ -222,7 +222,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of first occurrence of value in array or -1 if no such value exists */
-	public int indexOf (T value, boolean identity) {
+	public int indexOf (@Null T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
@@ -239,7 +239,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of last occurrence of value in array or -1 if no such value exists */
-	public int lastIndexOf (T value, boolean identity) {
+	public int lastIndexOf (@Null T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = size - 1; i >= 0; i--)
@@ -255,7 +255,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
-	public boolean removeValue (T value, boolean identity) {
+	public boolean removeValue (@Null T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++) {
