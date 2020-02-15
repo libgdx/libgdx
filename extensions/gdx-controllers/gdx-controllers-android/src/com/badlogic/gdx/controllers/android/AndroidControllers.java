@@ -191,7 +191,7 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 
 	@Override
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
-		if (!keyEvent.isGamepadButton(keyCode)) {
+		if (!KeyEvent.isGamepadButton(keyCode)) {
 			return false;
 		}
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());

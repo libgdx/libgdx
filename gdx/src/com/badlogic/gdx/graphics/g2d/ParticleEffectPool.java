@@ -28,6 +28,11 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 		this.effect = effect;
 	}
 
+	public ParticleEffectPool (ParticleEffect effect, int initialCapacity, int max, boolean preFill) {
+		super(initialCapacity, max, preFill);
+		this.effect = effect;
+	}
+
 	protected PooledEffect newObject () {
 		PooledEffect pooledEffect = new PooledEffect(effect);
 		pooledEffect.start();

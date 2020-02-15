@@ -61,6 +61,7 @@ public class BuildScriptHelper {
 
 	public static void addAllProjects(BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
+		write(wr, "apply plugin: \"eclipse\"");
 		space(wr);
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
