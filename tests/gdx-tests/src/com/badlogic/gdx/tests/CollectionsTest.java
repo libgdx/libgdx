@@ -57,15 +57,14 @@ public class CollectionsTest extends GdxTest {
 	private Byte[] byteValues = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	private Short[] shortValues = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	private Character[] charValues = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-	
+
 	// 49 String keys that all have the same two hashCode() results
 	// It is extremely easy to generate String keys that have colliding hashCode()s, so we check to make
 	// sure ObjectSet and OrderedSet can tolerate them in case of low-complexity malicious use.
 	// If they can tolerate these problem values, then ObjectMap and others should too.
-	private String[] problemValues = 
-		("21oo 0oq1 0opP 0ooo 0pPo 21pP 21q1 1Poo 1Pq1 1PpP 0q31 0pR1 0q2P 0q1o 232P 231o 2331 0pQP 22QP" 
-			+ " 22Po 22R1 1QQP 1R1o 1QR1 1R2P 1R31 1QPo 1Qup 1S7p 0r8Q 0r7p 0r92 23X2 2492 248Q 247p 22vQ" 
-			+ " 22up 1S92 1S8Q 23WQ 23Vp 22w2 1QvQ 1Qw2 1RVp 1RWQ 1RX2 0qX2").split(" ");
+	private String[] problemValues = ("21oo 0oq1 0opP 0ooo 0pPo 21pP 21q1 1Poo 1Pq1 1PpP 0q31 0pR1 0q2P 0q1o 232P 231o 2331 0pQP 22QP"
+		+ " 22Po 22R1 1QQP 1R1o 1QR1 1R2P 1R31 1QPo 1Qup 1S7p 0r8Q 0r7p 0r92 23X2 2492 248Q 247p 22vQ"
+		+ " 22up 1S92 1S8Q 23WQ 23Vp 22w2 1QvQ 1Qw2 1RVp 1RWQ 1RX2 0qX2").split(" ");
 
 	/** Checks that the two values are equal, and that their hashcodes are equal. */
 	private void assertEquals (Object a, Object b) {
@@ -113,12 +112,12 @@ public class CollectionsTest extends GdxTest {
 		}
 	}
 
-	private Object copy(Object object) {
+	private Object copy (Object object) {
 		try {
 			Constructor theConstructor = null;
 			for (Constructor constructor : ClassReflection.getConstructors(object.getClass())) {
 				if (constructor.getParameterTypes().length == 1
-						&& ClassReflection.isAssignableFrom(constructor.getParameterTypes()[0], object.getClass())) {
+					&& ClassReflection.isAssignableFrom(constructor.getParameterTypes()[0], object.getClass())) {
 					theConstructor = constructor;
 					break;
 				}
@@ -147,7 +146,7 @@ public class CollectionsTest extends GdxTest {
 
 		// perform an iteration test
 		Object anotherMap = copy(map);
-		Iterator it = ((Iterable) anotherMap).iterator();
+		Iterator it = ((Iterable)anotherMap).iterator();
 		int iterationCount = 0;
 		while (it.hasNext()) {
 			Object entry = it.next();
@@ -158,7 +157,7 @@ public class CollectionsTest extends GdxTest {
 		// perform an iteration and remove test for every index
 		for (int i = 0, n = keys.length; i < n; ++i) {
 			anotherMap = copy(map);
-			it = ((Iterable) anotherMap).iterator();
+			it = ((Iterable)anotherMap).iterator();
 			iterationCount = 0;
 			while (it.hasNext()) {
 				Object entry = it.next();
@@ -224,7 +223,8 @@ public class CollectionsTest extends GdxTest {
 			for (int i = 0, n = keys.length; i < n; ++i) {
 				Object anotherMap = copy(map);
 				assertEquals(map, anotherMap);
-				if(((IntMap)map).get(keys[n - 1]) != null) throw new GdxRuntimeException("get() on an impossible key returned non-null");
+				if (((IntMap)map).get(keys[n - 1]) != null)
+					throw new GdxRuntimeException("get() on an impossible key returned non-null");
 				((IntMap)map).put(keys[i], values[i]);
 				((IntMap)otherMap).put(keys[i], values[i]);
 				assertEquals(map, otherMap);
@@ -310,9 +310,9 @@ public class CollectionsTest extends GdxTest {
 		testMap(ObjectIntMap.class, values, intValues);
 		testMap(ObjectMap.class, values, valuesWithNulls);
 		testMap(OrderedMap.class, values, valuesWithNulls);
-		
+
 		testEmptyMaps();
-		
+
 		testArray(Array.class, valuesWithNulls);
 		testArray(BooleanArray.class, new Boolean[] {true, false});
 		testArray(ByteArray.class, byteValues);
