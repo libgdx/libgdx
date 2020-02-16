@@ -14,7 +14,7 @@
 	<!-- should we build natives in release mode -->
 	<property name="release" value="true"/>
 
-	<property name="javacTarget" value="13"/>
+	<property name="javacTarget" value="1.6"/>
 
 	<!-- clean distribution/output directory -->
 	<target name="clean">
@@ -321,7 +321,7 @@
 			]]></header>
 			<bottom><![CDATA[
 				<div style="font-size:9pt"><i>
-				Copyright &copy; 2010-20mv. Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+				Copyright &copy; 2010-2020. Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
 				</i></div>
 			]]></bottom>
 			<fileset dir="gdx/src" defaultexcludes="yes">

@@ -10,6 +10,8 @@
 - API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
 - API Change: Actor#removeAction no longer accepts null.
 - API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
+- API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
+- API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 - API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
 - API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
 - API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.

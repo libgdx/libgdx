@@ -896,6 +896,7 @@ public class JsonValue implements Iterable<JsonValue> {
 			while (true) {
 				if (current.next == null) {
 					current.next = value;
+					value.prev = current;
 					return;
 				}
 				current = current.next;
