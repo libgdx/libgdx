@@ -68,16 +68,20 @@ public class CollectionsTest extends GdxTest {
 
 	/** Checks that the two values are equal, and that their hashcodes are equal. */
 	private void assertEquals (Object a, Object b) {
-		if (!a.equals(b)) throw new GdxRuntimeException("equals() failed: " + a + " != " + b);
-		if (!b.equals(a)) throw new GdxRuntimeException("equals() failed (not symmetric): " + b + " != " + a);
-		if (a.hashCode() != b.hashCode()) throw new GdxRuntimeException("hashCode() failed: " + a + " != " + b);
+		if (!a.equals(b)) throw new GdxRuntimeException(a.getClass().getSimpleName() + " equals() failed:\n" + a + "\n!=\n" + b);
+		if (!b.equals(a))
+			throw new GdxRuntimeException(a.getClass().getSimpleName() + " equals() failed (not symmetric):\n" + b + "\n!=\n" + a);
+		if (a.hashCode() != b.hashCode())
+			throw new GdxRuntimeException(a.getClass().getSimpleName() + " hashCode() failed:\n" + a + "\n!=\n" + b);
 	}
 
 	/** Checks that the two values are not equal, and emits a warning if their hashcodes are equal. */
 	private void assertNotEquals (Object a, Object b) {
-		if (a.equals(b)) throw new GdxRuntimeException("!equals() failed: " + a + " == " + b);
-		if (b.equals(a)) throw new GdxRuntimeException("!equals() failed (not symmetric): " + b + " == " + a);
-		if (a.hashCode() == b.hashCode()) System.out.println("Warning: hashCode() may be incorrect: " + a + " == " + b);
+		if (a.equals(b)) throw new GdxRuntimeException(a.getClass().getSimpleName() + " !equals() failed:\n" + a + "\n==\n" + b);
+		if (b.equals(a))
+			throw new GdxRuntimeException(a.getClass().getSimpleName() + " !equals() failed (not symmetric):\n" + b + "\n==\n" + a);
+		if (a.hashCode() == b.hashCode())
+			System.out.println("Warning: " + a.getClass().getSimpleName() + " hashCode() may be incorrect:\n" + a + "\n==\n" + b);
 	}
 
 	/** Uses reflection to create a new instance of the given type. */
@@ -133,7 +137,7 @@ public class CollectionsTest extends GdxTest {
 		Object map = newInstance(mapClass);
 		Object otherMap = newInstance(mapClass);
 		assertEquals(map, map);
-		for (int i = 0, n = keys.length; i < n; ++i) {
+		for (int i = 0, n = keys.length; i < n; i++) {
 			Object anotherMap = copy(map);
 			assertEquals(map, anotherMap);
 			invoke("put", map, keys[i], values[i]);
@@ -155,7 +159,7 @@ public class CollectionsTest extends GdxTest {
 		assertEquals(iterationCount, keys.length);
 
 		// perform an iteration and remove test for every index
-		for (int i = 0, n = keys.length; i < n; ++i) {
+		for (int i = 0, n = keys.length; i < n; i++) {
 			anotherMap = copy(map);
 			it = ((Iterable)anotherMap).iterator();
 			iterationCount = 0;
@@ -170,7 +174,21 @@ public class CollectionsTest extends GdxTest {
 		}
 
 		invoke("clear", map);
-		assertEquals(map, newInstance(mapClass));
+		otherMap = newInstance(mapClass);
+		assertEquals(map, otherMap);
+
+		int[] clear = {0, 1, 2, 3, keys.length - 1, keys.length, keys.length + 1, 10, 1000};
+		for (int i = 0, n = clear.length; i < n; i++) {
+			for (int ii = 0, nn = keys.length; ii < nn; ii++) {
+				invoke("put", map, keys[ii], values[ii]);
+				invoke("put", otherMap, keys[ii], values[ii]);
+			}
+			assertEquals(map, otherMap);
+
+			invoke("clear", map, clear[i]);
+			otherMap = newInstance(mapClass);
+			assertEquals(map, otherMap);
+		}
 	}
 
 	private void testEmptyMaps () {
@@ -180,7 +198,7 @@ public class CollectionsTest extends GdxTest {
 			Integer[] keys = intValues, values = intValues;
 			Object otherMap = new IntIntMap(0);
 			assertEquals(map, map);
-			for (int i = 0, n = keys.length; i < n; ++i) {
+			for (int i = 0, n = keys.length; i < n; i++) {
 				Object anotherMap = copy(map);
 				assertEquals(map, anotherMap);
 				assertEquals(((IntIntMap)map).get(keys[n - 1], 0), 0);
@@ -203,7 +221,7 @@ public class CollectionsTest extends GdxTest {
 			assertEquals(iterationCount, keys.length);
 
 			// perform an iteration and remove test for every index
-			for (int i = 0, n = keys.length; i < n; ++i) {
+			for (int i = 0, n = keys.length; i < n; i++) {
 				anotherMap = copy(map);
 				it = ((Iterable)anotherMap).iterator();
 				iterationCount = 0;
@@ -223,7 +241,7 @@ public class CollectionsTest extends GdxTest {
 			Integer[] keys = intValues, values = intValues;
 			Object otherMap = new IntMap(0);
 			assertEquals(map, map);
-			for (int i = 0, n = keys.length; i < n; ++i) {
+			for (int i = 0, n = keys.length; i < n; i++) {
 				Object anotherMap = copy(map);
 				assertEquals(map, anotherMap);
 				if (((IntMap)map).get(keys[n - 1]) != null)
@@ -247,7 +265,7 @@ public class CollectionsTest extends GdxTest {
 			assertEquals(iterationCount, keys.length);
 
 			// perform an iteration and remove test for every index
-			for (int i = 0, n = keys.length; i < n; ++i) {
+			for (int i = 0, n = keys.length; i < n; i++) {
 				anotherMap = copy(map);
 				it = ((Iterable)anotherMap).iterator();
 				iterationCount = 0;
@@ -283,10 +301,10 @@ public class CollectionsTest extends GdxTest {
 	private void testSet (Class<?> setClass, Object[] values) {
 		System.out.println(setClass);
 		Object set = newInstance(setClass);
-		for (int i = 0, n = values.length; i < n; ++i)
+		for (int i = 0, n = values.length; i < n; i++)
 			invoke("add", set, values[i]);
 		Object otherSet = newInstance(setClass);
-		for (int i = 0, n = values.length; i < n; ++i)
+		for (int i = 0, n = values.length; i < n; i++)
 			invoke("add", otherSet, values[i]);
 		Object thirdSet = newInstance(setClass);
 		for (int i = 0, n = values.length; i < n; i++)

@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
+import static com.badlogic.gdx.utils.ObjectSet.*;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map where the keys are objects and the values are unboxed ints. Null keys are not allowed. No allocation is done
  * except when growing the table size.
@@ -36,8 +36,8 @@ import com.badlogic.gdx.math.MathUtils;
  * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
  * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
- * @author Tommy Ettinger
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author Tommy Ettinger */
 public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	public int size;
 
@@ -81,25 +81,22 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectIntMap (int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
-		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(Math.max(1, initialCapacity) / loadFactor));
-		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-
 		this.loadFactor = loadFactor;
 
-		threshold = (int)(initialCapacity * loadFactor);
-		mask = initialCapacity - 1;
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int)(tableSize * loadFactor);
+		mask = tableSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		keyTable = (K[])new Object[initialCapacity];
-		valueTable = new int[initialCapacity];
+		keyTable = (K[])new Object[tableSize];
+		valueTable = new int[tableSize];
 	}
 
 	/** Creates a new map identical to the specified map. */
 	public ObjectIntMap (ObjectIntMap<? extends K> map) {
-		this((int)Math.floor(map.keyTable.length * map.loadFactor), map.loadFactor);
+		this((int)(map.keyTable.length * map.loadFactor), map.loadFactor);
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
@@ -221,23 +218,24 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return size == 0;
 	}
 
-	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
+	/** Reduces the size of the backing arrays to be the specified capacity / loadFactor, or less. If the capacity is already less,
+	 * nothing is done. If the map contains more items than the specified capacity, the next highest power of two capacity is used
+	 * instead. */
 	public void shrink (int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
-		if (size > maximumCapacity) maximumCapacity = size;
-		if (keyTable.length <= maximumCapacity) return;
-		resize(MathUtils.nextPowerOfTwo(maximumCapacity));
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity / loadFactor, if they are larger. */
 	public void clear (int maximumCapacity) {
-		if (keyTable.length <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
 		size = 0;
-		resize(maximumCapacity);
+		resize(tableSize);
 	}
 
 	public void clear () {
@@ -273,11 +271,11 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return null;
 	}
 
-	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes. */
+	/** Increases the size of the backing array to accommodate the specified number of additional items / loadFactor. Useful before
+	 * adding many items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	final void resize (int newSize) {
@@ -306,10 +304,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		int[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			K key = keyTable[i];
-			if (key != null) {
-				h ^= key.hashCode();
-				h += valueTable[i];
-			}
+			if (key != null) h += key.hashCode() + valueTable[i];
 		}
 		return h;
 	}
