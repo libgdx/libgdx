@@ -170,8 +170,6 @@ public class TextureArraySpriteBatch implements Batch {
 			ownsShader = false;
 		}
 
-		// System.out.println("Using " + maxTextureUnits + " texture units.");
-
 		usedTextures = new Texture[maxTextureUnits];
 		usedTexturesLFU = new int[maxTextureUnits];
 
@@ -1165,8 +1163,6 @@ public class TextureArraySpriteBatch implements Batch {
 		// If not we have to flush and then throw out the least accessed one.
 		if (currentTextureLFUSize < maxTextureUnits) {
 
-			// System.out.println("Adding new Texture " + textureHandle + " to slot " + currentTextureLFUSize);
-
 			// Put the texture into the next free slot
 			usedTextures[currentTextureLFUSize] = texture;
 
@@ -1182,8 +1178,6 @@ public class TextureArraySpriteBatch implements Batch {
 			if (idx > 0) {
 				flush();
 			}
-
-			// System.out.println("LFU BEFORE: " + Arrays.toString(usedTexturesLFU));
 
 			int slot = 0;
 			int slotVal = usedTexturesLFU[0];
@@ -1217,10 +1211,6 @@ public class TextureArraySpriteBatch implements Batch {
 
 			// Give the new texture a fair (average) chance of staying.
 			usedTexturesLFU[slot] = average;
-
-			// System.out.println("LFU AFTER: " + Arrays.toString(usedTexturesLFU) + " - Swapped: " + slot);
-
-			// System.out.println("Kicking out Texture from slot " + slot + " for texture " + textureHandle);
 
 			usedTextures[slot] = texture;
 
