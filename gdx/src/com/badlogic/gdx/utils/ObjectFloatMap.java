@@ -455,32 +455,32 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 
 		void findNextIndex () {
-			hasNext = false;
 			K[] keyTable = map.keyTable;
 			for (int n = keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != null) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
+			int i = currentIndex;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
 			K[] keyTable = map.keyTable;
 			float[] valueTable = map.valueTable;
-			int mask = map.mask;
-			int loc = currentIndex, nl = (loc + 1 & mask);
+			int mask = map.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[nl]) != null && nl != map.place(key)) {
-				keyTable[loc] = key;
-				valueTable[loc] = valueTable[nl];
-				loc = nl;
-				nl = loc + 1 & mask;
+			while ((key = keyTable[next]) != null && next != map.place(key)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+				next = next + 1 & mask;
 			}
-			if (loc != currentIndex) --nextIndex;
-			keyTable[loc] = null;
-			--map.size;
+			keyTable[i] = null;
+			map.size--;
+			if (i != currentIndex) --nextIndex;
 			currentIndex = -1;
 		}
 	}
@@ -512,11 +512,6 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		public Entries<K> iterator () {
 			return this;
 		}
-
-		public void remove () {
-			super.remove();
-		}
-
 	}
 
 	static public class Values extends MapIterator<Object> {

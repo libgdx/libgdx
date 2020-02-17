@@ -386,7 +386,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the first selected node, or null. */
-    @Null
+	@Null
 	public N getSelectedNode () {
 		return selection.first();
 	}
@@ -398,7 +398,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		return node == null ? null : (V)node.getValue();
 	}
 
-    public TreeStyle getStyle () {
+	public TreeStyle getStyle () {
 		return style;
 	}
 
@@ -508,12 +508,13 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the node with the specified value, or null. */
-    @Null
+	@Null
 	public N findNode (V value) {
 		if (value == null) throw new IllegalArgumentException("value cannot be null.");
 		return (N)findNode(rootNodes, value);
 	}
 
+	@Null
 	static Node findNode (Array<? extends Node> nodes, Object value) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
@@ -860,7 +861,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public Drawable plus, minus;
 		/** Optional. */
 		@Null public Drawable plusOver, minusOver;
-        @Null public Drawable over, selection, background;
+		@Null public Drawable over, selection, background;
 
 		public TreeStyle () {
 		}

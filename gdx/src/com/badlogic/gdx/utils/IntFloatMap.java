@@ -478,7 +478,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	}
 
 	static private class MapIterator {
-		static final int INDEX_ILLEGAL = -2;
+		static private final int INDEX_ILLEGAL = -2;
 		static final int INDEX_ZERO = -1;
 
 		public boolean hasNext;
@@ -502,34 +502,34 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		}
 
 		void findNextIndex () {
-			hasNext = false;
 			int[] keyTable = map.keyTable;
 			for (int n = keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != 0) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex == INDEX_ZERO && map.hasZeroValue) {
+			int i = currentIndex;
+			if (i == INDEX_ZERO && map.hasZeroValue) {
 				map.hasZeroValue = false;
-			} else if (currentIndex < 0) {
+			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
 				int[] keyTable = map.keyTable;
 				float[] valueTable = map.valueTable;
-				int mask = map.mask;
-				int loc = currentIndex, nl = (loc + 1 & mask), key;
-				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {
-					keyTable[loc] = key;
-					valueTable[loc] = valueTable[nl];
-					loc = nl;
-					nl = loc + 1 & mask;
+				int mask = map.mask, next = i + 1 & mask, key;
+				while ((key = keyTable[next]) != 0 && next != map.place(key)) {
+					keyTable[i] = key;
+					valueTable[i] = valueTable[next];
+					i = next;
+					next = next + 1 & mask;
 				}
-				if (loc != currentIndex) --nextIndex;
-				keyTable[loc] = 0;
+				keyTable[i] = 0;
+				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
 			map.size--;

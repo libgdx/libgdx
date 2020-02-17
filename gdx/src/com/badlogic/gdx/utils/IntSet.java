@@ -358,8 +358,7 @@ public class IntSet {
 	}
 
 	static public class IntSetIterator {
-		static final int INDEX_ILLEGAL = -2;
-		static final int INDEX_ZERO = -1;
+		static private final int INDEX_ILLEGAL = -2, INDEX_ZERO = -1;
 
 		public boolean hasNext;
 
@@ -382,32 +381,32 @@ public class IntSet {
 		}
 
 		void findNextIndex () {
-			hasNext = false;
 			int[] keyTable = set.keyTable;
 			for (int n = keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != 0) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex == INDEX_ZERO && set.hasZeroValue) {
+			int i = currentIndex;
+			if (i == INDEX_ZERO && set.hasZeroValue) {
 				set.hasZeroValue = false;
-			} else if (currentIndex < 0) {
+			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
 				int[] keyTable = set.keyTable;
-				int mask = set.mask;
-				int loc = currentIndex, nl = (loc + 1 & mask), key;
-				while ((key = keyTable[nl]) != 0 && nl != set.place(key)) {
-					keyTable[loc] = key;
-					loc = nl;
-					nl = loc + 1 & mask;
+				int mask = set.mask, next = i + 1 & mask, key;
+				while ((key = keyTable[next]) != 0 && next != set.place(key)) {
+					keyTable[i] = key;
+					i = next;
+					next = next + 1 & mask;
 				}
-				if (loc != currentIndex) --nextIndex;
-				keyTable[loc] = 0;
+				keyTable[i] = 0;
+				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
 			set.size--;

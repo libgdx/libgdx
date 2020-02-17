@@ -375,32 +375,31 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 
 		private void findNextIndex () {
-			hasNext = false;
 			K[] keyTable = set.keyTable;
 			for (int n = set.keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != null) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-
+			int i = currentIndex;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
 			K[] keyTable = set.keyTable;
-			int mask = set.mask;
-			int loc = currentIndex, nl = (loc + 1 & mask);
+			int mask = set.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[nl]) != null && nl != set.place(key)) {
-				keyTable[loc] = key;
-				loc = nl;
-				nl = loc + 1 & mask;
+			while ((key = keyTable[next]) != null && next != set.place(key)) {
+				keyTable[i] = key;
+				i = next;
+				next = next + 1 & mask;
 			}
-			if (loc != currentIndex) --nextIndex;
-			keyTable[loc] = null;
-			currentIndex = -1;
+			keyTable[i] = null;
 			set.size--;
+			if (i != currentIndex) --nextIndex;
+			currentIndex = -1;
 		}
 
 		public boolean hasNext () {
