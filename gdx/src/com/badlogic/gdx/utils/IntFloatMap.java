@@ -339,7 +339,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		float[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			int key = keyTable[i];
-			if (key != 0) h += key * 31 + Float.floatToRawIntBits(valueTable[i]);
+			if (key != 0) h += key * 31 + NumberUtils.floatToRawIntBits(valueTable[i]);
 		}
 		return h;
 	}
