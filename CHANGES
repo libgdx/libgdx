@@ -12,6 +12,7 @@
 - API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
 - API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- Fixed changing looping state of already playing sounds on Android by first pausing the sound before setting the looping state (see #5822).
 - Added TextureArraySpriteBatch that batches drawing operations with different textures into one draw call.
 
 [1.9.10]

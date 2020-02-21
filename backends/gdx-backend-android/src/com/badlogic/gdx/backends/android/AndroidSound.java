@@ -111,7 +111,11 @@ final class AndroidSound implements Sound {
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
-		soundPool.setLoop((int)soundId, looping ? -1 : 0);
+		int streamId = (int)soundId;
+
+		soundPool.pause(streamId);
+		soundPool.setLoop(streamId, looping ? -1 : 0);
+		soundPool.resume(streamId);
 	}
 
 	@Override
