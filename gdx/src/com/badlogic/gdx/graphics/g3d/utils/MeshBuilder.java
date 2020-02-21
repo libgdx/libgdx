@@ -459,6 +459,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureRectangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureRectangles (int numRectangles) {
 		ensureVertices(4 * numRectangles);
 		ensureRectangleIndices(numRectangles);
