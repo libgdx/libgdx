@@ -8,7 +8,6 @@
 - API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide; this helps resistance against malicious users who can choose problematic names
 - API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this
 - API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
-- API Change: Actor#removeAction no longer accepts null.
 - API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
 - API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
