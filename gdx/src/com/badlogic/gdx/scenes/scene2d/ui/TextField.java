@@ -375,7 +375,7 @@ public class TextField extends Widget implements Disableable {
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
 		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
-				textHeight);
+			textHeight);
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
@@ -388,8 +388,8 @@ public class TextField extends Widget implements Disableable {
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		cursorPatch.draw(batch,
-				x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
-				y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
+			x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
+			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
@@ -538,8 +538,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** @return May be null. */
 	@Null
-	private TextField findNextTextField (Array<Actor> actors, @Null TextField best,
-		Vector2 bestCoords, Vector2 currentCoords,
+	private TextField findNextTextField (Array<Actor> actors, @Null TextField best, Vector2 bestCoords, Vector2 currentCoords,
 		boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
@@ -626,14 +625,13 @@ public class TextField extends Widget implements Disableable {
 		return text;
 	}
 
-	/** @param oldText May be null.
-	 * @return True if the text was changed. */
-	boolean changeText (String oldText, @Null String newText) {
+	/** @return True if the text was changed. */
+	boolean changeText (String oldText, String newText) {
 		if (newText.equals(oldText)) return false;
 		text = newText;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		boolean cancelled = fire(changeEvent);
-		text = cancelled ? oldText : newText;
+		if (cancelled) text = oldText;
 		Pools.free(changeEvent);
 		return !cancelled;
 	}
@@ -1095,8 +1093,8 @@ public class TextField extends Widget implements Disableable {
 		public TextFieldStyle () {
 		}
 
-		public TextFieldStyle (BitmapFont font, Color fontColor, @Null Drawable cursor,
-			@Null Drawable selection, @Null Drawable background) {
+		public TextFieldStyle (BitmapFont font, Color fontColor, @Null Drawable cursor, @Null Drawable selection,
+			@Null Drawable background) {
 			this.background = background;
 			this.cursor = cursor;
 			this.font = font;

@@ -12,6 +12,7 @@
 - API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 - Fixed changing looping state of already playing sounds on Android by first pausing the sound before setting the looping state (see #5822).
+- API Change: In scene2d TextField, only revert the text if the change event was cancelled. This allows the text to be manipulated in the change listener.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
