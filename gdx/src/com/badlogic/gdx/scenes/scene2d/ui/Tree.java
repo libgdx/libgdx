@@ -149,14 +149,31 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	public void insert (int index, N node) {
-		int existingIndex = rootNodes.indexOf(node, true);
-		if (existingIndex != -1 && existingIndex < index) index--;
-		remove(node);
-		node.parent = null;
+		if (node.parent != null) {
+			node.parent.remove(node);
+			node.parent = null;
+		} else {
+			int existingIndex = rootNodes.indexOf(node, true);
+			if (existingIndex != -1) {
+				if (existingIndex == index) return;
+				if (existingIndex < index) index--;
+				rootNodes.removeIndex(existingIndex);
+				int actorIndex = node.actor.getZIndex();
+				if (actorIndex != -1) node.removeFromTree(this, actorIndex);
+			}
+		}
+
 		rootNodes.insert(index, node);
 
-		int actorIndex = 0;
-		if (rootNodes.size > 1 && index > 0) actorIndex = rootNodes.get(index - 1).actor.getZIndex() + 1;
+		int actorIndex;
+		if (index == 0)
+			actorIndex = 0;
+		else if (index < rootNodes.size - 1)
+			actorIndex = rootNodes.get(index + 1).actor.getZIndex();
+		else {
+			N before = rootNodes.get(index - 1);
+			actorIndex = before.actor.getZIndex() + before.countActors();
+		}
 		node.addToTree(this, actorIndex);
 	}
 
@@ -655,7 +672,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			return count;
 		}
 
-		/** Remove this node from the tree. */
+		/** Remove this node from its parent. */
 		public void remove () {
 			Tree tree = getTree();
 			if (tree != null)
@@ -664,7 +681,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				parent.remove(this);
 		}
 
-		/** Remove the specified child node from the tree. */
+		/** Remove the specified child node from this node. Does nothing if the node is not a child of this node. */
 		public void remove (N node) {
 			if (!children.removeValue(node, true)) return;
 			if (!expanded) return;
@@ -672,8 +689,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (tree != null) node.removeFromTree(tree, node.actor.getZIndex());
 		}
 
-		/** Remove all child nodes from the tree. */
-		public void removeAll () {
+		/** Removes all children from this node. */
+		public void clearChildren () {
 			if (expanded) {
 				Tree tree = getTree();
 				if (tree != null) {
@@ -699,8 +716,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (actor != null) {
 				Tree<N, V> tree = getTree();
 				if (tree != null) {
-					actor.remove();
-					tree.addActor(newActor);
+					int index = actor.getZIndex();
+					tree.removeActorAt(index, true);
+					tree.addActorAt(index, newActor);
 				}
 			}
 			actor = newActor;
