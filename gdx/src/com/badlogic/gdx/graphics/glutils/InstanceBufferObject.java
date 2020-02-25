@@ -255,7 +255,7 @@ public class InstanceBufferObject implements InstanceData {
 				if (location < 0)
 					continue;
 				int unitOffset = +attribute.unit;
-				shader.enableVertexAttribute(location + unitOffset);
+				shader.disableVertexAttribute(location + unitOffset);
 			}
 		}
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
