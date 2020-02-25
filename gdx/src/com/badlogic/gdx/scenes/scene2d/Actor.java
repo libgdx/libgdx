@@ -275,9 +275,8 @@ public class Actor {
 		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
 
-	public void removeAction (Action action) {
-		if (action == null) throw new IllegalArgumentException("action cannot be null.");
-		if (actions.removeValue(action, true)) action.setActor(null);
+	public void removeAction (@Null Action action) {
+		if (action != null && actions.removeValue(action, true)) action.setActor(null);
 	}
 
 	public Array<Action> getActions () {

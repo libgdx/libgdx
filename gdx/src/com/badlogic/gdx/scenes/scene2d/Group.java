@@ -338,7 +338,7 @@ public class Group extends Actor implements Cullable {
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
 	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
 	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
-	 * @return the actor removed from this group or null. */
+	 * @return the actor removed from this group. */
 	public Actor removeActorAt (int index, boolean unfocus) {
 		Actor actor = children.removeIndex(index);
 		if (unfocus) {

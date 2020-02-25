@@ -246,7 +246,7 @@ public class IntSet {
 
 	public boolean contains (int key) {
 		if (key == 0) return hasZeroValue;
-		return locateKey(key) != -1;
+		return locateKey(key) >= 0;
 	}
 
 	public int first () {

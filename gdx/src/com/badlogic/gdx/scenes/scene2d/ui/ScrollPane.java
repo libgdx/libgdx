@@ -711,11 +711,13 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** @deprecated Use {@link #setActor(Actor)}. */
+	@Deprecated
 	public void setWidget (@Null Actor actor) {
 		setActor(actor);
 	}
 
 	/** @deprecated Use {@link #getActor()}. */
+	@Deprecated
 	@Null
 	public Actor getWidget () {
 		return widget;
@@ -723,24 +725,28 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
@@ -1142,8 +1148,8 @@ public class ScrollPane extends WidgetGroup {
 		public ScrollPaneStyle () {
 		}
 
-		public ScrollPaneStyle (@Null Drawable background, @Null Drawable hScroll,
-			@Null Drawable hScrollKnob, @Null Drawable vScroll, @Null Drawable vScrollKnob) {
+		public ScrollPaneStyle (@Null Drawable background, @Null Drawable hScroll, @Null Drawable hScrollKnob,
+			@Null Drawable vScroll, @Null Drawable vScrollKnob) {
 			this.background = background;
 			this.hScroll = hScroll;
 			this.hScrollKnob = hScrollKnob;

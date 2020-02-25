@@ -8,11 +8,12 @@
 - API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide; this helps resistance against malicious users who can choose problematic names
 - API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this
 - API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap
-- API Change: Actor#removeAction no longer accepts null.
 - API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
 - API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 - Fixed changing looping state of already playing sounds on Android by first pausing the sound before setting the looping state (see #5822).
+- API Change: In scene2d TextField, only revert the text if the change event was cancelled. This allows the text to be manipulated in the change listener.
+- API Change: Tree.Node#removeAll renamed to clearChildren.
 - Added TextureArraySpriteBatch that batches drawing operations with different textures into one draw call.
 
 [1.9.10]
