@@ -312,6 +312,11 @@ public class Mesh implements Disposable {
 
 		return this;
 	}
+	
+	/** @return Indicates whether this mesh uses instancing. */
+	public boolean isInstanced () {
+		return this.isInstanced;
+	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 *
