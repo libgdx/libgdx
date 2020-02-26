@@ -275,6 +275,7 @@ public class Actor {
 		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
 
+	/** @param action May be null, in which case nothing is done. */
 	public void removeAction (@Null Action action) {
 		if (action != null && actions.removeValue(action, true)) action.setActor(null);
 	}
