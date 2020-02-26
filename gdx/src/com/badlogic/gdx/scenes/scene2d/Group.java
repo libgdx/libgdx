@@ -338,8 +338,8 @@ public class Group extends Actor implements Cullable {
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
 	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
 	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
-	 * @return the actor removed from this group or null. */
-    public Actor removeActorAt (int index, boolean unfocus) {
+	 * @return the actor removed from this group. */
+	public Actor removeActorAt (int index, boolean unfocus) {
 		Actor actor = children.removeIndex(index);
 		if (unfocus) {
 			Stage stage = getStage();
@@ -372,6 +372,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the
 	 * group. */
+	@Null
 	public <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)

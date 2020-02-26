@@ -176,24 +176,28 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}

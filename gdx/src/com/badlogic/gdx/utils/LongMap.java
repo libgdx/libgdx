@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
+import static com.badlogic.gdx.utils.ObjectSet.*;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map where the keys are unboxed longs and values are objects. No allocation is done except when growing the table
  * size.
@@ -36,8 +36,8 @@ import com.badlogic.gdx.math.MathUtils;
  * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
  * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
- * @author Tommy Ettinger
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author Tommy Ettinger */
 public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	public int size;
 
@@ -84,20 +84,17 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public LongMap (int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
-		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(Math.max(1, initialCapacity) / loadFactor));
-		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-
 		this.loadFactor = loadFactor;
 
-		threshold = (int)(initialCapacity * loadFactor);
-		mask = initialCapacity - 1;
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int)(tableSize * loadFactor);
+		mask = tableSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		keyTable = new long[initialCapacity];
-		valueTable = (V[])new Object[initialCapacity];
+		keyTable = new long[tableSize];
+		valueTable = (V[])new Object[tableSize];
 	}
 
 	/** Creates a new map identical to the specified map. */
@@ -204,9 +201,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
 			hasZeroValue = false;
+			V oldValue = zeroValue;
 			zeroValue = null;
 			size--;
-			return zeroValue;
+			return oldValue;
 		}
 
 		int i = locateKey(key);
@@ -236,25 +234,26 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return size == 0;
 	}
 
-	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
+	/** Reduces the size of the backing arrays to be the specified capacity / loadFactor, or less. If the capacity is already less,
+	 * nothing is done. If the map contains more items than the specified capacity, the next highest power of two capacity is used
+	 * instead. */
 	public void shrink (int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
-		if (size > maximumCapacity) maximumCapacity = size;
-		if (keyTable.length <= maximumCapacity) return;
-		resize(MathUtils.nextPowerOfTwo(maximumCapacity));
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity / loadFactor, if they are larger. */
 	public void clear (int maximumCapacity) {
-		if (keyTable.length <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
-		zeroValue = null;
-		hasZeroValue = false;
 		size = 0;
-		resize(maximumCapacity);
+		hasZeroValue = false;
+		zeroValue = null;
+		resize(tableSize);
 	}
 
 	public void clear () {
@@ -318,12 +317,11 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return notFound;
 	}
 
-	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes. */
+	/** Increases the size of the backing array to accommodate the specified number of additional items / loadFactor. Useful before
+	 * adding many items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
-		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	private void resize (int newSize) {
@@ -348,13 +346,13 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	public int hashCode () {
 		int h = size;
-		if (hasZeroValue && zeroValue != null) h = zeroValue.hashCode();
+		if (hasZeroValue && zeroValue != null) h += zeroValue.hashCode();
 		long[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			long key = keyTable[i];
 			if (key != 0) {
-				h ^= key ^ key >>> 32;
+				h += key * 31;
 				V value = valueTable[i];
 				if (value != null) h += value.hashCode();
 			}
@@ -520,7 +518,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	static private class MapIterator<V> {
-		static final int INDEX_ILLEGAL = -2;
+		static private final int INDEX_ILLEGAL = -2;
 		static final int INDEX_ZERO = -1;
 
 		public boolean hasNext;
@@ -544,37 +542,35 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 
 		void findNextIndex () {
-			hasNext = false;
 			long[] keyTable = map.keyTable;
 			for (int n = keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != 0) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex == INDEX_ZERO && map.hasZeroValue) {
-				map.zeroValue = null;
+			int i = currentIndex;
+			if (i == INDEX_ZERO && map.hasZeroValue) {
 				map.hasZeroValue = false;
-			} else if (currentIndex < 0) {
+			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
 				long[] keyTable = map.keyTable;
 				V[] valueTable = map.valueTable;
-				int mask = map.mask;
-				int loc = currentIndex, nl = (loc + 1 & mask);
+				int mask = map.mask, next = i + 1 & mask;
 				long key;
-				while ((key = keyTable[nl]) != 0 && nl != map.place(key)) {
-					keyTable[loc] = key;
-					valueTable[loc] = valueTable[nl];
-					loc = nl;
-					nl = loc + 1 & mask;
+				while ((key = keyTable[next]) != 0 && next != map.place(key)) {
+					keyTable[i] = key;
+					valueTable[i] = valueTable[next];
+					i = next;
+					next = next + 1 & mask;
 				}
-				if (loc != currentIndex) --nextIndex;
-				keyTable[loc] = 0;
-				valueTable[loc] = null;
+				keyTable[i] = 0;
+				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
 			map.size--;
@@ -613,10 +609,6 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		public Iterator<Entry<V>> iterator () {
 			return this;
 		}
-
-		public void remove () {
-			super.remove();
-		}
 	}
 
 	static public class Values<V> extends MapIterator<V> implements Iterable<V>, Iterator<V> {
@@ -653,10 +645,6 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			while (hasNext)
 				array.add(next());
 			return array;
-		}
-
-		public void remove () {
-			super.remove();
 		}
 	}
 

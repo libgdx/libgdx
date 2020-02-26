@@ -168,7 +168,7 @@ public class Table extends WidgetGroup {
 	}
 
 	@Null
-    public Actor hit (float x, float y, boolean touchable) {
+	public Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (touchable && getTouchable() == Touchable.disabled) return null;
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
@@ -248,7 +248,7 @@ public class Table extends WidgetGroup {
 		return cell;
 	}
 
-    public Table add (Actor... actors) {
+	public Table add (Actor... actors) {
 		for (int i = 0, n = actors.length; i < n; i++)
 			add(actors[i]);
 		return this;

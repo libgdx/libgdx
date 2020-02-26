@@ -149,6 +149,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
 	 * value is found.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
+	@Null
 	public K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
@@ -258,6 +259,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return -1;
 	}
 
+	@Null
 	public V removeKey (K key) {
 		Object[] keys = this.keys;
 		if (key == null) {

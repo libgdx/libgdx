@@ -149,14 +149,31 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	public void insert (int index, N node) {
-		int existingIndex = rootNodes.indexOf(node, true);
-		if (existingIndex != -1 && existingIndex < index) index--;
-		remove(node);
-		node.parent = null;
+		if (node.parent != null) {
+			node.parent.remove(node);
+			node.parent = null;
+		} else {
+			int existingIndex = rootNodes.indexOf(node, true);
+			if (existingIndex != -1) {
+				if (existingIndex == index) return;
+				if (existingIndex < index) index--;
+				rootNodes.removeIndex(existingIndex);
+				int actorIndex = node.actor.getZIndex();
+				if (actorIndex != -1) node.removeFromTree(this, actorIndex);
+			}
+		}
+
 		rootNodes.insert(index, node);
 
-		int actorIndex = 0;
-		if (rootNodes.size > 1 && index > 0) actorIndex = rootNodes.get(index - 1).actor.getZIndex() + 1;
+		int actorIndex;
+		if (index == 0)
+			actorIndex = 0;
+		else if (index < rootNodes.size - 1)
+			actorIndex = rootNodes.get(index + 1).actor.getZIndex();
+		else {
+			N before = rootNodes.get(index - 1);
+			actorIndex = before.actor.getZIndex() + before.countActors();
+		}
 		node.addToTree(this, actorIndex);
 	}
 
@@ -386,7 +403,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the first selected node, or null. */
-    @Null
+	@Null
 	public N getSelectedNode () {
 		return selection.first();
 	}
@@ -398,16 +415,18 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		return node == null ? null : (V)node.getValue();
 	}
 
-    public TreeStyle getStyle () {
+	public TreeStyle getStyle () {
 		return style;
 	}
 
+	/** If the order of the root nodes is changed, {@link #updateRootNodes()} must be called to ensure the nodes' actors are in the
+	 * correct order. */
 	public Array<N> getRootNodes () {
 		return rootNodes;
 	}
 
-	/** Removes the root node actors from the tree and adds them again. This is useful after changing the order of
-	 * {@link #getRootNodes()}.
+	/** Updates the order of the actors in the tree for all root nodes and all child nodes. This is useful after changing the order
+	 * of {@link #getRootNodes()}.
 	 * @see Node#updateChildren() */
 	public void updateRootNodes () {
 		for (int i = 0, n = rootNodes.size; i < n; i++) {
@@ -508,12 +527,13 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the node with the specified value, or null. */
-    @Null
+	@Null
 	public N findNode (V value) {
 		if (value == null) throw new IllegalArgumentException("value cannot be null.");
 		return (N)findNode(rootNodes, value);
 	}
 
+	@Null
 	static Node findNode (Array<? extends Node> nodes, Object value) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
@@ -601,16 +621,17 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		protected int addToTree (Tree<N, V> tree, int actorIndex) {
 			tree.addActorAt(actorIndex, actor);
 			if (!expanded) return 1;
-			int added = 1;
+			int childIndex = actorIndex + 1;
 			Object[] children = this.children.items;
 			for (int i = 0, n = this.children.size; i < n; i++)
-				added += ((N)children[i]).addToTree(tree, actorIndex + added);
-			return added;
+				childIndex += ((N)children[i]).addToTree(tree, childIndex);
+			return childIndex - actorIndex;
 		}
 
 		/** Called to remove the actor from the tree, eg when the node is removed or the node's parent is collapsed. */
 		protected void removeFromTree (Tree<N, V> tree, int actorIndex) {
 			Actor removeActorAt = tree.removeActorAt(actorIndex, true);
+			// assert removeActorAt != actor; // If false, either 1) there's a bug, or 2) the children were modified.
 			if (!expanded) return;
 			Object[] children = this.children.items;
 			for (int i = 0, n = this.children.size; i < n; i++)
@@ -654,7 +675,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			return count;
 		}
 
-		/** Remove this node from the tree. */
+		/** Remove this node from its parent. */
 		public void remove () {
 			Tree tree = getTree();
 			if (tree != null)
@@ -663,7 +684,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				parent.remove(this);
 		}
 
-		/** Remove the specified child node from the tree. */
+		/** Remove the specified child node from this node. Does nothing if the node is not a child of this node. */
 		public void remove (N node) {
 			if (!children.removeValue(node, true)) return;
 			if (!expanded) return;
@@ -671,8 +692,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (tree != null) node.removeFromTree(tree, node.actor.getZIndex());
 		}
 
-		/** Remove all child nodes from the tree. */
-		public void removeAll () {
+		/** Removes all children from this node. */
+		public void clearChildren () {
 			if (expanded) {
 				Tree tree = getTree();
 				if (tree != null) {
@@ -698,8 +719,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			if (actor != null) {
 				Tree<N, V> tree = getTree();
 				if (tree != null) {
-					actor.remove();
-					tree.addActor(newActor);
+					int index = actor.getZIndex();
+					tree.removeActorAt(index, true);
+					tree.addActorAt(index, newActor);
 				}
 			}
 			actor = newActor;
@@ -713,7 +735,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			return expanded;
 		}
 
-		/** If the children order is changed, {@link #updateChildren()} must be called. */
+		/** If the children order is changed, {@link #updateChildren()} must be called to ensure the node's actors are in the
+		 * correct order. That is not necessary if this node is not in the tree or is not expanded, because then the child node's
+		 * actors are not in the tree. */
 		public Array<N> getChildren () {
 			return children;
 		}
@@ -722,8 +746,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			return children.size > 0;
 		}
 
-		/** Removes the child node actors from the tree and adds them again. This is useful after changing the order of
-		 * {@link #getChildren()}.
+		/** Updates the order of the actors in the tree for this node and all child nodes. This is useful after changing the order
+		 * of {@link #getChildren()}.
 		 * @see Tree#updateRootNodes() */
 		public void updateChildren () {
 			if (!expanded) return;
@@ -860,7 +884,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		public Drawable plus, minus;
 		/** Optional. */
 		@Null public Drawable plusOver, minusOver;
-        @Null public Drawable over, selection, background;
+		@Null public Drawable over, selection, background;
 
 		public TreeStyle () {
 		}

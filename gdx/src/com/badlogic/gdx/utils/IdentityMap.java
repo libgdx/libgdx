@@ -69,4 +69,19 @@ public class IdentityMap<K, V> extends ObjectMap<K, V> {
 			if (other == key) return i; // Same key was found.
 		}
 	}
+
+	public int hashCode () {
+		int h = size;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = keyTable.length; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				h += System.identityHashCode(key);
+				V value = valueTable[i];
+				if (value != null) h += value.hashCode();
+			}
+		}
+		return h;
+	}
 }

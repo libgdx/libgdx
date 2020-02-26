@@ -36,8 +36,8 @@ import com.badlogic.gdx.math.MathUtils;
  * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
  * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
  * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
- * @author Tommy Ettinger
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author Tommy Ettinger */
 public class ObjectSet<T> implements Iterable<T> {
 	public int size;
 
@@ -78,23 +78,21 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectSet (int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
-		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(Math.max(1, initialCapacity) / loadFactor));
-		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-
 		this.loadFactor = loadFactor;
 
-		threshold = (int)(initialCapacity * loadFactor);
-		mask = initialCapacity - 1;
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int)(tableSize * loadFactor);
+		mask = tableSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
-		keyTable = (T[])(new Object[initialCapacity]);
+
+		keyTable = (T[])new Object[tableSize];
 	}
 
 	/** Creates a new set identical to the specified set. */
 	public ObjectSet (ObjectSet<? extends T> set) {
-		this((int)Math.ceil(set.keyTable.length * set.loadFactor), set.loadFactor);
+		this((int)(set.keyTable.length * set.loadFactor), set.loadFactor);
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
 	}
@@ -208,25 +206,26 @@ public class ObjectSet<T> implements Iterable<T> {
 		return size == 0;
 	}
 
-	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead. */
+	/** Reduces the size of the backing arrays to be the specified capacity / loadFactor, or less. If the capacity is already less,
+	 * nothing is done. If the set contains more items than the specified capacity, the next highest power of two capacity is used
+	 * instead. */
 	public void shrink (int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
-		if (size > maximumCapacity) maximumCapacity = size;
-		if (keyTable.length <= maximumCapacity) return;
-		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
-		resize(maximumCapacity);
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the set and reduces the size of the backing arrays to be the specified capacity, if they are larger. The reduction
-	 * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array. */
+	/** Clears the set and reduces the size of the backing arrays to be the specified capacity / loadFactor, if they are larger.
+	 * The reduction is done by allocating new arrays, though for large arrays this can be faster than clearing the existing
+	 * array. */
 	public void clear (int maximumCapacity) {
-		if (keyTable.length <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
 		size = 0;
-		resize(maximumCapacity);
+		resize(tableSize);
 	}
 
 	/** Clears the set, leaving the backing arrays at the current capacity. When the capacity is high and the population is low,
@@ -254,12 +253,11 @@ public class ObjectSet<T> implements Iterable<T> {
 		throw new IllegalStateException("ObjectSet is empty.");
 	}
 
-	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes. */
+	/** Increases the size of the backing array to accommodate the specified number of additional items / loadFactor. Useful before
+	 * adding many items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
-		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	private void resize (int newSize) {
@@ -282,8 +280,10 @@ public class ObjectSet<T> implements Iterable<T> {
 	public int hashCode () {
 		int h = size;
 		T[] keyTable = this.keyTable;
-		for (int i = 0, n = keyTable.length; i < n; i++)
-			if (keyTable[i] != null) h += keyTable[i].hashCode();
+		for (int i = 0, n = keyTable.length; i < n; i++) {
+			T key = keyTable[i];
+			if (key != null) h += key.hashCode();
+		}
 		return h;
 	}
 
@@ -349,6 +349,13 @@ public class ObjectSet<T> implements Iterable<T> {
 		return set;
 	}
 
+	static int tableSize (int capacity, float loadFactor) {
+		if (capacity < 0) throw new IllegalArgumentException("capacity must be >= 0: " + capacity);
+		int tableSize = MathUtils.nextPowerOfTwo(Math.max(2, (int)Math.ceil(capacity / loadFactor)));
+		if (tableSize > 1 << 30) throw new IllegalArgumentException("The required capacity is too large: " + capacity);
+		return tableSize;
+	}
+
 	static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K> {
 		public boolean hasNext;
 
@@ -368,32 +375,31 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 
 		private void findNextIndex () {
-			hasNext = false;
 			K[] keyTable = set.keyTable;
 			for (int n = set.keyTable.length; ++nextIndex < n;) {
 				if (keyTable[nextIndex] != null) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove () {
-			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-
+			int i = currentIndex;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
 			K[] keyTable = set.keyTable;
-			int mask = set.mask;
-			int loc = currentIndex, nl = (loc + 1 & mask);
+			int mask = set.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[nl]) != null && nl != set.place(key)) {
-				keyTable[loc] = key;
-				loc = nl;
-				nl = loc + 1 & mask;
+			while ((key = keyTable[next]) != null && next != set.place(key)) {
+				keyTable[i] = key;
+				i = next;
+				next = next + 1 & mask;
 			}
-			if (loc != currentIndex) --nextIndex;
-			keyTable[loc] = null;
-			currentIndex = -1;
+			keyTable[i] = null;
 			set.size--;
+			if (i != currentIndex) --nextIndex;
+			currentIndex = -1;
 		}
 
 		public boolean hasNext () {
