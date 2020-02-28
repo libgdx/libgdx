@@ -120,6 +120,7 @@ public class GdxTests {
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
+		CoordinatesTest.class,
 		CpuSpriteBatchTest.class,
 		CullTest.class,
 		CursorTest.class,

@@ -289,7 +289,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	public boolean containsKey (int key) {
 		if (key == 0) return hasZeroValue;
-		return locateKey(key) < 0;
+		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and

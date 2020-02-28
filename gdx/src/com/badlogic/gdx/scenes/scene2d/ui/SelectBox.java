@@ -58,12 +58,19 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	SelectBoxStyle style;
 	final Array<T> items = new Array();
-	final ArraySelection<T> selection = new ArraySelection(items);
 	SelectBoxList<T> selectBoxList;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	boolean disabled;
 	private int alignment = Align.left;
+	boolean selectedPrefWidth;
+
+	final ArraySelection<T> selection = new ArraySelection(items) {
+		public boolean fireChangeEvent () {
+			if (selectedPrefWidth) invalidateHierarchy();
+			return super.fireChangeEvent();
+		}
+	};
 
 	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
@@ -179,28 +186,38 @@ public class SelectBox<T> extends Widget implements Disableable {
 		} else
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
-		float maxItemWidth = 0;
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
-		for (int i = 0; i < items.size; i++) {
-			layout.setText(font, toString(items.get(i)));
-			maxItemWidth = Math.max(layout.width, maxItemWidth);
+		if (selectedPrefWidth) {
+			prefWidth = 0;
+			if (bg != null) prefWidth = bg.getLeftWidth() + bg.getRightWidth();
+			T selected = getSelected();
+			if (selected != null) {
+				layout.setText(font, toString(selected));
+				prefWidth += layout.width;
+			}
+		} else {
+			float maxItemWidth = 0;
+			for (int i = 0; i < items.size; i++) {
+				layout.setText(font, toString(items.get(i)));
+				maxItemWidth = Math.max(layout.width, maxItemWidth);
+			}
+
+			prefWidth = maxItemWidth;
+			if (bg != null) prefWidth = Math.max(prefWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
+
+			ListStyle listStyle = style.listStyle;
+			ScrollPaneStyle scrollStyle = style.scrollStyle;
+			float listWidth = maxItemWidth + listStyle.selection.getLeftWidth() + listStyle.selection.getRightWidth();
+			bg = scrollStyle.background;
+			if (bg != null) listWidth = Math.max(listWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
+			if (selectBoxList == null || !selectBoxList.disableY) {
+				listWidth += Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
+					style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0);
+			}
+			prefWidth = Math.max(prefWidth, listWidth);
 		}
 		layoutPool.free(layout);
-
-		prefWidth = maxItemWidth;
-		if (bg != null) prefWidth = Math.max(prefWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
-
-		ListStyle listStyle = style.listStyle;
-		ScrollPaneStyle scrollStyle = style.scrollStyle;
-		float listWidth = maxItemWidth + listStyle.selection.getLeftWidth() + listStyle.selection.getRightWidth();
-		bg = scrollStyle.background;
-		if (bg != null) listWidth = Math.max(listWidth + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
-		if (selectBoxList == null || !selectBoxList.disableY) {
-			listWidth += Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
-				style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0);
-		}
-		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
@@ -218,7 +235,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 		else
 			background = null;
 		BitmapFont font = style.font;
-		Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
+		Color fontColor;
+		if (disabled && style.disabledFontColor != null)
+			fontColor = style.disabledFontColor;
+		else if (style.overFontColor != null && (clickListener.isOver() || selectBoxList.hasParent()))
+			fontColor = style.overFontColor;
+		else
+			fontColor = style.fontColor;
 
 		Color color = getColor();
 		float x = getX(), y = getY();
@@ -285,6 +308,26 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Sets the selection to only the selected index. */
 	public void setSelectedIndex (int index) {
 		selection.set(items.get(index));
+	}
+
+	/** When true the pref width is based on the selected item. */
+	public void setSelectedPrefWidth (boolean selectedPrefWidth) {
+		this.selectedPrefWidth = selectedPrefWidth;
+	}
+
+	/** Returns the pref width of the select box if the widest item was selected, for use when
+	 * {@link #setSelectedPrefWidth(boolean)} is true. */
+	public float getMaxSelectedPrefWidth () {
+		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		GlyphLayout layout = layoutPool.obtain();
+		float width = 0;
+		for (int i = 0; i < items.size; i++) {
+			layout.setText(style.font, toString(items.get(i)));
+			width = Math.max(layout.width, width);
+		}
+		Drawable bg = style.background;
+		if (bg != null) width = Math.max(width + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
+		return width;
 	}
 
 	public void setDisabled (boolean disabled) {
@@ -515,7 +558,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		@Null public Color disabledFontColor;
+		@Null public Color overFontColor, disabledFontColor;
 		/** Optional. */
 		@Null public Drawable background;
 		public ScrollPaneStyle scrollStyle;
@@ -538,6 +581,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public SelectBoxStyle (SelectBoxStyle style) {
 			this.font = style.font;
 			this.fontColor.set(style.fontColor);
+			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.background = style.background;
 			this.backgroundOver = style.backgroundOver;
