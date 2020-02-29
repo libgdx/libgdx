@@ -251,13 +251,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return true;
 		} else if (identity) {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return true;
 		} else {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return true;
 		}
 		return false;
@@ -276,13 +276,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return keyTable[i];
 		} else if (identity) {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return keyTable[i];
 		} else {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return keyTable[i];
 		}
 		return null;
