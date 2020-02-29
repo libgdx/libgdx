@@ -33,7 +33,7 @@ public class CoordinatesTest extends GdxTest {
 	Camera camera;
 	private Image img;
 	
-	private final Vector2 localActorScreen = new Vector2();
+	final Vector2 localActorScreen = new Vector2();
 	private Label inScreenLabel;
 	private Label vpScreenLabel;
 	private Label stScreenLabel;

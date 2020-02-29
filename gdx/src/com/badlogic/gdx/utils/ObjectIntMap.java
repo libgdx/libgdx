@@ -249,7 +249,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	public boolean containsValue (int value) {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--)
+		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
@@ -264,7 +264,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	public K findKey (int value) {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--) {
+		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
 		}

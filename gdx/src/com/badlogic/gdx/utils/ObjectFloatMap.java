@@ -253,7 +253,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	public boolean containsValue (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--)
+		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
@@ -268,7 +268,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	public K findKey (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--) {
+		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
 		}
