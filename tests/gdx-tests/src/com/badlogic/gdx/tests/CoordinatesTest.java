@@ -48,8 +48,16 @@ public class CoordinatesTest extends GdxTest {
 		
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		TextureRegionDrawable logo = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg"))));
-		
+
 		stageViewport = new FitViewport(500, 500);
+		stageViewport = new Viewport() {
+		    public void update(int screenWidth, int screenHeight, boolean centerCamera) {
+		        setScreenBounds(20, 20, screenWidth - 20, screenHeight - 20);
+		        setWorldSize(500, 500);
+		        apply(centerCamera);
+		    }
+		};
+		stageViewport.setCamera(new OrthographicCamera());
 		gameViewport = new FitViewport(100, 100);
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

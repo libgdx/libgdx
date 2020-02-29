@@ -450,8 +450,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * is added automatically when true is returned from {@link InputListener#touchDown(InputEvent, float, float, int, int)
 	 * touchDown}. The specified actors will be used as the {@link Event#getListenerActor() listener actor} and
 	 * {@link Event#getTarget() target} for the touchDragged and touchUp events. */
-	public void addTouchFocus (EventListener listener, Actor listenerActor,
-		Actor target, int pointer, int button) {
+	public void addTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		TouchFocus focus = Pools.obtain(TouchFocus.class);
 		focus.listenerActor = listenerActor;
 		focus.target = target;
@@ -463,8 +462,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Removes touch focus for the specified listener, pointer, and button. Note the listener will not receive a touchUp event
 	 * when this method is used. */
-	public void removeTouchFocus (EventListener listener,
-		Actor listenerActor, Actor target, int pointer, int button) {
+	public void removeTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
@@ -742,7 +740,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
-		stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
+		stageCoords.y = Gdx.graphics.getHeight() - stageCoords.y;
 		return stageCoords;
 	}
 
