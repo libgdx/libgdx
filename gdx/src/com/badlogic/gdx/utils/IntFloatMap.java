@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed ints and values are unboxed floats. No allocation is done except when growing the
  * table size.
@@ -227,10 +227,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		float[] valueTable = this.valueTable;
 		float oldValue = valueTable[i];
 		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != 0 && next != place(key)) {
-			keyTable[i] = key;
-			valueTable[i] = valueTable[next];
-			i = next;
+		int placement;
+		while ((key = keyTable[next]) != 0) {
+			placement = place(key);
+			if((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
@@ -522,10 +526,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 				int[] keyTable = map.keyTable;
 				float[] valueTable = map.valueTable;
 				int mask = map.mask, next = i + 1 & mask, key;
-				while ((key = keyTable[next]) != 0 && next != map.place(key)) {
-					keyTable[i] = key;
-					valueTable[i] = valueTable[next];
-					i = next;
+				int placement;
+				while ((key = keyTable[next]) != 0) {
+					placement = map.place(key);
+					if((next - placement & mask) > (i - placement & mask)) {
+						keyTable[i] = key;
+						valueTable[i] = valueTable[next];
+						i = next;
+					}
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;
