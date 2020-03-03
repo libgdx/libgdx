@@ -36,8 +36,8 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/** Displays a dialog, which is a modal window containing a content table with a button table underneath it. Methods are provided
- * to add a label to the content table and buttons to the button table, but any widgets can be added. When a button is clicked,
+/** Displays a dialog, which is a window with a title, a content table, and a button table. Methods are provided to add a label to
+ * the content table and buttons to the button table, but any widgets can be added. When a button is clicked,
  * {@link #result(Object)} is called and the dialog is removed from the stage.
  * @author Nathan Sweet */
 public class Dialog extends Window {

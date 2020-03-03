@@ -281,7 +281,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		if (hasZeroValue && zeroValue == value) return true;
 		int[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--)
+		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != 0 && valueTable[i] == value) return true;
 		return false;
 	}
@@ -297,7 +297,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		if (hasZeroValue && zeroValue == value) return 0;
 		int[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--) {
+		for (int i = valueTable.length - 1; i >= 0; i--) {
 			int key = keyTable[i];
 			if (key != 0 && valueTable[i] == value) return key;
 		}

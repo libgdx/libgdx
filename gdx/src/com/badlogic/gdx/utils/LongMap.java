@@ -274,15 +274,15 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return true;
 			long[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != 0 && valueTable[i] == null) return true;
 		} else if (identity) {
 			if (value == zeroValue) return true;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return true;
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return true;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return true;
 		}
 		return false;
@@ -303,15 +303,15 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return 0;
 			long[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != 0 && valueTable[i] == null) return keyTable[i];
 		} else if (identity) {
 			if (value == zeroValue) return 0;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return keyTable[i];
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return 0;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return keyTable[i];
 		}
 		return notFound;
