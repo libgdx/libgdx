@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
+import static com.badlogic.gdx.utils.ObjectSet.*;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are objects and the values are unboxed ints. Null keys are not allowed. No allocation is done
  * except when growing the table size.
@@ -196,11 +196,10 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
 		int oldValue = valueTable[i];
-		int next = i + 1 & mask;
-		int placement;
+		int mask = this.mask, next = i + 1 & mask;
 		while ((key = keyTable[next]) != null) {
-			placement = place(key);
-			if((next - placement & mask) > (i - placement & mask)) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
 				keyTable[i] = key;
 				valueTable[i] = valueTable[next];
 				i = next;
@@ -472,10 +471,9 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 			int[] valueTable = map.valueTable;
 			int mask = map.mask, next = i + 1 & mask;
 			K key;
-			int placement;
 			while ((key = keyTable[next]) != null) {
-				placement = map.place(key);
-				if((next - placement & mask) > (i - placement & mask)) {
+				int placement = map.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
 					keyTable[i] = key;
 					valueTable[i] = valueTable[next];
 					i = next;

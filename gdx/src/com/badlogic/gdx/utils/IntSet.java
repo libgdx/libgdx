@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
+import static com.badlogic.gdx.utils.ObjectSet.*;
+
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-
-import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered set where the items are unboxed ints. No allocation is done except when growing the table size.
  * <p>
@@ -195,11 +195,10 @@ public class IntSet {
 		int i = locateKey(key);
 		if (i < 0) return false;
 		int[] keyTable = this.keyTable;
-		int next = i + 1 & mask;
-		int placement;
+		int mask = this.mask, next = i + 1 & mask;
 		while ((key = keyTable[next]) != 0) {
-			placement = place(key);
-			if((next - placement & mask) > (i - placement & mask)) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
 				keyTable[i] = key;
 				i = next;
 			}
@@ -404,10 +403,9 @@ public class IntSet {
 			} else {
 				int[] keyTable = set.keyTable;
 				int mask = set.mask, next = i + 1 & mask, key;
-				int placement;
 				while ((key = keyTable[next]) != 0) {
-					placement = set.place(key);
-					if((next - placement & mask) > (i - placement & mask)) {
+					int placement = set.place(key);
+					if ((next - placement & mask) > (i - placement & mask)) {
 						keyTable[i] = key;
 						i = next;
 					}

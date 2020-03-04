@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered set where the keys are objects. Null keys are not allowed. No allocation is done except when growing the table
  * size.
@@ -185,11 +185,10 @@ public class ObjectSet<T> implements Iterable<T> {
 		int i = locateKey(key);
 		if (i < 0) return false;
 		T[] keyTable = this.keyTable;
-		int next = i + 1 & mask;
-		int placement;
+		int mask = this.mask, next = i + 1 & mask;
 		while ((key = keyTable[next]) != null) {
-			placement = place(key);
-			if((next - placement & mask) > (i - placement & mask)) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
 				keyTable[i] = key;
 				i = next;
 			}
@@ -395,10 +394,9 @@ public class ObjectSet<T> implements Iterable<T> {
 			K[] keyTable = set.keyTable;
 			int mask = set.mask, next = i + 1 & mask;
 			K key;
-			int placement;
 			while ((key = keyTable[next]) != null) {
-				placement = set.place(key);
-				if((next - placement & mask) > (i - placement & mask)) {
+				int placement = set.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
 					keyTable[i] = key;
 					i = next;
 				}
