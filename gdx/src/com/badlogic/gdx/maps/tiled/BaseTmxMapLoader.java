@@ -148,7 +148,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
-			loadProperties(map.getProperties(), properties);
+			loadCustomProperties(map.getProperties(), properties);
 		}
 
 		Array<Element> tilesets = root.getChildrenByName("tileset");
@@ -171,7 +171,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		} else if (name.equals("layer")) {
 			loadTileLayer(map, parentLayers, element);
 		} else if (name.equals("objectgroup")) {
-			loadObjectGroup(map, parentLayers, element);
+			loadObjectGroup(map, parentLayers, element, tmxFile);
 		} else if (name.equals("imagelayer")) {
 			loadImageLayer(map, parentLayers, element, tmxFile, imageResolver);
 		}
@@ -184,7 +184,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				loadProperties(groupLayer.getProperties(), properties);
+				loadCustomProperties(groupLayer.getProperties(), properties);
 			}
 
 			for (int i = 0, j = element.getChildCount(); i < j; i++) {
@@ -230,23 +230,23 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				loadProperties(layer.getProperties(), properties);
+				loadCustomProperties(layer.getProperties(), properties);
 			}
 			parentLayers.add(layer);
 		}
 	}
 
-	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element) {
+	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("objectgroup")) {
 			MapLayer layer = new MapLayer();
 			loadBasicLayerInfo(layer, element);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				loadProperties(layer.getProperties(), properties);
+				loadCustomProperties(layer.getProperties(), properties);
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer, objectElement);
+				loadObjectOrTemplateInstance(map, layer, objectElement, tmxFile);
 			}
 
 			parentLayers.add(layer);
@@ -286,7 +286,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				loadProperties(layer.getProperties(), properties);
+				loadCustomProperties(layer.getProperties(), properties);
 			}
 
 			parentLayers.add(layer);
@@ -307,17 +307,143 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		layer.setOffsetY(offsetY);
 	}
 
-	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
-		loadObject(map, layer.getObjects(), element, mapHeightInPixels);
+	protected void loadObjectOrTemplateInstance(TiledMap map, MapLayer layer, Element element, FileHandle tmxFile) {
+		loadObjectOrTemplateInstance(
+			map,
+			layer.getObjects(),
+			element,
+			mapHeightInPixels,
+			tmxFile);
 	}
 
-	protected void loadObject (TiledMap map, TiledMapTile tile, Element element) {
-		loadObject(map, tile.getObjects(), element, tile.getTextureRegion().getRegionHeight());
+	protected void loadObjectOrTemplateInstance(TiledMap map, TiledMapTile tile, Element element, FileHandle tmxFile) {
+		loadObjectOrTemplateInstance(
+			map,
+			tile.getObjects(),
+			element,
+			tile.getTextureRegion().getRegionHeight(),
+			tmxFile);
 	}
 
-	protected void loadObject (TiledMap map, MapObjects objects, Element element, float heightInPixels) {
+	protected void loadObjectOrTemplateInstance(TiledMap map, MapObjects objects, Element element, float heightInPixels, FileHandle tmxFile)
+	{
+		String template = null;
+		Element templateElement = null;
+		Element templateObjectElement = null;
+		MapObject object;
 		if (element.getName().equals("object")) {
-			MapObject object = null;
+			if ((template = element.getAttribute("template", null)) != null)
+			{
+				FileHandle templateFile = getRelativeFileHandle(tmxFile, template);
+				templateElement = xml.parse(templateFile);
+				if((templateObjectElement = templateElement.getChildByName("object")) != null) {
+					// Load default properties
+					object = loadObject(map, objects, templateObjectElement, heightInPixels);
+					// Load instance properties
+					loadProperties(object, element, heightInPixels);
+				}
+			}
+			else
+			{
+				loadObject(map, objects, element, heightInPixels);
+			}
+		}
+	}
+
+	protected void loadProperties(MapObject object, Element element, float heightInPixels)
+	{
+		String prop = null;
+		TiledMapTileMapObject tiledMapTileMapObject = null;
+		float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
+		float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
+
+		// Width
+		prop = element.getAttribute("width", null);
+		if(prop != null) {
+			float width = element.getFloatAttribute("width", 0) * scaleX;
+			object.getProperties().put("width", width);
+		}
+
+		// Height
+		float height;
+		prop = element.getAttribute("height", null);
+		if(prop != null) {
+			height = element.getFloatAttribute("height", 0) * scaleY;
+			object.getProperties().put("height", height);
+
+		}
+		else height = object.getProperties().get("height", float.class);
+
+		// X
+		prop = element.getAttribute("x", null);
+		if(prop != null) {
+			float x = element.getFloatAttribute("x", 0) * scaleX;
+			object.getProperties().put("x", x);
+			tiledMapTileMapObject = object instanceof TiledMapTileMapObject ? (TiledMapTileMapObject) object : null;
+			if(tiledMapTileMapObject != null) tiledMapTileMapObject.setX(x);
+		}
+
+		// Y
+		prop = element.getAttribute("y", null);
+		if(prop != null) {
+			float y = (flipY ? (heightInPixels - element.getFloatAttribute("y", 0)) : element.getFloatAttribute("y", 0)) * scaleY;
+			tiledMapTileMapObject = object instanceof TiledMapTileMapObject ? (TiledMapTileMapObject) object : null;
+			if(tiledMapTileMapObject != null)
+			{
+				object.getProperties().put("y", y);
+				tiledMapTileMapObject.setY(y);
+			}
+			else
+			{
+				object.getProperties().put("y", (flipY ? y - height : y));
+			}
+		}
+
+		// Name
+		prop = element.getAttribute("name", null);
+		if(prop != null) {
+			object.setName(prop);
+		}
+
+		// Rotation
+		String rotation = element.getAttribute("rotation", null);
+		if (rotation != null) {
+			object.getProperties().put("rotation", Float.parseFloat(rotation));
+			tiledMapTileMapObject = object instanceof TiledMapTileMapObject ? (TiledMapTileMapObject) object : null;
+			if(tiledMapTileMapObject != null) tiledMapTileMapObject.setRotation(Float.parseFloat(rotation));
+		}
+
+		// Type
+		prop = element.getAttribute("type", null);
+		if (prop != null) {
+			object.getProperties().put("type", prop);
+		}
+
+		// ID
+		int id = element.getIntAttribute("id", 0);
+		if (id != 0) {
+			object.getProperties().put("id", id);
+		}
+
+		// Visible
+		prop = element.getAttribute("visible", null);
+		if (prop != null) {
+			int visible = element.getIntAttribute("visible", 1);
+			object.setVisible(visible == 1);
+			tiledMapTileMapObject = object instanceof TiledMapTileMapObject ? (TiledMapTileMapObject) object : null;
+			if(tiledMapTileMapObject != null) tiledMapTileMapObject.setVisible(visible == 1);
+		}
+
+		Element properties = element.getChildByName("properties");
+		if (properties != null) {
+			loadCustomProperties(object.getProperties(), properties);
+		}
+	}
+
+	protected MapObject loadObject(TiledMap map, MapObjects objects, Element element, float heightInPixels) {
+		MapObject object = null;
+
+		if (element.getName().equals("object")) {
 
 			float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
@@ -379,38 +505,15 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
 				}
 			}
-			object.setName(element.getAttribute("name", null));
-			String rotation = element.getAttribute("rotation", null);
-			if (rotation != null) {
-				object.getProperties().put("rotation", Float.parseFloat(rotation));
-			}
-			String type = element.getAttribute("type", null);
-			if (type != null) {
-				object.getProperties().put("type", type);
-			}
-			int id = element.getIntAttribute("id", 0);
-			if (id != 0) {
-				object.getProperties().put("id", id);
-			}
-			object.getProperties().put("x", x);
-			
-			if (object instanceof TiledMapTileMapObject) {
-				object.getProperties().put("y", y);
-			} else {
-				object.getProperties().put("y", (flipY ? y - height : y));
-			}
-			object.getProperties().put("width", width);
-			object.getProperties().put("height", height);
-			object.setVisible(element.getIntAttribute("visible", 1) == 1);
-			Element properties = element.getChildByName("properties");
-			if (properties != null) {
-				loadProperties(object.getProperties(), properties);
-			}
+			// Load default properties
+			loadProperties(object, element, heightInPixels);
 			objects.add(object);
 		}
+
+		return object;
 	}
 
-	protected void loadProperties (MapProperties properties, Element element) {
+	protected void loadCustomProperties(MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
@@ -593,7 +696,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			final MapProperties tileSetProperties = tileSet.getProperties();
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				loadProperties(tileSetProperties, properties);
+				loadCustomProperties(tileSetProperties, properties);
 			}
 			tileSetProperties.put("firstgid", firstgid);
 
@@ -615,7 +718,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						tile = animatedTile;
 					}
 					addTileProperties(tile, tileElement);
-					addTileObjectGroup(tile, tileElement);
+					addTileObjectGroup(tile, tileElement, tmxFile);
 				}
 			}
 
@@ -643,15 +746,15 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {
-			loadProperties(tile.getProperties(), properties);
+			loadCustomProperties(tile.getProperties(), properties);
 		}
 	}
 
-	protected void addTileObjectGroup (TiledMapTile tile, Element tileElement) {
+	protected void addTileObjectGroup (TiledMapTile tile, Element tileElement, FileHandle tmxFile) {
 		Element objectgroupElement = tileElement.getChildByName("objectgroup");
 		if (objectgroupElement != null) {
 			for (Element objectElement : objectgroupElement.getChildrenByName("object")) {
-				loadObject(map, tile, objectElement);
+				loadObjectOrTemplateInstance(map, tile, objectElement, tmxFile);
 			}
 		}
 	}
