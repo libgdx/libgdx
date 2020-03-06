@@ -47,7 +47,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		public boolean forceTextureFilters = false;
 	}
 
-	private interface AtlasResolver extends ImageResolver {
+	protected interface AtlasResolver extends ImageResolver {
 
 		public TextureAtlas getAtlas ();
 
@@ -187,17 +187,36 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		// Add tiles with individual image sources
 		for (Element tileElement : tileElements) {
-			int tileId = firstgid + tileElement.getIntAttribute("id", 0);
-			TiledMapTile tile = tileSet.getTile(tileId);
+			int tileId = tileElement.getIntAttribute("id", 0);
+			int tileGid = firstgid + tileId;
+			TiledMapTile tile = tileSet.getTile(tileGid);
 			if (tile == null) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
-					String regionName = imageElement.getAttribute("source");
-					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
-					AtlasRegion region = atlas.findRegion(regionName);
-					if (region == null)
-						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
-					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
+					// Try to get the region from the atlas first
+					TextureRegion region = atlas.findRegion(regionsName, tileId);
+
+					if (region == null) {
+						// Texture region not found on atlas, try "source" location next
+						String imgSource = imageElement.getAttribute("source");
+
+						FileHandle imageFileHandle = null;
+						if (source != null) {
+							imageFileHandle = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imgSource);
+						} else {
+							imageFileHandle = getRelativeFileHandle(tmxFile, imgSource);
+						}
+
+						if (imageFileHandle == null) {
+							throw new GdxRuntimeException(
+								"Tileset image not found on atlas or filesystem.  regionsName: \"" + regionsName + "\"  imgSource: \""
+									+ imgSource + "\"");
+						} else {
+							region = imageResolver.getImage(image.path());
+						}
+					}
+
+					addStaticTiledMapTile(tileSet, region, tileGid, offsetX, offsetY);
 				}
 			}
 		}
