@@ -29,20 +29,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author xoppa */
 public final class DefaultTextureBinder implements TextureBinder {
 	public final static int ROUNDROBIN = 0;
-	public final static int WEIGHTED = 1;
-	public final static int LRU = 2;
+	public final static int LRU = 1;
 	/** GLES only supports up to 32 textures */
 	public final static int MAX_GLES_UNITS = 32;
 	/** The index of the first exclusive texture unit */
 	private final int offset;
 	/** The amount of exclusive textures that may be used */
 	private final int count;
-	/** The weight added to a texture when its reused */
-	private final int reuseWeight;
 	/** The textures currently exclusive bound */
 	private final GLTexture[] textures;
-	/** The weight (reuseWeight * reused - discarded) of the textures */
-	private final int[] weights;
 	/** Texture units ordered from most to least recently used */
 	private int [] unitsLRU;
 	/** The method of binding to use */
@@ -77,8 +72,6 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this.offset = offset;
 		this.count = count;
 		this.textures = new GLTexture[count];
-		this.reuseWeight = reuseWeight;
-		this.weights = (method == WEIGHTED) ? new int[count] : null;
 		this.unitsLRU = (method == LRU) ? new int[count] : null;
 	}
 
@@ -92,7 +85,6 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public void begin () {
 		for (int i = 0; i < count; i++) {
 			textures[i] = null;
-			if (weights != null) weights[i] = 0;
 			if (unitsLRU != null) unitsLRU[i] = i;
 		}
 	}
@@ -128,9 +120,6 @@ public final class DefaultTextureBinder implements TextureBinder {
 		switch (method) {
 		case ROUNDROBIN:
 			result = offset + (idx = bindTextureRoundRobin(texture));
-			break;
-		case WEIGHTED:
-			result = offset + (idx = bindTextureWeighted(texture));
 			break;
 		case LRU:
 			result = offset + (idx = bindTextureLRU(texture));
@@ -192,28 +181,6 @@ public final class DefaultTextureBinder implements TextureBinder {
 			texture.bind(offset + idx);
 		}
 		return idx;
-	}
-
-	private final int bindTextureWeighted (final GLTexture texture) {
-		int result = -1;
-		int weight = weights[0];
-		int windex = 0;
-		for (int i = 0; i < count; i++) {
-			if (textures[i] == texture) {
-				result = i;
-				weights[i] += reuseWeight;
-			} else if (weights[i] < 0 || --weights[i] < weight) {
-				weight = weights[i];
-				windex = i;
-			}
-		}
-		if (result < 0) {
-			textures[windex] = texture;
-			weights[windex] = 100;
-			texture.bind(offset + (result = windex));
-		} else
-			reused = true;
-		return result;
 	}
 
 	@Override
