@@ -18,9 +18,11 @@ package com.badlogic.gdx.graphics.g3d.utils;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLTexture;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -32,6 +34,8 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public final static int WEIGHTED = 1;
 	/** GLES only supports up to 32 textures */
 	public final static int MAX_GLES_UNITS = 32;
+	/** Enables workaround for macOS that limits count to 1 */
+	public static boolean enableMacOSWorkaround = true;
 	/** The index of the first exclusive texture unit */
 	private final int offset;
 	/** The amount of exclusive textures that may be used */
@@ -66,8 +70,13 @@ public final class DefaultTextureBinder implements TextureBinder {
 	}
 
 	public DefaultTextureBinder (final int method, final int offset, int count, final int reuseWeight) {
-		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
-		if (count < 0) count = max - offset;
+		int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
+		if (count < 0) {
+			if (enableMacOSWorkaround && UIUtils.isMac && Gdx.app.getType() == ApplicationType.Desktop)
+				count = 1;
+			else
+				count = max - offset;
+		}
 		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
