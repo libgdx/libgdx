@@ -15,6 +15,7 @@
 - API Change: scene2d: In TextField, only revert the text if the change event was cancelled. This allows the text to be manipulated in the change listener.
 - API Change: scene2d: Tree.Node#removeAll renamed to clearChildren.
 - API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
+- API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
