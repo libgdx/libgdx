@@ -49,6 +49,15 @@ public class Rectangle implements Serializable, Shape2D {
 		this.height = height;
 	}
 
+    /**
+     * Constructs a new rectangle with the given center point.
+     * @param center The center point
+     * @param width The width
+     * @param height The height */
+    public Rectangle (Vector2 center, float width, float height){
+        this(center.x - width / 2, center.y - height / 2, width, height);
+    }
+
 	/** Constructs a rectangle based on the given rectangle
 	 * @param rect The rectangle */
 	public Rectangle (Rectangle rect) {
