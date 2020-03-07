@@ -58,15 +58,10 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this(method, offset, -1);
 	}
 
-	/** Uses reuse weight of 10 */
-	public DefaultTextureBinder (final int method, final int offset, final int count) {
-		this(method, offset, count, 10);
-	}
-
-	public DefaultTextureBinder (final int method, final int offset, int count, final int reuseWeight) {
+	public DefaultTextureBinder (final int method, final int offset, int count) {
 		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
 		if (count < 0) count = max - offset;
-		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
+		if (offset < 0 || count < 0 || (offset + count) > max)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
 		this.offset = offset;
