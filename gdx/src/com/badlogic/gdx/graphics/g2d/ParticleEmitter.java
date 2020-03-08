@@ -703,6 +703,23 @@ public class ParticleEmitter {
 		this.spriteMode = spriteMode;
 	}
 
+	/**
+	 * Allocates max particles emitter can hold. Usually called early on to avoid allocation on updates.
+	 * {@link #setSprites(Array)} must have been set before calling this method
+	 */
+	public void preAllocateParticles () {
+		if (sprites.isEmpty())
+			throw new IllegalStateException("ParticleEmitter.setSprites() must have been called before preAllocateParticles()");
+		for (int index = 0; index < particles.length; index++) {
+			Particle particle = particles[index];
+			if (particle == null) {
+				particles[index] = particle = newParticle(sprites.first());
+				particle.flip(flipX, flipY);
+			}
+		}
+	}
+
+
 	/** Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
 	 * to stop smoothly. */
 	public void allowCompletion () {

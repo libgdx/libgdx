@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /** 2D scene graph node that may contain other actors.
@@ -40,7 +41,7 @@ public class Group extends Actor implements Cullable {
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
-	private Rectangle cullingArea;
+	@Null private Rectangle cullingArea;
 
 	public void act (float delta) {
 		super.act(delta);
@@ -228,16 +229,18 @@ public class Group extends Actor implements Cullable {
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
 	 * actors.
 	 * @param cullingArea May be null. */
-	public void setCullingArea (Rectangle cullingArea) {
+	public void setCullingArea (@Null Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
 	/** @return May be null.
 	 * @see #setCullingArea(Rectangle) */
+	@Null
 	public Rectangle getCullingArea () {
 		return cullingArea;
 	}
 
+	@Null
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
 		if (!isVisible()) return null;
@@ -335,7 +338,7 @@ public class Group extends Actor implements Cullable {
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
 	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
 	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
-	 * @return the actor removed from this group or null. */
+	 * @return the actor removed from this group. */
 	public Actor removeActorAt (int index, boolean unfocus) {
 		Actor actor = children.removeIndex(index);
 		if (unfocus) {
@@ -369,6 +372,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the
 	 * group. */
+	@Null
 	public <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)

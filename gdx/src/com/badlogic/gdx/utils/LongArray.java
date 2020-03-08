@@ -371,8 +371,10 @@ public class LongArray {
 		if (!ordered) return super.hashCode();
 		long[] items = this.items;
 		int h = 1;
-		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + (int)(items[i] ^ (items[i] >>> 32));
+		for (int i = 0, n = size; i < n; i++) {
+			long item = items[i];
+			h = h * 31 + (int)(item ^ (item >>> 32));
+		}
 		return h;
 	}
 

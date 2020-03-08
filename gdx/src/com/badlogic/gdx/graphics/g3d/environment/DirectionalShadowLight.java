@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 /** @deprecated Experimental, likely to change, do not use!
  * @author Xoppa */
+@Deprecated
 public class DirectionalShadowLight extends DirectionalLight implements ShadowMap, Disposable {
 	protected FrameBuffer fbo;
 	protected Camera cam;
@@ -39,6 +40,7 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 	protected final TextureDescriptor textureDesc;
 
 	/** @deprecated Experimental, likely to change, do not use! */
+	@Deprecated
 	public DirectionalShadowLight (int shadowMapWidth, int shadowMapHeight, float shadowViewportWidth, float shadowViewportHeight,
 		float shadowNear, float shadowFar) {
 		fbo = new FrameBuffer(Format.RGBA8888, shadowMapWidth, shadowMapHeight, true);

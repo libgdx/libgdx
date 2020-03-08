@@ -59,7 +59,7 @@ public class DataOutput extends DataOutputStream {
 
 	/** Writes a length and then the string as UTF8.
 	 * @param value May be null. */
-	public void writeString (String value) throws IOException {
+	public void writeString (@Null String value) throws IOException {
 		if (value == null) {
 			write(0);
 			return;
