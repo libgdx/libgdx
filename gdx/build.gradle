@@ -19,8 +19,9 @@ apply plugin: "java"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-sourceSets.main.java.srcDirs = ["src/com"]
-sourceSets.main.resources.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["src"]
+sourceSets.main.java.srcDirs = ["src"]
+
 sourceSets.test.java.srcDirs = ["test"]
 
 compileJava {
