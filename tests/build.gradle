@@ -20,7 +20,7 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
     sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["src"]
+    sourceSets.main.resources.srcDirs = ["src/com"]
 
     compileJava.options.encoding = 'UTF-8'
 

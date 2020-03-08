@@ -20,7 +20,7 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["src/com"]
 sourceSets.test.java.srcDirs = ["test"]
 
 compileJava {
