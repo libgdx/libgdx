@@ -31,6 +31,7 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
@@ -325,7 +326,7 @@ public interface Net {
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
-	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
+	public void sendHttpRequest (HttpRequest httpRequest, @Null HttpResponseListener httpResponseListener);
 
 	public void cancelHttpRequest (HttpRequest httpRequest);
 

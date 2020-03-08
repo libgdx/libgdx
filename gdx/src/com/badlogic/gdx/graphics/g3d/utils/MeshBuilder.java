@@ -363,11 +363,14 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setUVRange (TextureRegion region) {
-		if (!(hasUVTransform = (region != null))) {
+		if (region == null) {
+			hasUVTransform = false;
 			uOffset = vOffset = 0f;
 			uScale = vScale = 1f;
-		} else
+		} else {
+			hasUVTransform = true;
 			setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+		}
 	}
 
 	@Override
@@ -456,6 +459,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureRectangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureRectangles (int numRectangles) {
 		ensureVertices(4 * numRectangles);
 		ensureRectangleIndices(numRectangles);

@@ -29,7 +29,7 @@ public class Sort {
 
 	public <T extends Comparable> void sort (Array<T> a) {
 		if (comparableTimSort == null) comparableTimSort = new ComparableTimSort();
-		comparableTimSort.doSort((Object[])a.items, 0, a.size);
+		comparableTimSort.doSort(a.items, 0, a.size);
 	}
 
 	/** The specified objects must implement {@link Comparable}. */
@@ -46,7 +46,7 @@ public class Sort {
 
 	public <T> void sort (Array<T> a, Comparator<? super T> c) {
 		if (timSort == null) timSort = new TimSort();
-		timSort.doSort((Object[])a.items, (Comparator)c, 0, a.size);
+		timSort.doSort(a.items, c, 0, a.size);
 	}
 
 	public <T> void sort (T[] a, Comparator<? super T> c) {
