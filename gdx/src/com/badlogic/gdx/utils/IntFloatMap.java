@@ -226,11 +226,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		float oldValue = valueTable[i];
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != 0 && next != place(key)) {
-			keyTable[i] = key;
-			valueTable[i] = valueTable[next];
-			i = next;
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
@@ -522,10 +525,13 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 				int[] keyTable = map.keyTable;
 				float[] valueTable = map.valueTable;
 				int mask = map.mask, next = i + 1 & mask, key;
-				while ((key = keyTable[next]) != 0 && next != map.place(key)) {
-					keyTable[i] = key;
-					valueTable[i] = valueTable[next];
-					i = next;
+				while ((key = keyTable[next]) != 0) {
+					int placement = map.place(key);
+					if ((next - placement & mask) > (i - placement & mask)) {
+						keyTable[i] = key;
+						valueTable[i] = valueTable[next];
+						i = next;
+					}
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;

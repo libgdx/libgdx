@@ -224,12 +224,14 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		if (i < 0) return defaultValue;
 		int[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
-		int oldValue = valueTable[i];
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != 0 && next != place(key)) {
-			keyTable[i] = key;
-			valueTable[i] = valueTable[next];
-			i = next;
+		int oldValue = valueTable[i], mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
@@ -521,10 +523,13 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 				int[] keyTable = map.keyTable;
 				int[] valueTable = map.valueTable;
 				int mask = map.mask, next = i + 1 & mask, key;
-				while ((key = keyTable[next]) != 0 && next != map.place(key)) {
-					keyTable[i] = key;
-					valueTable[i] = valueTable[next];
-					i = next;
+				while ((key = keyTable[next]) != 0) {
+					int placement = map.place(key);
+					if ((next - placement & mask) > (i - placement & mask)) {
+						keyTable[i] = key;
+						valueTable[i] = valueTable[next];
+						i = next;
+					}
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;
