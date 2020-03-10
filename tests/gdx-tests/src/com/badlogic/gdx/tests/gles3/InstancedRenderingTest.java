@@ -84,8 +84,7 @@ public class InstancedRenderingTest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		shader.begin();
+		shader.bind();
 		mesh.render(shader, GL30.GL_TRIANGLES);
-		shader.end();
 	}
 }

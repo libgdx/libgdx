@@ -686,19 +686,21 @@ public class ShaderProgram implements Disposable {
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
 	}
 
-	/** Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call
-	 * {@link ShaderProgram#end()}. */
+	/** @deprecated use {@link #bind()} instead, this method will be remove in future version */
+	@Deprecated
 	public void begin () {
+		bind();
+	}
+
+	public void bind(){
 		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUseProgram(program);
 	}
 
-	/** Disables this shader. Must be called when one is done with the shader. Don't mix it with dispose, that will release the
-	 * shader resources. */
+	/** @deprecated no longer necessary, this method will be remove in future version */
+	@Deprecated
 	public void end () {
-		GL20 gl = Gdx.gl20;
-		gl.glUseProgram(0);
 	}
 
 	/** Disposes all resources associated with this shader. Must be called when the shader is no longer used. */
