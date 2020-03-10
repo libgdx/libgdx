@@ -44,15 +44,11 @@ import com.badlogic.gdx.utils.ObjectMap;
  * 
  * <p>
  * After construction a ShaderProgram can be used to draw {@link Mesh}. To make the GPU use a specific ShaderProgram the programs
- * {@link ShaderProgram#begin()} method must be used which effectively binds the program.
+ * {@link ShaderProgram#bind()} method must be used which effectively binds the program.
  * </p>
  * 
  * <p>
  * When a ShaderProgram is bound one can set uniforms, vertex attributes and attributes as needed via the respective methods.
- * </p>
- * 
- * <p>
- * A ShaderProgram can be unbound with a call to {@link ShaderProgram#end()}
  * </p>
  * 
  * <p>
