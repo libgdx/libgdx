@@ -120,12 +120,11 @@ public class TextureArrayTest extends GdxTest {
 
 		textureArray.bind();
 
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformi("u_textureArray", 0);
 		shaderProgram.setUniformMatrix("u_projViewTrans", camera.combined);
 		shaderProgram.setUniformMatrix("u_modelView", modelView);
 		terrain.render(shaderProgram, GL20.GL_TRIANGLES);
-		shaderProgram.end();
 	}
 
 	@Override
