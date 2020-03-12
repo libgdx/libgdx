@@ -200,11 +200,14 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		float oldValue = valueTable[i];
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != null && next != place(key)) {
-			keyTable[i] = key;
-			valueTable[i] = valueTable[next];
-			i = next;
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != null) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = null;
@@ -253,7 +256,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	public boolean containsValue (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--)
+		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
@@ -268,7 +271,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	public K findKey (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i > 0; i--) {
+		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
 		}
@@ -370,9 +373,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -389,9 +395,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Values} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Values} constructor for nested or multithreaded iteration. */
 	public Values values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -408,9 +417,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Keys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);
@@ -472,10 +484,13 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			float[] valueTable = map.valueTable;
 			int mask = map.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[next]) != null && next != map.place(key)) {
-				keyTable[i] = key;
-				valueTable[i] = valueTable[next];
-				i = next;
+			while ((key = keyTable[next]) != null) {
+				int placement = map.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
+					keyTable[i] = key;
+					valueTable[i] = valueTable[next];
+					i = next;
+				}
 				next = next + 1 & mask;
 			}
 			keyTable[i] = null;

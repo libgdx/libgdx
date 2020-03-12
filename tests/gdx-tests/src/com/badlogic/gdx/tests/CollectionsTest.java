@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tests;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -43,8 +45,6 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Method;
-
-import java.util.Iterator;
 
 /** Tests for the collection classes. Currently, only equals() and hashCode() methods are tested. */
 public class CollectionsTest extends GdxTest {
@@ -320,6 +320,33 @@ public class CollectionsTest extends GdxTest {
 		assertEquals(thirdSet, thirdSet);
 	}
 
+	public void testEntrySet () {
+		int hmSize = 1000;
+		Object[] objArray = new Object[hmSize];
+		Object[] objArray2 = new Object[hmSize];
+		for (int i = 0; i < objArray.length; i++) {
+			objArray[i] = i;
+			objArray2[i] = objArray[i].toString();
+		}
+		ObjectMap hm = new ObjectMap();
+		for (int i = 0; i < objArray.length; i++)
+			hm.put(objArray2[i], objArray[i]);
+		hm.put("test", null);
+
+		ObjectMap.Entries s = hm.entries();
+		Iterator i = s.iterator();
+		while (i.hasNext()) {
+			ObjectMap.Entry m = (ObjectMap.Entry)i.next();
+			assertEquals(hm.containsKey(m.key), true);
+			assertEquals(hm.containsValue(m.value, false), true);
+		}
+
+		ObjectMap.Entries iter = s.iterator();
+		iter.reset();
+		hm.remove(iter.next());
+		assertEquals(1001, hm.size);
+	}
+
 	public void create () {
 		testMap(ObjectMap.class, values, valuesWithNulls);
 		testMap(OrderedMap.class, values, valuesWithNulls);
@@ -350,6 +377,8 @@ public class CollectionsTest extends GdxTest {
 
 		testSet(ObjectSet.class, problemValues);
 		testSet(OrderedSet.class, problemValues);
+
+		testEntrySet();
 
 		System.out.println("Success!");
 	}

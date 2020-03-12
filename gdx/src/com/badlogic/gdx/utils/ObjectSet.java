@@ -185,10 +185,13 @@ public class ObjectSet<T> implements Iterable<T> {
 		int i = locateKey(key);
 		if (i < 0) return false;
 		T[] keyTable = this.keyTable;
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != null && next != place(key)) {
-			keyTable[i] = key;
-			i = next;
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != null) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = null;
@@ -391,9 +394,12 @@ public class ObjectSet<T> implements Iterable<T> {
 			K[] keyTable = set.keyTable;
 			int mask = set.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[next]) != null && next != set.place(key)) {
-				keyTable[i] = key;
-				i = next;
+			while ((key = keyTable[next]) != null) {
+				int placement = set.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
+					keyTable[i] = key;
+					i = next;
+				}
 				next = next + 1 & mask;
 			}
 			keyTable[i] = null;
