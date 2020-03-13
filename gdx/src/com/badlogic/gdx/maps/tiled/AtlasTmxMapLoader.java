@@ -199,13 +199,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					if (region == null) {
 						// Texture region not found on atlas, try "source" location next
 						FileHandle imageFileHandle = getSourceTextureRegionFileHandle(tmxFile, source, imageElement);
-
-						if (imageFileHandle == null) {
-							throw new GdxRuntimeException(
-								"Tileset image not found on atlas or filesystem.  regionsName: \"" + regionsName + "\"  imgSource: \""
-									+ imageElement.getAttribute("source") + "\"");
-						} else {
-							region = imageResolver.getImage(image.path());
+						if (imageFileHandle != null) {
+							region = imageResolver.getImage(imageFileHandle.path());
 						}
 					}
 
