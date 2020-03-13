@@ -49,7 +49,7 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
-		shader.begin();
+		shader.bind();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();
 		vbo.bind(shader);
@@ -57,7 +57,6 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 		Gdx.gl20.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, 0);
 		ibo.unbind();
 		vbo.unbind(shader);
-		shader.end();
 	}
 
 	@Override
