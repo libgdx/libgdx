@@ -59,6 +59,7 @@
 	- 32-bit: ARMv7/armhf
 	- 64-bit: ARMv8/AArch64
 - API Change: Removed arm abi from SharedLibraryLoader
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
