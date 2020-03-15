@@ -231,6 +231,12 @@ public class OpenALAudio implements Audio {
 		if (!sourceToSoundId.containsKey(sourceId)) return -1;
 		return sourceToSoundId.get(sourceId);
 	}
+	
+	public int getSourceId(long soundId) {
+		if (!soundIdToSource.containsKey(soundId))
+			return -1;
+		return soundIdToSource.get(soundId);
+	}
 
 	public void stopSound (long soundId) {
 		if (!soundIdToSource.containsKey(soundId)) return;
