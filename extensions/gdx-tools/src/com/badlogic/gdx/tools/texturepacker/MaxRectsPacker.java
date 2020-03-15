@@ -120,19 +120,19 @@ public class MaxRectsPacker implements Packer {
 			if (settings.rotation) {
 				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
 					String paddingMessage = (edgePadX || edgePadY) ? (" and edge padding " + paddingX + "*2," + paddingY + "*2") : "";
-					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
-						+ paddingMessage + ": " + rect.name + "[" + width + "," + height + "]");
+					throw new RuntimeException("Image does not fit within max page size " + settings.maxWidth + "x"
+						+ settings.maxHeight + paddingMessage + ": " + rect.name + " " + width + "x" + height);
 				}
 			} else {
 				if (width > maxWidth) {
 					String paddingMessage = edgePadX ? (" and X edge padding " + paddingX + "*2") : "";
-					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
-						+ rect.name + "[" + width + "," + height + "]");
+					throw new RuntimeException("Image does not fit within max page width " + settings.maxWidth + paddingMessage + ": "
+						+ rect.name + " " + width + "x" + height);
 				}
 				if (height > maxHeight && (!settings.rotation || width > maxHeight)) {
 					String paddingMessage = edgePadY ? (" and Y edge padding " + paddingY + "*2") : "";
-					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
-						+ rect.name + "[" + width + "," + height + "]");
+					throw new RuntimeException("Image does not fit within max page height " + settings.maxHeight + paddingMessage
+						+ ": " + rect.name + " " + width + "x" + height);
 				}
 			}
 		}

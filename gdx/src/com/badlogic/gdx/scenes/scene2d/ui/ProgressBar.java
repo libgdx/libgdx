@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
@@ -95,7 +96,6 @@ public class ProgressBar extends Widget implements Disableable {
 		return style;
 	}
 
-	@Override
 	public void act (float delta) {
 		super.act(delta);
 		if (animateTime > 0) {
@@ -105,7 +105,6 @@ public class ProgressBar extends Widget implements Disableable {
 		}
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		ProgressBarStyle style = this.style;
 		boolean disabled = this.disabled;
@@ -164,10 +163,10 @@ public class ProgressBar extends Widget implements Disableable {
 				if (round) {
 					knobAfter.draw(batch, Math.round(x + (width - knobAfter.getMinWidth()) * 0.5f),
 						Math.round(y + position + knobHeightHalf), Math.round(knobAfter.getMinWidth()),
-						Math.round(height - position - knobHeightHalf));
+						Math.round(height - position - knobHeightHalf - bgBottomHeight));
 				} else {
 					knobAfter.draw(batch, x + (width - knobAfter.getMinWidth()) * 0.5f, y + position + knobHeightHalf,
-						knobAfter.getMinWidth(), height - position - knobHeightHalf);
+						knobAfter.getMinWidth(), height - position - knobHeightHalf - bgBottomHeight);
 				}
 			}
 			if (knob != null) {
@@ -215,11 +214,11 @@ public class ProgressBar extends Widget implements Disableable {
 			if (knobAfter != null) {
 				if (round) {
 					knobAfter.draw(batch, Math.round(x + position + knobWidthHalf),
-						Math.round(y + (height - knobAfter.getMinHeight()) * 0.5f), Math.round(width - position - knobWidthHalf),
+						Math.round(y + (height - knobAfter.getMinHeight()) * 0.5f), Math.round(width - position - knobWidthHalf - bgRightWidth),
 						Math.round(knobAfter.getMinHeight()));
 				} else {
 					knobAfter.draw(batch, x + position + knobWidthHalf, y + (height - knobAfter.getMinHeight()) * 0.5f,
-						width - position - knobWidthHalf, knobAfter.getMinHeight());
+						width - position - knobWidthHalf - bgRightWidth, knobAfter.getMinHeight());
 				}
 			}
 			if (knob != null) {
@@ -252,6 +251,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
+	@Null
 	protected Drawable getKnobDrawable () {
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
 	}
@@ -360,6 +360,10 @@ public class ProgressBar extends Widget implements Disableable {
 		this.disabled = disabled;
 	}
 
+	public boolean isAnimating () {
+		return animateTime > 0;
+	}
+
 	public boolean isDisabled () {
 		return disabled;
 	}
@@ -374,18 +378,18 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
 		/** The progress bar background, stretched only in one direction. Optional. */
-		public Drawable background;
+		@Null public Drawable background;
 		/** Optional. **/
-		public Drawable disabledBackground;
+		@Null public Drawable disabledBackground;
 		/** Optional, centered on the background. */
-		public Drawable knob, disabledKnob;
+		@Null public Drawable knob, disabledKnob;
 		/** Optional. */
-		public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
+		@Null public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public ProgressBarStyle () {
 		}
 
-		public ProgressBarStyle (Drawable background, Drawable knob) {
+		public ProgressBarStyle (@Null Drawable background, @Null Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}

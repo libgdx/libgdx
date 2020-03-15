@@ -16,48 +16,34 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.EGLConfigChooser;
+import android.opengl.GLSurfaceView.Renderer;
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.DisplayCutout;
+import android.view.View;
+import android.view.WindowManager.LayoutParams;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.android.surfaceview.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
-
-import android.opengl.GLSurfaceView;
-import android.opengl.GLSurfaceView.EGLConfigChooser;
-import android.opengl.GLSurfaceView.Renderer;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.View;
-import android.view.WindowManager.LayoutParams;
-
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
-import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureArray;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.GLVersion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An implementation of {@link Graphics} for Android.
  *
@@ -76,6 +62,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
@@ -126,13 +113,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	protected void preserveEGLContextOnPause () {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if ((sdkVersion >= 11 && view instanceof GLSurfaceView20) || view instanceof GLSurfaceView20API18) {
-			try {
-				view.getClass().getMethod("setPreserveEGLContextOnPause", boolean.class).invoke(view, true);
-			} catch (Exception e) {
-				Gdx.app.log(LOG_TAG, "Method GLSurfaceView.setPreserveEGLContextOnPause not found");
-			}
-		}
+		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) ((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
+		if (view instanceof GLSurfaceView20API18) ((GLSurfaceView20API18) view).setPreserveEGLContextOnPause(true);
 	}
 
 	protected View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
@@ -305,6 +287,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		this.width = width;
 		this.height = height;
 		updatePpi();
+		updateSafeAreaInsets();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
 			app.getApplicationListener().create();
@@ -322,6 +305,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
+		updateSafeAreaInsets();
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
@@ -646,6 +630,48 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[] {getDisplayMode()};
+	}
+
+	protected void updateSafeAreaInsets() {
+		safeInsetLeft = 0;
+		safeInsetTop = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			try {
+				DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+				if (displayCutout != null) {
+					safeInsetRight = displayCutout.getSafeInsetRight();
+					safeInsetBottom = displayCutout.getSafeInsetBottom();
+					safeInsetTop = displayCutout.getSafeInsetTop();
+					safeInsetLeft = displayCutout.getSafeInsetLeft();
+				}
+			} // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
+			catch (UnsupportedOperationException e) {
+				Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
+			}
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
 	}
 
 	@Override

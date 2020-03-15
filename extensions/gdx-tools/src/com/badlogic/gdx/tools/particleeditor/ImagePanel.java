@@ -59,13 +59,16 @@ class ImagePanel extends EditorPanel {
 				public void actionPerformed (ActionEvent event) {
 					FileDialog dialog = new FileDialog(editor, "Open Image", FileDialog.LOAD);
 					if (lastDir != null) dialog.setDirectory(lastDir);
+					dialog.setMultipleMode(true);
 					dialog.setVisible(true);
-					final String file = dialog.getFile();
+					final File[] files = dialog.getFiles();
 					final String dir = dialog.getDirectory();
-					if (dir == null || file == null || file.trim().length() == 0) return;
+					if (dir == null || files == null) return;
 					lastDir = dir;
 					final ParticleEmitter emitter = editor.getEmitter();
-					emitter.getImagePaths().add(new File(dir, file).getAbsolutePath());
+					for (File file : files) {
+						emitter.getImagePaths().add(file.getAbsolutePath());
+					}
 					emitter.getSprites().clear();
 					updateImageList(emitter.getImagePaths());
 				}

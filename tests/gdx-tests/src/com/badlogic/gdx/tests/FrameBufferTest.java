@@ -64,10 +64,9 @@ public class FrameBufferTest extends GdxTest {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
 		texture.bind();
-		meshShader.begin();
+		meshShader.bind();
 		meshShader.setUniformi("u_texture", 0);
 		mesh.render(meshShader, GL20.GL_TRIANGLES);
-		meshShader.end();
 		frameBuffer.end();
 
 		stencilFrameBuffer.begin();
@@ -86,18 +85,16 @@ public class FrameBufferTest extends GdxTest {
 		Gdx.gl20.glStencilMask(0xFF);
 		Gdx.gl20.glClear(GL20.GL_STENCIL_BUFFER_BIT);
 
-		meshShader.begin();
+		meshShader.bind();
 		stencilMesh.render(meshShader, GL20.GL_TRIANGLES);
-		meshShader.end();
 
 		Gdx.gl20.glColorMask(true, true, true, true);
 		Gdx.gl20.glDepthMask(true);
 		Gdx.gl20.glStencilMask(0x00);
 		Gdx.gl20.glStencilFunc(GL20.GL_EQUAL, 1, 0xFF);
 
-		meshShader.begin();
+		meshShader.bind();
 		mesh.render(meshShader, GL20.GL_TRIANGLES);
-		meshShader.end();
 
 		Gdx.gl20.glDisable(GL20.GL_STENCIL_TEST);
 		stencilFrameBuffer.end();

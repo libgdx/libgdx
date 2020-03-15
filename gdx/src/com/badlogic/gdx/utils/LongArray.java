@@ -142,9 +142,21 @@ public class LongArray {
 		items[index] += value;
 	}
 
+	public void incr (long value) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, long value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (long value) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, long value) {
@@ -359,8 +371,10 @@ public class LongArray {
 		if (!ordered) return super.hashCode();
 		long[] items = this.items;
 		int h = 1;
-		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + (int)(items[i] ^ (items[i] >>> 32));
+		for (int i = 0, n = size; i < n; i++) {
+			long item = items[i];
+			h = h * 31 + (int)(item ^ (item >>> 32));
+		}
 		return h;
 	}
 

@@ -60,7 +60,7 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
 	 * @param object can be null */
-	public void addLast (T object) {
+	public void addLast (@Null T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
@@ -78,7 +78,7 @@ public class Queue<T> implements Iterable<T> {
 	/** Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
 	 * @see #addLast(Object)
 	 * @param object can be null */
-	public void addFirst (T object) {
+	public void addFirst (@Null T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
@@ -112,7 +112,6 @@ public class Queue<T> implements Iterable<T> {
 		final int head = this.head;
 		final int tail = this.tail;
 
-		@SuppressWarnings("unchecked")
 		final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
 		if (head < tail) {
 			// Continuous

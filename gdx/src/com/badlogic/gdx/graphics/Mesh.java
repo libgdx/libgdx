@@ -312,6 +312,11 @@ public class Mesh implements Disposable {
 
 		return this;
 	}
+	
+	/** @return Indicates whether this mesh uses instancing. */
+	public boolean isInstanced () {
+		return this.isInstanced;
+	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 *
@@ -538,7 +543,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>
@@ -562,7 +567,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>
@@ -589,7 +594,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>

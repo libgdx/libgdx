@@ -39,7 +39,7 @@ public class Lwjgl3WindowConfiguration {
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
 	boolean vSyncEnabled = true;
@@ -56,6 +56,7 @@ public class Lwjgl3WindowConfiguration {
 		windowResizable = config.windowResizable;
 		windowDecorated = config.windowDecorated;
 		windowMaximized = config.windowMaximized;
+		maximizedMonitor = config.maximizedMonitor;
 		autoIconify = config.autoIconify;
 		windowIconFileType = config.windowIconFileType;
 		if (config.windowIconPaths != null) 
@@ -107,6 +108,13 @@ public class Lwjgl3WindowConfiguration {
 	 */
 	public void setMaximized(boolean maximized) {
 		this.windowMaximized = maximized;
+	}
+	
+	/**
+	 * @param monitor what monitor the window should maximize to
+	 */
+	public void setMaximizedMonitor(Graphics.Monitor monitor) {
+		this.maximizedMonitor = (Lwjgl3Graphics.Lwjgl3Monitor) monitor;
 	}
 
 	/**
@@ -167,7 +175,7 @@ public class Lwjgl3WindowConfiguration {
 
 	/**
 	 * Sets the app to use fullscreen mode. Use the static methods like
-	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
+	 * {@link Lwjgl3ApplicationConfiguration#getDisplayMode()} on this class to enumerate connected monitors
 	 * and their fullscreen display modes.
 	 */
 	public void setFullscreenMode(DisplayMode mode) {

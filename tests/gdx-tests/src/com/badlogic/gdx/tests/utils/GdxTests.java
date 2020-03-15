@@ -64,13 +64,17 @@ import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
+import com.badlogic.gdx.tests.g3d.ParticleControllerInfluencerSingleTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
+import com.badlogic.gdx.tests.g3d.PolarAccelerationTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.TangentialAccelerationTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
+import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -117,10 +121,12 @@ public class GdxTests {
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
+		CoordinatesTest.class,
 		CpuSpriteBatchTest.class,
 		CullTest.class,
 		CursorTest.class,
 		DecalTest.class,
+		DefaultTextureBinderTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
@@ -185,6 +191,7 @@ public class GdxTests {
 		OnscreenKeyboardTest.class,
 		PathTest.class,
 		ParallaxTest.class,
+		ParticleControllerInfluencerSingleTest.class,
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
@@ -194,6 +201,7 @@ public class GdxTests {
 		PixmapPackerTest.class,
 		PixmapPackerIOTest.class,
 		PixmapTest.class,
+		PolarAccelerationTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
 		PreferencesTest.class,
@@ -235,6 +243,7 @@ public class GdxTests {
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
+		TangentialAccelerationTest.class,
 		TextAreaTest.class,
 		TextAreaTest2.class,		
 		TextButtonTest.class,

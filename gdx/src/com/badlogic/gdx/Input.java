@@ -653,7 +653,7 @@ public interface Input {
 	public boolean isButtonPressed (int button);
 
 	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
-	 * constant is meaningful before version 4.0.
+	 * constant is meaningful before version 4.0. On WebGL (GWT), only LEFT, RIGHT and MIDDLE buttons are supported.
 	 *
 	 * @param button the button to check.
 	 * @return true or false. */
