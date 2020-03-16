@@ -1,5 +1,3 @@
-package com.badlogic.gdx.setup.resources.android
-
 android {
     buildToolsVersion "%BUILD_TOOLS_VERSION%"
     compileSdkVersion %API_LEVEL%

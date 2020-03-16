@@ -1,5 +1,3 @@
-package com.badlogic.gdx.setup.resources.ios
-
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 sourceCompatibility = '1.7'

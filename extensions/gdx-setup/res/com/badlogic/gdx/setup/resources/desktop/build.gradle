@@ -1,5 +1,3 @@
-package com.badlogic.gdx.setup.resources.desktop
-
 apply plugin: "%LANG%"
 
 sourceCompatibility = 1.7

@@ -1,5 +1,3 @@
-package com.badlogic.gdx.setup.resources.html
-
 gwt {
     gwtVersion='%GWT_VERSION%' // Should match the gwt version used for building the gwt backend
     maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
