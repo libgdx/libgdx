@@ -104,6 +104,7 @@ task addSource {
         sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers').sourceSets.main.allJava.srcDirs)
         sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers-gwt').sourceSets.main.allJava.srcDirs)
         sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
     }
 }
 
