@@ -128,8 +128,9 @@ public class TextureArraySpriteBatch implements Batch {
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link#createDefaultShader()}.
 	 * @param size The max number of sprites in a single batch. Max of 8191.
 	 * @param defaultShader The default shader to use. This is not owned by the TextureArraySpriteBatch and must be disposed
-	 *           separately. */
-	public TextureArraySpriteBatch (int size, ShaderProgram defaultShader) {
+	 *           separately.
+	 * @throws IllegalStateException If the device does not support texture arrays. */
+	public TextureArraySpriteBatch (int size, ShaderProgram defaultShader) throws IllegalStateException {
 
 		// 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
 		if (size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
