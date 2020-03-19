@@ -17,6 +17,7 @@
 - API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
 - API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
 - API Change: ShaderProgram begin and end methods are deprecated in favor to bind method.
+- API Addition: Added a OpenALAudio#getSourceId(long) method.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
