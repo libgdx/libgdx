@@ -90,27 +90,31 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }   
+    }
 }
 
-configure(subprojects - project(":tests:gdx-tests-android")) {
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
     apply plugin: "java-library"
-    apply plugin: "com.diffplug.spotless"
 
     compileJava {
         options.fork = true
         options.incremental = true
     }
-    
+
     java {
         withJavadocJar()
         withSourcesJar()
     }
+}
+
+allprojects {
+    apply plugin: "com.diffplug.spotless"
 
     spotless {
         lineEndings 'UNIX'
 
         java {
+            target '*.java'
             removeUnusedImports()
             eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
         }
@@ -164,26 +168,26 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 }
 
 task fetchExternalNativesZIP() {
-   doLast {        
+   doLast {
         file("build").mkdir();
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
         new URL('https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib').withInputStream{ i -> file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib").withOutputStream{ it << i }}
     }
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 task fetchExternalNatives(dependsOn: fetchExternalNativesZIP, type: Copy) {
     from zipTree("build/gdx-angle-natives.zip")
     into "./extensions/gdx-lwjgl3-angle/res"
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 task fetchNativesZip(dependsOn: fetchExternalNatives) {
-    doLast {        
+    doLast {
         def zip = file("build/natives.zip");
-        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}        
+        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
     }
     outputs.upToDateWhen { false }
 }
@@ -191,7 +195,7 @@ task fetchNativesZip(dependsOn: fetchExternalNatives) {
 task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 apply from: rootProject.file('publish.gradle')
