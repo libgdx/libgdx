@@ -47,3 +47,5 @@ include ":tests:gdx-tests-lwjgl"
 include ":tests:gdx-tests-lwjgl3"
 
 rootProject.name = "libgdx"
+project(":extensions:gdx-box2d:gdx-box2d").name = "gdx-box2d-core"
+project(":extensions:gdx-controllers:gdx-controllers").name = "gdx-controllers-core"
