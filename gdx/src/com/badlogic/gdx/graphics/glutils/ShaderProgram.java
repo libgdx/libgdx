@@ -915,4 +915,9 @@ public class ShaderProgram implements Disposable {
 	public String getFragmentShaderSource () {
 		return fragmentShaderSource;
 	}
+
+	/** @return the handle of the shader program */
+	public int getHandle () {
+		return program;
+	}
 }

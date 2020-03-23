@@ -93,7 +93,7 @@ public class OpenALAudio implements Audio {
 		alListener(AL_VELOCITY, velocity);
 		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
 		alListener(AL_POSITION, position);
-		
+
 		recentSounds = new OpenALSound[simultaneousSources];
 	}
 
@@ -140,11 +140,8 @@ public class OpenALAudio implements Audio {
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					if (sourceToSoundId.containsKey(sourceId)) {
-						long soundId = sourceToSoundId.get(sourceId);
-						sourceToSoundId.remove(sourceId);
-						soundIdToSource.remove(soundId);
-					}
+					Long oldSoundId = sourceToSoundId.remove(sourceId);
+					if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
 
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
@@ -165,10 +162,8 @@ public class OpenALAudio implements Audio {
 		if (noDevice) return;
 		alSourceStop(sourceID);
 		alSourcei(sourceID, AL_BUFFER, 0);
-		if (sourceToSoundId.containsKey(sourceID)) {
-			long soundId = sourceToSoundId.remove(sourceID);
-			soundIdToSource.remove(soundId);
-		}
+		Long soundId = sourceToSoundId.remove(sourceID);
+		if (soundId != null) soundIdToSource.remove(soundId);
 		idleSources.add(sourceID);
 	}
 
@@ -177,10 +172,8 @@ public class OpenALAudio implements Audio {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (sourceToSoundId.containsKey(sourceID)) {
-					long soundId = sourceToSoundId.remove(sourceID);
-					soundIdToSource.remove(soundId);
-				}
+				Long soundId = sourceToSoundId.remove(sourceID);
+				if (soundId != null) soundIdToSource.remove(soundId);
 				alSourceStop(sourceID);
 				alSourcei(sourceID, AL_BUFFER, 0);
 			}
@@ -192,31 +185,27 @@ public class OpenALAudio implements Audio {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (sourceToSoundId.containsKey(sourceID)) {
-					long soundId = sourceToSoundId.remove(sourceID);
-					soundIdToSource.remove(soundId);
-				}
+				Long soundId = sourceToSoundId.remove(sourceID);
+				if (soundId != null) soundIdToSource.remove(soundId);
 				alSourceStop(sourceID);
 			}
 		}
 	}
-	
+
 	void pauseSourcesWithBuffer (int bufferID) {
 		if (noDevice) return;
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID)
-				alSourcePause(sourceID);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) alSourcePause(sourceID);
 		}
 	}
-	
+
 	void resumeSourcesWithBuffer (int bufferID) {
 		if (noDevice) return;
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED)
-					alSourcePlay(sourceID);
+				if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED) alSourcePlay(sourceID);
 			}
 		}
 	}
@@ -228,54 +217,52 @@ public class OpenALAudio implements Audio {
 	}
 
 	public long getSoundId (int sourceId) {
-		if (!sourceToSoundId.containsKey(sourceId)) return -1;
-		return sourceToSoundId.get(sourceId);
+		Long soundId = sourceToSoundId.get(sourceId);
+		return soundId != null ? soundId : -1;
+	}
+
+	public int getSourceId (long soundId) {
+		Integer sourceId = soundIdToSource.get(soundId);
+		return sourceId != null ? sourceId : -1;
 	}
 
 	public void stopSound (long soundId) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		alSourceStop(sourceId);
+		Integer sourceId = soundIdToSource.get(soundId);
+		if (sourceId != null) alSourceStop(sourceId);
 	}
-	
+
 	public void pauseSound (long soundId) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		alSourcePause(sourceId);
+		Integer sourceId = soundIdToSource.get(soundId);
+		if (sourceId != null) alSourcePause(sourceId);
 	}
-	
+
 	public void resumeSound (long soundId) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		if (alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED)
-			alSourcePlay(sourceId);
+		int sourceId = soundIdToSource.get(soundId, -1);
+		if (sourceId != -1 && alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED) alSourcePlay(sourceId);
 	}
 
 	public void setSoundGain (long soundId, float volume) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
+		Integer sourceId = soundIdToSource.get(soundId);
+		if (sourceId != null) AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 	}
 
 	public void setSoundLooping (long soundId, boolean looping) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		alSourcei(sourceId, AL10.AL_LOOPING, looping ? AL10.AL_TRUE : AL10.AL_FALSE);
+		Integer sourceId = soundIdToSource.get(soundId);
+		if (sourceId != null) alSourcei(sourceId, AL10.AL_LOOPING, looping ? AL10.AL_TRUE : AL10.AL_FALSE);
 	}
 
 	public void setSoundPitch (long soundId, float pitch) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-		AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
+		Integer sourceId = soundIdToSource.get(soundId);
+		if (sourceId != null) AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
 	}
 
 	public void setSoundPan (long soundId, float pan, float volume) {
-		if (!soundIdToSource.containsKey(soundId)) return;
-		int sourceId = soundIdToSource.get(soundId);
-
-		AL10.alSource3f(sourceId, AL10.AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
-			MathUtils.sin((pan + 1) * MathUtils.PI / 2));
-		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
+		int sourceId = soundIdToSource.get(soundId, -1);
+		if (sourceId != -1) {
+			AL10.alSource3f(sourceId, AL10.AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
+				MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+			AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
+		}
 	}
 
 	public void dispose () {

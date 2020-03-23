@@ -24,13 +24,7 @@
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-        <directory>src</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
+        <directory>res</directory>
       </resource>
     </resources>
     <plugins>

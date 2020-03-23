@@ -22,6 +22,9 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.swing.JFrame;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -80,6 +83,10 @@ public class LwjglFrame extends JFrame {
 
 			protected void exception (Throwable t) {
 				LwjglFrame.this.exception(t);
+			}
+
+			protected void postedException (Throwable ex, Throwable caller) {
+				LwjglFrame.this.postedException(ex, caller);
 			}
 
 			protected int getFrameRate () {
@@ -146,6 +153,13 @@ public class LwjglFrame extends JFrame {
 	protected void exception (Throwable ex) {
 		ex.printStackTrace();
 		lwjglCanvas.stop();
+	}
+
+	protected void postedException (Throwable ex, Throwable caller) {
+		if (caller == null) throw new RuntimeException(ex);
+		StringWriter buffer = new StringWriter(1024);
+		caller.printStackTrace(new PrintWriter(buffer));
+		throw new RuntimeException("Posted: " + buffer, ex);
 	}
 
 	/** Called before the JFrame is made displayable. */
