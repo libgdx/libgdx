@@ -60,7 +60,7 @@ public class TextureArraySpriteBatch implements Batch {
 	private final int spriteFloatSize = Sprite.SPRITE_SIZE;
 
 	/** The maximum number of available texture units for the fragment shader */
-	private int maxTextureUnits;
+	private static int maxTextureUnits = -1;
 
 	/** Textures in use (index: Texture Unit, value: Texture) */
 	private final Texture[] usedTextures;
@@ -125,45 +125,25 @@ public class TextureArraySpriteBatch implements Batch {
 	 * pixel perfect with respect to the current screen resolution.
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link#createDefaultShader()}.
+	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
 	 * @param size The max number of sprites in a single batch. Max of 8191.
 	 * @param defaultShader The default shader to use. This is not owned by the TextureArraySpriteBatch and must be disposed
 	 *           separately.
-	 * @throws IllegalStateException If the device does not support texture arrays. */
+	 * @throws IllegalStateException If the device does not support texture arrays.
+	 * @See {@link#createDefaultShader()} {@link#getMaxTextureUnits()} */
 	public TextureArraySpriteBatch (int size, ShaderProgram defaultShader) throws IllegalStateException {
 
 		// 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
 		if (size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-		// Query the number of available texture units and decide on a safe number of texture units to use
-		IntBuffer texUnitsQueryBuffer = BufferUtils.newIntBuffer(32);
+		getMaxTextureUnits();
 
-		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, texUnitsQueryBuffer);
+		if (maxTextureUnits == 0) {
+			throw new IllegalStateException("Texture Arrays are not supported on this device.");
+		}
 
-		maxTextureUnits = texUnitsQueryBuffer.get();
-
-		// Some OpenGL drivers (I'm looking at you, Intel!) do not report the right values,
-		// so we take caution and test it first, reducing the number of slots if needed.
 		if (defaultShader == null) {
-
-			// Will try to create a shader with a lower amount of texture units if creation fails.
-			while (maxTextureUnits > 0) {
-
-				try {
-
-					shader = createDefaultShader(maxTextureUnits);
-
-					break;
-
-				} catch (Exception e) {
-					maxTextureUnits /= 2;
-				}
-			}
-
-			if (maxTextureUnits == 0) {
-				throw new IllegalStateException("Texture Arrays are not supported on this device.");
-			}
-
+			shader = createDefaultShader(maxTextureUnits);
 			ownsShader = true;
 
 		} else {
@@ -192,7 +172,7 @@ public class TextureArraySpriteBatch implements Batch {
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		vertices = new float[size * (Sprite.SPRITE_SIZE + 4)];
+		vertices = new float[size * (spriteFloatSize + 4)];
 
 		int len = size * 6;
 		short[] indices = new short[len];
@@ -209,7 +189,8 @@ public class TextureArraySpriteBatch implements Batch {
 		mesh.setIndices(indices);
 	}
 
-	/** Returns a new instance of the default shader used by TextureArraySpriteBatch for GL2 when no shader is specified. */
+	/** Returns a new instance of the default shader used by TextureArraySpriteBatch for GL2 when no shader is specified.
+	 * @See {@link#getMaxTextureUnits()} */
 	public static ShaderProgram createDefaultShader (int maxTextureUnits) {
 
 		// The texture index is just passed to the fragment shader, maybe there's an more elegant way.
@@ -1084,7 +1065,7 @@ public class TextureArraySpriteBatch implements Batch {
 		vertices[idx++] = ti;
 	}
 
-	/** Flushes if the vertices array cannot hold an additional sprite ((Sprite.VERTEX_SIZE + 1) * 4 vertices) anymore. */
+	/** Flushes if the vertices array cannot hold an additional sprite ((spriteVertexSize + 1) * 4 vertices) anymore. */
 	private void flushIfFull () {
 		// original Sprite attribute size plus one extra float per sprite vertex
 		if (vertices.length - idx < spriteFloatSize + spriteFloatSize / spriteVertexSize) {
@@ -1100,7 +1081,7 @@ public class TextureArraySpriteBatch implements Batch {
 		renderCalls++;
 		totalRenderCalls++;
 
-		int spritesInBatch = idx / (Sprite.SPRITE_SIZE + 4);
+		int spritesInBatch = idx / (spriteFloatSize + 4);
 		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
 		int count = spritesInBatch * 6;
 
@@ -1232,9 +1213,10 @@ public class TextureArraySpriteBatch implements Batch {
 		return currentTextureLFUSize;
 	}
 
-	/** @return The maximum number of textures that the LFU cache can hold. This limit is imposed by the driver. */
+	/** @return The maximum number of textures that the LFU cache can hold. This limit is imposed by the driver.
+	 * @see {@link #getMaxTextureUnits()} */
 	public int getTextureLFUCapacity () {
-		return maxTextureUnits;
+		return getMaxTextureUnits();
 	}
 
 	@Override
@@ -1362,6 +1344,43 @@ public class TextureArraySpriteBatch implements Batch {
 		}
 	}
 
+	/** Queries the number of supported textures in a texture array by trying the create the default shader.<br>
+	 * The first call of this method is very expensive, after that it simply returns a cached value.
+	 * @return the number of supported textures in a texture array or zero if this feature is unsupported on this device.
+	 * @see {@link #setShader(ShaderProgram shader)} */
+	public static int getMaxTextureUnits () {
+
+		if (maxTextureUnits == -1) {
+
+			// Query the number of available texture units and decide on a safe number of texture units to use
+			IntBuffer texUnitsQueryBuffer = BufferUtils.newIntBuffer(32);
+
+			Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, texUnitsQueryBuffer);
+
+			int maxTextureUnitsLocal = texUnitsQueryBuffer.get();
+
+			// Some OpenGL drivers (I'm looking at you, Intel!) do not report the right values,
+			// so we take caution and test it first, reducing the number of slots if needed.
+			// Will try to find the maximum amount of texture units supported.
+			while (maxTextureUnitsLocal > 0) {
+
+				try {
+
+					createDefaultShader(maxTextureUnitsLocal);
+
+					break;
+
+				} catch (Exception e) {
+					maxTextureUnitsLocal /= 2;
+				}
+			}
+
+			maxTextureUnits = maxTextureUnitsLocal;
+		}
+
+		return maxTextureUnits;
+	}
+
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
 	 * coordinates attribute is called "a_texCoord0", the color attribute is called "a_color", texture unit index is called
 	 * "texture_index", this needs to be converted to int with int(...) in the fragment shader. See
@@ -1374,7 +1393,8 @@ public class TextureArraySpriteBatch implements Batch {
 	 * <p>
 	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
 	 * {@link #end()}.
-	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
+	 * @param shader the {@link ShaderProgram} or null to use the default shader.
+	 * @See {@link#createDefaultShader()} {@link#getMaxTextureUnits()} */
 	@Override
 	public void setShader (ShaderProgram shader) {
 
