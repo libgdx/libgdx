@@ -1366,7 +1366,9 @@ public class TextureArraySpriteBatch implements Batch {
 
 				try {
 
-					createDefaultShader(maxTextureUnitsLocal);
+					ShaderProgram tempProg = createDefaultShader(maxTextureUnitsLocal);
+
+					tempProg.dispose();
 
 					break;
 
