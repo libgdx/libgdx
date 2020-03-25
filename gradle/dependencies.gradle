@@ -32,10 +32,10 @@ versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "3.1.0"
-versions.multiDex = "1.0.3"
+versions.multiDex = "2.0.1"
 versions.androidSdk = 29
 versions.androidBuildTools = "28.0.3"
-versions.androidSupport = "25.+"
+versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
 
 libraries.lwjgl = [
@@ -105,7 +105,7 @@ libraries.robovm = [
 ]
 
 libraries.android = [
-        "com.android.support:support-v4:${versions.androidSupport}"
+        "androidx.fragment:fragment:${versions.androidFragment}"
 ]
 
 libraries.gwt = [
