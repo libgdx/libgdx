@@ -136,7 +136,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
-		audio = new AndroidAudio(getActivity(), config);
+		audio = createAudio(getActivity(), config);
 		files = new AndroidFiles(getResources().getAssets(), getActivity().getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this, config);
 		this.listener = listener;
@@ -445,6 +445,11 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidAudio(context, config);
 	}
 
 	@Override

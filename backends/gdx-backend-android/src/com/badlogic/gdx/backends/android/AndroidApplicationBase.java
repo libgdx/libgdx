@@ -91,4 +91,8 @@ public interface AndroidApplicationBase extends Application {
 	/** Returns the Handler object created by the application
 	 * @return The {@link Handler} object created by the application */
 	Handler getHandler ();
+
+	/** Returns the AndroidAudio to be used by the application
+	 * @return the created {@link AndroidAudio} */
+	AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config);
 }

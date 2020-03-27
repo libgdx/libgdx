@@ -70,7 +70,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
-		audio = new AndroidAudio(this.getService(), config);
+		audio = createAudio(this.getService(), config);
 
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
@@ -344,6 +344,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	@Override
 	public Handler getHandler () {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidAudio(context, config);
 	}
 
 	@Override
