@@ -64,17 +64,6 @@
                     </execution>
 
                     <execution>
-                        <id>armeabi-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi</cacheDirectory>
-                            <url>${base.url}/armeabi/libgdx-freetype.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi</outputDirectory>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
                         <id>armeabi-v7a-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -171,20 +160,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-local-armeabi</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/armeabi</directory></resource>
-                            </resources>
-                            <outputDirectory>${basedir}/target/armeabi</outputDirectory>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>copy-local-armeabi-v7a</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -238,7 +213,6 @@
                         <descriptor>desktop.xml</descriptor>
                         <descriptor>x86.xml</descriptor>
                         <descriptor>x86_64.xml</descriptor>
-                        <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
                         <descriptor>arm64-v8a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>

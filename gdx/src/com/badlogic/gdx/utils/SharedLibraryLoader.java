@@ -30,7 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
- * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
+ * in the classpath, for Android projects put the shared libraries in the libs/arm64-v8a and libs/armeabi-v7a folders.
  * @author mzechner
  * @author Nathan Sweet */
 public class SharedLibraryLoader {
