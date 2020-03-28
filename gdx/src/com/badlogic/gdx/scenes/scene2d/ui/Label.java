@@ -272,6 +272,10 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
+	public boolean isWrap () {
+		return wrap;
+	}
+
 	public int getLabelAlign () {
 		return labelAlign;
 	}
