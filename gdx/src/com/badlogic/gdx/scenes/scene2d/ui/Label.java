@@ -272,7 +272,7 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	public boolean isWrap () {
+	public boolean getWrap () {
 		return wrap;
 	}
 
