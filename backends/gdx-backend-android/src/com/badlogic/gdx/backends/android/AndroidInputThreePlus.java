@@ -27,7 +27,7 @@ import com.badlogic.gdx.Application;
 
 /** Subclass of AndroidInput, used on Android +3.x to get generic motion events for things like gamepads/joysticks and so on.
  * @author mzechner */
-public class AndroidInputThreePlus extends AndroidInput implements OnGenericMotionListener {
+public class AndroidInputThreePlus extends AndroidInputImpl implements OnGenericMotionListener {
 	ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 

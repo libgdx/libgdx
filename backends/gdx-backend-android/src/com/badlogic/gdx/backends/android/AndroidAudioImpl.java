@@ -42,12 +42,12 @@ import java.util.List;
 /** An implementation of the {@link Audio} interface for Android.
  * 
  * @author mzechner */
-public final class DefaultAndroidAudio implements AndroidAudio {
+public final class AndroidAudioImpl implements AndroidAudio {
 	private final SoundPool soundPool;
 	private final AudioManager manager;
 	private final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 
-	public DefaultAndroidAudio (Context context, AndroidApplicationConfiguration config) {
+	public AndroidAudioImpl (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				AudioAttributes audioAttrib = new AudioAttributes.Builder()

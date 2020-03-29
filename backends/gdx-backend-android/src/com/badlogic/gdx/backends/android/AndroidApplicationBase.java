@@ -66,7 +66,7 @@ public interface AndroidApplicationBase extends Application {
 	void startActivity (Intent intent);
 
 	/** Returns the {@link AndroidInput} object associated with this {@link AndroidApplicationBase}
-	 * 
+	 *
 	 * @return the {@link AndroidInput} object */
 	@Override
 	AndroidInput getInput ();
@@ -95,4 +95,9 @@ public interface AndroidApplicationBase extends Application {
 	/** Returns the AndroidAudio to be used by the application
 	 * @return the created {@link AndroidAudio} */
 	AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config);
+
+	/** Returns the AndroidInput to be used by the application
+	 * @return the created {@link AndroidInput} */
+	AndroidInput createInput (Application activity, Context context, Object view,
+		AndroidApplicationConfiguration config);
 }

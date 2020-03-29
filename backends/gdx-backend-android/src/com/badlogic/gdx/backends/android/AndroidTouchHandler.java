@@ -20,7 +20,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 
 public interface AndroidTouchHandler {
-	public void onTouch (MotionEvent event, AndroidInput input);
+	public void onTouch (MotionEvent event, AndroidInputImpl input);
 
 	public boolean supportsMultitouch (Context app);
 }

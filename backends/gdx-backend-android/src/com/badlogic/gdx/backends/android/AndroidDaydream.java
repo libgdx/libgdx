@@ -113,7 +113,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
+		input = createInput(this, this, graphics.view, config);
 		audio = createAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
@@ -159,7 +159,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 		// detect an already connected bluetooth keyboardAvailable
 		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
-			this.getInput().keyboardAvailable = true;
+			input.setKeyboardAvailable(true);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -190,14 +190,8 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		graphics.setContinuousRendering(true);
 		graphics.pause();
 
-		input.unregisterSensorListeners();
+		input.onDreamingStopped();
 
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
 		graphics.clearManagedCaches();
 		graphics.destroy();
 		graphics.setContinuousRendering(isContinuous);
@@ -216,7 +210,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		getInput().registerSensorListeners();
+		input.onDreamingStarted();
 
 		if (graphics != null) {
 			graphics.onResumeGLSurfaceView();
@@ -307,7 +301,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		super.onConfigurationChanged(config);
 		boolean keyboardAvailable = false;
 		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
-		input.keyboardAvailable = keyboardAvailable;
+		input.setKeyboardAvailable(keyboardAvailable);
 	}
 
 	@Override
@@ -416,7 +410,12 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidAudio(context, config);
+		return new AndroidAudioImpl(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class AndroidInputFactory {
 		if (sdkVersion >= 12) {
 			return new AndroidInputThreePlus(activity, context, view, config);
 		} else {
-			return new AndroidInput(activity, context, view, config);
+			return new AndroidInputImpl(activity, context, view, config);
 		}
 	}
 }

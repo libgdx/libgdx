@@ -67,7 +67,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
 		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		input = createInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
 		audio = createAudio(this.getService(), config);
@@ -348,7 +348,12 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidAudio(context, config);
+		return new AndroidAudioImpl(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
 	}
 
 	@Override
