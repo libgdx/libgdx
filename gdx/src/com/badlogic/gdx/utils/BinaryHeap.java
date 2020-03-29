@@ -81,20 +81,28 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 	/** Removes the first item in the heap and returns it. This is the item with the lowest value (or highest value if this heap is
 	 * configured as a max heap). */
 	public T pop () {
-		return remove(0);
+		Node removed = nodes[0];
+		if (--size > 0) {
+			nodes[0] = nodes[size];
+			nodes[size] = null;
+			down(0);
+		} else
+			nodes[0] = null;
+		return (T)removed;
 	}
 
 	public T remove (T node) {
-		return remove(node.index);
-	}
-
-	private T remove (int index) {
-		Node[] nodes = this.nodes;
-		Node removed = nodes[index];
-		nodes[index] = nodes[--size];
-		nodes[size] = null;
-		if (size > 0 && index < size) down(index);
-		return (T)removed;
+		if (--size > 0) {
+			Node moved = nodes[size];
+			nodes[node.index] = moved;
+			nodes[size] = null;
+			if (moved.value < node.value ^ isMaxHeap)
+				up(node.index);
+			else
+				down(node.index);
+		} else
+			nodes[0] = null;
+		return node;
 	}
 
 	/** Returns true if the heap has one or more items. */
