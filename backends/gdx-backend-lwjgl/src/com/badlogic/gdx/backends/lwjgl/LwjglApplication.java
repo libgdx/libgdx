@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
 
+import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
@@ -43,7 +44,7 @@ import java.awt.Canvas;
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
 	protected final LwjglGraphics graphics;
-	protected OpenALAudio audio;
+	protected LwjglAudio audio;
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
@@ -87,8 +88,7 @@ public class LwjglApplication implements Application {
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio) {
 			try {
-				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-					config.audioDeviceBufferSize);
+				audio = createAudio(config);
 			} catch (Throwable t) {
 				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
 				LwjglApplicationConfiguration.disableAudio = true;
@@ -272,6 +272,11 @@ public class LwjglApplication implements Application {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+	protected LwjglAudio createAudio(LwjglApplicationConfiguration config) {
+		return new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+			config.audioDeviceBufferSize);
 	}
 
 	@Override

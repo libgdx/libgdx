@@ -38,7 +38,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
-public class OpenALAudio implements Audio {
+public class OpenALAudio implements LwjglAudio {
 	private final int deviceBufferSize;
 	private final int deviceBufferCount;
 	private IntArray idleSources, allSources;
@@ -210,6 +210,7 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
+	@Override
 	public void update () {
 		if (noDevice) return;
 		for (int i = 0; i < music.size; i++)
@@ -265,6 +266,7 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
+	@Override
 	public void dispose () {
 		if (noDevice) return;
 		for (int i = 0, n = allSources.size; i < n; i++) {
