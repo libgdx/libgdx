@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import java.awt.Canvas;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
-public class LwjglApplication implements Application {
+public class LwjglApplication implements LwjglApplicationBase {
 	protected final LwjglGraphics graphics;
 	protected LwjglAudio audio;
 	protected final LwjglFiles files;
@@ -95,7 +95,7 @@ public class LwjglApplication implements Application {
 			}
 		}
 		files = new LwjglFiles();
-		input = new LwjglInput();
+		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
@@ -274,9 +274,15 @@ public class LwjglApplication implements Application {
 		return listener;
 	}
 
-	protected LwjglAudio createAudio(LwjglApplicationConfiguration config) {
+	@Override
+	public LwjglAudio createAudio(LwjglApplicationConfiguration config) {
 		return new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
 			config.audioDeviceBufferSize);
+	}
+
+	@Override
+	public LwjglInput createInput(LwjglApplicationConfiguration config) {
+		return new LwjglInputImpl();
 	}
 
 	@Override
