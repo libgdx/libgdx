@@ -163,9 +163,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener, OnGe
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
 			v.requestFocus();
+			v.setOnGenericMotionListener(this);
 		}
 		this.config = config;
 		this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
+		this.mouseHandler = new AndroidMouseHandler();
 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
@@ -190,14 +192,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener, OnGe
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		keysToCatch.add(Keys.BUTTON_CIRCLE);
-
-		// we hook into View, for LWPs we call onTouch below directly from
-		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
-		if (view instanceof View) {
-			View v = (View)view;
-			v.setOnGenericMotionListener(this);
-		}
-		mouseHandler = new AndroidMouseHandler();
 	}
 
 	@Override
