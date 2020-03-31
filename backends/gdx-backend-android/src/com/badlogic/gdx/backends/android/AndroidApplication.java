@@ -192,7 +192,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void hideStatusBar (boolean hide) {
 		if (!hide) return;
 
