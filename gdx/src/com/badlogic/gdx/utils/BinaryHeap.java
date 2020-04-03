@@ -94,8 +94,8 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 	public T remove (T node) {
 		if (--size > 0) {
 			Node moved = nodes[size];
-			nodes[node.index] = moved;
 			nodes[size] = null;
+			nodes[node.index] = moved;
 			if (moved.value < node.value ^ isMaxHeap)
 				up(node.index);
 			else
