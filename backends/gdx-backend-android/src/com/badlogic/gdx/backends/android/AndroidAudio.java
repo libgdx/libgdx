@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -113,37 +113,16 @@ public final class AndroidAudio implements Audio {
 		}
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
-		MediaPlayer mediaPlayer = new MediaPlayer();
-
-		if (aHandle.type() == FileType.Internal) {
-			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-				mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-				descriptor.close();
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error loading audio file: " + file
+		try {
+			AndroidMusic music = new AndroidMusic(this, aHandle, aHandle.type() == FileType.Internal ? AndroidMusic.INTERNAL : AndroidMusic.PATH);
+			synchronized (musics) {
+				musics.add(music);
+			}
+			return music;
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error loading audio file: " + file
 					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
-			}
-		} else {
-			try {
-				mediaPlayer.setDataSource(aHandle.file().getPath());
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
-			}
 		}
-
 	}
 
 	/** Creates a new Music instance from the provided FileDescriptor. It is the caller's responsibility to close the file
@@ -164,7 +143,7 @@ public final class AndroidAudio implements Audio {
 			mediaPlayer.setDataSource(fd);
 			mediaPlayer.prepare();
 
-			AndroidMusic music = new AndroidMusic(this, mediaPlayer);
+			AndroidMusic music = new AndroidMusic(this, fd);
 			synchronized (musics) {
 				musics.add(music);
 			}
