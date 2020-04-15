@@ -45,7 +45,7 @@ import com.badlogic.gdx.tests.box2d.VerticalStack;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Box2DTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new Chain(), new Bridge(),
+	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new ContactListenerTest(), new Chain(), new Bridge(),
 		new SphereStack(), new Cantilever(), new ApplyForce(), new ContinuousTest(), new Prismatic(), new CharacterCollision(),
 		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution(),
 		new ConveyorBelt()};
