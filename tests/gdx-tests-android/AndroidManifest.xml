@@ -54,6 +54,9 @@
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
         </activity>
+
+		<activity android:name=".TextureViewTestActivity"
+			      android:label="TextureView Test"/>
 		
 		<service android:name=".LiveWallpaper"
             android:label="@string/app_name"

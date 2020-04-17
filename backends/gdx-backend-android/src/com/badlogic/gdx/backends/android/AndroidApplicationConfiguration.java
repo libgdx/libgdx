@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.android;
 import android.hardware.SensorManager;
 import android.media.SoundPool;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
@@ -107,4 +106,9 @@ public class AndroidApplicationConfiguration {
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
+
+	/** Use {@link android.view.TextureView} instead of {@link android.view.SurfaceView}
+	 *  When it's used, you can render to area defined by view's size and position.
+	 *  And it can be transparent over any android views and layouts.*/
+	public boolean useTextureView = false;
 }

@@ -30,6 +30,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.*;
+import com.badlogic.gdx.backends.android.textureview.GLTextureView;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -115,6 +116,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) ((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
 		if (view instanceof GLSurfaceView20API18) ((GLSurfaceView20API18) view).setPreserveEGLContextOnPause(true);
+		if (view instanceof GLTextureView) ((GLTextureView) view).setPreserveEGLContextOnPause(true);
 	}
 
 	protected View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
@@ -128,6 +130,17 @@ public class AndroidGraphics implements Graphics, Renderer {
 				view.setEGLConfigChooser(configChooser);
 			else
 				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		} else if (config.useTextureView) {
+			GLTextureView view = new GLTextureView(application.getContext(), resolutionStrategy, this.config.useGL30 ? 3 : 2);
+			if (configChooser != null) {
+				view.setEGLConfigChooser(configChooser);
+			} else {
+				view.setEGLConfigChooser(this.config.r, this.config.g, this.config.b, this.config.a, this.config.depth, this.config.stencil);
+			}
+
+			view.setOpaque(false);
 			view.setRenderer(this);
 			return view;
 		} else {
@@ -145,6 +158,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onPause();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onPause();
+			if (view instanceof GLTextureView) ((GLTextureView) view).onPause();
 		}
 	}
 
@@ -152,6 +166,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onResume();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onResume();
+			if (view instanceof GLTextureView) ((GLTextureView) view).onResume();
 		}
 	}
 
@@ -725,6 +740,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+			if (view instanceof GLTextureView) ((GLTextureView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
 	}
@@ -739,6 +755,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+			if (view instanceof GLTextureView) ((GLTextureView)view).requestRender();
 		}
 	}
 
