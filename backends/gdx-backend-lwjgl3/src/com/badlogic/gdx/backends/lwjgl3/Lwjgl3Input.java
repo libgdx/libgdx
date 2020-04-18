@@ -325,7 +325,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key > 256) {
+		if (key < 0 || key >= justPressedKeys.length) {
 			return false;
 		}
 		return justPressedKeys[key];
