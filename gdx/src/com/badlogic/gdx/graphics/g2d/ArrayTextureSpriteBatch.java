@@ -231,11 +231,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		contextRestoreListener = new LifecycleListener() {
 
+			final ApplicationType appType = Gdx.app.getType();
+
 			@Override
 			public void resume () {
-
-				final ApplicationType appType = Gdx.app.getType();
-
 				if (appType == ApplicationType.Android) {
 					initializeArrayTexture();
 				}
@@ -243,6 +242,9 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 			@Override
 			public void pause () {
+				if (appType == ApplicationType.Android) {
+					disposeArrayTexture();
+				}
 			}
 
 			@Override
@@ -273,15 +275,18 @@ public class ArrayTextureSpriteBatch implements Batch {
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
 	}
 
+	private void disposeArrayTexture() {
+		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
+		Gdx.gl30.glDeleteTexture(arrayTextureHandle);
+	}
+	
 	@Override
 	public void dispose () {
 
 		Gdx.app.removeLifecycleListener(contextRestoreListener);
 
-		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
-
-		Gdx.gl30.glDeleteTexture(arrayTextureHandle);
-
+		disposeArrayTexture();
+		
 		copyFramebuffer.dispose();
 
 		mesh.dispose();
