@@ -654,32 +654,37 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		float color = this.colorPacked;
 
+		u *= subImageScaleWidth;
+		v *= subImageScaleHeight;
+		u2 *= subImageScaleWidth;
+		v2 *= subImageScaleHeight;
+
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
-		vertices[idx++] = u * subImageScaleWidth;
-		vertices[idx++] = v * subImageScaleWidth;
+		vertices[idx++] = u;
+		vertices[idx++] = v;
 		vertices[idx++] = ti;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
-		vertices[idx++] = u * subImageScaleWidth;
-		vertices[idx++] = v2 * subImageScaleWidth;
+		vertices[idx++] = u;
+		vertices[idx++] = v2;
 		vertices[idx++] = ti;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
-		vertices[idx++] = u2 * subImageScaleWidth;
-		vertices[idx++] = v2 * subImageScaleWidth;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
 		vertices[idx++] = ti;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
-		vertices[idx++] = u2 * subImageScaleWidth;
-		vertices[idx++] = v * subImageScaleWidth;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
 		vertices[idx++] = ti;
 	}
 
@@ -703,7 +708,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 		final float fy2 = y + height;
 		final float u = 0;
 		final float v = subImageScaleWidth;
-		final float u2 = subImageScaleWidth;
+		final float u2 = subImageScaleHeight;
 		final float v2 = 0;
 
 		float color = this.colorPacked;
@@ -784,10 +789,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		final float fx2 = x + width;
 		final float fy2 = y + height;
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
+		final float u = region.u * subImageScaleWidth;
+		final float v = region.v2 * subImageScaleHeight;
+		final float u2 = region.u2 * subImageScaleWidth;
+		final float v2 = region.v * subImageScaleHeight;
 
 		float color = this.colorPacked;
 
@@ -906,10 +911,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 		x4 += worldOriginX;
 		y4 += worldOriginY;
 
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
+		final float u = region.u * subImageScaleWidth;
+		final float v = region.v2 * subImageScaleHeight;
+		final float u2 = region.u2 * subImageScaleWidth;
+		final float v2 = region.v * subImageScaleHeight;
 
 		float color = this.colorPacked;
 
@@ -1049,6 +1054,16 @@ public class ArrayTextureSpriteBatch implements Batch {
 			v4 = region.v2;
 		}
 
+		u1 *= subImageScaleWidth;
+		u2 *= subImageScaleWidth;
+		u3 *= subImageScaleWidth;
+		u4 *= subImageScaleWidth;
+
+		v1 *= subImageScaleHeight;
+		v2 *= subImageScaleHeight;
+		v3 *= subImageScaleHeight;
+		v4 *= subImageScaleHeight;
+
 		float color = this.colorPacked;
 
 		vertices[idx++] = x1;
@@ -1100,10 +1115,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 		float x4 = transform.m00 * width + transform.m02;
 		float y4 = transform.m10 * width + transform.m12;
 
-		float u = region.u;
-		float v = region.v2;
-		float u2 = region.u2;
-		float v2 = region.v;
+		float u = region.u * subImageScaleWidth;
+		float v = region.v2 * subImageScaleHeight;
+		float u2 = region.u2 * subImageScaleWidth;
+		float v2 = region.v * subImageScaleHeight;
 
 		float color = this.colorPacked;
 
