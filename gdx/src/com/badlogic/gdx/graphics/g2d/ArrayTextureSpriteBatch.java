@@ -16,8 +16,14 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.Arrays;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -45,7 +51,7 @@ import com.badlogic.gdx.math.Matrix4;
  * 
  * @author mzechner (Original SpriteBatch)
  * @author Nathan Sweet (Original SpriteBatch)
- * @author VaTTeRGeR (TextureArray Extension) */
+ * @author VaTTeRGeR (ArrayTexture Extension) */
 
 public class ArrayTextureSpriteBatch implements Batch {
 
@@ -58,22 +64,31 @@ public class ArrayTextureSpriteBatch implements Batch {
 	private final int spriteVertexSize = Sprite.VERTEX_SIZE;
 	private final int spriteFloatSize = Sprite.SPRITE_SIZE;
 
-	/** The maximum number of available texture units for the fragment shader */
+	/** The maximum number of available texture slots for the fragment shader */
 	private static int maxTextureLevels = -1;
 
-	/** Textures in use (index: Texture Unit, value: Texture) */
+	/** Textures in use (index: Texture Slot, value: Texture) */
 	private final Texture[] usedTextures;
 
-	/** LFU Array (index: Texture Unit Index - value: Access frequency) */
+	/** LFU Array (index: Texture Slot - value: Access frequency) */
 	private final int[] usedTexturesLFU;
+
+	/** LFU Array of the previous begin-draw-end cycle (index: Texture Slot - value: Access frequency) */
+	private final int[] usedTexturesLFUPrevious;
+
+	private final IntBuffer FBO_READ_INTBUFF;
 
 	private final FrameBuffer copyFramebuffer;
 
-	private final int arrayTextureHandle;
+	private int arrayTextureHandle;
+	private int arrayTextureMagFilter;
+	private int arrayTextureMinFilter;
 
+	private int maxTextureWidth, maxTextureHeight;
+	
 	private float invTexWidth, invTexHeight;
-	private float subImageScaleWidth, subImageScaleHeight;
 	private float invMaxTextureWidth, invMaxTextureHeight;
+	private float subImageScaleWidth, subImageScaleHeight;
 
 	private boolean drawing = false;
 	private boolean useMipMaps = true;
@@ -111,6 +126,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 	/** The current number of texture swaps in the LFU cache. Gets reset when calling {@link#begin()} **/
 	private int currentTextureLFUSwaps = 0;
+
+	private final LifecycleListener contextRestoreListener;
 
 	/** Constructs a ArrayTextureSpriteBatch with the default shader.
 	 * @see ArrayTextureSpriteBatch#ArrayTextureSpriteBatch(int, int, int, int, ShaderProgram) */
@@ -159,6 +176,9 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		maxTextureLevels = maxConcurrentTextures;
 
+		this.maxTextureWidth = maxTextureWidth;
+		this.maxTextureHeight = maxTextureHeight;
+
 		invMaxTextureWidth = 1f / maxTextureWidth;
 		invMaxTextureHeight = 1f / maxTextureHeight;
 
@@ -171,29 +191,21 @@ public class ArrayTextureSpriteBatch implements Batch {
 			ownsShader = false;
 		}
 
-		copyFramebuffer = new FrameBuffer(Format.RGBA8888, maxTextureWidth, maxTextureHeight, false, false);
-
-		// Create ArrayTexture2D
-		GL30 gl30 = Gdx.gl30;
-
-		arrayTextureHandle = gl30.glGenTexture();
-
-		gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
-
-		gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL30.GL_RGBA, maxTextureWidth, maxTextureHeight, maxTextureLevels, 0,
-			GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
-
-		setArrayTextureFilter(GL30.GL_NEAREST, GL30.GL_LINEAR_MIPMAP_LINEAR);
-
-		gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
+		FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * Integer.BYTES).order(ByteOrder.nativeOrder()).asIntBuffer();
 
 		usedTextures = new Texture[maxTextureLevels];
 		usedTexturesLFU = new int[maxTextureLevels];
+		usedTexturesLFUPrevious = new int[maxTextureLevels];
 
-		VertexDataType vertexDataType = (Gdx.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
+		arrayTextureMagFilter = GL30.GL_NEAREST;
+		arrayTextureMinFilter = GL30.GL_LINEAR_MIPMAP_LINEAR;
+		
+		initializeArrayTexture();
+
+		copyFramebuffer = new FrameBuffer(Format.RGBA8888, maxTextureWidth, maxTextureHeight, false, false);
 
 		// The vertex data is extended with one float for the texture index.
-		mesh = new Mesh(vertexDataType, false, maxSprites * 4, maxSprites * 6,
+		mesh = new Mesh(VertexDataType.VertexBufferObjectWithVAO, false, maxSprites * 4, maxSprites * 6,
 			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
 			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"),
@@ -216,6 +228,67 @@ public class ArrayTextureSpriteBatch implements Batch {
 		}
 
 		mesh.setIndices(indices);
+
+		contextRestoreListener = new LifecycleListener() {
+
+			@Override
+			public void resume () {
+
+				final ApplicationType appType = Gdx.app.getType();
+
+				if (appType == ApplicationType.Android) {
+					initializeArrayTexture();
+				}
+			}
+
+			@Override
+			public void pause () {
+			}
+
+			@Override
+			public void dispose () {
+			}
+		};
+
+		Gdx.app.addLifecycleListener(contextRestoreListener);
+	}
+
+	private void initializeArrayTexture () {
+
+		// This forces a re-population of the Array Texture
+		currentTextureLFUSize = 0;
+
+		arrayTextureHandle = Gdx.gl30.glGenTexture();
+
+		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
+
+		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL30.GL_RGBA, maxTextureWidth, maxTextureHeight, maxTextureLevels, 0,
+			GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
+
+		setArrayTextureFilter(arrayTextureMagFilter, arrayTextureMinFilter);
+
+		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
+		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
+
+		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
+	}
+
+	@Override
+	public void dispose () {
+
+		Gdx.app.removeLifecycleListener(contextRestoreListener);
+
+		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
+
+		Gdx.gl30.glDeleteTexture(arrayTextureHandle);
+
+		copyFramebuffer.dispose();
+
+		mesh.dispose();
+
+		if (ownsShader && shader != null) {
+			shader.dispose();
+		}
 	}
 
 	/** Sets the OpenGL texture filtering modes. MipMaps will be generated on the GPU, this takes additional time when first
@@ -225,15 +298,17 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * Default minification: GL30.GL_LINEAR_MIPMAP_LINEAR -> Smooth
 	 * @param glTextureMagFilter The filtering mode used when zooming into the texture.
 	 * @param glTextureMinFilter The filtering mode used when zooming away from the texture.
+	 * @return This object for chaining or assignment.
 	 * @see <a href="https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering">OpenGL Wiki: Sampler Object - Filtering</a> */
-	public void setArrayTextureFilter (int glTextureMagFilter, int glTextureMinFilter) {
+	public ArrayTextureSpriteBatch setArrayTextureFilter (int glTextureMagFilter, int glTextureMinFilter) {
 
+		arrayTextureMagFilter = glTextureMagFilter;
+		arrayTextureMinFilter = glTextureMinFilter;
+		
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
 
 		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, glTextureMagFilter);
 		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, glTextureMinFilter);
-		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
-		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
 
 		if (glTextureMagFilter >= GL30.GL_NEAREST_MIPMAP_NEAREST && glTextureMagFilter <= GL30.GL_LINEAR_MIPMAP_LINEAR) {
 			useMipMaps = true;
@@ -244,6 +319,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 		}
 
 		mipMapsDirty = useMipMaps;
+
+		return this;
 	}
 
 	/** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
@@ -312,6 +389,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		currentTextureLFUSwaps = 0;
 
+		// We use this data to decide which texture to swap out if space is needed
+		System.arraycopy(usedTexturesLFU, 0, usedTexturesLFUPrevious, 0, maxTextureLevels);
+		Arrays.fill(usedTexturesLFU, 0);
+
 		Gdx.gl30.glDepthMask(false);
 
 		Gdx.gl30.glActiveTexture(GL30.GL_TEXTURE0);
@@ -348,22 +429,6 @@ public class ArrayTextureSpriteBatch implements Batch {
 			customShader.end();
 		} else {
 			shader.end();
-		}
-	}
-
-	@Override
-	public void dispose () {
-
-		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
-
-		Gdx.gl30.glDeleteTexture(arrayTextureHandle);
-
-		copyFramebuffer.dispose();
-
-		mesh.dispose();
-
-		if (ownsShader && shader != null) {
-			shader.dispose();
 		}
 	}
 
@@ -1208,9 +1273,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 		subImageScaleHeight = texture.getHeight() * invMaxTextureHeight;
 
 		if (subImageScaleWidth > 1f || subImageScaleHeight > 1f) {
-			throw new IllegalStateException(
-				"Texture " + texture.getTextureObjectHandle() + " is larger than the Array Texture: [" + texture.getWidth() + ","
-					+ texture.getHeight() + "] > [" + (int)(1f / invMaxTextureWidth) + "," + (int)(1f / invMaxTextureHeight) + "]");
+			throw new IllegalStateException("Texture " + texture.getTextureObjectHandle() + " is larger than the Array Texture: ["
+				+ texture.getWidth() + "," + texture.getHeight() + "] > [" + maxTextureWidth + "," + maxTextureHeight + "]");
 		}
 
 		invTexWidth = subImageScaleWidth / texture.getWidth();
@@ -1245,48 +1309,40 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 			copyTextureIntoArrayTexture(texture, currentTextureLFUSize);
 
+			currentTextureLFUSwaps++;
+			
 			return currentTextureLFUSize++;
 
 		} else {
 
-			// We have to flush if there is something in the pipeline already,
-			// otherwise the texture index of previously rendered sprites gets invalidated
-			if (idx > 0) {
-				flush();
-			}
-
+			// We try to find an unused (since calling begin()) or otherwise the least-used slot when swapping.
 			int slot = 0;
-			int slotVal = usedTexturesLFU[0];
-
-			int max = 0;
-			int average = 0;
+			int slotValPrev = usedTexturesLFUPrevious[slot];
 
 			// We search for the best candidate for a swap (least accessed) and collect some data
-			for (int i = 0; i < maxTextureLevels; i++) {
+			for (int i = 1; i < maxTextureLevels; i++) {
 
-				final int val = usedTexturesLFU[i];
+				final int val = usedTexturesLFUPrevious[i];
 
-				max = Math.max(val, max);
-
-				average += val;
-
-				if (val <= slotVal) {
+				if (val <= slotValPrev) {
 					slot = i;
-					slotVal = val;
+					slotValPrev = val;
+				}
+
+				// Early exit when a texture was found that hasn't yet been used in this or the previous rendering cycle
+				if (slotValPrev == 0 && usedTexturesLFU[slot] == 0) {
+					break;
 				}
 			}
 
-			// The LFU weights will be normalized to the range 0...100
-			final int normalizeRange = 100;
-
-			for (int i = 0; i < maxTextureLevels; i++) {
-				usedTexturesLFU[i] = usedTexturesLFU[i] * normalizeRange / max;
+			// We have to flush if there is something in the pipeline using this texture already,
+			// otherwise the texture index of previously rendered sprites gets invalidated
+			if (idx > 0 && usedTexturesLFU[slot] > 0) {
+				flush();
 			}
 
-			average = (average * normalizeRange) / (max * maxTextureLevels);
-
-			// Give the new texture a fair (average) chance of staying.
-			usedTexturesLFU[slot] = average;
+			// This texture was used once now.
+			usedTexturesLFU[slot] = 1;
 
 			usedTextures[slot] = texture;
 
@@ -1304,6 +1360,12 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * @param slot The slice of the Array Texture to copy the texture onto. */
 	private void copyTextureIntoArrayTexture (Texture texture, int slot) {
 
+		// Query current Framebuffer configuration
+		Gdx.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, FBO_READ_INTBUFF);
+
+		final int previousFrameBufferHandle = FBO_READ_INTBUFF.get(0);
+
+		// Bind CopyFrameBuffer
 		copyFramebuffer.bind();
 
 		Gdx.gl30.glFramebufferTexture2D(GL30.GL_READ_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D,
@@ -1316,7 +1378,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 		Gdx.gl30.glCopyTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, slot, 0, 0, copyFramebuffer.getWidth(),
 			copyFramebuffer.getHeight());
 
-		FrameBuffer.unbind();
+		// Restore previous FrameBuffer configuration
+		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFrameBufferHandle);
 
 		if (useMipMaps) {
 			mipMapsDirty = true;
