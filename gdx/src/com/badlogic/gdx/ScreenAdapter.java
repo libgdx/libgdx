@@ -19,6 +19,21 @@ package com.badlogic.gdx;
 /** Convenience implementation of {@link Screen}. Derive from this and only override what you need.
  * @author semtiko */
 public class ScreenAdapter implements Screen {
+
+	protected Game game;
+
+	public ScreenAdapter(Game game) {
+		this.game = game;
+	}
+
+	protected void setScreen(Screen screen) {
+		game.setScreen(screen);
+	}
+
+	protected Screen getScreen() {
+		return game.getScreen();
+	}
+
 	@Override
 	public void render (float delta) {
 	}
