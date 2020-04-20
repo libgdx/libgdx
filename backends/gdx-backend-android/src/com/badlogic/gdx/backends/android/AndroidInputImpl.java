@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchListener, OnGenericMotionListener {
+public class AndroidInputImpl implements AndroidInput {
 
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -472,40 +472,41 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 		return true;
 	}
 
-	/** Called in {@link AndroidLiveWallpaperService} on tap
-	 * @param x
-	 * @param y */
-	public void onTap (int x, int y) {
-		postTap(x, y);
-	}
-
-	/** Called in {@link AndroidLiveWallpaperService} on drop
-	 * @param x
-	 * @param y */
-	public void onDrop (int x, int y) {
-		postTap(x, y);
-	}
-
-	protected void postTap (int x, int y) {
-		synchronized (this) {
-			TouchEvent event = usedTouchEvents.obtain();
-			event.timeStamp = System.nanoTime();
-			event.pointer = 0;
-			event.x = x;
-			event.y = y;
-			event.type = TouchEvent.TOUCH_DOWN;
-			touchEvents.add(event);
-
-			event = usedTouchEvents.obtain();
-			event.timeStamp = System.nanoTime();
-			event.pointer = 0;
-			event.x = x;
-			event.y = y;
-			event.type = TouchEvent.TOUCH_UP;
-			touchEvents.add(event);
-		}
-		Gdx.app.getGraphics().requestRendering();
-	}
+// TODO Seems unused. Delete when confirmed.
+//	/** Called in {@link AndroidLiveWallpaperService} on tap
+//	 * @param x
+//	 * @param y */
+//	public void onTap (int x, int y) {
+//		postTap(x, y);
+//	}
+//
+//	/** Called in {@link AndroidLiveWallpaperService} on drop
+//	 * @param x
+//	 * @param y */
+//	public void onDrop (int x, int y) {
+//		postTap(x, y);
+//	}
+//
+//	protected void postTap (int x, int y) {
+//		synchronized (this) {
+//			TouchEvent event = usedTouchEvents.obtain();
+//			event.timeStamp = System.nanoTime();
+//			event.pointer = 0;
+//			event.x = x;
+//			event.y = y;
+//			event.type = TouchEvent.TOUCH_DOWN;
+//			touchEvents.add(event);
+//
+//			event = usedTouchEvents.obtain();
+//			event.timeStamp = System.nanoTime();
+//			event.pointer = 0;
+//			event.x = x;
+//			event.y = y;
+//			event.type = TouchEvent.TOUCH_UP;
+//			touchEvents.add(event);
+//		}
+//		Gdx.app.getGraphics().requestRendering();
+//	}
 
 	@Override
 	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
