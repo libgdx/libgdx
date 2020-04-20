@@ -24,11 +24,6 @@ import com.badlogic.gdx.Application;
 public class AndroidInputFactory {
 	public static AndroidInput newAndroidInput (Application activity, Context context, Object view,
 		AndroidApplicationConfiguration config) {
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion >= 12) {
-			return new AndroidInputThreePlus(activity, context, view, config);
-		} else {
-			return new AndroidInput(activity, context, view, config);
-		}
+		return new AndroidInput(activity, context, view, config);
 	}
 }

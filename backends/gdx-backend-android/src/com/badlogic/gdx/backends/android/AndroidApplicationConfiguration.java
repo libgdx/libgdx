@@ -98,12 +98,6 @@ public class AndroidApplicationConfiguration {
   	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 
-	/** whether to use {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} in place of the classic
-	 * {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20} on Android API 10 and lower.
-	 * In case this is true {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} will be used.
-	 * This implementation properly supports attach to and detach from window. default: false */
-	public boolean useGLSurfaceView20API18 = false;
-
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
 

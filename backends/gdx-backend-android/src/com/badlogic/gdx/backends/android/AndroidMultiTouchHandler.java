@@ -47,7 +47,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				if (android.os.Build.VERSION.SDK_INT >= 14) button = toGdxButton(event.getButtonState());
+				button = toGdxButton(event.getButtonState());
 				if (button != -1) postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;

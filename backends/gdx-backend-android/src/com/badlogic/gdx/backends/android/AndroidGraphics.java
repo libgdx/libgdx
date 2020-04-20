@@ -113,9 +113,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	protected void preserveEGLContextOnPause () {
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) ((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
-		if (view instanceof GLSurfaceView20API18) ((GLSurfaceView20API18) view).setPreserveEGLContextOnPause(true);
+		if (view instanceof GLSurfaceView20) ((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
 		if (view instanceof GLTextureView) ((GLTextureView) view).setPreserveEGLContextOnPause(true);
 	}
 
@@ -123,16 +121,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
-			GLSurfaceView20API18 view = new GLSurfaceView20API18(application.getContext(), resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else if (config.useTextureView) {
+		if (config.useTextureView) {
 			GLTextureView view = new GLTextureView(application.getContext(), resolutionStrategy, this.config.useGL30 ? 3 : 2);
 			if (configChooser != null) {
 				view.setEGLConfigChooser(configChooser);
@@ -144,7 +133,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			view.setRenderer(this);
 			return view;
 		} else {
-			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
+			GLSurfaceView view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
 			else
@@ -156,17 +145,15 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	public void onPauseGLSurfaceView () {
 		if (view != null) {
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onPause();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onPause();
-			if (view instanceof GLTextureView) ((GLTextureView) view).onPause();
+			if (view instanceof GLTextureView) ((GLTextureView)view).onPause();
 		}
 	}
 
 	public void onResumeGLSurfaceView () {
 		if (view != null) {
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onResume();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onResume();
-			if (view instanceof GLTextureView) ((GLTextureView) view).onResume();
+			if (view instanceof GLTextureView) ((GLTextureView)view).onResume();
 		}
 	}
 
@@ -738,9 +725,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 			// ignore setContinuousRendering(false) while pausing
 			this.isContinuous = enforceContinuousRendering || isContinuous;
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
-			if (view instanceof GLTextureView) ((GLTextureView)view).setRenderMode(renderMode);
+            if (view instanceof GLTextureView) ((GLTextureView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
 	}
@@ -753,9 +739,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
-			if (view instanceof GLTextureView) ((GLTextureView)view).requestRender();
+            if (view instanceof GLTextureView) ((GLTextureView)view).requestRender();
 		}
 	}
 
