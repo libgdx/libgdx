@@ -112,6 +112,7 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
+		if (newText.length() > 0) setSize(getPrefWidth(), getPrefHeight());
 		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
 	}
