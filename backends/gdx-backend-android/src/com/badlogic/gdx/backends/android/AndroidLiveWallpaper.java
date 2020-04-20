@@ -353,7 +353,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		return new AndroidInputImpl(this, this.getService(), graphics.view, config);
 	}
 
 	@Override

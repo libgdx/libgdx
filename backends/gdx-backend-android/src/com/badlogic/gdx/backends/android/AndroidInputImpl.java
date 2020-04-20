@@ -34,6 +34,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.View.OnGenericMotionListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -53,7 +54,7 @@ import java.util.List;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchListener {
+public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchListener, OnGenericMotionListener {
 
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -119,8 +120,6 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 	protected final float[] accelerometerValues = new float[3];
 	public boolean gyroscopeAvailable = false;
 	protected final float[] gyroscopeValues = new float[3];
-	private String text = null;
-	private TextInputListener textListener = null;
 	private Handler handle;
 	final Application app;
 	final Context context;
@@ -136,18 +135,19 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 	private float azimuth = 0;
 	private float pitch = 0;
 	private float roll = 0;
-	private float inclination = 0;
 	private boolean justTouched = false;
 	private InputProcessor processor;
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
-	private final AndroidOnscreenKeyboard onscreenKeyboard;
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener gyroscopeListener;
 	private SensorEventListener compassListener;
 	private SensorEventListener rotationVectorListener;
+
+	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
+	private final AndroidMouseHandler mouseHandler;
 
 	public AndroidInputImpl (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
@@ -159,9 +159,10 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
 			v.requestFocus();
+			v.setOnGenericMotionListener(this);
 		}
 		this.config = config;
-		this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
+		this.mouseHandler = new AndroidMouseHandler();
 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
@@ -845,13 +846,7 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) {
-			if (Build.VERSION.SDK_INT >= 11) {
-				return vibrator != null && vibrator.hasVibrator();
-			} else {
-				return vibrator != null;
-			}
-		}
+		if (peripheral == Peripheral.Vibrator) return vibrator != null && vibrator.hasVibrator();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;
@@ -978,6 +973,19 @@ public class AndroidInputImpl implements AndroidInput, OnKeyListener, OnTouchLis
 	@Override
 	public void addKeyListener (OnKeyListener listener) {
 		keyListeners.add(listener);
+	}
+
+	@Override
+	public boolean onGenericMotion (View view, MotionEvent event) {
+		if (mouseHandler.onGenericMotion(event, this)) return true;
+		for (int i = 0, n = genericMotionListeners.size(); i < n; i++)
+			if (genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
+		return false;
+	}
+
+	@Override
+	public void addGenericMotionListener (OnGenericMotionListener listener) {
+		genericMotionListeners.add(listener);
 	}
 
 	@Override

@@ -176,7 +176,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11) return;
+		if (!config.hideStatusBar) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -415,7 +415,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
+		return new AndroidInputImpl(this, this, graphics.view, config);
 	}
 
 	@Override

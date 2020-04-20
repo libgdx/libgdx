@@ -454,7 +454,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
+		return new AndroidInputImpl(this, getActivity(), graphics.view, config);
 	}
 
 	@Override

@@ -18,6 +18,8 @@ public interface AndroidInput extends Input {
 
 	void addKeyListener (View.OnKeyListener listener);
 
+	void addGenericMotionListener (View.OnGenericMotionListener listener);
+
 	void processEvents();
 
 	void setKeyboardAvailable(boolean available);
