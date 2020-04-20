@@ -176,7 +176,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11) return;
+		if (!config.hideStatusBar) return;
 
 		View rootView = getWindow().getDecorView();
 
