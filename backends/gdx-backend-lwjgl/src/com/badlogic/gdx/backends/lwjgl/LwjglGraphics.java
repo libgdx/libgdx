@@ -345,6 +345,7 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
+					Display.destroy();
 					if (!softwareMode && config.allowSoftwareMode) {
 						softwareMode = true;
 						System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
