@@ -16,6 +16,7 @@
 - API Change: scene2d: Tree.Node#removeAll renamed to clearChildren.
 - API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
 - API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
+- Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
