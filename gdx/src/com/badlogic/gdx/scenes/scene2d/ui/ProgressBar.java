@@ -163,10 +163,10 @@ public class ProgressBar extends Widget implements Disableable {
 				if (round) {
 					knobAfter.draw(batch, Math.round(x + (width - knobAfter.getMinWidth()) * 0.5f),
 						Math.round(y + position + knobHeightHalf), Math.round(knobAfter.getMinWidth()),
-						Math.round(height - position - knobHeightHalf));
+						Math.round(height - position - knobHeightHalf - bgBottomHeight));
 				} else {
 					knobAfter.draw(batch, x + (width - knobAfter.getMinWidth()) * 0.5f, y + position + knobHeightHalf,
-						knobAfter.getMinWidth(), height - position - knobHeightHalf);
+						knobAfter.getMinWidth(), height - position - knobHeightHalf - bgBottomHeight);
 				}
 			}
 			if (knob != null) {
@@ -214,11 +214,11 @@ public class ProgressBar extends Widget implements Disableable {
 			if (knobAfter != null) {
 				if (round) {
 					knobAfter.draw(batch, Math.round(x + position + knobWidthHalf),
-						Math.round(y + (height - knobAfter.getMinHeight()) * 0.5f), Math.round(width - position - knobWidthHalf),
+						Math.round(y + (height - knobAfter.getMinHeight()) * 0.5f), Math.round(width - position - knobWidthHalf - bgRightWidth),
 						Math.round(knobAfter.getMinHeight()));
 				} else {
 					knobAfter.draw(batch, x + position + knobWidthHalf, y + (height - knobAfter.getMinHeight()) * 0.5f,
-						width - position - knobWidthHalf, knobAfter.getMinHeight());
+						width - position - knobWidthHalf - bgRightWidth, knobAfter.getMinHeight());
 				}
 			}
 			if (knob != null) {

@@ -79,7 +79,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch (final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
 		this.ownContext = (context == null);
-		this.context = (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1)) : context;
+		this.context = (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
 		this.shaderProvider = (shaderProvider == null) ? new DefaultShaderProvider() : shaderProvider;
 	}
 

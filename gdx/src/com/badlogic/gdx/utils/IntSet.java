@@ -195,10 +195,13 @@ public class IntSet {
 		int i = locateKey(key);
 		if (i < 0) return false;
 		int[] keyTable = this.keyTable;
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != 0 && next != place(key)) {
-			keyTable[i] = key;
-			i = next;
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != 0) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
@@ -400,9 +403,12 @@ public class IntSet {
 			} else {
 				int[] keyTable = set.keyTable;
 				int mask = set.mask, next = i + 1 & mask, key;
-				while ((key = keyTable[next]) != 0 && next != set.place(key)) {
-					keyTable[i] = key;
-					i = next;
+				while ((key = keyTable[next]) != 0) {
+					int placement = set.place(key);
+					if ((next - placement & mask) > (i - placement & mask)) {
+						keyTable[i] = key;
+						i = next;
+					}
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;

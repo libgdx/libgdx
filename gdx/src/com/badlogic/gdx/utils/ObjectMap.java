@@ -193,11 +193,14 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		V oldValue = valueTable[i];
-		int next = i + 1 & mask;
-		while ((key = keyTable[next]) != null && next != place(key)) {
-			keyTable[i] = key;
-			valueTable[i] = valueTable[next];
-			i = next;
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != null) {
+			int placement = place(key);
+			if ((next - placement & mask) > (i - placement & mask)) {
+				keyTable[i] = key;
+				valueTable[i] = valueTable[next];
+				i = next;
+			}
 			next = next + 1 & mask;
 		}
 		keyTable[i] = null;
@@ -251,13 +254,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return true;
 		} else if (identity) {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return true;
 		} else {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return true;
 		}
 		return false;
@@ -276,13 +279,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (keyTable[i] != null && valueTable[i] == null) return keyTable[i];
 		} else if (identity) {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (valueTable[i] == value) return keyTable[i];
 		} else {
-			for (int i = valueTable.length - 1; i > 0; i--)
+			for (int i = valueTable.length - 1; i >= 0; i--)
 				if (value.equals(valueTable[i])) return keyTable[i];
 		}
 		return null;
@@ -407,9 +410,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -426,9 +432,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Values} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Values} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -445,9 +454,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Keys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);
@@ -509,10 +521,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			V[] valueTable = map.valueTable;
 			int mask = map.mask, next = i + 1 & mask;
 			K key;
-			while ((key = keyTable[next]) != null && next != map.place(key)) {
-				keyTable[i] = key;
-				valueTable[i] = valueTable[next];
-				i = next;
+			while ((key = keyTable[next]) != null) {
+				int placement = map.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
+					keyTable[i] = key;
+					valueTable[i] = valueTable[next];
+					i = next;
+				}
 				next = next + 1 & mask;
 			}
 			keyTable[i] = null;
