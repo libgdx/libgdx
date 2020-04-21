@@ -19,6 +19,7 @@
 - API Change: ShaderProgram begin and end methods are deprecated in favor to bind method.
 - API Addition: Added a OpenALAudio#getSourceId(long) method.
 - API Addition: Added a ShaderProgram#getHandle() method.
+- Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
