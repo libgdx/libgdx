@@ -33,7 +33,6 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnKeyListener;
-import android.view.View.OnTouchListener;
 import android.view.View.OnGenericMotionListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -170,7 +169,7 @@ public class AndroidInputImpl implements AndroidInput {
 		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
-		touchHandler = new AndroidMultiTouchHandler();
+		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
 		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
