@@ -35,6 +35,11 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>res</directory>
+      </resource>
+    </resources>
 
     <plugins>
       <plugin>

@@ -305,14 +305,6 @@ public class GdxSetup {
 		// ios robovm
 		if (builder.modules.contains(ProjectType.IOS)) {
 			project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-			project.files.add(new ProjectFile("ios/data/Default.png", false));
-			project.files.add(new ProjectFile("ios/data/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/Contents.json", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/Contents.json", false));
@@ -333,8 +325,11 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
-
-
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Base.lproj/LaunchScreen.storyboard", false));
 
 			project.files.add(new ProjectFile("ios/build.gradle", true));
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));

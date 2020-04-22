@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
+import com.badlogic.gdx.tests.BigMeshTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontMetricsTest;
@@ -521,6 +522,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new AtlasIssueTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new BigMeshTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {

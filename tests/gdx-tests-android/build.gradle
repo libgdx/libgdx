@@ -32,7 +32,7 @@ dependencies {
 	implementation project(":extensions:gdx-freetype")
 	implementation project(":backends:gdx-backend-android")
 	implementation libraries.android
-	implementation "com.android.support:multidex:${versions.multiDex}"
+	implementation "androidx.multidex:multidex:${versions.multiDex}"
 }
 
 android {

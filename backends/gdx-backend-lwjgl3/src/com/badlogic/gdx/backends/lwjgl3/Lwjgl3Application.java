@@ -22,6 +22,8 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -453,23 +455,33 @@ public class Lwjgl3Application implements Application {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
-		if (config.fullscreenMode == null && !config.windowMaximized) {
+		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
 				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
 				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
 				if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
-				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - windowWidth / 2, vidMode.height() / 2 - windowHeight / 2);
+
+				long monitorHandle = GLFW.glfwGetPrimaryMonitor();
+				if (config.windowMaximized && config.maximizedMonitor != null) {
+					monitorHandle = config.maximizedMonitor.monitorHandle;
+				}
+
+				IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
+				IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
+				IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
+				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
+				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
+
+				GLFW.glfwSetWindowPos(windowHandle,
+					    areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2,
+					    areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2);
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
-		} else if (config.windowMaximized) {
-			if (config.maximizedMonitor != null) {
-				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(config.maximizedMonitor.monitorHandle);
-				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
-			} else {
-				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
+
+			if (config.windowMaximized) {
+				GLFW.glfwMaximizeWindow(windowHandle);
 			}
 		}
 		if (config.windowIconPaths != null) {

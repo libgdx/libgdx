@@ -246,7 +246,7 @@ final public class LwjglInput implements Input {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key > 255) {
+		if (key < 0 || key >= justPressedKeys.length) {
 			return false;
 		}
 		return justPressedKeys[key];

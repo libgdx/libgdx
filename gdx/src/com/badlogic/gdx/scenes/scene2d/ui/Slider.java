@@ -116,15 +116,15 @@ public class Slider extends ProgressBar {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final SliderStyle style = getStyle();
-		final Drawable knob = getKnobDrawable();
-		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		SliderStyle style = getStyle();
+		Drawable knob = style.knob;
+		Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = position;
 
-		final float min = getMinValue();
-		final float max = getMaxValue();
+		float min = getMinValue();
+		float max = getMaxValue();
 
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();

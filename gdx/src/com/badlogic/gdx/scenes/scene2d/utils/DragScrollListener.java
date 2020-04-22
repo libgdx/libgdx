@@ -28,9 +28,8 @@ import com.badlogic.gdx.utils.Timer.Task;
  * <p>
  * If {@link ScrollPane#setFlickScroll(boolean)} is true, the scroll pane must have
  * {@link ScrollPane#setCancelTouchFocus(boolean)} false. When a drag starts that should drag rather than flick scroll, cancel the
- * scroll pane's touch focus using <code>stage.cancelTouchFocus(gloom.monstersScroll);</code>. In this case the drag scroll
- * listener must not be attached to the scroll pane, else it would also lose touch focus. Instead it can be attached to the scroll
- * pane's actor.
+ * scroll pane's touch focus using <code>stage.cancelTouchFocus(scrollPane);</code>. In this case the drag scroll listener must
+ * not be attached to the scroll pane, else it would also lose touch focus. Instead it can be attached to the scroll pane's actor.
  * <p>
  * If using drag and drop, {@link DragAndDrop#setCancelTouchFocus(boolean)} must be false.
  * @author Nathan Sweet */

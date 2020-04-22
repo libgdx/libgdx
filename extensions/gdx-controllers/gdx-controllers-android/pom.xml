@@ -36,14 +36,6 @@
 			<systemPath>${basedir}/../../../backends/gdx-backend-android/libs/android-9.0.jar</systemPath>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>com.android.support</groupId>
-			<artifactId>support-v4</artifactId>
-			<version>19.0.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/../../../backends/gdx-backend-android/libs/support-v4-19.0.1.jar</systemPath>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
 
 	<build>
