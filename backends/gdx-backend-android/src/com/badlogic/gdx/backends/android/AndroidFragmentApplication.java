@@ -135,8 +135,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
-		audio = new AndroidAudio(getActivity(), config);
+		input = createInput(this, getActivity(), graphics.view, config);
+		audio = createAudio(getActivity(), config);
 		files = new AndroidFiles(getResources().getAssets(), getActivity().getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this, config);
 		this.listener = listener;
@@ -177,7 +177,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 		// detect an already connected bluetooth keyboardAvailable
 		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
-			this.getInput().keyboardAvailable = true;
+			input.setKeyboardAvailable(true);
 		return graphics.getView();
 	}
 
@@ -305,7 +305,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		super.onConfigurationChanged(config);
 		boolean keyboardAvailable = false;
 		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
-		input.keyboardAvailable = keyboardAvailable;
+		input.setKeyboardAvailable(keyboardAvailable);
 	}
 
 	@Override
@@ -445,6 +445,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
+		return new AndroidAudioImpl(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return new AndroidInputImpl(this, getActivity(), graphics.view, config);
 	}
 
 	@Override
