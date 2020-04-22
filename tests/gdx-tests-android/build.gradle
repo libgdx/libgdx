@@ -42,6 +42,7 @@ android {
 	defaultConfig {
 		minSdkVersion versions.minAndroidSdk
 		targetSdkVersion versions.androidSdk
+		multiDexEnabled true
 	}
 
 	sourceSets {
