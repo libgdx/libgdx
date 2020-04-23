@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public class AndroidInputImpl implements AndroidInput {
+public class DefaultAndroidInput implements AndroidInput {
 
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -148,7 +148,7 @@ public class AndroidInputImpl implements AndroidInput {
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public AndroidInputImpl (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+	public DefaultAndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
 		if (view instanceof View) {

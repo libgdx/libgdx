@@ -348,12 +348,12 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new AndroidAudioImpl(context, config);
+		return new DefaultAndroidAudio(context, config);
 	}
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new AndroidInputImpl(this, this.getService(), graphics.view, config);
+		return new DefaultAndroidInput(this, this.getService(), graphics.view, config);
 	}
 
 	@Override
