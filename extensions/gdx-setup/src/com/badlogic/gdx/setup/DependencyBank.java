@@ -26,7 +26,7 @@ public class DependencyBank {
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.9.11-SNAPSHOT";
 	static String roboVMVersion = "2.3.8";
-	static String moeVersion = "1.4.0";
+	static String moeVersion = "1.5.1";
 	static String buildToolsVersion = "29.0.2";
 	static String androidAPILevel = "29";
 	static String gwtVersion = "2.8.2";
@@ -44,7 +44,7 @@ public class DependencyBank {
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.9";
 	static String androidPluginImport = "com.android.tools.build:gradle:3.4.1";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
-	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
+	static String moePluginImport = "org.multi-os-engine.community:moe-gradle:" + moeVersion;
 	
 	//Extension versions
 	static String box2DLightsVersion = "1.4";
