@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
@@ -173,7 +174,7 @@ public class IOSApplication implements Application {
 	}
 
 	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
-		return new IOSAudioImpl(config);
+		return new OALIOSAudio(config);
 	}
 
 	protected IOSGraphics createGraphics(float scale) {
@@ -185,7 +186,7 @@ public class IOSApplication implements Application {
 	}
 
 	protected IOSInput createInput() {
-		 return new IOSInputImpl(this);
+		 return new DefaultIOSInput(this);
 	}
 
 	int getIosVersion () {

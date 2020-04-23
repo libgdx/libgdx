@@ -14,21 +14,23 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.iosrobovm;
+package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import com.badlogic.gdx.backends.iosrobovm.IOSAudio;
+import com.badlogic.gdx.backends.iosrobovm.IOSMusic;
+import com.badlogic.gdx.backends.iosrobovm.IOSSound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class IOSAudioImpl implements IOSAudio {
+public class OALIOSAudio implements IOSAudio {
 
-	public IOSAudioImpl (IOSApplicationConfiguration config) {
+	public OALIOSAudio (IOSApplicationConfiguration config) {
 		if (!config.useAudio) return;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {

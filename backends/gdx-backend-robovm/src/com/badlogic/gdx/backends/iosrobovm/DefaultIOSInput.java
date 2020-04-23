@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
-public class IOSInputImpl implements IOSInput {
+public class DefaultIOSInput implements IOSInput {
 	static final int MAX_TOUCHES = 20;
 	private static final int POINTER_NOT_FOUND = -1;
 
@@ -97,7 +97,7 @@ public class IOSInputImpl implements IOSInput {
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
-	public IOSInputImpl (IOSApplication app) {
+	public DefaultIOSInput (IOSApplication app) {
 		this.app = app;
 		this.config = app.config;
 		this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
