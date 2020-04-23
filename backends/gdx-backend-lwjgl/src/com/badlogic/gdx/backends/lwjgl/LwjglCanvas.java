@@ -25,7 +25,6 @@ import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
@@ -36,7 +35,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Null;
@@ -476,11 +475,11 @@ public class LwjglCanvas implements LwjglApplicationBase {
 
 	@Override
 	public LwjglAudio createAudio (LwjglApplicationConfiguration config) {
-		return new OpenALAudio();
+		return new OpenALLwjglAudio();
 	}
 
 	@Override
 	public LwjglInput createInput (LwjglApplicationConfiguration config) {
-		return new LwjglInputImpl();
+		return new DefaultLwjglInput();
 	}
 }

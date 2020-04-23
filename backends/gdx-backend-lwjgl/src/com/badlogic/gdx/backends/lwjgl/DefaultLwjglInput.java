@@ -56,7 +56,7 @@ import com.badlogic.gdx.utils.Pool;
 /** An implementation of the {@link LwjglInput} interface hooking a LWJGL panel for input.
  * 
  * @author mzechner */
-final public class LwjglInputImpl implements LwjglInput {
+final public class DefaultLwjglInput implements LwjglInput {
 	static public float keyRepeatInitialTime = 0.4f;
 	static public float keyRepeatTime = 0.1f;
 
@@ -90,7 +90,7 @@ final public class LwjglInputImpl implements LwjglInput {
 		}
 	};
 
-	public LwjglInputImpl () {
+	public DefaultLwjglInput () {
 		Keyboard.enableRepeatEvents(false);
 		Mouse.setClipMouseCoordinatesToWindow(false);
 	}
