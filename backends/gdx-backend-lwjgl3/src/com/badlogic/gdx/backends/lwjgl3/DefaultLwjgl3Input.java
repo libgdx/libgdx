@@ -177,8 +177,9 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 		this.window = window;
 		windowHandleChanged(window.getWindowHandle());
 	}	
-	
-	void resetPollingStates() {
+
+	@Override
+	public void resetPollingStates() {
 		justTouched = false;
 		keyJustPressed = false;
 		for (int i = 0; i < justPressedKeys.length; i++) {

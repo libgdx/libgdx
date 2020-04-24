@@ -11,4 +11,5 @@ public interface Lwjgl3Input extends Input, Disposable {
 
 	void prepareNext ();
 
+	void resetPollingStates ();
 }
