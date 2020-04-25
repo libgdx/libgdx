@@ -217,6 +217,11 @@ public class LwjglCanvas implements Application {
 
 			start();
 		} catch (Exception ex) {
+			try {
+				Display.destroy();
+				if (audio != null) audio.dispose();
+			} catch (Throwable ignored) {
+			}
 			stopped();
 			exception(ex);
 			return;

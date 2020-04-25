@@ -65,7 +65,7 @@ public class DragAndDropTest extends GdxTest {
 				Payload payload = new Payload();
 				payload.setObject("Some payload!");
 
-				payload.setDragActor(new Label("Some payload!", skin));
+				payload.setDragActor(getActor());
 
 				Label validLabel = new Label("Some payload!", skin);
 				validLabel.setColor(0, 1, 0, 1);

@@ -208,19 +208,20 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return keys2;
 	}
 
-	public String toString () {
-		if (size == 0) return "{}";
+	protected String toString (String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
-		buffer.append('{');
+		if (braces) buffer.append('{');
 		Array<K> keys = this.keys;
 		for (int i = 0, n = keys.size; i < n; i++) {
 			K key = keys.get(i);
-			if (i > 0) buffer.append(", ");
-			buffer.append(key);
+			if (i > 0) buffer.append(separator);
+			buffer.append(key == this ? "(this)" : key);
 			buffer.append('=');
-			buffer.append(get(key));
+			V value = get(key);
+			buffer.append(value == this ? "(this)" : value);
 		}
-		buffer.append('}');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
