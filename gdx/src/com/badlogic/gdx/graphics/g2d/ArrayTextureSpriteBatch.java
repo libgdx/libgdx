@@ -40,8 +40,11 @@ import com.badlogic.gdx.math.Matrix4;
 
 /** Draws batched quads using indices.
  * <p>
- * This is an optimized version of the SpriteBatch that maintains an LFU texture-cache to combine draw calls with different
- * textures effectively.
+ * This is an optimized version of the SpriteBatch that maintains an LFU texture-cache inside an array texture to combine draw
+ * calls with different textures effectively.
+ * <p>
+ * Rendering to a Frame Buffer Object (FBO) is not allowed on WebGL because of current API limitations. Other platform may use
+ * this Batch to render to a FBO.
  * <p>
  * Use this Batch if you frequently utilize more than a single texture between calling {@link#begin()} and {@link#end()}. An
  * example would be if your Atlas is spread over multiple Textures or if you draw with individual Textures.
@@ -67,6 +70,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 	/** The maximum number of available texture slots for the fragment shader */
 	private static int maxTextureLevels = -1;
 
+	private static final boolean isWebGL = Gdx.app.getType().equals(ApplicationType.WebGL);
+
 	/** Textures in use (index: Texture Slot, value: Texture) */
 	private final Texture[] usedTextures;
 
@@ -85,7 +90,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 	private int arrayTextureMinFilter;
 
 	private int maxTextureWidth, maxTextureHeight;
-	
+
 	private float invTexWidth, invTexHeight;
 	private float invMaxTextureWidth, invMaxTextureHeight;
 	private float subImageScaleWidth, subImageScaleHeight;
@@ -199,7 +204,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		arrayTextureMagFilter = GL30.GL_NEAREST;
 		arrayTextureMinFilter = GL30.GL_LINEAR_MIPMAP_LINEAR;
-		
+
 		initializeArrayTexture();
 
 		copyFramebuffer = new FrameBuffer(Format.RGBA8888, maxTextureWidth, maxTextureHeight, false, false);
@@ -275,18 +280,18 @@ public class ArrayTextureSpriteBatch implements Batch {
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
 	}
 
-	private void disposeArrayTexture() {
+	private void disposeArrayTexture () {
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
 		Gdx.gl30.glDeleteTexture(arrayTextureHandle);
 	}
-	
+
 	@Override
 	public void dispose () {
 
 		Gdx.app.removeLifecycleListener(contextRestoreListener);
 
 		disposeArrayTexture();
-		
+
 		copyFramebuffer.dispose();
 
 		mesh.dispose();
@@ -309,7 +314,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		arrayTextureMagFilter = glTextureMagFilter;
 		arrayTextureMinFilter = glTextureMinFilter;
-		
+
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
 
 		Gdx.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, glTextureMagFilter);
@@ -834,8 +839,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 			// Advance idx by vertex float count
 			idx += spriteVertexSize - 2;
 
+			// Scale UV coordinates to fit array texture
 			vertices[idx++] *= subImageScaleWidth;
 			vertices[idx++] *= subImageScaleHeight;
+
 			// Inject texture unit index and advance idx
 			vertices[idx++] = ti;
 		}
@@ -1315,7 +1322,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 			copyTextureIntoArrayTexture(texture, currentTextureLFUSize);
 
 			currentTextureLFUSwaps++;
-			
+
 			return currentTextureLFUSize++;
 
 		} else {
@@ -1365,10 +1372,14 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * @param slot The slice of the Array Texture to copy the texture onto. */
 	private void copyTextureIntoArrayTexture (Texture texture, int slot) {
 
-		// Query current Framebuffer configuration
-		Gdx.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, FBO_READ_INTBUFF);
+		int previousFrameBufferHandle = 0;
 
-		final int previousFrameBufferHandle = FBO_READ_INTBUFF.get(0);
+		if (!isWebGL) {
+			// Query current Framebuffer configuration
+			Gdx.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, FBO_READ_INTBUFF);
+
+			previousFrameBufferHandle = FBO_READ_INTBUFF.get(0);
+		}
 
 		// Bind CopyFrameBuffer
 		copyFramebuffer.bind();
@@ -1383,8 +1394,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 		Gdx.gl30.glCopyTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, slot, 0, 0, copyFramebuffer.getWidth(),
 			copyFramebuffer.getHeight());
 
-		// Restore previous FrameBuffer configuration
-		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFrameBufferHandle);
+		if (!isWebGL) {
+			// Restore previous FrameBuffer configuration
+			Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFrameBufferHandle);
+		}
 
 		if (useMipMaps) {
 			mipMapsDirty = true;
