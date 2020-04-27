@@ -113,6 +113,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		String staggerAxis = root.getAttribute("staggeraxis", null);
 		String staggerIndex = root.getAttribute("staggerindex", null);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
+		boolean infinite = root.getIntAttribute("infinite", 0) == 1;
 
 		MapProperties mapProperties = map.getProperties();
 		if (mapOrientation != null) {
@@ -132,6 +133,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
+		mapProperties.put("infinite", infinite);
 		this.mapTileWidth = tileWidth;
 		this.mapTileHeight = tileHeight;
 		this.mapWidthInPixels = mapWidth * tileWidth;
@@ -210,7 +212,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 			loadBasicLayerInfo(layer, element);
 
-			int[] ids = getTileIds(element, width, height);
+			int[] ids = getTileIds(element, width, height, map.getProperties().get("infinite", Boolean.class));
 			TiledMapTileSets tilesets = map.getTileSets();
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
@@ -467,60 +469,99 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return cell;
 	}
 
-	static public int[] getTileIds (Element element, int width, int height) {
+	static public int[] getTileIds (Element element, int width, int height, boolean isMapInfinite) {
 		Element data = element.getChildByName("data");
 		String encoding = data.getAttribute("encoding", null);
 		if (encoding == null) { // no 'encoding' attribute means that the encoding is XML
 			throw new GdxRuntimeException("Unsupported encoding (XML) for TMX Layer Data");
 		}
 		int[] ids = new int[width * height];
-		if (encoding.equals("csv")) {
-			String[] array = data.getText().split(",");
-			for (int i = 0; i < array.length; i++)
-				ids[i] = (int)Long.parseLong(array[i].trim());
-		} else {
-			if (true)
-				if (encoding.equals("base64")) {
-					InputStream is = null;
-					try {
-						String compression = data.getAttribute("compression", null);
-						byte[] bytes = Base64Coder.decode(data.getText());
-						if (compression == null)
-							is = new ByteArrayInputStream(bytes);
-						else if (compression.equals("gzip"))
-							is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
-						else if (compression.equals("zlib"))
-							is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
-						else
-							throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
+		String compression = data.getAttribute("compression", null);
 
-						byte[] temp = new byte[4];
-						for (int y = 0; y < height; y++) {
-							for (int x = 0; x < width; x++) {
-								int read = is.read(temp);
-								while (read < temp.length) {
-									int curr = is.read(temp, read, temp.length - read);
-									if (curr == -1) break;
-									read += curr;
-								}
-								if (read != temp.length)
-									throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
-								ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-									| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
-							}
-						}
-					} catch (IOException e) {
-						throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
-					} finally {
-						StreamUtils.closeQuietly(is);
-					}
-				} else {
-					// any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
-					// or another editor
-					throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
-				}
+		if (isMapInfinite)
+			for (Element chunk : data.getChildrenByName("chunk")) {
+				int chunkWidth = chunk.getIntAttribute("width");
+				int chunkHeight = chunk.getIntAttribute("height");
+				loadChunk(width, height,
+						chunk.getIntAttribute("x"), chunk.getIntAttribute("y"),
+						chunkWidth, chunkHeight,
+						getTileIdsFromString(chunk.getText(), encoding, compression, chunkWidth * chunkHeight),
+						ids);
+			}
+		else
+			loadChunk(
+					width, height,
+					0, 0,
+					width, height,
+					getTileIdsFromString(data.getText(), encoding, compression, width * height), ids);
+
+		return ids;
+	}
+
+	protected static int[] getTileIdsFromString(String content, String encoding, String compression, int count) {
+		int[] ids;
+		if (encoding.equals("csv")) {
+			String[] data = content.split(",");
+			ids = new int[data.length];
+			for (int i = 0; i < data.length; i++)
+				ids[i] = (int) Long.parseLong(data[i].trim());
+			return ids;
+		} else if (encoding.equals("base64")) {
+			InputStream is = null;
+			try {
+				byte[] bytes = Base64Coder.decode(content);
+				if (compression == null)
+					is = new ByteArrayInputStream(bytes);
+				else if (compression.equals("gzip"))
+					is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
+				else if (compression.equals("zlib"))
+					is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
+				else
+					throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
+				ids = readIds(is, count);
+			} catch (IOException e) {
+				throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
+			} finally {
+				StreamUtils.closeQuietly(is);
+			}
+		} else {
+			// any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
+			// or another editor
+			throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
 		}
 		return ids;
+	}
+
+	protected static int[] readIds(InputStream is, int count) throws IOException {
+		int[] ids = new int[count];
+		byte[] temp = new byte[4];
+		for (int idIndex = 0; idIndex < count; idIndex++) {
+			int read = is.read(temp);
+			while (read < temp.length) {
+				int curr = is.read(temp, read, temp.length - read);
+				if (curr == -1) break;
+				read += curr;
+			}
+			if (read != temp.length)
+				throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
+			ids[idIndex] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
+					| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+		}
+		return ids;
+	}
+
+	protected static void loadChunk(
+			int mapWidth, int mapHeight,
+			int chunkXPos, int chunkYPos,
+			int chunkWidth, int chunkHeight,
+			int[] chunkIds, int[] mapIds) {
+		for (int chunkRow = 0; chunkRow < chunkHeight; chunkRow++)
+			for (int chunkCol = 0; chunkCol < chunkWidth; chunkCol++) {
+				int mapCol = chunkCol + chunkXPos;
+				int mapRow = chunkRow + chunkYPos;
+				if (mapCol < mapWidth && mapRow < mapHeight)
+					mapIds[mapWidth * mapRow + mapCol] = chunkIds[chunkRow * chunkWidth + chunkCol];
+			}
 	}
 
 	protected static int unsignedByteToInt (byte b) {
