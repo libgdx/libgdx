@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.glutils.GLFrameBuffer.FrameBufferTextureAttachmentSpec;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
@@ -79,7 +80,9 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
 		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
 		Texture result = new Texture(data);
-		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		if (!attachmentSpec.isDepth) {
+			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		}
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
 	}
