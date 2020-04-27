@@ -312,6 +312,11 @@ public class Mesh implements Disposable {
 
 		return this;
 	}
+	
+	/** @return Indicates whether this mesh uses instancing. */
+	public boolean isInstanced () {
+		return this.isInstanced;
+	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 *
@@ -538,7 +543,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>
@@ -562,7 +567,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>
@@ -589,7 +594,7 @@ public class Mesh implements Disposable {
 	 * </p>
 	 *
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#bind()} method has been called!
 	 * </p>
 	 *
 	 * <p>
@@ -776,7 +781,7 @@ public class Mesh implements Disposable {
 		case 1:
 			if (numIndices > 0) {
 				for (int i = offset; i < end; i++) {
-					final int idx = index.get(i) * vertexSize + posoff;
+					final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 					tmpV.set(verts.get(idx), 0, 0);
 					if (transform != null) tmpV.mul(transform);
 					out.ext(tmpV);
@@ -793,7 +798,7 @@ public class Mesh implements Disposable {
 		case 2:
 			if (numIndices > 0) {
 				for (int i = offset; i < end; i++) {
-					final int idx = index.get(i) * vertexSize + posoff;
+					final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 					tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
 					if (transform != null) tmpV.mul(transform);
 					out.ext(tmpV);
@@ -810,7 +815,7 @@ public class Mesh implements Disposable {
 		case 3:
 			if (numIndices > 0) {
 				for (int i = offset; i < end; i++) {
-					final int idx = index.get(i) * vertexSize + posoff;
+					final int idx = (index.get(i) &0xFFFF) * vertexSize + posoff;
 					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
 					if (transform != null) tmpV.mul(transform);
 					out.ext(tmpV);
@@ -852,7 +857,7 @@ public class Mesh implements Disposable {
 		switch (posAttrib.numComponents) {
 		case 1:
 			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
+				final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 				tmpV.set(verts.get(idx), 0, 0);
 				if (transform != null) tmpV.mul(transform);
 				final float r = tmpV.sub(centerX, centerY, centerZ).len2();
@@ -861,7 +866,7 @@ public class Mesh implements Disposable {
 			break;
 		case 2:
 			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
+				final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
 				if (transform != null) tmpV.mul(transform);
 				final float r = tmpV.sub(centerX, centerY, centerZ).len2();
@@ -870,7 +875,7 @@ public class Mesh implements Disposable {
 			break;
 		case 3:
 			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
+				final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
 				if (transform != null) tmpV.mul(transform);
 				final float r = tmpV.sub(centerX, centerY, centerZ).len2();

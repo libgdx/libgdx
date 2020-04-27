@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
@@ -76,8 +77,8 @@ public class Stage extends InputAdapter implements Disposable {
 	private final int[] pointerScreenX = new int[20];
 	private final int[] pointerScreenY = new int[20];
 	private int mouseScreenX, mouseScreenY;
-	private Actor mouseOverActor;
-	private Actor keyboardFocus, scrollFocus;
+	@Null private Actor mouseOverActor;
+	@Null private Actor keyboardFocus, scrollFocus;
 	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 	private boolean actionsRequestRendering = true;
 
@@ -222,7 +223,8 @@ public class Stage extends InputAdapter implements Disposable {
 		root.act(delta);
 	}
 
-	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
+	@Null
+	private Actor fireEnterAndExit (@Null Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 		Actor over = hit(tempCoords.x, tempCoords.y, true);
@@ -606,7 +608,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Sets the actor that will receive key events.
 	 * @param actor May be null.
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
-	public boolean setKeyboardFocus (Actor actor) {
+	public boolean setKeyboardFocus (@Null Actor actor) {
 		if (keyboardFocus == actor) return true;
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
@@ -634,6 +636,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive key events.
 	 * @return May be null. */
+	@Null
 	public Actor getKeyboardFocus () {
 		return keyboardFocus;
 	}
@@ -641,7 +644,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Sets the actor that will receive scroll events.
 	 * @param actor May be null.
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
-	public boolean setScrollFocus (Actor actor) {
+	public boolean setScrollFocus (@Null Actor actor) {
 		if (scrollFocus == actor) return true;
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
@@ -669,6 +672,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive scroll events.
 	 * @return May be null. */
+	@Null
 	public Actor getScrollFocus () {
 		return scrollFocus;
 	}
@@ -719,6 +723,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #screenToStageCoordinates(Vector2)}.
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
+	@Null
 	public Actor hit (float stageX, float stageY, boolean touchable) {
 		root.parentToLocalCoordinates(tempCoords.set(stageX, stageY));
 		return root.hit(tempCoords.x, tempCoords.y, touchable);
@@ -735,7 +740,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
-		stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
+		stageCoords.y = Gdx.graphics.getHeight() - stageCoords.y;
 		return stageCoords;
 	}
 
@@ -817,7 +822,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** If not {@link Debug#none}, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can
 	 * be combined with {@link #setDebugAll(boolean)}.
 	 * @param debugTableUnderMouse May be null for {@link Debug#none}. */
-	public void setDebugTableUnderMouse (Debug debugTableUnderMouse) {
+	public void setDebugTableUnderMouse (@Null Debug debugTableUnderMouse) {
 		if (debugTableUnderMouse == null) debugTableUnderMouse = Debug.none;
 		if (this.debugTableUnderMouse == debugTableUnderMouse) return;
 		this.debugTableUnderMouse = debugTableUnderMouse;

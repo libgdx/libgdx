@@ -17,10 +17,10 @@
 configure(subprojects - project(":tests:gdx-tests-android")) {
     apply plugin: "java"
 
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
     sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["src"]
+    sourceSets.main.resources.srcDirs = ["res"]
 
     compileJava.options.encoding = 'UTF-8'
 

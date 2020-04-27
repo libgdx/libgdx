@@ -35,6 +35,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	 * @param index Index of the element
 	 * @param value Element to insert
 	 * @return Element replaced by newly inserted element, null if nothing was replaced */
+	@Null
 	public E insert (int index, E value) {
 		if (first != null) {
 			Node<E> c = first;
@@ -109,18 +110,17 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		return size == 0;
 	}
 
-	/** Returns an iterator to traverse the list.<br/>
-	 * Only one iterator can be active per list at any given time.
-	 * 
-	 * @return Iterator to traverse list */
+	/** Returns an iterator to traverse the list.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Iterator} constructor for nested or multithreaded iteration. */
 	public java.util.Iterator<Node<E>> iterator () {
-		if (iterator == null) {
-			iterator = new Iterator();
-		}
+		if (Collections.allocateIterators) return new Iterator();
+		if (iterator == null) iterator = new Iterator();
 		return iterator.reset();
 	}
 
-	class Iterator implements java.util.Iterator<Node<E>> {
+	public class Iterator implements java.util.Iterator<Node<E>> {
 		private Node<E> position;
 		private Node<E> previousPosition;
 

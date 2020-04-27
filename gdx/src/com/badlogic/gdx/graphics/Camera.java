@@ -194,7 +194,7 @@ public abstract class Camera {
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		float x = screenCoords.x, y = screenCoords.y;
 		x = x - viewportX;
-		y = Gdx.graphics.getHeight() - y - 1;
+		y = Gdx.graphics.getHeight() - y;
 		y = y - viewportY;
 		screenCoords.x = (2 * x) / viewportWidth - 1;
 		screenCoords.y = (2 * y) / viewportHeight - 1;

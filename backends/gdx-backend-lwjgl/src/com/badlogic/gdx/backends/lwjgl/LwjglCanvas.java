@@ -38,6 +38,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import java.awt.Canvas;
@@ -216,6 +217,11 @@ public class LwjglCanvas implements Application {
 
 			start();
 		} catch (Exception ex) {
+			try {
+				Display.destroy();
+				if (audio != null) audio.dispose();
+			} catch (Throwable ignored) {
+			}
 			stopped();
 			exception(ex);
 			return;
@@ -284,17 +290,26 @@ public class LwjglCanvas implements Application {
 		if (executedRunnables.size == 0) return false;
 		do {
 			Runnable runnable = (Runnable)executedRunnables.pop();
-			Throwable stacktrace = (Throwable)executedRunnables.pop();
+			Throwable caller = (Throwable)executedRunnables.pop();
 			try {
 				runnable.run();
 			} catch (Throwable ex) {
-				if (stacktrace == null) throw new RuntimeException(ex);
-				StringWriter buffer = new StringWriter(1024);
-				stacktrace.printStackTrace(new PrintWriter(buffer));
-				throw new RuntimeException("Posted: " + buffer, ex);
+				postedException(ex, caller);
 			}
 		} while (executedRunnables.size > 0);
 		return true;
+	}
+
+	protected void postedException (Throwable ex, @Null Throwable caller) {
+		if (caller == null) throw new RuntimeException(ex);
+		StringWriter buffer = new StringWriter(1024);
+		caller.printStackTrace(new PrintWriter(buffer));
+		throw new RuntimeException("Posted: " + buffer, ex);
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		stop();
 	}
 
 	protected int getFrameRate () {
@@ -303,11 +318,6 @@ public class LwjglCanvas implements Application {
 		if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
 		if (frameRate == 0) frameRate = 30;
 		return frameRate;
-	}
-
-	protected void exception (Throwable ex) {
-		ex.printStackTrace();
-		stop();
 	}
 
 	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */

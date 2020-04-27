@@ -31,19 +31,19 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Lwjgl3Input implements Input, Disposable {
-	private final Lwjgl3Window window;
+	final Lwjgl3Window window;
 	private InputProcessor inputProcessor;
-	private final InputEventQueue eventQueue = new InputEventQueue();
+	final InputEventQueue eventQueue = new InputEventQueue();
 		
-	private int mouseX, mouseY;
-	private int mousePressed;
-	private int deltaX, deltaY;
-	private boolean justTouched;
-	private int pressedKeys;
-	private boolean keyJustPressed;
-	private boolean[] justPressedKeys = new boolean[256];
-	private boolean[] justPressedButtons = new boolean[5];
-	private char lastCharacter;
+	int mouseX, mouseY;
+	int mousePressed;
+	int deltaX, deltaY;
+	boolean justTouched;
+	int pressedKeys;
+	boolean keyJustPressed;
+	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedButtons = new boolean[5];
+	char lastCharacter;
 		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
 		@Override
@@ -76,7 +76,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		}
 	};
 	
-	private GLFWCharCallback charCallback = new GLFWCharCallback() {
+	GLFWCharCallback charCallback = new GLFWCharCallback() {
 		@Override
 		public void invoke(long window, int codepoint) {
 			if ((codepoint & 0xff00) == 0xf700) return;
@@ -325,7 +325,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key > 256) {
+		if (key < 0 || key >= justPressedKeys.length) {
 			return false;
 		}
 		return justPressedKeys[key];
