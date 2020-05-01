@@ -23,6 +23,7 @@ import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
@@ -128,8 +129,7 @@ public class IOSApplication implements Application {
 
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
-			.getScale());
+		float scale = (float) UIScreen.getMainScreen().getNativeScale();
 		if (scale >= 2.0f) {
 			Gdx.app.debug("IOSApplication", "scale: " + scale);
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -184,12 +184,6 @@ public class IOSApplication implements Application {
 
 	protected IOSInput createInput() {
 		 return new IOSInput(this);
-	}
-
-	int getIosVersion () {
-		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
-		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
-		return version;
 	}
 
 	/** Return the UI view controller of IOSApplication
@@ -389,7 +383,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public int getVersion () {
-		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
+		return (int) NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
 	}
 
 	@Override
