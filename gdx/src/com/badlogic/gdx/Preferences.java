@@ -27,7 +27,7 @@ import java.util.Map;
  * 
  * <p>
  * To persist changes made to a preferences instance {@link #flush()} has to be invoked. With the exception of Android, changes are
- * cached in memory prior to flushing.
+ * cached in memory prior to flushing. On iOS changes are not synchronized between different preferences instances.
  * </p>
  * 
  * <p>
