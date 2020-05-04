@@ -40,21 +40,25 @@ import com.badlogic.gdx.math.Matrix4;
 
 /** Draws batched quads using indices.
  * <p>
- * This is an optimized version of the SpriteBatch that maintains an LFU texture-cache inside an array texture to combine draw
- * calls with different textures effectively.
+ * <b>Experimental: This Batch requires GLES3.0! Enable this by setting useGL30=true in your application configuration(s). GL30 is
+ * supported by most Android devices (starting with Android 4.3 Jelly Bean, 2012) and PCs with appropriate OpenGL support.</b>
  * <p>
- * Rendering to a Frame Buffer Object (FBO) is not allowed on WebGL because of current API limitations. Other platform may use
- * this Batch to render to a FBO.
+ * This is an optimized version of the {@link SpriteBatch} that maintains an texture-cache inside a GL_TEXTURE_2D_ARRAY to combine draw
+ * calls with different textures effectively. This will avoid costly (especially on mobile) batch flushes that would usually occur
+ * when your render with more then one texture.
  * <p>
  * Use this Batch if you frequently utilize more than a single texture between calling {@link#begin()} and {@link#end()}. An
  * example would be if your Atlas is spread over multiple Textures or if you draw with individual Textures.
+ * <p>
+ * Using this Batch to render to a Frame Buffer Object (FBO) is not allowed on WebGL because of current WebGL and LibGDX API
+ * limitations. Other platforms may use this Batch to render to a FBO as the state is saved and restored recursively.
  * 
  * @see Batch
  * @see SpriteBatch
  * 
  * @author mzechner (Original SpriteBatch)
  * @author Nathan Sweet (Original SpriteBatch)
- * @author VaTTeRGeR (ArrayTexture Extension) */
+ * @author VaTTeRGeR (ArrayTextureSpriteBatch) */
 
 public class ArrayTextureSpriteBatch implements Batch {
 
@@ -70,6 +74,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 	/** The maximum number of available texture slots for the fragment shader */
 	private static int maxTextureLevels = -1;
 
+	/** WebGL requires special handling for FBOs */
 	private static final boolean isWebGL = Gdx.app.getType().equals(ApplicationType.WebGL);
 
 	/** Textures in use (index: Texture Slot, value: Texture) */
@@ -134,7 +139,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 	private final LifecycleListener contextRestoreListener;
 
-	/** Constructs a ArrayTextureSpriteBatch with the default shader.
+	/** Constructs a new ArrayTextureSpriteBatch with the default shader.
 	 * @see ArrayTextureSpriteBatch#ArrayTextureSpriteBatch(int, int, int, int, ShaderProgram) */
 	public ArrayTextureSpriteBatch (int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures)
 		throws IllegalStateException {
@@ -146,23 +151,27 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * pixel perfect with respect to the current screen resolution.
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
+	 * the ones expected for shaders set with {@link #setShader(ShaderProgram)}.
 	 * <p>
-	 * Remember: VRAM usage will be roughly maxTextureWidth * maxTextureHeight * maxConcurrentTextures * 4 byte!
-	 * @param maxSprites The maximum number of sprites in a single batch. Upper limit of 8191.
+	 * <b>Remember: VRAM usage will be roughly maxTextureWidth * maxTextureHeight * maxConcurrentTextures * 4 byte plus some
+	 * overhead!</b>
+	 * 
+	 * @param maxSprites The maximum number of sprites in a single batched draw call. Upper limit of 8191.
 	 * @param maxTextureWidth Set as wide as your widest texture.
 	 * @param maxTextureHeight Set as tall as your tallest texture.
-	 * @param maxConcurrentTextures Set to the max number of textures you want to use.
+	 * @param maxConcurrentTextures Set to the maximum number of textures you want to use ideally, grossly oversized values waste
+	 *           VRAM.
 	 * @param defaultShader The default shader to use. This is not owned by the ArrayTextureSpriteBatch and must be disposed
-	 *           separately.
+	 *           separately. Remember to incorporate the fragment-/vertex-shader changes required for the use of an array texture
+	 *           as demonstrated by the default shader.
 	 * @throws IllegalStateException Thrown if the device does not support GLES 3.0 and by extension: GL_TEXTURE_2D_ARRAY and
 	 *            Framebuffer Objects. Make sure to implement a Fallback to {@link SpriteBatch} in case Texture Arrays are not
-	 *            supported on a clients device. */
+	 *            supported on a device. */
 	public ArrayTextureSpriteBatch (int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures,
 		ShaderProgram defaultShader) throws IllegalStateException {
 
 		if (Gdx.gl30 == null) {
-			throw new IllegalStateException("GL30 is not available. Remember to set \"useGL30 = true\" in your ApplicationConfig.");
+			throw new IllegalStateException("GL30 is not available. Remember to set \"useGL30 = true\" in your application config.");
 		}
 
 		// 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
@@ -188,7 +197,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 		invMaxTextureHeight = 1f / maxTextureHeight;
 
 		if (defaultShader == null) {
-			shader = createDefaultShader(maxTextureLevels);
+			shader = createDefaultShader();
 			ownsShader = true;
 
 		} else {
@@ -304,8 +313,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 	/** Sets the OpenGL texture filtering modes. MipMaps will be generated on the GPU, this takes additional time when first
 	 * loading or swapping textures. Dimension the {@link ArrayTextureSpriteBatch} accordingly to avoid stuttering.
 	 * <p>
-	 * Default magnification: GL30.GL_NEAREST -> Pixel perfect<br>
-	 * Default minification: GL30.GL_LINEAR_MIPMAP_LINEAR -> Smooth
+	 * <b>Default magnification: GL30.GL_NEAREST -> Pixel perfect when going to close<br>
+	 * Default minification: GL30.GL_LINEAR_MIPMAP_LINEAR -> Smooth when zooming out.</b>
 	 * @param glTextureMagFilter The filtering mode used when zooming into the texture.
 	 * @param glTextureMinFilter The filtering mode used when zooming away from the texture.
 	 * @return This object for chaining or assignment.
@@ -334,7 +343,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 	}
 
 	/** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
-	public static ShaderProgram createDefaultShader (int maxTextureUnits) {
+	public static ShaderProgram createDefaultShader () {
 
 		// The texture index is just passed to the fragment shader, maybe there's an more elegant way.
 		String vertexShader = "in vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
@@ -365,10 +374,10 @@ public class ArrayTextureSpriteBatch implements Batch {
 			+ "in LOWP vec4 v_color;\n" //
 			+ "in vec2 v_texCoords;\n" //
 			+ "in float v_texture_index;\n" //
-			+ "uniform sampler2DArray u_textures;\n" //
+			+ "uniform sampler2DArray u_texturearray;\n" //
 			+ "out vec4 diffuseColor;\n" + "void main()\n"//
 			+ "{\n" //
-			+ "  diffuseColor = v_color * texture(u_textures, vec3(v_texCoords, v_texture_index));\n" //
+			+ "  diffuseColor = v_color * texture(u_texturearray, vec3(v_texCoords, v_texture_index));\n" //
 			+ "}";
 
 		final ApplicationType appType = Gdx.app.getType();
@@ -1228,7 +1237,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 		vertices[idx++] = ti;
 	}
 
-	/** Flushes if the vertices array cannot hold an additional sprite ((spriteVertexSize + 1) * 4 vertices) anymore. */
+	/** Convenience method to flush if the Batches vertex-array cannot hold an additional sprite ((spriteVertexSize + 1) * 4
+	 * vertices) anymore. */
 	private void flushIfFull () {
 		// original Sprite attribute size plus one extra float per sprite vertex
 		if (vertices.length - idx < spriteFloatSize + spriteFloatSize / spriteVertexSize) {
@@ -1404,17 +1414,19 @@ public class ArrayTextureSpriteBatch implements Batch {
 		}
 	}
 
-	/** @return The number of texture swaps the LFU cache performed since calling {@link #begin()}. */
+	/** @return The number of texture swaps the texture cache performed since calling {@link #begin()}. <b>Texture swaps are
+	 *         extremely expensive operations. Always try to make the texture cache large enough (Parameter called
+	 *         maxConcurrentTextures in the constructor) otherwise you'll loose all performance gains!</b> */
 	public int getTextureLFUSwaps () {
 		return currentTextureLFUSwaps;
 	}
 
-	/** @return The current number of textures in the LFU cache. */
+	/** @return The current number of textures residing in the texture cache. */
 	public int getTextureLFUSize () {
 		return currentTextureLFUSize;
 	}
 
-	/** @return The maximum number of textures that the LFU cache can hold. */
+	/** @return The maximum number of textures that the texture cache can hold. */
 	public int getTextureLFUCapacity () {
 		return maxTextureLevels;
 	}
@@ -1536,21 +1548,17 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		if (customShader != null) {
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-			// Gdx.gl20.glUniform1iv(customShader.fetchUniformLocation("u_textures", true), maxTextureUnits,
-			// textureUnitIndicesBuffer);
 
 		} else {
 			shader.setUniformMatrix("u_projTrans", combinedMatrix);
-			// Gdx.gl20.glUniform1iv(shader.fetchUniformLocation("u_textures", true), maxTextureUnits, textureUnitIndicesBuffer);
 		}
 	}
 
-	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
-	 * coordinates attribute is called "a_texCoord0", the color attribute is called "a_color", texture unit index is called
-	 * "texture_index", this needs to be converted to int with int(...) in the fragment shader. See
-	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appended to indicate the use of the first texture unit. The combined transform and projection matrix is
-	 * uploaded via a mat4 uniform called "u_projTrans". The array texture sampler is passed via a uniform called "u_textures", see
+	/** Sets the shader to be used in a GLES 3.0 environment. Vertex position attribute is called "a_position", the texture
+	 * coordinates attribute is called "a_texCoord0", the color attribute is called "a_color", texture index is called
+	 * "texture_index". See {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and
+	 * {@link ShaderProgram#TEXCOORD_ATTRIBUTE} which gets "0" appended to indicate the use of the first texture unit. The combined
+	 * transform and projection matrix is uploaded via a mat4 uniform called "u_projTrans". See
 	 * {@link ArrayTextureSpriteBatch#createDefaultShader(int)} for reference.
 	 * <p>
 	 * Call this method with a null argument to use the default shader.
