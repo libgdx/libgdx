@@ -43,9 +43,9 @@ import com.badlogic.gdx.math.Matrix4;
  * <b>Experimental: This Batch requires GLES3.0! Enable this by setting useGL30=true in your application configuration(s). GL30 is
  * supported by most Android devices (starting with Android 4.3 Jelly Bean, 2012) and PCs with appropriate OpenGL support.</b>
  * <p>
- * This is an optimized version of the {@link SpriteBatch} that maintains an texture-cache inside a GL_TEXTURE_2D_ARRAY to combine draw
- * calls with different textures effectively. This will avoid costly (especially on mobile) batch flushes that would usually occur
- * when your render with more then one texture.
+ * This is an optimized version of the {@link SpriteBatch} that maintains an texture-cache inside a GL_TEXTURE_2D_ARRAY to combine
+ * draw calls with different textures effectively. This will avoid costly (especially on mobile) batch flushes that would usually
+ * occur when your render with more then one texture.
  * <p>
  * Use this Batch if you frequently utilize more than a single texture between calling {@link#begin()} and {@link#end()}. An
  * example would be if your Atlas is spread over multiple Textures or if you draw with individual Textures.
@@ -139,11 +139,11 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 	private final LifecycleListener contextRestoreListener;
 
-	/** Constructs a new ArrayTextureSpriteBatch with the default shader.
-	 * @see ArrayTextureSpriteBatch#ArrayTextureSpriteBatch(int, int, int, int, ShaderProgram) */
-	public ArrayTextureSpriteBatch (int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures)
-		throws IllegalStateException {
-		this(maxSprites, maxTextureWidth, maxTextureHeight, maxConcurrentTextures, null);
+	/** Constructs a new ArrayTextureSpriteBatch with the default shader, texture cache size and texture filters.
+	 * @see ArrayTextureSpriteBatch#ArrayTextureSpriteBatch(int, int, int, int, int, int, ShaderProgram) */
+	public ArrayTextureSpriteBatch (int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures,
+		int texFilterMag, int texFilterMin) throws IllegalStateException {
+		this(maxSprites, maxTextureWidth, maxTextureHeight, maxConcurrentTextures, texFilterMag, texFilterMin, null);
 	}
 
 	/** Constructs a new ArrayTextureSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point
@@ -161,6 +161,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * @param maxTextureHeight Set as tall as your tallest texture.
 	 * @param maxConcurrentTextures Set to the maximum number of textures you want to use ideally, grossly oversized values waste
 	 *           VRAM.
+	 * @param texFilterMag The OpenGL texture magnification filter. See {@link #setArrayTextureFilter(int, int)}.
+	 * @param texFilterMin The OpenGL texture minification filter. See {@link #setArrayTextureFilter(int, int)}.
 	 * @param defaultShader The default shader to use. This is not owned by the ArrayTextureSpriteBatch and must be disposed
 	 *           separately. Remember to incorporate the fragment-/vertex-shader changes required for the use of an array texture
 	 *           as demonstrated by the default shader.
@@ -168,7 +170,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 *            Framebuffer Objects. Make sure to implement a Fallback to {@link SpriteBatch} in case Texture Arrays are not
 	 *            supported on a device. */
 	public ArrayTextureSpriteBatch (int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures,
-		ShaderProgram defaultShader) throws IllegalStateException {
+		int texFilterMag, int texFilterMin, ShaderProgram defaultShader) throws IllegalStateException {
 
 		if (Gdx.gl30 == null) {
 			throw new IllegalStateException("GL30 is not available. Remember to set \"useGL30 = true\" in your application config.");
@@ -211,8 +213,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 		usedTexturesLFU = new int[maxTextureLevels];
 		usedTexturesLFUPrevious = new int[maxTextureLevels];
 
-		arrayTextureMagFilter = GL30.GL_NEAREST;
-		arrayTextureMinFilter = GL30.GL_LINEAR_MIPMAP_LINEAR;
+		arrayTextureMagFilter = texFilterMag;
+		arrayTextureMinFilter = texFilterMin;
 
 		initializeArrayTexture();
 
@@ -317,9 +319,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * Default minification: GL30.GL_LINEAR_MIPMAP_LINEAR -> Smooth when zooming out.</b>
 	 * @param glTextureMagFilter The filtering mode used when zooming into the texture.
 	 * @param glTextureMinFilter The filtering mode used when zooming away from the texture.
-	 * @return This object for chaining or assignment.
 	 * @see <a href="https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering">OpenGL Wiki: Sampler Object - Filtering</a> */
-	public ArrayTextureSpriteBatch setArrayTextureFilter (int glTextureMagFilter, int glTextureMinFilter) {
+	public void setArrayTextureFilter (int glTextureMagFilter, int glTextureMinFilter) {
 
 		arrayTextureMagFilter = glTextureMagFilter;
 		arrayTextureMinFilter = glTextureMinFilter;
@@ -338,8 +339,6 @@ public class ArrayTextureSpriteBatch implements Batch {
 		}
 
 		mipMapsDirty = useMipMaps;
-
-		return this;
 	}
 
 	/** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
