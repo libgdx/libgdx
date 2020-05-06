@@ -27,7 +27,7 @@ android {
     buildToolsVersion versions.androidBuildTools
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion versions.minAndroidSdk
     }
 
     sourceSets {
