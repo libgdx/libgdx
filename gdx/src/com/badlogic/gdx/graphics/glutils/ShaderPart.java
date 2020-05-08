@@ -14,10 +14,10 @@ public class ShaderPart {
 	int handle;
 	/** final shader code (prepended code + original source code) */
 	String finalCode;
-	/**
-	 * @param stage shader stage
-	 * @param source shader source code
-	 */
+
+	/** @param stage shader stage, typically one of {@link ShaderStage} preset eg. {@link ShaderStage#vertex},
+	 *           {@link ShaderStage#fragment}
+	 * @param source shader source code */
 	public ShaderPart (ShaderStage stage, String source) {
 		this.stage = stage;
 		this.source = source;

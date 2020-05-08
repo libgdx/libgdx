@@ -16,10 +16,17 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 
 /**
+ * Define a shader stage preset including a shader type, name and file extension.
+ * 
+ * This class contains several shader stage presets for convenience and mainly used by ShaderProgramLoader.
+ * You're not limited to the predefined ones, you can create your own to change naming convention
+ * or in order to support other shader stage type (eg. Compute Shader available with OpenGL 4.3+).
+ * 
  * Shader file extension is following official convention
  * (https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/) :
  * <ul>
