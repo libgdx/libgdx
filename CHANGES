@@ -23,6 +23,7 @@
 - API Addition: Created interfaces AndroidAudio and AndroidInput and added AndroidApplication#createAudio and AndroidApplication#createInput to allow initializing custom module implementations.
 - Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
 - API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
+- API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
 - Added ArrayTextureSpriteBatch that batches drawing operations with different textures into one draw call.
 
 [1.9.10]

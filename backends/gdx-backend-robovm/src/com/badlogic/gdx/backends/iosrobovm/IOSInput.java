@@ -111,7 +111,7 @@ public class IOSInput implements Input {
 		UIDevice device = UIDevice.getCurrentDevice();
 		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 
-		if (app.getIosVersion() >= 9){
+		if (app.getVersion() >= 9){
 			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
