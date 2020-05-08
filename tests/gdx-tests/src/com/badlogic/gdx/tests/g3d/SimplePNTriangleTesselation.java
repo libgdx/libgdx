@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 
-public class SimplePNTriangleTesslation extends GdxTest {
+public class SimplePNTriangleTesselation extends GdxTest {
 	ShaderProgram shader;
 	Mesh mesh;
 	Matrix4 projection = new Matrix4();
@@ -50,13 +50,13 @@ public class SimplePNTriangleTesslation extends GdxTest {
 	public void create () {
 		
 		ShaderStage.geometry.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 150\n" : "#version 320 es\n";
-		ShaderStage.tesslationControl.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
-		ShaderStage.tesslationEvaluation.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
+		ShaderStage.tesselationControl.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
+		ShaderStage.tesselationEvaluation.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
 
 		shader = new ShaderProgram(
 			new ShaderPart(ShaderStage.vertex, Gdx.files.internal("data/g3d/shaders/pnt.vert").readString()),
-			new ShaderPart(ShaderStage.tesslationControl, Gdx.files.internal("data/g3d/shaders/pnt.tesc").readString()),
-			new ShaderPart(ShaderStage.tesslationEvaluation, Gdx.files.internal("data/g3d/shaders/pnt.tese").readString()),
+			new ShaderPart(ShaderStage.tesselationControl, Gdx.files.internal("data/g3d/shaders/pnt.tesc").readString()),
+			new ShaderPart(ShaderStage.tesselationEvaluation, Gdx.files.internal("data/g3d/shaders/pnt.tese").readString()),
 			new ShaderPart(ShaderStage.geometry, Gdx.files.internal("data/g3d/shaders/pnt.geom").readString()),
 			new ShaderPart(ShaderStage.fragment, Gdx.files.internal("data/g3d/shaders/pnt.frag").readString()));
 		

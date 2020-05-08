@@ -34,7 +34,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class SimpleTesslationShaderTest extends GdxTest {
+public class SimpleTesselationShaderTest extends GdxTest {
 	ShaderProgram shader;
 	Mesh mesh;
 	Matrix4 projection = new Matrix4();
@@ -114,13 +114,13 @@ public class SimpleTesslationShaderTest extends GdxTest {
 		// @on
 		
 		ShaderStage.geometry.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 150\n" : "#version 320 es\n";
-		ShaderStage.tesslationControl.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
-		ShaderStage.tesslationEvaluation.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
+		ShaderStage.tesselationControl.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
+		ShaderStage.tesselationEvaluation.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 400\n" : "#version 320 es\n";
 
 		shader = new ShaderProgram(
 			new ShaderPart(ShaderStage.vertex, vertexShader),
-			new ShaderPart(ShaderStage.tesslationControl, tesslationControlShader),
-			new ShaderPart(ShaderStage.tesslationEvaluation, tesslationEvaluationShader),
+			new ShaderPart(ShaderStage.tesselationControl, tesslationControlShader),
+			new ShaderPart(ShaderStage.tesselationEvaluation, tesslationEvaluationShader),
 			new ShaderPart(ShaderStage.geometry, geometryShader),
 			new ShaderPart(ShaderStage.fragment, fragmentShader));
 		

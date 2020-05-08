@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.GL30;
  * You're not limited to the predefined ones, you can create your own to change naming convention
  * or in order to support other shader stage type (eg. Compute Shader available with OpenGL 4.3+).
  * 
+ * Note that geometry and tesselation shaders require GLES 3.2+ and are not supported by WebGL. 
+ * 
  * Shader file extension is following official convention
  * (https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/) :
  * <ul>
@@ -45,10 +47,10 @@ public class ShaderStage {
 	public static final ShaderStage vertex = new ShaderStage(GL20.GL_VERTEX_SHADER, "Vertex", ".vert");
 	public static final ShaderStage fragment = new ShaderStage(GL20.GL_FRAGMENT_SHADER, "Fragment", ".frag");
 	public static final ShaderStage geometry = new ShaderStage(GL30.GL_GEOMETRY_SHADER, "Geometry", ".geom");
-	public static final ShaderStage tesslationControl = new ShaderStage(GL30.GL_TESS_CONTROL_SHADER, "Tesslation Control", ".tesc");
-	public static final ShaderStage tesslationEvaluation = new ShaderStage(GL30.GL_TESS_EVALUATION_SHADER, "Tesslation Evaluation", ".tese");
+	public static final ShaderStage tesselationControl = new ShaderStage(GL30.GL_TESS_CONTROL_SHADER, "Tesslation Control", ".tesc");
+	public static final ShaderStage tesselationEvaluation = new ShaderStage(GL30.GL_TESS_EVALUATION_SHADER, "Tesslation Evaluation", ".tese");
 	
-	public static final ShaderStage [] stages = {vertex, fragment, geometry, tesslationControl, tesslationEvaluation};
+	public static final ShaderStage [] stages = {vertex, fragment, geometry, tesselationControl, tesselationEvaluation};
 	
 	public final int type;
 	public final String name;
