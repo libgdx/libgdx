@@ -261,6 +261,8 @@
 		<include name="graphics/glutils/MipMapGenerator.java"/>
 		<include name="graphics/glutils/PixmapTextureData.java"/>
 		<include name="graphics/glutils/ShaderProgram.java"/>
+		<include name="graphics/glutils/ShaderPart.java"/>
+		<include name="graphics/glutils/ShaderStage.java"/>
 		<include name="graphics/glutils/ShapeRenderer.java"/>
 		<include name="graphics/glutils/VertexArray.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->

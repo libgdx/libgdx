@@ -330,6 +330,10 @@ public interface GL30 extends GL20 {
 	public final int GL_MAX_ELEMENT_INDEX = 0x8D6B;
 	public final int GL_NUM_SAMPLE_COUNTS = 0x9380;
 	public final int GL_TEXTURE_IMMUTABLE_LEVELS = 0x82DF;
+	public final int GL_GEOMETRY_SHADER = 0x8DD9;
+	public final int GL_TESS_EVALUATION_SHADER = 0x8E87;
+	public final int GL_TESS_CONTROL_SHADER = 0x8E88;
+	public final int GL_PATCHES = 0xE;
 
 	// C function void glReadBuffer ( GLenum mode )
 

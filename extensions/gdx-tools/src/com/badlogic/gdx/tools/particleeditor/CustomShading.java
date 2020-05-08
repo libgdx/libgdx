@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShaderStage;
 import com.badlogic.gdx.utils.Array;
 
 public class CustomShading {
@@ -41,8 +42,8 @@ public class CustomShading {
 
 	public CustomShading () {
 		shader = SpriteBatch.createDefaultShader();
-		vertexShaderCode = defaultVertexShaderCode = shader.getVertexShaderSource();
-		fragmentShaderCode = defaultFragmentShaderCode = shader.getFragmentShaderSource();
+		vertexShaderCode = defaultVertexShaderCode = shader.getShaderSources(ShaderStage.vertex).first();
+		fragmentShaderCode = defaultFragmentShaderCode = shader.getShaderSources(ShaderStage.fragment).first();
 	}
 
 	public void begin (SpriteBatch spriteBatch) {

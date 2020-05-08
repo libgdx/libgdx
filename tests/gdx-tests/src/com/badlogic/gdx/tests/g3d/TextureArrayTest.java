@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShaderStage;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -53,8 +54,8 @@ public class TextureArrayTest extends GdxTest {
 		glProfiler = new GLProfiler(Gdx.graphics);
 		glProfiler.enable();
 
-		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
-		ShaderProgram.prependFragmentCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
+		ShaderStage.vertex.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
+		ShaderStage.fragment.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
 
 		String[] texPaths = new String[] {  "data/g3d/materials/Searing Gorge.jpg",  "data/g3d/materials/Lava Cracks.jpg", "data/g3d/materials/Deep Fire.jpg" };
 

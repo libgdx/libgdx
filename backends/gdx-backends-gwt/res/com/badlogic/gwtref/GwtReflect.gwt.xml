@@ -55,6 +55,9 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.maps.tiled.objects" />
 	
+	<extend-configuration-property name="gdx.reflect.include" 
+		value="com.badlogic.gdx.graphics.glutils.ShaderPart" />
+	
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.ParticleEffect" />
 	<extend-configuration-property name="gdx.reflect.include"
