@@ -51,6 +51,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLOnlyTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShaderStage;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
@@ -108,8 +109,8 @@ public class MultipleRenderTargetTest extends GdxTest {
 
 		modelCache = new ModelCache();
 
-		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n" : "#version 300 es\n";
-		ShaderProgram.prependFragmentCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n" : "#version 300 es\n";
+		ShaderStage.vertex.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n" : "#version 300 es\n";
+		ShaderStage.fragment.prependCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n" : "#version 300 es\n";
 
 		renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN));
 		shaderProvider = new BaseShaderProvider() {

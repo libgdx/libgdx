@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** <p>
- * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
+ * A shader program encapsulates several shader parts (typically a vertex and fragment shader) linked to form a shader program.
  * </p>
  * 
  * <p>
@@ -81,14 +81,6 @@ public class ShaderProgram implements Disposable {
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;
 
-	/** code that is always added to the vertex shader code, typically used to inject a #version line. Note that this is added
-	 * as-is, you should include a newline (`\n`) if needed. */
-	public static String prependVertexCode = "";
-
-	/** code that is always added to every fragment shader code, typically used to inject a #version line. Note that this is added
-	 * as-is, you should include a newline (`\n`) if needed. */
-	public static String prependFragmentCode = "";
-
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 
@@ -125,20 +117,8 @@ public class ShaderProgram implements Disposable {
 	/** program handle **/
 	private int program;
 
-	/** vertex shader handle **/
-	private int vertexShaderHandle;
-
-	/** fragment shader handle **/
-	private int fragmentShaderHandle;
-
 	/** matrix float buffer **/
 	private final FloatBuffer matrix;
-
-	/** vertex shader source **/
-	private final String vertexShaderSource;
-
-	/** fragment shader source **/
-	private final String fragmentShaderSource;
 
 	/** whether this shader was invalidated **/
 	private boolean invalidated;
@@ -146,25 +126,33 @@ public class ShaderProgram implements Disposable {
 	/** reference count **/
 	private int refCount = 0;
 
+	/** all shaders making this shader program */
+	private Array<ShaderPart> parts;
+	
 	/** Constructs a new ShaderProgram and immediately compiles it.
-	 * 
-	 * @param vertexShader the vertex shader
-	 * @param fragmentShader the fragment shader */
-
-	public ShaderProgram (String vertexShader, String fragmentShader) {
-		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
-		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
-
-		if (prependVertexCode != null && prependVertexCode.length() > 0)
-			vertexShader = prependVertexCode + vertexShader;
-		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
-			fragmentShader = prependFragmentCode + fragmentShader;
-
-		this.vertexShaderSource = vertexShader;
-		this.fragmentShaderSource = fragmentShader;
+	 * <p>
+	 * Caller is responsible to provide a consistent list shaders, typically a vertex shader and
+	 * a fragment shader. Several shaders can be used for a particular stage but each stages needs one and only
+	 * one main function, this can be helpful if you want to include some library parts.
+	 * GLES 2.0 only permit a vertex shader and a fragment shader pair.
+	 * </p>
+	 * @param parts shaders
+	 */
+	public ShaderProgram(Array<ShaderPart> parts) {
 		this.matrix = BufferUtils.newFloatBuffer(16);
+		this.parts = parts;
+		
+		// prepend code
+		for(ShaderPart part : parts) {
+			String prependCode = part.stage.prependCode;
+			if(prependCode != null){
+				part.finalCode = prependCode + part.source;
+			}else{
+				part.finalCode = part.source;
+			}
+		}
 
-		compileShaders(vertexShader, fragmentShader);
+		compileShaders();
 		if (isCompiled()) {
 			fetchAttributes();
 			fetchUniforms();
@@ -172,20 +160,35 @@ public class ShaderProgram implements Disposable {
 		}
 	}
 
+	public ShaderProgram(ShaderPart ...parts) {
+		this(new Array<ShaderPart>(parts));
+	}
+
+	/** Constructs a new ShaderProgram and immediately compiles it.
+	 * Convenient constructor for typical vertex and fragment shader pair.
+	 * @param vertexShader the vertex shader
+	 * @param fragmentShader the fragment shader */
+
+	public ShaderProgram (String vertexShader, String fragmentShader) {
+		this(new ShaderPart(ShaderStage.vertex, vertexShader), new ShaderPart(ShaderStage.fragment, fragmentShader));
+	}
+
 	public ShaderProgram (FileHandle vertexShader, FileHandle fragmentShader) {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
 
 	/** Loads and compiles the shaders, creates a new program and links the shaders.
-	 * 
-	 * @param vertexShader
-	 * @param fragmentShader */
-	private void compileShaders (String vertexShader, String fragmentShader) {
-		vertexShaderHandle = loadShader(GL20.GL_VERTEX_SHADER, vertexShader);
-		fragmentShaderHandle = loadShader(GL20.GL_FRAGMENT_SHADER, fragmentShader);
+	 */
+	private void compileShaders () {
+		isCompiled = true;
+		for(ShaderPart part : parts){
+			part.handle = loadShader(part.stage, part.finalCode);
+			if(part.handle == -1){
+				isCompiled = false;
+			}
+		}
 
-		if (vertexShaderHandle == -1 || fragmentShaderHandle == -1) {
-			isCompiled = false;
+		if (!isCompiled) {
 			return;
 		}
 
@@ -198,11 +201,11 @@ public class ShaderProgram implements Disposable {
 		isCompiled = true;
 	}
 
-	private int loadShader (int type, String source) {
+	private int loadShader (ShaderStage stage, String source) {
 		GL20 gl = Gdx.gl20;
 		IntBuffer intbuf = BufferUtils.newIntBuffer(1);
 
-		int shader = gl.glCreateShader(type);
+		int shader = gl.glCreateShader(stage.type);
 		if (shader == 0) return -1;
 
 		gl.glShaderSource(shader, source);
@@ -215,7 +218,7 @@ public class ShaderProgram implements Disposable {
 // int infoLogLength = intbuf.get(0);
 // if (infoLogLength > 1) {
 			String infoLog = gl.glGetShaderInfoLog(shader);
-			log += type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n";
+			log += stage.name + " shader\n";
 			log += infoLog;
 // }
 			return -1;
@@ -234,8 +237,10 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.gl20;
 		if (program == -1) return -1;
 
-		gl.glAttachShader(program, vertexShaderHandle);
-		gl.glAttachShader(program, fragmentShaderHandle);
+		for(ShaderPart part : parts){
+			gl.glAttachShader(program, part.handle);
+		}
+
 		gl.glLinkProgram(program);
 
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
@@ -703,8 +708,9 @@ public class ShaderProgram implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
 		gl.glUseProgram(0);
-		gl.glDeleteShader(vertexShaderHandle);
-		gl.glDeleteShader(fragmentShaderHandle);
+		for(ShaderPart part : parts){
+			gl.glDeleteShader(part.handle);
+		}
 		gl.glDeleteProgram(program);
 		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).removeValue(this, true);
 	}
@@ -745,7 +751,7 @@ public class ShaderProgram implements Disposable {
 
 	private void checkManaged () {
 		if (invalidated) {
-			compileShaders(vertexShaderSource, fragmentShaderSource);
+			compileShaders();
 			invalidated = false;
 		}
 	}
@@ -906,14 +912,31 @@ public class ShaderProgram implements Disposable {
 		return uniformNames;
 	}
 
-	/** @return the source of the vertex shader */
+	/** get final GLSL code for a pipeline stage.
+	 * @param stage
+	 * @return the sources of the shaders */
+	public Array<String> getShaderSources (ShaderStage stage) {
+		Array<String> sources = new Array<String>();
+		for(ShaderPart part : parts) {
+			if(part.stage == stage) {
+				sources.add(part.finalCode);
+			}
+		}
+		return sources;
+	}
+	
+	/** @return the source of the vertex shader 
+	 * @deprecated use {@link #getShaderSources(ShaderStage)} instead */
+	@Deprecated
 	public String getVertexShaderSource () {
-		return vertexShaderSource;
+		return getShaderSources(ShaderStage.vertex).first();
 	}
 
-	/** @return the source of the fragment shader */
+	/** @return the source of the fragment shader
+	 * @deprecated use {@link #getShaderSources(ShaderStage)} instead */
+	@Deprecated
 	public String getFragmentShaderSource () {
-		return fragmentShaderSource;
+		return getShaderSources(ShaderStage.fragment).first();
 	}
 
 	/** @return the handle of the shader program */

@@ -317,6 +317,9 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public int glCreateShader (int type) {
 		WebGLShader shader = gl.createShader(type);
+		if(type != GL_VERTEX_SHADER && type != GL_FRAGMENT_SHADER){
+			throw new GdxRuntimeException("Shader type " + type + " not supported by WebGL");
+		}
 		return shaders.add(shader);
 	}
 

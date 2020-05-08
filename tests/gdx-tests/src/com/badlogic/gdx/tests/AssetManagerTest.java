@@ -26,6 +26,7 @@ import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader.ShaderFile;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
@@ -36,10 +37,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShaderStage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
@@ -104,7 +105,9 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
 		manager.load("data/g2d/monochrome.frag", ShaderProgram.class, new ShaderProgramLoader.ShaderProgramParameter(){
 			{
-				vertexFile = "data/g2d/batchCommon.vert";
+				shaderFiles = new ShaderProgramLoader.ShaderFile[]{
+					new ShaderFile(ShaderStage.vertex, "data/g2d/batchCommon.vert")
+				};
 			}
 		});
 		

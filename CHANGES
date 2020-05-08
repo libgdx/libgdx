@@ -24,6 +24,8 @@
 - Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
 - API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
 - API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
+- API Change: ShaderProgram now use a more flexible way to define shaders parts via ShaderPart and ShaderStage. prependVertexCode and prependFragmentCode has been moved to related ShaderStage and require use code migration. Some other methods have been marked as deprecated and other remains for convenience and backward compatibility.
+- API Addition: added Geometry and Tesselation shaders support (require GLES 3.2+)
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
