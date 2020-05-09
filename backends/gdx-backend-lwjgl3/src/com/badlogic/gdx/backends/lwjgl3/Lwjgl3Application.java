@@ -122,7 +122,7 @@ public class Lwjgl3Application implements Application {
 		}
 	}
 
-	private void loop() {
+	protected void loop() {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
 			// FIXME put it on a separate thread
@@ -192,7 +192,7 @@ public class Lwjgl3Application implements Application {
 		}
 	}
 
-	private void cleanupWindows() {
+	protected void cleanupWindows() {
 		synchronized (lifecycleListeners) {
 			for(LifecycleListener lifecycleListener : lifecycleListeners){
 				lifecycleListener.pause();
@@ -205,7 +205,7 @@ public class Lwjgl3Application implements Application {
 		windows.clear();
 	}
 	
-	private void cleanup() {
+	protected void cleanup() {
 		Lwjgl3Cursor.disposeSystemCursors();
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
