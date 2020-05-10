@@ -38,7 +38,7 @@ public class LwjglClipboard implements Clipboard, ClipboardOwner {
 				if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 					try {
 						return (String)contents.getTransferData(DataFlavor.stringFlavor);
-					} catch (Exception ex) {
+					} catch (Throwable ex) {
 					}
 				}
 				if (contents.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -54,7 +54,7 @@ public class LwjglClipboard implements Clipboard, ClipboardOwner {
 					}
 				}
 			}
-		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
+		} catch (Throwable ignored) { // Ignore JDK crashes sorting data flavors.
 		}
 		return "";
 	}
@@ -65,7 +65,7 @@ public class LwjglClipboard implements Clipboard, ClipboardOwner {
 			StringSelection stringSelection = new StringSelection(content);
 			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			clipboard.setContents(stringSelection, this);
-		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
+		} catch (Throwable ignored) { // Ignore JDK crashes sorting data flavors.
 		}
 	}
 

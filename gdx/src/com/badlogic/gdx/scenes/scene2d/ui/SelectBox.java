@@ -66,9 +66,9 @@ public class SelectBox<T> extends Widget implements Disableable {
 	boolean selectedPrefWidth;
 
 	final ArraySelection<T> selection = new ArraySelection(items) {
-		protected void changed () {
-			super.changed();
+		public boolean fireChangeEvent () {
 			if (selectedPrefWidth) invalidateHierarchy();
+			return super.fireChangeEvent();
 		}
 	};
 
@@ -416,7 +416,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list.addListener(new ClickListener() {
 				public void clicked (InputEvent event, float x, float y) {
-					selectBox.selection.choose(list.getSelected());
+					T selected = list.getSelected();
+					// Force clicking the already selected item to trigger a change event.
+					if (selected != null) selectBox.selection.items().clear();
+					selectBox.selection.choose(selected);
 					hide();
 				}
 

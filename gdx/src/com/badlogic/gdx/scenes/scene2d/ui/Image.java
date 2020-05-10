@@ -167,6 +167,10 @@ public class Image extends Widget {
 		this.align = align;
 		invalidate();
 	}
+	
+	public int getAlign () {
+		return align;
+	}
 
 	public float getMinWidth () {
 		return 0;

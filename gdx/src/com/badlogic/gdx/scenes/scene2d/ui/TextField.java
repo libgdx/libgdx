@@ -300,7 +300,7 @@ public class TextField extends Widget implements Disableable {
 
 	public void draw (Batch batch, float parentAlpha) {
 		boolean focused = hasKeyboardFocus();
-		if (focused != this.focused) {
+		if (focused != this.focused || (focused && !blinkTask.isScheduled())) {
 			this.focused = focused;
 			blinkTask.cancel();
 			cursorOn = focused;

@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.9.9-SNAPSHOT"/>
+	<property name="version" value="1.9.10-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -44,7 +44,7 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
-		<fileset id="resourcefiles" dir="gdx/src">
+		<fileset id="resourcefiles" dir="gdx/res">
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>

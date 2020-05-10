@@ -42,7 +42,7 @@ public abstract class OpenALMusic implements Music {
 
 	private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
 
-	private final OpenALAudio audio;
+	private final OpenALLwjgl3Audio audio;
 	private IntBuffer buffers;
 	private int sourceID = -1;
 	private int format, sampleRate;
@@ -55,7 +55,7 @@ public abstract class OpenALMusic implements Music {
 
 	private OnCompletionListener onCompletionListener;
 
-	public OpenALMusic (OpenALAudio audio, FileHandle file) {
+	public OpenALMusic (OpenALLwjgl3Audio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
 		this.onCompletionListener = null;
