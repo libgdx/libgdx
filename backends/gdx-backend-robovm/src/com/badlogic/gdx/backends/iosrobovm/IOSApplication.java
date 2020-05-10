@@ -18,13 +18,10 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 
-import com.badlogic.gdx.ApplicationLogger;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
-import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
@@ -39,6 +36,7 @@ import org.robovm.rt.bro.Bro;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -49,7 +47,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -128,8 +125,8 @@ public class IOSApplication implements Application {
 
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
-			.getScale());
+		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale()
+			: UIScreen.getMainScreen().getScale());
 		if (scale >= 2.0f) {
 			Gdx.app.debug("IOSApplication", "scale: " + scale);
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -174,16 +171,16 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
-	protected IOSGraphics createGraphics(float scale) {
-		 return new IOSGraphics(scale, this, config, input, config.useGL30);
+	protected IOSGraphics createGraphics (float scale) {
+		return new IOSGraphics(scale, this, config, input, config.useGL30);
 	}
 
-	protected IOSGraphics.IOSUIViewController createUIViewController(IOSGraphics graphics) {
+	protected IOSGraphics.IOSUIViewController createUIViewController (IOSGraphics graphics) {
 		return new IOSGraphics.IOSUIViewController(this, graphics);
 	}
 
-	protected IOSInput createInput() {
-		 return new IOSInput(this);
+	protected IOSInput createInput () {
+		return new IOSInput(this);
 	}
 
 	int getIosVersion () {
@@ -444,7 +441,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		NSThread.exit();
+		System.exit(0);
 	}
 
 	@Override
