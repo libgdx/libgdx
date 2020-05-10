@@ -19,8 +19,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
@@ -50,7 +50,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -156,7 +155,7 @@ public class IOSApplication implements Application {
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio(config);
+		this.audio = createAudio(config);
 		this.net = new IOSNet(this, config);
 
 		Gdx.files = this.files;
@@ -174,6 +173,10 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
+	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
+		return new OALIOSAudio(config);
+	}
+
 	protected IOSGraphics createGraphics(float scale) {
 		 return new IOSGraphics(scale, this, config, input, config.useGL30);
 	}
@@ -183,7 +186,7 @@ public class IOSApplication implements Application {
 	}
 
 	protected IOSInput createInput() {
-		 return new IOSInput(this);
+		 return new DefaultIOSInput(this);
 	}
 
 	/** Return the UI view controller of IOSApplication
