@@ -48,7 +48,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -61,7 +61,7 @@ public class LwjglAWTCanvas implements Application {
 	static int instanceCount;
 
 	LwjglGraphics graphics;
-	OpenALAudio audio;
+	OpenALLwjglAudio audio;
 	LwjglFiles files;
 	LwjglAWTInput input;
 	LwjglNet net;
@@ -165,7 +165,7 @@ public class LwjglAWTCanvas implements Application {
 			}
 		};
 
-		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALAudio();
+		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALLwjglAudio();
 		if (Gdx.files == null) files = new LwjglFiles();
 		if (Gdx.net == null) net = new LwjglNet(config);
 		input = new LwjglAWTInput(this);

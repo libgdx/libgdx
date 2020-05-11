@@ -16,12 +16,21 @@
 - API Change: scene2d: Tree.Node#removeAll renamed to clearChildren.
 - API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
 - API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
+- API Change: ShaderProgram begin and end methods are deprecated in favor to bind method.
+- API Addition: Added a OpenALAudio#getSourceId(long) method.
+- API Addition: Added a ShaderProgram#getHandle() method.
+- API Change: Replaced deprecated android support libraries with androidx. AndroidFragmentApplication is only affected.
+- API Addition: Created interfaces AndroidAudio and AndroidInput and added AndroidApplication#createAudio and AndroidApplication#createInput to allow initializing custom module implementations.
+- Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
+- API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
+- API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
+- API Addition: convenient Matrix4 rotate methods: rotateTowardDirection and rotateTowardTarget
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 - API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
 - API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
 - API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
 - API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
-- Bugfix: TextFields and TextAreas behaving of focus traversal works like intended on all platforms now.
+- Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

@@ -119,7 +119,7 @@ public class GwtGL20 implements GL20 {
 		} else {
 			ensureCapacity(buffer);
 			for (int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
-				shortBuffer.set(j, buffer.get(i));
+				shortBuffer.set(j, (buffer.get(i) & 0xFFFF));
 			}
 			return shortBuffer.subarray(0, buffer.remaining());
 		}

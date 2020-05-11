@@ -21,7 +21,7 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<copy todir="bin/"><fileset dir="src/" excludes="**/*.java"/></copy>
+		<copy todir="bin/"><fileset dir="res/" /></copy>
 		
 		<jar destfile="${name}.jar" basedir="bin/">
 			<manifest>

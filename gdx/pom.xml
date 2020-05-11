@@ -48,7 +48,7 @@
     
     <resources>
       <resource>
-        <directory>src</directory>
+        <directory>res</directory>
         <includes>
           <include>**/*</include>
         </includes>
