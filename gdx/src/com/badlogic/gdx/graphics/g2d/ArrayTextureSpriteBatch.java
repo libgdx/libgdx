@@ -72,7 +72,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 	private final int spriteFloatSize = Sprite.SPRITE_SIZE;
 
 	/** The maximum number of available texture slots for the fragment shader */
-	private static int maxTextureLevels = -1;
+	private final int maxTextureSlots;
 
 	/** WebGL requires special handling for FBOs */
 	private static final boolean isWebGL = Gdx.app.getType().equals(ApplicationType.WebGL);
@@ -190,7 +190,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 				"Maximum Texture width / height must both be greater than zero: " + maxTextureWidth + " / " + maxTextureHeight);
 		}
 
-		maxTextureLevels = maxConcurrentTextures;
+		maxTextureSlots = maxConcurrentTextures;
 
 		this.maxTextureWidth = maxTextureWidth;
 		this.maxTextureHeight = maxTextureHeight;
@@ -209,9 +209,9 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * Integer.BYTES).order(ByteOrder.nativeOrder()).asIntBuffer();
 
-		usedTextures = new Texture[maxTextureLevels];
-		usedTexturesLFU = new int[maxTextureLevels];
-		usedTexturesLFUPrevious = new int[maxTextureLevels];
+		usedTextures = new Texture[maxTextureSlots];
+		usedTexturesLFU = new int[maxTextureSlots];
+		usedTexturesLFUPrevious = new int[maxTextureSlots];
 
 		arrayTextureMagFilter = texFilterMag;
 		arrayTextureMinFilter = texFilterMin;
@@ -280,7 +280,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		Gdx.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
 
-		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL30.GL_RGBA, maxTextureWidth, maxTextureHeight, maxTextureLevels, 0,
+		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL30.GL_RGBA, maxTextureWidth, maxTextureHeight, maxTextureSlots, 0,
 			GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
 
 		setArrayTextureFilter(arrayTextureMagFilter, arrayTextureMinFilter);
@@ -408,7 +408,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 		currentTextureLFUSwaps = 0;
 
 		// We use this data to decide which texture to swap out if space is needed
-		System.arraycopy(usedTexturesLFU, 0, usedTexturesLFUPrevious, 0, maxTextureLevels);
+		System.arraycopy(usedTexturesLFU, 0, usedTexturesLFUPrevious, 0, maxTextureSlots);
 		Arrays.fill(usedTexturesLFU, 0);
 
 		Gdx.gl30.glDepthMask(false);
@@ -1320,7 +1320,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		// If a free texture unit is available we just use it
 		// If not we have to flush and then throw out the least accessed one.
-		if (currentTextureLFUSize < maxTextureLevels) {
+		if (currentTextureLFUSize < maxTextureSlots) {
 
 			// Put the texture into the next free slot
 			usedTextures[currentTextureLFUSize] = texture;
@@ -1341,7 +1341,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 			int slotValPrev = usedTexturesLFUPrevious[slot];
 
 			// We search for the best candidate for a swap (least accessed) and collect some data
-			for (int i = 1; i < maxTextureLevels; i++) {
+			for (int i = 1; i < maxTextureSlots; i++) {
 
 				final int val = usedTexturesLFUPrevious[i];
 
@@ -1427,7 +1427,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 	/** @return The maximum number of textures that the texture cache can hold. */
 	public int getTextureLFUCapacity () {
-		return maxTextureLevels;
+		return maxTextureSlots;
 	}
 
 	@Override
