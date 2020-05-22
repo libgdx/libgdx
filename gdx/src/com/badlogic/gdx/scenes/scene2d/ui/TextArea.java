@@ -30,9 +30,8 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
-/** A multiple-line text input field, entirely based on {@link TextField} */
+/** A text input field with multiple lines. */
 public class TextArea extends TextField {
-
 	/** Array storing lines breaks positions **/
 	IntArray linesBreak;
 
@@ -165,7 +164,7 @@ public class TextArea extends TextField {
 				cursorLine = line;
 			}
 		}
-		updateFirstLineShowing();	// fix for drag-selecting text out of the TextArea's bounds
+		updateFirstLineShowing(); // fix for drag-selecting text out of the TextArea's bounds
 	}
 
 	/** Scroll the text area to show the line of the cursor **/
@@ -173,7 +172,7 @@ public class TextArea extends TextField {
 		updateCurrentLine();
 		updateFirstLineShowing();
 	}
-	
+
 	void updateFirstLineShowing () {
 		if (cursorLine != firstLineShowing) {
 			int step = cursorLine >= firstLineShowing ? 1 : -1;
@@ -419,8 +418,7 @@ public class TextArea extends TextField {
 			return result;
 		}
 
-		@Override
-		protected boolean checkFocusTraverse(char character) {
+		protected boolean checkFocusTraversal (char character) {
 			return focusTraversal && character == TAB;
 		}
 

@@ -64,9 +64,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
 	static protected final char BACKSPACE = 8;
-	//Windows and Mac before OS X as Enter
 	static protected final char CARRIAGE_RETURN = '\r';
-	//Unix based systems as Enter
 	static protected final char NEWLINE = '\n';
 	static protected final char TAB = '\t';
 	static protected final char DELETE = 127;
@@ -507,8 +505,9 @@ public class TextField extends Widget implements Disableable {
 		return minIndex;
 	}
 
-	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
+	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
+	 * onscreen keyboard is hidden. Does nothing if the text field is not in a stage.
+	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
@@ -1011,16 +1010,13 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
-		/**
-		 * Checks if focus traversal should be triggered. Depends on {@link TextField#focusTraversal} and
-		 * the typed {@link char}, given as parameter.
-		 * @param character - the character that is checked to trigger focus traversal.
-		 * @return <b>true</b>, if the focus should jump to the next input field. <b>false</b> if not.
-		 */
-		protected boolean checkFocusTraverse(char character) {
-			return focusTraversal && (character == TAB || (
-							(character == CARRIAGE_RETURN || character == NEWLINE)
-							&& (UIUtils.isAndroid || UIUtils.isIos) ));
+		/** Checks if focus traversal should be triggered. The default implementation uses {@link TextField#focusTraversal} and the
+		 * typed character, depending on the OS.
+		 * @param character The character that triggered a possible focus traversal.
+		 * @return true if the focus should change to the {@link TextField#next(boolean) next} input field. */
+		protected boolean checkFocusTraversal (char character) {
+			return focusTraversal && (character == TAB
+				|| ((character == CARRIAGE_RETURN || character == NEWLINE) && (UIUtils.isAndroid || UIUtils.isIos)));
 		}
 
 		public boolean keyTyped (InputEvent event, char character) {
@@ -1041,9 +1037,9 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if ( checkFocusTraverse(character) ) {
+			if (checkFocusTraversal(character))
 				next(UIUtils.shift());
-			} else {
+			else {
 				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
