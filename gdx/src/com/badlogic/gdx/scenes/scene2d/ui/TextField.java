@@ -106,7 +106,7 @@ public class TextField extends Widget implements Disableable {
 	protected float fontOffset, textHeight, textOffset;
 	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
-	private int maxLength = 0;
+	private int maxLength;
 
 	boolean focused;
 	boolean cursorOn;
@@ -1064,7 +1064,7 @@ public class TextField extends Widget implements Disableable {
 					if (add && !remove) {
 						// Character may be added to the text.
 						if (!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
-						if (!withinMaxLength(text.length())) return true;
+						if (!withinMaxLength(text.length() - (hasSelection ? Math.abs(cursor - selectionStart) : 0))) return true;
 						if (hasSelection) cursor = delete(false);
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
