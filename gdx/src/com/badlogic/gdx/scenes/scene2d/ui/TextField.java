@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -64,12 +63,14 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static private final char BACKSPACE = 8;
-	static protected final char ENTER_DESKTOP = '\r';
-	static protected final char ENTER_ANDROID = '\n';
-	static private final char TAB = '\t';
-	static private final char DELETE = 127;
-	static private final char BULLET = 149;
+	static protected final char BACKSPACE = 8;
+	//Windows and Mac before OS X as Enter
+	static protected final char CARRIAGE_RETURN = '\r';
+	//Unix based systems as Enter
+	static protected final char NEWLINE = '\n';
+	static protected final char TAB = '\t';
+	static protected final char DELETE = 127;
+	static protected final char BULLET = 149;
 
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
@@ -468,7 +469,7 @@ public class TextField extends Widget implements Disableable {
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
-			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
+			if (!(writeEnters && (c == NEWLINE || c == CARRIAGE_RETURN))) {
 				if (c == '\r' || c == '\n') continue;
 				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
@@ -1010,6 +1011,18 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
+		/**
+		 * Checks if focus traversal should be triggered. Depends on {@link TextField#focusTraversal} and
+		 * the typed {@link char}, given as parameter.
+		 * @param character - the character that is checked to trigger focus traversal.
+		 * @return <b>true</b>, if the focus should jump to the next input field. <b>false</b> if not.
+		 */
+		protected boolean checkFocusTraverse(char character) {
+			return focusTraversal && (character == TAB || (
+							(character == CARRIAGE_RETURN || character == NEWLINE)
+							&& (UIUtils.isAndroid || UIUtils.isIos) ));
+		}
+
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
 
@@ -1017,8 +1030,8 @@ public class TextField extends Widget implements Disableable {
 			switch (character) {
 			case BACKSPACE:
 			case TAB:
-			case ENTER_ANDROID:
-			case ENTER_DESKTOP:
+			case NEWLINE:
+			case CARRIAGE_RETURN:
 				break;
 			default:
 				if (character < 32) return false;
@@ -1028,12 +1041,12 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
+			if ( checkFocusTraverse(character) ) {
 				next(UIUtils.shift());
 			} else {
+				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean enter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {

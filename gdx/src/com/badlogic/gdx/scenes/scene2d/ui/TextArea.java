@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
@@ -122,7 +121,7 @@ public class TextArea extends TextField {
 	/** Returns if there's a new line at then end of the text **/
 	public boolean newLineAtEnd () {
 		return text.length() != 0
-			&& (text.charAt(text.length() - 1) == ENTER_ANDROID || text.charAt(text.length() - 1) == ENTER_DESKTOP);
+			&& (text.charAt(text.length() - 1) == NEWLINE || text.charAt(text.length() - 1) == CARRIAGE_RETURN);
 	}
 
 	/** Moves the cursor to the given number line **/
@@ -161,8 +160,8 @@ public class TextArea extends TextField {
 		// wider than the box
 		if (index % 2 == 0 || index + 1 >= linesBreak.size || cursor != linesBreak.items[index]
 			|| linesBreak.items[index + 1] != linesBreak.items[index]) {
-			if (line < linesBreak.size / 2 || text.length() == 0 || text.charAt(text.length() - 1) == ENTER_ANDROID
-				|| text.charAt(text.length() - 1) == ENTER_DESKTOP) {
+			if (line < linesBreak.size / 2 || text.length() == 0 || text.charAt(text.length() - 1) == NEWLINE
+				|| text.charAt(text.length() - 1) == CARRIAGE_RETURN) {
 				cursorLine = line;
 			}
 		}
@@ -272,7 +271,7 @@ public class TextArea extends TextField {
 			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);
-				if (lastCharacter == ENTER_DESKTOP || lastCharacter == ENTER_ANDROID) {
+				if (lastCharacter == CARRIAGE_RETURN || lastCharacter == NEWLINE) {
 					linesBreak.add(lineStart);
 					linesBreak.add(i);
 					lineStart = i + 1;
@@ -418,6 +417,11 @@ public class TextArea extends TextField {
 				return true;
 			}
 			return result;
+		}
+
+		@Override
+		protected boolean checkFocusTraverse(char character) {
+			return focusTraversal && character == TAB;
 		}
 
 		public boolean keyTyped (InputEvent event, char character) {
