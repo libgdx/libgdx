@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics.g2d;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -80,11 +79,8 @@ public class ArrayTextureSpriteBatch implements Batch {
 	/** Textures in use (index: Texture Slot, value: Texture) */
 	private final Texture[] usedTextures;
 
-	/** LFU Array (index: Texture Slot - value: Access frequency) */
-	private final int[] usedTexturesLFU;
-
-	/** LFU Array of the previous begin-draw-end cycle (index: Texture Slot - value: Access frequency) */
-	private final int[] usedTexturesLFUPrevious;
+	/** This slot gets replaced once texture cache space runs out. */
+	private int usedTexturesNextSwapSlot;
 
 	private final IntBuffer FBO_READ_INTBUFF;
 
@@ -210,8 +206,6 @@ public class ArrayTextureSpriteBatch implements Batch {
 		FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * Integer.BYTES).order(ByteOrder.nativeOrder()).asIntBuffer();
 
 		usedTextures = new Texture[maxTextureSlots];
-		usedTexturesLFU = new int[maxTextureSlots];
-		usedTexturesLFUPrevious = new int[maxTextureSlots];
 
 		arrayTextureMagFilter = texFilterMag;
 		arrayTextureMinFilter = texFilterMin;
@@ -406,10 +400,6 @@ public class ArrayTextureSpriteBatch implements Batch {
 		renderCalls = 0;
 
 		currentTextureLFUSwaps = 0;
-
-		// We use this data to decide which texture to swap out if space is needed
-		System.arraycopy(usedTexturesLFU, 0, usedTexturesLFUPrevious, 0, maxTextureSlots);
-		Arrays.fill(usedTexturesLFU, 0);
 
 		Gdx.gl30.glDepthMask(false);
 
@@ -1301,21 +1291,16 @@ public class ArrayTextureSpriteBatch implements Batch {
 		invTexWidth = subImageScaleWidth / texture.getWidth();
 		invTexHeight = subImageScaleHeight / texture.getHeight();
 
-		// This is our identifier for the textures
-		final int textureHandle = texture.getTextureObjectHandle();
+		final int textureSlot = findTextureCacheIndex(texture);
 
-		// First try to see if the texture is already cached
-		for (int i = 0; i < currentTextureLFUSize; i++) {
+		if (textureSlot >= 0) {
 
-			// getTextureObjectHandle() just returns an int,
-			// it's fine to call this method instead of caching the value.
-			if (textureHandle == usedTextures[i].getTextureObjectHandle()) {
-
-				// Increase the access counter.
-				usedTexturesLFU[i]++;
-
-				return i;
+			// We don't want to throw out a texture we just used
+			if (textureSlot == usedTexturesNextSwapSlot) {
+				usedTexturesNextSwapSlot = (usedTexturesNextSwapSlot + 1) % currentTextureLFUSize;
 			}
+
+			return textureSlot;
 		}
 
 		// If a free texture unit is available we just use it
@@ -1325,9 +1310,6 @@ public class ArrayTextureSpriteBatch implements Batch {
 			// Put the texture into the next free slot
 			usedTextures[currentTextureLFUSize] = texture;
 
-			// Increase the access counter.
-			usedTexturesLFU[currentTextureLFUSize]++;
-
 			copyTextureIntoArrayTexture(texture, currentTextureLFUSize);
 
 			currentTextureLFUSwaps++;
@@ -1336,34 +1318,15 @@ public class ArrayTextureSpriteBatch implements Batch {
 
 		} else {
 
-			// We try to find an unused (since calling begin()) or otherwise the least-used slot when swapping.
-			int slot = 0;
-			int slotValPrev = usedTexturesLFUPrevious[slot];
-
-			// We search for the best candidate for a swap (least accessed) and collect some data
-			for (int i = 1; i < maxTextureSlots; i++) {
-
-				final int val = usedTexturesLFUPrevious[i];
-
-				if (val <= slotValPrev) {
-					slot = i;
-					slotValPrev = val;
-				}
-
-				// Early exit when a texture was found that hasn't yet been used in this or the previous rendering cycle
-				if (slotValPrev == 0 && usedTexturesLFU[slot] == 0) {
-					break;
-				}
-			}
-
 			// We have to flush if there is something in the pipeline using this texture already,
 			// otherwise the texture index of previously rendered sprites gets invalidated
-			if (idx > 0 && usedTexturesLFU[slot] > 0) {
+			if (idx > 0) {
 				flush();
 			}
 
-			// This texture was used once now.
-			usedTexturesLFU[slot] = 1;
+			final int slot = usedTexturesNextSwapSlot;
+
+			usedTexturesNextSwapSlot = (usedTexturesNextSwapSlot + 1) % currentTextureLFUSize;
 
 			usedTextures[slot] = texture;
 
@@ -1373,6 +1336,41 @@ public class ArrayTextureSpriteBatch implements Batch {
 			currentTextureLFUSwaps++;
 
 			return slot;
+		}
+	}
+
+	/** Finds and returns the cache slot the Texture resides in.
+	 * @param texture The {@link Texture} which index should be searched for.
+	 * @return The index of the cache slot or -1 if not found. */
+	private int findTextureCacheIndex (Texture texture) {
+
+		// This is our identifier for the textures
+		final int textureHandle = texture.getTextureObjectHandle();
+
+		// First try to see if the texture is already cached
+		for (int i = 0; i < currentTextureLFUSize; i++) {
+
+			// getTextureObjectHandle() just returns an int,
+			// it's fine to call this method instead of caching the value.
+			if (textureHandle == usedTextures[i].getTextureObjectHandle()) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/** Causes the provided {@link Texture} to be reloaded if it is cached or loaded if it is not cached yet. This method can be
+	 * used to explicitly pre-load {@link Texture}s to cache if needed.
+	 * @param texture The {@link Texture} that should be reloaded. */
+	public void reloadTexture (Texture texture) {
+
+		final int textureSlot = findTextureCacheIndex(texture);
+
+		if (textureSlot < 0) {
+			activateTexture(texture);
+		} else {
+			copyTextureIntoArrayTexture(texture, textureSlot);
 		}
 	}
 
