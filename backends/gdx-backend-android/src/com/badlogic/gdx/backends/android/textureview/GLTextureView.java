@@ -3,7 +3,6 @@ package com.badlogic.gdx.backends.android.textureview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-import android.opengl.GLDebugHelper;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import android.util.Log;
@@ -18,10 +17,8 @@ import android.view.inputmethod.InputConnection;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 
-import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGL11;
@@ -32,21 +29,9 @@ import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
-/*
- * Copyright (C) 2018 Wasabeef
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
+import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+
 public class GLTextureView extends TextureView
         implements TextureView.SurfaceTextureListener, View.OnLayoutChangeListener {
 
@@ -59,42 +44,6 @@ public class GLTextureView extends TextureView
     private final static boolean LOG_RENDERER = false;
     private final static boolean LOG_RENDERER_DRAW_FRAME = false;
     private final static boolean LOG_EGL = false;
-
-    /**
-     * The renderer only renders
-     * when the surface is created, or when {@link #requestRender} is called.
-     *
-     * @see #getRenderMode()
-     * @see #setRenderMode(int)
-     * @see #requestRender()
-     */
-    public final static int RENDERMODE_WHEN_DIRTY = 0;
-    /**
-     * The renderer is called
-     * continuously to re-render the scene.
-     *
-     * @see #getRenderMode()
-     * @see #setRenderMode(int)
-     */
-    public final static int RENDERMODE_CONTINUOUSLY = 1;
-
-    /**
-     * Check glError() after every GL call and throw an exception if glError indicates
-     * that an error has occurred. This can be used to help track down which OpenGL ES call
-     * is causing an error.
-     *
-     * @see #getDebugFlags
-     * @see #setDebugFlags
-     */
-    public final static int DEBUG_CHECK_GL_ERROR = 1;
-
-    /**
-     * Log GL calls to the system log at "verbose" level with tag "GLTextureView".
-     *
-     * @see #getDebugFlags
-     * @see #setDebugFlags
-     */
-    public final static int DEBUG_LOG_GL_CALLS = 2;
 
     /**
      * Standard View constructor. In order to render something, you
@@ -173,47 +122,6 @@ public class GLTextureView extends TextureView
         if (translucent) {
             setOpaque(false);
         }
-    }
-
-    /**
-     * Set the glWrapper. If the glWrapper is not null, its
-     * {@link GLSurfaceView.GLWrapper#wrap(javax.microedition.khronos.opengles.GL)} method is called
-     * whenever a surface is created. A GLWrapper can be used to wrap
-     * the GL object that's passed to the renderer. Wrapping a GL
-     * object enables examining and modifying the behavior of the
-     * GL calls made by the renderer.
-     * <p>
-     * Wrapping is typically used for debugging purposes.
-     * <p>
-     * The default value is null.
-     *
-     * @param glWrapper the new GLWrapper
-     */
-    public void setGLWrapper(GLSurfaceView.GLWrapper glWrapper) {
-        this.glWrapper = glWrapper;
-    }
-
-    /**
-     * Set the debug flags to a new value. The value is
-     * constructed by OR-together zero or more
-     * of the DEBUG_CHECK_* constants. The debug flags take effect
-     * whenever a surface is created. The default value is zero.
-     *
-     * @param debugFlags the new debug flags
-     * @see #DEBUG_CHECK_GL_ERROR
-     * @see #DEBUG_LOG_GL_CALLS
-     */
-    public void setDebugFlags(int debugFlags) {
-        this.debugFlags = debugFlags;
-    }
-
-    /**
-     * Get the current value of the debug flags.
-     *
-     * @return the current value of the debug flags.
-     */
-    public int getDebugFlags() {
-        return debugFlags;
     }
 
     /**
@@ -411,8 +319,8 @@ public class GLTextureView extends TextureView
      * This method can only be called after {@link #setRenderer(GLSurfaceView.Renderer)}
      *
      * @param renderMode one of the RENDERMODE_X constants
-     * @see #RENDERMODE_CONTINUOUSLY
-     * @see #RENDERMODE_WHEN_DIRTY
+     * @see GLSurfaceView#RENDERMODE_CONTINUOUSLY
+     * @see GLSurfaceView#RENDERMODE_WHEN_DIRTY
      */
     public void setRenderMode(int renderMode) {
         glThread.setRenderMode(renderMode);
@@ -423,8 +331,8 @@ public class GLTextureView extends TextureView
      * from any thread. Must not be called before a renderer has been set.
      *
      * @return the current rendering mode.
-     * @see #RENDERMODE_CONTINUOUSLY
-     * @see #RENDERMODE_WHEN_DIRTY
+     * @see GLSurfaceView#RENDERMODE_CONTINUOUSLY
+     * @see GLSurfaceView#RENDERMODE_WHEN_DIRTY
      */
     public int getRenderMode() {
         return glThread.getRenderMode();
@@ -433,7 +341,7 @@ public class GLTextureView extends TextureView
     /**
      * Request that the renderer render a frame.
      * This method is typically used when the render mode has been set to
-     * {@link #RENDERMODE_WHEN_DIRTY}, so that frames are only rendered on demand.
+     * {@link GLSurfaceView#RENDERMODE_WHEN_DIRTY}, so that frames are only rendered on demand.
      * May be called
      * from any thread. Must not be called before a renderer has been set.
      */
@@ -545,46 +453,27 @@ public class GLTextureView extends TextureView
         surfaceChanged(getSurfaceTexture(), 0, right - left, bottom - top);
     }
 
-    public void addSurfaceTextureListener(SurfaceTextureListener listener) {
-        surfaceTextureListeners.add(listener);
-    }
-
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         surfaceCreated(surface);
         surfaceChanged(surface, 0, width, height);
-
-        for (SurfaceTextureListener l : surfaceTextureListeners) {
-            l.onSurfaceTextureAvailable(surface, width, height);
-        }
     }
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         surfaceChanged(surface, 0, width, height);
-
-        for (SurfaceTextureListener l : surfaceTextureListeners) {
-            l.onSurfaceTextureSizeChanged(surface, width, height);
-        }
     }
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         surfaceDestroyed(surface);
-
-        for (SurfaceTextureListener l : surfaceTextureListeners) {
-            l.onSurfaceTextureDestroyed(surface);
-        }
-
         return true;
     }
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        requestRender();
-
-        for (SurfaceTextureListener l : surfaceTextureListeners) {
-            l.onSurfaceTextureUpdated(surface);
+        if (getRenderMode() == RENDERMODE_CONTINUOUSLY) {
+            requestRender();
         }
     }
 
@@ -897,27 +786,8 @@ public class GLTextureView extends TextureView
         /**
          * Create a GL object for the current EGL context.
          */
-        GL createGL() {
-
+        private GL createGL() {
             GL gl = eglContext.getGL();
-            GLTextureView view = glTextureViewWeakRef.get();
-            if (view != null) {
-                if (view.glWrapper != null) {
-                    gl = view.glWrapper.wrap(gl);
-                }
-
-                if ((view.debugFlags & (DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS)) != 0) {
-                    int configFlags = 0;
-                    Writer log = null;
-                    if ((view.debugFlags & DEBUG_CHECK_GL_ERROR) != 0) {
-                        configFlags |= GLDebugHelper.CONFIG_CHECK_GL_ERROR;
-                    }
-                    if ((view.debugFlags & DEBUG_LOG_GL_CALLS) != 0) {
-                        log = new LogWriter();
-                    }
-                    gl = GLDebugHelper.wrap(gl, configFlags, log);
-                }
-            }
             return gl;
         }
 
@@ -1449,7 +1319,7 @@ public class GLTextureView extends TextureView
                 width = w;
                 height = h;
                 sizeChanged = true;
-                requestRender = true;
+                requestRender = getRenderMode() == RENDERMODE_CONTINUOUSLY;
                 renderComplete = false;
                 glThreadManager.notifyAll();
 
@@ -1533,40 +1403,6 @@ public class GLTextureView extends TextureView
          * the GLThread is still alive.
          */
         private WeakReference<GLTextureView> glTextureViewWeakRef;
-    }
-
-    static class LogWriter extends Writer {
-
-        @Override
-        public void close() {
-            flushBuilder();
-        }
-
-        @Override
-        public void flush() {
-            flushBuilder();
-        }
-
-        @Override
-        public void write(char[] buf, int offset, int count) {
-            for (int i = 0; i < count; i++) {
-                char c = buf[offset + i];
-                if (c == '\n') {
-                    flushBuilder();
-                } else {
-                    builder.append(c);
-                }
-            }
-        }
-
-        private void flushBuilder() {
-            if (builder.length() > 0) {
-                Log.v("GLTextureView", builder.toString());
-                builder.delete(0, builder.length());
-            }
-        }
-
-        private StringBuilder builder = new StringBuilder();
     }
 
     static boolean checkEglError(String prompt, EGL10 egl) {
@@ -1696,10 +1532,7 @@ public class GLTextureView extends TextureView
     private GLSurfaceView.EGLConfigChooser eglConfigChooser;
     private GLSurfaceView.EGLContextFactory eglContextFactory;
     private GLSurfaceView.EGLWindowSurfaceFactory eglWindowSurfaceFactory;
-    private GLSurfaceView.GLWrapper glWrapper;
-    private int debugFlags;
     private int eglContextClientVersion;
     private boolean preserveEGLContextOnPause;
-    private List<SurfaceTextureListener> surfaceTextureListeners = new ArrayList<>();
     private final ResolutionStrategy resolutionStrategy;
 }
