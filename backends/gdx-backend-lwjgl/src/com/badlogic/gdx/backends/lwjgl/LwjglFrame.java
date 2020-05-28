@@ -81,6 +81,10 @@ public class LwjglFrame extends JFrame {
 				LwjglFrame.this.start();
 			}
 
+			protected void disposed () {
+				LwjglFrame.this.disposed();
+			}
+
 			protected void exception (Throwable t) {
 				LwjglFrame.this.exception(t);
 			}
@@ -129,17 +133,20 @@ public class LwjglFrame extends JFrame {
 	 * from causing a deadlock and keeping the JVM alive indefinitely. Default is true. */
 	public void setHaltOnShutdown (boolean halt) {
 		try {
-			if (halt) {
-				if (shutdownHook != null) return;
-				shutdownHook = new Thread() {
-					public void run () {
-						Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
-					}
-				};
-				Runtime.getRuntime().addShutdownHook(shutdownHook);
-			} else if (shutdownHook != null) {
-				Runtime.getRuntime().removeShutdownHook(shutdownHook);
-				shutdownHook = null;
+			try {
+				if (halt) {
+					if (shutdownHook != null) return;
+					shutdownHook = new Thread() {
+						public void run () {
+							Runtime.getRuntime().halt(0);
+						}
+					};
+					Runtime.getRuntime().addShutdownHook(shutdownHook);
+				} else if (shutdownHook != null) {
+					Runtime.getRuntime().removeShutdownHook(shutdownHook);
+					shutdownHook = null;
+				}
+			} catch (Throwable ignored) { // Can happen if already shutting down.
 			}
 		} catch (IllegalStateException ex) {
 			shutdownHook = null;
@@ -177,6 +184,10 @@ public class LwjglFrame extends JFrame {
 
 	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
+	}
+
+	/** Called after dispose is complete. */
+	protected void disposed () {
 	}
 
 	public LwjglCanvas getLwjglCanvas () {
