@@ -102,24 +102,22 @@ public class Label extends Widget {
 		return true;
 	}
 
-	/** @param newText If null, "" will be used.
-	 * @return true if the text was changed. */
-	public boolean setText (@Null CharSequence newText) {
+	/** @param newText If null, "" will be used. */
+	public void setText (@Null CharSequence newText) {
 		if (newText == null) {
-			if (text.length == 0) return false;
+			if (text.length == 0) return;
 			text.clear();
 		} else if (newText instanceof StringBuilder) {
-			if (text.equals(newText)) return false;
+			if (text.equals(newText)) return;
 			text.clear();
 			text.append((StringBuilder)newText);
 		} else {
-			if (textEquals(newText)) return false;
+			if (textEquals(newText)) return;
 			text.clear();
 			text.append(newText);
 		}
 		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
-		return true;
 	}
 
 	public boolean textEquals (CharSequence other) {
