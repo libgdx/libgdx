@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /** A binary heap that stores nodes which each have a float value and are sorted either lowest first or highest first. The
  * {@link Node} class can be extended to store additional information.
  * @author Nathan Sweet */
@@ -79,20 +81,28 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 	/** Removes the first item in the heap and returns it. This is the item with the lowest value (or highest value if this heap is
 	 * configured as a max heap). */
 	public T pop () {
-		return remove(0);
+		Node removed = nodes[0];
+		if (--size > 0) {
+			nodes[0] = nodes[size];
+			nodes[size] = null;
+			down(0);
+		} else
+			nodes[0] = null;
+		return (T)removed;
 	}
 
 	public T remove (T node) {
-		return remove(node.index);
-	}
-
-	private T remove (int index) {
-		Node[] nodes = this.nodes;
-		Node removed = nodes[index];
-		nodes[index] = nodes[--size];
-		nodes[size] = null;
-		if (size > 0 && index < size) down(index);
-		return (T)removed;
+		if (--size > 0) {
+			Node moved = nodes[size];
+			nodes[size] = null;
+			nodes[node.index] = moved;
+			if (moved.value < node.value ^ isMaxHeap)
+				up(node.index);
+			else
+				down(node.index);
+		} else
+			nodes[0] = null;
+		return node;
 	}
 
 	/** Returns true if the heap has one or more items. */
@@ -106,9 +116,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 	}
 
 	public void clear () {
-		Node[] nodes = this.nodes;
-		for (int i = 0, n = size; i < n; i++)
-			nodes[i] = null;
+		Arrays.fill(nodes, 0, size, null);
 		size = 0;
 	}
 
@@ -176,7 +184,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			} else {
 				if (rightValue == value || (rightValue > value ^ isMaxHeap)) break;
 				nodes[index] = rightNode;
-				rightNode.index = index;
+				if (rightNode != null) rightNode.index = index;
 				index = rightIndex;
 			}
 		}
@@ -197,6 +205,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 
 	public int hashCode () {
 		int h = 1;
+		Node[] nodes = this.nodes;
 		for (int i = 0, n = size; i < n; i++)
 			h = h * 31 + Float.floatToIntBits(nodes[i].value);
 		return h;

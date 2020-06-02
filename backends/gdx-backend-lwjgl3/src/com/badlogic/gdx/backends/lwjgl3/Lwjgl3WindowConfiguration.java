@@ -39,7 +39,7 @@ public class Lwjgl3WindowConfiguration {
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
 	boolean vSyncEnabled = true;
@@ -56,6 +56,7 @@ public class Lwjgl3WindowConfiguration {
 		windowResizable = config.windowResizable;
 		windowDecorated = config.windowDecorated;
 		windowMaximized = config.windowMaximized;
+		maximizedMonitor = config.maximizedMonitor;
 		autoIconify = config.autoIconify;
 		windowIconFileType = config.windowIconFileType;
 		if (config.windowIconPaths != null) 
@@ -108,6 +109,13 @@ public class Lwjgl3WindowConfiguration {
 	public void setMaximized(boolean maximized) {
 		this.windowMaximized = maximized;
 	}
+	
+	/**
+	 * @param monitor what monitor the window should maximize to
+	 */
+	public void setMaximizedMonitor(Graphics.Monitor monitor) {
+		this.maximizedMonitor = (Lwjgl3Graphics.Lwjgl3Monitor) monitor;
+	}
 
 	/**
 	 * @param autoIconify whether the window should automatically iconify and restore previous video mode on input focus loss. (default false)
@@ -118,8 +126,8 @@ public class Lwjgl3WindowConfiguration {
 	}
 
 	/**
-	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for both coordinates for centered.
+	 * Sets the position of the window in windowed mode.
+	 * Default -1 for both coordinates for centered on primary monitor.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
@@ -167,7 +175,7 @@ public class Lwjgl3WindowConfiguration {
 
 	/**
 	 * Sets the app to use fullscreen mode. Use the static methods like
-	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
+	 * {@link Lwjgl3ApplicationConfiguration#getDisplayMode()} on this class to enumerate connected monitors
 	 * and their fullscreen display modes.
 	 */
 	public void setFullscreenMode(DisplayMode mode) {

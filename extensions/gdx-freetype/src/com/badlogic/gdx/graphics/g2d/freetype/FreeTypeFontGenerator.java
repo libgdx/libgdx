@@ -161,9 +161,16 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
-		BitmapFont font = new BitmapFont(data, data.regions, true);
+		BitmapFont font = newBitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
+	}
+
+	/** Called by generateFont to create a new {@link BitmapFont} instance. This allows injecting a customized {@link BitmapFont},
+	 * eg for a RTL font.
+	 * @see BitmapFont#BitmapFont(BitmapFontData, Array, boolean) */
+	protected BitmapFont newBitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		return new BitmapFont(data, pageRegions, integer);
 	}
 
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
@@ -281,7 +288,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
 		data.name = name + "-" + parameter.size;
-		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
 		boolean incremental = parameter.incremental;

@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** A slider is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between
@@ -90,11 +91,11 @@ public class Slider extends ProgressBar {
 				calculatePositionAndValue(x, y);
 			}
 
-			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+			public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+			public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}
 		});
@@ -106,6 +107,7 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
+	@Null
 	protected Drawable getKnobDrawable () {
 		SliderStyle style = getStyle();
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob
@@ -114,15 +116,15 @@ public class Slider extends ProgressBar {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final SliderStyle style = getStyle();
-		final Drawable knob = getKnobDrawable();
-		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		SliderStyle style = getStyle();
+		Drawable knob = style.knob;
+		Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = position;
 
-		final float min = getMinValue();
-		final float max = getMaxValue();
+		float min = getMinValue();
+		float max = getMaxValue();
 
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
@@ -166,7 +168,7 @@ public class Slider extends ProgressBar {
 
 	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
 	 * @param values May be null. */
-	public void setSnapToValues (float[] values, float threshold) {
+	public void setSnapToValues (@Null float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
@@ -187,12 +189,12 @@ public class Slider extends ProgressBar {
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
 		/** Optional. */
-		public Drawable knobOver, knobDown;
+		@Null public Drawable knobOver, knobDown;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (Drawable background, Drawable knob) {
+		public SliderStyle (@Null Drawable background, @Null Drawable knob) {
 			super(background, knob);
 		}
 

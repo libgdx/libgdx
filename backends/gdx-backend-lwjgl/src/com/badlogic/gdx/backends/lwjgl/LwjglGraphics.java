@@ -108,7 +108,6 @@ public class LwjglGraphics implements Graphics {
 		return getHeight();
 	}
 
-
 	public long getFrameId () {
 		return frameId;
 	}
@@ -195,18 +194,18 @@ public class LwjglGraphics implements Graphics {
 		} else {
 			boolean displayCreated = false;
 
-			if(!config.fullscreen) {
+			if (!config.fullscreen) {
 				displayCreated = setWindowedMode(config.width, config.height);
 			} else {
 				DisplayMode bestMode = null;
-				for(DisplayMode mode: getDisplayModes()) {
-					if(mode.width == config.width && mode.height == config.height) {
-						if(bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
+				for (DisplayMode mode : getDisplayModes()) {
+					if (mode.width == config.width && mode.height == config.height) {
+						if (bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
 							bestMode = mode;
 						}
 					}
 				}
-				if(bestMode == null) {
+				if (bestMode == null) {
 					bestMode = this.getDisplayMode();
 				}
 				displayCreated = setFullscreenMode(bestMode);
@@ -219,8 +218,8 @@ public class LwjglGraphics implements Graphics {
 					}
 				}
 				if (!displayCreated) {
-					throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
-						+ config.fullscreen);
+					throw new GdxRuntimeException(
+						"Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: " + config.fullscreen);
 				}
 			}
 			if (config.iconPaths.size > 0) {
@@ -251,10 +250,8 @@ public class LwjglGraphics implements Graphics {
 		initiateGL();
 	}
 
-	/**
-	 * Only needed when setupDisplay() is not called.
-	 */
-	void initiateGL() {
+	/** Only needed when setupDisplay() is not called. */
+	void initiateGL () {
 		extractVersion();
 		extractExtensions();
 		initiateGLInstances();
@@ -303,8 +300,9 @@ public class LwjglGraphics implements Graphics {
 				ContextAttribs context = new ContextAttribs(gles30ContextMajor, gles30ContextMinor).withForwardCompatible(false)
 					.withProfileCore(true);
 				try {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
-						config.samples), context);
+					Display.create(
+						new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples),
+						context);
 				} catch (Exception e) {
 					System.out.println("LwjglGraphics: OpenGL " + gles30ContextMajor + "." + gles30ContextMinor
 						+ "+ core profile (GLES 3.0) not supported.");
@@ -347,6 +345,7 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
+					Display.destroy();
 					if (!softwareMode && config.allowSoftwareMode) {
 						softwareMode = true;
 						System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
@@ -433,7 +432,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public Monitor[] getMonitors () {
-		return new Monitor[] { getPrimaryMonitor() };
+		return new Monitor[] {getPrimaryMonitor()};
 	}
 
 	@Override
@@ -444,6 +443,26 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public DisplayMode getDisplayMode (Monitor monitor) {
 		return getDisplayMode();
+	}
+
+	@Override
+	public int getSafeInsetLeft () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight () {
+		return 0;
 	}
 
 	@Override
@@ -540,8 +559,8 @@ public class LwjglGraphics implements Graphics {
 			int idx = 0;
 			for (org.lwjgl.opengl.DisplayMode mode : availableDisplayModes) {
 				if (mode.isFullscreenCapable()) {
-					modes[idx++] = new LwjglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getFrequency(),
-						mode.getBitsPerPixel(), mode);
+					modes[idx++] = new LwjglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getFrequency(), mode.getBitsPerPixel(),
+						mode);
 				}
 			}
 
@@ -562,19 +581,13 @@ public class LwjglGraphics implements Graphics {
 		Display.setTitle(title);
 	}
 
-	/**
-	 * Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take
-	 * effect.
-	 */
+	/** Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take effect. */
 	@Override
 	public void setUndecorated (boolean undecorated) {
 		System.setProperty("org.lwjgl.opengl.Window.undecorated", undecorated ? "true" : "false");
 	}
 
-	/**
-	 * Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take
-	 * effect.
-	 */
+	/** Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take effect. */
 	@Override
 	public void setResizable (boolean resizable) {
 		this.config.resizable = resizable;
@@ -633,8 +646,8 @@ public class LwjglGraphics implements Graphics {
 
 	/** A callback used by LwjglApplication when trying to create the display */
 	public interface SetDisplayModeCallback {
-		/** If the display creation fails, this method will be called. Suggested usage is to modify the passed configuration to use a
-		 * common width and height, and set fullscreen to false.
+		/** If the display creation fails, this method will be called. Suggested usage is to modify the passed configuration to use
+		 * a common width and height, and set fullscreen to false.
 		 * @return the configuration to be used for a second attempt at creating a display. A null value results in NOT attempting
 		 *         to create the display a second time */
 		public LwjglApplicationConfiguration onFailure (LwjglApplicationConfiguration initialConfig);

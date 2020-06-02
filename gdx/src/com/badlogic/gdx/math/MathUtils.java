@@ -59,30 +59,34 @@ public final class MathUtils {
 		}
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in radians from a lookup table. For optimal precision, use radians between -PI2 and PI2 (both
+	 * inclusive). */
 	static public float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in radians from a lookup table. For optimal precision, use radians between -PI2 and PI2 (both
+	 * inclusive). */
 	static public float cos (float radians) {
 		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	 * inclusive). */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	 * inclusive). */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
 
 	// ---
 
-	/** Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
-	 * largest error of 0.00488 radians (0.2796 degrees). */
+	/** Returns atan2 in radians, less accurate than Math.atan2 but may be faster. Average error of 0.00231 radians (0.1323
+	 * degrees), largest error of 0.00488 radians (0.2796 degrees). */
 	static public float atan2 (float y, float x) {
 		if (x == 0f) {
 			if (y > 0f) return PI / 2;
@@ -97,6 +101,18 @@ public final class MathUtils {
 		}
 		atan = PI / 2 - z / (z * z + 0.28f);
 		return y < 0f ? atan - PI : atan;
+	}
+
+	/** Returns acos in radians, less accurate than Math.acos but may be faster. */
+	static public float acos (float a) {
+		return 1.5707963267948966f - (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
+			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	}
+
+	/** Returns asin in radians, less accurate than Math.asin but may be faster. */
+	static public float asin (float a) {
+		return (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
+			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
 	}
 
 	// ---

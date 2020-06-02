@@ -41,7 +41,7 @@ public class AtomicQueue<T> {
 		return (idx + 1) % queue.length();
 	}
 
-	public boolean put (T value) {
+	public boolean put (@Null T value) {
 		int write = writeIndex.get();
 		int read = readIndex.get();
 		int next = next(write);
@@ -51,6 +51,7 @@ public class AtomicQueue<T> {
 		return true;
 	}
 
+	@Null
 	public T poll () {
 		int read = readIndex.get();
 		int write = writeIndex.get();

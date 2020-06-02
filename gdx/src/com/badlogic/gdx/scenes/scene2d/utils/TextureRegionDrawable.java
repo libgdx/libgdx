@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /** Drawable for a {@link TextureRegion}.

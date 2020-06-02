@@ -121,7 +121,6 @@ public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends
 				disposables.remove();
 			}
 		}
-		data = null;
 		return result;
 	}
 

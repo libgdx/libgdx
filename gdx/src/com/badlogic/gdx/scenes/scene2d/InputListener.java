@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Null;
 
 /** EventListener for low-level input events. Unpacks {@link InputEvent}s and calls the appropriate method. By default the methods
  * here do nothing with the event. Users are expected to override the methods they are interested in, like this:
@@ -107,14 +108,14 @@ public class InputListener implements EventListener {
 	 * mouse buttons are pressed (pointer will be -1).
 	 * @param fromActor May be null.
 	 * @see InputEvent */
-	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+	public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 	}
 
 	/** Called any time the mouse cursor or a finger touch is moved out of an actor. On the desktop, this event occurs even when no
 	 * mouse buttons are pressed (pointer will be -1).
 	 * @param toActor May be null.
 	 * @see InputEvent */
-	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+	public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 	}
 
 	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
