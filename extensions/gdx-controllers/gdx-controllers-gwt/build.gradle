@@ -15,6 +15,6 @@
  ******************************************************************************/
 
 dependencies {
-    compileOnly project(":extensions:gdx-controllers:gdx-controllers")
+    compileOnly project(":extensions:gdx-controllers:gdx-controllers-core")
     compileOnly libraries.gwt
 }

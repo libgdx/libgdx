@@ -94,11 +94,10 @@ public class MeshShaderTest extends GdxTest {
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
 		meshToDraw.render(shader, GL20.GL_TRIANGLES);
-		shader.end();
 	}
 
 	@Override

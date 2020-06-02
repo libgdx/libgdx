@@ -13,9 +13,9 @@
 #include "gdx2d.h"
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_NO_FAILURE_STRINGS
+#define STBI_FAILURE_USERMSG
+#define STBI_NO_STDIO
 #include "stb_image.h"
-#include "jpgd_c.h"
 
 
 static uint32_t* lu4 = 0;
@@ -224,9 +224,6 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
 
 	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
-	if (pixels == NULL) {
-		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
-	}
 	if (pixels == NULL)
 		return NULL;
 
@@ -287,9 +284,7 @@ void gdx2d_set_scale (gdx2d_pixmap* pixmap, uint32_t scale) {
 }
 
 const char *gdx2d_get_failure_reason(void) {
-	if (stbi_failure_reason())
-		return stbi_failure_reason();
-    return jpgd_failure_reason();
+	return stbi_failure_reason();
 }
 
 static inline void clear_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {

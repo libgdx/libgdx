@@ -16,14 +16,11 @@
 
 package com.badlogic.gdx.controllers;
 
-import java.util.Collection;
-
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -93,12 +90,7 @@ public class Controllers {
 		if (preferredManager != null) {
 			className = preferredManager;
 		} else if (type == ApplicationType.Android) {
-			if (Gdx.app.getVersion() >= 12) {
-				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
-			} else {
-				Gdx.app.log(TAG, "No controller manager is available for Android versions < API level 12");
-				manager = new ControllerManagerStub();
-			}
+			className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 		} else if (type == ApplicationType.Desktop) {
 			if(Gdx.graphics.getType() == GraphicsType.LWJGL3) {
 				className = "com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager";

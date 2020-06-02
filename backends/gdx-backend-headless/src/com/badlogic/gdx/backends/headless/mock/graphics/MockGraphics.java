@@ -98,7 +98,7 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public int getFramesPerSecond() {
-		return 0;
+		return fps;
 	}
 
 	@Override
@@ -149,6 +149,26 @@ public class MockGraphics implements Graphics {
 	@Override
 	public DisplayMode getDisplayMode() {
 		return null;
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return 0;
 	}
 
 	@Override

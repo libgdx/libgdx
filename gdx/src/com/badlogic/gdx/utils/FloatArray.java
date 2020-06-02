@@ -142,9 +142,21 @@ public class FloatArray {
 		items[index] += value;
 	}
 
+	public void incr (float value) {
+		float[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, float value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (float value) {
+		float[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, float value) {
@@ -360,7 +372,7 @@ public class FloatArray {
 		float[] items = this.items;
 		int h = 1;
 		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + Float.floatToIntBits(items[i]);
+			h = h * 31 + NumberUtils.floatToRawIntBits(items[i]);
 		return h;
 	}
 

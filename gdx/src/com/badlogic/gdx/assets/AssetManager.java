@@ -394,7 +394,8 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
+	/** Updates the AssetManager for a single task. Returns if the current task is still being processed or there arew no tasks,
+	 * otherwise it finishes the current task and starts the next task.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {
 		try {
@@ -426,7 +427,8 @@ public class AssetManager implements Disposable {
 		}
 	}
 
-	/** Returns true when all assets are loaded. Can be called from any thread. */
+	/** Returns true when all assets are loaded. Can be called from any thread but note {@link #update()} or related methods must
+	 * be called to process tasks. */
 	public synchronized boolean isFinished () {
 		return loadQueue.size == 0 && tasks.size() == 0;
 	}
@@ -671,11 +673,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		float fractionalLoaded = (float)loaded;
+		float fractionalLoaded = loaded;
 		if (peakTasks > 0) {
 			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
 		}
-		return Math.min(1, fractionalLoaded / (float)toLoad);
+		return Math.min(1, fractionalLoaded / toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.

@@ -1,3 +1,37 @@
+[1.9.11]
+- Update to MobiVM 2.3.8
+- Update to LWJGL 3.2.3
+- Fixed AndroidInput crashes due to missing array resize (pressure array).
+- API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide. This also helps resistance against malicious users who can choose problematic names.
+- API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this.
+- API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap.
+- API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
+- API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
+- Fixed changing looping state of already playing sounds on Android by first pausing the sound before setting the looping state (see #5822).
+- API Change: scene2d: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
+- API Change: scene2d: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
+- API Addition: scene2d: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- API Change: scene2d: In TextField, only revert the text if the change event was cancelled. This allows the text to be manipulated in the change listener.
+- API Change: scene2d: Tree.Node#removeAll renamed to clearChildren.
+- API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
+- API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
+- API Change: ShaderProgram begin and end methods are deprecated in favor to bind method.
+- API Addition: Added a OpenALAudio#getSourceId(long) method.
+- API Addition: Added a ShaderProgram#getHandle() method.
+- API Change: Replaced deprecated android support libraries with androidx. AndroidFragmentApplication is only affected.
+- API Addition: Created interfaces AndroidAudio and AndroidInput and added AndroidApplication#createAudio and AndroidApplication#createInput to allow initializing custom module implementations.
+- Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
+- API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
+- API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
+- API Addition: convenient Matrix4 rotate methods: rotateTowardDirection and rotateTowardTarget
+- API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
+- API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
+- API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
+- API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
+- Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
+
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
 - API Addition: Accelerometer support on GWT
@@ -34,6 +68,8 @@
 - API Addition: Support for InstancedRendering via Mesh
 - API Change: Cell#setLayout renamed to setTable.
 - API Addition: Added Collections#allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
+- API Addition: Added Group#removeActorAt(int,boolean) to avoid looking up the actor index. Subclasses intending to take action when an actor is removed may need to override this new method.
+- API Change: If Group#addActorAfter is called with an afterActor not in the group, the actor is added as the last child (not the first).
 
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker

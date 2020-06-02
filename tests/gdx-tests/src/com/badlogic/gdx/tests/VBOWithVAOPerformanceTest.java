@@ -203,7 +203,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 
 
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
 
@@ -211,12 +211,11 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		oldVBOWithVAOMesh.render(shader, GL20.GL_TRIANGLES);
 		Gdx.gl.glFlush();
 		oldCounter.addValue((System.nanoTime() - beforeOld));
-		shader.end();
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
 
@@ -224,13 +223,12 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		newVBOWithVAOMesh.render(shader, GL20.GL_TRIANGLES);
 		Gdx.gl.glFlush();
 		newCounter.addValue((System.nanoTime() - beforeNew));
-		shader.end();
 
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
 
@@ -239,13 +237,12 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			oldVBOWithVAOMesh.render(shader, GL20.GL_TRIANGLES);
 		Gdx.gl.glFlush();
 		oldCounterStress.addValue((System.nanoTime() - beforeOldStress));
-		shader.end();
 
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
 
@@ -254,7 +251,6 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			newVBOWithVAOMesh.render(shader, GL20.GL_TRIANGLES);
 		Gdx.gl.glFlush();
 		newCounterStress.addValue((System.nanoTime() - beforeNewStress));
-		shader.end();
 
 
 
