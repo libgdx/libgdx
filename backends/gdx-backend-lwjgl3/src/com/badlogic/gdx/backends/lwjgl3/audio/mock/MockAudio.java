@@ -21,12 +21,13 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.files.FileHandle;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
  */
-public class MockAudio implements Audio {
+public class MockAudio implements Lwjgl3Audio {
 
 	@Override
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
@@ -47,4 +48,10 @@ public class MockAudio implements Audio {
 	public Music newMusic(FileHandle file) {
 		return new MockMusic();
 	}
+
+	@Override
+	public void update () {}
+
+	@Override
+	public void dispose () {}
 }

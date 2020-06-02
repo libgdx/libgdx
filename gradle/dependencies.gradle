@@ -20,22 +20,22 @@ ext {
     testnatives = [:]
 }
 
-versions.robovm = "2.3.6"
+versions.robovm = "2.3.8"
 versions.moe = "1.4.0"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.0.9"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
-versions.lwjgl3 = "3.2.1"
+versions.lwjgl3 = "3.2.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "3.1.0"
-versions.multiDex = "1.0.3"
-versions.androidSdk = 28
+versions.multiDex = "2.0.1"
+versions.androidSdk = 29
 versions.androidBuildTools = "28.0.3"
-versions.androidSupport = "25.+"
+versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
 
 libraries.lwjgl = [
@@ -48,28 +48,46 @@ libraries.lwjgl = [
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
         "com.apple:AppleJavaExtensions:${versions.appleExtension}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
@@ -87,7 +105,7 @@ libraries.robovm = [
 ]
 
 libraries.android = [
-        "com.android.support:support-v4:${versions.androidSupport}"
+        "androidx.fragment:fragment:${versions.androidFragment}"
 ]
 
 libraries.gwt = [

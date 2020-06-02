@@ -125,12 +125,12 @@ public class SpriteCache implements Disposable {
 			short[] indices = new short[length];
 			short j = 0;
 			for (int i = 0; i < length; i += 6, j += 4) {
-				indices[i + 0] = (short)j;
+				indices[i + 0] = j;
 				indices[i + 1] = (short)(j + 1);
 				indices[i + 2] = (short)(j + 2);
 				indices[i + 3] = (short)(j + 2);
 				indices[i + 4] = (short)(j + 3);
-				indices[i + 5] = (short)j;
+				indices[i + 5] = j;
 			}
 			mesh.setIndices(indices);
 		}
@@ -855,14 +855,14 @@ public class SpriteCache implements Disposable {
 		Gdx.gl20.glDepthMask(false);
 
 		if (customShader != null) {
-			customShader.begin();
+			customShader.bind();
 			customShader.setUniformMatrix("u_proj", projectionMatrix);
 			customShader.setUniformMatrix("u_trans", transformMatrix);
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 			customShader.setUniformi("u_texture", 0);
 			mesh.bind(customShader);
 		} else {
-			shader.begin();
+			shader.bind();
 			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
 			shader.setUniformi("u_texture", 0);
 			mesh.bind(shader);
@@ -875,7 +875,6 @@ public class SpriteCache implements Disposable {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
 
-		shader.end();
 		GL20 gl = Gdx.gl20;
 		gl.glDepthMask(true);
 		if (customShader != null)

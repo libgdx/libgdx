@@ -1282,8 +1282,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		return true;
 	}
 
-	/** @param other May be null. */
-	public boolean equalsIgnoreCase (StringBuilder other) {
+	public boolean equalsIgnoreCase (@Null StringBuilder other) {
 		if (this == other) return true;
 		if (other == null) return false;
 		int length = this.length;
@@ -1297,8 +1296,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		return true;
 	}
 
-	/** @param other May be null. */
-	public boolean equalsIgnoreCase (String other) {
+	public boolean equalsIgnoreCase (@Null String other) {
 		if (other == null) return false;
 		int length = this.length;
 		if (length != other.length()) return false;

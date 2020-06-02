@@ -63,7 +63,7 @@ public class Ray implements Serializable {
 		tmp.set(origin).add(direction);
 		tmp.mul(matrix);
 		origin.mul(matrix);
-		direction.set(tmp.sub(origin));
+		direction.set(tmp.sub(origin)).nor();
 		return this;
 	}
 
@@ -79,7 +79,7 @@ public class Ray implements Serializable {
 	 * @return this ray for chaining */
 	public Ray set (Vector3 origin, Vector3 direction) {
 		this.origin.set(origin);
-		this.direction.set(direction);
+		this.direction.set(direction).nor();
 		return this;
 	}
 
@@ -94,7 +94,7 @@ public class Ray implements Serializable {
 	 * @return this ray for chaining */
 	public Ray set (float x, float y, float z, float dx, float dy, float dz) {
 		this.origin.set(x, y, z);
-		this.direction.set(dx, dy, dz);
+		this.direction.set(dx, dy, dz).nor();
 		return this;
 	}
 
@@ -104,7 +104,7 @@ public class Ray implements Serializable {
 	 * @return This ray for chaining */
 	public Ray set (Ray ray) {
 		this.origin.set(ray.origin);
-		this.direction.set(ray.direction);
+		this.direction.set(ray.direction).nor();
 		return this;
 	}
 
