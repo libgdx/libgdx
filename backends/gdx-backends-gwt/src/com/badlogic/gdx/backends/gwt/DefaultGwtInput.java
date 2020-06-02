@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
@@ -361,13 +360,26 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
-	public int getRotation () {
+	public native int getRotation () /*-{
+		if ("screen" in $wnd) {
+			var orientation = $wnd.screen.msOrientation || $wnd.screen.mozOrientation || ($wnd.screen.orientation || {}).type;
+			var isPortrait = this.@com.badlogic.gdx.backends.gwt.GwtInput::getNativeOrientation()() === @com.badlogic.gdx.Input.Orientation::Portrait;
+			if (orientation === "portrait-primary") {
+				return isPortrait ? 0 : 270;
+			} else if (orientation === "landscape-primary") {
+				return isPortrait ? 90 : 0;
+			} else if (orientation === "portrait-secondary") {
+				return isPortrait ? 180 : 90;
+			} else if (orientation === "landscape-secondary") {
+				return isPortrait ? 270 : 180;
+			}
+		}
 		return 0;
-	}
+	}-*/;
 
 	@Override
 	public Orientation getNativeOrientation () {
-		return Orientation.Landscape;
+		return GwtApplication.isMobileDevice() ? Orientation.Portrait : Orientation.Landscape;
 	}
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
