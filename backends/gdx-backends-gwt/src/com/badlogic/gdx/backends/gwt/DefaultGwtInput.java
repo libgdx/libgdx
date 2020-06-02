@@ -55,6 +55,7 @@ public class DefaultGwtInput implements GwtInput {
 	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
+	GwtGyroscope gyroscope;
 
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
@@ -76,6 +77,27 @@ public class DefaultGwtInput implements GwtInput {
 					@Override
 					public void prompt() {
 						setupAccelerometer();
+					}
+				});
+			}
+		}
+		if (config.useGyroscope) {
+			if (GwtApplication.agentInfo().isFirefox()) {
+				setupGyroscope();
+			} else {
+				GwtPermissions.queryPermission(GwtGyroscope.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+					@Override
+					public void granted() {
+						setupGyroscope();
+					}
+
+					@Override
+					public void denied() {
+					}
+
+					@Override
+					public void prompt() {
+						setupGyroscope();
 					}
 				});
 			}
@@ -106,6 +128,13 @@ public class DefaultGwtInput implements GwtInput {
 		}
 	}
 
+	void setupGyroscope () {
+		if (GwtGyroscope.isSupported()) {
+			if (gyroscope == null) gyroscope = GwtGyroscope.getInstance();
+			if (!gyroscope.activated()) gyroscope.start();
+		}
+	}
+
 	@Override
 	public float getAccelerometerX () {
 		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
@@ -127,20 +156,21 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public float getGyroscopeX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.x() : 0;
 	}
 
 	@Override
 	public float getGyroscopeY () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.y() : 0;
 	}
 
 	@Override
 	public float getGyroscopeZ () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.z() : 0;
+	}
+
+	private boolean isGyroscopePresent() {
+		return getGyroscopeX() != 0 || getGyroscopeY() != 0 || getGyroscopeZ() != 0;
 	}
 
 	@Override
@@ -352,6 +382,7 @@ public class DefaultGwtInput implements GwtInput {
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
+		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent();
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
