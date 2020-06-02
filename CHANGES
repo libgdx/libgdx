@@ -31,6 +31,7 @@
 - API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
 - API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
 - Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
+- API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
