@@ -29,6 +29,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.io.UnsupportedEncodingException;
+
 public class Base64Coder {
 	public static class CharMap {
 		protected final char[] encodingMap = new char[64];
@@ -76,11 +78,21 @@ public class Base64Coder {
 		return encodeString(s, false);
 	}
 
+	/** Encodes a string into Base64 format, optionally using URL-safe encoding instead of the "regular" Base64 encoding.
+	 * No blanks or line breaks are inserted.
+	 * @param s A String to be encoded.
+	 * @param useUrlsafeEncoding If true, this encodes the result with an alternate URL-safe set of characters.
+	 * @return A String containing the Base64 encoded data. */
 	public static String encodeString (String s, boolean useUrlsafeEncoding) {
-		return new String(encode(s.getBytes(), useUrlsafeEncoding ? urlsafeMap.encodingMap : regularMap.encodingMap));
+		try {
+			return new String(encode(s.getBytes("UTF-8"), useUrlsafeEncoding ? urlsafeMap.encodingMap : regularMap.encodingMap));
+		} catch (UnsupportedEncodingException e) {
+			// shouldn't ever happen; only needed because we specify an encoding with a String
+			return "";
+		}
 	}
 
-	/** Encodes a byte array into Base 64 format and breaks the output into lines of 76 characters. This method is compatible with
+	/** Encodes a byte array into Base64 format and breaks the output into lines of 76 characters. This method is compatible with
 	 * <code>sun.misc.BASE64Encoder.encodeBuffer(byte[])</code>.
 	 * @param in An array containing the data bytes to be encoded.
 	 * @return A String containing the Base64 encoded data, broken into lines. */
@@ -92,7 +104,7 @@ public class Base64Coder {
 		return encodeLines(in, iOff, iLen, lineLen, lineSeparator, charMap.encodingMap);
 	}
 
-	/** Encodes a byte array into Base 64 format and breaks the output into lines.
+	/** Encodes a byte array into Base64 format and breaks the output into lines.
 	 * @param in An array containing the data bytes to be encoded.
 	 * @param iOff Offset of the first byte in <code>in</code> to be processed.
 	 * @param iLen Number of bytes to be processed in <code>in</code>, starting at <code>iOff</code>.

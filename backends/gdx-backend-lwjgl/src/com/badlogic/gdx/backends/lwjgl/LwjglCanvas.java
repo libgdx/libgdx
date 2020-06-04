@@ -331,6 +331,10 @@ public class LwjglCanvas implements LwjglApplicationBase {
 	/** Called when the game loop has stopped. */
 	protected void stopped () {
 	}
+	
+	/** Called after dispose is complete. */
+	protected void disposed () {
+	}
 
 	public void stop () {
 		EventQueue.invokeLater(new Runnable() {
@@ -351,6 +355,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 					if (audio != null) audio.dispose();
 				} catch (Throwable ignored) {
 				}
+				disposed();
 			}
 		});
 	}

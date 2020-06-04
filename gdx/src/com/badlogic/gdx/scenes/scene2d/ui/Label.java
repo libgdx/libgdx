@@ -95,21 +95,25 @@ public class Label extends Widget {
 	 * @return true if the text was changed. */
 	public boolean setText (int value) {
 		if (this.intValue == value) return false;
-		setText(Integer.toString(value));
+		text.clear();
+		text.append(value);
 		intValue = value;
+		invalidateHierarchy();
 		return true;
 	}
 
-	/** @param newText May be null, "" will be used. */
+	/** @param newText If null, "" will be used. */
 	public void setText (@Null CharSequence newText) {
-		if (newText == null) newText = "";
-		if (newText instanceof StringBuilder) {
+		if (newText == null) {
+			if (text.length == 0) return;
+			text.clear();
+		} else if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
-			text.setLength(0);
+			text.clear();
 			text.append((StringBuilder)newText);
 		} else {
 			if (textEquals(newText)) return;
-			text.setLength(0);
+			text.clear();
 			text.append(newText);
 		}
 		intValue = Integer.MIN_VALUE;
