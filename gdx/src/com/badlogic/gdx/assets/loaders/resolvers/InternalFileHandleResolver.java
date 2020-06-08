@@ -20,9 +20,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.nio.file.Paths;
+
 public class InternalFileHandleResolver implements FileHandleResolver {
 	@Override
 	public FileHandle resolve (String fileName) {
-		return Gdx.files.internal(fileName);
+		String normalizedFileName = Paths.get(fileName).normalize().toString();
+		return Gdx.files.internal(normalizedFileName);
 	}
 }
