@@ -53,9 +53,10 @@ public class LwjglGraphics implements Graphics {
 	GL20 gl20;
 	GL30 gl30;
 	long frameId = -1;
-	float deltaTime = 0;
-	long frameStart = 0;
-	int frames = 0;
+	float deltaTime;
+	boolean resetDeltaTime;
+	long frameStart;
+	int frames;
 	int fps;
 	long lastTime = System.nanoTime();
 	Canvas canvas;
@@ -120,6 +121,12 @@ public class LwjglGraphics implements Graphics {
 		return deltaTime;
 	}
 
+	/** The delta time for the next frame will be 0. This can be useful if the render thread was blocked for some time to prevent
+	 * game state or animations from advancing. */
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
+	}
+
 	public GraphicsType getType () {
 		return GraphicsType.LWJGL;
 	}
@@ -172,7 +179,12 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	void updateTime () {
-		long time = System.nanoTime();
+		long time;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			time = lastTime;
+		} else
+			time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
 
