@@ -22,6 +22,7 @@ import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.Method;
+import org.robovm.objc.block.VoidBlock1;
 import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.MachineSizedUInt;
@@ -357,7 +358,8 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-		buildUIAlertView(listener, title, text, hint).show();
+		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint);
+		app.getUIViewController().presentViewController(uiAlertController, true, null);
 	}	
 
 	// hack for software keyboard support
@@ -466,49 +468,36 @@ public class DefaultIOSInput implements IOSInput {
 		app.getUIViewController().getView().addSubview(textfield);
 	}
 	
-	// Issue 773 indicates this may solve a premature GC issue
-	UIAlertViewDelegate delegate;
-
-	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
+	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
-	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
-		delegate = new UIAlertViewDelegateAdapter() {
+	 * @return UIAlertController */
+	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder) {
+		final UIAlertController uiAlertController = new UIAlertController(title, text, UIAlertControllerStyle.Alert);
+		uiAlertController.addTextField(new VoidBlock1<UITextField>() {
 			@Override
-			public void clicked (UIAlertView view, long clicked) {
-				if (clicked == 0) {
-					// user clicked "Cancel" button
-					listener.canceled();
-				} else if (clicked == 1) {
-					// user clicked "Ok" button
-					UITextField textField = view.getTextField(0);
-					listener.input(textField.getText());
-				}
-				delegate = null;
+			public void invoke(UITextField uiTextField) {
+				uiTextField.setPlaceholder(placeholder);
+				uiTextField.setText(text);
 			}
-
+		});
+		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {
 			@Override
-			public void cancel (UIAlertView view) {
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Ok" button
+				UITextField textField = uiAlertController.getTextFields().get(0);
+				listener.input(textField.getText());
+			}
+		}));
+		uiAlertController.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Cancel, new VoidBlock1<UIAlertAction>() {
+			@Override
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Cancel" button
 				listener.canceled();
-				delegate = null;
 			}
-		};
-
-		// build the view
-		final UIAlertView uiAlertView = new UIAlertView();
-		uiAlertView.setTitle(title);
-		uiAlertView.addButton("Cancel");
-		uiAlertView.addButton("Ok");
-		uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
-		uiAlertView.setDelegate(delegate);
-
-		UITextField textField = uiAlertView.getTextField(0);
-		textField.setPlaceholder(placeholder);
-		textField.setText(text);
-
-		return uiAlertView;
+		}));
+		return uiAlertController;
 	}
 
 	@Override
