@@ -40,7 +40,7 @@ public class FPSLogger {
 	/** Logs the current frames per second to the console. */
 	public void log () {
 		final long nanoTime = TimeUtils.nanoTime();
-		if (nanoTime - startTime > 1_000_000_000) /* 1,000,000,000ns == one second */ {
+		if (nanoTime - startTime > 1000000000) /* 1,000,000,000ns == one second */ {
 			final int fps = Gdx.graphics.getFramesPerSecond();
 			if (fps < bound) {
 				Gdx.app.log("FPSLogger", "fps: " + fps);
