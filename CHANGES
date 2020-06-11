@@ -20,6 +20,7 @@
 - API Addition: Added a OpenALAudio#getSourceId(long) method.
 - API Addition: Added a ShaderProgram#getHandle() method.
 - API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
+
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
 - API Addition: Accelerometer support on GWT
