@@ -33,6 +33,7 @@
 - Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
 - API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
 - Fixed: SphereShapeBuilder poles are now merged which removes lighting artifacts, see #6068 for more information.
+- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
