@@ -532,6 +532,7 @@ public class TextureAtlas implements Disposable {
 			rotate = region.rotate;
 			degrees = region.degrees;
 			splits = region.splits;
+			pads = region.pads;
 		}
 
 		public AtlasRegion (TextureRegion region) {
