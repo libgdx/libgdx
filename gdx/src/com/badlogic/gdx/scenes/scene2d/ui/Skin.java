@@ -58,8 +58,9 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
-	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
+	float scale = 1;
 
+	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
 	{
 		for (Class c : defaultTagClasses)
 			jsonClassTags.put(c.getSimpleName(), c);
@@ -232,6 +233,10 @@ public class Skin implements Disposable {
 
 		tiled = new TiledDrawable(getRegion(name));
 		tiled.setName(name);
+		if (scale != 1) {
+			scale(tiled);
+			tiled.setScale(scale);
+		}
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
@@ -254,6 +259,7 @@ public class Skin implements Disposable {
 				}
 			}
 			if (patch == null) patch = new NinePatch(region);
+			if (scale != 1) patch.scale(scale, scale);
 			add(name, patch, NinePatch.class);
 			return patch;
 		} catch (GdxRuntimeException ex) {
@@ -276,6 +282,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
+			if (scale != 1) sprite.setSize(sprite.getWidth() * scale, sprite.getHeight() * scale);
 			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
@@ -299,7 +306,10 @@ public class Skin implements Disposable {
 				else if (region.rotate || region.packedWidth != region.originalWidth || region.packedHeight != region.originalHeight)
 					drawable = new SpriteDrawable(getSprite(name));
 			}
-			if (drawable == null) drawable = new TextureRegionDrawable(textureRegion);
+			if (drawable == null) {
+				drawable = new TextureRegionDrawable(textureRegion);
+				if (scale != 1) scale(drawable);
+			}
 		} catch (GdxRuntimeException ignored) {
 		}
 
@@ -384,6 +394,25 @@ public class Skin implements Disposable {
 		}
 
 		return newDrawable;
+	}
+
+	private void scale (Drawable drawble) {
+		drawble.setLeftWidth(drawble.getLeftWidth() * scale);
+		drawble.setRightWidth(drawble.getRightWidth() * scale);
+		drawble.setBottomHeight(drawble.getBottomHeight() * scale);
+		drawble.setTopHeight(drawble.getTopHeight() * scale);
+		drawble.setMinWidth(drawble.getMinWidth() * scale);
+		drawble.setMinHeight(drawble.getMinHeight() * scale);
+	}
+
+	/** The scale used to size drawables created by this skin.
+	 * <p>
+	 * This can be useful when scaling an entire UI (eg with a stage's viewport) then using an atlas with images whose resolution
+	 * matches the UI scale. The skin can then be scaled the opposite amount so that the larger or smaller images are drawn at the
+	 * original size. For example, if the UI is scaled 2x, the atlas would have images that are twice the size, then the skin's
+	 * scale would be set to 0.5. */
+	public void setScale (float scale) {
+		this.scale = scale;
 	}
 
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
