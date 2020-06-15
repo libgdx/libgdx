@@ -835,8 +835,7 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToLookAt (Vector3 direction, Vector3 up) {
 		l_vez.set(direction).nor();
-		l_vex.set(direction).nor();
-		l_vex.crs(up).nor();
+		l_vex.set(direction).crs(up).nor();
 		l_vey.set(l_vex).crs(l_vez).nor();
 		idt();
 		val[M00] = l_vex.x;
