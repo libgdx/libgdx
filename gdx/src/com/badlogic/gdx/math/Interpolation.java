@@ -19,19 +19,19 @@ package com.badlogic.gdx.math;
 /** Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value.
  * @author Nathan Sweet */
 public abstract class Interpolation {
-	/** @param a Normalized value (between 0 and 1). */
-	abstract public float apply (float a);
+	/** @param n Normalized value (between 0 and 1). */
+	abstract public float apply (float n);
 
-	/** @param a Normalized value (between 0 and 1). */
-	public float apply (float start, float end, float a) {
-		return start + (end - start) * apply(a);
+	/** @param n Normalized value (between 0 and 1). */
+	public float apply (float start, float end, float n) {
+		return start + (end - start) * apply(n);
 	}
 
 	//
 
 	static public final Interpolation linear = new Interpolation() {
-		public float apply (float a) {
-			return a;
+		public float apply (float n) {
+			return n;
 		}
 	};
 
@@ -39,21 +39,21 @@ public abstract class Interpolation {
 
 	/** Aka "smoothstep". */
 	static public final Interpolation smooth = new Interpolation() {
-		public float apply (float a) {
-			return a * a * (3 - 2 * a);
+		public float apply (float n) {
+			return n * n * (3 - 2 * n);
 		}
 	};
 	static public final Interpolation smooth2 = new Interpolation() {
-		public float apply (float a) {
-			a = a * a * (3 - 2 * a);
-			return a * a * (3 - 2 * a);
+		public float apply (float n) {
+			n = n * n * (3 - 2 * n);
+			return n * n * (3 - 2 * n);
 		}
 	};
 
 	/** By Ken Perlin. */
 	static public final Interpolation smoother = new Interpolation() {
-		public float apply (float a) {
-			return a * a * a * (a * (a * 6 - 15) + 10);
+		public float apply (float n) {
+			return n * n * n * (n * (n * 6 - 15) + 10);
 		}
 	};
 	static public final Interpolation fade = smoother;
@@ -68,13 +68,13 @@ public abstract class Interpolation {
 	static public final PowOut pow2Out = new PowOut(2);
 	static public final PowOut fastSlow = pow2Out;
 	static public final Interpolation pow2InInverse = new Interpolation() {
-		public float apply (float a) {
-			return (float)Math.sqrt(a);
+		public float apply (float n) {
+			return (float)Math.sqrt(n);
 		}
 	};
 	static public final Interpolation pow2OutInverse = new Interpolation() {
-		public float apply (float a) {
-			return 1 - (float)Math.sqrt(-(a - 1));
+		public float apply (float n) {
+			return 1 - (float)Math.sqrt(-(n - 1));
 		}
 	};
 
@@ -82,13 +82,13 @@ public abstract class Interpolation {
 	static public final PowIn pow3In = new PowIn(3);
 	static public final PowOut pow3Out = new PowOut(3);
 	static public final Interpolation pow3InInverse = new Interpolation() {
-		public float apply (float a) {
-			return (float)Math.cbrt(a);
+		public float apply (float n) {
+			return (float)Math.cbrt(n);
 		}
 	};
 	static public final Interpolation pow3OutInverse = new Interpolation() {
-		public float apply (float a) {
-			return 1 - (float)Math.cbrt(-(a - 1));
+		public float apply (float n) {
+			return 1 - (float)Math.cbrt(-(n - 1));
 		}
 	};
 
@@ -101,20 +101,20 @@ public abstract class Interpolation {
 	static public final PowOut pow5Out = new PowOut(5);
 
 	static public final Interpolation sine = new Interpolation() {
-		public float apply (float a) {
-			return (1 - MathUtils.cos(a * MathUtils.PI)) / 2;
+		public float apply (float n) {
+			return (1 - MathUtils.cos(n * MathUtils.PI)) / 2;
 		}
 	};
 
 	static public final Interpolation sineIn = new Interpolation() {
-		public float apply (float a) {
-			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
+		public float apply (float n) {
+			return 1 - MathUtils.cos(n * MathUtils.PI / 2);
 		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
-		public float apply (float a) {
-			return MathUtils.sin(a * MathUtils.PI / 2);
+		public float apply (float n) {
+			return MathUtils.sin(n * MathUtils.PI / 2);
 		}
 	};
 
@@ -127,27 +127,27 @@ public abstract class Interpolation {
 	static public final ExpOut exp5Out = new ExpOut(2, 5);
 
 	static public final Interpolation circle = new Interpolation() {
-		public float apply (float a) {
-			if (a <= 0.5f) {
-				a *= 2;
-				return (1 - (float)Math.sqrt(1 - a * a)) / 2;
+		public float apply (float n) {
+			if (n <= 0.5f) {
+				n *= 2;
+				return (1 - (float)Math.sqrt(1 - n * n)) / 2;
 			}
-			a--;
-			a *= 2;
-			return ((float)Math.sqrt(1 - a * a) + 1) / 2;
+			n--;
+			n *= 2;
+			return ((float)Math.sqrt(1 - n * n) + 1) / 2;
 		}
 	};
 
 	static public final Interpolation circleIn = new Interpolation() {
-		public float apply (float a) {
-			return 1 - (float)Math.sqrt(1 - a * a);
+		public float apply (float n) {
+			return 1 - (float)Math.sqrt(1 - n * n);
 		}
 	};
 
 	static public final Interpolation circleOut = new Interpolation() {
-		public float apply (float a) {
-			a--;
-			return (float)Math.sqrt(1 - a * a);
+		public float apply (float n) {
+			n--;
+			return (float)Math.sqrt(1 - n * n);
 		}
 	};
 
@@ -172,9 +172,9 @@ public abstract class Interpolation {
 			this.power = power;
 		}
 
-		public float apply (float a) {
-			if (a <= 0.5f) return (float)Math.pow(a * 2, power) / 2;
-			return (float)Math.pow((a - 1) * 2, power) / (power % 2 == 0 ? -2 : 2) + 1;
+		public float apply (float n) {
+			if (n <= 0.5f) return (float)Math.pow(n * 2, power) / 2;
+			return (float)Math.pow((n - 1) * 2, power) / (power % 2 == 0 ? -2 : 2) + 1;
 		}
 	}
 
@@ -183,8 +183,8 @@ public abstract class Interpolation {
 			super(power);
 		}
 
-		public float apply (float a) {
-			return (float)Math.pow(a, power);
+		public float apply (float n) {
+			return (float)Math.pow(n, power);
 		}
 	}
 
@@ -193,8 +193,8 @@ public abstract class Interpolation {
 			super(power);
 		}
 
-		public float apply (float a) {
-			return (float)Math.pow(a - 1, power) * (power % 2 == 0 ? -1 : 1) + 1;
+		public float apply (float n) {
+			return (float)Math.pow(n - 1, power) * (power % 2 == 0 ? -1 : 1) + 1;
 		}
 	}
 
@@ -210,9 +210,9 @@ public abstract class Interpolation {
 			scale = 1 / (1 - min);
 		}
 
-		public float apply (float a) {
-			if (a <= 0.5f) return ((float)Math.pow(value, power * (a * 2 - 1)) - min) * scale / 2;
-			return (2 - ((float)Math.pow(value, -power * (a * 2 - 1)) - min) * scale) / 2;
+		public float apply (float n) {
+			if (n <= 0.5f) return ((float)Math.pow(value, power * (n * 2 - 1)) - min) * scale / 2;
+			return (2 - ((float)Math.pow(value, -power * (n * 2 - 1)) - min) * scale) / 2;
 		}
 	};
 
@@ -221,8 +221,8 @@ public abstract class Interpolation {
 			super(value, power);
 		}
 
-		public float apply (float a) {
-			return ((float)Math.pow(value, power * (a - 1)) - min) * scale;
+		public float apply (float n) {
+			return ((float)Math.pow(value, power * (n - 1)) - min) * scale;
 		}
 	}
 
@@ -231,8 +231,8 @@ public abstract class Interpolation {
 			super(value, power);
 		}
 
-		public float apply (float a) {
-			return 1 - ((float)Math.pow(value, -power * a) - min) * scale;
+		public float apply (float n) {
+			return 1 - ((float)Math.pow(value, -power * n) - min) * scale;
 		}
 	}
 
@@ -248,14 +248,14 @@ public abstract class Interpolation {
 			this.bounces = bounces * MathUtils.PI * (bounces % 2 == 0 ? 1 : -1);
 		}
 
-		public float apply (float a) {
-			if (a <= 0.5f) {
-				a *= 2;
-				return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale / 2;
+		public float apply (float n) {
+			if (n <= 0.5f) {
+				n *= 2;
+				return (float)Math.pow(value, power * (n - 1)) * MathUtils.sin(n * bounces) * scale / 2;
 			}
-			a = 1 - a;
-			a *= 2;
-			return 1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin((a) * bounces) * scale / 2;
+			n = 1 - n;
+			n *= 2;
+			return 1 - (float)Math.pow(value, power * (n - 1)) * MathUtils.sin((n) * bounces) * scale / 2;
 		}
 	}
 
@@ -264,9 +264,9 @@ public abstract class Interpolation {
 			super(value, power, bounces, scale);
 		}
 
-		public float apply (float a) {
-			if (a >= 0.99) return 1;
-			return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale;
+		public float apply (float n) {
+			if (n >= 0.99) return 1;
+			return (float)Math.pow(value, power * (n - 1)) * MathUtils.sin(n * bounces) * scale;
 		}
 	}
 
@@ -275,10 +275,10 @@ public abstract class Interpolation {
 			super(value, power, bounces, scale);
 		}
 
-		public float apply (float a) {
-			if (a == 0) return 0;
-			a = 1 - a;
-			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale);
+		public float apply (float n) {
+			if (n == 0) return 0;
+			n = 1 - n;
+			return (1 - (float)Math.pow(value, power * (n - 1)) * MathUtils.sin(n * bounces) * scale);
 		}
 	}
 
@@ -294,14 +294,14 @@ public abstract class Interpolation {
 		}
 
 		private float out (float a) {
-			float test = a + widths[0] / 2;
+			float test = n + widths[0] / 2;
 			if (test < widths[0]) return test / (widths[0] / 2) - 1;
-			return super.apply(a);
+			return super.apply(n);
 		}
 
-		public float apply (float a) {
-			if (a <= 0.5f) return (1 - out(1 - a * 2)) / 2;
-			return out(a * 2 - 1) / 2 + 0.5f;
+		public float apply (float n) {
+			if (n <= 0.5f) return (1 - out(1 - n * 2)) / 2;
+			return out(n * 2 - 1) / 2 + 0.5f;
 		}
 	}
 
@@ -357,21 +357,21 @@ public abstract class Interpolation {
 			widths[0] *= 2;
 		}
 
-		public float apply (float a) {
-			if (a == 1) return 1;
-			a += widths[0] / 2;
+		public float apply (float n) {
+			if (n == 1) return 1;
+			n += widths[0] / 2;
 			float width = 0, height = 0;
-			for (int i = 0, n = widths.length; i < n; i++) {
+			for (int i = 0, m = widths.length; i < m; i++) {
 				width = widths[i];
-				if (a <= width) {
+				if (n <= width) {
 					height = heights[i];
 					break;
 				}
-				a -= width;
+				n -= width;
 			}
-			a /= width;
-			float z = 4 / width * height * a;
-			return 1 - (z - z * a) * width;
+			n /= width;
+			float z = 4 / width * height * n;
+			return 1 - (z - z * n) * width;
 		}
 	}
 
@@ -384,8 +384,8 @@ public abstract class Interpolation {
 			super(bounces);
 		}
 
-		public float apply (float a) {
-			return 1 - super.apply(1 - a);
+		public float apply (float n) {
+			return 1 - super.apply(1 - n);
 		}
 	}
 
@@ -398,14 +398,14 @@ public abstract class Interpolation {
 			this.scale = scale * 2;
 		}
 
-		public float apply (float a) {
-			if (a <= 0.5f) {
-				a *= 2;
-				return a * a * ((scale + 1) * a - scale) / 2;
+		public float apply (float n) {
+			if (n <= 0.5f) {
+				n *= 2;
+				return n * n * ((scale + 1) * n - scale) / 2;
 			}
-			a--;
-			a *= 2;
-			return a * a * ((scale + 1) * a + scale) / 2 + 1;
+			n--;
+			n *= 2;
+			return n * n * ((scale + 1) * n + scale) / 2 + 1;
 		}
 	}
 
@@ -416,9 +416,9 @@ public abstract class Interpolation {
 			this.scale = scale;
 		}
 
-		public float apply (float a) {
-			a--;
-			return a * a * ((scale + 1) * a + scale) + 1;
+		public float apply (float n) {
+			n--;
+			return n * n * ((scale + 1) * n + scale) + 1;
 		}
 	}
 
@@ -429,8 +429,8 @@ public abstract class Interpolation {
 			this.scale = scale;
 		}
 
-		public float apply (float a) {
-			return a * a * ((scale + 1) * a - scale);
+		public float apply (float n) {
+			return n * n * ((scale + 1) * n - scale);
 		}
 	}
 }
