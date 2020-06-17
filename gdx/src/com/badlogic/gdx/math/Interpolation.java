@@ -293,7 +293,7 @@ public abstract class Interpolation {
 			super(bounces);
 		}
 
-		private float out (float a) {
+		private float out (float n) {
 			float test = n + widths[0] / 2;
 			if (test < widths[0]) return test / (widths[0] / 2) - 1;
 			return super.apply(n);
