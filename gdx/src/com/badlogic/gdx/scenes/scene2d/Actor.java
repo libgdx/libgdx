@@ -55,13 +55,13 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
-	private Stage stage;
+	private @Null Stage stage;
 	@Null Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
-	@Null private String name;
+	private @Null String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true, debug;
 	float x, y;
@@ -70,7 +70,7 @@ public class Actor {
 	float scaleX = 1, scaleY = 1;
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
-	@Null private Object userObject;
+	private @Null Object userObject;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -205,8 +205,7 @@ public class Actor {
 	 * The default implementation returns this actor if the point is within this actor's bounds and this actor is visible.
 	 * @param touchable If true, hit detection will respect the {@link #setTouchable(Touchable) touchability}.
 	 * @see Touchable */
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (touchable && this.touchable != Touchable.enabled) return null;
 		if (!isVisible()) return null;
 		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
@@ -298,7 +297,7 @@ public class Actor {
 	}
 
 	/** Returns the stage that this actor is currently in, or null if not in a stage. */
-	public Stage getStage () {
+	public @Null Stage getStage () {
 		return stage;
 	}
 
@@ -331,8 +330,7 @@ public class Actor {
 
 	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type, or null if none were
 	 * found. */
-	@Null
-	public <T extends Actor> T firstAscendant (Class<T> type) {
+	public @Null <T extends Actor> T firstAscendant (Class<T> type) {
 		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor actor = this;
 		do {
@@ -348,8 +346,7 @@ public class Actor {
 	}
 
 	/** Returns the parent actor, or null if not in a group. */
-	@Null
-	public Group getParent () {
+	public @Null Group getParent () {
 		return parent;
 	}
 
@@ -430,8 +427,7 @@ public class Actor {
 	}
 
 	/** Returns an application specific object for convenience, or null. */
-	@Null
-	public Object getUserObject () {
+	public @Null Object getUserObject () {
 		return userObject;
 	}
 
@@ -750,8 +746,7 @@ public class Actor {
 
 	/** @see #setName(String)
 	 * @return May be null. */
-	@Null
-	public String getName () {
+	public @Null String getName () {
 		return name;
 	}
 

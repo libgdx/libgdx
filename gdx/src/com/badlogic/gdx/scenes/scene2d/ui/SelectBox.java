@@ -284,8 +284,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}. */
-	@Null
-	public T getSelected () {
+	public @Null T getSelected () {
 		return selection.first();
 	}
 
@@ -561,13 +560,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		@Null public Color overFontColor, disabledFontColor;
+		public @Null Color overFontColor, disabledFontColor;
 		/** Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;
 		/** Optional. */
-		@Null public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
+		public @Null Drawable backgroundOver, backgroundOpen, backgroundDisabled;
 
 		public SelectBoxStyle () {
 		}

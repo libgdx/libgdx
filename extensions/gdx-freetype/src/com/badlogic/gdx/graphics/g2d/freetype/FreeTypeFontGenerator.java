@@ -478,8 +478,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** @return null if glyph was not found. */
-	@Null
-	protected Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker,
+	protected @Null Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker,
 		float baseLine, PixmapPacker packer) {
 
 		boolean missing = face.getCharIndex(c) == 0 && c != 0;

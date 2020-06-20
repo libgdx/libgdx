@@ -290,8 +290,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	@Null
-	private Drawable getBackgroundDrawable () {
+	private @Null Drawable getBackgroundDrawable () {
 		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
@@ -537,9 +536,8 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
-	@Null
-	private TextField findNextTextField (Array<Actor> actors, @Null TextField best, Vector2 bestCoords, Vector2 currentCoords,
-		boolean up) {
+	private @Null TextField findNextTextField (Array<Actor> actors, @Null TextField best, Vector2 bestCoords,
+		Vector2 currentCoords, boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof TextField) {
@@ -576,8 +574,7 @@ public class TextField extends Widget implements Disableable {
 		this.filter = filter;
 	}
 
-	@Null
-	public TextFieldFilter getTextFieldFilter () {
+	public @Null TextFieldFilter getTextFieldFilter () {
 		return filter;
 	}
 
@@ -587,8 +584,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
-	@Null
-	public String getMessageText () {
+	public @Null String getMessageText () {
 		return messageText;
 	}
 
@@ -1091,13 +1087,13 @@ public class TextField extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor;
 		/** Optional. */
-		@Null public Color focusedFontColor, disabledFontColor;
+		public @Null Color focusedFontColor, disabledFontColor;
 		/** Optional. */
-		@Null public Drawable background, focusedBackground, disabledBackground, cursor, selection;
+		public @Null Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */
-		@Null public BitmapFont messageFont;
+		public @Null BitmapFont messageFont;
 		/** Optional. */
-		@Null public Color messageFontColor;
+		public @Null Color messageFontColor;
 
 		public TextFieldStyle () {
 		}

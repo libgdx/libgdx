@@ -170,8 +170,7 @@ public class ActorGestureListener implements EventListener {
 		return detector;
 	}
 
-	@Null
-	public Actor getTouchDownTarget () {
+	public @Null Actor getTouchDownTarget () {
 		return touchDownTarget;
 	}
 }

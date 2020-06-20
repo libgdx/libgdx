@@ -107,8 +107,7 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
-	@Null
-	protected Drawable getKnobDrawable () {
+	protected @Null Drawable getKnobDrawable () {
 		SliderStyle style = getStyle();
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob
 			: (isDragging() && style.knobDown != null) ? style.knobDown
@@ -189,7 +188,7 @@ public class Slider extends ProgressBar {
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
 		/** Optional. */
-		@Null public Drawable knobOver, knobDown;
+		public @Null Drawable knobOver, knobDown;
 
 		public SliderStyle () {
 		}

@@ -48,7 +48,7 @@ public class Label extends Widget {
 	private boolean prefSizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
 	private boolean fontScaleChanged = false;
-	@Null private String ellipsis;
+	private @Null String ellipsis;
 
 	public Label (@Null CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -372,9 +372,9 @@ public class Label extends Widget {
 	static public class LabelStyle {
 		public BitmapFont font;
 		/** Optional. */
-		@Null public Color fontColor;
+		public @Null Color fontColor;
 		/** Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 
 		public LabelStyle () {
 		}

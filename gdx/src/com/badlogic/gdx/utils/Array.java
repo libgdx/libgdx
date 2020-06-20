@@ -503,8 +503,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns a random item from the array, or null if the array is empty. */
-	@Null
-	public T random () {
+	public @Null T random () {
 		if (size == 0) return null;
 		return items[MathUtils.random(0, size - 1)];
 	}

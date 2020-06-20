@@ -114,13 +114,13 @@ public class ImageButton extends Button {
 	 * @author Nathan Sweet */
 	static public class ImageButtonStyle extends ButtonStyle {
 		/** Optional. */
-		@Null public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+		public @Null Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
 
 		public ImageButtonStyle () {
 		}
 
-		public ImageButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked,
-			@Null Drawable imageUp, @Null Drawable imageDown, @Null Drawable imageChecked) {
+		public ImageButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, @Null Drawable imageUp,
+			@Null Drawable imageDown, @Null Drawable imageChecked) {
 			super(up, down, checked);
 			this.imageUp = imageUp;
 			this.imageDown = imageDown;

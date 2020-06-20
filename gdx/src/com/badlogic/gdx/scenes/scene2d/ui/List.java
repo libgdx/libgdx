@@ -272,8 +272,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Returns the first selected item, or null. */
-	@Null
-	public T getSelected () {
+	public @Null T getSelected () {
 		return selection.first();
 	}
 
@@ -317,8 +316,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** @return null if not over an item. */
-	@Null
-	public T getItemAt (float y) {
+	public @Null T getItemAt (float y) {
 		int index = getItemIndexAt(y);
 		if (index == -1) return null;
 		return items.get(index);
@@ -435,7 +433,7 @@ public class List<T> extends Widget implements Cullable {
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
 		/** Optional. */
-		@Null public Drawable down, over, background;
+		public @Null Drawable down, over, background;
 
 		public ListStyle () {
 		}

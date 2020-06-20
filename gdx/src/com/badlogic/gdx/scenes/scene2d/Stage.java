@@ -77,8 +77,8 @@ public class Stage extends InputAdapter implements Disposable {
 	private final int[] pointerScreenX = new int[20];
 	private final int[] pointerScreenY = new int[20];
 	private int mouseScreenX, mouseScreenY;
-	@Null private Actor mouseOverActor;
-	@Null private Actor keyboardFocus, scrollFocus;
+	private @Null Actor mouseOverActor;
+	private @Null Actor keyboardFocus, scrollFocus;
 	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 	private boolean actionsRequestRendering = true;
 
@@ -223,8 +223,7 @@ public class Stage extends InputAdapter implements Disposable {
 		root.act(delta);
 	}
 
-	@Null
-	private Actor fireEnterAndExit (@Null Actor overLast, int screenX, int screenY, int pointer) {
+	private @Null Actor fireEnterAndExit (@Null Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 		Actor over = hit(tempCoords.x, tempCoords.y, true);
@@ -636,8 +635,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive key events.
 	 * @return May be null. */
-	@Null
-	public Actor getKeyboardFocus () {
+	public @Null Actor getKeyboardFocus () {
 		return keyboardFocus;
 	}
 
@@ -672,8 +670,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive scroll events.
 	 * @return May be null. */
-	@Null
-	public Actor getScrollFocus () {
+	public @Null Actor getScrollFocus () {
 		return scrollFocus;
 	}
 
@@ -723,8 +720,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #screenToStageCoordinates(Vector2)}.
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
-	@Null
-	public Actor hit (float stageX, float stageY, boolean touchable) {
+	public @Null Actor hit (float stageX, float stageY, boolean touchable) {
 		root.parentToLocalCoordinates(tempCoords.set(stageX, stageY));
 		return root.hit(tempCoords.x, tempCoords.y, touchable);
 	}

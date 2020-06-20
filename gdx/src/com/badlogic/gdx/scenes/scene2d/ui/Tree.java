@@ -363,8 +363,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
-	@Null
-	public N getNodeAt (float y) {
+	public @Null N getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
 		return foundNode;
@@ -403,14 +402,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the first selected node, or null. */
-	@Null
-	public N getSelectedNode () {
+	public @Null N getSelectedNode () {
 		return selection.first();
 	}
 
 	/** Returns the first selected value, or null. */
-	@Null
-	public V getSelectedValue () {
+	public @Null V getSelectedValue () {
 		N node = selection.first();
 		return node == null ? null : (V)node.getValue();
 	}
@@ -439,14 +436,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
-	@Null
-	public N getOverNode () {
+	public @Null N getOverNode () {
 		return overNode;
 	}
 
 	/** @return May be null. */
-	@Null
-	public V getOverValue () {
+	public @Null V getOverValue () {
 		if (overNode == null) return null;
 		return (V)overNode.getValue();
 	}
@@ -527,14 +522,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the node with the specified value, or null. */
-	@Null
-	public N findNode (V value) {
+	public @Null N findNode (V value) {
 		if (value == null) throw new IllegalArgumentException("value cannot be null.");
 		return (N)findNode(rootNodes, value);
 	}
 
-	@Null
-	static Node findNode (Array<? extends Node> nodes, Object value) {
+	static @Null Node findNode (Array<? extends Node> nodes, Object value) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (value.equals(node.value)) return node;
@@ -708,8 +701,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 		/** Returns the tree this node's actor is currently in, or null. The actor is only in the tree when all of its parent nodes
 		 * are expanded. */
-		@Null
-		public Tree<N, V> getTree () {
+		public @Null Tree<N, V> getTree () {
 			Group parent = actor.getParent();
 			if (parent instanceof Tree) return (Tree)parent;
 			return null;
@@ -763,8 +755,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** @return May be null. */
-		@Null
-		public N getParent () {
+		public @Null N getParent () {
 			return parent;
 		}
 
@@ -773,8 +764,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			this.icon = icon;
 		}
 
-		@Null
-		public V getValue () {
+		public @Null V getValue () {
 			return value;
 		}
 
@@ -783,8 +773,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			this.value = value;
 		}
 
-		@Null
-		public Drawable getIcon () {
+		public @Null Drawable getIcon () {
 			return icon;
 		}
 
@@ -799,8 +788,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** Returns this node or the child node with the specified value, or null. */
-		@Null
-		public N findNode (V value) {
+		public @Null N findNode (V value) {
 			if (value == null) throw new IllegalArgumentException("value cannot be null.");
 			if (value.equals(this.value)) return (N)this;
 			return (N)Tree.findNode(children, value);
@@ -883,8 +871,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	static public class TreeStyle {
 		public Drawable plus, minus;
 		/** Optional. */
-		@Null public Drawable plusOver, minusOver;
-		@Null public Drawable over, selection, background;
+		public @Null Drawable plusOver, minusOver;
+		public @Null Drawable over, selection, background;
 
 		public TreeStyle () {
 		}

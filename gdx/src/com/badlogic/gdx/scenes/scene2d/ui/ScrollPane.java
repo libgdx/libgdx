@@ -705,8 +705,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** Returns the actor embedded in this scroll pane, or null. */
-	@Null
-	public Actor getActor () {
+	public @Null Actor getActor () {
 		return widget;
 	}
 
@@ -718,8 +717,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @deprecated Use {@link #getActor()}. */
 	@Deprecated
-	@Null
-	public Actor getWidget () {
+	public @Null Actor getWidget () {
 		return widget;
 	}
 
@@ -771,8 +769,7 @@ public class ScrollPane extends WidgetGroup {
 		return actor;
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		if (touchable && getTouchable() == Touchable.enabled && isVisible()) {
 			if (scrollX && touchScrollH && hScrollBounds.contains(x, y)) return this;
@@ -1139,11 +1136,11 @@ public class ScrollPane extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
 		/** Optional. */
-		@Null public Drawable background, corner;
+		public @Null Drawable background, corner;
 		/** Optional. */
-		@Null public Drawable hScroll, hScrollKnob;
+		public @Null Drawable hScroll, hScrollKnob;
 		/** Optional. */
-		@Null public Drawable vScroll, vScrollKnob;
+		public @Null Drawable vScroll, vScrollKnob;
 
 		public ScrollPaneStyle () {
 		}
