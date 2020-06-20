@@ -112,6 +112,8 @@ public class ActorGestureListener implements EventListener {
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
 			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			if (event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
+				event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			if (event.isTouchFocusCancel()) {
@@ -155,14 +157,13 @@ public class ActorGestureListener implements EventListener {
 	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
 
-    public void panStop (InputEvent event, float x, float y, int pointer, int button) {
-    }
+	public void panStop (InputEvent event, float x, float y, int pointer, int button) {
+	}
 
 	public void zoom (InputEvent event, float initialDistance, float distance) {
 	}
 
-	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2,
-					   Vector2 pointer1, Vector2 pointer2) {
+	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 	}
 
 	public GestureDetector getGestureDetector () {
