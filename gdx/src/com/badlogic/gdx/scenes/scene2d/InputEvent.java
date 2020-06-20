@@ -27,7 +27,7 @@ public class InputEvent extends Event {
 	private float stageX, stageY;
 	private int pointer, button, keyCode, scrollAmount;
 	private char character;
-	@Null private Actor relatedActor;
+	private @Null Actor relatedActor;
 
 	public void reset () {
 		super.reset();
@@ -35,7 +35,8 @@ public class InputEvent extends Event {
 		button = -1;
 	}
 
-	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
+	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and
+	 * exit. */
 	public float getStageX () {
 		return stageX;
 	}
@@ -44,7 +45,8 @@ public class InputEvent extends Event {
 		this.stageX = stageX;
 	}
 
-	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
+	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and
+	 * exit. */
 	public float getStageY () {
 		return stageY;
 	}
@@ -111,8 +113,7 @@ public class InputEvent extends Event {
 
 	/** The actor related to the event. Valid for: enter and exit. For enter, this is the actor being exited, or null. For exit,
 	 * this is the actor being entered, or null. */
-	@Null
-	public Actor getRelatedActor () {
+	public @Null Actor getRelatedActor () {
 		return relatedActor;
 	}
 

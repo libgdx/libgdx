@@ -223,20 +223,17 @@ public class DragAndDrop {
 	}
 
 	/** Returns the current drag actor, or null. */
-	@Null
-	public Actor getDragActor () {
+	public @Null Actor getDragActor () {
 		return dragActor;
 	}
 
 	/** Returns the current drag payload, or null. */
-	@Null
-	public Payload getDragPayload () {
+	public @Null Payload getDragPayload () {
 		return payload;
 	}
 
 	/** Returns the current drag source, or null. */
-	@Null
-	public Source getDragSource () {
+	public @Null Source getDragSource () {
 		return dragSource;
 	}
 
@@ -278,8 +275,7 @@ public class DragAndDrop {
 
 		/** Called when a drag is started on the source. The coordinates are in the source's local coordinate system.
 		 * @return If null the drag will not affect any targets. */
-		@Null
-		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
+		abstract public @Null Payload dragStart (InputEvent event, float x, float y, int pointer);
 
 		/** Called repeatedly during a drag which started on this source. */
 		public void drag (InputEvent event, float x, float y, int pointer) {
@@ -338,8 +334,7 @@ public class DragAndDrop {
 			this.dragActor = dragActor;
 		}
 
-		@Null
-		public Actor getDragActor () {
+		public @Null Actor getDragActor () {
 			return dragActor;
 		}
 
@@ -347,8 +342,7 @@ public class DragAndDrop {
 			this.validDragActor = validDragActor;
 		}
 
-		@Null
-		public Actor getValidDragActor () {
+		public @Null Actor getValidDragActor () {
 			return validDragActor;
 		}
 
@@ -356,13 +350,11 @@ public class DragAndDrop {
 			this.invalidDragActor = invalidDragActor;
 		}
 
-		@Null
-		public Actor getInvalidDragActor () {
+		public @Null Actor getInvalidDragActor () {
 			return invalidDragActor;
 		}
 
-		@Null
-		public Object getObject () {
+		public @Null Object getObject () {
 			return object;
 		}
 

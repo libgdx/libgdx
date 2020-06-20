@@ -119,12 +119,12 @@ public class TextButton extends Button {
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
 		/** Optional. */
-		@Null public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		public @Null Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
 
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (@Null Drawable up, @Null Drawable down, @Null  Drawable checked, @Null BitmapFont font) {
+		public TextButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, @Null BitmapFont font) {
 			super(up, down, checked);
 			this.font = font;
 		}

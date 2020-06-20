@@ -74,7 +74,7 @@ public class Table extends WidgetGroup {
 
 	@Null Drawable background;
 	private boolean clip;
-	@Null private Skin skin;
+	private @Null Skin skin;
 	boolean round = true;
 
 	public Table () {
@@ -162,13 +162,11 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	@Null
-	public Drawable getBackground () {
+	public @Null Drawable getBackground () {
 		return background;
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (touchable && getTouchable() == Touchable.disabled) return null;
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
@@ -397,8 +395,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Returns the cell for the specified actor in this table, or null. */
-	@Null
-	public <T extends Actor> Cell<T> getCell (T actor) {
+	public @Null <T extends Actor> Cell<T> getCell (T actor) {
 		Array<Cell> cells = this.cells;
 		for (int i = 0, n = cells.size; i < n; i++) {
 			Cell c = cells.get(i);
@@ -1266,8 +1263,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** @return The skin that was passed to this table in its constructor, or null if none was given. */
-	@Null
-	public Skin getSkin () {
+	public @Null Skin getSkin () {
 		return skin;
 	}
 

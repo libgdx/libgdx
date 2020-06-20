@@ -155,22 +155,20 @@ public class ActorGestureListener implements EventListener {
 	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
 
-    public void panStop (InputEvent event, float x, float y, int pointer, int button) {
-    }
+	public void panStop (InputEvent event, float x, float y, int pointer, int button) {
+	}
 
 	public void zoom (InputEvent event, float initialDistance, float distance) {
 	}
 
-	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2,
-					   Vector2 pointer1, Vector2 pointer2) {
+	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 	}
 
 	public GestureDetector getGestureDetector () {
 		return detector;
 	}
 
-	@Null
-	public Actor getTouchDownTarget () {
+	public @Null Actor getTouchDownTarget () {
 		return touchDownTarget;
 	}
 }
