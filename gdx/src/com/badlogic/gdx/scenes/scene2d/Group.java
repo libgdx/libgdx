@@ -391,7 +391,7 @@ public class Group extends Actor implements Cullable {
 		super.setStage(stage);
 		Actor[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
-			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ancestor.
+			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ascendant.
 	}
 
 	/** Swaps two actors by index. Returns false if the swap did not occur because the indexes were out of bounds. */

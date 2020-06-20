@@ -112,13 +112,13 @@ public class Actor {
 		}
 	}
 
-	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor
-	 * actors as necessary. If this actor is not in the stage, the stage must be set before calling this method.
+	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ascendants as
+	 * necessary. If this actor is not in the stage, the stage must be set before calling this method.
 	 * <p>
 	 * Events are fired in 2 phases:
 	 * <ol>
-	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating downward to
-	 * (and including) this actor.</li>
+	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating down the
+	 * hierarchy to (and including) this actor.</li>
 	 * <li>The second phase notifies listeners on each actor starting at this actor and, if {@link Event#getBubbles()} is true,
 	 * propagating upward to the root.</li>
 	 * </ol>
@@ -128,19 +128,19 @@ public class Actor {
 		if (event.getStage() == null) event.setStage(getStage());
 		event.setTarget(this);
 
-		// Collect ancestors so event propagation is unaffected by hierarchy changes.
-		Array<Group> ancestors = Pools.obtain(Array.class);
+		// Collect ascendants so event propagation is unaffected by hierarchy changes.
+		Array<Group> ascendants = Pools.obtain(Array.class);
 		Group parent = this.parent;
 		while (parent != null) {
-			ancestors.add(parent);
+			ascendants.add(parent);
 			parent = parent.parent;
 		}
 
 		try {
-			// Notify all parent capture listeners, starting at the root. Ancestors may stop an event before children receive it.
-			Object[] ancestorsArray = ancestors.items;
-			for (int i = ancestors.size - 1; i >= 0; i--) {
-				Group currentTarget = (Group)ancestorsArray[i];
+			// Notify ascendants' capture listeners, starting at the root. Ascendants may stop an event before children receive it.
+			Object[] ascendantsArray = ascendants.items;
+			for (int i = ascendants.size - 1; i >= 0; i--) {
+				Group currentTarget = (Group)ascendantsArray[i];
 				currentTarget.notify(event, true);
 				if (event.isStopped()) return event.isCancelled();
 			}
@@ -154,24 +154,25 @@ public class Actor {
 			if (!event.getBubbles()) return event.isCancelled();
 			if (event.isStopped()) return event.isCancelled();
 
-			// Notify all parent listeners, starting at the target. Children may stop an event before ancestors receive it.
-			for (int i = 0, n = ancestors.size; i < n; i++) {
-				((Group)ancestorsArray[i]).notify(event, false);
+			// Notify ascendants' actor listeners, starting at the target. Children may stop an event before ascendants receive it.
+			for (int i = 0, n = ascendants.size; i < n; i++) {
+				((Group)ascendantsArray[i]).notify(event, false);
 				if (event.isStopped()) return event.isCancelled();
 			}
 
 			return event.isCancelled();
 		} finally {
-			ancestors.clear();
-			Pools.free(ancestors);
+			ascendants.clear();
+			Pools.free(ascendants);
 		}
 	}
 
-	/** Notifies this actor's listeners of the event. The event is not propagated to any parents. Before notifying the listeners,
-	 * this actor is set as the {@link Event#getListenerActor() listener actor}. The event {@link Event#setTarget(Actor) target}
-	 * must be set before calling this method. If this actor is not in the stage, the stage must be set before calling this method.
+	/** Notifies this actor's listeners of the event. The event is not propagated to any ascendants. The event
+	 * {@link Event#setTarget(Actor) target} must be set before calling this method. Before notifying the listeners, this actor is
+	 * set as the {@link Event#getListenerActor() listener actor}. If this actor is not in the stage, the stage must be set before
+	 * calling this method.
 	 * @param capture If true, the capture listeners will be notified instead of the regular listeners.
-	 * @return true of the event was {@link Event#cancel() cancelled}. */
+	 * @return true if the event was {@link Event#cancel() cancelled}. */
 	public boolean notify (Event event, boolean capture) {
 		if (event.getTarget() == null) throw new IllegalArgumentException("The event target cannot be null.");
 
@@ -313,8 +314,8 @@ public class Actor {
 		return stage;
 	}
 
-	/** Called by the framework when this actor or any parent is added to a group that is in the stage.
-	 * @param stage May be null if the actor or any parent is no longer in a stage. */
+	/** Called by the framework when this actor or any ascendant is added to a group that is in the stage.
+	 * @param stage May be null if the actor or any ascendant is no longer in a stage. */
 	protected void setStage (Stage stage) {
 		this.stage = stage;
 	}
@@ -393,14 +394,19 @@ public class Actor {
 		this.visible = visible;
 	}
 
-	/** Returns true if this actor and all ancestors are visible. */
-	public boolean ancestorsVisible () {
+	/** Returns true if this actor and all ascendants are visible. */
+	public boolean ascendantsVisible () {
 		Actor actor = this;
 		do {
 			if (!actor.isVisible()) return false;
 			actor = actor.parent;
 		} while (actor != null);
 		return true;
+	}
+
+	/** @deprecated Use {@link #ascendantsVisible()}. */
+	public boolean ancestorsVisible () {
+		return ascendantsVisible();
 	}
 
 	/** Returns true if this actor is the {@link Stage#getKeyboardFocus() keyboard focus} actor. */
@@ -922,7 +928,7 @@ public class Actor {
 		return localCoords;
 	}
 
-	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
+	/** Converts coordinates for this actor to those of an ascendant. The ascendant is not required to be the immediate parent. */
 	public Vector2 localToAscendantCoordinates (@Null Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
 		do {

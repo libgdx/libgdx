@@ -102,8 +102,8 @@ public class Stage extends InputAdapter implements Disposable {
 		ownsBatch = true;
 	}
 
-	/** Creates a stage with the specified viewport and batch. This can be used to avoid creating a new batch (which can be
-	 * somewhat slow) if multiple stages are used during an application's life time.
+	/** Creates a stage with the specified viewport and batch. This can be used to specify an existing batch or to customize which
+	 * batch implementation is used.
 	 * @param batch Will not be disposed if {@link #dispose()} is called, handle disposal yourself. */
 	public Stage (Viewport viewport, Batch batch) {
 		if (viewport == null) throw new IllegalArgumentException("viewport cannot be null.");
