@@ -131,7 +131,7 @@ public class ClickListener extends InputListener {
 		return touchDownX != -1;
 	}
 
-	/** The tap square will not longer be used for the current touch. */
+	/** The tap square will no longer be used for the current touch. */
 	public void invalidateTapSquare () {
 		touchDownX = -1;
 		touchDownY = -1;
