@@ -36,6 +36,7 @@
 - API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
 - API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
 - API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
+- API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082).
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

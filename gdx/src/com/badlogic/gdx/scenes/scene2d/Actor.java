@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -185,19 +184,8 @@ public class Actor {
 
 		try {
 			listeners.begin();
-			for (int i = 0, n = listeners.size; i < n; i++) {
-				EventListener listener = listeners.get(i);
-				if (listener.handle(event)) {
-					event.handle();
-					if (event instanceof InputEvent) {
-						InputEvent inputEvent = (InputEvent)event;
-						if (inputEvent.getType() == Type.touchDown) {
-							event.getStage().addTouchFocus(listener, this, inputEvent.getTarget(), inputEvent.getPointer(),
-								inputEvent.getButton());
-						}
-					}
-				}
-			}
+			for (int i = 0, n = listeners.size; i < n; i++)
+				if (listeners.get(i).handle(event)) event.handle();
 			listeners.end();
 		} catch (RuntimeException ex) {
 			String context = toString();
