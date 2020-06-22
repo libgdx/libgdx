@@ -390,6 +390,7 @@ public class Actor {
 	}
 
 	/** @deprecated Use {@link #ascendantsVisible()}. */
+	@Deprecated
 	public boolean ancestorsVisible () {
 		return ascendantsVisible();
 	}
