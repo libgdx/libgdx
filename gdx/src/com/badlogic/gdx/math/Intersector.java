@@ -65,7 +65,7 @@ public final class Intersector {
 		return true;
 	}
 
-	/** Returns true if the given point is inside the triangle. */
+	/** Returns {@code true} if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
 		float px1 = p.x - a.x;
 		float py1 = p.y - a.y;
@@ -75,7 +75,7 @@ public final class Intersector {
 		return true;
 	}
 
-	/** Returns true if the given point is inside the triangle. */
+	/** Returns {@code true} if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (float px, float py, float ax, float ay, float bx, float by, float cx, float cy) {
 		float px1 = px - ax;
 		float py1 = py - ay;
@@ -96,14 +96,25 @@ public final class Intersector {
 		return true;
 	}
 
-	/** Determines on which side of the given line the point is. Returns -1 if the point is on the left side of the line, 0 if the
-	 * point is on the line and 1 if the point is on the right side of the line. Left and right are relative to the lines direction
-	 * which is linePoint1 to linePoint2. */
+	/**
+	 * Determines on which side of the given line the point is.<p>
+	 * Left and right are relative to the line's direction which is linePoint1 to linePoint2.
+	 * 
+	 * @return {@code -1} if the point is on the left side of the line.<p>
+	 * {@code 0} if the point is on the line.<p>
+	 * {@code 1} if the point is on the right side of the line. */
 	public static int pointLineSide (Vector2 linePoint1, Vector2 linePoint2, Vector2 point) {
 		return (int)Math.signum(
 			(linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y) * (point.x - linePoint1.x));
 	}
 
+	/**
+	 * Determines on which side of the given line the point is.<p>
+	 * Left and right are relative to the line's direction which is linePoint1 to linePoint2.
+	 * 
+	 * @return {@code -1} if the point is on the left side of the line.<p>
+	 * {@code 0} if the point is on the line.<p>
+	 * {@code 1} if the point is on the right side of the line. */
 	public static int pointLineSide (float linePoint1X, float linePoint1Y, float linePoint2X, float linePoint2Y, float pointX,
 		float pointY) {
 		return (int)Math
@@ -111,9 +122,10 @@ public final class Intersector {
 	}
 
 	/** Checks whether the given point is in the polygon.
+	 * 
 	 * @param polygon The polygon vertices passed as an array
 	 * @param point The point
-	 * @return true if the point is in the polygon */
+	 * @return {@code true} if the point is in the polygon */
 	public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
 		Vector2 last = polygon.peek();
 		float x = point.x, y = point.y;
@@ -128,9 +140,11 @@ public final class Intersector {
 		return oddNodes;
 	}
 
-	/** Returns true if the specified point is in the polygon.
+	/** Checks if the specified point is in the polygon.
+	 * 
 	 * @param offset Starting polygon index.
-	 * @param count Number of array indices to use after offset. */
+	 * @param count Number of array indices to use after offset.
+	 * @return {@code true} if the point is in the polygon. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
 		boolean oddNodes = false;
 		float sx = polygon[offset], sy = polygon[offset + 1], y1 = sy;
@@ -157,9 +171,10 @@ public final class Intersector {
 
 	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
+	 * 
 	 * @param p1 The polygon that is being clipped
 	 * @param p2 The clip polygon
-	 * @param overlap The intersection of the two polygons (can be null, if an intersection polygon is not needed)
+	 * @param overlap The intersection of the two polygons (can be {@code null}, if an intersection polygon is not needed)
 	 * @return Whether the two polygons intersect. */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
 		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
@@ -218,14 +233,14 @@ public final class Intersector {
 		return false;
 	}
 
-	/** Returns true if the specified poygons intersect. */
+	/** Returns {@code true} if the specified poygons intersect. */
 	static public boolean intersectPolygons (FloatArray polygon1, FloatArray polygon2) {
 		if (Intersector.isPointInPolygon(polygon1.items, 0, polygon1.size, polygon2.items[0], polygon2.items[1])) return true;
 		if (Intersector.isPointInPolygon(polygon2.items, 0, polygon2.size, polygon1.items[0], polygon1.items[1])) return true;
 		return intersectPolygonEdges(polygon1, polygon2);
 	}
 
-	/** Returns true if the lines of the specified poygons intersect. */
+	/** Returns {@code true} if the lines of the specified poygons intersect. */
 	static public boolean intersectPolygonEdges (FloatArray polygon1, FloatArray polygon2) {
 		int last1 = polygon1.size - 2, last2 = polygon2.size - 2;
 		float[] p1 = polygon1.items, p2 = polygon2.items;
@@ -289,7 +304,8 @@ public final class Intersector {
 		return nearest.set(startX + t * (endX - startX), startY + t * (endY - startY));
 	}
 
-	/** Returns whether the given line segment intersects the given circle.
+	/** Checks whether the given line segment intersects the given circle.
+	 * 
 	 * @param start The start point of the line segment
 	 * @param end The end point of the line segment
 	 * @param center The center of the circle
@@ -315,29 +331,30 @@ public final class Intersector {
 		return x * x + y * y <= squareRadius;
 	}
 
-    /** Returns whether the given line segment intersects the given circle.
-     * @param start The start point of the line segment
-     * @param end The end point of the line segment
-     * @param circle The circle
-     * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
-     * @return Whether the line segment and the circle intersect */
-    public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Circle circle, MinimumTranslationVector mtv) {
-        v2a.set(end).sub(start);
-        v2b.set(circle.x - start.x, circle.y - start.y);
-        float len = v2a.len();
-        float u = v2b.dot(v2a.nor());
-        if (u <= 0) {
-            v2c.set(start);
-        } else if (u >= len) {
-            v2c.set(end);
-        } else {
-            v2d.set(v2a.scl(u)); // remember v2a is already normalized
-            v2c.set(v2d).add(start);
-        }
+	/** Checks whether the given line segment intersects the given circle.
+	 * 
+	 * @param start The start point of the line segment
+	 * @param end The end point of the line segment
+	 * @param circle The circle
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or {@code null} (optional).
+	 * @return Whether the line segment and the circle intersect */
+	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Circle circle, MinimumTranslationVector mtv) {
+		v2a.set(end).sub(start);
+		v2b.set(circle.x - start.x, circle.y - start.y);
+		float len = v2a.len();
+		float u = v2b.dot(v2a.nor());
+		if (u <= 0) {
+			v2c.set(start);
+		} else if (u >= len) {
+			v2c.set(end);
+		} else {
+			v2d.set(v2a.scl(u)); // remember v2a is already normalized
+			v2c.set(v2d).add(start);
+		}
 
-        v2a.set(v2c.x - circle.x, v2c.y - circle.y);
+		v2a.set(v2c.x - circle.x, v2c.y - circle.y);
 
-        if (mtv != null) {
+		if (mtv != null) {
 			// Handle special case of segment containing circle center
 			if (v2a.equals(Vector2.Zero)) {
 				v2d.set(end.y - start.y, start.x - end.x);
@@ -347,21 +364,21 @@ public final class Intersector {
 				mtv.normal.set(v2a).nor();
 				mtv.depth = circle.radius - v2a.len();
 			}
-        }
+		}
 
-        return v2a.len2() <= circle.radius * circle.radius;
-    }
-
+		return v2a.len2() <= circle.radius * circle.radius;
+	}
 
 	/** Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point. You can get the
-	 * intersection point by: Vector2 point(direction1).scl(scalar).add(start1); For more information, check:
-	 * http://stackoverflow.com/a/565282/1091440
+	 * intersection point by: {@code Vector2 point(direction1).scl(scalar).add(start1);}.<p>
+	 * For more information, check: http://stackoverflow.com/a/565282/1091440
+	 * 
 	 * @param start1 Where the first ray start
 	 * @param direction1 The direction the first ray is pointing
 	 * @param start2 Where the second ray start
 	 * @param direction2 The direction the second ray is pointing
 	 * @return scalar parameter on the first ray describing the point where the intersection happens. May be negative. In case the
-	 *         rays are collinear, Float.POSITIVE_INFINITY will be returned. */
+	 *         rays are collinear, {@code Float.POSITIVE_INFINITY} will be returned. */
 	public static float intersectRayRay (Vector2 start1, Vector2 direction1, Vector2 start2, Vector2 direction2) {
 		float difx = start2.x - start1.x;
 		float dify = start2.y - start1.y;
@@ -397,8 +414,9 @@ public final class Intersector {
 	}
 
 	/** Intersects a line and a plane. The intersection is returned as the distance from the first point to the plane. In case an
-	 * intersection happened, the return value is in the range [0,1]. The intersection point can be recovered by point1 + t *
-	 * (point2 - point1) where t is the return value of this method.
+	 * intersection happened, the return value is in the range [0,1]. The intersection point can be recovered by {@code point1 +
+	 * t * (point2 - point1)} where {@code t} is the return value of this method.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -433,7 +451,7 @@ public final class Intersector {
 	 * @param t2 The second vertex of the triangle
 	 * @param t3 The third vertex of the triangle
 	 * @param intersection The intersection point (optional)
-	 * @return True in case an intersection is present. */
+	 * @return {@code true} in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
 		Vector3 edge1 = v0.set(t2).sub(t1);
 		Vector3 edge2 = v1.set(t3).sub(t1);
@@ -481,7 +499,7 @@ public final class Intersector {
 	 * @param ray The ray, the direction component must be normalized before calling this method
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @param intersection The intersection point (optional, can be null)
+	 * @param intersection The intersection point (optional, can be {@code null})
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRaySphere (Ray ray, Vector3 center, float radius, Vector3 intersection) {
 		final float len = ray.direction.dot(center.x - ray.origin.x, center.y - ray.origin.y, center.z - ray.origin.z);
@@ -812,7 +830,7 @@ public final class Intersector {
 	 * @param p2 The second point of the first line
 	 * @param p3 The first point of the second line
 	 * @param p4 The second point of the second line
-	 * @param intersection The intersection point. May be null.
+	 * @param intersection The intersection point. May be {@code null}.
 	 * @return Whether the two lines intersect */
 	public static boolean intersectLines (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
 		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
@@ -828,7 +846,8 @@ public final class Intersector {
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.
-	 * @param intersection The intersection point, or null.
+	 * 
+	 * @param intersection The intersection point, or {@code null}.
 	 * @return Whether the two lines intersect */
 	public static boolean intersectLines (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
 		Vector2 intersection) {
@@ -843,6 +862,7 @@ public final class Intersector {
 	}
 
 	/** Check whether the given line and {@link Polygon} intersect.
+	 * 
 	 * @param p1 The first point of the line
 	 * @param p2 The second point of the line
 	 * @param polygon The polygon
@@ -871,6 +891,7 @@ public final class Intersector {
 
 	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
 	 * area of overlap.
+	 * 
 	 * @return Whether the rectangles intersect */
 	static public boolean intersectRectangles (Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
 		if (rectangle1.overlaps(rectangle2)) {
@@ -884,6 +905,7 @@ public final class Intersector {
 	}
 
 	/** Determines whether the given rectangle and segment intersect
+	 * 
 	 * @param startX x-coordinate start of line segment
 	 * @param startY y-coordinate start of line segment
 	 * @param endX y-coordinate end of line segment
@@ -913,6 +935,7 @@ public final class Intersector {
 	}
 
 	/** Check whether the given line segment and {@link Polygon} intersect.
+	 * 
 	 * @param p1 The first point of the segment
 	 * @param p2 The second point of the segment
 	 * @return Whether polygon and segment intersect */
@@ -947,7 +970,7 @@ public final class Intersector {
 	 * @param p2 The second point of the first line segment
 	 * @param p3 The first point of the second line segment
 	 * @param p4 The second point of the second line segment
-	 * @param intersection The intersection point. May be null.
+	 * @param intersection The intersection point. May be {@code null}.
 	 * @return Whether the two line segments intersect */
 	public static boolean intersectSegments (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
 		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
@@ -967,7 +990,7 @@ public final class Intersector {
 		return true;
 	}
 
-	/** @param intersection May be null. */
+	/** @param intersection May be {@code null}. */
 	public static boolean intersectSegments (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
 		Vector2 intersection) {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
@@ -1026,6 +1049,7 @@ public final class Intersector {
 	}
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap.
+	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @return Whether polygons overlap. */
@@ -1035,6 +1059,7 @@ public final class Intersector {
 
 	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum
 	 * Translation Vector indicating the minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
+	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
@@ -1051,9 +1076,10 @@ public final class Intersector {
 	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
 	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
 	 * collision with the polygon defined by verts2.
+	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
-	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or {@code null} (optional).
 	 * @return Whether polygons overlap. */
 	public static boolean overlapConvexPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
 		MinimumTranslationVector mtv) {
@@ -1350,6 +1376,7 @@ public final class Intersector {
 		int backOffset = 0;
 
 		/** Creates a new instance, assuming numAttributes attributes per triangle vertex.
+		 * 
 		 * @param numAttributes must be >= 3 */
 		public SplitTriangle (int numAttributes) {
 			front = new float[numAttributes * 3 * 2];
