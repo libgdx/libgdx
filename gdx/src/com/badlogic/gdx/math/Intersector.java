@@ -95,8 +95,7 @@ public final class Intersector {
 		return true;
 	}
 
-	/**
-	 * Determines on which side of the given line the point is.<p>
+	/** Determines on which side of the given line the point is.<p>
 	 * Left and right are relative to the line's direction which is linePoint1 to linePoint2.
 	 * 
 	 * @return {@code -1} if the point is on the left side of the line.<p>
@@ -107,8 +106,7 @@ public final class Intersector {
 			(linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y) * (point.x - linePoint1.x));
 	}
 
-	/**
-	 * Determines on which side of the given line the point is.<p>
+	/** Determines on which side of the given line the point is.<p>
 	 * Left and right are relative to the line's direction which is linePoint1 to linePoint2.
 	 * 
 	 * @return {@code -1} if the point is on the left side of the line.<p>
