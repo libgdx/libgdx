@@ -37,7 +37,7 @@ public final class Intersector {
 	private final static FloatArray floatArray = new FloatArray();
 	private final static FloatArray floatArray2 = new FloatArray();
 	
-	private Intersector() {
+	private Intersector () {
 	}
 
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
