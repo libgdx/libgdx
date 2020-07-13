@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -25,8 +24,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 
 /** Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
- * shader for (unlit) rendering.</p> *
- * 
+ * shader for (unlit) rendering.
  * @author mzechner */
 public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	private int primitiveType;
@@ -57,7 +55,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		ownsShader = true;
 	}
 
-	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, ShaderProgram shader) {
+	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords,
+		ShaderProgram shader) {
 		this.maxVertices = maxVertices;
 		this.numTexCoords = numTexCoords;
 		this.shader = shader;
@@ -70,9 +69,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		normalOffset = mesh.getVertexAttribute(Usage.Normal) != null ? mesh.getVertexAttribute(Usage.Normal).offset / 4 : 0;
 		colorOffset = mesh.getVertexAttribute(Usage.ColorPacked) != null ? mesh.getVertexAttribute(Usage.ColorPacked).offset / 4
 			: 0;
-		texCoordOffset = mesh.getVertexAttribute(Usage.TextureCoordinates) != null ? mesh
-			.getVertexAttribute(Usage.TextureCoordinates).offset / 4 : 0;
-			
+		texCoordOffset = mesh.getVertexAttribute(Usage.TextureCoordinates) != null
+			? mesh.getVertexAttribute(Usage.TextureCoordinates).offset / 4
+			: 0;
+
 		shaderUniformNames = new String[numTexCoords];
 		for (int i = 0; i < numTexCoords; i++) {
 			shaderUniformNames[i] = "u_sampler" + i;
@@ -115,7 +115,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	public void color (float r, float g, float b, float a) {
 		vertices[vertexIdx + colorOffset] = Color.toFloatBits(r, g, b, a);
 	}
-	
+
 	public void color (float colorBits) {
 		vertices[vertexIdx + colorOffset] = colorBits;
 	}
@@ -186,21 +186,24 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 			shader += "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
 		}
 
-		shader += "uniform mat4 u_projModelView;\n";
-		shader += (hasColors ? "varying vec4 v_col;\n" : "");
+		shader += "uniform mat4 u_projModelView;\n" //
+			+ (hasColors ? "varying vec4 v_col;\n" : "");
 
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "varying vec2 v_tex" + i + ";\n";
 		}
 
-		shader += "void main() {\n" + "   gl_Position = u_projModelView * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
-			+ (hasColors ? "   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
+		shader += "void main() {\n" + "   gl_Position = u_projModelView * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n";
+		if (hasColors) {
+			shader += "   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+				+ "   v_col.a *= 255.0 / 254.0;\n";
+		}
 
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
 		}
-		shader += "   gl_PointSize = 1.0;\n";
-		shader += "}\n";
+		shader += "   gl_PointSize = 1.0;\n" //
+			+ "}\n";
 		return shader;
 	}
 
@@ -213,7 +216,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 			shader += "uniform sampler2D u_sampler" + i + ";\n";
 		}
 
-		shader += "void main() {\n" + "   gl_FragColor = " + (hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
+		shader += "void main() {\n" //
+			+ "   gl_FragColor = " + (hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
 
 		if (numTexCoords > 0) shader += " * ";
 
