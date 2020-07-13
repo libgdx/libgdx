@@ -38,6 +38,7 @@
 - API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
 - API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
 - API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
+- Fixed Label text wrapping when it shouldn't (#6098).
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
