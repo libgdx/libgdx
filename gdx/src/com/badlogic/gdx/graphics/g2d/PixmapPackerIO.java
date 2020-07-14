@@ -64,18 +64,9 @@ public class PixmapPackerIO {
 		Writer writer = file.writer(false);
 		int index = 0;
 		for (Page page : packer.pages) {
+			index++;
+			FileHandle pageFile = writeImageFile(file, index, parameters, page);
 			if (page.rects.size > 0) {
-				FileHandle pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + parameters.format.getExtension());
-				switch (parameters.format) {
-					case CIM:{
-						PixmapIO.writeCIM(pageFile, page.image);
-						break;
-					}
-					case PNG: {
-						PixmapIO.writePNG(pageFile, page.image);
-						break;
-					}
-				}
 				writer.write("\n");
 				writer.write(pageFile.name() + "\n");
 				writer.write("size: " + page.image.getWidth() + "," + page.image.getHeight() + "\n");
@@ -112,5 +103,19 @@ public class PixmapPackerIO {
 		}		
 		writer.close();
 	}
-	
+
+	private FileHandle writeImageFile(FileHandle file, int index, SaveParameters parameters, Page page) {
+		FileHandle pageFile = file.sibling(file.nameWithoutExtension() + "_" + (index) + parameters.format.getExtension());
+		switch (parameters.format) {
+			case CIM:{
+				PixmapIO.writeCIM(pageFile, page.image);
+				break;
+			}
+			case PNG: {
+				PixmapIO.writePNG(pageFile, page.image);
+				break;
+			}
+		}
+		return pageFile;
+	}
 }
