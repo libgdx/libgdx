@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
-public class UIUtils {
+public final class UIUtils {
 
 	private UIUtils() {
 	}
