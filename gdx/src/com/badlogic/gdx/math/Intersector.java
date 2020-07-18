@@ -32,7 +32,7 @@ import java.util.List;
  * @author Nathan Sweet */
 public final class Intersector {
 
-	private Intersector() {
+	private Intersector () {
 	}
 
 	private final static Vector3 v0 = new Vector3();

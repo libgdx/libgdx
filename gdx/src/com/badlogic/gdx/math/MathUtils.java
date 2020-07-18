@@ -24,7 +24,7 @@ import java.util.Random;
  * @author Nathan Sweet */
 public final class MathUtils {
 
-	private MathUtils() {
+	private MathUtils () {
 	}
 
 	static public final float nanoToSec = 1 / 1000000000f;

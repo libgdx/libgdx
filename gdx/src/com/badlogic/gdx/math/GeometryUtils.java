@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /** @author Nathan Sweet */
 public final class GeometryUtils {
 
-	private GeometryUtils() {
+	private GeometryUtils () {
 	}
 
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();

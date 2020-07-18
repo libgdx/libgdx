@@ -7,7 +7,7 @@ import com.badlogic.gdx.Input.Keys;
 
 public final class UIUtils {
 
-	private UIUtils() {
+	private UIUtils () {
 	}
 
 	//Adapted system checks from com.badlogic.gdx.utils.SharedLibraryLoader
