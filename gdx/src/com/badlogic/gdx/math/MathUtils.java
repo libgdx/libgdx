@@ -23,6 +23,10 @@ import java.util.Random;
  * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
  * @author Nathan Sweet */
 public final class MathUtils {
+
+	private MathUtils() {
+	}
+
 	static public final float nanoToSec = 1 / 1000000000f;
 
 	// ---
