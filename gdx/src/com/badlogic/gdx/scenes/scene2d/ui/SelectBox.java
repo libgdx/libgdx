@@ -391,7 +391,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	static class SelectBoxList<T> extends ScrollPane {
 		private final SelectBox<T> selectBox;
 		int maxListCount;
-		private final Vector2 screenPosition = new Vector2();
+		private final Vector2 stagePosition = new Vector2();
 		final List<T> list;
 		private InputListener hideListener;
 		private Actor previousScrollFocus;
@@ -468,7 +468,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			stage.addCaptureListener(hideListener);
 			stage.addListener(list.getKeyListener());
 
-			selectBox.localToStageCoordinates(screenPosition.set(0, 0));
+			selectBox.localToStageCoordinates(stagePosition.set(0, 0));
 
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
 			float itemHeight = list.getItemHeight();
@@ -478,8 +478,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 			Drawable listBackground = list.getStyle().background;
 			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
-			float heightBelow = screenPosition.y;
-			float heightAbove = stage.getCamera().viewportHeight - screenPosition.y - selectBox.getHeight();
+			float heightBelow = stagePosition.y;
+			float heightAbove = stage.getHeight() - heightBelow - selectBox.getHeight();
 			boolean below = true;
 			if (height > heightBelow) {
 				if (heightAbove > heightBelow) {
@@ -490,10 +490,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			}
 
 			if (below)
-				setY(screenPosition.y - height);
+				setY(stagePosition.y - height);
 			else
-				setY(screenPosition.y + selectBox.getHeight());
-			setX(screenPosition.x);
+				setY(stagePosition.y + selectBox.getHeight());
+			setX(stagePosition.x);
 			setHeight(height);
 			validate();
 			float width = Math.max(getPrefWidth(), selectBox.getWidth());
@@ -534,7 +534,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 		public void draw (Batch batch, float parentAlpha) {
 			selectBox.localToStageCoordinates(temp.set(0, 0));
-			if (!temp.equals(screenPosition)) hide();
+			if (!temp.equals(stagePosition)) hide();
 			super.draw(batch, parentAlpha);
 		}
 
