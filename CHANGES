@@ -1,3 +1,6 @@
+[1.9.12]
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3
@@ -40,7 +43,7 @@
 - API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
 - Fixed Label text wrapping when it shouldn't (#6098).
 - Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
-- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- API Change: glGetActiveUniform and glGetActiveAttrib paramter changed from Buffer to IntBuffer.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
