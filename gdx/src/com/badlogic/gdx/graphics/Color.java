@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Color {
-	public static final Color WHITE = new Color(1, 1, 1,1);
+	public static final Color WHITE = new Color(1, 1, 1, 1);
 	public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
 	public static final Color GRAY = new Color(0x7f7f7fff);
 	public static final Color DARK_GRAY = new Color(0x3f3f3fff);
