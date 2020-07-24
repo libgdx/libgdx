@@ -37,8 +37,8 @@ abstract public class Pool<T> {
 		this(initialCapacity, Integer.MAX_VALUE);
 	}
 
-	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created/pre-allocated.
-	 *                             Use {@link #fill(int) after instantiation if needed.
+	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created/pre-allocated. Use
+	 *           {@link #fill(int)} after instantiation if needed.
 	 * @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
 		freeObjects = new Array(false, initialCapacity);
