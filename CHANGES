@@ -1,3 +1,6 @@
+[1.9.12]
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3
