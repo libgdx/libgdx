@@ -90,7 +90,7 @@ abstract public class Pool<T> {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
-		for (int i = 0; i < objects.size; i++) {
+		for (int i = 0, n = objects.size; i < n; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
 			if (freeObjects.size < max) freeObjects.add(object);

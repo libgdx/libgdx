@@ -37,14 +37,18 @@ import com.badlogic.gdx.utils.Pools;
  * {@link BitmapFontData#isWhitespace(char)}.
  * <p>
  * Glyphs positions are determined by {@link BitmapFontData#getGlyphs(GlyphRun, CharSequence, int, int, Glyph)}.
+ * <p>
+ * This class is not thread safe, even if synchronized externally, and must only be used from the game thread.
  * @author Nathan Sweet
  * @author davebaol
  * @author Alexander Dorokhov */
 public class GlyphLayout implements Poolable {
+	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
+	static private final Pool<Color> colorPool = Pools.get(Color.class);
+	static private final Array<Color> colorStack = new Array(4);
+
 	public final Array<GlyphRun> runs = new Array(1);
 	public float width, height;
-
-	private @Null Array<Color> colorStack;
 
 	/** Creates an empty GlyphLayout. */
 	public GlyphLayout () {
@@ -89,7 +93,6 @@ public class GlyphLayout implements Poolable {
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, @Null String truncate) {
 
-		Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
 		Array<GlyphRun> runs = this.runs;
 		glyphRunPool.freeAll(runs);
 		runs.clear();
@@ -107,14 +110,12 @@ public class GlyphLayout implements Poolable {
 			wrap = false; // Avoid one line per character, which is very inefficient.
 
 		Color nextColor = color;
-		Array<Color> colorStack = null;
-		Pool<Color> colorPool = null;
 		boolean markupEnabled = fontData.markupEnabled;
 		if (markupEnabled) {
-			colorStack = this.colorStack;
-			if (colorStack == null) this.colorStack = colorStack = new Array(2);
+			for (int i = 1, n = colorStack.size; i < n; i++)
+				colorPool.free(colorStack.get(i));
+			colorStack.clear();
 			colorStack.add(color);
-			colorPool = Pools.get(Color.class);
 		}
 
 		float x = 0, y = 0, down = fontData.down;
@@ -224,7 +225,7 @@ public class GlyphLayout implements Poolable {
 								adjustLastGlyph(fontData, previous);
 							}
 						} else {
-							next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
+							next = wrap(fontData, run, wrapIndex, i);
 							if (next == null) { // All wrapped glyphs were whitespace.
 								x = 0;
 								y += down;
@@ -261,12 +262,6 @@ public class GlyphLayout implements Poolable {
 				runStart = start;
 				color = nextColor;
 			}
-		}
-
-		if (markupEnabled) {
-			for (int i = 1, n = colorStack.size; i < n; i++)
-				colorPool.free(colorStack.get(i));
-			colorStack.clear();
 		}
 
 		// Calculate run widths and the entire layout width.
@@ -362,7 +357,7 @@ public class GlyphLayout implements Poolable {
 
 	/** Breaks a run into two runs at the specified wrapIndex.
 	 * @return May be null if second run is all whitespace. */
-	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
+	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, int wrapIndex, int widthIndex) {
 		Array<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
 		int glyphCount = first.glyphs.size;
 		FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
