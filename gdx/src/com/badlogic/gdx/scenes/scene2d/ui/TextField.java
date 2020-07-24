@@ -1070,9 +1070,9 @@ public class TextField extends Widget implements Disableable {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
+						updateDisplayText();
 					} else
 						cursor = oldCursor;
-					updateDisplayText();
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);
