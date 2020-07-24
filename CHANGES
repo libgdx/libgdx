@@ -1,5 +1,6 @@
 [1.9.12]
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
 
 [1.9.11]
 - Update to MobiVM 2.3.8
