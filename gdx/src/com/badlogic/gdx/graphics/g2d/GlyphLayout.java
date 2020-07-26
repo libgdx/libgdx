@@ -175,10 +175,16 @@ public class GlyphLayout implements Poolable {
 					runs.add(run);
 
 					int n = run.xAdvances.size;
-					if (!wrap || n == 0) break runEnded; // No wrap or truncate, or no glyphs.
+					float[] xAdvances = run.xAdvances.items;
+					if (!wrap || n == 0) { // No wrap or truncate, or no glyphs.
+						if (markupEnabled) { // If disabled any subsequent run is sure to be on the next line.
+							for (int i = 0; i < n; i++)
+								x += xAdvances[i];
+						}
+						break runEnded;
+					}
 
 					// Wrap or truncate.
-					float[] xAdvances = run.xAdvances.items;
 					x += xAdvances[0] + xAdvances[1]; // X offset relative to the drawing position + first xAdvance.
 					for (int i = 2; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
