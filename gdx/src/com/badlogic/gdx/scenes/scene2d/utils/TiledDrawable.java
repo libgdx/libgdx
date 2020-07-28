@@ -65,7 +65,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 		float v2 = region.getV2();
 		if (remainingX > 0) {
 			// Right edge.
-			float u2 = u + remainingX / texture.getWidth();
+			float u2 = u + remainingX / (texture.getWidth() * scale);
 			float v = region.getV();
 			y = startY;
 			for (int ii = 0; ii < fullY; ii++) {
@@ -74,14 +74,14 @@ public class TiledDrawable extends TextureRegionDrawable {
 			}
 			// Upper right corner.
 			if (remainingY > 0) {
-				v = v2 - remainingY / texture.getHeight();
+				v = v2 - remainingY / (texture.getHeight() * scale);
 				batch.draw(texture, x, y, remainingX, remainingY, u, v2, u2, v);
 			}
 		}
 		if (remainingY > 0) {
 			// Top edge.
 			float u2 = region.getU2();
-			float v = v2 - remainingY / texture.getHeight();
+			float v = v2 - remainingY / (texture.getHeight() * scale);
 			x = startX;
 			for (int i = 0; i < fullX; i++) {
 				batch.draw(texture, x, y, regionWidth, remainingY, u, v2, u2, v);
