@@ -290,7 +290,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	private @Null Drawable getBackgroundDrawable () {
+	protected @Null Drawable getBackgroundDrawable () {
 		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
