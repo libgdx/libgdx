@@ -24,8 +24,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /** Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
  * @author Nathan Sweet */
 public class TiledDrawable extends TextureRegionDrawable {
-	static private final Color temp = new Color();
-
 	private final Color color = new Color(1, 1, 1, 1);
 	private float scale = 1;
 
@@ -42,9 +40,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 	}
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
-		Color batchColor = batch.getColor();
-		temp.set(batchColor);
-		batch.setColor(batchColor.mul(color));
+		float oldColor = batch.getPackedColor();
+		batch.getColor().mul(color);
 
 		TextureRegion region = getRegion();
 		float regionWidth = region.getRegionWidth() * scale, regionHeight = region.getRegionHeight() * scale;
@@ -89,7 +86,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 			}
 		}
 
-		batch.setColor(temp);
+		batch.setPackedColor(oldColor);
 	}
 
 	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
