@@ -362,7 +362,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public void ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= keys.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > keys.length) resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 	}
 
 	protected void resize (int newSize) {
