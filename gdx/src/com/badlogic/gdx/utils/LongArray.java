@@ -171,6 +171,16 @@ public class LongArray {
 		items[index] = value;
 	}
 
+	/** Inserts the specified number of items at the specified index. The new items will have values equal to the values at those
+	 * indices before the insertion. */
+	public void insertRange (int index, int count) {
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		int sizeNeeded = size + count;
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
+		System.arraycopy(items, index, items, index + count, size - index);
+		size = sizeNeeded;
+	}
+
 	public void swap (int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
 		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
