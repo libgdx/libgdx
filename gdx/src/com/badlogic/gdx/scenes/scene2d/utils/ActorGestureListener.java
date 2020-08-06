@@ -38,7 +38,7 @@ public class ActorGestureListener implements EventListener {
 
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
-		this(20, 0.4f, 1.1f, 0.15f);
+		this(20, 0.4f, 1.1f, Integer.MAX_VALUE);
 	}
 
 	/** @see GestureDetector#GestureDetector(float, float, float, float, com.badlogic.gdx.input.GestureDetector.GestureListener) */
