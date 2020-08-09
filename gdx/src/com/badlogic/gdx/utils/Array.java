@@ -382,7 +382,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void clear () {
-		Arrays.fill(items, null);
+		Arrays.fill(items, 0, size, null);
 		size = 0;
 	}
 
