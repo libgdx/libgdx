@@ -827,6 +827,7 @@ public class BitmapFont implements Disposable {
 		 *           square bracket.
 		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+			if (end == start) return;
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
 			Array<Glyph> glyphs = run.glyphs;
@@ -836,7 +837,7 @@ public class BitmapFont implements Disposable {
 			int i = run.xAdvances.size;
 			float[] xAdvances = run.xAdvances.setSize(i + end - start + 1);
 
-			while (start < end) {
+			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
@@ -856,7 +857,7 @@ public class BitmapFont implements Disposable {
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
-			}
+			} while (start < end);
 			if (lastGlyph != null) {
 				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
