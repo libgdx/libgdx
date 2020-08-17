@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -64,12 +63,12 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static private final char BACKSPACE = 8;
-	static protected final char ENTER_DESKTOP = '\r';
-	static protected final char ENTER_ANDROID = '\n';
-	static private final char TAB = '\t';
-	static private final char DELETE = 127;
-	static private final char BULLET = 149;
+	static protected final char BACKSPACE = 8;
+	static protected final char CARRIAGE_RETURN = '\r';
+	static protected final char NEWLINE = '\n';
+	static protected final char TAB = '\t';
+	static protected final char DELETE = 127;
+	static protected final char BULLET = 149;
 
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
@@ -107,7 +106,7 @@ public class TextField extends Widget implements Disableable {
 	protected float fontOffset, textHeight, textOffset;
 	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
-	private int maxLength = 0;
+	private int maxLength;
 
 	boolean focused;
 	boolean cursorOn;
@@ -291,8 +290,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	@Null
-	private Drawable getBackgroundDrawable () {
+	protected @Null Drawable getBackgroundDrawable () {
 		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
@@ -300,7 +298,7 @@ public class TextField extends Widget implements Disableable {
 
 	public void draw (Batch batch, float parentAlpha) {
 		boolean focused = hasKeyboardFocus();
-		if (focused != this.focused) {
+		if (focused != this.focused || (focused && !blinkTask.isScheduled())) {
 			this.focused = focused;
 			blinkTask.cancel();
 			cursorOn = focused;
@@ -468,7 +466,7 @@ public class TextField extends Widget implements Disableable {
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
-			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
+			if (!(writeEnters && (c == NEWLINE || c == CARRIAGE_RETURN))) {
 				if (c == '\r' || c == '\n') continue;
 				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
@@ -506,8 +504,9 @@ public class TextField extends Widget implements Disableable {
 		return minIndex;
 	}
 
-	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
+	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
+	 * onscreen keyboard is hidden. Does nothing if the text field is not in a stage.
+	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
@@ -537,15 +536,14 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
-	@Null
-	private TextField findNextTextField (Array<Actor> actors, @Null TextField best, Vector2 bestCoords, Vector2 currentCoords,
-		boolean up) {
+	private @Null TextField findNextTextField (Array<Actor> actors, @Null TextField best, Vector2 bestCoords,
+		Vector2 currentCoords, boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof TextField) {
 				if (actor == this) continue;
 				TextField textField = (TextField)actor;
-				if (textField.isDisabled() || !textField.focusTraversal || !textField.ancestorsVisible()) continue;
+				if (textField.isDisabled() || !textField.focusTraversal || !textField.ascendantsVisible()) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				boolean below = actorCoords.y != currentCoords.y && (actorCoords.y < currentCoords.y ^ up);
 				boolean right = actorCoords.y == currentCoords.y && (actorCoords.x > currentCoords.x ^ up);
@@ -576,8 +574,7 @@ public class TextField extends Widget implements Disableable {
 		this.filter = filter;
 	}
 
-	@Null
-	public TextFieldFilter getTextFieldFilter () {
+	public @Null TextFieldFilter getTextFieldFilter () {
 		return filter;
 	}
 
@@ -587,8 +584,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** @return May be null. */
-	@Null
-	public String getMessageText () {
+	public @Null String getMessageText () {
 		return messageText;
 	}
 
@@ -1010,6 +1006,15 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
+		/** Checks if focus traversal should be triggered. The default implementation uses {@link TextField#focusTraversal} and the
+		 * typed character, depending on the OS.
+		 * @param character The character that triggered a possible focus traversal.
+		 * @return true if the focus should change to the {@link TextField#next(boolean) next} input field. */
+		protected boolean checkFocusTraversal (char character) {
+			return focusTraversal && (character == TAB
+				|| ((character == CARRIAGE_RETURN || character == NEWLINE) && (UIUtils.isAndroid || UIUtils.isIos)));
+		}
+
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
 
@@ -1017,8 +1022,8 @@ public class TextField extends Widget implements Disableable {
 			switch (character) {
 			case BACKSPACE:
 			case TAB:
-			case ENTER_ANDROID:
-			case ENTER_DESKTOP:
+			case NEWLINE:
+			case CARRIAGE_RETURN:
 				break;
 			default:
 				if (character < 32) return false;
@@ -1028,12 +1033,12 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
+			if (checkFocusTraversal(character))
 				next(UIUtils.shift());
-			} else {
+			else {
+				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean enter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {
@@ -1055,7 +1060,7 @@ public class TextField extends Widget implements Disableable {
 					if (add && !remove) {
 						// Character may be added to the text.
 						if (!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
-						if (!withinMaxLength(text.length())) return true;
+						if (!withinMaxLength(text.length() - (hasSelection ? Math.abs(cursor - selectionStart) : 0))) return true;
 						if (hasSelection) cursor = delete(false);
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
@@ -1065,9 +1070,9 @@ public class TextField extends Widget implements Disableable {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
+						updateDisplayText();
 					} else
 						cursor = oldCursor;
-					updateDisplayText();
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);
@@ -1082,13 +1087,13 @@ public class TextField extends Widget implements Disableable {
 		public BitmapFont font;
 		public Color fontColor;
 		/** Optional. */
-		@Null public Color focusedFontColor, disabledFontColor;
+		public @Null Color focusedFontColor, disabledFontColor;
 		/** Optional. */
-		@Null public Drawable background, focusedBackground, disabledBackground, cursor, selection;
+		public @Null Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */
-		@Null public BitmapFont messageFont;
+		public @Null BitmapFont messageFont;
 		/** Optional. */
-		@Null public Color messageFontColor;
+		public @Null Color messageFontColor;
 
 		public TextFieldStyle () {
 		}

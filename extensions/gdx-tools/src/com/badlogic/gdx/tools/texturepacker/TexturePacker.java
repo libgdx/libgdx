@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -201,7 +200,7 @@ public class TexturePacker {
 		File packDir = packFileNoExt.getParentFile();
 		String imageName = packFileNoExt.getName();
 
-		int fileIndex = 0;
+		int fileIndex = 1;
 		for (int p = 0, pn = pages.size; p < pn; p++) {
 			Page page = pages.get(p);
 
@@ -234,7 +233,18 @@ public class TexturePacker {
 
 			File outputFile;
 			while (true) {
-				outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
+				String name = imageName;
+				if (fileIndex > 1) {
+					// Last character is a digit or a digit + 'x'.
+					char last = name.charAt(name.length() - 1);
+					if (Character.isDigit(last)
+						|| (name.length() > 3 && last == 'x' && Character.isDigit(name.charAt(name.length() - 2)))) {
+						name += "-";
+					}
+					name += fileIndex;
+				}
+				fileIndex++;
+				outputFile = new File(packDir, name + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
 			new FileHandle(outputFile).parent().mkdirs();
@@ -662,25 +672,16 @@ public class TexturePacker {
 	 *         the input file */
 	static public boolean isModified (String input, String output, String packFileName, Settings settings) {
 		String packFullFileName = output;
-
-		if (!packFullFileName.endsWith("/")) {
-			packFullFileName += "/";
-		}
-
-		// Check against the only file we know for sure will exist and will be changed if any asset changes:
-		// the atlas file
+		if (!packFullFileName.endsWith("/")) packFullFileName += "/";
 		packFullFileName += packFileName;
 		packFullFileName += settings.atlasExtension;
-		File outputFile = new File(packFullFileName);
 
-		if (!outputFile.exists()) {
-			return true;
-		}
+		// Check against the only file we know for sure will exist and will be changed if any asset changes: the atlas file.
+		File outputFile = new File(packFullFileName);
+		if (!outputFile.exists()) return true;
 
 		File inputFile = new File(input);
-		if (!inputFile.exists()) {
-			throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
-		}
+		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 
 		return isModified(inputFile, outputFile.lastModified());
 	}

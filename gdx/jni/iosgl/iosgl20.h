@@ -522,7 +522,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenT
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glGetActiveAttrib
- * Signature: (IILjava/nio/IntBuffer;Ljava/nio/Buffer;)Ljava/lang/String;
+ * Signature: (IILjava/nio/IntBuffer;Ljava/nio/IntBuffer;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGetActiveAttrib
   (JNIEnv *, jobject, jint, jint, jobject, jobject);
@@ -530,7 +530,7 @@ JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glG
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glGetActiveUniform
- * Signature: (IILjava/nio/IntBuffer;Ljava/nio/Buffer;)Ljava/lang/String;
+ * Signature: (IILjava/nio/IntBuffer;Ljava/nio/IntBuffer;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGetActiveUniform
   (JNIEnv *, jobject, jint, jint, jobject, jobject);

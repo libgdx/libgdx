@@ -225,6 +225,7 @@ public class GdxTests {
 		ShaderTest.class,
 		ShadowMappingTest.class,
 		ShapeRendererTest.class,
+		ShapeRendererAlphaTest.class,
 		SimpleAnimationTest.class,
 		SimpleDecalTest.class,
 		SimpleStageCullingTest.class,

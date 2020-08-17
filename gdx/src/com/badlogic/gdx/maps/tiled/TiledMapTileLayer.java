@@ -24,8 +24,8 @@ public class TiledMapTileLayer extends MapLayer {
 	private int width;
 	private int height;
 
-	private float tileWidth;
-	private float tileHeight;
+	private int tileWidth;
+	private int tileHeight;
 
 	private Cell[][] cells;
 
@@ -40,12 +40,12 @@ public class TiledMapTileLayer extends MapLayer {
 	}
 
 	/** @return tiles' width in pixels */
-	public float getTileWidth () {
+	public int getTileWidth () {
 		return tileWidth;
 	}
 
 	/** @return tiles' height in pixels */
-	public float getTileHeight () {
+	public int getTileHeight () {
 		return tileHeight;
 	}
 

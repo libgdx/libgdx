@@ -159,9 +159,9 @@ public class IOSGLES20 implements GL20
 	
 	public native int glGenTexture();
 
-	public native String glGetActiveAttrib ( int program, int index, IntBuffer size, Buffer type );
+	public native String glGetActiveAttrib ( int program, int index, IntBuffer size, IntBuffer type );
 
-	public native String glGetActiveUniform ( int program, int index, IntBuffer size, Buffer type );
+	public native String glGetActiveUniform ( int program, int index, IntBuffer size, IntBuffer type );
 
 	public native void glGetAttachedShaders ( int program, int maxcount, Buffer count, IntBuffer shaders );
 

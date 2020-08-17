@@ -161,7 +161,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			String prefix = packFile.getName();
 			int dotIndex = prefix.lastIndexOf('.');
 			if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-			deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg|jpeg)");
+			deleteProcessor.addInputRegex("(?i)" + prefix + "-?\\d*\\.(png|jpg|jpeg)");
 			deleteProcessor.addInputRegex("(?i)" + prefix + atlasExtension);
 
 			String dir = packFile.getParent();

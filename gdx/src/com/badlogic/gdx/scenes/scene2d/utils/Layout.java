@@ -33,8 +33,8 @@ public interface Layout {
 	 * maximum, or actual size of the actor (meaning it does not affect the parent actor's layout). */
 	public void invalidate ();
 
-	/** Invalidates this actor and all its ancestors, calling {@link #invalidate()} on each. This method should be called when
-	 * state changes in the actor that affects the minimum, preferred, maximum, or actual size of the actor (meaning it potentially
+	/** Invalidates this actor and its ascendants, calling {@link #invalidate()} on each. This method should be called when state
+	 * changes in the actor that affects the minimum, preferred, maximum, or actual size of the actor (meaning it potentially
 	 * affects the parent actor's layout). */
 	public void invalidateHierarchy ();
 

@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -77,6 +78,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+			outAttrs.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_NULL;
 		}
 
 		BaseInputConnection connection = new BaseInputConnection(this, false) {
@@ -106,6 +108,11 @@ public class GLSurfaceView20 extends GLSurfaceView {
 			}
 		};
 		return connection;
+	}
+
+	@Override
+	public void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
 	}
 
 	private void init (boolean translucent, int depth, int stencil) {

@@ -616,7 +616,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl30.glGetActiveAttrib(program, index, size, type);
 		check();
@@ -624,7 +624,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl30.glGetActiveUniform(program, index, size, type);
 		check();

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -29,6 +30,18 @@ public class InputTest extends GdxTest implements InputProcessor {
 // Gdx.input = new RemoteInput();
 		Gdx.input.setInputProcessor(this);
 // Gdx.input.setCursorCatched(true);
+//
+//		Gdx.input.getTextInput(new Input.TextInputListener() {
+//			@Override
+//			public void input(String text) {
+//				Gdx.app.log("Input test", "Input value: " + text);
+//			}
+//
+//			@Override
+//			public void canceled() {
+//				Gdx.app.log("Input test", "Canceled input text");
+//			}
+//		}, "Title", "Text", "Placeholder");
 	}
 
 	@Override

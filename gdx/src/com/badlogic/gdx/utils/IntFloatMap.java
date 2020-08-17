@@ -281,12 +281,23 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
 	 * be an expensive operation. */
-	public boolean containsValue (int value) {
+	public boolean containsValue (float value) {
 		if (hasZeroValue && zeroValue == value) return true;
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != 0 && valueTable[i] == value) return true;
+		return false;
+	}
+
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
+	public boolean containsValue (float value, float epsilon) {
+		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return true;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return true;
 		return false;
 	}
 
@@ -297,14 +308,23 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
 	 * compares every value, which may be an expensive operation. */
-	public int findKey (int value, int notFound) {
+	public int findKey (float value, int notFound) {
 		if (hasZeroValue && zeroValue == value) return 0;
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i >= 0; i--) {
-			int key = keyTable[i];
-			if (key != 0 && valueTable[i] == value) return key;
-		}
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && valueTable[i] == value) return keyTable[i];
+		return notFound;
+	}
+
+	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
+	 * compares every value, which may be an expensive operation. */
+	public int findKey (float value, float epsilon, int notFound) {
+		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return 0;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return keyTable[i];
 		return notFound;
 	}
 

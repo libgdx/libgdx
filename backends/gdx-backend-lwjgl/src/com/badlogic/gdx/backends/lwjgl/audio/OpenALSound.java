@@ -26,10 +26,10 @@ import static org.lwjgl.openal.AL10.*;
 /** @author Nathan Sweet */
 public class OpenALSound implements Sound {
 	private int bufferID = -1;
-	private final OpenALAudio audio;
+	private final OpenALLwjglAudio audio;
 	private float duration;
 
-	public OpenALSound (OpenALAudio audio) {
+	public OpenALSound (OpenALLwjglAudio audio) {
 		this.audio = audio;
 	}
 

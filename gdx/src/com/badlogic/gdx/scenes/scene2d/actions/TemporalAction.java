@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author Nathan Sweet */
 abstract public class TemporalAction extends Action {
 	private float duration, time;
-	@Null private Interpolation interpolation;
+	private @Null Interpolation interpolation;
 	private boolean reverse, began, complete;
 
 	public TemporalAction () {
@@ -111,8 +111,7 @@ abstract public class TemporalAction extends Action {
 		this.duration = duration;
 	}
 
-	@Null
-	public Interpolation getInterpolation () {
+	public @Null Interpolation getInterpolation () {
 		return interpolation;
 	}
 

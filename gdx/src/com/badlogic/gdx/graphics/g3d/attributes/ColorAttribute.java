@@ -74,6 +74,30 @@ public class ColorAttribute extends Attribute {
 		return new ColorAttribute(Reflection, r, g, b, a);
 	}
 
+	public final static ColorAttribute createEmissive (final Color color) {
+		return new ColorAttribute(Emissive, color);
+	}
+
+	public final static ColorAttribute createEmissive (float r, float g, float b, float a) {
+		return new ColorAttribute(Emissive, r, g, b, a);
+	}
+
+	public final static ColorAttribute createAmbientLight (final Color color) {
+		return new ColorAttribute(AmbientLight, color);
+	}
+
+	public final static ColorAttribute createAmbientLight (float r, float g, float b, float a) {
+		return new ColorAttribute(AmbientLight, r, g, b, a);
+	}
+
+	public final static ColorAttribute createFog (final Color color) {
+		return new ColorAttribute(Fog, color);
+	}
+
+	public final static ColorAttribute createFog (float r, float g, float b, float a) {
+		return new ColorAttribute(Fog, r, g, b, a);
+	}
+
 	public final Color color = new Color();
 
 	public ColorAttribute (final long type) {

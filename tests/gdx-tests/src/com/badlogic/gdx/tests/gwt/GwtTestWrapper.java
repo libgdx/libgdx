@@ -103,6 +103,8 @@ import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TableTest;
+import com.badlogic.gdx.tests.TextAreaTest;
+import com.badlogic.gdx.tests.TextAreaTest2;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
@@ -849,5 +851,15 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new GWTLossyPremultipliedAlphaTest();
 			}
-		}};
+		},
+		new Instancer() {
+			public GdxTest instance () {
+				return new TextAreaTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TextAreaTest2();
+			}
+		} // these may have issues with tab getting intercepted by the browser
+	};
 }

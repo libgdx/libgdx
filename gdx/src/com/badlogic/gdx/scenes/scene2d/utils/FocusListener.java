@@ -76,8 +76,7 @@ abstract public class FocusListener implements EventListener {
 
 		/** The actor related to the event. When focus is lost, this is the new actor being focused, or null. When focus is gained,
 		 * this is the previous actor that was focused, or null. */
-		@Null
-		public Actor getRelatedActor () {
+		public @Null Actor getRelatedActor () {
 			return relatedActor;
 		}
 

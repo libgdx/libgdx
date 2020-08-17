@@ -41,7 +41,7 @@ public class Group extends Actor implements Cullable {
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
-	@Null private Rectangle cullingArea;
+	private @Null Rectangle cullingArea;
 
 	public void act (float delta) {
 		super.act(delta);
@@ -235,13 +235,11 @@ public class Group extends Actor implements Cullable {
 
 	/** @return May be null.
 	 * @see #setCullingArea(Rectangle) */
-	@Null
-	public Rectangle getCullingArea () {
+	public @Null Rectangle getCullingArea () {
 		return cullingArea;
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
 		if (!isVisible()) return null;
 		Vector2 point = tmp;
@@ -372,8 +370,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the
 	 * group. */
-	@Null
-	public <T extends Actor> T findActor (String name) {
+	public @Null <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)
 			if (name.equals(children.get(i).getName())) return (T)children.get(i);
@@ -391,7 +388,7 @@ public class Group extends Actor implements Cullable {
 		super.setStage(stage);
 		Actor[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
-			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ancestor.
+			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ascendant.
 	}
 
 	/** Swaps two actors by index. Returns false if the swap did not occur because the indexes were out of bounds. */

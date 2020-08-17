@@ -118,6 +118,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super.insert(index, value);
 	}
 
+	public void insertRange (int index, int count) {
+		modified();
+		super.insertRange(index, count);
+	}
+
 	public void swap (int first, int second) {
 		modified();
 		super.swap(first, second);

@@ -95,7 +95,7 @@ public class CheckBox extends TextButton {
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
 		/** Optional. */
-		@Null public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
+		public @Null Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
 
 		public CheckBoxStyle () {
 		}

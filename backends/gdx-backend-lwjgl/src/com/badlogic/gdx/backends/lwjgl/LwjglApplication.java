@@ -18,10 +18,10 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
 
+import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -41,9 +41,9 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import java.awt.Canvas;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
-public class LwjglApplication implements Application {
+public class LwjglApplication implements LwjglApplicationBase {
 	protected final LwjglGraphics graphics;
-	protected OpenALAudio audio;
+	protected LwjglAudio audio;
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
@@ -87,15 +87,14 @@ public class LwjglApplication implements Application {
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio) {
 			try {
-				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-					config.audioDeviceBufferSize);
+				audio = createAudio(config);
 			} catch (Throwable t) {
 				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
 				LwjglApplicationConfiguration.disableAudio = true;
 			}
 		}
 		files = new LwjglFiles();
-		input = new LwjglInput();
+		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
@@ -272,6 +271,17 @@ public class LwjglApplication implements Application {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+	@Override
+	public LwjglAudio createAudio(LwjglApplicationConfiguration config) {
+		return new OpenALLwjglAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+			config.audioDeviceBufferSize);
+	}
+
+	@Override
+	public LwjglInput createInput(LwjglApplicationConfiguration config) {
+		return new DefaultLwjglInput();
 	}
 
 	@Override

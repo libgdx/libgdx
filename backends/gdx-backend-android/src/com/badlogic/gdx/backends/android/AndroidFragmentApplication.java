@@ -449,12 +449,12 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new AndroidAudioImpl(context, config);
+		return new DefaultAndroidAudio(context, config);
 	}
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new AndroidInputImpl(this, getActivity(), graphics.view, config);
+		return new DefaultAndroidInput(this, getActivity(), graphics.view, config);
 	}
 
 	@Override

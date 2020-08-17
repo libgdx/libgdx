@@ -137,8 +137,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		}
 	}
 
-	@Null
-	public V put (int key, @Null V value) {
+	public @Null V put (int key, @Null V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
@@ -196,8 +195,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
-	@Null
-	public V remove (int key) {
+	public @Null V remove (int key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
 			hasZeroValue = false;
@@ -626,8 +624,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			return hasNext;
 		}
 
-		@Null
-		public V next () {
+		public @Null V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value;

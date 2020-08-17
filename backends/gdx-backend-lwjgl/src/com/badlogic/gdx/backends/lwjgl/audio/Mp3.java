@@ -36,7 +36,7 @@ public class Mp3 {
 		private OutputBuffer outputBuffer;
 		private MP3Decoder decoder;
 
-		public Music (OpenALAudio audio, FileHandle file) {
+		public Music (OpenALLwjglAudio audio, FileHandle file) {
 			super(audio, file);
 			if (audio.noDevice) return;
 			bitstream = new Bitstream(file.read());
@@ -104,7 +104,7 @@ public class Mp3 {
 	static public class Sound extends OpenALSound {
 		// Note: This uses a slightly modified version of JLayer.
 
-		public Sound (OpenALAudio audio, FileHandle file) {
+		public Sound (OpenALLwjglAudio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);

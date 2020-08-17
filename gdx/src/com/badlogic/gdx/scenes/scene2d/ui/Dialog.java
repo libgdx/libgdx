@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * @author Nathan Sweet */
 public class Dialog extends Window {
 	Table contentTable, buttonTable;
-	@Null private Skin skin;
+	private @Null Skin skin;
 	ObjectMap<Actor, Object> values = new ObjectMap();
 	boolean cancelHide;
 	Actor previousKeyboardFocus, previousScrollFocus;
@@ -254,7 +254,7 @@ public class Dialog extends Window {
 
 	/** If this key is pressed, {@link #result(Object)} is called with the specified object.
 	 * @see Keys */
-	public Dialog key (final int keycode, @Null final Object object) {
+	public Dialog key (final int keycode, final @Null Object object) {
 		addListener(new InputListener() {
 			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {

@@ -38,8 +38,6 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import java.util.Arrays;
-
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener)} method specifying the configuration for
  * the {@link GLSurfaceView}.
@@ -410,12 +408,12 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new AndroidAudioImpl(context, config);
+		return new DefaultAndroidAudio(context, config);
 	}
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new AndroidInputImpl(this, this, graphics.view, config);
+		return new DefaultAndroidInput(this, this, graphics.view, config);
 	}
 
 	@Override

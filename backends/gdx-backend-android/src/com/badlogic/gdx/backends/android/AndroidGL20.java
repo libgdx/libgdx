@@ -288,31 +288,27 @@ public class AndroidGL20 implements GL20 {
 		return ints[0];
 	}
 
-	public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type) {
-		//it is assumed that size and type are both int buffers of length 1 with a single integer at position 0
-		
-		//length
-		ints[0] = 0;
-		//size
-		ints2[0] = size.get(0);
-		//type
-		ints3[0] = ((IntBuffer)type).get(0);
-
+	public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type) {
 		GLES20.glGetActiveAttrib(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
+
+		//size
+		size.put(ints2[0]);
+		//type
+		type.put(ints3[0]);
+
 		return new String(buffer, 0, ints[0]);
 	}
 
-    	public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type) {
-        	//length
-        	ints[0] = 0;
-        	//size
-        	ints2[0] = size.get(0);
-        	//type
-        	ints3[0] = ((IntBuffer)type).get(0);
+	public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type) {
+		GLES20.glGetActiveUniform(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
 
-        	GLES20.glGetActiveUniform(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
-        	return new String(buffer, 0, ints[0]);
-    	}
+		//size
+		size.put(ints2[0]);
+		//type
+		type.put(ints3[0]);
+
+		return new String(buffer, 0, ints[0]);
+	}
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
 		GLES20.glGetAttachedShaders (program, maxcount, (IntBuffer)count, shaders);

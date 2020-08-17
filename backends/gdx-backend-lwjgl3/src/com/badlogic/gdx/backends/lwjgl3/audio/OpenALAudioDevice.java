@@ -32,7 +32,7 @@ import static org.lwjgl.openal.AL10.*;
 public class OpenALAudioDevice implements AudioDevice {
 	static private final int bytesPerSample = 2;
 
-	private final OpenALAudio audio;
+	private final OpenALLwjgl3Audio audio;
 	private final int channels;
 	private IntBuffer buffers;
 	private int sourceID = -1;
@@ -45,7 +45,7 @@ public class OpenALAudioDevice implements AudioDevice {
 	private final int bufferCount;
 	private final ByteBuffer tempBuffer;
 
-	public OpenALAudioDevice (OpenALAudio audio, int sampleRate, boolean isMono, int bufferSize, int bufferCount) {
+	public OpenALAudioDevice (OpenALLwjgl3Audio audio, int sampleRate, boolean isMono, int bufferSize, int bufferCount) {
 		this.audio = audio;
 		channels = isMono ? 1 : 2;
 		this.bufferSize = bufferSize;

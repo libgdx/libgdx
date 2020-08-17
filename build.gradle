@@ -19,7 +19,7 @@ apply from: "gradle/dependencies.gradle"
 
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.9.11-SNAPSHOT'
+    version = '1.9.12-SNAPSHOT'
 
     buildscript {
         repositories {
@@ -49,7 +49,7 @@ configure(subprojects - project(":tests:gdx-tests-android") - project(":backends
 }
 
 ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName    
+    "ant-task-" + antTargetName
 }
 task fetchNatives(dependsOn: "ant-task-all"){
     doLast {

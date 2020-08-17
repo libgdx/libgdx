@@ -261,19 +261,40 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return false;
 	}
 
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
+	public boolean containsValue (float value, float epsilon) {
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != null && Math.abs(valueTable[i] - value) <= epsilon) return true;
+		return false;
+	}
+
 	public boolean containsKey (K key) {
 		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
-	@Null
-	public K findKey (float value) {
+	public @Null K findKey (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
+		}
+		return null;
+	}
+
+	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
+	 * every value, which may be an expensive operation. */
+	public @Null K findKey (float value, float epsilon) {
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--) {
+			K key = keyTable[i];
+			if (key != null && Math.abs(valueTable[i] - value) <= epsilon) return key;
 		}
 		return null;
 	}

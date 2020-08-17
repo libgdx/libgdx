@@ -29,33 +29,20 @@ abstract public class Pool<T> {
 
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool () {
-		this(16, Integer.MAX_VALUE, false);
+		this(16, Integer.MAX_VALUE);
 	}
 
 	/** Creates a pool with the specified initial capacity and no maximum. */
 	public Pool (int initialCapacity) {
-		this(initialCapacity, Integer.MAX_VALUE, false);
+		this(initialCapacity, Integer.MAX_VALUE);
 	}
 
-	/** @param max The maximum number of free objects to store in this pool. */
+	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created/pre-allocated. Use
+	 *           {@link #fill(int)} after instantiation if needed.
+	 * @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
-		this(initialCapacity, max, false);
-	}
-
-	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created unless preFill is true.
-	 * @param max The maximum number of free objects to store in this pool.
-	 * @param preFill Whether to pre-fill the pool with objects. The number of pre-filled objects will be equal to the initial
-	 *           capacity. */
-	public Pool (int initialCapacity, int max, boolean preFill) {
-		if (initialCapacity > max && preFill)
-			throw new IllegalArgumentException("max must be larger than initialCapacity if preFill is set to true.");
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
-		if (preFill) {
-			for (int i = 0; i < initialCapacity; i++)
-				freeObjects.add(newObject());
-			peak = freeObjects.size;
-		}
 	}
 
 	abstract protected T newObject ();
@@ -103,7 +90,7 @@ abstract public class Pool<T> {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
-		for (int i = 0; i < objects.size; i++) {
+		for (int i = 0, n = objects.size; i < n; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
 			if (freeObjects.size < max) freeObjects.add(object);

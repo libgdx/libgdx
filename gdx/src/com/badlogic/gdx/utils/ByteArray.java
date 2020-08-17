@@ -122,7 +122,7 @@ public class ByteArray {
 	public void addAll (byte[] array, int offset, int length) {
 		byte[] items = this.items;
 		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
@@ -169,6 +169,16 @@ public class ByteArray {
 			items[size] = items[index];
 		size++;
 		items[index] = value;
+	}
+
+	/** Inserts the specified number of items at the specified index. The new items will have values equal to the values at those
+	 * indices before the insertion. */
+	public void insertRange (int index, int count) {
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		int sizeNeeded = size + count;
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
+		System.arraycopy(items, index, items, index + count, size - index);
+		size = sizeNeeded;
 	}
 
 	public void swap (int first, int second) {
@@ -304,7 +314,7 @@ public class ByteArray {
 	public byte[] ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		return items;
 	}
 

@@ -498,10 +498,10 @@ public interface GL20 {
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers);
 
 	// deviates
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type);
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type);
 
 	// deviates
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type);
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type);
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders);
 

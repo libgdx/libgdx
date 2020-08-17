@@ -136,8 +136,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
-	@Null
-	public V put (long key, @Null V value) {
+	public @Null V put (long key, @Null V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
@@ -183,8 +182,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
-	@Null
-	public V get (long key) {
+	public @Null V get (long key) {
 		if (key == 0) return hasZeroValue ? zeroValue : null;
 		int i = locateKey(key);
 		return i >= 0 ? valueTable[i] : null;
@@ -196,8 +194,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
-	@Null
-	public V remove (long key) {
+	public @Null V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
 			hasZeroValue = false;
@@ -627,8 +624,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			return hasNext;
 		}
 
-		@Null
-		public V next () {
+		public @Null V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value;

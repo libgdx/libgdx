@@ -1568,6 +1568,43 @@ public class Matrix4 implements Serializable {
 		return rotate(quat.setFromCross(v1, v2));
 	}
 
+	/** Post-multiplies this matrix by a rotation toward a direction.
+	 * @param direction direction to rotate toward
+	 * @param up up vector
+	 * @return This matrix for chaining */
+	public Matrix4 rotateTowardDirection (final Vector3 direction, final Vector3 up) {
+		l_vez.set(direction).nor();
+		l_vex.set(direction).crs(up).nor();
+		l_vey.set(l_vex).crs(l_vez).nor();
+		tmp[M00] = l_vex.x;
+		tmp[M10] = l_vex.y;
+		tmp[M20] = l_vex.z;
+		tmp[M30] = 0f;
+		tmp[M01] = l_vey.x;
+		tmp[M11] = l_vey.y;
+		tmp[M21] = l_vey.z;
+		tmp[M31] = 0f;
+		tmp[M02] = -l_vez.x;
+		tmp[M12] = -l_vez.y;
+		tmp[M22] = -l_vez.z;
+		tmp[M32] = 0f;
+		tmp[M03] = 0f;
+		tmp[M13] = 0f;
+		tmp[M23] = 0f;
+		tmp[M33] = 1f;
+		mul(val, tmp);
+		return this;
+	}
+
+	/** Post-multiplies this matrix by a rotation toward a target.
+	 * @param target the target to rotate to
+	 * @param up the up vector
+	 * @return This matrix for chaining */
+	public Matrix4 rotateTowardTarget (final Vector3 target, final Vector3 up) {
+		tmpVec.set(target.x - val[M03], target.y - val[M13], target.z - val[M23]);
+		return rotateTowardDirection(tmpVec, up);
+	}
+
 	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
 	 * @param scaleX The scale in the x-axis.

@@ -271,8 +271,7 @@ public class Window extends Table {
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
@@ -340,12 +339,12 @@ public class Window extends Table {
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
 		/** Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 		public BitmapFont titleFont;
 		/** Optional. */
 		public Color titleFontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		@Null public Drawable stageBackground;
+		public @Null Drawable stageBackground;
 
 		public WindowStyle () {
 		}
