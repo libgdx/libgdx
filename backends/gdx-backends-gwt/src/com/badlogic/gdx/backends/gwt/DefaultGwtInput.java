@@ -45,9 +45,9 @@ public class DefaultGwtInput implements GwtInput {
 	IntSet pressedButtons = new IntSet();
 	int pressedKeyCount = 0;
 	IntSet pressedKeySet = new IntSet();
-	boolean[] pressedKeys = new boolean[256];
+	boolean[] pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
 	long currentEventTimeStamp;
