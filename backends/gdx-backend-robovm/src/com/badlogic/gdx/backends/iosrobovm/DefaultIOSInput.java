@@ -672,11 +672,25 @@ public class DefaultIOSInput implements IOSInput {
 				keyEvents.add(event);
 
 				if (!down) {
-					String characters = key.getCharacters();
-					// special keys return constants like "UIKeyInputF5", so we check for length 1
-					if (characters != null && characters.length() == 1) {
-						char character = characters.charAt(0);
+					char character;
 
+					switch (keyCode) {
+						case Keys.DEL:
+							character = 8;
+							break;
+						case Keys.FORWARD_DEL:
+							character = 127;
+							break;
+						case Keys.ENTER:
+							character = 13;
+							break;
+						default:
+							String characters = key.getCharacters();
+							// special keys return constants like "UIKeyInputF5", so we check for length 1
+							character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
+					}
+
+					if (character >= 0) {
 						event = keyEventPool.obtain();
 						event.timeStamp = timeStamp;
 						event.type = KeyEvent.KEY_TYPED;
