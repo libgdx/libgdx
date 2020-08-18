@@ -125,6 +125,7 @@ public class DefaultIOSInput implements IOSInput {
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
+	boolean softkeyboardActive = false;
 
 	private IntSet keysToCatch = new IntSet();
 	private boolean keyJustPressed = false;
@@ -412,26 +413,6 @@ public class DefaultIOSInput implements IOSInput {
 	// uses a hidden textfield to capture input
 	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
-	private class HiddenTextField extends UITextField {
-		public HiddenTextField (CGRect frame) {
-			super(frame);
-
-			setKeyboardType(UIKeyboardType.Default);
-			setReturnKeyType(UIReturnKeyType.Done);
-			setAutocapitalizationType(UITextAutocapitalizationType.None);
-			setAutocorrectionType(UITextAutocorrectionType.No);
-			setSpellCheckingType(UITextSpellCheckingType.No);
-			setHidden(true);
-		}
-
-		@Override
-		public void deleteBackward () {
-			inputProcessor.keyTyped((char)8);
-			super.deleteBackward();
-			Gdx.graphics.requestRendering();
-		}
-	}
-
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
@@ -478,6 +459,7 @@ public class DefaultIOSInput implements IOSInput {
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 		if (textfield == null) createDefaultTextField();
+		softkeyboardActive = visible;
 		if (visible) {
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
@@ -687,14 +669,17 @@ public class DefaultIOSInput implements IOSInput {
 
 				if (!down) {
 					String characters = key.getCharacters();
-					char character = characters != null && characters.length() > 0 ?
-							characters.charAt(0) : 0;
-					event = keyEventPool.obtain();
-					event.timeStamp = timeStamp;
-					event.type = KeyEvent.KEY_TYPED;
-					event.keyCode = keyCode;
-					event.keyChar = character;
-					keyEvents.add(event);
+					// special keys return constants like "UIKeyInputF5", so we check for length 1
+					if (characters != null && characters.length() == 1) {
+						char character = characters.charAt(0);
+
+						event = keyEventPool.obtain();
+						event.timeStamp = timeStamp;
+						event.type = KeyEvent.KEY_TYPED;
+						event.keyCode = keyCode;
+						event.keyChar = character;
+						keyEvents.add(event);
+					}
 
 					if (keys[keyCode]) {
 						keyCount--;
@@ -757,7 +742,9 @@ public class DefaultIOSInput implements IOSInput {
 						if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
 						break;
 					case KeyEvent.KEY_TYPED:
-						if (inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
+						// don't process key typed events if soft keyboard is active
+						// the soft keyboard hook already catches the changes
+						if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
 				}
 
 			}
