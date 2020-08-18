@@ -387,7 +387,7 @@ public class DefaultIOSInput implements IOSInput {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyCount > 0;
 		}
-		if (key < 0 || key >= Keys.MAX_KEYCODE) {
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
 			return false;
 		}
 		return keys[key];
@@ -398,7 +398,7 @@ public class DefaultIOSInput implements IOSInput {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key >= Keys.MAX_KEYCODE) {
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
 			return false;
 		}
 		return justPressedKeys[key];
