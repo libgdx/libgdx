@@ -305,7 +305,8 @@ public class ProgressBar extends Widget implements Disableable {
 		this.max = max;
 		if (value < min)
 			setValue(min);
-		else if (value > max) setValue(max);
+		else if (value > max) //
+			setValue(max);
 	}
 
 	public void setStepSize (float stepSize) {

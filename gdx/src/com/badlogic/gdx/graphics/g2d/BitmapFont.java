@@ -827,17 +827,17 @@ public class BitmapFont implements Disposable {
 		 *           square bracket.
 		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+			if (end == start) return;
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
-			Glyph missingGlyph = this.missingGlyph;
 			Array<Glyph> glyphs = run.glyphs;
-			FloatArray xAdvances = run.xAdvances;
 
 			// Guess at number of glyphs needed.
 			glyphs.ensureCapacity(end - start);
-			xAdvances.ensureCapacity(end - start + 1);
+			int i = run.xAdvances.size;
+			float[] xAdvances = run.xAdvances.setSize(i + end - start + 1);
 
-			while (start < end) {
+			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
@@ -849,18 +849,19 @@ public class BitmapFont implements Disposable {
 				glyphs.add(glyph);
 
 				if (lastGlyph == null) // First glyph on line, adjust the position so it isn't drawn left of 0.
-					xAdvances.add(glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft);
+					xAdvances[i] = glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft;
 				else
-					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+					xAdvances[i] = (lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX;
+				i++;
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
-			}
+			} while (start < end);
 			if (lastGlyph != null) {
 				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
-				xAdvances.add(lastGlyphWidth);
+				xAdvances[i] = lastGlyphWidth;
 			}
 		}
 
@@ -868,13 +869,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			char ch = (char)glyphs.get(i).id;
+			Object[] glyphsItems = glyphs.items;
+			char ch = (char)((Glyph)glyphsItems[i]).id;
 			if (isWhitespace(ch)) return i;
 			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				ch = (char)glyphs.get(i).id;
-				if (isBreakChar(ch)) return i + 1;
-				if (isWhitespace(ch)) return i + 1;
+				ch = (char)((Glyph)glyphsItems[i]).id;
+				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
 			return 0;
 		}
