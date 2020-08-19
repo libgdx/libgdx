@@ -4,6 +4,8 @@
 		<ant antfile="build-windows64.xml" target="clean"/>
 		<ant antfile="build-linux32.xml" target="clean"/>
 		<ant antfile="build-linux64.xml" target="clean"/>
+		<ant antfile="build-linuxarm32.xml" target="clean"/>
+		<ant antfile="build-linuxarm64.xml" target="clean"/>
 
 	</target>
 	
@@ -12,6 +14,8 @@
 		<ant antfile="build-windows64.xml"/>
 		<ant antfile="build-linux32.xml"/>
 		<ant antfile="build-linux64.xml"/>
+		<ant antfile="build-linuxarm32.xml"/>
+		<ant antfile="build-linuxarm64.xml"/>
 
 	</target>
 	
@@ -21,6 +25,8 @@
 			<fileset dir="../libs/windows64" includes="gdx-controllers-desktop64.dll"/>
 			<fileset dir="../libs/linux32" includes="libgdx-controllers-desktop.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-controllers-desktop64.so"/>
+			<fileset dir="../libs/linuxarm32" includes="libgdx-controllers-desktoparm.so"/>
+			<fileset dir="../libs/linuxarm64" includes="libgdx-controllers-desktoparm64.so"/>
 			<fileset dir="../libs/macosx64" includes="libgdx-controllers-desktop64.dylib"/>
 
 		</jar>
