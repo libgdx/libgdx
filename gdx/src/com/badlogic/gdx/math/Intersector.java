@@ -37,9 +37,16 @@ public final class Intersector {
 	private final static FloatArray floatArray = new FloatArray();
 	private final static FloatArray floatArray2 = new FloatArray();
 
-	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
+	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. A
 	 * check is performed that this is the case.
-	 * 
+	 *
+	 * The method requires a point that is checked and the 3 triangle's vectors (t1, t2, t3) that construct the triangle, relative
+	 * to the grid's origin with t1 next to the origin, where the vectors t2 and t3 are the baseline's intersections points.<p>
+	 * <b>Note:</b> In this case a triangle is only a triangle with the vertex t1 next to the grid's origin and it's baseline that
+	 * constructs the triangle's plane. If the vectors t1, t2 and t3 are pointing into the same positive direction and if you
+	 * apply the current to the point's coordinates, relative to the direction the triangle's vectors are pointing in, out of a
+	 * right angled perspective (orthogonal projection), the projection results in an <b>infinite</b> moving stream in a negative
+	 * direction made of multiple, but little different electrons.
 	 * @param point the point
 	 * @param t1 the first vertex of the triangle
 	 * @param t2 the second vertex of the triangle
