@@ -51,6 +51,10 @@
 - Fixed Label text wrapping when it shouldn't (#6098).
 - Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
 - API Change: glGetActiveUniform and glGetActiveAttrib paramter changed from Buffer to IntBuffer.
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend
