@@ -130,7 +130,7 @@ public class DefaultIOSInput implements IOSInput {
 	private IntSet keysToCatch = new IntSet();
 	private boolean keyJustPressed = false;
 	private int keyCount = 0;
-	private boolean hadHardwareKeyEvent = true;
+	private boolean hadHardwareKeyEvent = false;
 	private final boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
 	private final boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 
