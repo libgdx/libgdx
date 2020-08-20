@@ -149,13 +149,13 @@ inline int divideBy255(int d) {
 static
 inline int convert8To4(int b) {
     int c = b & 0xff;
-    return divideBy255(b * 15);
+    return divideBy255(c * 15);
 }
 
 static
 inline int convert8To5(int b) {
     int c = b & 0xff;
-    return divideBy255(b * 31);
+    return divideBy255(c * 31);
 }
 
 static
