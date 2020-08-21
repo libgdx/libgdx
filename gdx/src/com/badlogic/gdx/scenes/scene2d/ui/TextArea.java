@@ -229,19 +229,24 @@ public class TextArea extends TextField {
 				int start = Math.max(lineStart, minIndex);
 				int end = Math.min(lineEnd, maxIndex);
 
-				float fontLineOffset = 0;
+				float fontLineOffsetX = 0;
+				float fontLineOffsetWidth = 0;
 				// we can't use fontOffset as it is valid only for first glyph/line in the text
 				// we will grab first character in this line and calculate proper offset for this line
 				BitmapFont.Glyph lineFirst = fontData.getGlyph(displayText.charAt(lineStart));
 				if (lineFirst != null) {
-					// BitmapFontData.getGlyphs()#852
-					fontLineOffset = lineFirst.fixedWidth? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
+					// see BitmapFontData.getGlyphs()#852 for offset calculation
+					// if selection starts when line starts we want to offset width instead of moving the start as it looks better
+					if (start == lineStart) {
+						fontLineOffsetWidth = lineFirst.fixedWidth? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
+					} else {
+						fontLineOffsetX = lineFirst.fixedWidth? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
+					}
 				}
 				float selectionX = glyphPositions.get(start) - glyphPositions.get(lineStart);
 				float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
-				// we add the fontLineOffset to the width not to x so all line selections start at same x which looks better
-				selection.draw(batch, x + selectionX, y - lineHeight - offsetY, selectionWidth + fontLineOffset,
-					font.getLineHeight());
+				selection.draw(batch, x + selectionX + fontLineOffsetX, y - lineHeight - offsetY,
+					selectionWidth + fontLineOffsetWidth, font.getLineHeight());
 			}
 
 			offsetY += font.getLineHeight();
