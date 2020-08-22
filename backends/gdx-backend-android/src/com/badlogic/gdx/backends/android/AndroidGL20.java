@@ -25,7 +25,8 @@ import com.badlogic.gdx.graphics.GL20;
 import android.opengl.GLES20;
 
 public class AndroidGL20 implements GL20 {
-	private int[] ints = new int[1];
+	private int[] ints = new int[1], ints2 = new int[1], ints3 = new int[1];
+	private byte[] buffer = new byte[512];
 	
 	public void glActiveTexture (int texture) {
 		GLES20.glActiveTexture (texture);
@@ -287,12 +288,26 @@ public class AndroidGL20 implements GL20 {
 		return ints[0];
 	}
 
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		return GLES20.glGetActiveAttrib (program, index, size, (IntBuffer)type);
+	public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type) {
+		GLES20.glGetActiveAttrib(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
+
+		//size
+		size.put(ints2[0]);
+		//type
+		type.put(ints3[0]);
+
+		return new String(buffer, 0, ints[0]);
 	}
 
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		return GLES20.glGetActiveUniform (program, index, size, (IntBuffer)type);
+	public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type) {
+		GLES20.glGetActiveUniform(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
+
+		//size
+		size.put(ints2[0]);
+		//type
+		type.put(ints3[0]);
+
+		return new String(buffer, 0, ints[0]);
 	}
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {

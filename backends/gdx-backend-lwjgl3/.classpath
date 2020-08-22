@@ -11,29 +11,47 @@
 	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-windows-x86.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-windows-x86.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-windows-x86.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-windows-x86.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-windows-x86.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux-arm32.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux-arm64.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-macos.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry exported="true" kind="lib" path="libs/AppleJavaExtensions-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-windows-x86.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

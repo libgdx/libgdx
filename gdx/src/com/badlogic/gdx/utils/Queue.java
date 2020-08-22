@@ -60,7 +60,7 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
 	 * @param object can be null */
-	public void addLast (T object) {
+	public void addLast (@Null T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
@@ -78,7 +78,7 @@ public class Queue<T> implements Iterable<T> {
 	/** Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
 	 * @see #addLast(Object)
 	 * @param object can be null */
-	public void addFirst (T object) {
+	public void addFirst (@Null T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
@@ -112,7 +112,6 @@ public class Queue<T> implements Iterable<T> {
 		final int head = this.head;
 		final int tail = this.tail;
 
-		@SuppressWarnings("unchecked")
 		final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
 		if (head < tail) {
 			// Continuous
@@ -330,8 +329,8 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the queue. Remove is supported.
 	 * <p>
-	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-	 * {@link QueueIterator} constructor for nested or multithreaded iteration. */
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link QueueIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
 		if (Collections.allocateIterators) return new QueueIterator(this, true);
 		if (iterable == null) iterable = new QueueIterable(this);
@@ -353,6 +352,19 @@ public class Queue<T> implements Iterable<T> {
 			sb.append(", ").append(values[i]);
 		}
 		sb.append(']');
+		return sb.toString();
+	}
+
+	public String toString (String separator) {
+		if (size == 0) return "";
+		final T[] values = this.values;
+		final int head = this.head;
+		final int tail = this.tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append(values[head]);
+		for (int i = (head + 1) % values.length; i != tail; i = (i + 1) % values.length)
+			sb.append(separator).append(values[i]);
 		return sb.toString();
 	}
 

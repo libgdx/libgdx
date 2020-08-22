@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -101,15 +102,15 @@ public class Button extends Table implements Disableable {
 		});
 	}
 
-	public Button (Drawable up) {
+	public Button (@Null Drawable up) {
 		this(new ButtonStyle(up, null, null));
 	}
 
-	public Button (Drawable up, Drawable down) {
+	public Button (@Null Drawable up, @Null Drawable down) {
 		this(new ButtonStyle(up, down, null));
 	}
 
-	public Button (Drawable up, Drawable down, Drawable checked) {
+	public Button (@Null Drawable up, @Null Drawable down, @Null Drawable checked) {
 		this(new ButtonStyle(up, down, checked));
 	}
 
@@ -204,7 +205,7 @@ public class Button extends Table implements Disableable {
 	}
 
 	/** @return May be null. */
-	public ButtonGroup getButtonGroup () {
+	public @Null ButtonGroup getButtonGroup () {
 		return buttonGroup;
 	}
 
@@ -233,8 +234,7 @@ public class Button extends Table implements Disableable {
 			background = style.over;
 		} else if (focused && style.focused != null) {
 			background = style.focused;
-		} else if (style.up != null) //
-		{
+		} else if (style.up != null) {
 			background = style.up;
 		}
 		setBackground(background);
@@ -291,14 +291,14 @@ public class Button extends Table implements Disableable {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
+		public @Null Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (Drawable up, Drawable down, Drawable checked) {
+		public ButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked) {
 			this.up = up;
 			this.down = down;
 			this.checked = checked;

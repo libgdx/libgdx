@@ -1,17 +1,19 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonTest extends GdxTest {
 	Json json;
@@ -53,6 +55,12 @@ public class JsonTest extends GdxTest {
 		test.objectArray = new Array();
 		test.objectArray.add("meow");
 		test.objectArray.add(new Test1());
+		test.longMap = new LongMap<String>(4);
+		test.longMap.put(42L, "The Answer");
+		test.longMap.put(0x9E3779B97F4A7C15L, "Golden Ratio");
+		test.stringFloatMap = new ObjectFloatMap<String>(4);
+		test.stringFloatMap.put("point one", 0.1f);
+		test.stringFloatMap.put("point double oh seven", 0.007f);
 		test.someEnum = SomeEnum.b;
 		roundTrip(test);
 
@@ -204,6 +212,8 @@ public class JsonTest extends GdxTest {
 		public ObjectMap<String, Integer> map;
 		public Array<String> stringArray;
 		public Array objectArray;
+		public LongMap<String> longMap;
+		public ObjectFloatMap<String> stringFloatMap;
 		public SomeEnum someEnum;
 
 		public boolean equals (Object obj) {

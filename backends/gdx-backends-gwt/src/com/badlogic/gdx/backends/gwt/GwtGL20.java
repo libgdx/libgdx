@@ -119,7 +119,7 @@ public class GwtGL20 implements GL20 {
 		} else {
 			ensureCapacity(buffer);
 			for (int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
-				shortBuffer.set(j, buffer.get(i));
+				shortBuffer.set(j, (buffer.get(i) & 0xFFFF));
 			}
 			return shortBuffer.subarray(0, buffer.remaining());
 		}
@@ -546,18 +546,18 @@ public class GwtGL20 implements GL20 {
 
 
 	@Override
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
 		WebGLActiveInfo activeAttrib = gl.getActiveAttrib(programs.get(program), index);
 		size.put(activeAttrib.getSize());
-		((IntBuffer)type).put(activeAttrib.getType());
+		type.put(activeAttrib.getType());
 		return activeAttrib.getName();
 	}
 
 	@Override
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
 		WebGLActiveInfo activeUniform = gl.getActiveUniform(programs.get(program), index);
 		size.put(activeUniform.getSize());
-		((IntBuffer)type).put(activeUniform.getType());
+		type.put(activeUniform.getType());
 		return activeUniform.getName();
 	}
 

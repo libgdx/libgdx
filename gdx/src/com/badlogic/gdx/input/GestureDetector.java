@@ -272,7 +272,7 @@ public class GestureDetector extends InputAdapter {
 		return Math.abs(x - centerX) < tapRectangleWidth && Math.abs(y - centerY) < tapRectangleHeight;
 	}
 
-	/** The tap square will not longer be used for the current touch. */
+	/** The tap square will no longer be used for the current touch. */
 	public void invalidateTapSquare () {
 		inTapRectangle = false;
 	}

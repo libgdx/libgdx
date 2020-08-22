@@ -4,6 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
@@ -13,7 +14,7 @@ import java.util.Iterator;
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	private Actor actor;
+	private @Null Actor actor;
 	final OrderedSet<T> selected = new OrderedSet();
 	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
@@ -21,10 +22,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean multiple;
 	boolean required;
 	private boolean programmaticChangeEvents = true;
-	T lastSelected;
+	@Null T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
-	public void setActor (Actor actor) {
+	public void setActor (@Null Actor actor) {
 		this.actor = actor;
 	}
 
@@ -35,7 +36,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (isDisabled) return;
 		snapshot();
 		try {
-			if (((toggle && !required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)) {
+			if ((toggle || UIUtils.ctrl()) && selected.contains(item)) {
 				if (required && selected.size == 1) return;
 				selected.remove(item);
 				lastSelected = null;
@@ -81,7 +82,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Returns the first selected item, or null. */
-	public T first () {
+	public @Null T first () {
 		return selected.size == 0 ? null : selected.first();
 	}
 
@@ -228,13 +229,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** @param item May be null (returns false). */
-	public boolean contains (T item) {
+	public boolean contains (@Null T item) {
 		if (item == null) return false;
 		return selected.contains(item);
 	}
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
-	public T getLastSelected () {
+	public @Null T getLastSelected () {
 		if (lastSelected != null) {
 			return lastSelected;
 		} else if (selected.size > 0) {

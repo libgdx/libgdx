@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
@@ -138,9 +139,10 @@ public class NetJavaImpl {
 				60L, TimeUnit.SECONDS,
 				new SynchronousQueue<Runnable>(),
 				new ThreadFactory() {
+					AtomicInteger threadID = new AtomicInteger();
 					@Override
 					public Thread newThread(Runnable r) {
-						Thread thread = new Thread(r, "NetThread");
+						Thread thread = new Thread(r, "NetThread" + threadID.getAndIncrement());
 						thread.setDaemon(true);
 						return thread;
 					}

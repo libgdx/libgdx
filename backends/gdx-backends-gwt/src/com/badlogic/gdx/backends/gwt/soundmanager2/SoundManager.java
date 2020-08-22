@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.gwt.soundmanager2;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 public class SoundManager {
 	
 	public interface SoundManagerCallback {
@@ -75,6 +73,7 @@ public class SoundManager {
 
 	public static native void init (String moduleBaseURL, int flashVersion, boolean preferFlash, SoundManagerCallback callback) /*-{
 		$wnd.soundManager = new $wnd.SoundManager();
+		$wnd.soundManager.audioFormats.mp3.required = false;
 		$wnd.soundManager.setup({
 			url: moduleBaseURL,
 			flashVersion: flashVersion,

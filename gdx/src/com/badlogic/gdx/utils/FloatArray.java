@@ -142,9 +142,21 @@ public class FloatArray {
 		items[index] += value;
 	}
 
+	public void incr (float value) {
+		float[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, float value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (float value) {
+		float[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, float value) {
@@ -183,7 +195,7 @@ public class FloatArray {
 		return -1;
 	}
 
-	public int lastIndexOf (char value) {
+	public int lastIndexOf (float value) {
 		float[] items = this.items;
 		for (int i = size - 1; i >= 0; i--)
 			if (items[i] == value) return i;
@@ -216,18 +228,17 @@ public class FloatArray {
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
-		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		int n = size;
+		if (end >= n) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
-		float[] items = this.items;
-		int count = end - start + 1;
+		int count = end - start + 1, lastIndex = n - count;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(items, start + count, items, start, n - (start + count));
 		else {
-			int lastIndex = this.size - 1;
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+			int i = Math.max(lastIndex, end + 1);
+			System.arraycopy(items, i, items, start, n - i);
 		}
-		size -= count;
+		size = n - count;
 	}
 
 	/** Removes from this array all of elements contained in the specified array.
@@ -361,7 +372,7 @@ public class FloatArray {
 		float[] items = this.items;
 		int h = 1;
 		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + Float.floatToIntBits(items[i]);
+			h = h * 31 + NumberUtils.floatToRawIntBits(items[i]);
 		return h;
 	}
 

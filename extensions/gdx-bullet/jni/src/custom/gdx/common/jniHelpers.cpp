@@ -53,8 +53,8 @@ jobject GdxPool::temp(JNIEnv * const &e) {
 GdxPooledObject::GdxPooledObject(JNIEnv * const &e, GdxPool * const &pool, const bool &autoFree)
 	: pool(pool), autoFree(autoFree), obj(pool->obtain(e)) {
 }
-GdxPooledObject::GdxPooledObject(JNIEnv * const &e, GdxPool &pool, const bool &autoFree)
-	: pool(&pool), autoFree(autoFree), obj(pool.obtain(e)) {
+GdxPooledObject::GdxPooledObject(JNIEnv * const &e, GdxPool * &pool, const bool &autoFree)
+	: pool(pool), autoFree(autoFree), obj(pool->obtain(e)) {
 }
 GdxPooledObject::~GdxPooledObject() {
 	if (autoFree)

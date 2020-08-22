@@ -153,6 +153,26 @@ public interface Graphics {
 	/** @return the height of the framebuffer in physical pixels */
 	public int getBackBufferHeight ();
 
+	/**
+	 * @return the inset from the left which avoids display cutouts in pixels
+	 */
+	int getSafeInsetLeft();
+
+	/**
+	 * @return the inset from the top which avoids display cutouts in pixels
+	 */
+	int getSafeInsetTop();
+
+	/**
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
+	 */
+	int getSafeInsetBottom();
+
+	/**
+	 * @return the inset from the right which avoids display cutouts in pixels
+	 */
+	int getSafeInsetRight();
+
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
 	 * the first frame is 0; the id of subsequent frames is guaranteed to take increasing values for 2<sup>63</sup>-1 rendering
