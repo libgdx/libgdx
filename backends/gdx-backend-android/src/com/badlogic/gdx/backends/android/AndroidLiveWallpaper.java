@@ -16,36 +16,17 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.ApplicationLogger;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.*;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
@@ -86,10 +67,10 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
 		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		input = createInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
-		audio = new AndroidAudio(this.getService(), config);
+		audio = createAudio(this.getService(), config);
 
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
@@ -363,6 +344,16 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	@Override
 	public Handler getHandler () {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidAudio(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidInput(this, this.getService(), graphics.view, config);
 	}
 
 	@Override

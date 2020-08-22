@@ -74,10 +74,17 @@ public class ArraySelection<T> extends Selection<T> {
 			clear();
 			return;
 		}
+		boolean changed = false;
 		for (Iterator<T> iter = items().iterator(); iter.hasNext();) {
 			T selected = iter.next();
-			if (!array.contains(selected, false)) iter.remove();
+			if (!array.contains(selected, false)) {
+				iter.remove();
+				changed = true;
+			}
 		}
-		if (required && selected.size == 0) set(array.first());
+		if (required && selected.size == 0)
+			set(array.first());
+		else if (changed) //
+			changed();
 	}
 }

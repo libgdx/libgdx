@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.utils.Null;
 
 /** Drawable for a {@link NinePatch}.
  * <p>
@@ -58,12 +59,14 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
 	 * the patch's padding. */
 	public void setPatch (NinePatch patch) {
 		this.patch = patch;
-		setMinWidth(patch.getTotalWidth());
-		setMinHeight(patch.getTotalHeight());
-		setTopHeight(patch.getPadTop());
-		setRightWidth(patch.getPadRight());
-		setBottomHeight(patch.getPadBottom());
-		setLeftWidth(patch.getPadLeft());
+		if (patch != null) {
+			setMinWidth(patch.getTotalWidth());
+			setMinHeight(patch.getTotalHeight());
+			setTopHeight(patch.getPadTop());
+			setRightWidth(patch.getPadRight());
+			setBottomHeight(patch.getPadBottom());
+			setLeftWidth(patch.getPadLeft());
+		}
 	}
 
 	public NinePatch getPatch () {

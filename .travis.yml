@@ -8,6 +8,7 @@ branches:
 matrix:
   include:
     - name: "Ant Mac IOS Build"
+      if: type != pull_request
       language: java
       os: osx
       before_install:
@@ -27,9 +28,11 @@ matrix:
           - 'android-sdk-license-.+'
       before_install:
         - yes | sdkmanager "platforms;android-27"
-      script:
+      install:
         - ./gradlew fetchNatives
+      script:
         - ./gradlew test
+        - ./gradlew tests:gdx-tests-gwt:compileGwt
       before_cache:
         - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
         - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

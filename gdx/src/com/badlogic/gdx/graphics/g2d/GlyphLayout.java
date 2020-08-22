@@ -181,6 +181,7 @@ public class GlyphLayout implements Poolable {
 							// Glyph fits.
 							x += xAdvances[i];
 							run.width += xAdvances[i];
+							width = Math.max(width, x + glyphWidth);
 							continue;
 						}
 

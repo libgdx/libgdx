@@ -18,13 +18,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Null;
 
 /** Sets the actor's color (or a specified color), from the current to the new color. Note this action transitions from the color
  * at the time the action starts to the specified color.
  * @author Nathan Sweet */
 public class ColorAction extends TemporalAction {
 	private float startR, startG, startB, startA;
-	private Color color;
+	private @Null Color color;
 	private final Color end = new Color();
 
 	protected void begin () {
@@ -54,13 +55,13 @@ public class ColorAction extends TemporalAction {
 		color = null;
 	}
 
-	public Color getColor () {
+	public @Null Color getColor () {
 		return color;
 	}
 
 	/** Sets the color to modify. If null (the default), the {@link #getActor() actor's} {@link Actor#getColor() color} will be
 	 * used. */
-	public void setColor (Color color) {
+	public void setColor (@Null Color color) {
 		this.color = color;
 	}
 

@@ -32,8 +32,7 @@
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-				<exclude name="android/**"/>
-		<exclude name="iosgl/**"/>
+				<exclude name="iosgl/**"/>
 
 	</fileset>
 

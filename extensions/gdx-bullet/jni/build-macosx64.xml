@@ -16,7 +16,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -28,7 +28,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -39,7 +39,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="linker-opts" value="-shared -arch x86_64 -mmacosx-version-min=10.5"/>
+	<property name="linker-opts" value="-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++"/>
 	<property name="libraries" value=""/>
 
 	<!-- define stripper -->

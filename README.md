@@ -1,8 +1,10 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
 [![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) (Jenkins)
-
 [![Travis build status](https://travis-ci.org/libgdx/libgdx.svg?branch=master)](https://travis-ci.org/libgdx/libgdx) (Travis)
+
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)
 
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
@@ -63,7 +65,7 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 
 <table>
 <tr>
-<td style="text-align: center;"><a href="http://bit.ly/robovmgdx"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
+<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
 <td style="text-align: center;"><a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a></td>
 </tr>
 

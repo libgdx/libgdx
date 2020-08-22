@@ -82,6 +82,16 @@ public class MoveToAction extends TemporalAction {
 		endY = y;
 	}
 
+	/** Gets the starting X value, set in {@link #begin()}. */
+	public float getStartX () {
+		return startX;
+	}
+
+	/** Gets the starting Y value, set in {@link #begin()}. */
+	public float getStartY () {
+		return startY;
+	}
+
 	public int getAlignment () {
 		return alignment;
 	}

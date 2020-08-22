@@ -153,16 +153,10 @@ public class DelaunayTriangulator {
 					completeArray[completeIndex] = true;
 					break;
 				case INSIDE:
-					edges.add(p1);
-					edges.add(p2);
-					edges.add(p2);
-					edges.add(p3);
-					edges.add(p3);
-					edges.add(p1);
+					edges.add(p1, p2, p2, p3);
+					edges.add(p3, p1);
 
-					triangles.removeIndex(triangleIndex);
-					triangles.removeIndex(triangleIndex - 1);
-					triangles.removeIndex(triangleIndex - 2);
+					triangles.removeRange(triangleIndex - 2, triangleIndex);
 					complete.removeIndex(completeIndex);
 					break;
 				}
