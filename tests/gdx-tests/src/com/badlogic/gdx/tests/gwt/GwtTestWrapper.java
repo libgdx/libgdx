@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
+import com.badlogic.gdx.tests.BigMeshTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontMetricsTest;
@@ -85,6 +86,7 @@ import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapPackerTest;
+import com.badlogic.gdx.tests.PreferencesTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.ReflectionCorrectnessTest;
 import com.badlogic.gdx.tests.ReflectionTest;
@@ -101,6 +103,8 @@ import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TableTest;
+import com.badlogic.gdx.tests.TextAreaTest;
+import com.badlogic.gdx.tests.TextAreaTest2;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
@@ -359,7 +363,7 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public boolean isButtonJustPressed (int button) {
-			return false;
+			return input.isButtonJustPressed(button);
 		}
 
 		@Override
@@ -520,6 +524,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new AtlasIssueTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new BigMeshTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
@@ -723,6 +731,10 @@ public class GwtTestWrapper extends GdxTest {
 		// new Instancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't work
 		new Instancer() {
 			public GdxTest instance () {
+				return new PreferencesTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
 				return new ProjectiveTextureTest();
 			}
 		}, new Instancer() {
@@ -839,5 +851,15 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new GWTLossyPremultipliedAlphaTest();
 			}
-		}};
+		},
+		new Instancer() {
+			public GdxTest instance () {
+				return new TextAreaTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TextAreaTest2();
+			}
+		} // these may have issues with tab getting intercepted by the browser
+	};
 }

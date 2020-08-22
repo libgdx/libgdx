@@ -207,13 +207,11 @@ public class Model implements Disposable {
 
 				if (meshPart == null || meshMaterial == null) throw new GdxRuntimeException("Invalid node: " + node.id);
 
-				if (meshPart != null && meshMaterial != null) {
-					NodePart nodePart = new NodePart();
-					nodePart.meshPart = meshPart;
-					nodePart.material = meshMaterial;
-					node.parts.add(nodePart);
-					if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
-				}
+				NodePart nodePart = new NodePart();
+				nodePart.meshPart = meshPart;
+				nodePart.material = meshMaterial;
+				node.parts.add(nodePart);
+				if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
 			}
 		}
 

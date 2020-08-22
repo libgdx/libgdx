@@ -28,7 +28,7 @@ public class Wav {
 	static public class Music extends OpenALMusic {
 		private WavInputStream input;
 
-		public Music (OpenALAudio audio, FileHandle file) {
+		public Music (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio, file);
 			input = new WavInputStream(file);
 			if (audio.noDevice) return;
@@ -54,7 +54,7 @@ public class Wav {
 	}
 
 	static public class Sound extends OpenALSound {
-		public Sound (OpenALAudio audio, FileHandle file) {
+		public Sound (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
 

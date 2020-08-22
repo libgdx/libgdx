@@ -16,14 +16,14 @@
 
 package com.badlogic.gdx.math;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+
+import java.util.Arrays;
+import java.util.List;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -241,6 +241,11 @@ public final class Intersector {
 		return false;
 	}
 
+    static Vector2 v2a = new Vector2();
+    static Vector2 v2b = new Vector2();
+    static Vector2 v2c = new Vector2();
+    static Vector2 v2d = new Vector2();
+
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
 		float normalLength = (float)Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY));
@@ -249,12 +254,12 @@ public final class Intersector {
 
 	/** Returns the distance between the given segment and point. */
 	public static float distanceSegmentPoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
-		return nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY, v2tmp).dst(pointX, pointY);
+		return nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY, v2a).dst(pointX, pointY);
 	}
 
 	/** Returns the distance between the given segment and point. */
 	public static float distanceSegmentPoint (Vector2 start, Vector2 end, Vector2 point) {
-		return nearestSegmentPoint(start, end, point, v2tmp).dst(point);
+		return nearestSegmentPoint(start, end, point, v2a).dst(point);
 	}
 
 	/** Returns a point on the segment nearest to the specified point. */
@@ -306,30 +311,43 @@ public final class Intersector {
 		return x * x + y * y <= squareRadius;
 	}
 
-	/** Checks whether the line segment and the circle intersect and returns by how much and in what direction the line has to move
-	 * away from the circle to not intersect.
-	 * 
-	 * @param start The line segment starting point
-	 * @param end The line segment end point
-	 * @param point The center of the circle
-	 * @param radius The radius of the circle
-	 * @param displacement The displacement vector set by the method having unit length
-	 * @return The displacement or Float.POSITIVE_INFINITY if no intersection is present */
-	public static float intersectSegmentCircleDisplace (Vector2 start, Vector2 end, Vector2 point, float radius,
-		Vector2 displacement) {
-		float u = (point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y);
-		float d = start.dst(end);
-		u /= d * d;
-		if (u < 0 || u > 1) return Float.POSITIVE_INFINITY;
-		tmp.set(end.x, end.y, 0).sub(start.x, start.y, 0);
-		tmp2.set(start.x, start.y, 0).add(tmp.scl(u));
-		d = tmp2.dst(point.x, point.y, 0);
-		if (d < radius) {
-			displacement.set(point).sub(tmp2.x, tmp2.y).nor();
-			return d;
-		} else
-			return Float.POSITIVE_INFINITY;
-	}
+    /** Returns whether the given line segment intersects the given circle.
+     * @param start The start point of the line segment
+     * @param end The end point of the line segment
+     * @param circle The circle
+     * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
+     * @return Whether the line segment and the circle intersect */
+    public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Circle circle, MinimumTranslationVector mtv) {
+        v2a.set(end).sub(start);
+        v2b.set(circle.x - start.x, circle.y - start.y);
+        float len = v2a.len();
+        float u = v2b.dot(v2a.nor());
+        if (u <= 0) {
+            v2c.set(start);
+        } else if (u >= len) {
+            v2c.set(end);
+        } else {
+            v2d.set(v2a.scl(u)); // remember v2a is already normalized
+            v2c.set(v2d).add(start);
+        }
+
+        v2a.set(v2c.x - circle.x, v2c.y - circle.y);
+
+        if (mtv != null) {
+			// Handle special case of segment containing circle center
+			if (v2a.equals(Vector2.Zero)) {
+				v2d.set(end.y - start.y, start.x - end.x);
+				mtv.normal.set(v2d).nor();
+				mtv.depth = circle.radius;
+			} else {
+				mtv.normal.set(v2a).nor();
+				mtv.depth = circle.radius - v2a.len();
+			}
+        }
+
+        return v2a.len2() <= circle.radius * circle.radius;
+    }
+
 
 	/** Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point. You can get the
 	 * intersection point by: Vector2 point(direction1).scl(scalar).add(start1); For more information, check:
@@ -640,7 +658,6 @@ public final class Intersector {
 	static Vector3 tmp1 = new Vector3();
 	static Vector3 tmp2 = new Vector3();
 	static Vector3 tmp3 = new Vector3();
-	static Vector2 v2tmp = new Vector2();
 
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
@@ -751,6 +768,38 @@ public final class Intersector {
 			if (intersection != null) intersection.set(best);
 			return true;
 		}
+	}
+
+	/**
+	 * Quick check whether the given {@link BoundingBox} and {@link Plane} intersect.
+	 *
+	 * @param box The bounding box
+	 * @param plane The plane
+	 * @return Whether the bounding box and the plane intersect. */
+	public static boolean intersectBoundsPlaneFast (BoundingBox box, Plane plane) {
+		return intersectBoundsPlaneFast(box.getCenter(tmp1), box.getDimensions(tmp2).scl(0.5f), plane.normal, plane.d);
+	}
+
+	/**
+	 * Quick check whether the given bounding box and a plane intersect.
+	 * Code adapted from Christer Ericson's Real Time Collision
+	 *
+	 * @param center The center of the bounding box
+	 * @param halfDimensions Half of the dimensions (width, height and depth) of the bounding box
+	 * @param normal The normal of the plane
+	 * @param distance The distance of the plane
+	 * @return Whether the bounding box and the plane intersect. */
+	public static boolean intersectBoundsPlaneFast (Vector3 center, Vector3 halfDimensions, Vector3 normal, float distance) {
+		// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
+		float radius = halfDimensions.x * Math.abs(normal.x) +
+			halfDimensions.y * Math.abs(normal.y) +
+			halfDimensions.z * Math.abs(normal.z);
+
+		// Compute distance of box center from plane
+		float s = normal.dot(center) - distance;
+
+		// Intersection occurs when plane distance falls within [-r,+r] interval
+		return Math.abs(s) <= radius;
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.

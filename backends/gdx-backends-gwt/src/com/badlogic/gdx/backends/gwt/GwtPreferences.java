@@ -30,24 +30,26 @@ public class GwtPreferences implements Preferences {
 	GwtPreferences (String prefix) {
 		this.prefix = prefix + ":";
 		int prefixLength = this.prefix.length();
-		try {
-			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
-				String key = GwtFiles.LocalStorage.key(i);
-				if (key.startsWith(prefix)) {
-					String value = GwtFiles.LocalStorage.getItem(key);
-					values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
+		if (GwtFiles.LocalStorage != null) {
+			try {
+				for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+					String key = GwtFiles.LocalStorage.key(i);
+					if (key.startsWith(prefix)) {
+						String value = GwtFiles.LocalStorage.getItem(key);
+						values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
+					}
 				}
+			} catch (Exception e) {
+				values.clear();
 			}
-		} catch (Exception e) {
-			values.clear();
 		}
 	}
 
 	private Object toObject (String key, String value) {
-		if (key.endsWith("b")) return new Boolean(Boolean.parseBoolean(value));
-		if (key.endsWith("i")) return new Integer(Integer.parseInt(value));
-		if (key.endsWith("l")) return new Long(Long.parseLong(value));
-		if (key.endsWith("f")) return new Float(Float.parseFloat(value));
+		if (key.endsWith("b")) return Boolean.parseBoolean(value);
+		if (key.endsWith("i")) return Integer.parseInt(value);
+		if (key.endsWith("l")) return Long.parseLong(value);
+		if (key.endsWith("f")) return Float.parseFloat(value);
 		return value;
 	}
 
@@ -61,22 +63,24 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		try {
-			// remove all old values
-			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
-				String key = GwtFiles.LocalStorage.key(i);
-				if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
-			}
+		if (GwtFiles.LocalStorage != null) {
+			try {
+				// remove all old values
+				for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+					String key = GwtFiles.LocalStorage.key(i);
+					if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
+				}
 
-			// push new values to LocalStorage
-			for (String key : values.keys()) {
-				String storageKey = toStorageKey(key, values.get(key));
-				String storageValue = "" + values.get(key).toString();
-				GwtFiles.LocalStorage.setItem(storageKey, storageValue);
-			}
+				// push new values to LocalStorage
+				for (String key : values.keys()) {
+					String storageKey = toStorageKey(key, values.get(key));
+					String storageValue = "" + values.get(key).toString();
+					GwtFiles.LocalStorage.setItem(storageKey, storageValue);
+				}
 
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't flush preferences");
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't flush preferences", e);
+			}
 		}
 	}
 

@@ -71,10 +71,9 @@ public class SimpleVertexShader extends GdxTest {
 
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_mvpMatrix", combined);
 		mesh.render(shader, GL20.GL_TRIANGLES);
-		shader.end();
 
 		Gdx.app.log("angle", "" + angle);
 	}

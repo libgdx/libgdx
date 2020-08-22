@@ -473,8 +473,9 @@ public class TextureAtlas implements Disposable {
 		 * @see TextureAtlas#findRegions(String) */
 		public int index;
 
-		/** The name of the original image file, up to the first underscore. Underscores denote special instructions to the texture
-		 * packer. */
+		/** The name of the original image file, without the file's extension.<br>
+		 * If the name ends with an underscore followed by only numbers, that part is excluded: 
+		 * underscores denote special instructions to the texture packer. */
 		public String name;
 
 		/** The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing. */
@@ -531,6 +532,7 @@ public class TextureAtlas implements Disposable {
 			rotate = region.rotate;
 			degrees = region.degrees;
 			splits = region.splits;
+			pads = region.pads;
 		}
 
 		public AtlasRegion (TextureRegion region) {

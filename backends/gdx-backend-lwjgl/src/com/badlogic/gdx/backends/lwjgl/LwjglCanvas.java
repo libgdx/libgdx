@@ -21,10 +21,10 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
@@ -35,9 +35,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import java.awt.Canvas;
@@ -51,11 +52,11 @@ import java.awt.geom.AffineTransform;
  * application. All OpenGL calls are done on the EDT. Note that you may need to call {@link #stop()} or a Swing application may
  * deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
-public class LwjglCanvas implements Application {
+public class LwjglCanvas implements LwjglApplicationBase {
 	static boolean isWindows = System.getProperty("os.name").contains("Windows");
 
 	LwjglGraphics graphics;
-	OpenALAudio audio;
+	LwjglAudio audio;
 	LwjglFiles files;
 	LwjglInput input;
 	LwjglNet net;
@@ -143,9 +144,9 @@ public class LwjglCanvas implements Application {
 			}
 		};
 		graphics.setVSync(config.vSyncEnabled);
-		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio();
+		if (!LwjglApplicationConfiguration.disableAudio) audio = createAudio(config);
 		files = new LwjglFiles();
-		input = new LwjglInput();
+		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
 
@@ -216,6 +217,11 @@ public class LwjglCanvas implements Application {
 
 			start();
 		} catch (Exception ex) {
+			try {
+				Display.destroy();
+				if (audio != null) audio.dispose();
+			} catch (Throwable ignored) {
+			}
 			stopped();
 			exception(ex);
 			return;
@@ -284,17 +290,26 @@ public class LwjglCanvas implements Application {
 		if (executedRunnables.size == 0) return false;
 		do {
 			Runnable runnable = (Runnable)executedRunnables.pop();
-			Throwable stacktrace = (Throwable)executedRunnables.pop();
+			Throwable caller = (Throwable)executedRunnables.pop();
 			try {
 				runnable.run();
 			} catch (Throwable ex) {
-				if (stacktrace == null) throw new RuntimeException(ex);
-				StringWriter buffer = new StringWriter(1024);
-				stacktrace.printStackTrace(new PrintWriter(buffer));
-				throw new RuntimeException("Posted: " + buffer, ex);
+				postedException(ex, caller);
 			}
 		} while (executedRunnables.size > 0);
 		return true;
+	}
+
+	protected void postedException (Throwable ex, @Null Throwable caller) {
+		if (caller == null) throw new RuntimeException(ex);
+		StringWriter buffer = new StringWriter(1024);
+		caller.printStackTrace(new PrintWriter(buffer));
+		throw new RuntimeException("Posted: " + buffer, ex);
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		stop();
 	}
 
 	protected int getFrameRate () {
@@ -303,11 +318,6 @@ public class LwjglCanvas implements Application {
 		if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
 		if (frameRate == 0) frameRate = 30;
 		return frameRate;
-	}
-
-	protected void exception (Throwable ex) {
-		ex.printStackTrace();
-		stop();
 	}
 
 	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
@@ -320,6 +330,10 @@ public class LwjglCanvas implements Application {
 
 	/** Called when the game loop has stopped. */
 	protected void stopped () {
+	}
+	
+	/** Called after dispose is complete. */
+	protected void disposed () {
 	}
 
 	public void stop () {
@@ -341,6 +355,7 @@ public class LwjglCanvas implements Application {
 					if (audio != null) audio.dispose();
 				} catch (Throwable ignored) {
 				}
+				disposed();
 			}
 		});
 	}
@@ -466,5 +481,15 @@ public class LwjglCanvas implements Application {
 	 * runnable later throws an exception. Default is false. */
 	public void setPostedRunnableStacktraces (boolean postedRunnableStacktraces) {
 		this.postedRunnableStacktraces = postedRunnableStacktraces;
+	}
+
+	@Override
+	public LwjglAudio createAudio (LwjglApplicationConfiguration config) {
+		return new OpenALLwjglAudio();
+	}
+
+	@Override
+	public LwjglInput createInput (LwjglApplicationConfiguration config) {
+		return new DefaultLwjglInput();
 	}
 }

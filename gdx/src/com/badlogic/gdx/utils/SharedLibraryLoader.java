@@ -180,7 +180,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
 	 * @return null if a writable path could not be found. */
-	private File getExtractedFile (String dirName, String fileName) {
+	private @Null File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
 		File idealFile = new File(
 			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
@@ -322,7 +322,7 @@ public class SharedLibraryLoader {
 	}
 
 	/** @return null if the file was extracted and loaded. */
-	private Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+	private @Null Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
 		try {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;

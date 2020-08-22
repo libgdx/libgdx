@@ -108,6 +108,11 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		return connection;
 	}
 
+	@Override
+	public void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+	}
+
 	private void init (boolean translucent, int depth, int stencil) {
 
 		/*

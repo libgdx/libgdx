@@ -46,7 +46,9 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	public String name;
 	/** May be null. */
-	public JsonValue child, next, prev, parent;
+	public JsonValue child, parent;
+	/** May be null. When changing this field the parent {@link #size()} may need to be changed. */
+	public JsonValue next, prev;
 	public int size;
 
 	public JsonValue (ValueType type) {
@@ -204,7 +206,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		case doubleValue:
 			return (float)doubleValue;
 		case longValue:
-			return (float)longValue;
+			return longValue;
 		case booleanValue:
 			return longValue != 0 ? 1 : 0;
 		}
@@ -220,7 +222,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		case doubleValue:
 			return doubleValue;
 		case longValue:
-			return (double)longValue;
+			return longValue;
 		case booleanValue:
 			return longValue != 0 ? 1 : 0;
 		}
@@ -371,7 +373,7 @@ public class JsonValue implements Iterable<JsonValue> {
 				v = (float)value.doubleValue;
 				break;
 			case longValue:
-				v = (float)value.longValue;
+				v = value.longValue;
 				break;
 			case booleanValue:
 				v = value.longValue != 0 ? 1 : 0;
@@ -400,7 +402,7 @@ public class JsonValue implements Iterable<JsonValue> {
 				v = value.doubleValue;
 				break;
 			case longValue:
-				v = (double)value.longValue;
+				v = value.longValue;
 				break;
 			case booleanValue:
 				v = value.longValue != 0 ? 1 : 0;
@@ -886,6 +888,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Adds the specified value after the last child. */
 	public void addChild (JsonValue value) {
 		value.parent = this;
+		size++;
 		JsonValue current = child;
 		if (current == null)
 			child = value;
@@ -893,6 +896,7 @@ public class JsonValue implements Iterable<JsonValue> {
 			while (true) {
 				if (current.next == null) {
 					current.next = value;
+					value.prev = current;
 					return;
 				}
 				current = current.next;
@@ -906,6 +910,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		return next;
 	}
 
+	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	 * @param next May be null. */
 	public void setNext (JsonValue next) {
 		this.next = next;
 	}
@@ -916,6 +922,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		return prev;
 	}
 
+	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	 * @param prev May be null. */
 	public void setPrev (JsonValue prev) {
 		this.prev = prev;
 	}
@@ -937,7 +945,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** @param stringValue May be null if the string representation is the string value of the long (eg, no leading zeros). */
 	public void set (long value, String stringValue) {
 		longValue = value;
-		doubleValue = (double)value;
+		doubleValue = value;
 		this.stringValue = stringValue;
 		type = ValueType.longValue;
 	}
@@ -1004,9 +1012,37 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new SerializationException("Unknown object type: " + object);
 	}
 
+	public JsonIterator iterator () {
+		return new JsonIterator();
+	}
+
 	public String toString () {
 		if (isValue()) return name == null ? asString() : name + ": " + asString();
 		return (name == null ? "" : name + ": ") + prettyPrint(OutputType.minimal, 0);
+	}
+
+	/** Returns a human readable string representing the path from the root of the JSON object graph to this value. */
+	public String trace () {
+		if (parent == null) {
+			if (type == ValueType.array) return "[]";
+			if (type == ValueType.object) return "{}";
+			return "";
+		}
+		String trace;
+		if (parent.type == ValueType.array) {
+			trace = "[]";
+			int i = 0;
+			for (JsonValue child = parent.child; child != null; child = child.next, i++) {
+				if (child == this) {
+					trace = "[" + i + "]";
+					break;
+				}
+			}
+		} else if (name.indexOf('.') != -1)
+			trace = ".\"" + name.replace("\"", "\\\"") + "\"";
+		else
+			trace = '.' + name;
+		return parent.trace() + trace;
 	}
 
 	public String prettyPrint (OutputType outputType, int singleLineColumns) {
@@ -1176,14 +1212,6 @@ public class JsonValue implements Iterable<JsonValue> {
 			buffer.append('\t');
 	}
 
-	public enum ValueType {
-		object, array, stringValue, doubleValue, longValue, booleanValue, nullValue
-	}
-
-	public JsonIterator iterator () {
-		return new JsonIterator();
-	}
-
 	public class JsonIterator implements Iterator<JsonValue>, Iterable<JsonValue> {
 		JsonValue entry = child;
 		JsonValue current;
@@ -1215,28 +1243,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		}
 	}
 
-	/** Returns a human readable string representing the path from the root of the JSON object graph to this value. */
-	public String trace () {
-		if (parent == null) {
-			if (type == ValueType.array) return "[]";
-			if (type == ValueType.object) return "{}";
-			return "";
-		}
-		String trace;
-		if (parent.type == ValueType.array) {
-			trace = "[]";
-			int i = 0;
-			for (JsonValue child = parent.child; child != null; child = child.next, i++) {
-				if (child == this) {
-					trace = "[" + i + "]";
-					break;
-				}
-			}
-		} else if (name.indexOf('.') != -1)
-			trace = ".\"" + name.replace("\"", "\\\"") + "\"";
-		else
-			trace = '.' + name;
-		return parent.trace() + trace;
+	public enum ValueType {
+		object, array, stringValue, doubleValue, longValue, booleanValue, nullValue
 	}
 
 	static public class PrettyPrintSettings {

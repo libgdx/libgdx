@@ -25,7 +25,6 @@ import org.lwjgl.openal.AL11;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -41,7 +40,7 @@ public abstract class OpenALMusic implements Music {
 
 	private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
 
-	private final OpenALAudio audio;
+	private final OpenALLwjglAudio audio;
 	private IntBuffer buffers;
 	private int sourceID = -1;
 	private int format, sampleRate;
@@ -51,11 +50,10 @@ public abstract class OpenALMusic implements Music {
 	private float renderedSeconds, maxSecondsPerBuffer;
 
 	protected final FileHandle file;
-	protected int bufferOverhead = 0;
 
 	private OnCompletionListener onCompletionListener;
 
-	public OpenALMusic (OpenALAudio audio, FileHandle file) {
+	public OpenALMusic (OpenALLwjglAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
 		this.onCompletionListener = null;
@@ -64,7 +62,7 @@ public abstract class OpenALMusic implements Music {
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
-		maxSecondsPerBuffer = (float)(bufferSize - bufferOverhead) / (bytesPerSample * channels * sampleRate);
+		maxSecondsPerBuffer = (float)bufferSize / (bytesPerSample * channels * sampleRate);
 	}
 
 	public void play () {

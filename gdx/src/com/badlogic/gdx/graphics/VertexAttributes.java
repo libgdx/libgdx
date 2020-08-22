@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
@@ -187,7 +188,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		return 0;
 	}
 
-	/** @see Array#allocateIterators */
+	/** @see Collections#allocateIterators */
 	@Override
 	public Iterator<VertexAttribute> iterator () {
 		if (iterable == null) iterable = new ReadonlyIterable<VertexAttribute>(attributes);
@@ -241,7 +242,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 
 		@Override
 		public Iterator<T> iterator () {
-			if (Array.allocateIterators) return new ReadonlyIterator(array);
+			if (Collections.allocateIterators) return new ReadonlyIterator(array);
 			if (iterator1 == null) {
 				iterator1 = new ReadonlyIterator(array);
 				iterator2 = new ReadonlyIterator(array);

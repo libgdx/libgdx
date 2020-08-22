@@ -151,7 +151,7 @@ public class ShaderTest extends GdxTest {
 
 		@Override
 		public void begin (Camera camera, RenderContext context) {
-			program.begin();
+			program.bind();
 			context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
 			context.setDepthMask(true);
 			set(u_projTrans, camera.combined);
@@ -170,11 +170,6 @@ public class ShaderTest extends GdxTest {
 			}
 
 			renderable.meshPart.render(program);
-		}
-
-		@Override
-		public void end () {
-			program.end();
 		}
 
 		@Override
