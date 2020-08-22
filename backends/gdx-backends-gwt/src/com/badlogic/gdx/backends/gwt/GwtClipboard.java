@@ -36,7 +36,7 @@ public class GwtClipboard implements Clipboard {
 	@Override
 	public void setContents (String content) {
 		this.content = content;
-		if (requestedWritePermissions) {
+		if (requestedWritePermissions || GwtApplication.agentInfo().isFirefox()) {
 			if (hasWritePermissions)
 				setContentJSNI(content);
 		} else {

@@ -34,6 +34,10 @@ public abstract class FlushablePool<T> extends Pool<T> {
 		super(initialCapacity, max);
 	}
 
+	public FlushablePool (int initialCapacity, int max, boolean preFill) {
+		super(initialCapacity, max, preFill);
+	}
+
 	@Override
 	public T obtain () {
 		T result = super.obtain();

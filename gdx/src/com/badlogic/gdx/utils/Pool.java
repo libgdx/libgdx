@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,18 +29,33 @@ abstract public class Pool<T> {
 
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool () {
-		this(16, Integer.MAX_VALUE);
+		this(16, Integer.MAX_VALUE, false);
 	}
 
 	/** Creates a pool with the specified initial capacity and no maximum. */
 	public Pool (int initialCapacity) {
-		this(initialCapacity, Integer.MAX_VALUE);
+		this(initialCapacity, Integer.MAX_VALUE, false);
 	}
 
 	/** @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
+		this(initialCapacity, max, false);
+	}
+
+	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created unless preFill is true.
+	 * @param max The maximum number of free objects to store in this pool.
+	 * @param preFill Whether to pre-fill the pool with objects. The number of pre-filled objects will be equal to the initial
+	 *           capacity. */
+	public Pool (int initialCapacity, int max, boolean preFill) {
+		if (initialCapacity > max && preFill)
+			throw new IllegalArgumentException("max must be larger than initialCapacity if preFill is set to true.");
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
+		if (preFill) {
+			for (int i = 0; i < initialCapacity; i++)
+				freeObjects.add(newObject());
+			peak = freeObjects.size;
+		}
 	}
 
 	abstract protected T newObject ();
@@ -62,6 +77,16 @@ abstract public class Pool<T> {
 			peak = Math.max(peak, freeObjects.size);
 		}
 		reset(object);
+	}
+
+	/** Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be
+	 * used at any time.
+	 *
+	 * @param size the number of objects to be added */
+	public void fill (int size) {
+		for (int i = 0; i < size; i++)
+			if (freeObjects.size < max) freeObjects.add(newObject());
+		peak = Math.max(peak, freeObjects.size);
 	}
 
 	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls

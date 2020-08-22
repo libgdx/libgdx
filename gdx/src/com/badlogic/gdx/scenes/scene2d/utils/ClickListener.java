@@ -21,6 +21,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** Detects mouse over, mouse or finger touch presses, and clicks on an actor. A touch must go down over the actor and is
@@ -95,11 +96,11 @@ public class ClickListener extends InputListener {
 		}
 	}
 
-	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+	public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 		if (pointer == -1 && !cancelled) over = true;
 	}
 
-	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+	public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 		if (pointer == -1 && !cancelled) over = false;
 	}
 
@@ -130,7 +131,7 @@ public class ClickListener extends InputListener {
 		return touchDownX != -1;
 	}
 
-	/** The tap square will not longer be used for the current touch. */
+	/** The tap square will no longer be used for the current touch. */
 	public void invalidateTapSquare () {
 		touchDownX = -1;
 		touchDownY = -1;

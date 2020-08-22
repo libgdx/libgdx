@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 import apple.glkit.enums.GLKViewDrawableColorFormat;
 import apple.glkit.enums.GLKViewDrawableDepthFormat;
 import apple.glkit.enums.GLKViewDrawableMultisample;
@@ -88,7 +90,7 @@ public class IOSApplicationConfiguration {
 	public boolean useCompass = true;
 
 	/** whether or not to allow background music from iPod **/
-	public boolean allowIpod = false;
+	public boolean allowIpod = true;
 	
 	/** whether or not the onScreenKeyboard should be closed on return key **/
 	public boolean keyboardCloseOnReturn = true;
@@ -110,4 +112,15 @@ public class IOSApplicationConfiguration {
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
 
+	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
+
+	/**
+	 * adds device information for newer iOS devices, or overrides information for given ones
+	 * @param classifier human readable device classifier
+	 * @param machineString machine string returned by iOS
+	 * @param ppi device's pixel per inch value
+	 */
+	public void addIosDevice(String classifier, String machineString, int ppi) {
+		IOSDevice.addDeviceToMap(knownDevices, classifier, machineString, ppi);
+	}
 }

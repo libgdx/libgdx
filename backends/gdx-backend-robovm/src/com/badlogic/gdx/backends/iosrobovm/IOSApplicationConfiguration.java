@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
 import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
 import org.robovm.apple.glkit.GLKViewDrawableMultisample;
@@ -89,7 +91,7 @@ public class IOSApplicationConfiguration {
 	public boolean useCompass = true;
 
 	/** whether or not to allow background music from iPod **/
-	public boolean allowIpod = false;
+	public boolean allowIpod = true;
 
 	/** whether or not the onScreenKeyboard should be closed on return key **/
 	public boolean keyboardCloseOnReturn = true;
@@ -98,6 +100,9 @@ public class IOSApplicationConfiguration {
 	 *  When GL ES 3 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
+
+	/** whether the status bar should be visible or not **/
+	public boolean statusBarVisible = false;
 
 	/** whether the home indicator should be hidden or not **/
 	public boolean hideHomeIndicator = true;
@@ -115,4 +120,15 @@ public class IOSApplicationConfiguration {
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;
 
+	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
+
+	/**
+	 * adds device information for newer iOS devices, or overrides information for given ones
+	 * @param classifier human readable device classifier
+	 * @param machineString machine string returned by iOS
+	 * @param ppi device's pixel per inch value
+	 */
+	public void addIosDevice(String classifier, String machineString, int ppi) {
+		IOSDevice.addDeviceToMap(knownDevices, classifier, machineString, ppi);
+	}
 }

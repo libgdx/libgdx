@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -57,8 +58,9 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
-	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
+	float scale = 1;
 
+	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
 	{
 		for (Class c : defaultTagClasses)
 			jsonClassTags.put(c.getSimpleName(), c);
@@ -165,7 +167,7 @@ public class Skin implements Disposable {
 
 	/** Returns a named resource of the specified type.
 	 * @return null if not found. */
-	public <T> T optional (String name, Class<T> type) {
+	public @Null <T> T optional (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
@@ -180,7 +182,7 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns the name to resource mapping for the specified type, or null if no resources of that type exist. */
-	public <T> ObjectMap<String, T> getAll (Class<T> type) {
+	public @Null <T> ObjectMap<String, T> getAll (Class<T> type) {
 		return (ObjectMap<String, T>)resources.get(type);
 	}
 
@@ -206,7 +208,7 @@ public class Skin implements Disposable {
 	}
 
 	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
-	public Array<TextureRegion> getRegions (String regionName) {
+	public @Null Array<TextureRegion> getRegions (String regionName) {
 		Array<TextureRegion> regions = null;
 		int i = 0;
 		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
@@ -228,6 +230,10 @@ public class Skin implements Disposable {
 
 		tiled = new TiledDrawable(getRegion(name));
 		tiled.setName(name);
+		if (scale != 1) {
+			scale(tiled);
+			tiled.setScale(scale);
+		}
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
@@ -250,6 +256,7 @@ public class Skin implements Disposable {
 				}
 			}
 			if (patch == null) patch = new NinePatch(region);
+			if (scale != 1) patch.scale(scale, scale);
 			add(name, patch, NinePatch.class);
 			return patch;
 		} catch (GdxRuntimeException ex) {
@@ -272,6 +279,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
+			if (scale != 1) sprite.setSize(sprite.getWidth() * scale, sprite.getHeight() * scale);
 			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
@@ -295,7 +303,10 @@ public class Skin implements Disposable {
 				else if (region.rotate || region.packedWidth != region.originalWidth || region.packedHeight != region.originalHeight)
 					drawable = new SpriteDrawable(getSprite(name));
 			}
-			if (drawable == null) drawable = new TextureRegionDrawable(textureRegion);
+			if (drawable == null) {
+				drawable = new TextureRegionDrawable(textureRegion);
+				if (scale != 1) scale(drawable);
+			}
 		} catch (GdxRuntimeException ignored) {
 		}
 
@@ -322,7 +333,7 @@ public class Skin implements Disposable {
 
 	/** Returns the name of the specified style object, or null if it is not in the skin. This compares potentially every style
 	 * object in the skin of the same type as the specified style, which may be a somewhat expensive operation. */
-	public String find (Object resource) {
+	public @Null String find (Object resource) {
 		if (resource == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
 		if (typeResources == null) return null;
@@ -381,6 +392,25 @@ public class Skin implements Disposable {
 		return newDrawable;
 	}
 
+	private void scale (Drawable drawble) {
+		drawble.setLeftWidth(drawble.getLeftWidth() * scale);
+		drawble.setRightWidth(drawble.getRightWidth() * scale);
+		drawble.setBottomHeight(drawble.getBottomHeight() * scale);
+		drawble.setTopHeight(drawble.getTopHeight() * scale);
+		drawble.setMinWidth(drawble.getMinWidth() * scale);
+		drawble.setMinHeight(drawble.getMinHeight() * scale);
+	}
+
+	/** The scale used to size drawables created by this skin.
+	 * <p>
+	 * This can be useful when scaling an entire UI (eg with a stage's viewport) then using an atlas with images whose resolution
+	 * matches the UI scale. The skin can then be scaled the opposite amount so that the larger or smaller images are drawn at the
+	 * original size. For example, if the UI is scaled 2x, the atlas would have images that are twice the size, then the skin's
+	 * scale would be set to 0.5. */
+	public void setScale (float scale) {
+		this.scale = scale;
+	}
+
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
 	 * false, and removing "-disabled" from the style name when enabled is true. A method named "getStyle" is called the actor via
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
@@ -410,7 +440,7 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
-	public TextureAtlas getAtlas () {
+	public @Null TextureAtlas getAtlas () {
 		return atlas;
 	}
 
@@ -584,7 +614,7 @@ public class Skin implements Disposable {
 		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class, Tree.TreeStyle.class,
 		Window.WindowStyle.class};
 
-	static private Method findMethod (Class type, String name) {
+	static private @Null Method findMethod (Class type, String name) {
 		Method[] methods = ClassReflection.getMethods(type);
 		for (int i = 0, n = methods.length; i < n; i++) {
 			Method method = methods[i];

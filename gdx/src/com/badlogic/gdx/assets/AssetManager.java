@@ -76,10 +76,10 @@ public class AssetManager implements Disposable {
 	final AsyncExecutor executor;
 
 	final Stack<AssetLoadingTask> tasks = new Stack();
-	AssetErrorListener listener = null;
-	int loaded = 0;
-	int toLoad = 0;
-	int peakTasks = 0;
+	AssetErrorListener listener;
+	int loaded;
+	int toLoad;
+	int peakTasks;
 
 	final FileHandleResolver resolver;
 
@@ -160,9 +160,8 @@ public class AssetManager implements Disposable {
 	public synchronized <T> Array<T> getAll (Class<T> type, Array<T> out) {
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
 		if (assetsByType != null) {
-			for (ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()) {
+			for (ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries())
 				out.add(asset.value.getObject(type));
-			}
 		}
 		return out;
 	}
@@ -201,13 +200,13 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
-		// check if it's currently processed (and the first element in the stack, thus not a dependency)
-		// and cancel if necessary
+		// check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
 		if (tasks.size() > 0) {
-			AssetLoadingTask currAsset = tasks.firstElement();
-			if (currAsset.assetDesc.fileName.equals(fileName)) {
-				currAsset.cancel = true;
+			AssetLoadingTask currentTask = tasks.firstElement();
+			if (currentTask.assetDesc.fileName.equals(fileName)) {
 				log.info("Unload (from tasks): " + fileName);
+				currentTask.cancel = true;
+				currentTask.unload();
 				return;
 			}
 		}
@@ -244,21 +243,17 @@ public class AssetManager implements Disposable {
 			// remove the asset from the manager.
 			assetTypes.remove(fileName);
 			assets.get(type).remove(fileName);
-		} else {
+		} else
 			log.info("Unload (decrement): " + fileName);
-		}
 
 		// remove any dependencies (or just decrement their ref count).
 		Array<String> dependencies = assetDependencies.get(fileName);
 		if (dependencies != null) {
-			for (String dependency : dependencies) {
+			for (String dependency : dependencies)
 				if (isLoaded(dependency)) unload(dependency);
-			}
 		}
 		// remove dependencies if ref count < 0
-		if (assetRef.getRefCount() <= 0) {
-			assetDependencies.remove(fileName);
-		}
+		if (assetRef.getRefCount() <= 0) assetDependencies.remove(fileName);
 	}
 
 	/** @param asset the asset
@@ -309,7 +304,7 @@ public class AssetManager implements Disposable {
 		return assetContainer.getObject(type) != null;
 	}
 
-	/** Returns the default loader for the given type
+	/** Returns the default loader for the given type.
 	 * @param type The type of the loader to get
 	 * @return The loader capable of loading the type, or null if none exists */
 	public <T> AssetLoader getLoader (final Class<T> type) {
@@ -394,15 +389,15 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
+	/** Updates the AssetManager for a single task. Returns if the current task is still being processed or there arew no tasks,
+	 * otherwise it finishes the current task and starts the next task.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {
 		try {
 			if (tasks.size() == 0) {
 				// loop until we have a new task ready to be processed
-				while (loadQueue.size != 0 && tasks.size() == 0) {
+				while (loadQueue.size != 0 && tasks.size() == 0)
 					nextTask();
-				}
 				// have we not found a task? We are done!
 				if (tasks.size() == 0) return true;
 			}
@@ -426,7 +421,8 @@ public class AssetManager implements Disposable {
 		}
 	}
 
-	/** Returns true when all assets are loaded. Can be called from any thread. */
+	/** Returns true when all assets are loaded. Can be called from any thread but note {@link #update()} or related methods must
+	 * be called to process tasks. */
 	public synchronized boolean isFinished () {
 		return loadQueue.size == 0 && tasks.size() == 0;
 	}
@@ -497,9 +493,8 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(dependendAssetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(dependendAssetDesc.fileName);
-		}
-		// else add a new task for the asset.
-		else {
+		} else {
+			// else add a new task for the asset.
 			log.info("Loading dependency: " + dependendAssetDesc);
 			addTask(dependendAssetDesc);
 		}
@@ -517,9 +512,8 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(assetDesc.fileName);
-			if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
+			if (assetDesc.params != null && assetDesc.params.loadedCallback != null)
 				assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
-			}
 			loaded++;
 		} else {
 			// else add a new task for the asset.
@@ -528,8 +522,7 @@ public class AssetManager implements Disposable {
 		}
 	}
 
-	/** Adds a {@link AssetLoadingTask} to the task stack for the given asset.
-	 * @param assetDesc */
+	/** Adds a {@link AssetLoadingTask} to the task stack for the given asset. */
 	private void addTask (AssetDescriptor assetDesc) {
 		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
@@ -575,12 +568,11 @@ public class AssetManager implements Disposable {
 
 			if (task.cancel) return true;
 
-			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
+			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.asset);
 
 			// otherwise, if a listener was found in the parameter invoke it
-			if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
+			if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null)
 				task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
-			}
 
 			long endTime = TimeUtils.nanoTime();
 			log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
@@ -621,20 +613,18 @@ public class AssetManager implements Disposable {
 
 		// remove all dependencies
 		if (task.dependenciesLoaded && task.dependencies != null) {
-			for (AssetDescriptor desc : task.dependencies) {
+			for (AssetDescriptor desc : task.dependencies)
 				unload(desc.fileName);
-			}
 		}
 
 		// clear the rest of the stack
 		tasks.clear();
 
 		// inform the listener that something bad happened
-		if (listener != null) {
+		if (listener != null)
 			listener.error(assetDesc, t);
-		} else {
+		else
 			throw new GdxRuntimeException(t);
-		}
 	}
 
 	/** Sets a new {@link AssetLoader} for the given type.
@@ -671,11 +661,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		float fractionalLoaded = (float)loaded;
+		float fractionalLoaded = loaded;
 		if (peakTasks > 0) {
 			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
 		}
-		return Math.min(1, fractionalLoaded / (float)toLoad);
+		return Math.min(1, fractionalLoaded / toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
@@ -703,9 +693,8 @@ public class AssetManager implements Disposable {
 			// for each asset, figure out how often it was referenced
 			dependencyCount.clear();
 			Array<String> assets = assetTypes.keys().toArray();
-			for (String asset : assets) {
+			for (String asset : assets)
 				dependencyCount.put(asset, 0);
-			}
 
 			for (String asset : assets) {
 				Array<String> dependencies = assetDependencies.get(asset);
@@ -718,11 +707,8 @@ public class AssetManager implements Disposable {
 			}
 
 			// only dispose of assets that are root assets (not referenced)
-			for (String asset : assets) {
-				if (dependencyCount.get(asset, 0) == 0) {
-					unload(asset);
-				}
-			}
+			for (String asset : assets)
+				if (dependencyCount.get(asset, 0) == 0) unload(asset);
 		}
 
 		this.assets.clear();

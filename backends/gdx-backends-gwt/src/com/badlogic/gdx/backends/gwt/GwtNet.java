@@ -61,7 +61,8 @@ public class GwtNet implements Net {
 
 		@Override
 		public byte[] getResult () {
-			return null;
+			throw new GdxRuntimeException("HttpResponse.getResult() is not available on GWT. " +
+					"Use getResultAsString() if possible, or make use of AssetDownloader class.");
 		}
 
 		@Override
@@ -71,7 +72,8 @@ public class GwtNet implements Net {
 
 		@Override
 		public InputStream getResultAsStream () {
-			return null;
+			throw new GdxRuntimeException("HttpResponse.getResultAsStream() is not available on GWT. " +
+					"Use getResultAsString() if possible, or make use of AssetDownloader class.");
 		}
 
 		@Override

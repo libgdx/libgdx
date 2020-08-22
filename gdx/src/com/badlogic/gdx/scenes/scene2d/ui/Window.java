@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -133,7 +134,7 @@ public class Window extends Table {
 				float minWidth = getMinWidth(), maxWidth = getMaxWidth();
 				float minHeight = getMinHeight(), maxHeight = getMaxHeight();
 				Stage stage = getStage();
-				boolean clampPosition = keepWithinStage && getParent() == stage.getRoot();
+				boolean clampPosition = keepWithinStage && stage != null && getParent() == stage.getRoot();
 
 				if ((edge & MOVE) != 0) {
 					float amountX = x - startX, amountY = y - startY;
@@ -236,17 +237,18 @@ public class Window extends Table {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
-		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+		if (stage != null) {
+			if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
-		keepWithinStage();
+			keepWithinStage();
 
-		if (style.stageBackground != null) {
-			stageToLocalCoordinates(tmpPosition.set(0, 0));
-			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
-				getY() + tmpSize.y);
+			if (style.stageBackground != null) {
+				stageToLocalCoordinates(tmpPosition.set(0, 0));
+				stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
+				drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+					getY() + tmpSize.y);
+			}
 		}
-
 		super.draw(batch, parentAlpha);
 	}
 
@@ -269,7 +271,7 @@ public class Window extends Table {
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
@@ -337,17 +339,17 @@ public class Window extends Table {
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
 		/** Optional. */
-		public Drawable background;
+		public @Null Drawable background;
 		public BitmapFont titleFont;
 		/** Optional. */
 		public Color titleFontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		public Drawable stageBackground;
+		public @Null Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
-		public WindowStyle (BitmapFont titleFont, Color titleFontColor, Drawable background) {
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Null Drawable background) {
 			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);

@@ -75,8 +75,8 @@ public class MyJniClass {
 		new AntScriptGenerator().generate(buildConfig, win32, lin64);
 		
 		// build natives
-		BuildExecutor.executeAnt("jni/build-linux64.xml", "-v -Dhas-compiler=true clean postcompile");
-		BuildExecutor.executeAnt("jni/build.xml", "-v pack-natives");
+		BuildExecutor.executeAnt("jni/build-linux64.xml", "-v", "-Dhas-compiler=true", "clean", "postcompile");
+		BuildExecutor.executeAnt("jni/build.xml", "-v", "pack-natives");
 		
 		// load the test-natives.jar and from it the shared library, then execute the test. 
 		new JniGenSharedLibraryLoader("libs/test-natives.jar").load("test");

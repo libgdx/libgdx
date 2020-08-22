@@ -120,7 +120,8 @@ public class Gdx2DPixmap implements Disposable {
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
+		if (pixelPtr == null) throw new GdxRuntimeException(
+			"Unable to allocate memory for pixmap: " + width + "x" + height + ", " + getFormatString(format));
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
@@ -252,6 +253,10 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public String getFormatString () {
+		return getFormatString(format);
+	}
+
+	static private String getFormatString (int format) {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
 			return "alpha";

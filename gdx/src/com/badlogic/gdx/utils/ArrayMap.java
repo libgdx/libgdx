@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -124,13 +125,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	/** Returns the value (which may be null) for the specified key, or null if the key is not in the map. Note this does a
 	 * .equals() comparison of each key in reverse order until the specified key is found. */
-	public V get (K key) {
+	public @Null V get (K key) {
 		return get(key, null);
 	}
 
 	/** Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. Note this
 	 * does a .equals() comparison of each key in reverse order until the specified key is found. */
-	public V get (K key, V defaultValue) {
+	public @Null V get (K key, @Null V defaultValue) {
 		Object[] keys = this.keys;
 		int i = size - 1;
 		if (key == null) {
@@ -146,7 +147,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
 	 * value is found.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
-	public K getKey (V value, boolean identity) {
+	public @Null K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
 		if (identity || value == null) {
@@ -255,7 +256,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return -1;
 	}
 
-	public V removeKey (K key) {
+	public @Null V removeKey (K key) {
 		Object[] keys = this.keys;
 		if (key == null) {
 			for (int i = 0, n = size; i < n; i++) {
@@ -344,12 +345,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	public void clear () {
-		K[] keys = this.keys;
-		V[] values = this.values;
-		for (int i = 0, n = size; i < n; i++) {
-			keys[i] = null;
-			values[i] = null;
-		}
+		Arrays.fill(keys, 0, size, null);
+		Arrays.fill(values, 0, size, null);
 		size = 0;
 	}
 
@@ -483,9 +480,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -502,9 +503,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Values<V> values () {
+		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
 			values1 = new Values(this);
 			values2 = new Values(this);
@@ -521,9 +526,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Keys<K> keys () {
+		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
 			keys2 = new Keys(this);

@@ -18,6 +18,8 @@ package com.badlogic.gdx.tests.gwt;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +38,7 @@ public class GwtInputTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		Gdx.input.setInputProcessor(this);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.input.setCursorCatched(true);
 	}
 
 	@Override
@@ -71,6 +74,15 @@ public class GwtInputTest extends GdxTest {
 
 		if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 			y -= 1;
+		}
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+			Gdx.app.log("GwtInputTest", "button pressed: LEFT");
+		}
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE)){
+			Gdx.app.log("GwtInputTest", "button pressed: MIDDLE");
+		}
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+			Gdx.app.log("GwtInputTest", "button pressed: RIGHT");
 		}
 	}
 

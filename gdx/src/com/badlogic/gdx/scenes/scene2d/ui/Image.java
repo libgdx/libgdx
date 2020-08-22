@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
 
 /** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
@@ -45,13 +46,13 @@ public class Image extends Widget {
 
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
-	public Image (NinePatch patch) {
+	public Image (@Null NinePatch patch) {
 		this(new NinePatchDrawable(patch), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param region May be null. */
-	public Image (TextureRegion region) {
+	public Image (@Null TextureRegion region) {
 		this(new TextureRegionDrawable(region), Scaling.stretch, Align.center);
 	}
 
@@ -67,18 +68,18 @@ public class Image extends Widget {
 
 	/** Creates an image stretched, and aligned center.
 	 * @param drawable May be null. */
-	public Image (Drawable drawable) {
+	public Image (@Null Drawable drawable) {
 		this(drawable, Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image aligned center.
 	 * @param drawable May be null. */
-	public Image (Drawable drawable, Scaling scaling) {
+	public Image (@Null Drawable drawable, Scaling scaling) {
 		this(drawable, scaling, Align.center);
 	}
 
 	/** @param drawable May be null. */
-	public Image (Drawable drawable, Scaling scaling, int align) {
+	public Image (@Null Drawable drawable, Scaling scaling, int align) {
 		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
@@ -141,7 +142,7 @@ public class Image extends Widget {
 	/** Sets a new drawable for the image. The image's pref size is the drawable's min size. If using the image actor's size rather
 	 * than the pref size, {@link #pack()} can be used to size the image to its pref size.
 	 * @param drawable May be null. */
-	public void setDrawable (Drawable drawable) {
+	public void setDrawable (@Null Drawable drawable) {
 		if (this.drawable == drawable) return;
 		if (drawable != null) {
 			if (getPrefWidth() != drawable.getMinWidth() || getPrefHeight() != drawable.getMinHeight()) invalidateHierarchy();
@@ -151,7 +152,7 @@ public class Image extends Widget {
 	}
 
 	/** @return May be null. */
-	public Drawable getDrawable () {
+	public @Null Drawable getDrawable () {
 		return drawable;
 	}
 
@@ -164,6 +165,10 @@ public class Image extends Widget {
 	public void setAlign (int align) {
 		this.align = align;
 		invalidate();
+	}
+
+	public int getAlign () {
+		return align;
 	}
 
 	public float getMinWidth () {

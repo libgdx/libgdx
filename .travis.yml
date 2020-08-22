@@ -8,6 +8,7 @@ branches:
 matrix:
   include:
     - name: "Ant Mac IOS Build"
+      if: type != pull_request
       language: java
       os: osx
       before_install:

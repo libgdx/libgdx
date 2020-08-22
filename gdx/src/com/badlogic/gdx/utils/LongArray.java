@@ -142,9 +142,21 @@ public class LongArray {
 		items[index] += value;
 	}
 
+	public void incr (long value) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, long value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (long value) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, long value) {
@@ -216,18 +228,17 @@ public class LongArray {
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
-		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		int n = size;
+		if (end >= n) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
-		long[] items = this.items;
-		int count = end - start + 1;
+		int count = end - start + 1, lastIndex = n - count;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(items, start + count, items, start, n - (start + count));
 		else {
-			int lastIndex = this.size - 1;
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+			int i = Math.max(lastIndex, end + 1);
+			System.arraycopy(items, i, items, start, n - i);
 		}
-		size -= count;
+		size = n - count;
 	}
 
 	/** Removes from this array all of elements contained in the specified array.
@@ -360,8 +371,10 @@ public class LongArray {
 		if (!ordered) return super.hashCode();
 		long[] items = this.items;
 		int h = 1;
-		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + (int)(items[i] ^ (items[i] >>> 32));
+		for (int i = 0, n = size; i < n; i++) {
+			long item = items[i];
+			h = h * 31 + (int)(item ^ (item >>> 32));
+		}
 		return h;
 	}
 

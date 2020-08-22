@@ -27,6 +27,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 	static private final Color temp = new Color();
 
 	private final Color color = new Color(1, 1, 1, 1);
+	private float scale = 1;
 
 	public TiledDrawable () {
 		super();
@@ -46,7 +47,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 		batch.setColor(batchColor.mul(color));
 
 		TextureRegion region = getRegion();
-		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionHeight();
+		float regionWidth = region.getRegionWidth() * scale, regionHeight = region.getRegionHeight() * scale;
 		int fullX = (int)(width / regionWidth), fullY = (int)(height / regionHeight);
 		float remainingX = width - regionWidth * fullX, remainingY = height - regionHeight * fullY;
 		float startX = x, startY = y;
@@ -98,6 +99,14 @@ public class TiledDrawable extends TextureRegionDrawable {
 
 	public Color getColor () {
 		return color;
+	}
+
+	public void setScale (float scale) {
+		this.scale = scale;
+	}
+
+	public float getScale () {
+		return scale;
 	}
 
 	public TiledDrawable tint (Color tint) {
