@@ -355,14 +355,25 @@ public class AndroidGraphics implements Graphics, Renderer {
 			if (!running) return;
 			running = false;
 			pause = true;
+
+			view.queueEvent(new Runnable() {
+				@Override
+				public void run() {
+					if (!pause) {
+						// pause event already picked up by onDrawFrame
+						return;
+					}
+
+					// it's ok to call ApplicationListener's events
+					// from onDrawFrame because it's executing in GL thread
+					onDrawFrame(null);
+				}
+			});
+
 			while (pause) {
 				try {
-					// TODO: fix deadlock race condition with quick resume/pause.
-					// Temporary workaround:
 					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
-					// deadlock and killing process. This can easily be triggered by opening the
-					// Recent Apps list and then double-tapping the Recent Apps button with
-					// ~500ms between taps.
+					// deadlock and killing process.
 					synch.wait(4000);
 					if (pause) {
 						// pause will never go false if onDrawFrame is never called by the GLThread

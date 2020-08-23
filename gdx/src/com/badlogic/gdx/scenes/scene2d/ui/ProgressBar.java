@@ -261,8 +261,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
-	@Null
-	protected Drawable getKnobDrawable () {
+	protected @Null Drawable getKnobDrawable () {
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
 	}
 
@@ -306,7 +305,8 @@ public class ProgressBar extends Widget implements Disableable {
 		this.max = max;
 		if (value < min)
 			setValue(min);
-		else if (value > max) setValue(max);
+		else if (value > max) //
+			setValue(max);
 	}
 
 	public void setStepSize (float stepSize) {
@@ -388,13 +388,13 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
 		/** The progress bar background, stretched only in one direction. Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 		/** Optional. **/
-		@Null public Drawable disabledBackground;
+		public @Null Drawable disabledBackground;
 		/** Optional, centered on the background. */
-		@Null public Drawable knob, disabledKnob;
+		public @Null Drawable knob, disabledKnob;
 		/** Optional. */
-		@Null public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
+		public @Null Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public ProgressBarStyle () {
 		}

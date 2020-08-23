@@ -205,8 +205,7 @@ public class Button extends Table implements Disableable {
 	}
 
 	/** @return May be null. */
-	@Null
-	public ButtonGroup getButtonGroup () {
+	public @Null ButtonGroup getButtonGroup () {
 		return buttonGroup;
 	}
 
@@ -292,7 +291,7 @@ public class Button extends Table implements Disableable {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		@Null public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
+		public @Null Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 

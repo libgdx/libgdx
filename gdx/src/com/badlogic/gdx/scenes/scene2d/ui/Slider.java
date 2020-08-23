@@ -21,7 +21,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -40,6 +39,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class Slider extends ProgressBar {
+	int button = -1;
 	int draggingPointer = -1;
 	boolean mouseOver;
 	private Interpolation visualInterpolationInverse = Interpolation.linear;
@@ -69,6 +69,7 @@ public class Slider extends ProgressBar {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (disabled) return false;
+				if (Slider.this.button != -1 && Slider.this.button != button) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
@@ -107,8 +108,7 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
-	@Null
-	protected Drawable getKnobDrawable () {
+	protected @Null Drawable getKnobDrawable () {
 		SliderStyle style = getStyle();
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob
 			: (isDragging() && style.knobDown != null) ? style.knobDown
@@ -178,6 +178,11 @@ public class Slider extends ProgressBar {
 		return draggingPointer != -1;
 	}
 
+	/** Sets the mouse button, which can trigger a change of the slider. Is -1, so every button, by default. */
+	public void setButton (int button) {
+		this.button = button;
+	}
+
 	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
 	 * {@link #setVisualInterpolation(Interpolation) visual interpolation}. */
 	public void setVisualInterpolationInverse (Interpolation interpolation) {
@@ -189,7 +194,7 @@ public class Slider extends ProgressBar {
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
 		/** Optional. */
-		@Null public Drawable knobOver, knobDown;
+		public @Null Drawable knobOver, knobDown;
 
 		public SliderStyle () {
 		}

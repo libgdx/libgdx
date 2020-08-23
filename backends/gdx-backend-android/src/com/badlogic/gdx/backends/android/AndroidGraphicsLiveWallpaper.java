@@ -17,11 +17,9 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -63,11 +61,6 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			public SurfaceHolder getHolder () {
 				return getSurfaceHolder();
 			}
-
-			// This method is invoked via reflection by AndroidLiveWallpaper.onDestroy()
-			public void onDestroy () {
-				onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
-			}
 		};
 
 		if (configChooser != null)
@@ -83,8 +76,8 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	public void onDestroyGLSurfaceView () {
 		if (view != null) {
 			try {
-				// onDestroy redirects to onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
-				view.getClass().getMethod("onDestroy").invoke(view);
+				// onDetachedFromWindow stops GLThread by calling mGLThread.requestExitAndWait()
+				view.onDetachedFromWindow();
 				if (AndroidLiveWallpaperService.DEBUG)
 					Log.d(AndroidLiveWallpaperService.TAG,
 						" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");

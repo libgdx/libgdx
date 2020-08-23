@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Color {
-	public static final Color WHITE = new Color(1, 1, 1,1);
+	public static final Color WHITE = new Color(1, 1, 1, 1);
 	public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
 	public static final Color GRAY = new Color(0x7f7f7fff);
 	public static final Color DARK_GRAY = new Color(0x3f3f3fff);
@@ -309,7 +309,8 @@ public class Color {
 	}
 
 	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Alpha is compressed
-	 * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link NumberUtils#intToFloatColor(int)}).
+	 * from 0-255 to use only even numbers between 0-254 to avoid using float bits in the NaN range (see
+	 * {@link NumberUtils#intToFloatColor(int)}). Converting a color to a float and back can be lossy for alpha.
 	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));

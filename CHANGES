@@ -1,3 +1,14 @@
+[1.9.12]
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- Fixed GlyphLayout not laying out correctly with color markup.
+- Fixed TileDrawable not applying its scale correctly.
+- API Addition: Added epsilon methods to maps with float values.
+- API Addition: Added an insertRange method to array collections.
+- Fixed GestureDetector maxFlingDelay.
+- API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
+- Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3
@@ -32,6 +43,19 @@
 - API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
 - Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
 - API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
+- Fixed: SphereShapeBuilder poles are now merged which removes lighting artifacts, see #6068 for more information.
+- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
+- API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
+- API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
+- API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
+- API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
+- Fixed Label text wrapping when it shouldn't (#6098).
+- Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
+- API Change: glGetActiveUniform and glGetActiveAttrib paramter changed from Buffer to IntBuffer.
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

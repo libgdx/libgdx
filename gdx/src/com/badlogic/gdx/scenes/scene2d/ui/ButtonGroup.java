@@ -127,8 +127,7 @@ public class ButtonGroup<T extends Button> {
 	}
 
 	/** @return The first checked button, or null. */
-	@Null
-	public T getChecked () {
+	public @Null T getChecked () {
 		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
 	}

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.badlogicgames.gdx</groupId>
 		<artifactId>gdx-box2d-parent</artifactId>
-		<version>1.9.11-SNAPSHOT</version>
+		<version>1.9.12-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -18,13 +18,13 @@
 			<artifactId>gdx</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>gdx-box2d</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
@@ -54,7 +54,12 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>            
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>res</directory>
+			</resource>
+		</resources>
 	</build>
 </project>
