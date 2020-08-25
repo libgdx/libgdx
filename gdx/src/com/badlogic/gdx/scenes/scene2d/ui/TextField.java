@@ -632,8 +632,8 @@ public class TextField extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes
-	 * the text. */
+	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when the user
+	 * changes the text. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}

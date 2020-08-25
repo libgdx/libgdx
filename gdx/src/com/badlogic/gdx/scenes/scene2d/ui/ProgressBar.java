@@ -48,10 +48,9 @@ public class ProgressBar extends Widget implements Disableable {
 	float position;
 	final boolean vertical;
 	private float animateDuration, animateTime;
-	private Interpolation animateInterpolation = Interpolation.linear;
+	private Interpolation animateInterpolation = Interpolation.linear, visualInterpolation = Interpolation.linear;
 	boolean disabled;
-	private Interpolation visualInterpolation = Interpolation.linear;
-	private boolean round = true;
+	private boolean round = true, programmaticChangeEvents = true;
 
 	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
@@ -280,16 +279,22 @@ public class ProgressBar extends Widget implements Disableable {
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
 		this.value = value;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		boolean cancelled = fire(changeEvent);
-		if (cancelled)
-			this.value = oldValue;
-		else if (animateDuration > 0) {
+
+		if (programmaticChangeEvents) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			boolean cancelled = fire(changeEvent);
+			Pools.free(changeEvent);
+			if (cancelled) {
+				this.value = oldValue;
+				return false;
+			}
+		}
+
+		if (animateDuration > 0) {
 			animateFromValue = oldVisualValue;
 			animateTime = animateDuration;
 		}
-		Pools.free(changeEvent);
-		return !cancelled;
+		return true;
 	}
 
 	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress
@@ -381,6 +386,12 @@ public class ProgressBar extends Widget implements Disableable {
 	/** True if the progress bar is vertical, false if it is horizontal. **/
 	public boolean isVertical () {
 		return vertical;
+	}
+
+	/** If false, {@link #setValue(float)} will not fire {@link ChangeEvent}. The event will only be fired when the user changes
+	 * the slider. */
+	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
+		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
 	/** The style for a progress bar, see {@link ProgressBar}.
