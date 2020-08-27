@@ -6,6 +6,8 @@
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)
 
+[![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://discord.gg/7c6Wg8H)
+
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
@@ -24,33 +26,27 @@ WebGL enabled browser and iOS.
 As we switched to Gradle, there's no need to download libGDX itself anymore. For those of you who still prefer the old way of doing things, you can get libGDX from the [official download site](http://libgdx.badlogicgames.com/download.html).
 
 ### Documentation
-The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a 
+The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a
 libGDX game. You can contribute to the Wiki directly here on GitHub!
 
 We also provide [Javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The Javadocs are
 also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
 
 ### News & Community
-You can follow the latest news about libGDX on the [blog](http://www.badlogicgames.com). Follow
-[@badlogicgames](https://twitter.com/badlogicgames) for real-time updates.
-
-You can get help on our [forum](http://badlogicgames.com/forum/) and talk to other libGDX 
-users on our IRC channel #libgdx at irc.freenode.net.
-
-Another way of getting help or talking to other libGDX users is the [libgdx discord](https://discord.gg/6pgDK9F).
+You can follow the latest news about libGDX on the [blog](http://www.badlogicgames.com). A good way to get in touch with our community is to join the official [libGDX discord](https://discord.gg/6pgDK9F).
 
 ### Reporting Issues
-Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on GitHub to report issues. Make sure you read the 
+Use the [issue tracker](https://github.com/libgdx/libgdx/issues) here on GitHub to report issues. Make sure you read the
 [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
-the process or properly reporting an issue.
+the process of properly reporting an issue.
 
 ### Contributing & Working from Source
 libGDX has a strong developer community constantly improving the code base. We love to
-get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing) 
+get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing)
 article describes the process of helping libGDX to become even better.
 
 To contribute, you need to work with libGDX' sources directly, something normal users do not
-have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
+have to go through. The [Working with the Source](https://libgdx.badlogicgames.com/documentation/hacking/Working%20from%20source.html)
 article will give you directions.
 
 You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!
@@ -72,11 +68,6 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 <tr>
 <td style="text-align: center;"><a href="http://bit.ly/saikoagdx"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" /></a></td>
 <td style="text-align: center;"><a href="http://bit.ly/intelgdx"><img src="http://libgdx.badlogicgames.com/img/intel.png" alt="intel Software Partner" /></a></td>
-</tr>
-
-<tr>
-<td style="text-align: center;"><a href="http://bit.ly/jetblog"><img src="http://libgdx.badlogicgames.com/img/excelsior.png" alt="Excelsior JET"></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a></td>
 </tr>
 </table>
 
