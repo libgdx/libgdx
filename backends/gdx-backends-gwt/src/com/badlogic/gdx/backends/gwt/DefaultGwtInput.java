@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
@@ -122,14 +121,14 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	void setupAccelerometer () {
-		if (GwtAccelerometer.isSupported()) {
+		if (GwtAccelerometer.isSupported() && GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION)) {
 			if (accelerometer == null) accelerometer = GwtAccelerometer.getInstance();
 			if (!accelerometer.activated()) accelerometer.start();
 		}
 	}
 
 	void setupGyroscope () {
-		if (GwtGyroscope.isSupported()) {
+		if (GwtGyroscope.isSupported() && GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION)) {
 			if (gyroscope == null) gyroscope = GwtGyroscope.getInstance();
 			if (!gyroscope.activated()) gyroscope.start();
 		}
