@@ -1,4 +1,5 @@
 [1.9.12]
+- Update to MobiVM 2.3.10
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
 - API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
 - Fixed GlyphLayout not laying out correctly with color markup.
@@ -9,6 +10,7 @@
 - API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
 - API Addition: Added setProgrammaticChangeEvents to ProgressBar/Slider.
+- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
 
 [1.9.11]
 - Update to MobiVM 2.3.8
