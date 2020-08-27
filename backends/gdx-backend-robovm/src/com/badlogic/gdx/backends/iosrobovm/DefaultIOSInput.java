@@ -16,18 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.apple.audiotoolbox.AudioServices;
-import org.robovm.apple.coregraphics.CGPoint;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.*;
-import org.robovm.apple.uikit.*;
-import org.robovm.objc.annotation.Method;
-import org.robovm.rt.VM;
-import org.robovm.rt.bro.NativeObject;
-import org.robovm.rt.bro.annotation.MachineSizedUInt;
-import org.robovm.rt.bro.annotation.Pointer;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
@@ -35,7 +25,40 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
+
+import org.robovm.apple.audiotoolbox.AudioServices;
+import org.robovm.apple.coregraphics.CGPoint;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSExtensions;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSRange;
+import org.robovm.apple.uikit.UIAlertAction;
+import org.robovm.apple.uikit.UIAlertActionStyle;
+import org.robovm.apple.uikit.UIAlertController;
+import org.robovm.apple.uikit.UIAlertControllerStyle;
+import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIForceTouchCapability;
+import org.robovm.apple.uikit.UIKey;
+import org.robovm.apple.uikit.UIKeyboardHIDUsage;
+import org.robovm.apple.uikit.UIKeyboardType;
+import org.robovm.apple.uikit.UIReturnKeyType;
+import org.robovm.apple.uikit.UIScreen;
+import org.robovm.apple.uikit.UITextAutocapitalizationType;
+import org.robovm.apple.uikit.UITextAutocorrectionType;
+import org.robovm.apple.uikit.UITextField;
+import org.robovm.apple.uikit.UITextFieldDelegate;
+import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
+import org.robovm.apple.uikit.UITextSpellCheckingType;
+import org.robovm.apple.uikit.UITouch;
+import org.robovm.apple.uikit.UITouchPhase;
+import org.robovm.objc.annotation.Method;
+import org.robovm.objc.block.VoidBlock1;
+import org.robovm.rt.VM;
+import org.robovm.rt.bro.NativeObject;
+import org.robovm.rt.bro.annotation.MachineSizedUInt;
+import org.robovm.rt.bro.annotation.Pointer;
 
 public class DefaultIOSInput implements IOSInput {
 	static final int MAX_TOUCHES = 20;
@@ -85,6 +108,12 @@ public class DefaultIOSInput implements IOSInput {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
+	private final Pool<KeyEvent> keyEventPool = new Pool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
+			return new KeyEvent();
+		}
+	};
+	private final Array<KeyEvent> keyEvents = new Array();
 	private long currentEventTimeStamp = 0;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
@@ -96,6 +125,14 @@ public class DefaultIOSInput implements IOSInput {
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
+	boolean softkeyboardActive = false;
+
+	private IntSet keysToCatch = new IntSet();
+	private boolean keyJustPressed = false;
+	private int keyCount = 0;
+	private boolean hadHardwareKeyEvent = false;
+	private final boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
+	private final boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 
 	public DefaultIOSInput (IOSApplication app) {
 		this.app = app;
@@ -347,42 +384,35 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public boolean isKeyPressed (int key) {
-		return false;
+		if (key == Input.Keys.ANY_KEY) {
+			return keyCount > 0;
+		}
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
+			return false;
+		}
+		return keys[key];
 	}
 
 	@Override
 	public boolean isKeyJustPressed (int key) {
-		return false;
+		if (key == Input.Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-		buildUIAlertView(listener, title, text, hint).show();
+		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint);
+		app.getUIViewController().presentViewController(uiAlertController, true, null);
 	}	
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
 	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
-
-	private class HiddenTextField extends UITextField {
-		public HiddenTextField (CGRect frame) {
-			super(frame);
-
-			setKeyboardType(UIKeyboardType.Default);
-			setReturnKeyType(UIReturnKeyType.Done);
-			setAutocapitalizationType(UITextAutocapitalizationType.None);
-			setAutocorrectionType(UITextAutocorrectionType.No);
-			setSpellCheckingType(UITextSpellCheckingType.No);
-			setHidden(true);
-		}
-
-		@Override
-		public void deleteBackward () {
-			inputProcessor.keyTyped((char)8);
-			super.deleteBackward();
-			Gdx.graphics.requestRendering();
-		}
-	}
 
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
@@ -430,6 +460,7 @@ public class DefaultIOSInput implements IOSInput {
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 		if (textfield == null) createDefaultTextField();
+		softkeyboardActive = visible;
 		if (visible) {
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
@@ -466,49 +497,36 @@ public class DefaultIOSInput implements IOSInput {
 		app.getUIViewController().getView().addSubview(textfield);
 	}
 	
-	// Issue 773 indicates this may solve a premature GC issue
-	UIAlertViewDelegate delegate;
-
-	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
+	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
-	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
-		delegate = new UIAlertViewDelegateAdapter() {
+	 * @return UIAlertController */
+	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder) {
+		final UIAlertController uiAlertController = new UIAlertController(title, text, UIAlertControllerStyle.Alert);
+		uiAlertController.addTextField(new VoidBlock1<UITextField>() {
 			@Override
-			public void clicked (UIAlertView view, long clicked) {
-				if (clicked == 0) {
-					// user clicked "Cancel" button
-					listener.canceled();
-				} else if (clicked == 1) {
-					// user clicked "Ok" button
-					UITextField textField = view.getTextField(0);
-					listener.input(textField.getText());
-				}
-				delegate = null;
+			public void invoke(UITextField uiTextField) {
+				uiTextField.setPlaceholder(placeholder);
+				uiTextField.setText(text);
 			}
-
+		});
+		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {
 			@Override
-			public void cancel (UIAlertView view) {
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Ok" button
+				UITextField textField = uiAlertController.getTextFields().get(0);
+				listener.input(textField.getText());
+			}
+		}));
+		uiAlertController.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Cancel, new VoidBlock1<UIAlertAction>() {
+			@Override
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Cancel" button
 				listener.canceled();
-				delegate = null;
 			}
-		};
-
-		// build the view
-		final UIAlertView uiAlertView = new UIAlertView();
-		uiAlertView.setTitle(title);
-		uiAlertView.addButton("Cancel");
-		uiAlertView.addButton("Ok");
-		uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
-		uiAlertView.setDelegate(delegate);
-
-		UITextField textField = uiAlertView.getTextField(0);
-		textField.setPlaceholder(placeholder);
-		textField.setText(text);
-
-		return uiAlertView;
+		}));
+		return uiAlertController;
 	}
 
 	@Override
@@ -533,30 +551,36 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
+		setCatchKey(Keys.BACK, catchBack);
 	}
 
 	@Override
-	public boolean isCatchBackKey () {
-		return false;
+	public boolean isCatchBackKey() {
+		return keysToCatch.contains(Keys.BACK);
 	}
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
+		setCatchKey(Keys.MENU, catchMenu);
 	}
-	
+
 	@Override
-	public boolean isCatchMenuKey() {
-		return false;
+	public boolean isCatchMenuKey () {
+		return keysToCatch.contains(Keys.MENU);
 	}
 
 	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
-
+		if (!catchKey) {
+			keysToCatch.remove(keycode);
+		} else if (catchKey) {
+			keysToCatch.add(keycode);
+		}
 	}
 
 	@Override
 	public boolean isCatchKey (int keycode) {
-		return false;
+		return keysToCatch.contains(keycode);
 	}
 
 	@Override
@@ -577,6 +601,7 @@ public class DefaultIOSInput implements IOSInput {
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
+		if (peripheral == Peripheral.HardwareKeyboard) return hadHardwareKeyEvent;
 		return false;
 	}
 
@@ -627,6 +652,70 @@ public class DefaultIOSInput implements IOSInput {
 	}
 
 	@Override
+	public boolean onKey(UIKey key, boolean down) {
+		if (key == null) {
+			return false;
+		}
+
+		int keyCode = getGdxKeyCode(key.getKeyCode());
+
+		if (keyCode != Keys.UNKNOWN)
+			synchronized (keyEvents) {
+				hadHardwareKeyEvent = true;
+
+				KeyEvent event = keyEventPool.obtain();
+				long timeStamp = System.nanoTime();
+				event.timeStamp = timeStamp;
+				event.keyChar = 0;
+				event.keyCode = keyCode;
+				event.type = down ? KeyEvent.KEY_DOWN : KeyEvent.KEY_UP;
+				keyEvents.add(event);
+
+				if (!down) {
+					char character;
+
+					switch (keyCode) {
+						case Keys.DEL:
+							character = 8;
+							break;
+						case Keys.FORWARD_DEL:
+							character = 127;
+							break;
+						case Keys.ENTER:
+							character = 13;
+							break;
+						default:
+							String characters = key.getCharacters();
+							// special keys return constants like "UIKeyInputF5", so we check for length 1
+							character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
+					}
+
+					if (character >= 0) {
+						event = keyEventPool.obtain();
+						event.timeStamp = timeStamp;
+						event.type = KeyEvent.KEY_TYPED;
+						event.keyCode = keyCode;
+						event.keyChar = character;
+						keyEvents.add(event);
+					}
+
+					if (keys[keyCode]) {
+						keyCount--;
+						keys[keyCode] = false;
+					}
+				} else {
+					if (!keys[event.keyCode]) {
+						keyCount++;
+						keys[event.keyCode] = true;
+					}
+				}
+
+			}
+
+		return isCatchKey(keyCode);
+	}
+
+	@Override
 	public void processEvents () {
 		synchronized (touchEvents) {
 			justTouched = false;
@@ -649,6 +738,36 @@ public class DefaultIOSInput implements IOSInput {
 			}
 			touchEventPool.freeAll(touchEvents);
 			touchEvents.clear();
+		}
+
+		synchronized (keyEvents) {
+			if (keyJustPressed) {
+				keyJustPressed = false;
+				for (int i = 0; i < justPressedKeys.length; i++) {
+					justPressedKeys[i] = false;
+				}
+			}
+
+			for (KeyEvent e : keyEvents) {
+				currentEventTimeStamp = e.timeStamp;
+				switch (e.type) {
+					case KeyEvent.KEY_DOWN:
+						if (inputProcessor != null) inputProcessor.keyDown(e.keyCode);
+						keyJustPressed = true;
+						justPressedKeys[e.keyCode] = true;
+						break;
+					case KeyEvent.KEY_UP:
+						if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
+						break;
+					case KeyEvent.KEY_TYPED:
+						// don't process key typed events if soft keyboard is active
+						// the soft keyboard hook already catches the changes
+						if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
+				}
+
+			}
+			keyEventPool.freeAll(keyEvents);
+			keyEvents.clear();
 		}
 	}
 
@@ -767,6 +886,17 @@ public class DefaultIOSInput implements IOSInput {
 		int pointer;
 	}
 
+	static class KeyEvent {
+		static final int KEY_DOWN = 0;
+		static final int KEY_UP = 1;
+		static final int KEY_TYPED = 2;
+
+		long timeStamp;
+		int type;
+		int keyCode;
+		char keyChar;
+	}
+
 	@Override
 	public float getGyroscopeX() {
 		// TODO Auto-generated method stub
@@ -785,5 +915,244 @@ public class DefaultIOSInput implements IOSInput {
 		return 0;
 	}
 
-
+	protected int getGdxKeyCode(UIKeyboardHIDUsage keyCode) {
+		switch (keyCode) {
+			case KeyboardA:
+				return Keys.A;
+			case KeyboardB:
+				return Keys.B;
+			case KeyboardC:
+				return Keys.C;
+			case KeyboardD:
+				return Keys.D;
+			case KeyboardE:
+				return Keys.E;
+			case KeyboardF:
+				return Keys.F;
+			case KeyboardG:
+				return Keys.G;
+			case KeyboardH:
+				return Keys.H;
+			case KeyboardI:
+				return Keys.I;
+			case KeyboardJ:
+				return Keys.J;
+			case KeyboardK:
+				return Keys.K;
+			case KeyboardL:
+				return Keys.L;
+			case KeyboardM:
+				return Keys.M;
+			case KeyboardN:
+				return Keys.N;
+			case KeyboardO:
+				return Keys.O;
+			case KeyboardP:
+				return Keys.P;
+			case KeyboardQ:
+				return Keys.Q;
+			case KeyboardR:
+				return Keys.R;
+			case KeyboardS:
+				return Keys.S;
+			case KeyboardT:
+				return Keys.T;
+			case KeyboardU:
+				return Keys.U;
+			case KeyboardV:
+				return Keys.V;
+			case KeyboardW:
+				return Keys.W;
+			case KeyboardX:
+				return Keys.X;
+			case KeyboardY:
+				return Keys.Y;
+			case KeyboardZ:
+				return Keys.Z;
+			case Keyboard1:
+				return Keys.NUM_1;
+			case Keyboard2:
+				return Keys.NUM_2;
+			case Keyboard3:
+				return Keys.NUM_3;
+			case Keyboard4:
+				return Keys.NUM_4;
+			case Keyboard5:
+				return Keys.NUM_5;
+			case Keyboard6:
+				return Keys.NUM_6;
+			case Keyboard7:
+				return Keys.NUM_7;
+			case Keyboard8:
+				return Keys.NUM_8;
+			case Keyboard9:
+				return Keys.NUM_9;
+			case Keyboard0:
+				return Keys.NUM_0;
+			case KeyboardReturnOrEnter:
+				return Keys.ENTER;
+			case KeyboardEscape:
+				return Keys.ESCAPE;
+			case KeyboardDeleteOrBackspace:
+				return Keys.BACKSPACE;
+			case KeyboardTab:
+				return Keys.TAB;
+			case KeyboardSpacebar:
+				return Keys.SPACE;
+			case KeyboardHyphen:
+				return Keys.MINUS;
+			case KeyboardEqualSign:
+				return Keys.EQUALS;
+			case KeyboardOpenBracket:
+				return Keys.LEFT_BRACKET;
+			case KeyboardCloseBracket:
+				return Keys.RIGHT_BRACKET;
+			case KeyboardBackslash:
+				return Keys.BACKSLASH;
+			case KeyboardNonUSPound:
+				return Keys.POUND;
+			case KeyboardSemicolon:
+				return Keys.SEMICOLON;
+			case KeyboardQuote:
+				return Keys.APOSTROPHE;
+			case KeyboardGraveAccentAndTilde:
+				return Keys.GRAVE;
+			case KeyboardComma:
+				return Keys.COMMA;
+			case KeyboardPeriod:
+				return Keys.PERIOD;
+			case KeyboardSlash:
+				return Keys.SLASH;
+			case KeyboardF1:
+				return Keys.F1;
+			case KeyboardF2:
+				return Keys.F2;
+			case KeyboardF3:
+				return Keys.F3;
+			case KeyboardF4:
+				return Keys.F4;
+			case KeyboardF5:
+				return Keys.F5;
+			case KeyboardF6:
+				return Keys.F6;
+			case KeyboardF7:
+				return Keys.F7;
+			case KeyboardF8:
+				return Keys.F8;
+			case KeyboardF9:
+				return Keys.F9;
+			case KeyboardF10:
+				return Keys.F10;
+			case KeyboardF11:
+				return Keys.F11;
+			case KeyboardF12:
+				return Keys.F12;
+			case KeyboardPause:
+				return Keys.MEDIA_PLAY_PAUSE;
+			case KeyboardInsert:
+				return Keys.INSERT;
+			case KeyboardHome:
+				return Keys.HOME;
+			case KeyboardPageUp:
+				return Keys.PAGE_UP;
+			case KeyboardDeleteForward:
+				return Keys.DEL;
+			case KeyboardEnd:
+				return Keys.END;
+			case KeyboardPageDown:
+				return Keys.PAGE_DOWN;
+			case KeyboardRightArrow:
+				return Keys.RIGHT;
+			case KeyboardLeftArrow:
+				return Keys.LEFT;
+			case KeyboardDownArrow:
+				return Keys.DOWN;
+			case KeyboardUpArrow:
+				return Keys.UP;
+			case KeypadNumLock:
+				return Keys.NUM;
+			case KeypadSlash:
+				return Keys.SLASH;
+			case KeypadAsterisk:
+				return Keys.STAR;
+			case KeypadHyphen:
+				return Keys.MINUS;
+			case KeypadPlus:
+				return Keys.PLUS;
+			case KeypadEnter:
+				return Keys.ENTER;
+			case Keypad1:
+				return Keys.NUM_1;
+			case Keypad2:
+				return Keys.NUM_2;
+			case Keypad3:
+				return Keys.NUM_3;
+			case Keypad4:
+				return Keys.NUM_4;
+			case Keypad5:
+				return Keys.NUM_5;
+			case Keypad6:
+				return Keys.NUM_6;
+			case Keypad7:
+				return Keys.NUM_7;
+			case Keypad8:
+				return Keys.NUM_8;
+			case Keypad9:
+				return Keys.NUM_9;
+			case Keypad0:
+				return Keys.NUM_0;
+			case KeypadPeriod:
+				return Keys.PERIOD;
+			case KeyboardNonUSBackslash:
+				return Keys.BACKSLASH;
+			case KeyboardApplication:
+				return Keys.MENU;
+			case KeyboardPower:
+				return Keys.POWER;
+			case KeypadEqualSign:
+				return Keys.EQUALS;
+			case KeyboardHelp:
+				return Keys.F1;
+			case KeyboardMenu:
+				return Keys.MENU;
+			case KeyboardSelect:
+				return Keys.BUTTON_SELECT;
+			case KeyboardStop:
+				return Keys.MEDIA_STOP;
+			case KeyboardFind:
+				return Keys.SEARCH;
+			case KeyboardMute:
+				return Keys.MUTE;
+			case KeyboardVolumeUp:
+				return Keys.VOLUME_UP;
+			case KeyboardVolumeDown:
+				return Keys.VOLUME_DOWN;
+			case KeypadComma:
+				return Keys.COMMA;
+			case KeypadEqualSignAS400:
+				return Keys.EQUALS;
+			case KeyboardAlternateErase:
+				return Keys.DEL;
+			case KeyboardCancel:
+				return Keys.ESCAPE;
+			case KeyboardClear:
+				return Keys.CLEAR;
+			case KeyboardReturn:
+				return Keys.ENTER;
+			case KeyboardLeftControl:
+				return Keys.CONTROL_LEFT;
+			case KeyboardLeftShift:
+				return Keys.SHIFT_LEFT;
+			case KeyboardLeftAlt:
+				return Keys.ALT_LEFT;
+			case KeyboardRightControl:
+				return Keys.CONTROL_RIGHT;
+			case KeyboardRightShift:
+				return Keys.SHIFT_RIGHT;
+			case KeyboardRightAlt:
+				return Keys.ALT_RIGHT;
+			default:
+				return Keys.UNKNOWN;
+		}
+	}
 }

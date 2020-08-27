@@ -65,8 +65,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 		container.setActor(contents);
 	}
 
-	@Null
-	public T getActor () {
+	public @Null T getActor () {
 		return container.getActor();
 	}
 

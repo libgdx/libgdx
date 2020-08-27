@@ -135,8 +135,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the old value associated with the specified key, or null. */
-	@Null
-	public V put (K key, @Null V value) {
+	public @Null V put (K key, @Null V value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			V oldValue = valueTable[i];
@@ -174,8 +173,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the value for the specified key, or null if the key is not in the map. */
-	@Null
-	public <T extends K> V get (T key) {
+	public @Null <T extends K> V get (T key) {
 		int i = locateKey(key);
 		return i < 0 ? null : valueTable[i];
 	}
@@ -186,8 +184,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
-	@Null
-	public V remove (K key) {
+	public @Null V remove (K key) {
 		int i = locateKey(key);
 		if (i < 0) return null;
 		K[] keyTable = this.keyTable;
@@ -274,8 +271,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * every value, which may be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	@Null
-	public K findKey (@Null Object value, boolean identity) {
+	public @Null K findKey (@Null Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
@@ -478,7 +474,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	static public class Entry<K, V> {
 		public K key;
-		@Null public V value;
+		public @Null V value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -577,8 +573,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return hasNext;
 		}
 
-		@Null
-		public V next () {
+		public @Null V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value = map.valueTable[nextIndex];

@@ -48,10 +48,9 @@ public class ProgressBar extends Widget implements Disableable {
 	float position;
 	final boolean vertical;
 	private float animateDuration, animateTime;
-	private Interpolation animateInterpolation = Interpolation.linear;
+	private Interpolation animateInterpolation = Interpolation.linear, visualInterpolation = Interpolation.linear;
 	boolean disabled;
-	private Interpolation visualInterpolation = Interpolation.linear;
-	private boolean round = true;
+	private boolean round = true, programmaticChangeEvents = true;
 
 	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
@@ -261,8 +260,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
-	@Null
-	protected Drawable getKnobDrawable () {
+	protected @Null Drawable getKnobDrawable () {
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
 	}
 
@@ -281,16 +279,22 @@ public class ProgressBar extends Widget implements Disableable {
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
 		this.value = value;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		boolean cancelled = fire(changeEvent);
-		if (cancelled)
-			this.value = oldValue;
-		else if (animateDuration > 0) {
+
+		if (programmaticChangeEvents) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			boolean cancelled = fire(changeEvent);
+			Pools.free(changeEvent);
+			if (cancelled) {
+				this.value = oldValue;
+				return false;
+			}
+		}
+
+		if (animateDuration > 0) {
 			animateFromValue = oldVisualValue;
 			animateTime = animateDuration;
 		}
-		Pools.free(changeEvent);
-		return !cancelled;
+		return true;
 	}
 
 	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress
@@ -306,7 +310,8 @@ public class ProgressBar extends Widget implements Disableable {
 		this.max = max;
 		if (value < min)
 			setValue(min);
-		else if (value > max) setValue(max);
+		else if (value > max) //
+			setValue(max);
 	}
 
 	public void setStepSize (float stepSize) {
@@ -383,18 +388,24 @@ public class ProgressBar extends Widget implements Disableable {
 		return vertical;
 	}
 
+	/** If false, {@link #setValue(float)} will not fire {@link ChangeEvent}. The event will only be fired when the user changes
+	 * the slider. */
+	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
+		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
 	/** The style for a progress bar, see {@link ProgressBar}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
 		/** The progress bar background, stretched only in one direction. Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 		/** Optional. **/
-		@Null public Drawable disabledBackground;
+		public @Null Drawable disabledBackground;
 		/** Optional, centered on the background. */
-		@Null public Drawable knob, disabledKnob;
+		public @Null Drawable knob, disabledKnob;
 		/** Optional. */
-		@Null public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
+		public @Null Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public ProgressBarStyle () {
 		}

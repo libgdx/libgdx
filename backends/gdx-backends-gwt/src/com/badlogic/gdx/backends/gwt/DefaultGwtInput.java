@@ -45,9 +45,9 @@ public class DefaultGwtInput implements GwtInput {
 	IntSet pressedButtons = new IntSet();
 	int pressedKeyCount = 0;
 	IntSet pressedKeySet = new IntSet();
-	boolean[] pressedKeys = new boolean[256];
+	boolean[] pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
 	long currentEventTimeStamp;
@@ -60,7 +60,7 @@ public class DefaultGwtInput implements GwtInput {
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
 		this.config = config;
-		if (config.useAccelerometer) {
+		if (config.useAccelerometer && GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION)) {
 			if (GwtApplication.agentInfo().isFirefox()) {
 				setupAccelerometer();
 			} else {
@@ -381,8 +381,10 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent();
-		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent();
+		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent()
+				&& GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION);
+		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent()
+				&& GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION);
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
