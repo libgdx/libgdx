@@ -357,7 +357,7 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Changes the current animation by blending the new on top of the old during the transition time. */
 	protected AnimationDesc animate (final AnimationDesc anim, float transitionTime) {
-		if (current == null)
+		if (current == null || current.loopCount == 0)
 			current = anim;
 		else if (inAction)
 			queue(anim, transitionTime);
