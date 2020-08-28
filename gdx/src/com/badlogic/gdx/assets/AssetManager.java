@@ -214,6 +214,8 @@ public class AssetManager implements Disposable {
 			}
 		}
 
+		Class type = assetTypes.get(fileName);
+
 		// check if it's in the queue
 		int foundIndex = -1;
 		for (int i = 0; i < loadQueue.size; i++) {
@@ -224,13 +226,15 @@ public class AssetManager implements Disposable {
 		}
 		if (foundIndex != -1) {
 			toLoad--;
-			loadQueue.removeIndex(foundIndex);
+			AssetDescriptor desc = loadQueue.removeIndex(foundIndex);
 			log.info("Unload (from queue): " + fileName);
+
+			// if the queued asset was already loaded, let the callback know it is available.
+			if (type != null && desc.params != null && desc.params.loadedCallback != null)
+				desc.params.loadedCallback.finishedLoading(this, desc.fileName, desc.type);
 			return;
 		}
 
-		// get the asset and its type
-		Class type = assetTypes.get(fileName);
 		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 
 		RefCountedContainer assetRef = assets.get(type).get(fileName);
@@ -392,7 +396,7 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Updates the AssetManager for a single task. Returns if the current task is still being processed or there arew no tasks,
+	/** Updates the AssetManager for a single task. Returns if the current task is still being processed or there are no tasks,
 	 * otherwise it finishes the current task and starts the next task.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {
