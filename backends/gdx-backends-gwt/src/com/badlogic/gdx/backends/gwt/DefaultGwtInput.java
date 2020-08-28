@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
@@ -55,6 +54,7 @@ public class DefaultGwtInput implements GwtInput {
 	final GwtApplicationConfiguration config;
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
+	GwtGyroscope gyroscope;
 
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
@@ -80,6 +80,27 @@ public class DefaultGwtInput implements GwtInput {
 				});
 			}
 		}
+		if (config.useGyroscope) {
+			if (GwtApplication.agentInfo().isFirefox()) {
+				setupGyroscope();
+			} else {
+				GwtPermissions.queryPermission(GwtGyroscope.PERMISSION, new GwtPermissions.GwtPermissionResult() {
+					@Override
+					public void granted() {
+						setupGyroscope();
+					}
+
+					@Override
+					public void denied() {
+					}
+
+					@Override
+					public void prompt() {
+						setupGyroscope();
+					}
+				});
+			}
+		}
 		hookEvents();
 	}
 
@@ -100,9 +121,16 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	void setupAccelerometer () {
-		if (GwtAccelerometer.isSupported()) {
+		if (GwtAccelerometer.isSupported() && GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION)) {
 			if (accelerometer == null) accelerometer = GwtAccelerometer.getInstance();
 			if (!accelerometer.activated()) accelerometer.start();
+		}
+	}
+
+	void setupGyroscope () {
+		if (GwtGyroscope.isSupported() && GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION)) {
+			if (gyroscope == null) gyroscope = GwtGyroscope.getInstance();
+			if (!gyroscope.activated()) gyroscope.start();
 		}
 	}
 
@@ -127,20 +155,21 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public float getGyroscopeX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.x() : 0;
 	}
 
 	@Override
 	public float getGyroscopeY () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.y() : 0;
 	}
 
 	@Override
 	public float getGyroscopeZ () {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.gyroscope != null ? (float) this.gyroscope.z() : 0;
+	}
+
+	private boolean isGyroscopePresent() {
+		return getGyroscopeX() != 0 || getGyroscopeY() != 0 || getGyroscopeZ() != 0;
 	}
 
 	@Override
@@ -351,6 +380,8 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent()
+				&& GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION);
 		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent()
 				&& GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION);
 		if (peripheral == Peripheral.Compass) return false;
