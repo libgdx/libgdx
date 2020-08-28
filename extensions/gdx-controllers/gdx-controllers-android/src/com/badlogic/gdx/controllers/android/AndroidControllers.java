@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AndroidControllers implements LifecycleListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
 	private final static String TAG = "AndroidControllers";
+	public static boolean ignoreNoGamepadButtons = true;
 	private final IntMap<AndroidController> controllerMap = new IntMap<AndroidController>();
 	private final Array<Controller> controllers = new Array<Controller>();
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
@@ -46,7 +47,7 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 			return new AndroidControllerEvent();
 		}
 	};
-	
+
 	public AndroidControllers() {
 		Gdx.app.addLifecycleListener(this);
 		gatherControllers(false);
@@ -189,7 +190,7 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 
 	@Override
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
-		if (!KeyEvent.isGamepadButton(keyCode)) {
+		if (ignoreNoGamepadButtons && !KeyEvent.isGamepadButton(keyCode)) {
 			return false;
 		}
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());
