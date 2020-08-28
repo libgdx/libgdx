@@ -200,35 +200,41 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
-		// check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
-		if (tasks.size() > 0) {
-			AssetLoadingTask currentTask = tasks.firstElement();
-			if (currentTask.assetDesc.fileName.equals(fileName)) {
-				log.info("Unload (from tasks): " + fileName);
-				currentTask.cancel = true;
-				currentTask.unload();
-				return;
-			}
-		}
-
-		// check if it's in the queue
-		int foundIndex = -1;
-		for (int i = 0; i < loadQueue.size; i++) {
-			if (loadQueue.get(i).fileName.equals(fileName)) {
-				foundIndex = i;
-				break;
-			}
-		}
-		if (foundIndex != -1) {
-			toLoad--;
-			loadQueue.removeIndex(foundIndex);
-			log.info("Unload (from queue): " + fileName);
-			return;
-		}
+		// convert all windows path separators to unix style
+		fileName = fileName.replace('\\', '/');
 
 		// get the asset and its type
-		Class type = assetTypes.get(fileName);
-		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		Class<?> type = assetTypes.get(fileName);
+
+		if (type == null) {
+			// check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
+			if (tasks.size() > 0) {
+				AssetLoadingTask currentTask = tasks.firstElement();
+				if (currentTask.assetDesc.fileName.equals(fileName)) {
+					log.info("Unload (from tasks): " + fileName);
+					currentTask.cancel = true;
+					currentTask.unload();
+					return;
+				}
+			}
+
+			// check if it's in the queue
+			int foundIndex = -1;
+			for (int i = 0; i < loadQueue.size; i++) {
+				if (loadQueue.get(i).fileName.equals(fileName)) {
+					foundIndex = i;
+					break;
+				}
+			}
+			if (foundIndex != -1) {
+				toLoad--;
+				loadQueue.removeIndex(foundIndex);
+				log.info("Unload (from queue): " + fileName);
+				return;
+			}
+
+			throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		}
 
 		RefCountedContainer assetRef = assets.get(type).get(fileName);
 
