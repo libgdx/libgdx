@@ -290,7 +290,7 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	private @Null Drawable getBackgroundDrawable () {
+	protected @Null Drawable getBackgroundDrawable () {
 		boolean focused = hasKeyboardFocus();
 		return (disabled && style.disabledBackground != null) ? style.disabledBackground
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
@@ -632,8 +632,8 @@ public class TextField extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes
-	 * the text. */
+	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when the user
+	 * changes the text. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
@@ -1070,9 +1070,9 @@ public class TextField extends Widget implements Disableable {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
+						updateDisplayText();
 					} else
 						cursor = oldCursor;
-					updateDisplayText();
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);

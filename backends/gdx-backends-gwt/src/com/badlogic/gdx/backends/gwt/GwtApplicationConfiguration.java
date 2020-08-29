@@ -57,6 +57,8 @@ public class GwtApplicationConfiguration {
 	public boolean openURLInNewWindow = true;
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
+	/** whether to use the gyroscope. default: false **/
+	public boolean useGyroscope = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
