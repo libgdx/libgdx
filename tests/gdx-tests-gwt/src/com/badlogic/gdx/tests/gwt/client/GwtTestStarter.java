@@ -19,14 +19,18 @@ package com.badlogic.gdx.tests.gwt.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 
 public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
-		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320);
-		config.useGyroscope = true;
+		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320, true);
+        config.useGyroscope = true;
 		//config.openURLInNewWindow = true;
+		double density = GwtGraphics.getNativeScreenDensity();
+		config.width = (int) (config.width * density);
+		config.height = (int) (config.height * density);
 		return config;
 	}
 
