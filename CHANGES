@@ -1,3 +1,25 @@
+[1.9.12]
+- Update to MobiVM 2.3.10
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- Fixed GlyphLayout not laying out correctly with color markup.
+- Fixed TileDrawable not applying its scale correctly.
+- API Addition: Added epsilon methods to maps with float values.
+- API Addition: Added an insertRange method to array collections.
+- Fixed GestureDetector maxFlingDelay.
+- API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
+- Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- API Addition: Added setProgrammaticChangeEvents to ProgressBar/Slider.
+- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
+- API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
+- GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
+- GWT added possibility to lazy load assets via AssetManager instead of preload them before game start. See GWT specifics wiki article for more information.
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3

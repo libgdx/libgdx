@@ -146,6 +146,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super.insert(index, value);
 	}
 
+	public void insertRange (int index, int count) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		super.insertRange(index, count);
+	}
+
 	public void swap (int first, int second) {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.swap(first, second);

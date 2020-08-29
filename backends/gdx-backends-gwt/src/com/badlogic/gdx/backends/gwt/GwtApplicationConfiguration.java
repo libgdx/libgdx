@@ -22,8 +22,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
-	/** If true, SoundManager2 will not be used. This means {@link Application#getAudio()} returns null and the SoundManager2 file
-	 * are not used. */
+	/** If true, audio backend will not be used. This means {@link Application#getAudio()} returns null. */
 	public boolean disableAudio;
 	/** the width of the drawing area in pixels **/
 	public int width;
@@ -51,8 +50,6 @@ public class GwtApplicationConfiguration {
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
-	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
-	public boolean preferFlash = false;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
@@ -68,6 +65,8 @@ public class GwtApplicationConfiguration {
 	public boolean openURLInNewWindow = true;
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
+	/** whether to use the gyroscope. default: false **/
+	public boolean useGyroscope = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
