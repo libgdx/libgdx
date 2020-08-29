@@ -14,15 +14,24 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.gwt.soundmanager2;
+package com.badlogic.gdx.backends.gwt.webaudio;
 
-import com.badlogic.gdx.backends.gwt.soundmanager2.SMSound.SMSoundCallback;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.Pool;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.badlogic.gdx.utils.Pool;
 
-public class SMSoundOptions {
-	public SMSoundOptions() {};
-	public int volume = 100;
-	public int pan = 0;
-	public int loops = 1;
-	public int from = 0;
-	public SMSoundCallback callback = null;
+public class AudioControlGraphPool extends Pool<AudioControlGraph> {
+	public JavaScriptObject audioContext;
+	public JavaScriptObject destinationNode;
+
+	public AudioControlGraphPool (JavaScriptObject audioContext, JavaScriptObject destinationNode) {
+		this.audioContext = audioContext;
+		this.destinationNode = destinationNode;
+	}
+
+	@Override
+	protected AudioControlGraph newObject () {
+		return new AudioControlGraph(audioContext, destinationNode);
+	}
 }
