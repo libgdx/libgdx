@@ -260,19 +260,16 @@ public class GwtTestWrapper extends GdxTest {
 
 		@Override
 		public float getGyroscopeX () {
-			// TODO Auto-generated method stub
 			return input.getGyroscopeX();
 		}
 
 		@Override
 		public float getGyroscopeY () {
-			// TODO Auto-generated method stub
 			return input.getGyroscopeY();
 		}
 
 		@Override
 		public float getGyroscopeZ () {
-			// TODO Auto-generated method stub
 			return input.getGyroscopeZ();
 		}
 

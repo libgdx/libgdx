@@ -30,7 +30,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
-import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -136,28 +135,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		}
 
-		
-		if (config.disableAudio) {
-			preloadAssets();
-		} else {
-			// initialize SoundManager2
-			SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
-
-				@Override
-				public void onready () {
-					preloadAssets();
-				}
-
-				@Override
-				public void ontimeout (String status, String errorType) {
-					error("SoundManager", status + " " + errorType);
-				}
-
-			});
-		}
+		preloadAssets();
 	}
-	
-	void preloadAssets () {
+
+	void preloadAssets() {
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = createPreloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
