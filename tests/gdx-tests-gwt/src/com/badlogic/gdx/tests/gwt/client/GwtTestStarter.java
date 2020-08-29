@@ -26,7 +26,7 @@ public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
 		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320, true);
-        config.useGyroscope = true;
+		config.useGyroscope = true;
 		//config.openURLInNewWindow = true;
 		double density = GwtGraphics.getNativeScreenDensity();
 		config.width = (int) (config.width * density);
