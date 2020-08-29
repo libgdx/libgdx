@@ -38,6 +38,14 @@ public class GwtApplicationConfiguration {
 	/** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
 	 * body element of the DOM **/
 	public String canvasId;
+	/** Whether to use physical device pixels or CSS pixels for scaling the canvas. Makes a difference on mobile
+	 * devices and HDPI and Retina displays. Set to true for resizable and fullscreen games on mobile devices and for
+	 * Desktops if you want to use the full resolution of HDPI/Retina displays.<br/>
+	 * Setting to false mostly makes sense for
+	 * fixed-size games or non-mobile games expecting performance issues on huge resolutions. If you target mobiles
+	 * and desktops, consider using physical device pixels on mobile devices only by using the return value of
+	 * {@link GwtApplication#isMobileDevice()} . */
+	public boolean usePhysicalPixels;
 	/** a TextArea to log messages to, can be null in which case a TextArea will be added to the body element of the DOM. */
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
@@ -63,5 +71,11 @@ public class GwtApplicationConfiguration {
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
 		this.height = height;
+	}
+
+	public GwtApplicationConfiguration (int width, int height, boolean usePhysicalPixels) {
+		this.width = width;
+		this.height = height;
+		this.usePhysicalPixels = usePhysicalPixels;
 	}
 }
