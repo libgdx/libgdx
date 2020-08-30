@@ -402,7 +402,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	void createWindow(Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
-		window.create(windowHandle);
+		window.create(windowHandle,  config.vSyncEnabled);
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {

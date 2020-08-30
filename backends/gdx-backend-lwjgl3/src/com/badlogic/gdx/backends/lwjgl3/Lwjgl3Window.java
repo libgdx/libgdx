@@ -163,10 +163,11 @@ public class Lwjgl3Window implements Disposable {
 		this.tmpBuffer2 = BufferUtils.createIntBuffer(1);
 	}
 
-	void create(long windowHandle) {
+	void create(long windowHandle, boolean vsync) {
 		this.windowHandle = windowHandle;
 		this.input = application.createInput(this);
 		this.graphics = new Lwjgl3Graphics(this);
+		this.graphics.vsync = vsync;
 
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);

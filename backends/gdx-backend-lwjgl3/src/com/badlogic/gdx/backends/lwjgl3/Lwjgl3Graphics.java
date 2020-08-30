@@ -55,7 +55,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private int windowPosXBeforeFullscreen;
 	private int windowPosYBeforeFullscreen;
 	private DisplayMode displayModeBeforeFullscreen = null;
-	private boolean vsync;
+	boolean vsync;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
@@ -367,7 +367,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		}
 		updateFramebufferInfo();
 
-		setVSync(vsync);
+ 		setVSync(vsync);
 
 		return true;
 	}
