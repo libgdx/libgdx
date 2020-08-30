@@ -23,13 +23,13 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-freetype-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-freetype.dll"/>
-			<fileset dir="../libs/windows64" includes="gdx-freetype64.dll"/>
-			<fileset dir="../libs/linux32" includes="libgdx-freetype.so"/>
-			<fileset dir="../libs/linux64" includes="libgdx-freetype64.so"/>
-			<fileset dir="../libs/linuxarm32" includes="libgdx-freetypearm.so"/>
-			<fileset dir="../libs/linuxarm64" includes="libgdx-freetypearm64.so"/>
-			<fileset dir="../libs/macosx64" includes="libgdx-freetype64.dylib"/>
+			<fileset dir="../libs/windows32" erroronmissingdir="false" includes="gdx-freetype.dll"/>
+			<fileset dir="../libs/windows64" erroronmissingdir="false" includes="gdx-freetype64.dll"/>
+			<fileset dir="../libs/linux32" erroronmissingdir="false" includes="libgdx-freetype.so"/>
+			<fileset dir="../libs/linux64" erroronmissingdir="false" includes="libgdx-freetype64.so"/>
+			<fileset dir="../libs/linuxarm32" erroronmissingdir="false" includes="libgdx-freetypearm.so"/>
+			<fileset dir="../libs/linuxarm64" erroronmissingdir="false" includes="libgdx-freetypearm64.so"/>
+			<fileset dir="../libs/macosx64" erroronmissingdir="false" includes="libgdx-freetype64.dylib"/>
 
 		</jar>
 	</target>

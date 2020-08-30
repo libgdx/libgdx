@@ -125,7 +125,7 @@ public class AntScriptGenerator {
 			compile.append("\t\t<ant antfile=\"" + buildFiles.get(i) + "\"/>\n");
 		}
 		for (int i = 0; i < libsDirs.size(); i++) {
-			pack.append("\t\t\t<fileset dir=\"" + libsDirs.get(i) + "\" includes=\"" + sharedLibFiles.get(i) + "\"/>\n");
+			pack.append("\t\t\t<fileset dir=\"" + libsDirs.get(i) + "\" erroronmissingdir=\"false\" includes=\"" + sharedLibFiles.get(i) + "\"/>\n");
 		}
 
 		if (config.sharedLibs != null) {

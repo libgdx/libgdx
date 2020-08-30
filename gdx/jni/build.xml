@@ -23,13 +23,13 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-natives.jar">
-			<fileset dir="../libs/macosx64" includes="libgdx64.dylib"/>
-			<fileset dir="../libs/windows32" includes="gdx.dll"/>
-			<fileset dir="../libs/windows64" includes="gdx64.dll"/>
-			<fileset dir="../libs/linux32" includes="libgdx.so"/>
-			<fileset dir="../libs/linux64" includes="libgdx64.so"/>
-			<fileset dir="../libs/linuxarm32" includes="libgdxarm.so"/>
-			<fileset dir="../libs/linuxarm64" includes="libgdxarm64.so"/>
+			<fileset dir="../libs/macosx64" erroronmissingdir="false" includes="libgdx64.dylib"/>
+			<fileset dir="../libs/windows32" erroronmissingdir="false" includes="gdx.dll"/>
+			<fileset dir="../libs/windows64" erroronmissingdir="false" includes="gdx64.dll"/>
+			<fileset dir="../libs/linux32" erroronmissingdir="false" includes="libgdx.so"/>
+			<fileset dir="../libs/linux64" erroronmissingdir="false" includes="libgdx64.so"/>
+			<fileset dir="../libs/linuxarm32" erroronmissingdir="false" includes="libgdxarm.so"/>
+			<fileset dir="../libs/linuxarm64" erroronmissingdir="false" includes="libgdxarm64.so"/>
 
 		</jar>
 	</target>
