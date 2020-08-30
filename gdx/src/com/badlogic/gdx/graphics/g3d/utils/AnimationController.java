@@ -179,11 +179,11 @@ public class AnimationController extends BaseAnimationController {
 		}
 		if (current == null || current.loopCount == 0 || current.animation == null) return;
 		final float remain = current.update(delta);
-		if (remain != 0f && queued != null) {
+		if (queued != null) {
 			inAction = false;
 			animate(queued, queuedTransitionTime);
 			queued = null;			
-			update(remain);
+			if(remain != 0f) update(remain);
 			return;
 		}
 		if (previous != null)
