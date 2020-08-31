@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -362,25 +362,49 @@ public class DefaultGwtInput implements GwtInput {
 	@Override
 	public native int getRotation () /*-{
 		if ("screen" in $wnd) {
-			var orientation = $wnd.screen.msOrientation || $wnd.screen.mozOrientation || ($wnd.screen.orientation || {}).type;
-			var isPortrait = this.@com.badlogic.gdx.backends.gwt.GwtInput::getNativeOrientation()() === @com.badlogic.gdx.Input.Orientation::Portrait;
-			if (orientation === "portrait-primary") {
-				return isPortrait ? 0 : 270;
-			} else if (orientation === "landscape-primary") {
-				return isPortrait ? 90 : 0;
-			} else if (orientation === "portrait-secondary") {
-				return isPortrait ? 180 : 90;
-			} else if (orientation === "landscape-secondary") {
-				return isPortrait ? 270 : 180;
-			}
+		    // https://www.w3.org/TR/screen-orientation/#angle-attribute-get-orientation-angle
+			return $wnd.screen.msOrientation
+				|| $wnd.screen.mozOrientation
+				|| ($wnd.screen.orientation || {}).angle;
 		}
 		return 0;
 	}-*/;
 
 	@Override
-	public Orientation getNativeOrientation () {
-		return GwtApplication.isMobileDevice() ? Orientation.Portrait : Orientation.Landscape;
-	}
+	public native Orientation getNativeOrientation () /*-{
+    	var type = $wnd.screen.msOrientation
+            || $wnd.screen.mozOrientation
+            || ($wnd.screen.orientation || {}).type;
+    	// https://www.w3.org/TR/screen-orientation/#reading-the-screen-orientation
+    	switch (this.@com.badlogic.gdx.backends.gwt.GwtInput::getRotation()()) {
+			case 0:
+			    if (type === "portrait-primary") {
+                    return @com.badlogic.gdx.Input.Orientation::Portrait;
+                } else {
+                    return @com.badlogic.gdx.Input.Orientation::Landscape;
+				}
+			case 180:
+			    if (type === "portrait-secondary") {
+					return @com.badlogic.gdx.Input.Orientation::Portrait;
+				} else {
+					return @com.badlogic.gdx.Input.Orientation::Landscape;
+				}
+			case 90:
+                if (type === "landscape-primary") {
+                    return @com.badlogic.gdx.Input.Orientation::Portrait;
+                } else {
+                    return @com.badlogic.gdx.Input.Orientation::Landscape;
+                }
+            case 270:
+                if (type === "landscape-secondary") {
+                    return @com.badlogic.gdx.Input.Orientation::Portrait;
+                } else {
+                    return @com.badlogic.gdx.Input.Orientation::Landscape;
+                }
+			default:
+			    return @com.badlogic.gdx.Input.Orientation::Landscape;
+        }
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
