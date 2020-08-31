@@ -20,12 +20,15 @@ LibGDX also offers a very extensive third-party ecosystem. There are numerous [t
 ###### One example for a libGDX game: [Pathway](https://store.steampowered.com/app/546430/Pathway/) by Robotality. Find more games in our [showcase](https://libgdx.github.io/showcase/).
 
 ## Getting libGDX / Documentation
-As we switched to Gradle, there's no need to download libGDX itself anymore. We also offer a [setup tool](https://libgdx.github.io/dev/#how-to-get-started-with-libgdx), which automatically creates a project for you and downloads everything necessary. See our **[website](https://libgdx.github.io/dev/setup/)** for instruction son how to get started or read our **[wiki](https://github.com/libgdx/libgdx/wiki)**.
+As we switched to Gradle, there's no need to download libGDX itself anymore. We also offer a [setup tool](https://libgdx.github.io/dev/#how-to-get-started-with-libgdx), which automatically creates a project for you and downloads everything necessary. See our **[website](https://libgdx.github.io/dev/setup/)** for instructions on how to get started or read our **[wiki](https://github.com/libgdx/libgdx/wiki)**:
+
+- [Setup Your First Project](http://libgdx.com/dev/setup/)
+- [Create Your First Game](https://github.com/libgdx/libgdx/wiki/A-Simple-Game)
 
 We also provide [Javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The Javadocs are also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
 
 ## Community & Contributing
-You can follow the latest news about libGDX on the [blog](https://libgdx.github.io/news/). A good way to get in touch with our community is to join the official [libGDX discord](https://discord.gg/6pgDK9F).
+You can follow the **latest news** about libGDX on the [blog](https://libgdx.github.io/news/). A good way to get in touch with our community is to join the official [libGDX discord](https://discord.gg/6pgDK9F).
 
 ### Reporting Issues
 Use the **[issue tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
