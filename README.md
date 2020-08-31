@@ -1,4 +1,4 @@
-![logo](http://libgdx.badlogicgames.com/img/logo.png)
+![logo](http://libgdx.com/assets/images/logo.png)
 
 [![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?subject=Jenkins&job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) 
 [![Travis build status](https://img.shields.io/travis/libgdx/libgdx/master.svg?label=Travis%20CI)](https://travis-ci.org/libgdx/libgdx)
@@ -40,13 +40,13 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 
 <table>
 <tr>
-<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a></td>
+<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="http://libgdx.com/assets/images/sponsors/robovm.png" alt="RoboVM" /></a></td>
+<td style="text-align: center;"><a href="http://bit.ly/spinegdx"><img src="http://libgdx.com/assets/images/sponsors/spine.png"></a></td>
 </tr>
 
 <tr>
-<td style="text-align: center;"><a href="http://bit.ly/saikoagdx"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" /></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/intelgdx"><img src="http://libgdx.badlogicgames.com/img/intel.png" alt="intel Software Partner" /></a></td>
+<td style="text-align: center;"><a href="http://bit.ly/saikoagdx"><img style="margin-right:20px" src="http://libgdx.com/assets/images/sponsors/saikoa.png" alt="Saikoa" /></a></td>
+<td style="text-align: center;"><a href="http://bit.ly/intelgdx"><img src="http://libgdx.com/assets/images/sponsors/intel.png" alt="intel Software Partner" /></a></td>
 </tr>
 </table>
 
