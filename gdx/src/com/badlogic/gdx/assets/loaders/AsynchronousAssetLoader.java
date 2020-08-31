@@ -42,7 +42,7 @@ public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters
 	/** Called if this task is unloaded before {@link #loadSync(AssetManager, String, FileHandle, AssetLoaderParameters) loadSync}
 	 * is called. This method may be invoked on any thread, but will not be invoked during or after
 	 * {@link #loadSync(AssetManager, String, FileHandle, AssetLoaderParameters) loadSync}. This method is not invoked when a task
-	 * is cancelled because it throws an exception, only when the asset is unloaded before loading is complete.
+	 * is cancelled because it threw an exception, only when the asset is unloaded before loading is complete.
 	 * <p>
 	 * The default implementation does nothing. Subclasses should release any resources acquired in
 	 * {@link #loadAsync(AssetManager, String, FileHandle, AssetLoaderParameters) loadAsync}, which may or may not have been called

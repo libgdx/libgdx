@@ -575,7 +575,7 @@ public final class Intersector {
 				}
 			}
 		}
-		// max y
+		// max z
 		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
 			t = (box.max.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {

@@ -1,19 +1,63 @@
 <!-- Call this to fetch all the natives from the build server -->
 <project name="fetch-natives" default="all">
 	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
+
+    <property name="robovm-snapshoturl" value="https://oss.sonatype.org/content/repositories/snapshots/com/mobidevelop/robovm"/>
+
     <property name="robovm" value="https://oss.sonatype.org/content/repositories/releases/com/mobidevelop/robovm"/>
-    <property name="robovm-version" value="2.3.8"/>
+
+    <property name="robovm-version" value="2.3.10-SNAPSHOT"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
     <property name="lwjgl-version" value="3.2.3"/>
 
+    <!--    Begin robovm snapshot hacks-->
+    <exec executable="/bin/bash" outputproperty="robovm-snapshot.cacerts">
+        <arg value="extractLatestSnapshot.sh"/>
+        <arg value="robovm-cacerts-full"/>
+        <arg value="${robovm-snapshoturl}/robovm-cacerts-full/${robovm-version}/"/>
+    </exec>
+
+    <exec executable="/bin/bash" outputproperty="robovm-snapshot.cocoatouch">
+        <arg value="extractLatestSnapshot.sh"/>
+        <arg value="robovm-cocoatouch"/>
+        <arg value="${robovm-snapshoturl}/robovm-cocoatouch/${robovm-version}/"/>
+    </exec>
+
+    <exec executable="/bin/bash" outputproperty="robovm-snapshot.objc">
+        <arg value="extractLatestSnapshot.sh"/>
+        <arg value="robovm-objc"/>
+        <arg value="${robovm-snapshoturl}/robovm-objc/${robovm-version}/"/>
+    </exec>
+
+    <exec executable="/bin/bash" outputproperty="robovm-snapshot.rt">
+        <arg value="extractLatestSnapshot.sh"/>
+        <arg value="robovm-rt"/>
+        <arg value="${robovm-snapshoturl}/robovm-rt/${robovm-version}/"/>
+    </exec>
+
+
+    <echo message="Robovm Snapshots extracted
+        ${line.separator}${robovm-snapshot.cacerts}
+        ${line.separator}${robovm-snapshot.cocoatouch}
+        ${line.separator}${robovm-snapshot.objc}
+        ${line.separator}${robovm-snapshot.rt}">
+    </echo>
+
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
         <parallel>
-            <get src="${robovm}/robovm-cacerts-full/${robovm-version}/robovm-cacerts-full-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-cacerts-full.jar"/>
-            <get src="${robovm}/robovm-cocoatouch/${robovm-version}/robovm-cocoatouch-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-cocoatouch.jar"/>
-            <get src="${robovm}/robovm-objc/${robovm-version}/robovm-objc-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-objc.jar"/>
-            <get src="${robovm}/robovm-rt/${robovm-version}/robovm-rt-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-rt.jar"/>
+            <!--            Release-->
+            <!--            <get src="${robovm}/robovm-cacerts-full/${robovm-version}/robovm-cacerts-full-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-cacerts-full.jar"/>-->
+            <!--            <get src="${robovm}/robovm-cocoatouch/${robovm-version}/robovm-cocoatouch-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-cocoatouch.jar"/>-->
+            <!--            <get src="${robovm}/robovm-objc/${robovm-version}/robovm-objc-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-objc.jar"/>-->
+            <!--            <get src="${robovm}/robovm-rt/${robovm-version}/robovm-rt-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-rt.jar"/>-->
+
+            <!--            Snapshots-->
+            <get src="${robovm-snapshot.cacerts}" dest="backends/gdx-backend-robovm/libs/robovm-cacerts-full.jar"/>
+            <get src="${robovm-snapshot.cocoatouch}" dest="backends/gdx-backend-robovm/libs/robovm-cocoatouch.jar"/>
+            <get src="${robovm-snapshot.objc}" dest="backends/gdx-backend-robovm/libs/robovm-objc.jar"/>
+            <get src="${robovm-snapshot.rt}" dest="backends/gdx-backend-robovm/libs/robovm-rt.jar"/>
         </parallel>
     </target>
 

@@ -67,7 +67,7 @@ final public class DefaultLwjglInput implements LwjglInput {
 	int deltaX, deltaY;
 	int pressedKeys = 0;
 	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	boolean justTouched = false;
 	IntSet pressedButtons = new IntSet();

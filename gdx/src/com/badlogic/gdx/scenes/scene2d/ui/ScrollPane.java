@@ -441,17 +441,15 @@ public class ScrollPane extends WidgetGroup {
 				areaHeight -= scrollbarHeight;
 				areaWidth -= scrollbarWidth;
 			}
+		} else if (scrollbarsOnTop) {
+			// Make sure widget is drawn under non-fading scrollbars.
+			if (scrollX) widgetAreaBounds.height += scrollbarHeight;
+			if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 		} else {
-			if (scrollbarsOnTop) {
-				// Make sure widget is drawn under non-fading scrollbars.
-				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
-				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
-			} else {
-				// Offset widget area y for horizontal scrollbar at bottom.
-				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
-				// Offset widget area x for vertical scrollbar at left.
-				if (scrollY && !vScrollOnRight) widgetAreaBounds.x += scrollbarWidth;
-			}
+			// Offset widget area y for horizontal scrollbar at bottom.
+			if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
+			// Offset widget area x for vertical scrollbar at left.
+			if (scrollY && !vScrollOnRight) widgetAreaBounds.x += scrollbarWidth;
 		}
 
 		// If the widget is smaller than the available space, make it take up the available space.
@@ -460,12 +458,10 @@ public class ScrollPane extends WidgetGroup {
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
-		if (fade) {
-			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX && scrollY) {
-				maxY -= scrollbarHeight;
-				maxX -= scrollbarWidth;
-			}
+		// Make sure widget is drawn under fading scrollbars.
+		if (fade && scrollX && scrollY) {
+			maxY -= scrollbarHeight;
+			maxX -= scrollbarWidth;
 		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
@@ -476,7 +472,6 @@ public class ScrollPane extends WidgetGroup {
 				float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
 				// The corner gap where the two scroll bars intersect might have to flip from right to left.
 				float boundsX = vScrollOnRight ? bgLeftWidth : bgLeftWidth + scrollbarWidth;
-				// Scrollbar on the top or bottom.
 				float boundsY = hScrollOnBottom ? bgBottomHeight : height - bgTopHeight - hScrollHeight;
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
 				if (variableSizeKnobs)
@@ -497,19 +492,16 @@ public class ScrollPane extends WidgetGroup {
 		if (scrollY) {
 			if (vScrollKnob != null) {
 				float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
-				// the small gap where the two scroll bars intersect might have to flip from bottom to top
+				// The corner gap where the two scroll bars intersect might have to flip from bottom to top.
 				float boundsX, boundsY;
-				if (hScrollOnBottom) {
+				if (hScrollOnBottom)
 					boundsY = height - bgTopHeight - areaHeight;
-				} else {
+				else
 					boundsY = bgBottomHeight;
-				}
-				// bar on the left or right
-				if (vScrollOnRight) {
+				if (vScrollOnRight)
 					boundsX = width - bgRightWidth - vScrollWidth;
-				} else {
+				else
 					boundsX = bgLeftWidth;
-				}
 				vScrollBounds.set(boundsX, boundsY, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
 				if (variableSizeKnobs)
@@ -518,11 +510,10 @@ public class ScrollPane extends WidgetGroup {
 					vKnobBounds.height = vScrollKnob.getMinHeight();
 				if (vKnobBounds.height > widgetHeight) vKnobBounds.height = 0;
 
-				if (vScrollOnRight) {
+				if (vScrollOnRight)
 					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
-				} else {
+				else
 					vKnobBounds.x = bgLeftWidth;
-				}
 				vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 			} else {
 				vScrollBounds.set(0, 0, 0, 0);
@@ -590,8 +581,11 @@ public class ScrollPane extends WidgetGroup {
 
 		// Draw the background ninepatch.
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		float alpha = color.a * parentAlpha;
+		if (style.background != null) {
+			batch.setColor(color.r, color.g, color.b, alpha);
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
 
 		batch.flush();
 		if (clipBegin(widgetAreaBounds.x, widgetAreaBounds.y, widgetAreaBounds.width, widgetAreaBounds.height)) {
@@ -600,10 +594,9 @@ public class ScrollPane extends WidgetGroup {
 			clipEnd();
 		}
 
-		// Render scrollbars and knobs on top if they will be visible
-		float alpha = color.a * parentAlpha;
+		// Render scrollbars and knobs on top if they will be visible.
+		batch.setColor(color.r, color.g, color.b, alpha);
 		if (fadeScrollBars) alpha *= Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawScrollBars(batch, color.r, color.g, color.b, alpha);
 
 		resetTransform(batch);

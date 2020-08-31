@@ -41,7 +41,7 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	boolean justTouched;
 	int pressedKeys;
 	boolean keyJustPressed;
-	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	char lastCharacter;
 		

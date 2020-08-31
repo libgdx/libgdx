@@ -648,7 +648,7 @@ public class DefaultAndroidInput implements AndroidInput {
 
 	@Override
 	public boolean isCatchKey (int keycode) {
-		return keysToCatch.contains(keyCount);
+		return keysToCatch.contains(keycode);
 	}
 
 	@Override
