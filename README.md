@@ -14,7 +14,7 @@
 ## Open Source, Feature Packed and Offering a Big Third-party Ecosystem
 LibGDX is licensed under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) meaning you can use it free of charge, without strings attached in commercial and non-commercial projects. We love to get (non-mandatory) credit in case you release a game or app using libgdx! LibGDX comes with batteries included. See our [showcase](https://libgdx.github.io/showcase/) for a selection of 2D and 3D games developed with libGDX. 
 
-LibGDX also offers a very extensive third-party ecosystem. There are numerous [tools](https://libgdx.github.io/dev/tools/) and libraries that take a lot of work off the hands of developers. Take a look at [awesome-libgdx](https://github.com/rafaskb/awesome-libgdx) for a curated list of libGDX-centered libraries and a good starting point for anyone new in the libGDX world.
+LibGDX also offers a very extensive third-party ecosystem. There are numerous [tools](https://libgdx.github.io/dev/tools/) and libraries that take a lot of work off the hands of developers. Take a look at [awesome-libgdx](https://github.com/rafaskb/awesome-libgdx#readme) for a curated list of libGDX-centered libraries and a good starting point for anyone new in the libGDX world.
 
 ![](https://libgdx.github.io/assets/images/index_showcase/game0.png)
 ###### One example for a libGDX game: [Pathway](https://store.steampowered.com/app/546430/Pathway/) by Robotality. Find more games in our [showcase](https://libgdx.github.io/showcase/).
