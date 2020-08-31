@@ -5,7 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
-public class UIUtils {
+public final class UIUtils {
+
+	private UIUtils () {
+	}
+
 	//Adapted system checks from com.badlogic.gdx.utils.SharedLibraryLoader
 	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
 	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
