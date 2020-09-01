@@ -18,12 +18,12 @@ public class Vector2Test {
 
 	@Test
 	public void testAngle() {
-		assertEquals(270f, new Vector2(0, -1f).angle(), MathUtils.FLOAT_ROUNDING_ERROR);
+		assertEquals(270f, new Vector2(0, -1f).angleDeg(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
 	public void testAngleRelative() {
-		assertEquals(270f, new Vector2(0, -1f).angle(Vector2.X), MathUtils.FLOAT_ROUNDING_ERROR);
+		assertEquals(270f, new Vector2(0, -1f).angleDeg(Vector2.X), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
