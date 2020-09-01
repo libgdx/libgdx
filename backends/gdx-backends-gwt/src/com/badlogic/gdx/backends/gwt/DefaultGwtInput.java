@@ -363,9 +363,7 @@ public class DefaultGwtInput implements GwtInput {
 	public native int getRotation () /*-{
 		if ("screen" in $wnd) {
 			// https://www.w3.org/TR/screen-orientation/#angle-attribute-get-orientation-angle
-			return $wnd.screen.msOrientation
-				|| $wnd.screen.mozOrientation
-				|| ($wnd.screen.orientation || {}).angle;
+			return ($wnd.screen.orientation || {}).angle || 0;
 		}
 		return 0;
 	}-*/;
