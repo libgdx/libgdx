@@ -9,6 +9,7 @@
 - Fixed GestureDetector maxFlingDelay.
 - API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- Improved text, cursor and selection rendering in TextField and TextArea.
 - API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
 - Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
 - API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
