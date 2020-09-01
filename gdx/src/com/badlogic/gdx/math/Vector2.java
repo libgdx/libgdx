@@ -329,7 +329,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the negative y-axis
 	 *         (typically clockwise) between -180 and +180 
-	 * @deprecated  use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the range.  */
+	 * @deprecated  use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the range. */
 	@Deprecated
 	public float angle (Vector2 reference) {
 		return (float)Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
@@ -388,16 +388,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees 
-	 * @deprecated  use {@link #rotateDeg(float)} instead.
-	 * */
+	 * @deprecated  use {@link #rotateDeg(float)} instead. */
 	@Deprecated
 	public Vector2 rotate (float degrees) {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
-	 * @param degrees the angle in degrees 
-	 * */
+	 * @param degrees the angle in degrees  */
 	public Vector2 rotateDeg (float degrees) {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
@@ -441,8 +439,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	/** Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is counter-clockwise and < 0 is clockwise. 
-	 * @deprecated use {@link #rotateDeg(float)} instead.
-	 * */
+	 * @deprecated use {@link #rotateDeg(float)} instead. */
 	@Deprecated
 	public Vector2 rotate90 (int dir) {
 		float x = this.x;
