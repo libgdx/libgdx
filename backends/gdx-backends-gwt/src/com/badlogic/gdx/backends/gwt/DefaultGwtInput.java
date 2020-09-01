@@ -372,38 +372,39 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public native Orientation getNativeOrientation () /*-{
-		var type = $wnd.screen.msOrientation
-			|| $wnd.screen.mozOrientation
-			|| ($wnd.screen.orientation || {}).type;
-		// https://www.w3.org/TR/screen-orientation/#reading-the-screen-orientation
-		switch (this.@com.badlogic.gdx.backends.gwt.GwtInput::getRotation()()) {
-			case 0:
-				if (type === "portrait-primary") {
-					return @com.badlogic.gdx.Input.Orientation::Portrait;
-				} else {
-					return @com.badlogic.gdx.Input.Orientation::Landscape;
-				}
-			case 180:
-				if (type === "portrait-secondary") {
-					return @com.badlogic.gdx.Input.Orientation::Portrait;
-				} else {
-					return @com.badlogic.gdx.Input.Orientation::Landscape;
-				}
-			case 90:
-				if (type === "landscape-primary") {
-					return @com.badlogic.gdx.Input.Orientation::Portrait;
-				} else {
-					return @com.badlogic.gdx.Input.Orientation::Landscape;
-				}
-			case 270:
-				if (type === "landscape-secondary") {
-					return @com.badlogic.gdx.Input.Orientation::Portrait;
-				} else {
-					return @com.badlogic.gdx.Input.Orientation::Landscape;
-				}
-			default:
-				return @com.badlogic.gdx.Input.Orientation::Landscape;
+		if ("screen" in $wnd) {
+			var type = $wnd.screen.msOrientation
+				|| $wnd.screen.mozOrientation
+				|| ($wnd.screen.orientation || {}).type;
+			// https://www.w3.org/TR/screen-orientation/#reading-the-screen-orientation
+			switch (this.@com.badlogic.gdx.backends.gwt.GwtInput::getRotation()()) {
+				case 0:
+					if (type === "portrait-primary") {
+						return @com.badlogic.gdx.Input.Orientation::Portrait;
+					} else {
+						return @com.badlogic.gdx.Input.Orientation::Landscape;
+					}
+				case 180:
+					if (type === "portrait-secondary") {
+						return @com.badlogic.gdx.Input.Orientation::Portrait;
+					} else {
+						return @com.badlogic.gdx.Input.Orientation::Landscape;
+					}
+				case 90:
+					if (type === "landscape-primary") {
+						return @com.badlogic.gdx.Input.Orientation::Portrait;
+					} else {
+						return @com.badlogic.gdx.Input.Orientation::Landscape;
+					}
+				case 270:
+					if (type === "landscape-secondary") {
+						return @com.badlogic.gdx.Input.Orientation::Portrait;
+					} else {
+						return @com.badlogic.gdx.Input.Orientation::Landscape;
+					}
+			}
 		}
+		return @com.badlogic.gdx.Input.Orientation::Landscape;
 	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
