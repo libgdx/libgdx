@@ -43,7 +43,6 @@ public class SharedLibraryLoader {
 	static public boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
 
 	static {
-		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
 		String vm = System.getProperty("java.runtime.name");
 		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
@@ -52,7 +51,7 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-		if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
+		if (!isAndroid && !isWindows && !isLinux && !isMac) {
 			isIos = true;
 			isAndroid = false;
 			isWindows = false;

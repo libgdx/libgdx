@@ -4,6 +4,8 @@
 		<ant antfile="build-windows64.xml" target="clean"/>
 		<ant antfile="build-linux32.xml" target="clean"/>
 		<ant antfile="build-linux64.xml" target="clean"/>
+		<ant antfile="build-linuxarm32.xml" target="clean"/>
+		<ant antfile="build-linuxarm64.xml" target="clean"/>
 		<ant antfile="build-android32.xml" target="clean"/>
 
 	</target>
@@ -13,17 +15,21 @@
 		<ant antfile="build-windows64.xml"/>
 		<ant antfile="build-linux32.xml"/>
 		<ant antfile="build-linux64.xml"/>
+		<ant antfile="build-linuxarm32.xml"/>
+		<ant antfile="build-linuxarm64.xml"/>
 		<ant antfile="build-android32.xml"/>
 
 	</target>
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-bullet-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-bullet.dll"/>
-			<fileset dir="../libs/windows64" includes="gdx-bullet64.dll"/>
-			<fileset dir="../libs/linux32" includes="libgdx-bullet.so"/>
-			<fileset dir="../libs/linux64" includes="libgdx-bullet64.so"/>
-			<fileset dir="../libs/macosx64" includes="libgdx-bullet64.dylib"/>
+			<fileset dir="../libs/windows32" erroronmissingdir="false" includes="gdx-bullet.dll"/>
+			<fileset dir="../libs/windows64" erroronmissingdir="false" includes="gdx-bullet64.dll"/>
+			<fileset dir="../libs/linux32" erroronmissingdir="false" includes="libgdx-bullet.so"/>
+			<fileset dir="../libs/linux64" erroronmissingdir="false" includes="libgdx-bullet64.so"/>
+			<fileset dir="../libs/linuxarm32" erroronmissingdir="false" includes="libgdx-bulletarm.so"/>
+			<fileset dir="../libs/linuxarm64" erroronmissingdir="false" includes="libgdx-bulletarm64.so"/>
+			<fileset dir="../libs/macosx64" erroronmissingdir="false" includes="libgdx-bullet64.dylib"/>
 
 		</jar>
 	</target>

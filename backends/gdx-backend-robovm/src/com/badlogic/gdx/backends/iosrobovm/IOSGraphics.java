@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.Array;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -47,6 +48,8 @@ import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIPress;
+import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
 import org.robovm.apple.uikit.UIView;
 import org.robovm.objc.Selector;
@@ -147,6 +150,20 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
+
+        @Override
+        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+                super.pressesBegan(presses, event);
+            }
+        }
+
+        @Override
+        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+                super.pressesEnded(presses, event);
+            }
+        }
 	}
 
 	static class IOSUIView extends GLKView {

@@ -128,6 +128,8 @@ public class PreloaderBundleGenerator extends Generator {
 				sb.append(":");
 				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
 				sb.append(mimetype == null ? "application/unknown" : mimetype);
+                sb.append(":");
+                sb.append(asset.file.isDirectory() || assetFilter.preload(path) ? '1' : '0');
 				sb.append("\n");
 			}
 			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);

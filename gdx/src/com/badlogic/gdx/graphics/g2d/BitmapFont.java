@@ -827,15 +827,16 @@ public class BitmapFont implements Disposable {
 		 *           square bracket.
 		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
-			if (end == start) return;
+			int max = end - start;
+			if (max == 0) return;
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
 			Array<Glyph> glyphs = run.glyphs;
+			FloatArray xAdvances = run.xAdvances;
 
 			// Guess at number of glyphs needed.
-			glyphs.ensureCapacity(end - start);
-			int i = run.xAdvances.size;
-			float[] xAdvances = run.xAdvances.setSize(i + end - start + 1);
+			glyphs.ensureCapacity(max);
+			run.xAdvances.ensureCapacity(max + 1);
 
 			do {
 				char ch = str.charAt(start++);
@@ -845,14 +846,10 @@ public class BitmapFont implements Disposable {
 					if (missingGlyph == null) continue;
 					glyph = missingGlyph;
 				}
-
 				glyphs.add(glyph);
-
-				if (lastGlyph == null) // First glyph on line, adjust the position so it isn't drawn left of 0.
-					xAdvances[i] = glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft;
-				else
-					xAdvances[i] = (lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX;
-				i++;
+				xAdvances.add(lastGlyph == null // First glyph on line, adjust the position so it isn't drawn left of 0.
+					? (glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft)
+					: (lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
@@ -861,7 +858,7 @@ public class BitmapFont implements Disposable {
 			if (lastGlyph != null) {
 				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
-				xAdvances[i] = lastGlyphWidth;
+				xAdvances.add(lastGlyphWidth);
 			}
 		}
 
