@@ -21,12 +21,12 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** A slider is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between
@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class Slider extends ProgressBar {
+	int button = -1;
 	int draggingPointer = -1;
 	boolean mouseOver;
 	private Interpolation visualInterpolationInverse = Interpolation.linear;
@@ -68,6 +69,7 @@ public class Slider extends ProgressBar {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (disabled) return false;
+				if (Slider.this.button != -1 && Slider.this.button != button) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
@@ -90,31 +92,23 @@ public class Slider extends ProgressBar {
 				calculatePositionAndValue(x, y);
 			}
 
-			@Override
-			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+			public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 				if (pointer == -1) mouseOver = true;
 			}
 
-			@Override
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+			public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
 				if (pointer == -1) mouseOver = false;
 			}
 		});
 	}
 
-	public void setStyle (SliderStyle style) {
-		if (style == null) throw new NullPointerException("style cannot be null");
-		if (!(style instanceof SliderStyle)) throw new IllegalArgumentException("style must be a SliderStyle.");
-		super.setStyle(style);
-	}
-
-	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(SliderStyle)} is
-	 * called. */
+	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(ProgressBarStyle)}
+	 * is called. */
 	public SliderStyle getStyle () {
 		return (SliderStyle)super.getStyle();
 	}
 
-	protected Drawable getKnobDrawable () {
+	protected @Null Drawable getKnobDrawable () {
 		SliderStyle style = getStyle();
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob
 			: (isDragging() && style.knobDown != null) ? style.knobDown
@@ -122,15 +116,15 @@ public class Slider extends ProgressBar {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final SliderStyle style = getStyle();
-		final Drawable knob = getKnobDrawable();
-		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		SliderStyle style = getStyle();
+		Drawable knob = style.knob;
+		Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = position;
 
-		final float min = getMinValue();
-		final float max = getMaxValue();
+		float min = getMinValue();
+		float max = getMaxValue();
 
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
@@ -174,7 +168,7 @@ public class Slider extends ProgressBar {
 
 	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
 	 * @param values May be null. */
-	public void setSnapToValues (float[] values, float threshold) {
+	public void setSnapToValues (@Null float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
@@ -182,6 +176,11 @@ public class Slider extends ProgressBar {
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
 		return draggingPointer != -1;
+	}
+
+	/** Sets the mouse button, which can trigger a change of the slider. Is -1, so every button, by default. */
+	public void setButton (int button) {
+		this.button = button;
 	}
 
 	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
@@ -195,12 +194,12 @@ public class Slider extends ProgressBar {
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
 		/** Optional. */
-		public Drawable knobOver, knobDown;
+		public @Null Drawable knobOver, knobDown;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (Drawable background, Drawable knob) {
+		public SliderStyle (@Null Drawable background, @Null Drawable knob) {
 			super(background, knob);
 		}
 

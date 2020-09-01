@@ -37,7 +37,7 @@ public class ArraySelection<T> extends Selection<T> {
 					end = start;
 					start = temp;
 				}
-				if (!UIUtils.ctrl()) selected.clear();
+				if (!UIUtils.ctrl()) selected.clear(8);
 				for (int i = start; i <= end; i++)
 					selected.add(array.get(i));
 				if (fireChangeEvent())
@@ -74,10 +74,17 @@ public class ArraySelection<T> extends Selection<T> {
 			clear();
 			return;
 		}
+		boolean changed = false;
 		for (Iterator<T> iter = items().iterator(); iter.hasNext();) {
 			T selected = iter.next();
-			if (!array.contains(selected, false)) iter.remove();
+			if (!array.contains(selected, false)) {
+				iter.remove();
+				changed = true;
+			}
 		}
-		if (required && selected.size == 0) set(array.first());
+		if (required && selected.size == 0)
+			set(array.first());
+		else if (changed) //
+			changed();
 	}
 }

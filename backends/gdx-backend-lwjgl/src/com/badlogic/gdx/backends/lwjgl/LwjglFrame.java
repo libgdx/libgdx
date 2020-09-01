@@ -18,8 +18,12 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.swing.JFrame;
 
@@ -41,6 +45,12 @@ public class LwjglFrame extends JFrame {
 
 	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		super(config.title);
+		construct(listener, config);
+	}
+
+	/** @param graphicsConfig May be null. */
+	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config, GraphicsConfiguration graphicsConfig) {
+		super(config.title, graphicsConfig);
 		construct(listener, config);
 	}
 
@@ -71,8 +81,16 @@ public class LwjglFrame extends JFrame {
 				LwjglFrame.this.start();
 			}
 
+			protected void disposed () {
+				LwjglFrame.this.disposed();
+			}
+
 			protected void exception (Throwable t) {
 				LwjglFrame.this.exception(t);
+			}
+
+			protected void postedException (Throwable ex, Throwable caller) {
+				LwjglFrame.this.postedException(ex, caller);
 			}
 
 			protected int getFrameRate () {
@@ -114,16 +132,23 @@ public class LwjglFrame extends JFrame {
 	/** When true, <code>Runtime.getRuntime().halt(0);</code> is used when the JVM shuts down. This prevents Swing shutdown hooks
 	 * from causing a deadlock and keeping the JVM alive indefinitely. Default is true. */
 	public void setHaltOnShutdown (boolean halt) {
-		if (halt) {
-			if (shutdownHook != null) return;
-			shutdownHook = new Thread() {
-				public void run () {
-					Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
+		try {
+			try {
+				if (halt) {
+					if (shutdownHook != null) return;
+					shutdownHook = new Thread() {
+						public void run () {
+							Runtime.getRuntime().halt(0);
+						}
+					};
+					Runtime.getRuntime().addShutdownHook(shutdownHook);
+				} else if (shutdownHook != null) {
+					Runtime.getRuntime().removeShutdownHook(shutdownHook);
+					shutdownHook = null;
 				}
-			};
-			Runtime.getRuntime().addShutdownHook(shutdownHook);
-		} else if (shutdownHook != null) {
-			Runtime.getRuntime().removeShutdownHook(shutdownHook);
+			} catch (Throwable ignored) { // Can happen if already shutting down.
+			}
+		} catch (IllegalStateException ex) {
 			shutdownHook = null;
 		}
 	}
@@ -135,6 +160,13 @@ public class LwjglFrame extends JFrame {
 	protected void exception (Throwable ex) {
 		ex.printStackTrace();
 		lwjglCanvas.stop();
+	}
+
+	protected void postedException (Throwable ex, Throwable caller) {
+		if (caller == null) throw new RuntimeException(ex);
+		StringWriter buffer = new StringWriter(1024);
+		caller.printStackTrace(new PrintWriter(buffer));
+		throw new RuntimeException("Posted: " + buffer, ex);
 	}
 
 	/** Called before the JFrame is made displayable. */
@@ -152,6 +184,10 @@ public class LwjglFrame extends JFrame {
 
 	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
+	}
+
+	/** Called after dispose is complete. */
+	protected void disposed () {
 	}
 
 	public LwjglCanvas getLwjglCanvas () {

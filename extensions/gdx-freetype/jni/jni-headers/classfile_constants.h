@@ -1,9 +1,26 @@
 /*
- * %W% %E%
- * 
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- * 
+ * Copyright (c) 2004, 2017, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 #ifndef CLASSFILE_CONSTANTS_H
@@ -12,6 +29,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* Classfile version number for this information */
+#define JVM_CLASSFILE_MAJOR_VERSION 55
+#define JVM_CLASSFILE_MINOR_VERSION 0
 
 /* Flags */
 
@@ -33,8 +54,28 @@ enum {
     JVM_ACC_STRICT        = 0x0800,
     JVM_ACC_SYNTHETIC     = 0x1000,
     JVM_ACC_ANNOTATION    = 0x2000,
-    JVM_ACC_ENUM          = 0x4000
+    JVM_ACC_ENUM          = 0x4000,
+    JVM_ACC_MODULE        = 0x8000
 };
+
+#define JVM_ACC_PUBLIC_BIT        0
+#define JVM_ACC_PRIVATE_BIT       1
+#define JVM_ACC_PROTECTED_BIT     2
+#define JVM_ACC_STATIC_BIT        3
+#define JVM_ACC_FINAL_BIT         4
+#define JVM_ACC_SYNCHRONIZED_BIT  5
+#define JVM_ACC_SUPER_BIT         5
+#define JVM_ACC_VOLATILE_BIT      6
+#define JVM_ACC_BRIDGE_BIT        6
+#define JVM_ACC_TRANSIENT_BIT     7
+#define JVM_ACC_VARARGS_BIT       7
+#define JVM_ACC_NATIVE_BIT        8
+#define JVM_ACC_INTERFACE_BIT     9
+#define JVM_ACC_ABSTRACT_BIT      10
+#define JVM_ACC_STRICT_BIT        11
+#define JVM_ACC_SYNTHETIC_BIT     12
+#define JVM_ACC_ANNOTATION_BIT    13
+#define JVM_ACC_ENUM_BIT          14
 
 /* Used in newarray instruction. */
 
@@ -56,14 +97,32 @@ enum {
     JVM_CONSTANT_Unicode                = 2, /* unused */
     JVM_CONSTANT_Integer                = 3,
     JVM_CONSTANT_Float                  = 4,
-    JVM_CONSTANT_Long                   = 5,      
+    JVM_CONSTANT_Long                   = 5,
     JVM_CONSTANT_Double                 = 6,
     JVM_CONSTANT_Class                  = 7,
     JVM_CONSTANT_String                 = 8,
     JVM_CONSTANT_Fieldref               = 9,
     JVM_CONSTANT_Methodref              = 10,
     JVM_CONSTANT_InterfaceMethodref     = 11,
-    JVM_CONSTANT_NameAndType            = 12
+    JVM_CONSTANT_NameAndType            = 12,
+    JVM_CONSTANT_MethodHandle           = 15,  // JSR 292
+    JVM_CONSTANT_MethodType             = 16,  // JSR 292
+    JVM_CONSTANT_Dynamic                = 17,
+    JVM_CONSTANT_InvokeDynamic          = 18,
+    JVM_CONSTANT_ExternalMax            = 18
+};
+
+/* JVM_CONSTANT_MethodHandle subtypes */
+enum {
+    JVM_REF_getField                = 1,
+    JVM_REF_getStatic               = 2,
+    JVM_REF_putField                = 3,
+    JVM_REF_putStatic               = 4,
+    JVM_REF_invokeVirtual           = 5,
+    JVM_REF_invokeStatic            = 6,
+    JVM_REF_invokeSpecial           = 7,
+    JVM_REF_newInvokeSpecial        = 8,
+    JVM_REF_invokeInterface         = 9
 };
 
 /* StackMapTable type item numbers */
@@ -289,7 +348,7 @@ enum {
     JVM_OPC_invokespecial       = 183,
     JVM_OPC_invokestatic        = 184,
     JVM_OPC_invokeinterface     = 185,
-    JVM_OPC_xxxunusedxxx        = 186,
+    JVM_OPC_invokedynamic       = 186,
     JVM_OPC_new                 = 187,
     JVM_OPC_newarray            = 188,
     JVM_OPC_anewarray           = 189,
@@ -498,7 +557,7 @@ enum {
    3,   /* invokespecial */             \
    3,   /* invokestatic */              \
    5,   /* invokeinterface */           \
-   0,   /* xxxunusedxxx */              \
+   5,   /* invokedynamic */             \
    3,   /* new */                       \
    2,   /* newarray */                  \
    3,   /* anewarray */                 \

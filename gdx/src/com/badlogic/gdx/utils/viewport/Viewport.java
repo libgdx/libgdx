@@ -117,12 +117,13 @@ public abstract class Viewport {
 	public Vector2 toScreenCoordinates (Vector2 worldCoords, Matrix4 transformMatrix) {
 		tmp.set(worldCoords.x, worldCoords.y, 0);
 		tmp.mul(transformMatrix);
-		camera.project(tmp);
+		camera.project(tmp, screenX, screenY, screenWidth, screenHeight);
 		tmp.y = Gdx.graphics.getHeight() - tmp.y;
 		worldCoords.x = tmp.x;
 		worldCoords.y = tmp.y;
 		return worldCoords;
 	}
+
 
 	public Camera getCamera () {
 		return camera;

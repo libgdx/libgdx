@@ -129,7 +129,7 @@ public class ShortArray {
 	public void addAll (short[] array, int offset, int length) {
 		short[] items = this.items;
 		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
@@ -149,9 +149,21 @@ public class ShortArray {
 		items[index] += value;
 	}
 
+	public void incr (short value) {
+		short[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] += value;
+	}
+
 	public void mul (int index, short value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
+	}
+
+	public void mul (short value) {
+		short[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] *= value;
 	}
 
 	public void insert (int index, short value) {
@@ -164,6 +176,16 @@ public class ShortArray {
 			items[size] = items[index];
 		size++;
 		items[index] = value;
+	}
+
+	/** Inserts the specified number of items at the specified index. The new items will have values equal to the values at those
+	 * indices before the insertion. */
+	public void insertRange (int index, int count) {
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		int sizeNeeded = size + count;
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
+		System.arraycopy(items, index, items, index + count, size - index);
+		size = sizeNeeded;
 	}
 
 	public void swap (int first, int second) {
@@ -223,18 +245,17 @@ public class ShortArray {
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
-		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		int n = size;
+		if (end >= n) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
-		short[] items = this.items;
-		int count = end - start + 1;
+		int count = end - start + 1, lastIndex = n - count;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(items, start + count, items, start, n - (start + count));
 		else {
-			int lastIndex = this.size - 1;
-			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+			int i = Math.max(lastIndex, end + 1);
+			System.arraycopy(items, i, items, start, n - i);
 		}
-		size -= count;
+		size = n - count;
 	}
 
 	/** Removes from this array all of elements contained in the specified array.
@@ -272,6 +293,11 @@ public class ShortArray {
 		return items[0];
 	}
 
+	/** Returns true if the array has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
 	/** Returns true if the array is empty. */
 	public boolean isEmpty () {
 		return size == 0;
@@ -295,7 +321,7 @@ public class ShortArray {
 	public short[] ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		return items;
 	}
 
@@ -375,10 +401,9 @@ public class ShortArray {
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		short[] items1 = this.items;
-		short[] items2 = array.items;
+		short[] items1 = this.items, items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

@@ -39,15 +39,10 @@ public class SharedLibraryLoader {
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
-	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
-	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
-		|| System.getProperty("os.arch").equals("x86_64");
-
-	// JDK 8 only.
-	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
+	static public boolean isARM = System.getProperty("os.arch").startsWith("arm") || System.getProperty("os.arch").startsWith("aarch64");
+	static public boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
 
 	static {
-		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
 		String vm = System.getProperty("java.runtime.name");
 		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
@@ -56,7 +51,7 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-		if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
+		if (!isAndroid && !isWindows && !isLinux && !isMac) {
 			isIos = true;
 			isAndroid = false;
 			isWindows = false;
@@ -100,7 +95,7 @@ public class SharedLibraryLoader {
 	/** Maps a platform independent library name to a platform dependent name. */
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
-		if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
+		if (isLinux) return "lib" + libraryName + (isARM ? "arm" : "") + (is64Bit ? "64.so" : ".so");
 		if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
 		return libraryName;
 	}
@@ -180,7 +175,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
 	 * @return null if a writable path could not be found. */
-	private File getExtractedFile (String dirName, String fileName) {
+	private @Null File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
 		File idealFile = new File(
 			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
@@ -322,7 +317,7 @@ public class SharedLibraryLoader {
 	}
 
 	/** @return null if the file was extracted and loaded. */
-	private Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+	private @Null Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
 		try {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;

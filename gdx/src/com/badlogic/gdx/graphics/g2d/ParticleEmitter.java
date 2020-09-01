@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -701,6 +702,23 @@ public class ParticleEmitter {
 	public void setSpriteMode (SpriteMode spriteMode) {
 		this.spriteMode = spriteMode;
 	}
+
+	/**
+	 * Allocates max particles emitter can hold. Usually called early on to avoid allocation on updates.
+	 * {@link #setSprites(Array)} must have been set before calling this method
+	 */
+	public void preAllocateParticles () {
+		if (sprites.isEmpty())
+			throw new IllegalStateException("ParticleEmitter.setSprites() must have been called before preAllocateParticles()");
+		for (int index = 0; index < particles.length; index++) {
+			Particle particle = particles[index];
+			if (particle == null) {
+				particles[index] = particle = newParticle(sprites.first());
+				particle.flip(flipX, flipY);
+			}
+		}
+	}
+
 
 	/** Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
 	 * to stop smoothly. */
@@ -1540,13 +1558,23 @@ public class ParticleEmitter {
 		public void load (BufferedReader reader) throws IOException {
 			super.load(reader);
 			// For backwards compatibility, independent property may not be defined
-			reader.mark(100);
+			if (reader.markSupported())
+				reader.mark(100);
 			String line = reader.readLine();
-			if (line == null) throw new IOException("Missing value: " + "independent");
+			if (line == null) throw new IOException("Missing value: independent");
 			if (line.contains("independent"))
 				independent = Boolean.parseBoolean(readString(line));
-			else
+			else if (reader.markSupported())
 				reader.reset();
+			else {
+				// @see java.io.BufferedReader#markSupported may return false in some platforms (such as GWT),
+				// in that case backwards commpatibility is not possible
+				String errorMessage = "The loaded particle effect descriptor file uses an old invalid format. " +
+						"Please download the latest version of the Particle Editor tool and recreate the file by" +
+						" loading and saving it again.";
+				Gdx.app.error("ParticleEmitter", errorMessage);
+				throw new IOException(errorMessage);
+			}
 		}
 
 		public void load (IndependentScaledNumericValue value) {

@@ -23,6 +23,7 @@ import java.net.URL;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -76,6 +77,7 @@ public class TextureDownloadTest extends GdxTest {
 					int width = MathUtils.nextPowerOfTwo(pixmap.getWidth());
 					int height = MathUtils.nextPowerOfTwo(pixmap.getHeight());
 					final Pixmap potPixmap = new Pixmap(width, height, pixmap.getFormat());
+					potPixmap.setBlending(Blending.None);
 					potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 					pixmap.dispose();
 					Gdx.app.postRunnable(new Runnable() {

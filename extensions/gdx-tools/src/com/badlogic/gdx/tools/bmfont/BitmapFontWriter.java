@@ -82,7 +82,7 @@ public class BitmapFontWriter {
 		public int horizontal, vertical;
 	}
 
-	/** The font "info" line; everything except padding is ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
+	/** The font "info" line; everything except padding and override metrics are ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
 	 * clean and organized output. */
 	public static class FontInfo {
 		/** Face name */
@@ -109,6 +109,16 @@ public class BitmapFontWriter {
 		public Spacing spacing = new Spacing();
 		public int outline = 0;
 
+		/** Override metrics */
+		public boolean hasOverrideMetrics;
+		public float ascent;
+		public float descent;
+		public float down;
+		public float capHeight;
+		public float lineHeight;
+		public float spaceXAdvance;
+		public float xHeight;
+
 		public FontInfo () {
 		}
 
@@ -116,6 +126,18 @@ public class BitmapFontWriter {
 			this.face = face;
 			this.size = size;
 		}
+
+		public void overrideMetrics (BitmapFontData data) {
+			hasOverrideMetrics = true;
+			ascent = data.ascent;
+			descent = data.descent;
+			down = data.down;
+			capHeight = data.capHeight;
+			lineHeight = data.lineHeight;
+			spaceXAdvance = data.spaceXadvance;
+			xHeight = data.xHeight;
+		}
+
 	}
 
 	private static String quote (Object params) {
@@ -214,14 +236,11 @@ public class BitmapFontWriter {
 
 		buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
 
-		int padLeft = 0, padRight = 0, padTop = 0, padX = 0, padY = 0;
-		if (info != null) {
-			padTop = info.padding.up;
-			padLeft = info.padding.left;
-			padRight = info.padding.right;
-			padX = padLeft + padRight;
-			padY = info.padding.up + info.padding.down;
-		}
+		int padTop = info.padding.up;
+		int padLeft = info.padding.left;
+		int padRight = info.padding.right;
+		int padX = padLeft + padRight;
+		int padY = info.padding.up + info.padding.down;
 
 		// CHAR definitions
 		for (int i = 0; i < glyphs.size; i++) {
@@ -233,8 +252,7 @@ public class BitmapFontWriter {
 				.append(quote(String.format("%-5s", empty ? 0 : g.width), true)).append("height=")
 				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
-				.append(
-					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
+				.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
 				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
 				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
 				.append("\n");
@@ -264,6 +282,26 @@ public class BitmapFontWriter {
 
 		if (xml) {
 			buf.append("\t</kernings>\n");
+		}
+
+		// Override metrics
+		if (info.hasOverrideMetrics) {
+			if (xml) buf.append("\t<metrics>\n");
+
+			buf.append(xmlTab).append(xmlOpen)
+					.append("metrics ascent=").append(quote(info.ascent, true))
+					.append(" descent=").append(quote(info.descent, true))
+					.append(" down=").append(quote(info.down, true))
+					.append(" capHeight=").append(quote(info.capHeight, true))
+					.append(" lineHeight=").append(quote(info.lineHeight, true))
+					.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true))
+					.append(" xHeight=").append(quote(info.xHeight, true))
+					.append(xmlCloseSelf).append("\n");
+
+			if (xml) buf.append("\t</metrics>\n");
+		}
+
+		if (xml) {
 			buf.append("</font>");
 		}
 

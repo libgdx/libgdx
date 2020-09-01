@@ -27,7 +27,7 @@ public class Ogg {
 		private OggInputStream input;
 		private OggInputStream previousInput;
 
-		public Music (OpenALAudio audio, FileHandle file) {
+		public Music (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio, file);
 			if (audio.noDevice) return;
 			input = new OggInputStream(file.read());
@@ -58,7 +58,7 @@ public class Ogg {
 	}
 
 	static public class Sound extends OpenALSound {
-		public Sound (OpenALAudio audio, FileHandle file) {
+		public Sound (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
 			OggInputStream input = null;

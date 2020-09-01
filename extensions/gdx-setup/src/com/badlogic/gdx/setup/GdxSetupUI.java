@@ -268,14 +268,9 @@ public class GdxSetupUI extends JFrame {
 					}
 				}, ui.settings.getGradleArgs());
 				log("Done!");
-				if (ui.settings.getGradleArgs().contains("eclipse") || ui.settings.getGradleArgs().contains("idea")) {
-					log("To import in Eclipse: File -> Import -> General -> Existing Projects into Workspace");
-					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
-				} else {
-					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-					log("To import to Intellij IDEA: File -> Open -> build.gradle");
-					log("To import to NetBeans: File -> Open Project...");
-				}
+				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
+				log("To import to Intellij IDEA: File -> Open -> build.gradle");
+				log("To import to NetBeans: File -> Open Project...");
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -530,16 +525,16 @@ public class GdxSetupUI extends JFrame {
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
-				}				
+				}
+
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
 				if (projectType == ProjectType.HTML) {
 					gwtCheckBox = checkBox;
 				} 
-				
-				if (projectType != ProjectType.IOSMOE) {
-					modules.add(projectType);
-					checkBox.setSelected(true);
-				}
+
+				modules.add(projectType);
+				checkBox.setSelected(true);
+
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override

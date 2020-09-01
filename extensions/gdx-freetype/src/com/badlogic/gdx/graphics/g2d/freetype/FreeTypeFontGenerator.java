@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,10 +44,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.Null;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -94,42 +92,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
 		name = fontFile.nameWithoutExtension();
-		int fileSize = (int)fontFile.length();
-
 		library = FreeType.initFreeType();
-		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
-
-		ByteBuffer buffer = null;
-
-		try {
-			buffer = fontFile.map();
-		} catch (GdxRuntimeException e) {
-			// Silently error, certain platforms do not support file mapping.
-		}
-
-		if (buffer == null) {
-			InputStream input = fontFile.read();
-			try {
-				if (fileSize == 0) {
-					// Copy to a byte[] to get the file size, then copy to the buffer.
-					byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
-					buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-					BufferUtils.copy(data, 0, buffer, data.length);
-				} else {
-					// Trust the specified file size.
-					buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
-					StreamUtils.copyStream(input, buffer);
-				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException(ex);
-			} finally {
-				StreamUtils.closeQuietly(input);
-			}
-		}
-
-		face = library.newMemoryFace(buffer, faceIndex);
-		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + fontFile);
-
+		face = library.newFace(fontFile, faceIndex);
 		if (checkForBitmapFont()) return;
 		setPixelSizes(0, 15);
 	}
@@ -198,9 +162,16 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
-		BitmapFont font = new BitmapFont(data, data.regions, true);
+		BitmapFont font = newBitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
+	}
+
+	/** Called by generateFont to create a new {@link BitmapFont} instance. This allows injecting a customized {@link BitmapFont},
+	 * eg for a RTL font.
+	 * @see BitmapFont#BitmapFont(BitmapFontData, Array, boolean) */
+	protected BitmapFont newBitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		return new BitmapFont(data, pageRegions, integer);
 	}
 
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
@@ -239,12 +210,12 @@ public class FreeTypeFontGenerator implements Disposable {
 
 	public class GlyphAndBitmap {
 		public Glyph glyph;
-		public Bitmap bitmap;
+		public @Null Bitmap bitmap;
 	}
 
-	/** Returns null if glyph was not found. If there is nothing to render, for example with various space characters, then bitmap
-	 * is null. */
-	public GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
+	/** Returns null if glyph was not found in the font. If there is nothing to render, for example with various space characters,
+	 * then {@link GlyphAndBitmap#bitmap} will be null. */
+	public @Null GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
 		setPixelSizes(0, size);
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
@@ -318,7 +289,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
 		data.name = name + "-" + parameter.size;
-		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
 		boolean incremental = parameter.incremental;
@@ -414,7 +384,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
-		for (int i = 0, n = charactersLength; i < n; i++) {
+		for (int i = 0; i < charactersLength; i++) {
 			char c = characters[i];
 
 			int height = loadChar(c, flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
@@ -508,8 +478,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** @return null if glyph was not found. */
-	Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
-		PixmapPacker packer) {
+	protected @Null Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker,
+		float baseLine, PixmapPacker packer) {
 
 		boolean missing = face.getCharIndex(c) == 0 && c != 0;
 		if (missing) return null;
@@ -594,6 +564,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			if (parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0) {
 				Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
 					mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+				padPixmap.setBlending(Blending.None);
 				padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
 				mainPixmap.dispose();
 				mainPixmap = padPixmap;
@@ -680,7 +651,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class FreeTypeBitmapFontData extends BitmapFontData implements Disposable {
-		Array<TextureRegion> regions;
+		public Array<TextureRegion> regions;
 
 		// Fields for incremental glyph generation.
 		FreeTypeFontGenerator generator;
@@ -796,7 +767,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Pixels to add to glyph spacing when text is rendered. Can be negative. */
 		public int spaceX, spaceY;
-		/** Pixels to add to the glyph in the texture. Can be negative. */
+		/** Pixels to add to the glyph in the texture. Cannot be negative. */
 		public int padTop, padLeft, padBottom, padRight;
 		/** The characters the font should contain. If '\0' is not included then {@link BitmapFontData#missingGlyph} is not set. */
 		public String characters = DEFAULT_CHARS;

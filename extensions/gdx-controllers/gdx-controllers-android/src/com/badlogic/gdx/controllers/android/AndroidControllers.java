@@ -26,11 +26,9 @@ import android.view.View.OnKeyListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerManager;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
@@ -38,6 +36,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AndroidControllers implements LifecycleListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
 	private final static String TAG = "AndroidControllers";
+	public static boolean ignoreNoGamepadButtons = true;
 	private final IntMap<AndroidController> controllerMap = new IntMap<AndroidController>();
 	private final Array<Controller> controllers = new Array<Controller>();
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
@@ -48,13 +47,13 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 			return new AndroidControllerEvent();
 		}
 	};
-	
+
 	public AndroidControllers() {
 		Gdx.app.addLifecycleListener(this);
 		gatherControllers(false);
 		setupEventQueue();
 		((AndroidInput)Gdx.input).addKeyListener(this);
-		((AndroidInputThreePlus)Gdx.input).addGenericMotionListener(this);
+		((AndroidInput)Gdx.input).addGenericMotionListener(this);
 		
 		// use InputManager on Android +4.1 to receive (dis-)connect events
 		if(Gdx.app.getVersion() >= 16) {
@@ -191,7 +190,7 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 
 	@Override
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
-		if (!keyEvent.isGamepadButton(keyCode)) {
+		if (ignoreNoGamepadButtons && !KeyEvent.isGamepadButton(keyCode)) {
 			return false;
 		}
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());
@@ -277,22 +276,29 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	}
 	
 	protected void addController(int deviceId, boolean sendEvent) {
-		InputDevice device = InputDevice.getDevice(deviceId);
-		if(!isController(device)) return;
-		String name = device.getName();
-		AndroidController controller = new AndroidController(deviceId, name);
-		controllerMap.put(deviceId, controller);
-		if(sendEvent) {
-			synchronized(eventQueue) {
-				AndroidControllerEvent event = eventPool.obtain();
-				event.type = AndroidControllerEvent.CONNECTED;
-				event.controller = controller;
-				eventQueue.add(event);
+		try {
+			InputDevice device = InputDevice.getDevice(deviceId);
+			if (!isController(device)) return;
+			String name = device.getName();
+			AndroidController controller = new AndroidController(deviceId, name);
+			controllerMap.put(deviceId, controller);
+			if (sendEvent) {
+				synchronized (eventQueue) {
+					AndroidControllerEvent event = eventPool.obtain();
+					event.type = AndroidControllerEvent.CONNECTED;
+					event.controller = controller;
+					eventQueue.add(event);
+				}
+			} else {
+				controllers.add(controller);
 			}
-		} else {
-			controllers.add(controller);
+			Gdx.app.log(TAG, "added controller '" + name + "'");
+		} catch (RuntimeException e) {
+			// this exception is sometimes thrown by getDevice().
+			// we can't use this device anyway, so ignore it and move on
+			Gdx.app.error(TAG, "Could not get information about " + deviceId +
+							", ignoring the device.", e);
 		}
-		Gdx.app.log(TAG, "added controller '" + name + "'");
 	}
 	
 	protected void removeController(int deviceId) {

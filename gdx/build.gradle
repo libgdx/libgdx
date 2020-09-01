@@ -16,11 +16,15 @@
 
 apply plugin: "java"
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["res"]
+// Workaround the Idea limitation that only takes output folder for classpath resolution when running
+// from other modules (such as /tests)
+sourceSets.main.output.resourcesDir = file("$buildDir/classes/java/main")
+
 sourceSets.test.java.srcDirs = ["test"]
 
 compileJava {
@@ -31,4 +35,10 @@ compileJava {
 dependencies {
     compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
 }

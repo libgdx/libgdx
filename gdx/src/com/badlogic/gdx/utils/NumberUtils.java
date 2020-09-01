@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.graphics.Color;
-
 public final class NumberUtils {
 	public static int floatToIntBits (float value) {
 		return Float.floatToIntBits(value);
@@ -36,9 +34,9 @@ public final class NumberUtils {
 		return intBits;
 	}
 
-	/** Encodes the ABGR int color as a float. The alpha is compressed to 0-254 to avoid using bits in the NaN range (see
-	 * {@link Float#intBitsToFloat(int)} javadocs). Rendering which uses colors encoded as floats should expand the 0-254 back to
-	 * 0-255. */
+	/** Encodes the ABGR int color as a float. The alpha is compressed to use only even numbers between 0-254 to avoid using bits
+	 * in the NaN range (see {@link Float#intBitsToFloat(int)} javadocs). Rendering which uses colors encoded as floats should
+	 * expand the 0-254 back to 0-255, else colors cannot be fully opaque. */
 	public static float intToFloatColor (int value) {
 		return Float.intBitsToFloat(value & 0xfeffffff);
 	}

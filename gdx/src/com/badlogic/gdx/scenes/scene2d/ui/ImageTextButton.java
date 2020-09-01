@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
 
 /** A button with a child {@link Image} and {@link Label}.
@@ -35,17 +36,17 @@ public class ImageTextButton extends Button {
 	private Label label;
 	private ImageTextButtonStyle style;
 
-	public ImageTextButton (String text, Skin skin) {
+	public ImageTextButton (@Null String text, Skin skin) {
 		this(text, skin.get(ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, Skin skin, String styleName) {
+	public ImageTextButton (@Null String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, ImageTextButtonStyle style) {
+	public ImageTextButton (@Null String text, ImageTextButtonStyle style) {
 		super(style);
 		this.style = style;
 
@@ -159,12 +160,12 @@ public class ImageTextButton extends Button {
 	 * @author Nathan Sweet */
 	static public class ImageTextButtonStyle extends TextButtonStyle {
 		/** Optional. */
-		public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+		public @Null Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
 
 		public ImageTextButtonStyle () {
 		}
 
-		public ImageTextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+		public ImageTextButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, BitmapFont font) {
 			super(up, down, checked, font);
 		}
 

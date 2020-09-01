@@ -4,25 +4,28 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
+import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
  * {@link Table} with a single cell but is more lightweight.
  * @author Nathan Sweet */
 public class Container<T extends Actor> extends WidgetGroup {
-	private T actor;
+	private @Null T actor;
 	private Value minWidth = Value.minWidth, minHeight = Value.minHeight;
 	private Value prefWidth = Value.prefWidth, prefHeight = Value.prefHeight;
 	private Value maxWidth = Value.zero, maxHeight = Value.zero;
 	private Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
 	private float fillX, fillY;
 	private int align;
-	private Drawable background;
+	private @Null Drawable background;
 	private boolean clip;
 	private boolean round = true;
 
@@ -32,7 +35,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		setTransform(false);
 	}
 
-	public Container (T actor) {
+	public Container (@Null T actor) {
 		this();
 		setActor(actor);
 	}
@@ -71,7 +74,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the background drawable and adjusts the container's padding to match the background.
 	 * @see #setBackground(Drawable, boolean) */
-	public void setBackground (Drawable background) {
+	public void setBackground (@Null Drawable background) {
 		setBackground(background, true);
 	}
 
@@ -79,7 +82,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	 * {@link Drawable#getBottomHeight()} , {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and
 	 * {@link Drawable#getRightWidth()}.
 	 * @param background If null, the background will be cleared and padding removed. */
-	public void setBackground (Drawable background, boolean adjustPadding) {
+	public void setBackground (@Null Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
 		this.background = background;
 		if (adjustPadding) {
@@ -92,12 +95,12 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	/** @see #setBackground(Drawable) */
-	public Container<T> background (Drawable background) {
+	public Container<T> background (@Null Drawable background) {
 		setBackground(background);
 		return this;
 	}
 
-	public Drawable getBackground () {
+	public @Null Drawable getBackground () {
 		return background;
 	}
 
@@ -150,8 +153,13 @@ public class Container<T extends Actor> extends WidgetGroup {
 		if (actor instanceof Layout) ((Layout)actor).validate();
 	}
 
+	public void setCullingArea (Rectangle cullingArea) {
+		super.setCullingArea(cullingArea);
+		if (fillX == 1 && fillY == 1 && actor instanceof Cullable) ((Cullable)actor).setCullingArea(cullingArea);
+	}
+
 	/** @param actor May be null. */
-	public void setActor (T actor) {
+	public void setActor (@Null T actor) {
 		if (actor == this) throw new IllegalArgumentException("actor cannot be the Container.");
 		if (actor == this.actor) return;
 		if (this.actor != null) super.removeActor(this.actor);
@@ -160,30 +168,34 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
-	public T getActor () {
+	public @Null T getActor () {
 		return actor;
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
 	 * @see #setActor(Actor) */
+	@Deprecated
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
@@ -200,6 +212,12 @@ public class Container<T extends Actor> extends WidgetGroup {
 		if (actor != this.actor) return false;
 		this.actor = null;
 		return super.removeActor(actor, unfocus);
+	}
+
+	public Actor removeActorAt (int index, boolean unfocus) {
+		Actor actor = super.removeActorAt(index, unfocus);
+		if (actor == this.actor) this.actor = null;
+		return actor;
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
@@ -229,13 +247,13 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> size (float size) {
-		size(new Fixed(size));
+		size(Fixed.valueOf(size));
 		return this;
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
 	public Container<T> size (float width, float height) {
-		size(new Fixed(width), new Fixed(height));
+		size(Fixed.valueOf(width), Fixed.valueOf(height));
 		return this;
 	}
 
@@ -250,7 +268,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
 	public Container<T> width (float width) {
-		width(new Fixed(width));
+		width(Fixed.valueOf(width));
 		return this;
 	}
 
@@ -265,7 +283,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> height (float height) {
-		height(new Fixed(height));
+		height(Fixed.valueOf(height));
 		return this;
 	}
 
@@ -300,23 +318,23 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified value. */
 	public Container<T> minSize (float size) {
-		minSize(new Fixed(size));
+		minSize(Fixed.valueOf(size));
 		return this;
 	}
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Container<T> minSize (float width, float height) {
-		minSize(new Fixed(width), new Fixed(height));
+		minSize(Fixed.valueOf(width), Fixed.valueOf(height));
 		return this;
 	}
 
 	public Container<T> minWidth (float minWidth) {
-		this.minWidth = new Fixed(minWidth);
+		this.minWidth = Fixed.valueOf(minWidth);
 		return this;
 	}
 
 	public Container<T> minHeight (float minHeight) {
-		this.minHeight = new Fixed(minHeight);
+		this.minHeight = Fixed.valueOf(minHeight);
 		return this;
 	}
 
@@ -351,23 +369,23 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Container<T> prefSize (float width, float height) {
-		prefSize(new Fixed(width), new Fixed(height));
+		prefSize(Fixed.valueOf(width), Fixed.valueOf(height));
 		return this;
 	}
 
 	/** Sets the prefWidth and prefHeight to the specified values. */
 	public Container<T> prefSize (float size) {
-		prefSize(new Fixed(size));
+		prefSize(Fixed.valueOf(size));
 		return this;
 	}
 
 	public Container<T> prefWidth (float prefWidth) {
-		this.prefWidth = new Fixed(prefWidth);
+		this.prefWidth = Fixed.valueOf(prefWidth);
 		return this;
 	}
 
 	public Container<T> prefHeight (float prefHeight) {
-		this.prefHeight = new Fixed(prefHeight);
+		this.prefHeight = Fixed.valueOf(prefHeight);
 		return this;
 	}
 
@@ -402,23 +420,23 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified value. */
 	public Container<T> maxSize (float size) {
-		maxSize(new Fixed(size));
+		maxSize(Fixed.valueOf(size));
 		return this;
 	}
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Container<T> maxSize (float width, float height) {
-		maxSize(new Fixed(width), new Fixed(height));
+		maxSize(Fixed.valueOf(width), Fixed.valueOf(height));
 		return this;
 	}
 
 	public Container<T> maxWidth (float maxWidth) {
-		this.maxWidth = new Fixed(maxWidth);
+		this.maxWidth = Fixed.valueOf(maxWidth);
 		return this;
 	}
 
 	public Container<T> maxHeight (float maxHeight) {
-		this.maxHeight = new Fixed(maxHeight);
+		this.maxHeight = Fixed.valueOf(maxHeight);
 		return this;
 	}
 
@@ -470,7 +488,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
 	public Container<T> pad (float pad) {
-		Value value = new Fixed(pad);
+		Value value = Fixed.valueOf(pad);
 		padTop = value;
 		padLeft = value;
 		padBottom = value;
@@ -479,30 +497,30 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	public Container<T> pad (float top, float left, float bottom, float right) {
-		padTop = new Fixed(top);
-		padLeft = new Fixed(left);
-		padBottom = new Fixed(bottom);
-		padRight = new Fixed(right);
+		padTop = Fixed.valueOf(top);
+		padLeft = Fixed.valueOf(left);
+		padBottom = Fixed.valueOf(bottom);
+		padRight = Fixed.valueOf(right);
 		return this;
 	}
 
 	public Container<T> padTop (float padTop) {
-		this.padTop = new Fixed(padTop);
+		this.padTop = Fixed.valueOf(padTop);
 		return this;
 	}
 
 	public Container<T> padLeft (float padLeft) {
-		this.padLeft = new Fixed(padLeft);
+		this.padLeft = Fixed.valueOf(padLeft);
 		return this;
 	}
 
 	public Container<T> padBottom (float padBottom) {
-		this.padBottom = new Fixed(padBottom);
+		this.padBottom = Fixed.valueOf(padBottom);
 		return this;
 	}
 
 	public Container<T> padRight (float padRight) {
-		this.padRight = new Fixed(padRight);
+		this.padRight = Fixed.valueOf(padRight);
 		return this;
 	}
 
@@ -638,7 +656,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return v;
 	}
 
-	/** @return May be null if this value is not set. */
 	public Value getPadTopValue () {
 		return padTop;
 	}
@@ -647,7 +664,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return padTop.get(this);
 	}
 
-	/** @return May be null if this value is not set. */
 	public Value getPadLeftValue () {
 		return padLeft;
 	}
@@ -656,7 +672,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return padLeft.get(this);
 	}
 
-	/** @return May be null if this value is not set. */
 	public Value getPadBottomValue () {
 		return padBottom;
 	}
@@ -665,7 +680,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return padBottom.get(this);
 	}
 
-	/** @return May be null if this value is not set. */
 	public Value getPadRightValue () {
 		return padRight;
 	}
@@ -701,6 +715,17 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.round = round;
 	}
 
+	/** Sets clip to true. */
+	public Container<T> clip () {
+		setClip(true);
+		return this;
+	}
+
+	public Container<T> clip (boolean enabled) {
+		setClip(enabled);
+		return this;
+	}
+
 	/** Causes the contents to be clipped if they exceed the container bounds. Enabling clipping will set
 	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {
@@ -713,7 +738,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return clip;
 	}
 
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (touchable && getTouchable() == Touchable.disabled) return null;
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;

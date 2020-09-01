@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.jnigen;
 
-/** Defines the configuration for building a native shared library for a specific platform. Used with {@link AntScriptGenerator} to
- * create Ant build files that invoke the compiler toolchain to create the shared libraries. */
+/** Defines the configuration for building a native shared library for a specific platform. Used with {@link AntScriptGenerator}
+ * to create Ant build files that invoke the compiler toolchain to create the shared libraries. */
 public class BuildTarget {
 	/** The target operating system of a build target. */
 	public enum TargetOs {
@@ -28,6 +28,8 @@ public class BuildTarget {
 	public BuildTarget.TargetOs os;
 	/** whether this is a 64-bit build, not used for Android **/
 	public boolean is64Bit;
+	/** whether this is an ARM build, not used for Android **/
+	public boolean isARM;
 	/** the C files and directories to be included in the build, accepts Ant path format, must not be null **/
 	public String[] cIncludes;
 	/** the C files and directories to be excluded from the build, accepts Ant path format, must not be null **/
@@ -58,9 +60,9 @@ public class BuildTarget {
 	public String libraries;
 	/** The name used for folders for this specific target. Defaults to "${target}(64)" **/
 	public String osFileName;
-	/** The name used for the library file. This is a full file name, including file extension. Default is platform specific.
-	 *  E.g. "lib{sharedLibName}64.so" **/
-	public String libName; 
+	/** The name used for the library file. This is a full file name, including file extension. Default is platform specific. E.g.
+	 * "lib{sharedLibName}64.so" **/
+	public String libName;
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,
@@ -91,13 +93,24 @@ public class BuildTarget {
 		this.libraries = "";
 	}
 
+	/** Legacy compatible addition to specify isARM */
+	public BuildTarget setARM (boolean isARM) {
+		this.isARM = isARM;
+		return this;
+	}
+
 	/** Creates a new default BuildTarget for the given OS, using common default values. */
 	public static BuildTarget newDefaultTarget (BuildTarget.TargetOs type, boolean is64Bit) {
+		return newDefaultTarget(type, is64Bit, false);
+	}
+
+	/** Creates a new default BuildTarget for the given OS, using common default values. */
+	public static BuildTarget newDefaultTarget (BuildTarget.TargetOs type, boolean is64Bit, boolean isARM) {
 		if (type == TargetOs.Windows && !is64Bit) {
 			// Windows 32-Bit
 			return new BuildTarget(TargetOs.Windows, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "i686-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
-				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", 
+				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
 				"-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++");
 		}
 
@@ -107,6 +120,20 @@ public class BuildTarget {
 				new String[0], new String[0], "x86_64-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
 				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
 				"-Wl,--kill-at -shared -static -static-libgcc -static-libstdc++ -m64");
+		}
+
+		if (type == TargetOs.Linux && isARM && !is64Bit) {
+			// Linux ARM 32-Bit hardfloat
+			return new BuildTarget(TargetOs.Linux, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
+				new String[0], new String[0], "arm-linux-gnueabihf-", "-c -Wall -O2 -fmessage-length=0 -fPIC",
+				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM);
+		}
+
+		if (type == TargetOs.Linux && isARM && is64Bit) {
+			// Linux ARM 64-Bit
+			return new BuildTarget(TargetOs.Linux, true, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
+				new String[0], new String[0], "aarch64-linux-gnu-", "-c -Wall -O2 -fmessage-length=0 -fPIC",
+				"-c -Wall -O2 -fmessage-length=0 -fPIC", "-shared").setARM(isARM);
 		}
 
 		if (type == TargetOs.Linux && !is64Bit) {
@@ -124,22 +151,16 @@ public class BuildTarget {
 		}
 
 		if (type == TargetOs.MacOsX && !is64Bit) {
-			// Mac OS X x86 & x86_64
-			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, false, new String[] {"**/*.c"}, new String[0],
-				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch i386 -mmacosx-version-min=10.5");
-			return mac;
+			throw new RuntimeException("macOS 32-bit not supported");
 		}
-		
+
 		if (type == TargetOs.MacOsX && is64Bit) {
 			// Mac OS X x86 & x86_64
 			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, true, new String[] {"**/*.c"}, new String[0],
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch x86_64 -mmacosx-version-min=10.5");
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++",
+				"-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++");
 			return mac;
 		}
 
@@ -149,14 +170,11 @@ public class BuildTarget {
 				"-lm");
 			return android;
 		}
-		
-		if(type == TargetOs.IOS) {
+
+		if (type == TargetOs.IOS) {
 			// iOS, 386 simulator and armv7a, compiled to fat static lib
-			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0],
-				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2",
-				"-c -Wall -O2",
-				"rcs");
+			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
+				new String[0], new String[0], "", "-c -Wall -O2", "-c -Wall -O2", "rcs");
 			return ios;
 		}
 

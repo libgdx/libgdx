@@ -44,7 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-/** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
+/** Represents a file or directory on the filesystem, classpath, Android app storage, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * 
  * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk
@@ -157,7 +157,7 @@ public class FileHandle {
 		return new BufferedInputStream(read(), bufferSize);
 	}
 
-	/** Returns a reader for reading this file as characters.
+	/** Returns a reader for reading this file as characters the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader () {
 		return new InputStreamReader(read());
@@ -175,7 +175,7 @@ public class FileHandle {
 		}
 	}
 
-	/** Returns a buffered reader for reading this file as characters.
+	/** Returns a buffered reader for reading this file as characters using the platform's default charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize) {
 		return new BufferedReader(new InputStreamReader(read()), bufferSize);
@@ -654,14 +654,12 @@ public class FileHandle {
 		return file().lastModified();
 	}
 
-	@Override
 	public boolean equals (Object obj) {
 		if (!(obj instanceof FileHandle)) return false;
 		FileHandle other = (FileHandle)obj;
 		return type == other.type && path().equals(other.path());
 	}
 
-	@Override
 	public int hashCode () {
 		int hash = 1;
 		hash = hash * 37 + type.hashCode();

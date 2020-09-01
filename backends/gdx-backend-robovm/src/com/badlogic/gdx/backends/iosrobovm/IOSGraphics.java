@@ -30,7 +30,9 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -41,10 +43,15 @@ import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
+import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIPress;
+import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
+import org.robovm.apple.uikit.UIView;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
@@ -55,12 +62,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	private static final String tag = "IOSGraphics";
 
-	static class IOSUIViewController extends GLKViewController {
+	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
 		boolean created = false;
 
-		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
@@ -109,7 +116,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public UIRectEdge preferredScreenEdgesDeferringSystemGestures() {
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
 			return app.config.screenEdgesDeferringSystemGestures;
 		}
 
@@ -122,10 +129,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			graphics.height = (int)bounds.getHeight();
 			graphics.makeCurrent();
 			if (graphics.created) {
+				graphics.updateSafeInsets();
 				app.listener.resize(graphics.width, graphics.height);
 			}
 		}
-		
+
+		@Override
+		public boolean prefersStatusBarHidden () {
+			return !app.config.statusBarVisible;
+		}
+
 		@Override
 		public boolean prefersHomeIndicatorAutoHidden() {
 			return app.config.hideHomeIndicator;
@@ -137,6 +150,20 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
+
+        @Override
+        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+                super.pressesBegan(presses, event);
+            }
+        }
+
+        @Override
+        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+                super.pressesEnded(presses, event);
+            }
+        }
 	}
 
 	static class IOSUIView extends GLKView {
@@ -152,6 +179,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GL30 gl30;
 	int width;
 	int height;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -232,7 +260,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = new IOSUIViewController(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
@@ -265,7 +293,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi/160f : scale;
@@ -325,6 +353,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
+			updateSafeInsets();
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
@@ -515,6 +544,48 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public DisplayMode getDisplayMode(Monitor monitor) {
 		return getDisplayMode();
+	}
+
+	protected void updateSafeInsets() {
+		safeInsetTop = 0;
+		safeInsetLeft = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Foundation.getMajorSystemVersion() >= 11) {
+			UIView view = UIApplication.getSharedApplication().getKeyWindow().getRootViewController().getView();
+			UIEdgeInsets edgeInsets = view.getSafeAreaInsets();
+
+			double top = edgeInsets.getTop() * view.getContentScaleFactor();
+			double bottom = edgeInsets.getBottom() * view.getContentScaleFactor();
+			double left = edgeInsets.getLeft() * view.getContentScaleFactor();
+			double right = edgeInsets.getRight() * view.getContentScaleFactor();
+
+			safeInsetTop = (int) top;
+			safeInsetLeft = (int) left;
+			safeInsetRight = (int) right;
+			safeInsetBottom = (int) bottom;
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
 	}
 
 	@Override

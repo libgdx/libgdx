@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Color {
-	public static final Color WHITE = new Color(1, 1, 1,1);
+	public static final Color WHITE = new Color(1, 1, 1, 1);
 	public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
 	public static final Color GRAY = new Color(0x7f7f7fff);
 	public static final Color DARK_GRAY = new Color(0x3f3f3fff);
@@ -309,7 +309,8 @@ public class Color {
 	}
 
 	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Alpha is compressed
-	 * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link NumberUtils#intToFloatColor(int)}).
+	 * from 0-255 to use only even numbers between 0-254 to avoid using float bits in the NaN range (see
+	 * {@link NumberUtils#intToFloatColor(int)}). Converting a color to a float and back can be lossy for alpha.
 	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
@@ -334,12 +335,18 @@ public class Color {
 	/** Returns a new color from a hex string with the format RRGGBBAA.
 	 * @see #toString() */
 	public static Color valueOf (String hex) {
+		return valueOf(hex, new Color());
+	}
+
+	/** Sets the specified color from a hex string with the format RRGGBBAA.
+	 * @see #toString() */
+	public static Color valueOf (String hex, Color color) {
 		hex = hex.charAt(0) == '#' ? hex.substring(1) : hex;
-		int r = Integer.valueOf(hex.substring(0, 2), 16);
-		int g = Integer.valueOf(hex.substring(2, 4), 16);
-		int b = Integer.valueOf(hex.substring(4, 6), 16);
-		int a = hex.length() != 8 ? 255 : Integer.valueOf(hex.substring(6, 8), 16);
-		return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+		color.r = Integer.parseInt(hex.substring(0, 2), 16) / 255f;
+		color.g = Integer.parseInt(hex.substring(2, 4), 16) / 255f;
+		color.b = Integer.parseInt(hex.substring(4, 6), 16) / 255f;
+		color.a = hex.length() != 8 ? 1 : Integer.parseInt(hex.substring(6, 8), 16) / 255f;
+		return color;
 	}
 
 	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Note that no range
@@ -481,7 +488,7 @@ public class Color {
 		color.b = ((value & 0x000000ff)) / 255f;
 	}
 
-	/** Sets the Color components using the specified float value in the format ABGB8888.
+	/** Sets the Color components using the specified float value in the format ABGR8888.
 	 * @param color The Color to be modified. */
 	public static void abgr8888ToColor (Color color, float value) {
 		int c = NumberUtils.floatToIntColor(value);

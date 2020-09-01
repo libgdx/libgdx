@@ -5,10 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
-public class UIUtils {
-	static public boolean isMac = System.getProperty("os.name").contains("OS X");
-	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
-	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
+public final class UIUtils {
+
+	private UIUtils () {
+	}
+
+	//Adapted system checks from com.badlogic.gdx.utils.SharedLibraryLoader
+	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
+	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
+	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
+	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux");
+	static public boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
 
 	static public boolean left () {
 		return Gdx.input.isButtonPressed(Buttons.LEFT);

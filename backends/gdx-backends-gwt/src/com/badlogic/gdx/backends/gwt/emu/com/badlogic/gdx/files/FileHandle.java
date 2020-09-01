@@ -292,6 +292,18 @@ public class FileHandle {
 		throw new GdxRuntimeException("Stub");
 	}
 
+	/** Deletes all children of this directory, recursively.
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	public void emptyDirectory () {
+		throw new GdxRuntimeException("Not available on GWT");
+	}
+
+	/** Deletes all children of this directory, recursively. Optionally preserving the folder structure.
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	public void emptyDirectory (boolean preserveTree) {
+		throw new GdxRuntimeException("Not available on GWT");
+	}
+
 	/** Copies this file or directory to the specified file or directory. If this handle is a file, then 1) if the destination is a
 	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
 	 * doesn't exist, {@link #mkdirs()} is called on the destination's parent and this file is copied into it with a new name. If

@@ -1,3 +1,113 @@
+[1.9.12]
+- Update to MobiVM 2.3.10
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- Fixed GlyphLayout not laying out correctly with color markup.
+- Fixed TileDrawable not applying its scale correctly.
+- API Addition: Added epsilon methods to maps with float values.
+- API Addition: Added an insertRange method to array collections.
+- Fixed GestureDetector maxFlingDelay.
+- API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
+- Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- Improved text, cursor and selection rendering in TextField and TextArea.
+- API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
+- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
+- API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
+- GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
+- GWT: added possibility to lazy load assets via AssetManager instead of preload them before game start. See GWT specifics wiki article for more information.
+- GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
+- API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
+- API Change: Utility classes are now final and have a private constructor to prevent instantiation.
+- API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+
+[1.9.11]
+- Update to MobiVM 2.3.8
+- Update to LWJGL 3.2.3
+- Fixed AndroidInput crashes due to missing array resize (pressure array).
+- API Change: Ray#set methods and Ray#mul(Matrix4) normalize direction vector. Use public field to set and avoid nor()
+- API Change: New internal implementation of all Map and Set classes (except ArrayMap) to avoid OutOfMemoryErrors when too many keys collide. This also helps resistance against malicious users who can choose problematic names.
+- API Addition: OrderedMap#alter(Object,Object) and OrderedMap#alterIndex(int,Object) allow swapping out a key in-place without changing its value; OrderedSet also has this.
+- API Addition: Json can now read/write: ObjectIntMap, ObjectFloatMap, IntMap, LongMap.
+- API Addition: Added @Null annotation for IDE null analysis. All parameters and return values should be considered non-null unless annotated (or javadoc'ed if not yet annotated).
+- API Addition: Added ParticleEmitter#preAllocateParticles() and ParticleEffect#preAllocateParticles() to avoid particle allocations during updates.
+- Fixed changing looping state of already playing sounds on Android by first pausing the sound before setting the looping state (see #5822).
+- API Change: scene2d: Table#getRow now returns -1 when over the table but not over a row (used to return the last row).
+- API Change: scene2d: Tree#addToTree and #removeFromTree now have an "int actorIndex" parameter.
+- API Addition: scene2d: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- API Change: scene2d: In TextField, only revert the text if the change event was cancelled. This allows the text to be manipulated in the change listener.
+- API Change: scene2d: Tree.Node#removeAll renamed to clearChildren.
+- API Addition: scene2d: Added SelectBox#setSelectedPrefWidth to make the pref width based on the selected item and SelectBoxStyle#overFontColor.
+- API Change: DefaultTextureBinder WEIGHTED strategy replaced by LRU strategy.
+- API Change: ShaderProgram begin and end methods are deprecated in favor to bind method.
+- API Addition: Added a OpenALAudio#getSourceId(long) method.
+- API Addition: Added a ShaderProgram#getHandle() method.
+- API Change: Replaced deprecated android support libraries with androidx. AndroidFragmentApplication is only affected.
+- API Addition: Created interfaces AndroidAudio and AndroidInput and added AndroidApplication#createAudio and AndroidApplication#createInput to allow initializing custom module implementations.
+- Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
+- API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
+- API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
+- API Addition: convenient Matrix4 rotate methods: rotateTowardDirection and rotateTowardTarget
+- API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
+- API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
+- API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
+- API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
+- Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
+- API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
+- Fixed: SphereShapeBuilder poles are now merged which removes lighting artifacts, see #6068 for more information.
+- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
+- API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
+- API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
+- API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
+- API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
+- Fixed Label text wrapping when it shouldn't (#6098).
+- Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
+- API Change: glGetActiveUniform and glGetActiveAttrib parameter changed from Buffer to IntBuffer.
+
+[1.9.10]
+- API Addition: Allow target display for maximization LWJGL3 backend
+- API Addition: Accelerometer support on GWT
+- API Change: Set default behaviour of iOS audio to allow use of iPod
+- API Change: IOSDevice is no longer an enum to allow users to add their own new devices when LibGDX is not up to date
+- API Addition: Add statusBarVisible configuration to IOSApplicationConfiguration
+- Update GWT Backend to GWT 2.8.2
+- Update Android backend to build against API 28 (Android 9.0)
+- API Addition: Input.isButtonJustPressed
+- Update to LWJGL 2 backend to 2.9.3
+- Update to MobiVM 2.3.6 release
+- Update to LWJGL 3.2.1
+- API Addition: Input allows getting the maximum number of pointers supported by the backend
+- API Addition: Configuration option added to allow setting a max number of threads to use for net requests
+- API Change: NetJavaImpl now uses a cached thread pool to allow concurrent requests (by default, the thread pool is unbounded - use maxNetThreads in backend configurations to set a limit - set to 1 for previous behavior)
+- API Addition: New MathUtils norm and map methods
+- API Change: Pixmap blending was incorrect. Generated fonts may change for the better, but may require adjusting font settings.
+- API Change: Particle effects obtained from a ParticleEffectPool are now automatically started
+- Removed OSX 32-bit support
+- API Change: By default LWJGL2 backend no longer does pause/resume when becoming background/foreground window. New app config setting was added to enable the old behavior.
+- API Change: By default LWJGL2 backend now does pause/resume when window is minimized/restored. New app config setting was added to disable this behavior.
+- LWJGL3: Fixed window creation ignoring refresh rate of fullscreen mode.
+- TmxMapLoader and AtlasTmxMapLoader refactoring: Shared functionality was moved to BaseTmxMapLoader, duplicate code was removed.
+- AtlasTmxMapLoader supports group layers now (a positive side effect of the BaseTmxMapLoader refactoring).
+- API Change: TmxMapLoader and AtlasTmxMapLoader: load/loadAsync methods work exactly as before, but many methods of these classes had to change. This makes it possible implement new Tiled features.
+- API Addition: TextField#drawMessageText.
+- Fixed TextField rendering text outside the widget at small sizes.
+- API Addition: Group#getChild(int)
+- API Addition: notEmpty() for collections.
+- API Change: scene2d.ui Tree methods renamed for node set/getObject to set/getValue.
+- API Change: scene2d.ui Tree and Tree.Node require generics for the type of node, values, and actors.
+- API Change: For Selection in scene2d.utils "toggle" is now respected when !required and selected.size == 1.
+- API Addition: new InstanceBufferObject and InstanceBufferObjectSubData classes to enable instanced rendering.
+- API Addition: Support for InstancedRendering via Mesh
+- API Change: Cell#setLayout renamed to setTable.
+- API Addition: Added Collections#allocateIterators. When true, iterators are allocated. When false (default), iterators cannot be used nested.
+- API Addition: Added Group#removeActorAt(int,boolean) to avoid looking up the actor index. Subclasses intending to take action when an actor is removed may need to override this new method.
+- API Change: If Group#addActorAfter is called with an afterActor not in the group, the actor is added as the last child (not the first).
+
 [1.9.9]
 - API Addition: Add support for stripping whitespace in PixmapPacker
 - API Addition: Add support for 9 patch packing in PixmapPacker
@@ -34,6 +144,7 @@
 - API Change: List#toString(Object) changed from protected to public. Subclasses overriding this need to change to public.
 - API Change: List now handles more key presses.
 - API Change: TexturePacker ImageProcessor#addImage(File, String) now returns the Rect.
+
 
 [1.9.8]
 - Add iPhoneX images

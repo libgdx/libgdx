@@ -75,17 +75,20 @@ public class Timer {
 	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval.
 	 * @param repeatCount If negative, the task will repeat forever. */
 	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		synchronized (this) {
-			synchronized (task) {
-				if (task.timer != null) throw new IllegalArgumentException("The same task may not be scheduled twice.");
-				task.timer = this;
-				task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
-				task.intervalMillis = (long)(intervalSeconds * 1000);
-				task.repeatCount = repeatCount;
-				tasks.add(task);
-			}
-		}
 		synchronized (threadLock) {
+			synchronized (this) {
+				synchronized (task) {
+					if (task.timer != null) throw new IllegalArgumentException("The same task may not be scheduled twice.");
+					task.timer = this;
+					long timeMillis = System.nanoTime() / 1000000;
+					long executeTimeMillis = timeMillis + (long)(delaySeconds * 1000);
+					if (thread.pauseTimeMillis > 0) executeTimeMillis -= timeMillis - thread.pauseTimeMillis;
+					task.executeTimeMillis = executeTimeMillis;
+					task.intervalMillis = (long)(intervalSeconds * 1000);
+					task.repeatCount = repeatCount;
+					tasks.add(task);
+				}
+			}
 			threadLock.notifyAll();
 		}
 		return task;
@@ -245,13 +248,15 @@ public class Timer {
 	 * @author Nathan Sweet */
 	static class TimerThread implements Runnable, LifecycleListener {
 		final Files files;
+		final Application app;
 		final Array<Timer> instances = new Array(1);
 		Timer instance;
-		private long pauseMillis;
+		long pauseTimeMillis;
 
 		public TimerThread () {
 			files = Gdx.files;
-			Gdx.app.addLifecycleListener(this);
+			app = Gdx.app;
+			app.addLifecycleListener(this);
 			resume();
 
 			Thread thread = new Thread(this, "Timer");
@@ -265,7 +270,7 @@ public class Timer {
 					if (thread != this || files != Gdx.files) break;
 
 					long waitMillis = 5000;
-					if (pauseMillis == 0) {
+					if (pauseTimeMillis == 0) {
 						long timeMillis = System.nanoTime() / 1000000;
 						for (int i = 0, n = instances.size; i < n; i++) {
 							try {
@@ -289,17 +294,17 @@ public class Timer {
 
 		public void resume () {
 			synchronized (threadLock) {
-				long delayMillis = System.nanoTime() / 1000000 - pauseMillis;
+				long delayMillis = System.nanoTime() / 1000000 - pauseTimeMillis;
 				for (int i = 0, n = instances.size; i < n; i++)
 					instances.get(i).delay(delayMillis);
-				pauseMillis = 0;
+				pauseTimeMillis = 0;
 				threadLock.notifyAll();
 			}
 		}
 
 		public void pause () {
 			synchronized (threadLock) {
-				pauseMillis = System.nanoTime() / 1000000;
+				pauseTimeMillis = System.nanoTime() / 1000000;
 				threadLock.notifyAll();
 			}
 		}
@@ -310,7 +315,7 @@ public class Timer {
 				instances.clear();
 				threadLock.notifyAll();
 			}
-			Gdx.app.removeLifecycleListener(this);
+			app.removeLifecycleListener(this);
 		}
 	}
 }

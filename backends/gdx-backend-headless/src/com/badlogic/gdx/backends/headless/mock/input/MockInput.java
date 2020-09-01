@@ -56,6 +56,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return 0;
+	}
+
+	@Override
 	public int getX() {
 		return 0;
 	}
@@ -122,6 +127,11 @@ public class MockInput implements Input {
 
 	@Override
 	public boolean isButtonPressed(int button) {
+		return false;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
 		return false;
 	}
 
@@ -202,6 +212,16 @@ public class MockInput implements Input {
 	
 	@Override
 	public boolean isCatchMenuKey() {
+		return false;
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
 		return false;
 	}
 

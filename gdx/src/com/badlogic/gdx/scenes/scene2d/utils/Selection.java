@@ -4,6 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
@@ -13,7 +14,7 @@ import java.util.Iterator;
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	private Actor actor;
+	private @Null Actor actor;
 	final OrderedSet<T> selected = new OrderedSet();
 	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
@@ -21,10 +22,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean multiple;
 	boolean required;
 	private boolean programmaticChangeEvents = true;
-	T lastSelected;
+	@Null T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
-	public void setActor (Actor actor) {
+	public void setActor (@Null Actor actor) {
 		this.actor = actor;
 	}
 
@@ -35,7 +36,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (isDisabled) return;
 		snapshot();
 		try {
-			if ((toggle || (!required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)) {
+			if ((toggle || UIUtils.ctrl()) && selected.contains(item)) {
 				if (required && selected.size == 1) return;
 				selected.remove(item);
 				lastSelected = null;
@@ -44,7 +45,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 				if (!multiple || (!toggle && !UIUtils.ctrl())) {
 					if (selected.size == 1 && selected.contains(item)) return;
 					modified = selected.size > 0;
-					selected.clear();
+					selected.clear(8);
 				}
 				if (!selected.add(item) && !modified) return;
 				lastSelected = item;
@@ -58,7 +59,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
+	/** @deprecated Use {@link #notEmpty()}. */
+	@Deprecated
 	public boolean hasItems () {
+		return selected.size > 0;
+	}
+
+	public boolean notEmpty () {
 		return selected.size > 0;
 	}
 
@@ -75,17 +82,17 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Returns the first selected item, or null. */
-	public T first () {
+	public @Null T first () {
 		return selected.size == 0 ? null : selected.first();
 	}
 
 	void snapshot () {
-		old.clear();
+		old.clear(selected.size);
 		old.addAll(selected);
 	}
 
 	void revert () {
-		selected.clear();
+		selected.clear(old.size);
 		selected.addAll(old);
 	}
 
@@ -98,7 +105,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();
-		selected.clear();
+		selected.clear(8);
 		selected.add(item);
 		if (programmaticChangeEvents && fireChangeEvent())
 			revert();
@@ -113,7 +120,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		boolean added = false;
 		snapshot();
 		lastSelected = null;
-		selected.clear();
+		selected.clear(items.size);
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
 			if (item == null) throw new IllegalArgumentException("item cannot be null.");
@@ -194,7 +201,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void clear () {
 		if (selected.size == 0) return;
 		snapshot();
-		selected.clear();
+		selected.clear(8);
 		if (programmaticChangeEvents && fireChangeEvent())
 			revert();
 		else {
@@ -221,13 +228,14 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 	}
 
-	public boolean contains (T item) {
+	/** @param item May be null (returns false). */
+	public boolean contains (@Null T item) {
 		if (item == null) return false;
 		return selected.contains(item);
 	}
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
-	public T getLastSelected () {
+	public @Null T getLastSelected () {
 		if (lastSelected != null) {
 			return lastSelected;
 		} else if (selected.size > 0) {

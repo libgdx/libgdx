@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,9 @@ abstract public class Pool<T> {
 		this(initialCapacity, Integer.MAX_VALUE);
 	}
 
-	/** @param max The maximum number of free objects to store in this pool. */
+	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created/pre-allocated. Use
+	 *           {@link #fill(int)} after instantiation if needed.
+	 * @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
@@ -64,6 +66,16 @@ abstract public class Pool<T> {
 		reset(object);
 	}
 
+	/** Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be
+	 * used at any time.
+	 *
+	 * @param size the number of objects to be added */
+	public void fill (int size) {
+		for (int i = 0; i < size; i++)
+			if (freeObjects.size < max) freeObjects.add(newObject());
+		peak = Math.max(peak, freeObjects.size);
+	}
+
 	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
 	 * {@link Poolable#reset()} if the object is {@link Poolable}. */
 	protected void reset (T object) {
@@ -78,7 +90,7 @@ abstract public class Pool<T> {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
-		for (int i = 0; i < objects.size; i++) {
+		for (int i = 0, n = objects.size; i < n; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
 			if (freeObjects.size < max) freeObjects.add(object);
