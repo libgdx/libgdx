@@ -108,7 +108,7 @@ public class BooleanArray {
 	}
 
 	public void addAll (BooleanArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (BooleanArray array, int offset, int length) {

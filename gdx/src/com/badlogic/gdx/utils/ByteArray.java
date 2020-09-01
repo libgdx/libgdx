@@ -106,7 +106,7 @@ public class ByteArray {
 	}
 
 	public void addAll (ByteArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (ByteArray array, int offset, int length) {

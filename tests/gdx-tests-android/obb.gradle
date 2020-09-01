@@ -15,8 +15,7 @@ task zipAssets(type: Zip) {
     destinationDir = file("build/obb")
     entryCompression = ZipEntryCompression.STORED
     from "build/obbassets"
-    baseName = "main.1.com.badlogic.gdx.tests.android"
-    extension = "obb"
+    archiveName = "main.1.com.badlogic.gdx.tests.android.obb"
 }
 
 def getADBPath() {

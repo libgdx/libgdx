@@ -128,14 +128,15 @@ public class ProgressBar extends Widget implements Disableable {
 		if (vertical) {
 			float positionHeight = height;
 
-			float bgTopHeight = 0;
+			float bgTopHeight = 0, bgBottomHeight = 0;
 			if (bg != null) {
 				if (round)
 					bg.draw(batch, Math.round(x + (width - bg.getMinWidth()) * 0.5f), y, Math.round(bg.getMinWidth()), height);
 				else
 					bg.draw(batch, x + width - bg.getMinWidth() * 0.5f, y, bg.getMinWidth(), height);
 				bgTopHeight = bg.getTopHeight();
-				positionHeight -= bgTopHeight + bg.getBottomHeight();
+				bgBottomHeight = bg.getBottomHeight();
+				positionHeight -= bgTopHeight + bgBottomHeight;
 			}
 
 			float knobHeightHalf = 0;
@@ -146,9 +147,9 @@ public class ProgressBar extends Widget implements Disableable {
 			} else {
 				knobHeightHalf = knobHeight * 0.5f;
 				position = (positionHeight - knobHeight) * percent;
-				position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
+				position = Math.min(positionHeight - knobHeight, position) + bgBottomHeight;
 			}
-			position = Math.max(0, position);
+			position = Math.max(Math.min(0, bgBottomHeight), position);
 
 			if (knobBefore != null) {
 				if (round) {
@@ -179,14 +180,15 @@ public class ProgressBar extends Widget implements Disableable {
 		} else {
 			float positionWidth = width;
 
-			float bgLeftWidth = 0;
+			float bgLeftWidth = 0, bgRightWidth = 0;
 			if (bg != null) {
 				if (round)
 					bg.draw(batch, x, Math.round(y + (height - bg.getMinHeight()) * 0.5f), width, Math.round(bg.getMinHeight()));
 				else
 					bg.draw(batch, x, y + (height - bg.getMinHeight()) * 0.5f, width, bg.getMinHeight());
 				bgLeftWidth = bg.getLeftWidth();
-				positionWidth -= bgLeftWidth + bg.getRightWidth();
+				bgRightWidth = bg.getRightWidth();
+				positionWidth -= bgLeftWidth + bgRightWidth;
 			}
 
 			float knobWidthHalf = 0;
@@ -199,7 +201,7 @@ public class ProgressBar extends Widget implements Disableable {
 				position = (positionWidth - knobWidth) * percent;
 				position = Math.min(positionWidth - knobWidth, position) + bgLeftWidth;
 			}
-			position = Math.max(0, position);
+			position = Math.max(Math.min(0, bgLeftWidth), position);
 
 			if (knobBefore != null) {
 				if (round) {
@@ -306,7 +308,7 @@ public class ProgressBar extends Widget implements Disableable {
 		if (vertical) {
 			final Drawable knob = getKnobDrawable();
 			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
+			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg == null ? 0 : bg.getMinWidth());
 		} else
 			return 140;
 	}

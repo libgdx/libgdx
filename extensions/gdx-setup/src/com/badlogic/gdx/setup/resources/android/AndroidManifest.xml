@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="%PACKAGE%" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="%API_LEVEL%" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:isGame="true"
+        android:appCategory="game"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme" >
         <activity

@@ -113,7 +113,7 @@ public class ShortArray {
 	}
 
 	public void addAll (ShortArray array) {
-		addAll(array, 0, array.size);
+		addAll(array.items, 0, array.size);
 	}
 
 	public void addAll (ShortArray array, int offset, int length) {

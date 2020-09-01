@@ -46,6 +46,10 @@ abstract public class Value {
 		public float get (Actor context) {
 			return value;
 		}
+
+		public String toString () {
+			return Float.toString(value);
+		}
 	}
 
 	/** Value that is the minWidth of the actor in the cell. */

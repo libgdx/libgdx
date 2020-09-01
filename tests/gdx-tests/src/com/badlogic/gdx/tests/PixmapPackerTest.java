@@ -70,14 +70,17 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
 		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
+		Pixmap pixmap5 = new Pixmap(Gdx.files.internal("data/badlogic-with-whitespace.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false);
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false,
+				true, true, new PixmapPacker.GuillotineStrategy());
 		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
 			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace " + count, pixmap5);
 		}
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
@@ -90,12 +93,14 @@ public class PixmapPackerTest extends GdxTest {
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
 			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace -" + count, pixmap5);
 		}
 
 		pixmap1.dispose();
 		pixmap2.dispose();
 		pixmap3.dispose();
 		pixmap4.dispose();
+		pixmap5.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		textureRegions = new Array<TextureRegion>();

@@ -93,7 +93,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
 	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle fontFile, int faceIndex) {
-		name = fontFile.pathWithoutExtension();
+		name = fontFile.nameWithoutExtension();
 		int fileSize = (int)fontFile.length();
 
 		library = FreeType.initFreeType();
@@ -197,6 +197,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		generateData(parameter, data);
 		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+		if (data.regions.isEmpty()) throw new GdxRuntimeException("Unable to create a font with no texture regions.");
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
@@ -316,6 +317,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
+		data.name = name + "-" + parameter.size;
 		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
@@ -638,6 +640,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		mainGlyph.dispose();
 
 		return glyph;
+	}
+
+	public String toString () {
+		return name;
 	}
 
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
