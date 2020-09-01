@@ -9,7 +9,7 @@
 - Fixed GestureDetector maxFlingDelay.
 - API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
-- API Addition: Added setProgrammaticChangeEvents to ProgressBar/Slider.
+- API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
 - Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
 - API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
 - API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
@@ -22,6 +22,7 @@
 - API Change: Removed arm abi from SharedLibraryLoader
 - API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
 - API Change: Utility classes are now final and have a private constructor to prevent instantiation.
+- API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
