@@ -45,12 +45,12 @@ import org.apache.commons.io.IOUtils;
 public class PreloaderBundleGenerator extends Generator {
 	private class Asset {
 		String filePathOrig;
-		FileWrapper fileMd5;
+		FileWrapper file;
 		AssetType type;
 
-		public Asset(String filePathOrig, FileWrapper fileMd5, AssetType type) {
+		public Asset(String filePathOrig, FileWrapper file, AssetType type) {
 			this.filePathOrig = filePathOrig;
-			this.fileMd5 = fileMd5;
+			this.file = file;
 			this.type = type;
 		}
 	}
@@ -109,7 +109,7 @@ public class PreloaderBundleGenerator extends Generator {
 		
 		HashMap<String, ArrayList<Asset>> bundles = new HashMap<String, ArrayList<Asset>>();
 		for (Asset asset : assets) {
-			String bundleName = assetFilter.getBundleName(asset.fileMd5.path());
+			String bundleName = assetFilter.getBundleName(asset.file.path());
 			if (bundleName == null) {
 				bundleName = "assets";
 			}
@@ -126,7 +126,7 @@ public class PreloaderBundleGenerator extends Generator {
 			for (Asset asset : bundle.getValue()) {
                 String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
 				if (pathOrig.startsWith("/")) pathOrig = pathOrig.substring(1);
-                String pathMd5 = asset.fileMd5.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+                String pathMd5 = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
                 if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
 				sb.append(asset.type.code);
 				sb.append(":");
@@ -134,12 +134,12 @@ public class PreloaderBundleGenerator extends Generator {
 				sb.append(":");
                 sb.append(pathMd5);
                 sb.append(":");
-				sb.append(asset.fileMd5.isDirectory() ? 0 : asset.fileMd5.length());
+				sb.append(asset.file.isDirectory() ? 0 : asset.file.length());
 				sb.append(":");
-				String mimetype = URLConnection.guessContentTypeFromName(asset.fileMd5.name());
+				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
 				sb.append(mimetype == null ? "application/unknown" : mimetype);
                 sb.append(":");
-                sb.append(asset.fileMd5.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
+                sb.append(asset.file.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
 				sb.append("\n");
 			}
 			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);
