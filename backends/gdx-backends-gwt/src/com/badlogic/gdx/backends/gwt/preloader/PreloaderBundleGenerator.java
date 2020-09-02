@@ -139,7 +139,7 @@ public class PreloaderBundleGenerator extends Generator {
 				String mimetype = URLConnection.guessContentTypeFromName(asset.fileMd5.name());
 				sb.append(mimetype == null ? "application/unknown" : mimetype);
                 sb.append(":");
-                sb.append(asset.file.isDirectory() || assetFilter.preload(path) ? '1' : '0');
+                sb.append(asset.fileMd5.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
 				sb.append("\n");
 			}
 			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);

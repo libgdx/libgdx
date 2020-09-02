@@ -150,7 +150,7 @@ public class Preloader {
 					if (type == AssetType.Audio && !loader.isUseBrowserCache()) {
 						size = 0;
 					}
-					assets.add(new Asset(tokens[1].trim(), tokens[2].trim(), type, size, tokens[4]));
+					Asset asset = new Asset(tokens[1].trim(), tokens[2].trim(), type, size, tokens[4]);
                     if (tokens[5].equals("1") || asset.url.startsWith("com/badlogic/"))
                         assets.add(asset);
                     else
