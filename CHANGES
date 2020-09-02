@@ -24,6 +24,7 @@
 - API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
 - API Change: Utility classes are now final and have a private constructor to prevent instantiation.
 - API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+- API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
