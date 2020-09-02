@@ -106,7 +106,7 @@ public class TextArea extends TextField {
 		} else {
 			// without ceil we might end up with one less row then expected
 			// due to how linesShowing is calculated in #sizeChanged and #getHeight() returning rounded value
-			float prefHeight = MathUtils.ceil(lineHeight * prefRows);
+			float prefHeight = MathUtils.ceil(style.font.getLineHeight() * prefRows);
 			if (style.background != null) {
 				prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
 					style.background.getMinHeight());
@@ -221,6 +221,7 @@ public class TextArea extends TextField {
 		int minIndex = Math.min(cursor, selectionStart);
 		int maxIndex = Math.max(cursor, selectionStart);
 		BitmapFont.BitmapFontData fontData = font.getData();
+		float lineHeight = style.font.getLineHeight();
 		while (i + 1 < linesBreak.size && i < (firstLineShowing + linesShowing) * 2) {
 
 			int lineStart = linesBreak.get(i);
@@ -258,7 +259,7 @@ public class TextArea extends TextField {
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
-		float offsetY = -(lineHeight - textHeight) / 2;
+		float offsetY = -(style.font.getLineHeight() - textHeight) / 2;
 		for (int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
 			font.draw(batch, displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1], 0, Align.left, false);
 			offsetY -= font.getLineHeight();

@@ -103,7 +103,7 @@ public class TextField extends Widget implements Disableable {
 	private StringBuilder passwordBuffer;
 	private char passwordCharacter = BULLET;
 
-	protected float fontOffset, textHeight, lineHeight, textOffset;
+	protected float fontOffset, textHeight, textOffset;
 	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
 	private int maxLength;
@@ -217,8 +217,7 @@ public class TextField extends Widget implements Disableable {
 	public void setStyle (TextFieldStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		lineHeight = style.font.getLineHeight();
-		textHeight = style.font.getCapHeight() - style.font.getDescent();
+		textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
 		invalidateHierarchy();
 	}
 
@@ -360,7 +359,7 @@ public class TextField extends Widget implements Disableable {
 
 	protected float getTextY (BitmapFont font, @Null Drawable background) {
 		float height = getHeight();
-		float textY = textHeight / 2;
+		float textY = textHeight / 2 + font.getDescent();
 		if (background != null) {
 			float bottom = background.getBottomHeight();
 			textY = textY + (height - background.getTopHeight() - bottom) / 2 + bottom;
@@ -373,7 +372,8 @@ public class TextField extends Widget implements Disableable {
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
-		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight / 2 - lineHeight / 2, selectionWidth, lineHeight);
+		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
+			textHeight);
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
@@ -387,7 +387,7 @@ public class TextField extends Widget implements Disableable {
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		cursorPatch.draw(batch,
 			x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
-			y - textHeight / 2 - lineHeight / 2, cursorPatch.getMinWidth(), lineHeight);
+			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
@@ -723,7 +723,7 @@ public class TextField extends Widget implements Disableable {
 				style.disabledBackground.getBottomHeight() + style.disabledBackground.getTopHeight());
 			minHeight = Math.max(minHeight, style.disabledBackground.getMinHeight());
 		}
-		return Math.max(topAndBottom + lineHeight, minHeight);
+		return Math.max(topAndBottom + textHeight, minHeight);
 	}
 
 	/** Sets text horizontal alignment (left, center or right).

@@ -30,8 +30,8 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class TextAreaTest3 extends GdxTest {
 	private Stage stage;
 	private Skin skin;
-	private TextField textField;
-	private TextArea textArea;
+	TextField textField;
+	TextArea textArea;
 	private TextField.TextFieldStyle styleDefault;
 	private TextField.TextFieldStyle styleArial15;
 	private TextField.TextFieldStyle styleArial32;
