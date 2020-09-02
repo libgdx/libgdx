@@ -54,6 +54,8 @@ public class GamepadSupport {
 				if (gamepad != null) {
 					if (!gamepadsTemp.containsKey(gamepad.getIndex())) {
 						onGamepadConnect(gamepad);
+					} else {
+						gamepads.put(gamepad.getIndex(), gamepad);
 					}
 					gamepadsTemp.remove(gamepad.getIndex());
 				}				
@@ -115,18 +117,18 @@ public class GamepadSupport {
 	}
 	
 	private static native void nativeInit() /*-{
-        var gamepadSupportAvailable = !! navigator.getGamepads || !! navigator.webkitGetGamepads || !! navigator.webkitGamepads || (navigator.userAgent.indexOf('Firefox/') != -1);
+        var gamepadSupportAvailable = !! navigator.getGamepads;
         if (gamepadSupportAvailable) {
-            $wnd.addEventListener('MozGamepadConnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadConnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
-            $wnd.addEventListener('MozGamepadDisconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadDisconnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
-            if ( !! navigator.getGamepads || !! navigator.webkitGamepads || !! navigator.webkitGetGamepads) {
+            $wnd.addEventListener('gamepadconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadConnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
+            $wnd.addEventListener('gamepaddisconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadDisconnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
+            if ( !! navigator.getGamepads) {
                 @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::startPolling()();
             }
         }
 	}-*/;
 	
 	private static native JsArray<Gamepad> nativePollGamepads() /*-{
-		return rawGamepads = (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) || navigator.webkitGamepads;
+		return navigator.getGamepads();
 	}-*/;
 	
 	public static native void consoleLog(String message) /*-{

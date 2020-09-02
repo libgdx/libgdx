@@ -21,7 +21,7 @@ import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.tests.*;
 import org.moe.natj.general.Pointer;
 
-import ios.uikit.c.UIKit;
+import apple.uikit.c.UIKit;
 
 public class IOSTests extends IOSApplication.Delegate {
 
@@ -34,7 +34,7 @@ public class IOSTests extends IOSApplication.Delegate {
 		IOSApplicationConfiguration config = new  IOSApplicationConfiguration();
 		config.useAccelerometer = false;
 		config.useGL30 = false;
-		return new IOSApplication(new SpriteBatchTest(), config);
+		return new IOSApplication(new BulletTestCollection(), config);
 	}
 
 	public static void main(String[] argv) {

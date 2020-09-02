@@ -19,31 +19,32 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
-	private final Lwjgl3Window window;
-	private final GL20 gl20;
-	private final GL30 gl30;
+	final Lwjgl3Window window;
+	GL20 gl20;
+	private GL30 gl30;
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
 	private volatile int backBufferHeight;
 	private volatile int logicalWidth;
 	private volatile int logicalHeight;
+	private volatile boolean isContinuous = true;
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
@@ -51,6 +52,9 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private long frameCounterStart = 0;
 	private int frames;
 	private int fps;
+	private int windowPosXBeforeFullscreen;
+	private int windowPosYBeforeFullscreen;
+	private DisplayMode displayModeBeforeFullscreen = null;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
@@ -62,7 +66,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			if (!window.isListenerInitialized()) {
 				return;
 			}
-			GLFW.glfwMakeContextCurrent(windowHandle);
+			window.makeCurrent();
 			gl20.glViewport(0, 0, width, height);
 			window.getListener().resize(getWidth(), getHeight());
 			window.getListener().render();
@@ -95,7 +99,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		return window;
 	}
 
-	private void updateFramebufferInfo() {
+	void updateFramebufferInfo() {
 		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		this.backBufferWidth = tmpBuffer.get(0);
 		this.backBufferHeight = tmpBuffer2.get(0);
@@ -136,6 +140,16 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public GL30 getGL30() {
 		return gl30;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
 	}
 
 	@Override
@@ -309,6 +323,26 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 
 	@Override
+	public int getSafeInsetLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return 0;
+	}
+
+	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
 		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode) displayMode;
@@ -323,12 +357,21 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 						0, 0, newMode.width, newMode.height, newMode.refreshRate);
 			}
 		} else {
+			// store window position so we can restore it when switching from fullscreen to windowed later
+			storeCurrentWindowPositionAndDisplayMode();
+			
 			// switch from windowed to fullscreen
 			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
 					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
 		return true;
+	}
+	
+	private void storeCurrentWindowPositionAndDisplayMode() {
+		windowPosXBeforeFullscreen = window.getPositionX();
+		windowPosYBeforeFullscreen = window.getPositionY();
+		displayModeBeforeFullscreen = getDisplayMode();
 	}
 
 	@Override
@@ -337,11 +380,13 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		if (!isFullscreen()) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 		} else {
-			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
-			int windowPosX = (currentMode.width - width) / 2;
-			int windowPosY = (currentMode.height - height) / 2;
+			if (displayModeBeforeFullscreen == null) {
+				storeCurrentWindowPositionAndDisplayMode();
+			}
+				
 			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					windowPosX, windowPosY, width, height, currentMode.refreshRate);
+					windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
+					displayModeBeforeFullscreen.refreshRate);
 		}
 		updateFramebufferInfo();
 		return true;
@@ -355,24 +400,18 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		GLFW.glfwSetWindowTitle(window.getWindowHandle(), title);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setUndecorated(boolean undecorated) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setDecorated(!undecorated);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setResizable(boolean resizable) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setResizable(resizable);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override
@@ -392,18 +431,17 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setContinuousRendering(boolean isContinuous) {
-		// FIXME implement non-continuous rendering
+		this.isContinuous = isContinuous;
 	}
 
 	@Override
 	public boolean isContinuousRendering() {
-		// FIXME implement non-continuous rendering
-		return true;
+		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering() {
-		// FIXME implement non-continuous rendering
+		window.requestRendering();
 	}
 
 	@Override

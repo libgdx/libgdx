@@ -103,11 +103,12 @@ public:
 		btScalar minDimension = boxHalfExtents.getX();
 		if (minDimension>boxHalfExtents.getY())
 			minDimension = boxHalfExtents.getY();
-		setSafeMargin(minDimension);
 
 		m_shapeType = BOX_2D_SHAPE_PROXYTYPE;
 		btVector3 margin(getMargin(),getMargin(),getMargin());
 		m_implicitShapeDimensions = (boxHalfExtents * m_localScaling) - margin;
+
+		setSafeMargin(minDimension);
 	};
 
 	virtual void setMargin(btScalar collisionMargin)

@@ -141,11 +141,11 @@ public:
    * @param yaw Angle around Z
    * @param pitch Angle around Y
    * @param roll Angle around X */
-	void setEulerZYX(const btScalar& yaw, const btScalar& pitch, const btScalar& roll)
+	void setEulerZYX(const btScalar& yawZ, const btScalar& pitchY, const btScalar& rollX)
 	{
-		btScalar halfYaw = btScalar(yaw) * btScalar(0.5);  
-		btScalar halfPitch = btScalar(pitch) * btScalar(0.5);  
-		btScalar halfRoll = btScalar(roll) * btScalar(0.5);  
+		btScalar halfYaw = btScalar(yawZ) * btScalar(0.5);  
+		btScalar halfPitch = btScalar(pitchY) * btScalar(0.5);  
+		btScalar halfRoll = btScalar(rollX) * btScalar(0.5);  
 		btScalar cosYaw = btCos(halfYaw);
 		btScalar sinYaw = btSin(halfYaw);
 		btScalar cosPitch = btCos(halfPitch);
@@ -157,6 +157,28 @@ public:
                          cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw, //z
                          cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw); //formerly yzx
 	}
+
+	  /**@brief Get the euler angles from this quaternion
+	   * @param yaw Angle around Z
+	   * @param pitch Angle around Y
+	   * @param roll Angle around X */
+	void getEulerZYX(btScalar& yawZ, btScalar& pitchY, btScalar& rollX) const
+	{
+		btScalar squ;
+		btScalar sqx;
+		btScalar sqy;
+		btScalar sqz;
+		btScalar sarg;
+		sqx = m_floats[0] * m_floats[0];
+		sqy = m_floats[1] * m_floats[1];
+		sqz = m_floats[2] * m_floats[2];
+		squ = m_floats[3] * m_floats[3];
+		rollX = btAtan2(2 * (m_floats[1] * m_floats[2] + m_floats[3] * m_floats[0]), squ - sqx - sqy + sqz);
+		sarg = btScalar(-2.) * (m_floats[0] * m_floats[2] - m_floats[3] * m_floats[1]);
+		pitchY = sarg <= btScalar(-1.0) ? btScalar(-0.5) * SIMD_PI: (sarg >= btScalar(1.0) ? btScalar(0.5) * SIMD_PI : btAsin(sarg));
+		yawZ = btAtan2(2 * (m_floats[0] * m_floats[1] + m_floats[3] * m_floats[2]), squ + sqx - sqy - sqz);
+	}
+
   /**@brief Add two quaternions
    * @param q The quaternion to add to this one */
 	SIMD_FORCE_INLINE	btQuaternion& operator+=(const btQuaternion& q)
@@ -333,7 +355,15 @@ public:
 	{
 		return btSqrt(length2());
 	}
-
+	btQuaternion& safeNormalize()
+	{
+		btScalar l2 = length2();
+		if (l2>SIMD_EPSILON)
+		{
+			normalize();
+		}
+		return *this;
+	}
   /**@brief Normalize the quaternion 
    * Such that x^2 + y^2 + z^2 +w^2 = 1 */
 	btQuaternion& normalize() 
@@ -418,22 +448,21 @@ public:
 			return btAcos(dot(q) / s) * btScalar(2.0);
 	}
 
-  /**@brief Return the angle of rotation represented by this quaternion */
+	/**@brief Return the angle [0, 2Pi] of rotation represented by this quaternion */
 	btScalar getAngle() const 
 	{
 		btScalar s = btScalar(2.) * btAcos(m_floats[3]);
 		return s;
 	}
 
-	/**@brief Return the angle of rotation represented by this quaternion along the shortest path*/
+	/**@brief Return the angle [0, Pi] of rotation represented by this quaternion along the shortest path */
 	btScalar getAngleShortestPath() const 
 	{
 		btScalar s;
-		if (dot(*this) < 0)
+		if (m_floats[3] >= 0)
 			s = btScalar(2.) * btAcos(m_floats[3]);
 		else
 			s = btScalar(2.) * btAcos(-m_floats[3]);
-
 		return s;
 	}
 
@@ -533,25 +562,29 @@ public:
    * Slerp interpolates assuming constant velocity.  */
 	btQuaternion slerp(const btQuaternion& q, const btScalar& t) const
 	{
-	  btScalar magnitude = btSqrt(length2() * q.length2()); 
-	  btAssert(magnitude > btScalar(0));
 
-    btScalar product = dot(q) / magnitude;
-    if (btFabs(product) < btScalar(1))
+		const btScalar magnitude = btSqrt(length2() * q.length2());
+		btAssert(magnitude > btScalar(0));
+		
+		const btScalar product = dot(q) / magnitude;
+		const btScalar absproduct = btFabs(product);
+		
+		if(absproduct < btScalar(1.0 - SIMD_EPSILON))
 		{
-      // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
-      const btScalar sign = (product < 0) ? btScalar(-1) : btScalar(1);
-
-      const btScalar theta = btAcos(sign * product);
-      const btScalar s1 = btSin(sign * t * theta);   
-      const btScalar d = btScalar(1.0) / btSin(theta);
-      const btScalar s0 = btSin((btScalar(1.0) - t) * theta);
-
-      return btQuaternion(
-          (m_floats[0] * s0 + q.x() * s1) * d,
-          (m_floats[1] * s0 + q.y() * s1) * d,
-          (m_floats[2] * s0 + q.z() * s1) * d,
-          (m_floats[3] * s0 + q.m_floats[3] * s1) * d);
+			// Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+			const btScalar theta = btAcos(absproduct);
+			const btScalar d = btSin(theta);
+			btAssert(d > btScalar(0));
+			
+			const btScalar sign = (product < 0) ? btScalar(-1) : btScalar(1);
+			const btScalar s0 = btSin((btScalar(1.0) - t) * theta) / d;
+			const btScalar s1 = btSin(sign * t * theta) / d;
+			
+			return btQuaternion(
+				(m_floats[0] * s0 + q.x() * s1),
+				(m_floats[1] * s0 + q.y() * s1),
+				(m_floats[2] * s0 + q.z() * s1),
+				(m_floats[3] * s0 + q.w() * s1));
 		}
 		else
 		{

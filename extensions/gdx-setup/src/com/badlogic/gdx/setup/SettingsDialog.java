@@ -66,21 +66,19 @@ public class SettingsDialog extends JDialog {
 	private JPanel buttonPanel;
 
 	private JTextField mavenTextField;
-	private SetupCheckBox ideaBox;
-	private SetupCheckBox eclipseBox;
 	SetupCheckBox offlineBox;
+	SetupCheckBox kotlinBox;
 	private String mavenSnapshot;
-	private boolean ideaSnapshot;
-	private boolean eclipseSnapshot;
 	private boolean offlineSnapshot;
+	private boolean kotlinSnapshot;
 
-	public SettingsDialog () {
+	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
 
-		uiLayout();
+		uiLayout(gwtCheckBox);
 		uiStyle();
 
 		buttonOK.addActionListener(new ActionListener() {
@@ -127,7 +125,7 @@ public class SettingsDialog extends JDialog {
 		setLocationRelativeTo(null);
 	}
 
-	private void uiLayout () {
+	private void uiLayout (final SetupCheckBox gwtCheckBox) {
 		content = new JPanel(new GridBagLayout());
 		content.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -160,24 +158,31 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setMinimumSize(mavenTextField.getPreferredSize());
 		mavenLabel.setForeground(new Color(170, 170, 170));
 		mavenDesc.setForeground(new Color(170, 170, 170));
-		JLabel ideaLabel = new JLabel("IDEA");
-		JLabel ideaDesc = new JLabel("Generates Intellij IDEA project files");
-		ideaBox = new SetupCheckBox();
-		ideaLabel.setForeground(new Color(170, 170, 170));
-		ideaDesc.setForeground(new Color(170, 170, 170));
-		ideaBox.setBackground(new Color(36, 36, 36));
-		JLabel eclipseLabel = new JLabel("Eclipse");
-		JLabel eclipseDesc = new JLabel("Generates Eclipse project files");
-		eclipseBox = new SetupCheckBox();
-		eclipseLabel.setForeground(new Color(170, 170, 170));
-		eclipseDesc.setForeground(new Color(170, 170, 170));
-		eclipseBox.setBackground(new Color(36, 36, 36));
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
+		JLabel kotlinLabel = new JLabel("Use Kotlin");
+		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language.");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
+		kotlinBox = new SetupCheckBox();
+		kotlinBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final String message = "Using Kotlin with the HTML backend is not supported. Do you want to disable the HTML backend?";
+				if(kotlinBox.isSelected() && gwtCheckBox.isSelected() &&
+						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
+						JOptionPane.YES_NO_OPTION) == 0) {
+					gwtCheckBox.setSelected(false);
+				} else if(gwtCheckBox.isSelected()) {
+					kotlinBox.setSelected(false);
+				}
+			}
+		});
+		offlineBox.setBackground(new Color(36, 36, 36));
+		kotlinLabel.setForeground(new Color(170, 170, 170));
+		kotlinDesc.setForeground(new Color(170, 170, 170));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -189,17 +194,13 @@ public class SettingsDialog extends JDialog {
 		content.add(mavenTextField, new GridBagConstraints(1, 2, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(mavenDesc, new GridBagConstraints(3, 2, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
-		content.add(ideaLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		content.add(ideaBox, new GridBagConstraints(1, 3, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-		content.add(ideaDesc, new GridBagConstraints(3, 3, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-
-		content.add(eclipseLabel, new GridBagConstraints(0, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		content.add(eclipseBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-		content.add(eclipseDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(offlineLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(offlineBox, new GridBagConstraints(1, 3, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(offlineDesc, new GridBagConstraints(3, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		
-		content.add(offlineLabel, new GridBagConstraints(0, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		content.add(offlineBox, new GridBagConstraints(1, 5, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-		content.add(offlineDesc, new GridBagConstraints(3, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(kotlinLabel, new GridBagConstraints(0, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(kotlinBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(kotlinDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";
@@ -231,9 +232,13 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setForeground(new Color(255, 255, 255));
 	}
 
-	public void showDialog () {
+	public void showDialog (SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setVisible(true);
+		if (gwtCheckBox.isSelected()) {
+			kotlinBox.setSelected(false);
+			kotlinSnapshot = false;
+		}
 	}
 
 	public List<String> getGradleArgs () {
@@ -241,13 +246,6 @@ public class SettingsDialog extends JDialog {
 		list.add("--no-daemon");
 		if (offlineBox.isSelected()) {
 			list.add("--offline");	
-		}
-		if (eclipseBox.isSelected()) {
-			list.add("eclipse");
-			list.add("afterEclipseImport");
-		}
-		if (ideaBox.isSelected()) {
-			list.add("idea");
 		}
 		return list;
 	}
@@ -268,16 +266,13 @@ public class SettingsDialog extends JDialog {
 
 	private void takeSnapshot () {
 		mavenSnapshot = mavenTextField.getText();
-		ideaSnapshot = ideaBox.isSelected();
-		eclipseSnapshot = eclipseBox.isSelected();
 		offlineSnapshot = offlineBox.isSelected();
+		kotlinSnapshot = kotlinBox.isSelected();
 	}
 
 	private void restore () {
 		mavenTextField.setText(mavenSnapshot);
-		ideaBox.setSelected(ideaSnapshot);
-		eclipseBox.setSelected(eclipseSnapshot);
 		offlineBox.setSelected(offlineSnapshot);
+		kotlinBox.setSelected(kotlinSnapshot);
 	}
-
 }

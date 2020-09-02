@@ -46,7 +46,7 @@ public class Preloader {
 
 	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
-	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
+	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 
@@ -173,21 +173,21 @@ public class Preloader {
 						@Override
 						public void onSuccess(Object result) {
 							switch (asset.type) {
-								case Text:
-									texts.put(asset.file, (String) result);
-									break;
-								case Image:
-									images.put(asset.file, (ImageElement) result);
-									break;
-								case Binary:
-									binaries.put(asset.file, (Blob) result);
-									break;
-								case Audio:
-									audio.put(asset.file, null);
-									break;
-								case Directory:
-									directories.put(asset.file, null);
-									break;
+							case Text:
+								texts.put(asset.file, (String) result);
+								break;
+							case Image:
+								images.put(asset.file, (ImageElement) result);
+								break;
+							case Binary:
+								binaries.put(asset.file, (Blob) result);
+								break;
+							case Audio:
+								audio.put(asset.file, (Blob) result);
+								break;
+							case Directory:
+								directories.put(asset.file, null);
+								break;
 							}
 							asset.succeed = true;
 							callback.update(state);
@@ -214,7 +214,7 @@ public class Preloader {
 			return binaries.get(file).read();
 		}
 		if (audio.containsKey(file)) {
-			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
+			return audio.get(file).read();
 		}
 		return null;
 	}
@@ -310,7 +310,7 @@ public class Preloader {
 			return binaries.get(file).length();
 		}
 		if (audio.containsKey(file)) {
-			return 1; // FIXME sensible?
+			return audio.get(file).length();
 		}
 		return 0;
 	}

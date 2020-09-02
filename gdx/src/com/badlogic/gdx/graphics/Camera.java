@@ -98,7 +98,7 @@ public abstract class Camera {
 	/** Normalizes the up vector by first calculating the right vector via a cross product between direction and up, and then
 	 * recalculating the up vector via a cross product between right and direction. */
 	public void normalizeUp () {
-		tmpVec.set(direction).crs(up).nor();
+		tmpVec.set(direction).crs(up);
 		up.set(tmpVec).crs(direction).nor();
 	}
 
@@ -118,7 +118,7 @@ public abstract class Camera {
 	 * will not be orthogonalized.
 	 * 
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotate (Vector3 axis, float angle) {
 		direction.rotate(axis, angle);
 		up.rotate(axis, angle);
@@ -147,7 +147,7 @@ public abstract class Camera {
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotateAround (Vector3 point, Vector3 axis, float angle) {
 		tmpVec.set(point);
 		tmpVec.sub(position);
@@ -194,7 +194,7 @@ public abstract class Camera {
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		float x = screenCoords.x, y = screenCoords.y;
 		x = x - viewportX;
-		y = Gdx.graphics.getHeight() - y - 1;
+		y = Gdx.graphics.getHeight() - y;
 		y = y - viewportY;
 		screenCoords.x = (2 * x) / viewportWidth - 1;
 		screenCoords.y = (2 * y) / viewportHeight - 1;

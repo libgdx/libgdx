@@ -119,7 +119,7 @@ public class GwtGL20 implements GL20 {
 		} else {
 			ensureCapacity(buffer);
 			for (int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
-				shortBuffer.set(j, buffer.get(i));
+				shortBuffer.set(j, (buffer.get(i) & 0xFFFF));
 			}
 			return shortBuffer.subarray(0, buffer.remaining());
 		}
@@ -546,18 +546,18 @@ public class GwtGL20 implements GL20 {
 
 
 	@Override
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
 		WebGLActiveInfo activeAttrib = gl.getActiveAttrib(programs.get(program), index);
 		size.put(activeAttrib.getSize());
-		((IntBuffer)type).put(activeAttrib.getType());
+		type.put(activeAttrib.getType());
 		return activeAttrib.getName();
 	}
 
 	@Override
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
 		WebGLActiveInfo activeUniform = gl.getActiveUniform(programs.get(program), index);
 		size.put(activeUniform.getSize());
-		((IntBuffer)type).put(activeUniform.getType());
+		type.put(activeUniform.getType());
 		return activeUniform.getName();
 	}
 
@@ -626,8 +626,15 @@ public class GwtGL20 implements GL20 {
 				|| pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
 				|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT)
 			params.put(0, gl.getParameteri(pname));
-		else
-			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
+		else if (pname == GL20.GL_VIEWPORT) {
+			Int32Array array = gl.getParameterv(pname);
+			params.put(0, array.get(0));
+			params.put(1, array.get(1));
+			params.put(2, array.get(2));
+			params.put(3, array.get(3));
+			params.flip();
+		} else
+			throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
 	}
 
 
@@ -890,7 +897,13 @@ public class GwtGL20 implements GL20 {
 				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
 			} else {
 				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-				gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+				// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+				if (pixmap.canUseImageElement()) {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement());
+				}
+				else {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+				}
 			}
 		}
 	}

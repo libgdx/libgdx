@@ -422,7 +422,7 @@ static inline btVector3		BaryCoord(	const btVector3& a,
 }
 
 //
-static btScalar				ImplicitSolve(	btSoftBody::ImplicitFn* fn,
+inline static btScalar				ImplicitSolve(	btSoftBody::ImplicitFn* fn,
 										  const btVector3& a,
 										  const btVector3& b,
 										  const btScalar accuracy,
@@ -450,6 +450,25 @@ static btScalar				ImplicitSolve(	btSoftBody::ImplicitFn* fn,
 	}
 	return(-1);
 }
+
+inline static void					EvaluateMedium(	const btSoftBodyWorldInfo* wfi,
+										   const btVector3& x,
+										   btSoftBody::sMedium& medium)
+{
+	medium.m_velocity	=	btVector3(0,0,0);
+	medium.m_pressure	=	0;
+	medium.m_density	=	wfi->air_density;
+	if(wfi->water_density>0)
+	{
+		const btScalar	depth=-(btDot(x,wfi->water_normal)+wfi->water_offset);
+		if(depth>0)
+		{
+			medium.m_density	=	wfi->water_density;
+			medium.m_pressure	=	depth*wfi->water_density*wfi->m_gravity.length();
+		}
+	}
+}
+
 
 //
 static inline btVector3		NormalizeAny(const btVector3& v)
@@ -504,23 +523,7 @@ static inline btScalar		VolumeOf(	const btVector3& x0,
 }
 
 //
-static void					EvaluateMedium(	const btSoftBodyWorldInfo* wfi,
-										   const btVector3& x,
-										   btSoftBody::sMedium& medium)
-{
-	medium.m_velocity	=	btVector3(0,0,0);
-	medium.m_pressure	=	0;
-	medium.m_density	=	wfi->air_density;
-	if(wfi->water_density>0)
-	{
-		const btScalar	depth=-(btDot(x,wfi->water_normal)+wfi->water_offset);
-		if(depth>0)
-		{
-			medium.m_density	=	wfi->water_density;
-			medium.m_pressure	=	depth*wfi->water_density*wfi->m_gravity.length();
-		}
-	}
-}
+
 
 //
 static inline void			ApplyClampedForce(	btSoftBody::Node& n,

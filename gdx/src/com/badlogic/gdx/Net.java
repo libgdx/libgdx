@@ -31,6 +31,7 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
@@ -97,6 +98,7 @@ public interface Net {
 	 * <li>POST</li>
 	 * <li>PUT</li>
 	 * <li>DELETE</li>
+	 * <li>PATCH</li>
 	 * </ul> */
 	public static interface HttpMethods {
 
@@ -104,6 +106,7 @@ public interface Net {
 		public static final String POST = "POST";
 		public static final String PUT = "PUT";
 		public static final String DELETE = "DELETE";
+		public static final String PATCH = "PATCH";
 
 	}
 
@@ -205,7 +208,7 @@ public interface Net {
 		 * @param followRedirects whether to follow redirects.
 		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend. */
 		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
-			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
+			if (followRedirects || Gdx.app.getType() != ApplicationType.WebGL) {
 				this.followRedirects = followRedirects;
 			} else {
 				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");
@@ -323,7 +326,7 @@ public interface Net {
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
-	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
+	public void sendHttpRequest (HttpRequest httpRequest, @Null HttpResponseListener httpResponseListener);
 
 	public void cancelHttpRequest (HttpRequest httpRequest);
 
@@ -359,7 +362,7 @@ public interface Net {
 	 * @param port the port
 	 * @param hints additional {@link SocketHints} used to create the socket. Input null to use the default setting provided by the
 	 *           system.
-	 * @return GdxRuntimeException in case the socket couldn't be opened */
+	 * @throws GdxRuntimeException in case the socket couldn't be opened */
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints);
 
 	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the

@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
+	/** If true, SoundManager2 will not be used. This means {@link Application#getAudio()} returns null and the SoundManager2 file
+	 * are not used. */
+	public boolean disableAudio;
 	/** the width of the drawing area in pixels **/
 	public int width;
 	/** the height of the drawing area in pixels **/
@@ -40,7 +44,7 @@ public class GwtApplicationConfiguration {
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
 	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
-	public boolean preferFlash = true;
+	public boolean preferFlash = false;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
@@ -51,6 +55,11 @@ public class GwtApplicationConfiguration {
 	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
+	/* Whether openURI will open page in new tab. By default it will, however if may be blocked by popup blocker. */
+	/* To prevent the page from being blocked you can redirect to the new page. However this will exit your game.  */
+	public boolean openURLInNewWindow = true;
+	/** whether to use the accelerometer. default: true **/
+	public boolean useAccelerometer = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

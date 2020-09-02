@@ -100,6 +100,29 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl = gl20;
+		Gdx.gl = gl20;
+		Gdx.gl20 = gl20;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return null;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+
+	}
+
+
+	@Override
 	public int getWidth () {
 		return canvas.getWidth();
 	}
@@ -308,6 +331,26 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
+	public int getSafeInsetLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return 0;
+	}
+
+	@Override
 	public boolean setFullscreenMode (DisplayMode displayMode) {
 		if (displayMode.width != getScreenWidthJSNI() && displayMode.height != getScreenHeightJSNI()) return false;
 		return setFullscreenJSNI(this, canvas);
@@ -471,16 +514,6 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public boolean isFullscreen () {
 		return isFullscreenJSNI();
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	@Override

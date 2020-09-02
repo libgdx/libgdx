@@ -81,9 +81,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp">
-      <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>

@@ -47,6 +47,7 @@ public class SharedLibraryLoader {
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
 	static {
+		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
 		String vm = System.getProperty("java.runtime.name");
 		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
@@ -55,8 +56,12 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-		if (!isAndroid && !isWindows && !isLinux && !isMac) {
+		if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
 			isIos = true;
+			isAndroid = false;
+			isWindows = false;
+			isLinux = false;
+			isMac = false;
 			is64Bit = false;
 		}
 	}
@@ -86,6 +91,7 @@ public class SharedLibraryLoader {
 				crc.update(buffer, 0, length);
 			}
 		} catch (Exception ex) {
+		} finally {
 			StreamUtils.closeQuietly(input);
 		}
 		return Long.toString(crc.getValue(), 16);
@@ -174,7 +180,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
 	 * @return null if a writable path could not be found. */
-	private File getExtractedFile (String dirName, String fileName) {
+	private @Null File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
 		File idealFile = new File(
 			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
@@ -253,21 +259,24 @@ public class SharedLibraryLoader {
 
 		// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
 		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
+			InputStream input = null;
+			FileOutputStream output = null;
 			try {
-				InputStream input = readFile(sourcePath);
+				input = readFile(sourcePath);
 				extractedFile.getParentFile().mkdirs();
-				FileOutputStream output = new FileOutputStream(extractedFile);
+				output = new FileOutputStream(extractedFile);
 				byte[] buffer = new byte[4096];
 				while (true) {
 					int length = input.read(buffer);
 					if (length == -1) break;
 					output.write(buffer, 0, length);
 				}
-				input.close();
-				output.close();
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(),
 					ex);
+			} finally {
+				StreamUtils.closeQuietly(input);
+				StreamUtils.closeQuietly(output);
 			}
 		}
 
@@ -313,7 +322,7 @@ public class SharedLibraryLoader {
 	}
 
 	/** @return null if the file was extracted and loaded. */
-	private Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+	private @Null Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
 		try {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;

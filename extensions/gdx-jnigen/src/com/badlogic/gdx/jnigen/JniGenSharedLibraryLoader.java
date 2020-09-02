@@ -120,16 +120,21 @@ public class JniGenSharedLibraryLoader {
 		}
 
 		if (extractedCrc == null || !extractedCrc.equals(srcCrc)) {
+			InputStream input = null;
+			ZipFile file = null;
+			FileOutputStream output = null;
 			try {
 				// Extract native from classpath to temp dir.
-				InputStream input = null;
 				if (nativesJar == null)
 					input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
-				else
-					input = getFromJar(nativesJar, sharedLibName);
+				else {
+					file = new ZipFile(nativesJar);
+					ZipEntry entry = file.getEntry(sharedLibName);
+					input = file.getInputStream(entry);
+				}
 				if (input == null) return null;
 				nativeFile.getParentFile().mkdirs();
-				FileOutputStream output = new FileOutputStream(nativeFile);
+				output = new FileOutputStream(nativeFile);
 				byte[] buffer = new byte[4096];
 				while (true) {
 					int length = input.read(buffer);
@@ -141,15 +146,22 @@ public class JniGenSharedLibraryLoader {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				throw new RuntimeException(ex);
+			} finally {
+				try {
+					if (input != null) input.close();
+				} catch (IOException ignored) {
+				}
+				try {
+					if (file != null) file.close();
+				} catch (IOException ignored) {
+				}
+				try {
+					if (output != null) output.close();
+				} catch (IOException ignored) {
+				}
 			}
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
-	}
-
-	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
-		ZipFile file = new ZipFile(nativesJar);
-		ZipEntry entry = file.getEntry(sharedLibrary);
-		return file.getInputStream(entry);
 	}
 
 	/** Loads a shared library with the given name for the platform the application is running on. The name should not contain a

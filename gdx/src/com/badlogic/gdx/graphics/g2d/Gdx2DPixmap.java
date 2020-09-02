@@ -80,11 +80,6 @@ public class Gdx2DPixmap implements Disposable {
 	ByteBuffer pixelPtr;
 	long[] nativeData = new long[4];
 
-	static {
-		setBlend(GDX2D_BLEND_SRC_OVER);
-		setScale(GDX2D_SCALE_LINEAR);
-	}
-
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
 		pixelPtr = load(nativeData, encodedData, offset, len);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
@@ -125,7 +120,8 @@ public class Gdx2DPixmap implements Disposable {
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
+		if (pixelPtr == null) throw new GdxRuntimeException(
+			"Unable to allocate memory for pixmap: " + width + "x" + height + ", " + getFormatString(format));
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
@@ -143,6 +139,7 @@ public class Gdx2DPixmap implements Disposable {
 
 	private void convert (int requestedFormat) {
 		Gdx2DPixmap pixmap = new Gdx2DPixmap(width, height, requestedFormat);
+		pixmap.setBlend(GDX2D_BLEND_NONE);
 		pixmap.drawPixmap(this, 0, 0, 0, 0, width, height);
 		dispose();
 		this.basePtr = pixmap.basePtr;
@@ -203,6 +200,14 @@ public class Gdx2DPixmap implements Disposable {
 		drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 	}
 
+	public void setBlend (int blend) {
+		setBlend(basePtr, blend);
+	}
+
+	public void setScale (int scale) {
+		setScale(basePtr, scale);
+	}
+
 	public static Gdx2DPixmap newPixmap (InputStream in, int requestedFormat) {
 		try {
 			return new Gdx2DPixmap(in, requestedFormat);
@@ -248,6 +253,10 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public String getFormatString () {
+		return getFormatString(format);
+	}
+
+	static private String getFormatString (int format) {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
 			return "alpha";
@@ -352,12 +361,12 @@ public class Gdx2DPixmap implements Disposable {
 		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 		 */
 
-	public static native void setBlend (int blend); /*
-		gdx2d_set_blend(blend);
+	private static native void setBlend (long src, int blend); /*
+		gdx2d_set_blend((gdx2d_pixmap*)src, blend);
 	 */
 
-	public static native void setScale (int scale); /*
-		gdx2d_set_scale(scale);
+	private static native void setScale (long src, int scale); /*
+		gdx2d_set_scale((gdx2d_pixmap*)src, scale);
 	 */
 
 	public static native String getFailureReason (); /*

@@ -24,7 +24,7 @@ import com.google.gwt.storage.client.Storage;
 
 public class GwtFiles implements Files {
 	
-	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported();
+	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or blocked by the browser with "block third-party cookies"
 	
 	final Preloader preloader;
 	

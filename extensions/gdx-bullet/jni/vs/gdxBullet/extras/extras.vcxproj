@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -27,27 +27,27 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,15 +66,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras;..\..\..\src\extras\Serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_MBCS;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,6 +85,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,6 +118,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\btMultiBodyTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CloneTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CoilCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\DillCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\IDRandomUtil.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\invdyn_bullet_comparison.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyNameMap.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeDebugGraph.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\RandomTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\SimpleTreeCreator.cpp" />
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\User2InternalIndex.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bFile.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\btBulletFile.cpp" />
@@ -129,6 +143,9 @@
     </ProjectReference>
     <ProjectReference Include="..\dynamics\dynamics.vcxproj">
       <Project>{58920bba-0561-4073-9db6-9dc2f6820d52}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\inveresdynamics\inveresdynamics.vcxproj">
+      <Project>{12472f27-86f2-408b-86c3-f127affd0236}</Project>
     </ProjectReference>
     <ProjectReference Include="..\linearmath\linearmath.vcxproj">
       <Project>{5ffd74f9-2b8e-463f-bd2b-f8740e84d29d}</Project>

@@ -531,7 +531,7 @@ public class DefaultShader extends BaseShader {
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
 		this.renderable = renderable;
 		attributesMask = attributes.getMask() | optionalAttributes;
-		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
+		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
 
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
 		for (int i = 0; i < directionalLights.length; i++)
@@ -637,6 +637,13 @@ public class DefaultShader extends BaseShader {
 		return tmpAttributes;
 	}
 
+	private static final long combineAttributeMasks (final Renderable renderable) {
+		long mask = 0;
+		if (renderable.environment != null) mask |= renderable.environment.getMask();
+		if (renderable.material != null) mask |= renderable.material.getMask();
+		return mask;
+	}
+
 	public static String createPrefix (final Renderable renderable, final Config config) {
 		final Attributes attributes = combineAttributes(renderable);
 		String prefix = "";
@@ -712,9 +719,9 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean canRender (final Renderable renderable) {
-		final Attributes attributes = combineAttributes(renderable);
-		return (attributesMask == (attributes.getMask() | optionalAttributes))
-			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting;
+		final long renderableMask = combineAttributeMasks(renderable);
+		return (attributesMask == (renderableMask | optionalAttributes))
+			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked()) && (renderable.environment != null) == lighting;
 	}
 
 	@Override
@@ -726,7 +733,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof DefaultShader) ? equals((DefaultShader)obj) : false;
+		return (obj instanceof DefaultShader) && equals((DefaultShader) obj);
 	}
 
 	public boolean equals (DefaultShader obj) {

@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -104,6 +105,10 @@ public class UITest extends GdxTest {
 		textfield.setMessageText("Click here!");
 		textfield.setAlignment(Align.center);
 		final SelectBox selectBox = new SelectBox(skin);
+		selectBox.setAlignment(Align.right);
+		selectBox.getList().setAlignment(Align.right);
+		selectBox.getStyle().listStyle.selection.setRightWidth(10);
+		selectBox.getStyle().listStyle.selection.setLeftWidth(20);
 		selectBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println(selectBox.getSelected());
@@ -122,7 +127,11 @@ public class UITest extends GdxTest {
 		// list.getSelection().setToggle(true);
 		ScrollPane scrollPane2 = new ScrollPane(list, skin);
 		scrollPane2.setFlickScroll(false);
-		SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin, "default-horizontal");
+		Label minSizeLabel = new Label("minWidth cell", skin); // demos SplitPane respecting widget's minWidth
+		Table rightSideTable = new Table(skin);
+		rightSideTable.add(minSizeLabel).growX().row();
+		rightSideTable.add(scrollPane2).grow();
+		SplitPane splitPane = new SplitPane(scrollPane, rightSideTable, false, skin, "default-horizontal");
 		fpsLabel = new Label("fps:", skin);
 
 		// configures an example of a TextField in password mode.
@@ -132,7 +141,9 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
-		buttonMulti.addListener(new TextTooltip("This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!", skin));
+		buttonMulti.addListener(new TextTooltip(
+			"This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!",
+			skin));
 		Table tooltipTable = new Table(skin);
 		tooltipTable.pad(10).background("default-round");
 		tooltipTable.add(new TextButton("Fancy tooltip!", skin));

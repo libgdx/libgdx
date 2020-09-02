@@ -19,14 +19,20 @@ package com.badlogic.gdx.backends.iosmoe;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
+import org.moe.natj.general.ann.RegisterOnStartup;
+import org.moe.natj.objc.ObjCRuntime;
+import org.moe.natj.objc.ann.ObjCClassName;
 import org.moe.natj.objc.ann.Selector;
-import ios.coregraphics.struct.CGRect;
-import ios.foundation.NSSet;
-import ios.glkit.GLKView;
-import ios.opengles.EAGLContext;
-import ios.uikit.UIEvent;
-import ios.uikit.UITouch;
 
+import apple.coregraphics.struct.CGRect;
+import apple.foundation.NSSet;
+import apple.glkit.GLKView;
+import apple.uikit.UIEvent;
+import apple.uikit.UITouch;
+
+@org.moe.natj.general.ann.Runtime(ObjCRuntime.class)
+@ObjCClassName("IOSGLKView")
+@RegisterOnStartup
 public class IOSGLKView extends GLKView {
 
 	private IOSGraphics graphics;
@@ -45,9 +51,8 @@ public class IOSGLKView extends GLKView {
 		super(peer);
 	}
 
-	public IOSGLKView init (IOSGraphics graphics, CGRect bounds, EAGLContext context) {
-		initWithFrameContext(bounds, context);
-		this.graphics = graphics;
+	public IOSGLKView init (CGRect bounds) {
+		initWithFrame(bounds);
 		return this;
 	}
 
@@ -74,6 +79,10 @@ public class IOSGLKView extends GLKView {
 	@Override
 	public void drawRect (@ByValue CGRect cgRect) {
 		graphics.glkViewDrawInRect(this, cgRect);
+	}
+
+	public void setGraphics (IOSGraphics graphics) {
+		this.graphics = graphics;
 	}
 
 }

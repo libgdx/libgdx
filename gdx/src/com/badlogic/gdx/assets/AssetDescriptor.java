@@ -18,7 +18,7 @@ package com.badlogic.gdx.assets;
 
 import com.badlogic.gdx.files.FileHandle;
 
-/** Describes an asset to be loaded by it's filename, type and {@link AssetLoaderParameters}. Instances of this are used in
+/** Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in
  * {@link AssetLoadingTask} to load the actual asset.
  * @author mzechner */
 public class AssetDescriptor<T> {
@@ -53,10 +53,10 @@ public class AssetDescriptor<T> {
 
 	@Override
 	public String toString () {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(fileName);
-		buffer.append(", ");
-		buffer.append(type.getName());
-		return buffer.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append(fileName);
+		sb.append(", ");
+		sb.append(type.getName());
+		return sb.toString();
 	}
 }

@@ -31,11 +31,11 @@ import org.moe.natj.objc.ann.IsOptional;
 import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
-import ios.NSObject;
-import ios.avfoundation.AVAudioPlayer;
-import ios.avfoundation.protocol.AVAudioPlayerDelegate;
-import ios.foundation.NSError;
-import ios.foundation.NSURL;
+import apple.NSObject;
+import apple.avfoundation.AVAudioPlayer;
+import apple.avfoundation.protocol.AVAudioPlayerDelegate;
+import apple.foundation.NSError;
+import apple.foundation.NSURL;
 
 @Generated
 @Runtime(ObjCRuntime.class)

@@ -64,7 +64,7 @@ public class TooltipManager {
 	Tooltip showTooltip;
 	final Task showTask = new Task() {
 		public void run () {
-			if (showTooltip == null) return;
+			if (showTooltip == null || showTooltip.targetActor == null) return;
 
 			Stage stage = showTooltip.targetActor.getStage();
 			if (stage == null) return;

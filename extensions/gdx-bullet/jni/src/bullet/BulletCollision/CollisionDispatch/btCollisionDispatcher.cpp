@@ -16,7 +16,7 @@ subject to the following restrictions:
 
 
 #include "btCollisionDispatcher.h"
-
+#include "LinearMath/btQuickprof.h"
 
 #include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
 
@@ -50,8 +50,10 @@ m_dispatcherFlags(btCollisionDispatcher::CD_USE_RELATIVE_CONTACT_BREAKING_THRESH
 	{
 		for (int j=0;j<MAX_BROADPHASE_COLLISION_TYPES;j++)
 		{
-			m_doubleDispatch[i][j] = m_collisionConfiguration->getCollisionAlgorithmCreateFunc(i,j);
-			btAssert(m_doubleDispatch[i][j]);
+			m_doubleDispatchContactPoints[i][j] = m_collisionConfiguration->getCollisionAlgorithmCreateFunc(i,j);
+			btAssert(m_doubleDispatchContactPoints[i][j]);
+			m_doubleDispatchClosestPoints[i][j] = m_collisionConfiguration->getClosestPointsAlgorithmCreateFunc(i, j);
+
 		}
 	}
 	
@@ -61,7 +63,12 @@ m_dispatcherFlags(btCollisionDispatcher::CD_USE_RELATIVE_CONTACT_BREAKING_THRESH
 
 void btCollisionDispatcher::registerCollisionCreateFunc(int proxyType0, int proxyType1, btCollisionAlgorithmCreateFunc *createFunc)
 {
-	m_doubleDispatch[proxyType0][proxyType1] = createFunc;
+	m_doubleDispatchContactPoints[proxyType0][proxyType1] = createFunc;
+}
+
+void btCollisionDispatcher::registerClosestPointsCreateFunc(int proxyType0, int proxyType1, btCollisionAlgorithmCreateFunc *createFunc)
+{
+	m_doubleDispatchClosestPoints[proxyType0][proxyType1] = createFunc;
 }
 
 btCollisionDispatcher::~btCollisionDispatcher()
@@ -84,14 +91,10 @@ btPersistentManifold*	btCollisionDispatcher::getNewManifold(const btCollisionObj
 
 	btScalar contactProcessingThreshold = btMin(body0->getContactProcessingThreshold(),body1->getContactProcessingThreshold());
 		
- 	void* mem = 0;
-	
-	if (m_persistentManifoldPoolAllocator->getFreeCount())
+ 	void* mem = m_persistentManifoldPoolAllocator->allocate( sizeof( btPersistentManifold ) );
+    if (NULL == mem)
 	{
-		mem = m_persistentManifoldPoolAllocator->allocate(sizeof(btPersistentManifold));
-	} else
-	{
-		//we got a pool memory overflow, by default we fallback to dynamically allocate memory. If we require a contiguous contact pool then assert.
+        //we got a pool memory overflow, by default we fallback to dynamically allocate memory. If we require a contiguous contact pool then assert.
 		if ((m_dispatcherFlags&CD_DISABLE_CONTACTPOOL_DYNAMIC_ALLOCATION)==0)
 		{
 			mem = btAlignedAlloc(sizeof(btPersistentManifold),16);
@@ -142,14 +145,23 @@ void btCollisionDispatcher::releaseManifold(btPersistentManifold* manifold)
 
 	
 
-btCollisionAlgorithm* btCollisionDispatcher::findAlgorithm(const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,btPersistentManifold* sharedManifold)
+
+btCollisionAlgorithm* btCollisionDispatcher::findAlgorithm(const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,btPersistentManifold* sharedManifold, ebtDispatcherQueryType algoType)
 {
 	
 	btCollisionAlgorithmConstructionInfo ci;
 
 	ci.m_dispatcher1 = this;
 	ci.m_manifold = sharedManifold;
-	btCollisionAlgorithm* algo = m_doubleDispatch[body0Wrap->getCollisionShape()->getShapeType()][body1Wrap->getCollisionShape()->getShapeType()]->CreateCollisionAlgorithm(ci,body0Wrap,body1Wrap);
+	btCollisionAlgorithm* algo = 0;
+	if (algoType == BT_CONTACT_POINT_ALGORITHMS)
+	{
+		algo = m_doubleDispatchContactPoints[body0Wrap->getCollisionShape()->getShapeType()][body1Wrap->getCollisionShape()->getShapeType()]->CreateCollisionAlgorithm(ci, body0Wrap, body1Wrap);
+	}
+	else
+	{
+		algo = m_doubleDispatchClosestPoints[body0Wrap->getCollisionShape()->getShapeType()][body1Wrap->getCollisionShape()->getShapeType()]->CreateCollisionAlgorithm(ci, body0Wrap, body1Wrap);
+	}
 
 	return algo;
 }
@@ -228,7 +240,6 @@ public:
 	virtual bool	processOverlap(btBroadphasePair& pair)
 	{
 		(*m_dispatcher->getNearCallback())(pair,*m_dispatcher,m_dispatchInfo);
-
 		return false;
 	}
 };
@@ -249,7 +260,6 @@ void	btCollisionDispatcher::dispatchAllCollisionPairs(btOverlappingPairCache* pa
 
 
 
-
 //by default, Bullet will use this near callback
 void btCollisionDispatcher::defaultNearCallback(btBroadphasePair& collisionPair, btCollisionDispatcher& dispatcher, const btDispatcherInfo& dispatchInfo)
 {
@@ -265,7 +275,7 @@ void btCollisionDispatcher::defaultNearCallback(btBroadphasePair& collisionPair,
 			//dispatcher will keep algorithms persistent in the collision pair
 			if (!collisionPair.m_algorithm)
 			{
-				collisionPair.m_algorithm = dispatcher.findAlgorithm(&obj0Wrap,&obj1Wrap);
+				collisionPair.m_algorithm = dispatcher.findAlgorithm(&obj0Wrap,&obj1Wrap,0, BT_CONTACT_POINT_ALGORITHMS);
 			}
 
 			if (collisionPair.m_algorithm)
@@ -293,13 +303,13 @@ void btCollisionDispatcher::defaultNearCallback(btBroadphasePair& collisionPair,
 
 void* btCollisionDispatcher::allocateCollisionAlgorithm(int size)
 {
-	if (m_collisionAlgorithmPoolAllocator->getFreeCount())
-	{
-		return m_collisionAlgorithmPoolAllocator->allocate(size);
-	}
-	
-	//warn user for overflow?
-	return	btAlignedAlloc(static_cast<size_t>(size), 16);
+    void* mem = m_collisionAlgorithmPoolAllocator->allocate( size );
+    if (NULL == mem)
+    {
+	    //warn user for overflow?
+	    return btAlignedAlloc(static_cast<size_t>(size), 16);
+    }
+    return mem;
 }
 
 void btCollisionDispatcher::freeCollisionAlgorithm(void* ptr)

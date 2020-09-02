@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -44,11 +45,13 @@ public class Window extends Table {
 	private WindowStyle style;
 	boolean isMovable = true, isModal, isResizable;
 	int resizeBorder = 8;
-	boolean dragging;
 	boolean keepWithinStage = true;
 	Label titleLabel;
 	Table titleTable;
 	boolean drawTitleTable;
+
+	protected int edge;
+	protected boolean dragging;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -87,31 +90,34 @@ public class Window extends Table {
 			}
 		});
 		addListener(new InputListener() {
-			int edge;
 			float startX, startY, lastX, lastY;
+
+			private void updateEdge (float x, float y) {
+				float border = resizeBorder / 2f;
+				float width = getWidth(), height = getHeight();
+				float padTop = getPadTop(), padLeft = getPadLeft(), padBottom = getPadBottom(), padRight = getPadRight();
+				float left = padLeft, right = width - padRight, bottom = padBottom;
+				edge = 0;
+				if (isResizable && x >= left - border && x <= right + border && y >= bottom - border) {
+					if (x < left + border) edge |= Align.left;
+					if (x > right - border) edge |= Align.right;
+					if (y < bottom + border) edge |= Align.bottom;
+					if (edge != 0) border += 25;
+					if (x < left + border) edge |= Align.left;
+					if (x > right - border) edge |= Align.right;
+					if (y < bottom + border) edge |= Align.bottom;
+				}
+				if (isMovable && edge == 0 && y <= height && y >= height - padTop && x >= left && x <= right) edge = MOVE;
+			}
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
-					int border = resizeBorder;
-					float width = getWidth(), height = getHeight();
-					edge = 0;
-					if (isResizable && x >= 0 && x < width && y >= 0 && y < height) {
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
-						if (edge != 0) border += 25;
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
-					}
-					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
+					updateEdge(x, y);
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
-					lastX = x - width;
-					lastY = y - height;
+					lastX = x - getWidth();
+					lastY = y - getHeight();
 				}
 				return edge != 0 || isModal;
 			}
@@ -128,7 +134,7 @@ public class Window extends Table {
 				float minWidth = getMinWidth(), maxWidth = getMaxWidth();
 				float minHeight = getMinHeight(), maxHeight = getMaxHeight();
 				Stage stage = getStage();
-				boolean clampPosition = keepWithinStage && getParent() == stage.getRoot();
+				boolean clampPosition = keepWithinStage && stage != null && getParent() == stage.getRoot();
 
 				if ((edge & MOVE) != 0) {
 					float amountX = x - startX, amountY = y - startY;
@@ -166,6 +172,7 @@ public class Window extends Table {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
+				updateEdge(x, y);
 				return isModal;
 			}
 
@@ -201,9 +208,10 @@ public class Window extends Table {
 		return style;
 	}
 
-	void keepWithinStage () {
+	public void keepWithinStage () {
 		if (!keepWithinStage) return;
 		Stage stage = getStage();
+		if (stage == null) return;
 		Camera camera = stage.getCamera();
 		if (camera instanceof OrthographicCamera) {
 			OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
@@ -229,17 +237,18 @@ public class Window extends Table {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
-		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+		if (stage != null) {
+			if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
-		keepWithinStage();
+			keepWithinStage();
 
-		if (style.stageBackground != null) {
-			stageToLocalCoordinates(tmpPosition.set(0, 0));
-			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY()
-				+ tmpSize.y);
+			if (style.stageBackground != null) {
+				stageToLocalCoordinates(tmpPosition.set(0, 0));
+				stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
+				drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+					getY() + tmpSize.y);
+			}
 		}
-
 		super.draw(batch, parentAlpha);
 	}
 
@@ -262,7 +271,8 @@ public class Window extends Table {
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
+		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
 		float height = getHeight();
@@ -314,7 +324,7 @@ public class Window extends Table {
 	}
 
 	public float getPrefWidth () {
-		return Math.max(super.getPrefWidth(), titleLabel.getPrefWidth() + getPadLeft() + getPadRight());
+		return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getPadLeft() + getPadRight());
 	}
 
 	public Table getTitleTable () {
@@ -329,17 +339,17 @@ public class Window extends Table {
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
 		/** Optional. */
-		public Drawable background;
+		public @Null Drawable background;
 		public BitmapFont titleFont;
 		/** Optional. */
 		public Color titleFontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
-		public Drawable stageBackground;
+		public @Null Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
-		public WindowStyle (BitmapFont titleFont, Color titleFontColor, Drawable background) {
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Null Drawable background) {
 			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);

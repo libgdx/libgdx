@@ -27,21 +27,25 @@ public class ReflectionPool<T> extends Pool<T> {
 	private final Constructor constructor;
 
 	public ReflectionPool (Class<T> type) {
-		this(type, 16, Integer.MAX_VALUE);
+		this(type, 16, Integer.MAX_VALUE, false);
 	}
 
 	public ReflectionPool (Class<T> type, int initialCapacity) {
-		this(type, initialCapacity, Integer.MAX_VALUE);
+		this(type, initialCapacity, Integer.MAX_VALUE, false);
 	}
 
 	public ReflectionPool (Class<T> type, int initialCapacity, int max) {
-		super(initialCapacity, max);
+		this(type, initialCapacity, max, false);
+	}
+
+	public ReflectionPool (Class<T> type, int initialCapacity, int max, boolean preFill) {
+		super(initialCapacity, max, preFill);
 		constructor = findConstructor(type);
 		if (constructor == null)
 			throw new RuntimeException("Class cannot be created (missing no-arg constructor): " + type.getName());
 	}
 
-	private Constructor findConstructor (Class<T> type) {
+	private @Null Constructor findConstructor (Class<T> type) {
 		try {
 			return ClassReflection.getConstructor(type, (Class[])null);
 		} catch (Exception ex1) {

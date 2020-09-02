@@ -32,8 +32,8 @@ import org.moe.natj.objc.ann.ObjCBlock;
 import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
-import ios.NSObject;
-import ios.foundation.NSArray;
+import apple.NSObject;
+import apple.foundation.NSArray;
 
 @Generated
 @Runtime(ObjCRuntime.class)

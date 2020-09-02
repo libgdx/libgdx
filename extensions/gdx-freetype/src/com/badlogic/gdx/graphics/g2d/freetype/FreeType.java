@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -29,6 +31,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class FreeType {
 	// @off
@@ -36,8 +39,18 @@ public class FreeType {
 	#include <ft2build.h>
 	#include FT_FREETYPE_H
 	#include FT_STROKER_H
+	
+	static jint lastError = 0;	
 	 */
-
+	
+	/**
+	 * 
+	 * @return returns the last error code FreeType reported
+	 */
+	static native int getLastErrorCode(); /*
+		return lastError;
+	*/
+	
 	private static class Pointer {
 		long address;
 		
@@ -57,7 +70,8 @@ public class FreeType {
 		public void dispose () {
 			doneFreeType(address);
 			for(ByteBuffer buffer: fontData.values()) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
@@ -65,9 +79,34 @@ public class FreeType {
 			FT_Done_FreeType((FT_Library)library);
 		*/
 
-		public Face newFace(FileHandle font, int faceIndex) {
-			byte[] data = font.readBytes();
-			return newMemoryFace(data, data.length, faceIndex);
+		public Face newFace(FileHandle fontFile, int faceIndex) {
+			ByteBuffer buffer = null;
+			try {
+				buffer = fontFile.map();
+			} catch (GdxRuntimeException ignored) {
+				// OK to ignore, some platforms do not support file mapping.
+			}
+			if (buffer == null) {
+				InputStream input = fontFile.read();
+				try {
+					int fileSize = (int)fontFile.length();
+					if (fileSize == 0) {
+						// Copy to a byte[] to get the size, then copy to the buffer.
+						byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
+						buffer = BufferUtils.newUnsafeByteBuffer(data.length);
+						BufferUtils.copy(data, 0, buffer, data.length);
+					} else {
+						// Trust the specified file size.
+						buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
+						StreamUtils.copyStream(input, buffer);
+					}
+				} catch (IOException ex) {
+					throw new GdxRuntimeException(ex);
+				} finally {
+					StreamUtils.closeQuietly(input);
+				}
+			}
+			return newMemoryFace(buffer, faceIndex);
 		}
 
 		public Face newMemoryFace(byte[] data, int dataSize, int faceIndex) {
@@ -79,8 +118,9 @@ public class FreeType {
 		public Face newMemoryFace(ByteBuffer buffer, int faceIndex) {
 			long face = newMemoryFace(address, buffer, buffer.remaining(), faceIndex);
 			if(face == 0) {
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
-				throw new GdxRuntimeException("Couldn't load font");
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
+				throw new GdxRuntimeException("Couldn't load font, FreeType error code: " + getLastErrorCode());
 			}
 			else {
 				fontData.put(face, buffer);
@@ -91,20 +131,26 @@ public class FreeType {
 		private static native long newMemoryFace(long library, ByteBuffer data, int dataSize, int faceIndex); /*
 			FT_Face face = 0;
 			FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
-			if(error) return 0;
+			if(error) {
+				lastError = error;
+				return 0;
+			}
 			else return (jlong)face;
 		*/
 
 		public Stroker createStroker() {
 			long stroker = strokerNew(address);
-			if(stroker == 0) throw new GdxRuntimeException("Couldn't create FreeType stroker");
+			if(stroker == 0) throw new GdxRuntimeException("Couldn't create FreeType stroker, FreeType error code: " + getLastErrorCode());
 			return new Stroker(stroker);
 		}
 
 		private static native long strokerNew(long library); /*
 			FT_Stroker stroker;
 			FT_Error error = FT_Stroker_New((FT_Library)library, &stroker);
-			if(error) return 0;
+			if(error) {
+				lastError = error;
+				return 0;
+			}
 			else return (jlong)stroker;
 		*/
 	}
@@ -123,7 +169,8 @@ public class FreeType {
 			ByteBuffer buffer = library.fontData.get(address);
 			if(buffer != null) {
 				library.fontData.remove(address);
-				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
+					BufferUtils.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
@@ -468,14 +515,17 @@ public class FreeType {
 
 		public Glyph getGlyph() {
 			long glyph = getGlyph(address);
-			if(glyph == 0) throw new GdxRuntimeException("Couldn't get glyph");
+			if(glyph == 0) throw new GdxRuntimeException("Couldn't get glyph, FreeType error code: " + getLastErrorCode());
 			return new Glyph(glyph);
 		}
 
 		private static native long getGlyph(long glyphSlot); /*
 			FT_Glyph glyph;
 			FT_Error error = FT_Get_Glyph((FT_GlyphSlot)glyphSlot, &glyph);
-			if(error) return 0;
+			if(error) {
+				lastError = error;
+				return 0;
+			}
 			else return (jlong)glyph;
 		*/
 	}
@@ -508,7 +558,7 @@ public class FreeType {
 
 		public void toBitmap(int renderMode) {
 			long bitmap = toBitmap(address, renderMode);
-			if (bitmap == 0) throw new GdxRuntimeException("Couldn't render glyph");
+			if (bitmap == 0) throw new GdxRuntimeException("Couldn't render glyph, FreeType error code: " + getLastErrorCode());
 			address = bitmap;
 			rendered = true;
 		}
@@ -516,7 +566,10 @@ public class FreeType {
 		private static native long toBitmap(long glyph, int renderMode); /*
 			FT_Glyph bitmap = (FT_Glyph)glyph;
 			FT_Error error = FT_Glyph_To_Bitmap(&bitmap, (FT_Render_Mode)renderMode, NULL, 1);
-			if(error) return 0;
+			if(error) {
+				lastError = error;
+				return 0;
+			}
 			return (jlong)bitmap;
 		*/
 
@@ -600,7 +653,7 @@ public class FreeType {
 
 		private static native ByteBuffer getBuffer(long bitmap); /*
 			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
-			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch) * bmp->width);
+			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
 		*/
 
 		// @on
@@ -641,9 +694,16 @@ public class FreeType {
 					for (int y = 0; y < rows; y++) {
 						src.get(srcRow);
 						for (int x = 0; x < width; x++) {
-							float alpha = (srcRow[x] & 0xff) / 255f;
-							alpha = (float)Math.pow(alpha, gamma); // Inverse gamma.
-							dstRow[x] = rgb | (int)(a * alpha);
+							// Zero raised to any power is always zero.
+							// 255 (=one) raised to any power is always one.
+							// We only need Math.pow() when alpha is NOT zero and NOT one.
+							int alpha = srcRow[x] & 0xff;
+							if (alpha == 0)
+								dstRow[x] = rgb;
+							else if (alpha == 255)
+								dstRow[x] = rgb | a;
+							else
+								dstRow[x] = rgb | (int)(a * (float)Math.pow(alpha / 255f, gamma)); // Inverse gamma.
 						}
 						dst.put(dstRow);
 					}
@@ -653,10 +713,9 @@ public class FreeType {
 			Pixmap converted = pixmap;
 			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-				Blending blending = Pixmap.getBlending();
-				Pixmap.setBlending(Blending.None);
+				converted.setBlending(Blending.None);
 				converted.drawPixmap(pixmap, 0, 0);
-				Pixmap.setBlending(blending);
+				converted.setBlending(Blending.SourceOver);
 				pixmap.dispose();
 			}
 			return converted;
@@ -784,7 +843,7 @@ public class FreeType {
 	private static int encode (char a, char b, char c, char d) {
 		return (a << 24) | (b << 16) | (c << 8) | d;
 	}
-   
+
 	public static int FT_ENCODING_NONE = 0;
 	public static int FT_ENCODING_MS_SYMBOL = encode('s', 'y', 'm', 'b');
 	public static int FT_ENCODING_UNICODE = encode('u', 'n', 'i', 'c');
@@ -861,17 +920,22 @@ public class FreeType {
 	public static int FT_STROKER_LINEJOIN_MITER          = FT_STROKER_LINEJOIN_MITER_VARIABLE;
 	public static int FT_STROKER_LINEJOIN_MITER_FIXED    = 3;
 
-   public static Library initFreeType() {
+   public static Library initFreeType() {   	
    	new SharedLibraryLoader().load("gdx-freetype");
    	long address = initFreeTypeJni();
-   	if(address == 0) throw new GdxRuntimeException("Couldn't initialize FreeType library");
-   	else return new Library(address);
+   	if(address == 0)
+   		throw new GdxRuntimeException("Couldn't initialize FreeType library, FreeType error code: " + getLastErrorCode());
+   	else
+   		return new Library(address);
    }
    
 	private static native long initFreeTypeJni(); /*
 		FT_Library library = 0;
 		FT_Error error = FT_Init_FreeType(&library);
-		if(error) return 0;
+		if(error) {
+			lastError = error;
+			return 0;
+		}
 		else return (jlong)library;
 	*/
 

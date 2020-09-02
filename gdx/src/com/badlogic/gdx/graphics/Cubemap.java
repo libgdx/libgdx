@@ -90,7 +90,7 @@ public class Cubemap extends GLTexture {
 
 	protected CubemapData data;
 
-	/** Construct an Cubemap based on the given CubemapData. */
+	/** Construct a Cubemap based on the given CubemapData. */
 	public Cubemap (CubemapData data) {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
@@ -152,6 +152,7 @@ public class Cubemap extends GLTexture {
 		bind();
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
+		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
 		data.consumeCubemapData();
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}

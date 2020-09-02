@@ -34,7 +34,11 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author acoppes */
 public class LwjglNet implements Net {
 
-	NetJavaImpl netJavaImpl = new NetJavaImpl();
+	NetJavaImpl netJavaImpl;
+
+	public LwjglNet(LwjglApplicationConfiguration configuration) {
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
+	}
 
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {

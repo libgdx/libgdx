@@ -24,7 +24,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /** Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
  * @author Nathan Sweet */
 public class TiledDrawable extends TextureRegionDrawable {
+	static private final Color temp = new Color();
+
 	private final Color color = new Color(1, 1, 1, 1);
+	private float scale = 1;
 
 	public TiledDrawable () {
 		super();
@@ -39,11 +42,12 @@ public class TiledDrawable extends TextureRegionDrawable {
 	}
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
-		float batchColor = batch.getPackedColor();
-		batch.setColor(batch.getColor().mul(color));
+		Color batchColor = batch.getColor();
+		temp.set(batchColor);
+		batch.setColor(batchColor.mul(color));
 
 		TextureRegion region = getRegion();
-		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionHeight();
+		float regionWidth = region.getRegionWidth() * scale, regionHeight = region.getRegionHeight() * scale;
 		int fullX = (int)(width / regionWidth), fullY = (int)(height / regionHeight);
 		float remainingX = width - regionWidth * fullX, remainingY = height - regionHeight * fullY;
 		float startX = x, startY = y;
@@ -85,11 +89,24 @@ public class TiledDrawable extends TextureRegionDrawable {
 			}
 		}
 
-		batch.setColor(batchColor);
+		batch.setColor(temp);
+	}
+
+	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+		float scaleY, float rotation) {
+		throw new UnsupportedOperationException();
 	}
 
 	public Color getColor () {
 		return color;
+	}
+
+	public void setScale (float scale) {
+		this.scale = scale;
+	}
+
+	public float getScale () {
+		return scale;
 	}
 
 	public TiledDrawable tint (Color tint) {

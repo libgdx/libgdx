@@ -26,6 +26,9 @@ public class DefaultAssetFilter implements AssetFilter {
 
 	@Override
 	public boolean accept (String file, boolean isDirectory) {
+		String normFile = file.replace('\\', '/');
+		if (normFile.contains("/.")) return false;
+		if (normFile.contains("/_")) return false;
 		if (isDirectory && file.endsWith(".svn")) return false;
 		return true;
 	}

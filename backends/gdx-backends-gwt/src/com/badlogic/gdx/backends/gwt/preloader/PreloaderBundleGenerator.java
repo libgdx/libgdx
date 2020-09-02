@@ -122,25 +122,25 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
-			StringBuilder buffer = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for (Asset asset : bundle.getValue()) {
-				String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+                String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
 				if (pathOrig.startsWith("/")) pathOrig = pathOrig.substring(1);
-				String pathMd5 = asset.fileMd5.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
-				if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
-				buffer.append(asset.type.code);
-				buffer.append(":");
-				buffer.append(pathOrig);
-				buffer.append(":");
-				buffer.append(pathMd5);
-				buffer.append(":");
-				buffer.append(asset.fileMd5.isDirectory() ? 0 : asset.fileMd5.length());
-				buffer.append(":");
+                String pathMd5 = asset.fileMd5.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+                if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
+				sb.append(asset.type.code);
+				sb.append(":");
+				sb.append(pathOrig);
+				sb.append(":");
+                sb.append(pathMd5);
+                sb.append(":");
+				sb.append(asset.fileMd5.isDirectory() ? 0 : asset.fileMd5.length());
+				sb.append(":");
 				String mimetype = URLConnection.guessContentTypeFromName(asset.fileMd5.name());
-				buffer.append(mimetype == null ? "application/unknown" : mimetype);
-				buffer.append("\n");
+				sb.append(mimetype == null ? "application/unknown" : mimetype);
+				sb.append("\n");
 			}
-			target.child(bundle.getKey() + ".txt").writeString(buffer.toString(), false);
+			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);
 		}
 		return createDummyClass(logger, context);
 	}

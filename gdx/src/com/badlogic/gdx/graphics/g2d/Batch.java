@@ -62,14 +62,16 @@ public interface Batch extends Disposable {
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a);
 
-	/** @see #setColor(Color)
-	 * @see Color#toFloatBits() */
-	public void setColor (float color);
-
-	/** @return the rendering color of this Batch. Manipulating the returned instance has no effect. */
+	/** @return the rendering color of this Batch. If the returned instance is manipulated, {@link #setColor(Color)} must be called
+	 *         afterward. */
 	public Color getColor ();
 
-	/** @return the rendering color of this Batch in vertex format
+	/** Sets the rendering color of this Batch, expanding the alpha from 0-254 to 0-255.
+	 * @see #setColor(Color)
+	 * @see Color#toFloatBits() */
+	public void setPackedColor (float packedColor);
+
+	/** @return the rendering color of this Batch in vertex format (alpha compressed to 0-254)
 	 * @see Color#toFloatBits() */
 	public float getPackedColor ();
 
@@ -182,9 +184,21 @@ public interface Batch extends Disposable {
 	 * @param dstFunc the destination function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc);
 
+	/** Sets separate (color/alpha) blending function to be used when rendering sprites.
+	 * @param srcFuncColor the source color function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param dstFuncColor the destination color function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
+	 * @param srcFuncAlpha the source alpha function, e.g. GL20.GL_SRC_ALPHA.
+	 * @param dstFuncAlpha the destination alpha function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
+	 * */
+	public void setBlendFunctionSeparate (int srcFuncColor, int dstFuncColor, int srcFuncAlpha, int dstFuncAlpha);
+
 	public int getBlendSrcFunc ();
 
 	public int getBlendDstFunc ();
+
+	public int getBlendSrcFuncAlpha ();
+
+	public int getBlendDstFuncAlpha ();
 
 	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getProjectionMatrix ();

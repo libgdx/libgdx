@@ -19,9 +19,9 @@ package com.badlogic.gdx.backends.iosmoe;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.objc.ann.Selector;
-import ios.coregraphics.struct.CGRect;
-import ios.glkit.GLKViewController;
-import ios.uikit.enums.UIInterfaceOrientation;
+import apple.coregraphics.struct.CGRect;
+import apple.glkit.GLKViewController;
+import apple.uikit.enums.UIInterfaceOrientation;
 
 
 class IOSUIViewController extends GLKViewController {
@@ -59,6 +59,7 @@ class IOSUIViewController extends GLKViewController {
 
 	@Override
 	public void viewDidAppear (boolean animated) {
+		super.viewDidAppear(animated);
 		if (app.viewControllerListener != null)
 			app.viewControllerListener.viewDidAppear(animated);
 	}
@@ -80,6 +81,7 @@ class IOSUIViewController extends GLKViewController {
 		return true;
 	}
 
+	@Override
 	public boolean shouldAutorotateToInterfaceOrientation (long orientation) {
 		// we return "true" if we support the orientation
 		if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight)
@@ -100,5 +102,15 @@ class IOSUIViewController extends GLKViewController {
 		if (app.graphics.created) {
 			app.listener.resize(graphics.width, graphics.height);
 		}
+	}
+
+	@Override
+	public boolean prefersStatusBarHidden () {
+		return !app.config.statusBarVisible;
+	}
+	
+	@Override
+	public boolean prefersHomeIndicatorAutoHidden () {
+		return app.config.hideHomeIndicator;
 	}
 }

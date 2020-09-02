@@ -22,7 +22,8 @@ subject to the following restrictions:
 
 enum	btMultiBodyLinkFlags
 {
-	BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION = 1
+	BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION = 1,
+	BT_MULTIBODYLINKFLAGS_DISABLE_ALL_PARENT_COLLISION = 2,
 };
 
 //both defines are now permanently enabled
@@ -95,9 +96,18 @@ struct btMultibodyLink
 	//			   m_axesBottom[1][2] = unit vectors along the translational axes on that plane		
 	btSpatialMotionVector m_axes[6];
 	void setAxisTop(int dof, const btVector3 &axis) { m_axes[dof].m_topVec = axis; }
-	void setAxisBottom(int dof, const btVector3 &axis) { m_axes[dof].m_bottomVec = axis; }
-	void setAxisTop(int dof, const btScalar &x, const btScalar &y, const btScalar &z) { m_axes[dof].m_topVec.setValue(x, y, z); }
-	void setAxisBottom(int dof, const btScalar &x, const btScalar &y, const btScalar &z) { m_axes[dof].m_bottomVec.setValue(x, y, z); }
+	void setAxisBottom(int dof, const btVector3 &axis) 
+	{ 
+		m_axes[dof].m_bottomVec = axis; 
+	}
+	void setAxisTop(int dof, const btScalar &x, const btScalar &y, const btScalar &z) 
+	{
+		m_axes[dof].m_topVec.setValue(x, y, z); 
+	}
+	void setAxisBottom(int dof, const btScalar &x, const btScalar &y, const btScalar &z) 
+	{ 
+		m_axes[dof].m_bottomVec.setValue(x, y, z); 
+	}
 	const btVector3 & getAxisTop(int dof) const { return m_axes[dof].m_topVec; }
 	const btVector3 & getAxisBottom(int dof) const { return m_axes[dof].m_bottomVec; }
 
@@ -132,8 +142,16 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 
 	const char* m_linkName;//m_linkName memory needs to be managed by the developer/user!
 	const char* m_jointName;//m_jointName memory needs to be managed by the developer/user!
-
-    // ctor: set some sensible defaults
+    const void* m_userPtr;//m_userPtr ptr needs to be managed by the developer/user!
+    
+	btScalar m_jointDamping; //todo: implement this internally. It is unused for now, it is set by a URDF loader. User can apply manual damping.
+	btScalar m_jointFriction; //todo: implement this internally. It is unused for now, it is set by a URDF loader. User can apply manual friction using a velocity motor.
+	btScalar m_jointLowerLimit; //todo: implement this internally. It is unused for now, it is set by a URDF loader. 
+	btScalar m_jointUpperLimit; //todo: implement this internally. It is unused for now, it is set by a URDF loader.
+	btScalar m_jointMaxForce; //todo: implement this internally. It is unused for now, it is set by a URDF loader. 
+	btScalar m_jointMaxVelocity;//todo: implement this internally. It is unused for now, it is set by a URDF loader. 
+	
+	// ctor: set some sensible defaults
 	btMultibodyLink()
 		: 	m_mass(1),
 			m_parent(-1),
@@ -146,7 +164,14 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 			m_jointType(btMultibodyLink::eInvalid),
 			m_jointFeedback(0),
 			m_linkName(0),
-			m_jointName(0)
+			m_jointName(0),
+            m_userPtr(0),
+			m_jointDamping(0),
+			m_jointFriction(0),
+			m_jointLowerLimit(0),
+			m_jointUpperLimit(0),
+			m_jointMaxForce(0),
+			m_jointMaxVelocity(0)
 	{
 		
 		m_inertiaLocal.setValue(1, 1, 1);
@@ -165,20 +190,6 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 	}
 
     // routine to update m_cachedRotParentToThis and m_cachedRVector
-    void updateCache()
-	{
-		//multidof
-		if (m_jointType == eRevolute) 
-		{
-			m_cachedRotParentToThis = btQuaternion(getAxisTop(0),-m_jointPos[0]) * m_zeroRotParentToThis;
-			m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
-		} else 
-		{
-			// m_cachedRotParentToThis never changes, so no need to update
-			m_cachedRVector = m_eVector + m_jointPos[0] * getAxisBottom(0);
-		}
-	}
-
 	void updateCacheMultiDof(btScalar *pq = 0)
 	{
 		btScalar *pJointPos = (pq ? pq : &m_jointPos[0]);

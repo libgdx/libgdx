@@ -188,6 +188,11 @@ public class Sprite extends TextureRegion {
 		translate(x - this.x, y - this.y);
 	}
 
+	/** Sets the position where the sprite will be drawn, relative to its current origin.  */
+	public void setOriginBasedPosition (float x, float y) {
+		setPosition(x - this.originX, y - this.originY);
+	}
+
 	/** Sets the x position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
@@ -203,17 +208,17 @@ public class Sprite extends TextureRegion {
 	}
 	
 	/** Sets the x position so that it is centered on the given x parameter */
-	public void setCenterX(float x){
+	public void setCenterX (float x) {
 		setX(x - width / 2);
 	}
-	
+
 	/** Sets the y position so that it is centered on the given y parameter */
-	public void setCenterY(float y){
+	public void setCenterY (float y) {
 		setY(y - height / 2);
 	}
-	
+
 	/** Sets the position so that the sprite is centered on (x, y) */
-	public void setCenter(float x, float y){
+	public void setCenter (float x, float y) {
 		setCenterX(x);
 		setCenterY(y);
 	}
@@ -270,6 +275,7 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
+		color.set(tint);
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
@@ -280,14 +286,8 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the alpha portion of the color used to tint this sprite. */
 	public void setAlpha (float a) {
-		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
-		int alphaBits = (int)(255 * a) << 24;
-
-		// clear alpha on original color
-		intBits = intBits & 0x00FFFFFF;
-		// write new alpha
-		intBits = intBits | alphaBits;
-		float color = NumberUtils.intToFloatColor(intBits);
+		color.a = a;
+		float color = this.color.toFloatBits();
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
@@ -296,8 +296,8 @@ public class Sprite extends TextureRegion {
 
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
-		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = NumberUtils.intToFloatColor(intBits);
+		color.set(r, g, b, a);
+		float color = this.color.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -305,14 +305,16 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
-	/** @see #setColor(Color)
+	/** Sets the color of this sprite, expanding the alpha from 0-254 to 0-255.
+	 * @see #setColor(Color)
 	 * @see Color#toFloatBits() */
-	public void setColor (float color) {
+	public void setPackedColor (float packedColor) {
+		Color.abgr8888ToColor(color, packedColor);
 		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		vertices[C1] = packedColor;
+		vertices[C2] = packedColor;
+		vertices[C3] = packedColor;
+		vertices[C4] = packedColor;
 	}
 
 	/** Sets the origin in relation to the sprite's position for scaling and rotation. */
@@ -562,8 +564,8 @@ public class Sprite extends TextureRegion {
 		return scaleY;
 	}
 
-	/** Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
-	 * {@link #setColor(float, float, float, float)} must be used. */
+	/** Returns the color of this sprite. If the returned instance is manipulated, {@link #setColor(Color)} must be called
+	 * afterward. */
 	public Color getColor () {
 		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
 		Color color = this.color;

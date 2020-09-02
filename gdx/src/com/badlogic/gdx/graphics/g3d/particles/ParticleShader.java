@@ -276,7 +276,7 @@ public class ParticleShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof ParticleShader) ? equals((ParticleShader)obj) : false;
+		return (obj instanceof ParticleShader) && equals((ParticleShader) obj);
 	}
 
 	public boolean equals (ParticleShader obj) {

@@ -17,29 +17,21 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
-import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.graphics.profiling.GL20Profiler;
-import com.badlogic.gdx.graphics.profiling.GL30Profiler;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -49,9 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** @author Daniel Holderbaum */
@@ -66,11 +56,14 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 	protected boolean lighting;
 
+	private GLProfiler glProfiler;
+
 	@Override
 	public void create () {
 		super.create();
 
-		GLProfiler.enable();
+		glProfiler = new GLProfiler(Gdx.graphics);
+		glProfiler.enable();
 
 		randomizeLights();
 
@@ -170,27 +163,27 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	protected void getStatus (final StringBuilder stringBuilder) {
 		stringBuilder.setLength(0);
 		stringBuilder.append("GL calls: ");
-		stringBuilder.append(GLProfiler.calls);
+		stringBuilder.append(glProfiler.getCalls());
 		glCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Draw calls: ");
-		stringBuilder.append(GLProfiler.drawCalls);
+		stringBuilder.append(glProfiler.getDrawCalls());
 		drawCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Shader switches: ");
-		stringBuilder.append(GLProfiler.shaderSwitches);
+		stringBuilder.append(glProfiler.getShaderSwitches());
 		shaderSwitchesLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Texture bindings: ");
-		stringBuilder.append(GLProfiler.textureBindings);
+		stringBuilder.append(glProfiler.getTextureBindings());
 		textureBindsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Vertices: ");
-		stringBuilder.append(GLProfiler.vertexCount.total);
+		stringBuilder.append(glProfiler.getVertexCount().total);
 		vertexCountLabel.setText(stringBuilder);
 
 		DirectionalLightsAttribute dirLights = (DirectionalLightsAttribute)environment.get(DirectionalLightsAttribute.Type);
@@ -206,7 +199,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append(pointLights == null ? 0 : pointLights.lights.size);
 		lightsLabel.setText(stringBuilder);
 
-		GLProfiler.reset();
+		glProfiler.reset();
 
 		stringBuilder.setLength(0);
 		super.getStatus(stringBuilder);
@@ -262,7 +255,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	@Override
 	public void dispose () {
 		super.dispose();
-		GLProfiler.disable();
+		glProfiler.disable();
 	}
 
 }

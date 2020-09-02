@@ -150,7 +150,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		projector.update();
 
 		texture.bind();
-		projTexShader.begin();
+		projTexShader.bind();
 
 		if (camera.getSelectedIndex() == 0) {
 			renderMesh(projTexShader, cam.combined, projector.combined, planeTrans, plane, Color.WHITE);
@@ -164,8 +164,6 @@ public class ProjectiveTextureTest extends GdxTest {
 			 * Color.WHITE);
 			 */
 		}
-
-		projTexShader.end();
 
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.act();

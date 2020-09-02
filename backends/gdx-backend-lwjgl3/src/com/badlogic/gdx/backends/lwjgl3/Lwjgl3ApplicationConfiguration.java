@@ -24,24 +24,25 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
-import org.lwjgl.opengl.GL;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Graphics.Monitor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 
-public class Lwjgl3ApplicationConfiguration {
+public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	boolean disableAudio = false;
+
+	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
+	int maxNetThreads = Integer.MAX_VALUE;
+
 	int audioDeviceSimultaneousSources = 16;
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;
@@ -53,21 +54,9 @@ public class Lwjgl3ApplicationConfiguration {
 	int r = 8, g = 8, b = 8, a = 8;
 	int depth = 16, stencil = 0;
 	int samples = 0;
+	boolean transparentFramebuffer;
 
-	int windowX = -1;
-	int windowY = -1;
-	int windowWidth = 640;
-	int windowHeight = 480;
-	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
-	boolean windowResizable = true;
-	boolean windowDecorated = true;
-	Lwjgl3WindowListener windowListener;
-	Lwjgl3DisplayMode fullscreenMode;
-
-	boolean vSyncEnabled = true;
-	String title = "";
-	Color initialBackgroundColor = Color.BLACK;
-	boolean initialVisible = true;
+	int idleFPS = 60;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
@@ -79,42 +68,33 @@ public class Lwjgl3ApplicationConfiguration {
 	
 	static Lwjgl3ApplicationConfiguration copy(Lwjgl3ApplicationConfiguration config) {
 		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
-		copy.disableAudio = config.disableAudio;
-		copy.audioDeviceSimultaneousSources = config.audioDeviceSimultaneousSources;
-		copy.audioDeviceBufferSize = config.audioDeviceBufferSize;
-		copy.audioDeviceBufferCount = config.audioDeviceBufferCount;
-		copy.useGL30 = config.useGL30;
-		copy.gles30ContextMajorVersion = config.gles30ContextMajorVersion;
-		copy.gles30ContextMinorVersion = config.gles30ContextMinorVersion;
-		copy.r = config.r;
-		copy.g = config.g;
-		copy.b = config.b;
-		copy.a = config.a;
-		copy.depth = config.depth;
-		copy.stencil = config.stencil;
-		copy.samples = config.samples;
-		copy.windowX = config.windowX;
-		copy.windowY = config.windowY;
-		copy.windowWidth = config.windowWidth;
-		copy.windowHeight = config.windowHeight;
-		copy.windowMinWidth = config.windowMinWidth;
-		copy.windowMinHeight = config.windowMinHeight;
-		copy.windowMaxWidth = config.windowMaxWidth;
-		copy.windowMaxHeight = config.windowMaxHeight;
-		copy.windowResizable = config.windowResizable;
-		copy.windowDecorated = config.windowDecorated;
-		copy.windowListener = config.windowListener;
-		copy.fullscreenMode = config.fullscreenMode;
-		copy.vSyncEnabled = config.vSyncEnabled;
-		copy.title = config.title;
-		copy.initialBackgroundColor = config.initialBackgroundColor;
-		copy.initialVisible = config.initialVisible;
-		copy.preferencesDirectory = config.preferencesDirectory;
-		copy.preferencesFileType = config.preferencesFileType;
-		copy.hdpiMode = config.hdpiMode;
-		copy.debug = config.debug;
-		copy.debugStream = config.debugStream;
+		copy.set(config);
 		return copy;
+	}
+	
+	void set (Lwjgl3ApplicationConfiguration config){
+		super.setWindowConfiguration(config);
+		disableAudio = config.disableAudio;
+		audioDeviceSimultaneousSources = config.audioDeviceSimultaneousSources;
+		audioDeviceBufferSize = config.audioDeviceBufferSize;
+		audioDeviceBufferCount = config.audioDeviceBufferCount;
+		useGL30 = config.useGL30;
+		gles30ContextMajorVersion = config.gles30ContextMajorVersion;
+		gles30ContextMinorVersion = config.gles30ContextMinorVersion;
+		r = config.r;
+		g = config.g;
+		b = config.b;
+		a = config.a;
+		depth = config.depth;
+		stencil = config.stencil;
+		samples = config.samples;
+		transparentFramebuffer = config.transparentFramebuffer;
+		idleFPS = config.idleFPS;
+		preferencesDirectory = config.preferencesDirectory;
+		preferencesFileType = config.preferencesFileType;
+		hdpiMode = config.hdpiMode;
+		debug = config.debug;
+		debugStream = config.debugStream;
 	}
 	
 	/**
@@ -131,6 +111,13 @@ public class Lwjgl3ApplicationConfiguration {
 	 */
 	public void disableAudio(boolean disableAudio) {
 		this.disableAudio = disableAudio;
+	}
+
+	/**
+	 * Sets the maximum number of threads to use for network requests.
+	 */
+	public void setMaxNetThreads(int maxNetThreads) {
+		this.maxNetThreads = maxNetThreads;
 	}
 
 	/**
@@ -160,7 +147,7 @@ public class Lwjgl3ApplicationConfiguration {
 	 * 
 	 * @see <a href=
 	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
-	 *      LWJGL OSX ContextAttribs note
+	 *      LWJGL OSX ContextAttribs note</a>
 	 * 
 	 * @param useGL30
 	 *            whether to use OpenGL ES 3.0
@@ -205,89 +192,19 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 
 	/**
-	 * Sets the app to use windowed mode.
-	 * 
-	 * @param width
-	 *            the width of the window (default 640)
-	 * @param height
-	 *            the height of the window (default 480)
+	 * Set transparent window hint
+	 * @deprecated Results may vary on different OS and GPUs. See https://github.com/glfw/glfw/issues/1237
+	 * @param transparentFramebuffer
 	 */
-	public void setWindowedMode(int width, int height) {
-		this.windowWidth = width;
-		this.windowHeight = height;		
-	}
-	
-	/** 
-	 * @param resizable whether the windowed mode window is resizable (default true)
-	 */
-	public void setResizable(boolean resizable) {
-		this.windowResizable = resizable;
-	}
-	
-	/**
-	 * @param decorated whether the windowed mode window is decorated, i.e. displaying the title bars (default true)
-	 */
-	public void setDecorated(boolean decorated) {
-		this.windowDecorated = decorated;
-	}
-	
-	/**
-	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for booth coordinates for centered.
-	 */
-	public void setWindowPosition(int x, int y) {
-		windowX = x;
-		windowY = y;
-	}
-	
-	/**
-	 * Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these 
-	 * limits are ignored. The default for all four parameters is -1, which means unrestricted.
-	 */
-	public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
-		windowMinWidth = minWidth;
-		windowMinHeight = minHeight;
-		windowMaxWidth = maxWidth;
-		windowMaxHeight = maxHeight;
-	}
-	
-	/**
-	 * Sets the {@link Lwjgl3WindowListener} which will be informed about
-	 * iconficiation, focus loss and window close events.
-	 */
-	public void setWindowListener(Lwjgl3WindowListener windowListener) {
-		this.windowListener = windowListener;
+	@Deprecated
+	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
+		this.transparentFramebuffer = transparentFramebuffer;
 	}
 
-	/**
-	 * Sets the app to use fullscreen mode. Use the static methods like
-	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
-	 * and their fullscreen display modes.
-	 */
-	public void setFullscreenMode(DisplayMode mode) {
-		this.fullscreenMode = (Lwjgl3DisplayMode)mode;
-	}
-
-	/**
-	 * Sets whether to use vsync. This setting can be changed anytime at runtime
-	 * via {@link Graphics#setVSync(boolean)}.
-	 */
-	public void useVsync(boolean vsync) {
-		this.vSyncEnabled = vsync;
-	}
-
-	/**
-	 * Sets the window title. Defaults to empty string.
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * Sets the initial background color. Defaults to black.
-	 */
-	public void setInitialBackgroundColor(Color color) {
-		initialBackgroundColor = color;
+	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive.
+	 * Default is 60. */
+	public void setIdleFPS (int fps) {
+		this.idleFPS = fps;
 	}
 
 	/**
@@ -307,9 +224,10 @@ public class Lwjgl3ApplicationConfiguration {
 	 * lower resolution than the actual physical resolution. This setting allows
 	 * you to specify whether you want to work in logical or raw pixel units.
 	 * See {@link HdpiMode} for more information. Note that some OpenGL
-	 * functions like {@link GL#glViewport()} and {@link GL#glScissor()} require
-	 * raw pixel units. Use {@link HdpiUtils} to help with the conversion if
-	 * HdpiMode is set to {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
+	 * functions like {@link GL20#glViewport(int, int, int, int)} and
+	 * {@link GL20#glScissor(int, int, int, int)} require raw pixel units. Use
+	 * {@link HdpiUtils} to help with the conversion if HdpiMode is set to
+	 * {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
 	 */
 	public void setHdpiMode(HdpiMode mode) {
 		this.hdpiMode = mode;
@@ -410,24 +328,5 @@ public class Lwjgl3ApplicationConfiguration {
 		int virtualY = tmp2.get(0);
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
 		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
-	}
-
-	public static enum HdpiMode {
-		/**
-		 * mouse coordinates, {@link Graphics#getWidth()} and
-		 * {@link Graphics#getHeight()} will return logical coordinates
-		 * according to the system defined HDPI scaling. Rendering will be
-		 * performed to a backbuffer at raw resolution. Use {@link HdpiUtils}
-		 * when calling {@link GL20#glScissor} or {@link GL20#glViewport} which
-		 * expect raw coordinates.
-		 */
-		Logical,
-
-		/**
-		 * Mouse coordinates, {@link Graphics#getWidth()} and
-		 * {@link Graphics#getHeight()} will return raw pixel coordinates
-		 * irrespective of the system defined HDPI scaling.
-		 */
-		Pixels
 	}
 }

@@ -20,6 +20,9 @@ import com.badlogic.gdx.math.Matrix4;
 %javamethodmodifiers btCompoundShape::removeChildShapeByIndex "private";
 %ignore btCompoundShape::getChildShape;
 
+%rename(getChildTransformConst) btCompoundShape::getChildTransform(int) const;
+%rename(getDynamicAabbTreeConst) btCompoundShape::getDynamicAabbTree() const;
+
 %typemap(javacode) btCompoundShape %{
 	protected Array<btCollisionShape> children = new Array<btCollisionShape>();
 	

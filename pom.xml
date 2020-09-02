@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.5-SNAPSHOT</version>
+  <version>1.9.11</version>
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
@@ -38,18 +38,17 @@
     <connection>scm:git:https://github.com/libgdx/libgdx.git</connection>
     <developerConnection>scm:git:https://github.com/libgdx/libgdx.git</developerConnection>
     <url>http://github.com/libgdx/libgdx</url>
+    <tag>gdx-parent-1.9.11</tag>
   </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <android.version>4.4</android.version>
-    <gwt.version>2.6.1</gwt.version>
-    <lwjgl.version>2.9.2</lwjgl.version>
-    <lwjgl3.version>3.0.0</lwjgl3.version>
-    <lwjgl3.platformVersion>3.0.0</lwjgl3.platformVersion>
-    <jglfw.version>1.1</jglfw.version>
-    <robovm.version>2.2.0</robovm.version>
-    <moe.version>1.1.2</moe.version>
+    <android.version>9.0</android.version>
+    <gwt.version>2.8.2</gwt.version>
+    <lwjgl.version>2.9.3</lwjgl.version>
+    <lwjgl3.version>3.2.3</lwjgl3.version>
+    <robovm.version>2.3.8</robovm.version>
+    <moe.version>1.4.0</moe.version>
   </properties>
 
   <modules>
@@ -59,8 +58,7 @@
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
-    <module>backends/gdx-backend-lwjgl3</module>
-    <module>backends/gdx-backend-jglfw</module>
+    <module>backends/gdx-backend-lwjgl3</module>    
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
     <module>backends/gdx-backend-moe</module>
@@ -131,6 +129,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.5</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
       </plugin>
     </plugins>
   </build>

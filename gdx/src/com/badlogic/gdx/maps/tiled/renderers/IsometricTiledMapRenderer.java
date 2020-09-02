@@ -88,18 +88,23 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 		float tileWidth = layer.getTileWidth() * unitScale;
 		float tileHeight = layer.getTileHeight() * unitScale;
+
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		// offset in tiled is y down, so we flip it
+		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+
 		float halfTileWidth = tileWidth * 0.5f;
 		float halfTileHeight = tileHeight * 0.5f;
 
 		// setting up the screen points
 		// COL1
-		topRight.set(viewBounds.x + viewBounds.width, viewBounds.y);
+		topRight.set(viewBounds.x + viewBounds.width - layerOffsetX, viewBounds.y - layerOffsetY);
 		// COL2
-		bottomLeft.set(viewBounds.x, viewBounds.y + viewBounds.height);
+		bottomLeft.set(viewBounds.x - layerOffsetX, viewBounds.y + viewBounds.height - layerOffsetY);
 		// ROW1
-		topLeft.set(viewBounds.x, viewBounds.y);
+		topLeft.set(viewBounds.x - layerOffsetX, viewBounds.y - layerOffsetY);
 		// ROW2
-		bottomRight.set(viewBounds.x + viewBounds.width, viewBounds.y + viewBounds.height);
+		bottomRight.set(viewBounds.x + viewBounds.width - layerOffsetX, viewBounds.y + viewBounds.height - layerOffsetY);
 
 		// transforming screen coordinates to iso coordinates
 		int row1 = (int)(translateScreenToIso(topLeft).y / tileWidth) - 2;
@@ -124,8 +129,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x + tile.getOffsetX() * unitScale;
-					float y1 = y + tile.getOffsetY() * unitScale;
+					float x1 = x + tile.getOffsetX() * unitScale + layerOffsetX;
+					float y1 = y + tile.getOffsetY() * unitScale + layerOffsetY;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 

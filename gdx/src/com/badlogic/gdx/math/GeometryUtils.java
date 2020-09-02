@@ -32,6 +32,7 @@ public final class GeometryUtils {
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
 	 * </pre>
+	 * 
 	 * @return barycentricOut */
 	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
 		Vector2 v0 = tmp1.set(b).sub(a);
@@ -122,6 +123,45 @@ public final class GeometryUtils {
 		return circumcenter;
 	}
 
+	static public float triangleCircumradius (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float m1, m2, mx1, mx2, my1, my2, x, y;
+		if (Math.abs(y2 - y1) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx2 = (x2 + x3) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (x2 + x1) / 2;
+			y = m2 * (x - mx2) + my2;
+		} else if (Math.abs(y3 - y2) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m1 = -(x2 - x1) / (y2 - y1);
+			mx1 = (x1 + x2) / 2;
+			my1 = (y1 + y2) / 2;
+			x = (x3 + x2) / 2;
+			y = m1 * (x - mx1) + my1;
+		} else {
+			m1 = -(x2 - x1) / (y2 - y1);
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx1 = (x1 + x2) / 2;
+			mx2 = (x2 + x3) / 2;
+			my1 = (y1 + y2) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+			y = m1 * (x - mx1) + my1;
+		}
+		float dx = x1 - x, dy = y1 - y;
+		return (float)Math.sqrt(dx * dx + dy * dy);
+	}
+
+	/** Ratio of circumradius to shortest edge as a measure of triangle quality.
+	 * <p>
+	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
+	 * Generation, Formulation, and Partition. */
+	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
+		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
+		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
+		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
+	}
+
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
 		return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
 	}
@@ -140,37 +180,26 @@ public final class GeometryUtils {
 	/** Returns the centroid for the specified non-self-intersecting polygon. */
 	static public Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
 		if (count < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
-		float x = 0, y = 0;
 
-		float signedArea = 0;
-		int i = offset;
-		for (int n = offset + count - 2; i < n; i += 2) {
-			float x0 = polygon[i];
-			float y0 = polygon[i + 1];
-			float x1 = polygon[i + 2];
-			float y1 = polygon[i + 3];
-			float a = x0 * y1 - x1 * y0;
-			signedArea += a;
-			x += (x0 + x1) * a;
-			y += (y0 + y1) * a;
+		float area = 0, x = 0, y = 0;
+		int last = offset + count - 2;
+		float x1 = polygon[last], y1 = polygon[last + 1];
+		for (int i = offset; i <= last; i += 2) {
+			float x2 = polygon[i], y2 = polygon[i + 1];
+			float a = x1 * y2 - x2 * y1;
+			area += a;
+			x += (x1 + x2) * a;
+			y += (y1 + y2) * a;
+			x1 = x2;
+			y1 = y2;
 		}
-
-		float x0 = polygon[i];
-		float y0 = polygon[i + 1];
-		float x1 = polygon[offset];
-		float y1 = polygon[offset + 1];
-		float a = x0 * y1 - x1 * y0;
-		signedArea += a;
-		x += (x0 + x1) * a;
-		y += (y0 + y1) * a;
-
-		if (signedArea == 0) {
+		if (area == 0) {
 			centroid.x = 0;
 			centroid.y = 0;
 		} else {
-			signedArea *= 0.5f;
-			centroid.x = x / (6 * signedArea);
-			centroid.y = y / (6 * signedArea);
+			area *= 0.5f;
+			centroid.x = x / (6 * area);
+			centroid.y = y / (6 * area);
 		}
 		return centroid;
 	}
@@ -178,26 +207,25 @@ public final class GeometryUtils {
 	/** Computes the area for a convex polygon. */
 	static public float polygonArea (float[] polygon, int offset, int count) {
 		float area = 0;
-		for (int i = offset, n = offset + count; i < n; i += 2) {
-			int x1 = i;
-			int y1 = i + 1;
-			int x2 = (i + 2) % n;
-			if(x2 < offset)
-				x2 += offset;
-			int y2 = (i + 3) % n;
-			if(y2 < offset)
-				y2 += offset;
-			area += polygon[x1] * polygon[y2];
-			area -= polygon[x2] * polygon[y1];
+		int last = offset + count - 2;
+		float x1 = polygon[last], y1 = polygon[last + 1];
+		for (int i = offset; i <= last; i += 2) {
+			float x2 = polygon[i], y2 = polygon[i + 1];
+			area += x1 * y2 - x2 * y1;
+			x1 = x2;
+			y1 = y2;
 		}
-		area *= 0.5f;
-		return area;
+		return area * 0.5f;
 	}
 
 	static public void ensureCCW (float[] polygon) {
-		if (!areVerticesClockwise(polygon, 0, polygon.length)) return;
-		int lastX = polygon.length - 2;
-		for (int i = 0, n = polygon.length / 2; i < n; i += 2) {
+		ensureCCW(polygon, 0, polygon.length);
+	}
+
+	static public void ensureCCW (float[] polygon, int offset, int count) {
+		if (!isClockwise(polygon, offset, count)) return;
+		int lastX = offset + count - 2;
+		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
 			float x = polygon[i];
 			float y = polygon[i + 1];
@@ -208,20 +236,17 @@ public final class GeometryUtils {
 		}
 	}
 
-	static private boolean areVerticesClockwise (float[] polygon, int offset, int count) {
+	static public boolean isClockwise (float[] polygon, int offset, int count) {
 		if (count <= 2) return false;
-		float area = 0, p1x, p1y, p2x, p2y;
-		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
-			p1x = polygon[i];
-			p1y = polygon[i + 1];
-			p2x = polygon[i + 2];
-			p2y = polygon[i + 3];
-			area += p1x * p2y - p2x * p1y;
+		float area = 0;
+		int last = offset + count - 2;
+		float x1 = polygon[last], y1 = polygon[last + 1];
+		for (int i = offset; i <= last; i += 2) {
+			float x2 = polygon[i], y2 = polygon[i + 1];
+			area += x1 * y2 - x2 * y1;
+			x1 = x2;
+			y1 = y2;
 		}
-		p1x = polygon[count - 2];
-		p1y = polygon[count - 1];
-		p2x = polygon[0];
-		p2y = polygon[1];
-		return area + p1x * p2y - p2x * p1y < 0;
+		return area < 0;
 	}
 }
