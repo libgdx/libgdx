@@ -81,7 +81,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // Gdx.app.setLogLevel(Logger.DEBUG);
 		start = TimeUtils.nanoTime();
 		tex1 = new Texture("data/animation.png");
-		tex2 = new TextureAtlas(Gdx.files.internal("data/pack"));
+		tex2 = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 		font2 = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
 // tex3 = new Texture("data/test.etc1");
 // map = TiledLoader.createMap(Gdx.files.internal("data/tiledmap/tilemap csv.tmx"));
@@ -91,9 +91,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		System.out.println("plain took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 
 		start = TimeUtils.nanoTime();
+		// this is a test for lazy loading on GWT
+		manager.load("data/animation_gwt_lazy.png", Texture.class);
 		manager.load("data/animation.png", Texture.class);
 // manager.load("data/pack1.png", Texture.class);
-		manager.load("data/pack", TextureAtlas.class);
+		manager.load("data/pack.atlas", TextureAtlas.class);
 // manager.load("data/verdana39.png", Texture.class);
 		manager.load("data/verdana39.fnt", BitmapFont.class);
 // manager.load("data/multipagefont.fnt", BitmapFont.class);
@@ -119,9 +121,10 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // renderer.dispose();
 		shader.dispose();
 
+		manager.unload("data/animation_gwt_lazy.png");
 		manager.unload("data/animation.png");
 // manager.unload("data/pack1.png");
-		manager.unload("data/pack");
+		manager.unload("data/pack.atlas");
 // manager.unload("data/verdana39.png");
 		manager.unload("data/verdana39.fnt");
 // manager.unload("data/multipagefont.fnt");
@@ -163,10 +166,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		else batch.setShader(null);
 		
 		batch.begin();
+		if (manager.isLoaded("data/animation_gwt_lazy.png")) batch.draw(manager.get("data/animation_gwt_lazy.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
-		if (manager.isLoaded("data/pack"))
-			batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
+		if (manager.isLoaded("data/pack.atlas"))
+			batch.draw(manager.get("data/pack.atlas", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt"))
 			manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 80);
 		if (manager.isLoaded("data/multipagefont.fnt"))

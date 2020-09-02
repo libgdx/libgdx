@@ -7,5 +7,6 @@
 	<inherits name="com.badlogic.gdx.controllers.controllers-gwt"/>
 	<set-configuration-property name="gdx.assetpath" value="../gdx-tests-android/assets"/>
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
-	<entry-point class='com.badlogic.gdx.tests.gwt.client.GwtTestStarter' />	
+	<entry-point class='com.badlogic.gdx.tests.gwt.client.GwtTestStarter' />
+	<set-configuration-property name="gdx.assetfilterclass" value="com.badlogic.gdx.tests.gwt.client.GwtTestAssetFilter"/>
 </module>
