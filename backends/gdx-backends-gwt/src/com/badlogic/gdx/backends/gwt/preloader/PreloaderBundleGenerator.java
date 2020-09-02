@@ -96,9 +96,8 @@ public class PreloaderBundleGenerator extends Generator {
 					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
 					byte[] bytes = IOUtils.toByteArray(is);
 					is.close();
-					String md5 = md5(bytes);
 					FileWrapper origFile = target.child(classpathFile);
-					FileWrapper destFile = target.child(origFile.nameWithoutExtension() + "-" + md5 + "." + origFile.extension());
+					FileWrapper destFile = target.child(fileNameWithMd5(origFile, bytes));
 					destFile.writeBytes(bytes, false);
 					assets.add(new Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())));
 				} catch (IOException e) {
@@ -170,8 +169,7 @@ public class PreloaderBundleGenerator extends Generator {
 				FileWrapper destFile = destDir.child(srcFile.name());
 				copyDirectory(srcFile, destFile, filter, assets);
 			} else {
-				String md5 = md5(srcFile.readBytes());
-				FileWrapper destFile = destDir.child(srcFile.nameWithoutExtension() + "-" + md5 + "." + srcFile.extension());
+				FileWrapper destFile = destDir.child(fileNameWithMd5(srcFile, srcFile.readBytes()));
 				copyFile(srcFile, destDir.child(srcFile.name()).path(), destFile, filter, assets);
 			}
 		}
@@ -283,15 +281,23 @@ public class PreloaderBundleGenerator extends Generator {
 		return packageName + "." + className;
 	}
 
-	private static String md5(byte[] bytes) {
+	private static String fileNameWithMd5(FileWrapper fw, byte[] bytes) {
+		String md5;
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 			digest.update(bytes);
-			return String.format("%032x", new BigInteger(1, digest.digest()));
+			md5 = String.format("%032x", new BigInteger(1, digest.digest()));
 		} catch (NoSuchAlgorithmException e) {
 			// Fallback
-			return String.valueOf(System.currentTimeMillis());
+			md5 = String.valueOf(System.currentTimeMillis());
 		}
+
+		String nameWithMd5 = fw.nameWithoutExtension() + "-" + md5;
+		String extension = fw.extension();
+		if (!extension.isEmpty() || fw.name().endsWith(".")) {
+			nameWithMd5 = nameWithMd5 + "." + extension;
+		}
+		return nameWithMd5;
 	}
 
 }
