@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener;
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
@@ -35,7 +36,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 
 public class Preloader {
-	
+
+	private final AssetDownloader loader = new AssetDownloader();
+
 	public interface PreloaderCallback {
 		
 		public void update(PreloaderState state);
@@ -49,6 +52,7 @@ public class Preloader {
 	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
+	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
 
 	public static class Asset {
 		public Asset(String file, String url, AssetType type, long size, String mimeType) {
@@ -61,6 +65,7 @@ public class Preloader {
 
 		public boolean succeed;
 		public boolean failed;
+		public boolean downloadStarted;
 		public long loaded;
 		public final String file;
 		public final String url;
@@ -118,9 +123,8 @@ public class Preloader {
 	}
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
-		final AssetDownloader loader = new AssetDownloader();
 
-		loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), new AssetLoaderListener<String>() {
+        loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), new AssetLoaderListener<String>() {
 			@Override
 			public void onProgress (double amount) {
 			}
@@ -147,6 +151,10 @@ public class Preloader {
 						size = 0;
 					}
 					assets.add(new Asset(tokens[1].trim(), tokens[2].trim(), type, size, tokens[4]));
+                    if (tokens[5].equals("1") || asset.url.startsWith("com/badlogic/"))
+                        assets.add(asset);
+                    else
+                        stillToFetchAssets.put(asset.url, asset);
 				}
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
@@ -157,7 +165,8 @@ public class Preloader {
 						asset.succeed = true;
 						continue;
 					}
-					
+
+					asset.downloadStarted = true;
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
 						public void onProgress (double amount) {
@@ -171,24 +180,8 @@ public class Preloader {
 							callback.update(state);
 						}
 						@Override
-						public void onSuccess(Object result) {
-							switch (asset.type) {
-							case Text:
-								texts.put(asset.file, (String) result);
-								break;
-							case Image:
-								images.put(asset.file, (ImageElement) result);
-								break;
-							case Binary:
-								binaries.put(asset.file, (Blob) result);
-								break;
-							case Audio:
-								audio.put(asset.file, (Blob) result);
-								break;
-							case Directory:
-								directories.put(asset.file, null);
-								break;
-							}
+						public void onSuccess (Object result) {
+							putAssetInMap(result, asset);
 							asset.succeed = true;
 							callback.update(state);
 						}
@@ -197,6 +190,59 @@ public class Preloader {
 				callback.update(state);
 			}
 		});
+	}
+
+	public void preloadSingleFile(final String url) {
+		if (!isNotFetchedYet(url))
+			return;
+
+		final Asset asset = stillToFetchAssets.get(url);
+
+		if (asset.downloadStarted)
+			return;
+
+		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.url);
+
+		asset.downloadStarted = true;
+
+		loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
+			@Override
+			public void onProgress (double amount) {
+				asset.loaded = (long) amount;
+			}
+			@Override
+			public void onFailure () {
+				asset.failed = true;
+				stillToFetchAssets.remove(url);
+			}
+			@Override
+			public void onSuccess (Object result) {
+				putAssetInMap(result, asset);
+				stillToFetchAssets.remove(url);
+				asset.succeed = true;
+			}
+		});
+
+	}
+
+	protected void putAssetInMap(Object result, Asset asset) {
+		switch (asset.type) {
+		case Text:
+			texts.put(asset.file, (String) result);
+			break;
+		case Image:
+			images.put(asset.file, (ImageElement) result);
+			break;
+		case Binary:
+			binaries.put(asset.file, (Blob) result);
+			break;
+		case Audio:
+			audio.put(asset.file, (Blob) result);
+			break;
+		case Directory:
+			directories.put(asset.file, null);
+			break;
+		}
 	}
 
 	public InputStream read(String file) {
@@ -223,7 +269,11 @@ public class Preloader {
 		return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file);
 	}
 
-	public boolean isText(String file) {
+    public boolean isNotFetchedYet (String file) {
+        return stillToFetchAssets.containsKey(file);
+    }
+
+    public boolean isText(String file) {
 		return texts.containsKey(file);
 	}
 

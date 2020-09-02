@@ -137,7 +137,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			: config.resolutionStrategy);
 		input = createInput(this, getActivity(), graphics.view, config);
 		audio = createAudio(getActivity(), config);
-		files = new AndroidFiles(getResources().getAssets(), getActivity().getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(getResources().getAssets(), getActivity());
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();

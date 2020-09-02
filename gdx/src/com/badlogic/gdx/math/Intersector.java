@@ -31,6 +31,10 @@ import java.util.List;
  * @author jan.stria
  * @author Nathan Sweet */
 public final class Intersector {
+
+	private Intersector () {
+	}
+
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
@@ -571,7 +575,7 @@ public final class Intersector {
 				}
 			}
 		}
-		// max y
+		// max z
 		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
 			t = (box.max.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {

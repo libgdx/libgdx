@@ -219,6 +219,10 @@ public class GwtFileHandle extends FileHandle {
 		return position - offset;
 	}
 
+	public ByteBuffer map () {
+		throw new GdxRuntimeException("Cannot map files in GWT backend");
+	}
+
 	public ByteBuffer map (FileChannel.MapMode mode) {
 		throw new GdxRuntimeException("Cannot map files in GWT backend");
 	}
