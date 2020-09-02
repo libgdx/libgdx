@@ -24,6 +24,8 @@
 - API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
 - API Change: Utility classes are now final and have a private constructor to prevent instantiation.
 - API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+- API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
+- API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
