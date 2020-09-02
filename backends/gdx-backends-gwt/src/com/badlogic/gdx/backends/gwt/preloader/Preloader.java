@@ -138,23 +138,31 @@ public class Preloader {
 				Array<Asset> assets = new Array<Asset>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
-					if (tokens.length != 5) {
+					if (tokens.length != 6) {
 						throw new GdxRuntimeException("Invalid assets description file.");
 					}
-					AssetType type = AssetType.Text;
-					if (tokens[0].equals("i")) type = AssetType.Image;
-					if (tokens[0].equals("b")) type = AssetType.Binary;
-					if (tokens[0].equals("a")) type = AssetType.Audio;
-					if (tokens[0].equals("d")) type = AssetType.Directory;
+
+					String assetTypeCode = tokens[0];
+					String assetPathOrig = tokens[1];
+					String assetPathMd5 = tokens[2];
 					long size = Long.parseLong(tokens[3]);
+					String assetMimeType = tokens[4];
+					boolean assetPreload = tokens[5].equals("1");
+
+
+					AssetType type = AssetType.Text;
+					if (assetTypeCode.equals("i")) type = AssetType.Image;
+					if (assetTypeCode.equals("b")) type = AssetType.Binary;
+					if (assetTypeCode.equals("a")) type = AssetType.Audio;
+					if (assetTypeCode.equals("d")) type = AssetType.Directory;
 					if (type == AssetType.Audio && !loader.isUseBrowserCache()) {
 						size = 0;
 					}
-					Asset asset = new Asset(tokens[1].trim(), tokens[2].trim(), type, size, tokens[4]);
-                    if (tokens[5].equals("1") || asset.url.startsWith("com/badlogic/"))
+					Asset asset = new Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType);
+                    if (assetPreload || asset.file.startsWith("com/badlogic/"))
                         assets.add(asset);
                     else
-                        stillToFetchAssets.put(asset.url, asset);
+                        stillToFetchAssets.put(asset.file, asset);
 				}
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
@@ -176,7 +184,7 @@ public class Preloader {
 						@Override
 						public void onFailure () {
 							asset.failed = true;
-							callback.error(asset.url);
+							callback.error(asset.file);
 							callback.update(state);
 						}
 						@Override
@@ -192,16 +200,16 @@ public class Preloader {
 		});
 	}
 
-	public void preloadSingleFile(final String url) {
-		if (!isNotFetchedYet(url))
+	public void preloadSingleFile(final String file) {
+		if (!isNotFetchedYet(file))
 			return;
 
-		final Asset asset = stillToFetchAssets.get(url);
+		final Asset asset = stillToFetchAssets.get(file);
 
 		if (asset.downloadStarted)
 			return;
 
-		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.url);
+		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.file);
 
 		asset.downloadStarted = true;
 
@@ -213,12 +221,12 @@ public class Preloader {
 			@Override
 			public void onFailure () {
 				asset.failed = true;
-				stillToFetchAssets.remove(url);
+				stillToFetchAssets.remove(file);
 			}
 			@Override
 			public void onSuccess (Object result) {
 				putAssetInMap(result, asset);
-				stillToFetchAssets.remove(url);
+				stillToFetchAssets.remove(file);
 				asset.succeed = true;
 			}
 		});

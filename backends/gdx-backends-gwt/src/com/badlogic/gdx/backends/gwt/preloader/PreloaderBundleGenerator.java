@@ -121,6 +121,7 @@ public class PreloaderBundleGenerator extends Generator {
 			bundleAssets.add(asset);
 		}
 
+		// Write the tokens for Preloader.preload()
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
 			StringBuilder sb = new StringBuilder();
 			for (Asset asset : bundle.getValue()) {
@@ -288,7 +289,8 @@ public class PreloaderBundleGenerator extends Generator {
 			digest.update(bytes);
 			return String.format("%032x", new BigInteger(1, digest.digest()));
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
+			// Fallback
+			return String.valueOf(System.currentTimeMillis());
 		}
 	}
 
