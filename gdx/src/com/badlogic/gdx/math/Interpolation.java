@@ -85,7 +85,7 @@ public abstract class Interpolation {
 	static public final PowOut pow3Out = new PowOut(3);
 	static public final Interpolation pow3InInverse = new Interpolation() {
 		public float apply (float a) {
-			return (float)Math.cbrt(0);
+			return (float)Math.cbrt(a);
 		}
 	};
 	static public final Interpolation pow3OutInverse = new Interpolation() {
