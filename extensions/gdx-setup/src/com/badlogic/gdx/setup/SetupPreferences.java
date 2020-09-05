@@ -32,10 +32,10 @@ import java.util.Properties;
 public class SetupPreferences {
 
 	private static final File[] files = new File[] {
-		// $HOME/.gdxsetup
-		new File(new File(System.getProperty("user.home")), ".gdxsetup"),
 		// $CONFIG_HOME/gdxsetup/config
-		new File(new File(new File(findConfigHomePath()), "gdxsetup"), "config")};
+		new File(new File(new File(findConfigHomePath()), "gdxsetup"), "config"),
+		// $HOME/.gdxsetup
+		new File(new File(System.getProperty("user.home")), ".gdxsetup")};
 
 	private static final String findConfigHomePath () {
 		Map<String, String> env = System.getenv();
@@ -48,7 +48,7 @@ public class SetupPreferences {
 		for (File i : files) {
 			if (i.exists()) return i;
 		}
-		return files[0]; // default to $HOME/.gdxsetup
+		return files[files.length-1]; // default to $HOME/.gdxsetup
 	}
 
 	private final Properties properties = new Properties();

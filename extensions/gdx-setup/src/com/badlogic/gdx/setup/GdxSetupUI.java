@@ -426,7 +426,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog(form.gwtCheckBox);
+					settings.showDialog(form, form.gwtCheckBox);
 				}
 			});
 			generateButton.addActionListener(new ActionListener() {
@@ -495,9 +495,9 @@ public class GdxSetupUI extends JFrame {
 			}
 
 			nameLabel.setToolTipText("The name of the application used in gradle");
-			packageLabel.setToolTipText("The Java package name of the application");
-			gameClassLabel.setToolTipText("The name of the main Java class implementing ApplicationListener");
-			destinationLabel.setToolTipText("The root directory of the project to write the generated files to");
+			packageLabel.setToolTipText("The package name of the application");
+			gameClassLabel.setToolTipText("The name of the main class implementing ApplicationListener");
+			destinationLabel.setToolTipText("The root directory of the project, it will be created if it does not exist");
 			sdkLocationLabel.setToolTipText("The location of your Android SDK");
 		}
 
@@ -630,7 +630,7 @@ public class GdxSetupUI extends JFrame {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.setDialogTitle(dialogTitle);
-				int result = chooser.showOpenDialog(null);
+				int result = chooser.showOpenDialog(GdxSetupUI.this);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File dir = chooser.getSelectedFile();
 					if (dir == null) return null;
@@ -664,7 +664,7 @@ public class GdxSetupUI extends JFrame {
 			});
 			showMoreExtensionsButton.addActionListener(new ActionListener() {
 				 public void actionPerformed (ActionEvent e) {
-					  externalExtensionsDialog.showDialog();
+					  externalExtensionsDialog.showDialog(Form.this);
 				 }
 			});
 		}
