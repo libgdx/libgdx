@@ -62,32 +62,32 @@ public class AnimationControllerTest {
 	public void testEndUpActionAtDurationTime(){
 		
 		Animation loop = new Animation();
-      loop.id = "loop";
-      loop.duration = 1f;
+		loop.id = "loop";
+		loop.duration = 1f;
 
-      Animation action = new Animation();
-      action.id = "action";
-      action.duration = 0.2f;
+		Animation action = new Animation();
+		action.id = "action";
+		action.duration = 0.2f;
 
-      ModelInstance modelInstance = new ModelInstance(new Model());
-      modelInstance.animations.add(loop);
-      modelInstance.animations.add(action);
+		ModelInstance modelInstance = new ModelInstance(new Model());
+		modelInstance.animations.add(loop);
+		modelInstance.animations.add(action);
 
-      AnimationController animationController = new AnimationController(modelInstance);
-      
-      animationController.setAnimation("loop", -1);
-      assertSameAnimation(loop, animationController.current);
-      
-      animationController.update(1);
-      assertSameAnimation(loop, animationController.current);
-      
-      animationController.update(0.01f);
-      assertSameAnimation(loop, animationController.current);
+		AnimationController animationController = new AnimationController(modelInstance);
 
-      animationController.action("action", 1, 1f, null, 0f);
-      assertSameAnimation(action, animationController.current);
+		animationController.setAnimation("loop", -1);
+		assertSameAnimation(loop, animationController.current);
 
-      animationController.update(0.2f);
-      assertSameAnimation(loop, animationController.current);
+		animationController.update(1);
+		assertSameAnimation(loop, animationController.current);
+
+		animationController.update(0.01f);
+		assertSameAnimation(loop, animationController.current);
+
+		animationController.action("action", 1, 1f, null, 0f);
+		assertSameAnimation(action, animationController.current);
+
+		animationController.update(0.2f);
+		assertSameAnimation(loop, animationController.current);
 	}
 }
