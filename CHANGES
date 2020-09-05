@@ -28,6 +28,7 @@
 - API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
 - API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
 - API Addition: Added Slider#setVisualPercent.
+- API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
