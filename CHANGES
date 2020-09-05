@@ -8,6 +8,8 @@
 - Fixed GestureDetector maxFlingDelay.
 - API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
+
 
 [1.9.11]
 - Update to MobiVM 2.3.8
