@@ -396,6 +396,7 @@ public class Table extends WidgetGroup {
 
 	/** Returns the cell for the specified actor in this table, or null. */
 	public @Null <T extends Actor> Cell<T> getCell (T actor) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Array<Cell> cells = this.cells;
 		for (int i = 0, n = cells.size; i < n; i++) {
 			Cell c = cells.get(i);

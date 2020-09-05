@@ -38,14 +38,14 @@ public class AssetDescriptor<T> {
 	}
 
 	public AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
-		this.fileName = fileName.replaceAll("\\\\", "/");
+		this.fileName = fileName.replace('\\', '/');
 		this.type = assetType;
 		this.params = params;
 	}
 
 	/** Creates an AssetDescriptor with an already resolved name. */
 	public AssetDescriptor (FileHandle file, Class<T> assetType, AssetLoaderParameters<T> params) {
-		this.fileName = file.path().replaceAll("\\\\", "/");
+		this.fileName = file.path().replace('\\', '/');
 		this.file = file;
 		this.type = assetType;
 		this.params = params;
