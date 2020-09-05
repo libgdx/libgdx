@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class ProgressBar extends Widget implements Disableable {
 	private ProgressBarStyle style;
-	private float min, max, stepSize;
+	float min, max, stepSize;
 	private float value, animateFromValue;
 	float position;
 	final boolean vertical;

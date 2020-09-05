@@ -55,7 +55,8 @@ public class Preloader {
 	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
 
 	public static class Asset {
-		public Asset (String url, AssetType type, long size, String mimeType) {
+		public Asset(String file, String url, AssetType type, long size, String mimeType) {
+			this.file = file;
 			this.url = url;
 			this.type = type;
 			this.size = size;
@@ -66,6 +67,7 @@ public class Preloader {
 		public boolean failed;
 		public boolean downloadStarted;
 		public long loaded;
+		public final String file;
 		public final String url;
 		public final AssetType type;
 		public final long size;
@@ -122,7 +124,7 @@ public class Preloader {
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
 
-		loader.loadText(baseUrl + assetFileUrl, new AssetLoaderListener<String>() {
+        loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), new AssetLoaderListener<String>() {
 			@Override
 			public void onProgress (double amount) {
 			}
@@ -136,29 +138,37 @@ public class Preloader {
 				Array<Asset> assets = new Array<Asset>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
-					if (tokens.length != 5) {
+					if (tokens.length != 6) {
 						throw new GdxRuntimeException("Invalid assets description file.");
 					}
+
+					String assetTypeCode = tokens[0];
+					String assetPathOrig = tokens[1];
+					String assetPathMd5 = tokens[2];
+					long size = Long.parseLong(tokens[3]);
+					String assetMimeType = tokens[4];
+					boolean assetPreload = tokens[5].equals("1");
+
+
 					AssetType type = AssetType.Text;
-					if (tokens[0].equals("i")) type = AssetType.Image;
-					if (tokens[0].equals("b")) type = AssetType.Binary;
-					if (tokens[0].equals("a")) type = AssetType.Audio;
-					if (tokens[0].equals("d")) type = AssetType.Directory;
-					long size = Long.parseLong(tokens[2]);
+					if (assetTypeCode.equals("i")) type = AssetType.Image;
+					if (assetTypeCode.equals("b")) type = AssetType.Binary;
+					if (assetTypeCode.equals("a")) type = AssetType.Audio;
+					if (assetTypeCode.equals("d")) type = AssetType.Directory;
 					if (type == AssetType.Audio && !loader.isUseBrowserCache()) {
 						size = 0;
 					}
-					Asset asset = new Asset(tokens[1].trim(), type, size, tokens[3]);
-					if (tokens[4].equals("1") || asset.url.startsWith("com/badlogic/"))
-						assets.add(asset);
-					else
-						stillToFetchAssets.put(asset.url, asset);
+					Asset asset = new Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType);
+                    if (assetPreload || asset.file.startsWith("com/badlogic/"))
+                        assets.add(asset);
+                    else
+                        stillToFetchAssets.put(asset.file, asset);
 				}
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
 					final Asset asset = assets.get(i);
-					
-					if (contains(asset.url)) {
+
+					if (contains(asset.file)) {
 						asset.loaded = asset.size;
 						asset.succeed = true;
 						continue;
@@ -174,7 +184,7 @@ public class Preloader {
 						@Override
 						public void onFailure () {
 							asset.failed = true;
-							callback.error(asset.url);
+							callback.error(asset.file);
 							callback.update(state);
 						}
 						@Override
@@ -190,16 +200,16 @@ public class Preloader {
 		});
 	}
 
-	public void preloadSingleFile(final String url) {
-		if (!isNotFetchedYet(url))
+	public void preloadSingleFile(final String file) {
+		if (!isNotFetchedYet(file))
 			return;
 
-		final Asset asset = stillToFetchAssets.get(url);
+		final Asset asset = stillToFetchAssets.get(file);
 
 		if (asset.downloadStarted)
 			return;
 
-		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.url);
+		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.file);
 
 		asset.downloadStarted = true;
 
@@ -211,12 +221,12 @@ public class Preloader {
 			@Override
 			public void onFailure () {
 				asset.failed = true;
-				stillToFetchAssets.remove(url);
+				stillToFetchAssets.remove(file);
 			}
 			@Override
 			public void onSuccess (Object result) {
 				putAssetInMap(result, asset);
-				stillToFetchAssets.remove(url);
+				stillToFetchAssets.remove(file);
 				asset.succeed = true;
 			}
 		});
@@ -226,79 +236,79 @@ public class Preloader {
 	protected void putAssetInMap(Object result, Asset asset) {
 		switch (asset.type) {
 		case Text:
-			texts.put(asset.url, (String) result);
+			texts.put(asset.file, (String) result);
 			break;
 		case Image:
-			images.put(asset.url, (ImageElement) result);
+			images.put(asset.file, (ImageElement) result);
 			break;
 		case Binary:
-			binaries.put(asset.url, (Blob) result);
+			binaries.put(asset.file, (Blob) result);
 			break;
 		case Audio:
-			audio.put(asset.url, (Blob) result);
+			audio.put(asset.file, (Blob) result);
 			break;
 		case Directory:
-			directories.put(asset.url, null);
+			directories.put(asset.file, null);
 			break;
 		}
 	}
 
-	public InputStream read (String url) {
-		if (texts.containsKey(url)) {
+	public InputStream read(String file) {
+		if (texts.containsKey(file)) {
 			try {
-				return new ByteArrayInputStream(texts.get(url).getBytes("UTF-8"));
+				return new ByteArrayInputStream(texts.get(file).getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				return null;
 			}
 		}
-		if (images.containsKey(url)) {
+		if (images.containsKey(file)) {
 			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
 		}
-		if (binaries.containsKey(url)) {
-			return binaries.get(url).read();
+		if (binaries.containsKey(file)) {
+			return binaries.get(file).read();
 		}
-		if (audio.containsKey(url)) {
-			return audio.get(url).read();
+		if (audio.containsKey(file)) {
+			return audio.get(file).read();
 		}
 		return null;
 	}
 
-	public boolean contains (String url) {
-		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url) || directories.containsKey(url);
+	public boolean contains(String file) {
+		return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file);
 	}
 
-	public boolean isNotFetchedYet (String url) {
-		return stillToFetchAssets.containsKey(url);
+    public boolean isNotFetchedYet (String file) {
+        return stillToFetchAssets.containsKey(file);
+    }
+
+    public boolean isText(String file) {
+		return texts.containsKey(file);
 	}
 
-	public boolean isText (String url) {
-		return texts.containsKey(url);
+	public boolean isImage(String file) {
+		return images.containsKey(file);
 	}
 
-	public boolean isImage (String url) {
-		return images.containsKey(url);
+	public boolean isBinary(String file) {
+		return binaries.containsKey(file);
 	}
 
-	public boolean isBinary (String url) {
-		return binaries.containsKey(url);
+	public boolean isAudio(String file) {
+		return audio.containsKey(file);
 	}
 
-	public boolean isAudio (String url) {
-		return audio.containsKey(url);
+	public boolean isDirectory(String file) {
+		return directories.containsKey(file);
 	}
 
-	public boolean isDirectory (String url) {
-		return directories.containsKey(url);
+	private boolean isChild(String path, String file) {
+		return path.startsWith(file) && (path.indexOf('/', file.length() + 1) < 0);
 	}
 
-	private boolean isChild(String path, String url) {
-		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
-	}
-
-	public FileHandle[] list (String url) {
+	public FileHandle[] list(String file) {
 		Array<FileHandle> files = new Array<FileHandle>();
 		for (String path : texts.keys()) {
-			if (isChild(path, url)) {
+			if (isChild(path, file)) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
 		}
@@ -307,10 +317,10 @@ public class Preloader {
 		return list;
 	}
 
-	public FileHandle[] list (String url, FileFilter filter) {
+	public FileHandle[] list(String file, FileFilter filter) {
 		Array<FileHandle> files = new Array<FileHandle>();
 		for (String path : texts.keys()) {
-			if (isChild(path, url) && filter.accept(new File(path))) {
+			if (isChild(path, file) && filter.accept(new File(path))) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
 		}
@@ -319,10 +329,10 @@ public class Preloader {
 		return list;
 	}
 
-	public FileHandle[] list (String url, FilenameFilter filter) {
+	public FileHandle[] list(String file, FilenameFilter filter) {
 		Array<FileHandle> files = new Array<FileHandle>();
 		for (String path : texts.keys()) {
-			if (isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1))) {
+			if (isChild(path, file) && filter.accept(new File(file), path.substring(file.length() + 1))) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
 		}
@@ -331,10 +341,10 @@ public class Preloader {
 		return list;
 	}
 
-	public FileHandle[] list (String url, String suffix) {
+	public FileHandle[] list(String file, String suffix) {
 		Array<FileHandle> files = new Array<FileHandle>();
 		for (String path : texts.keys()) {
-			if (isChild(path, url) && path.endsWith(suffix)) {
+			if (isChild(path, file) && path.endsWith(suffix)) {
 				files.add(new GwtFileHandle(this, path, FileType.Internal));
 			}
 		}
@@ -343,22 +353,22 @@ public class Preloader {
 		return list;
 	}
 
-	public long length (String url) {
-		if (texts.containsKey(url)) {
+	public long length(String file) {
+		if (texts.containsKey(file)) {
 			try {
-				return texts.get(url).getBytes("UTF-8").length;
+				return texts.get(file).getBytes("UTF-8").length;
 			} catch (UnsupportedEncodingException e) {
-				return texts.get(url).getBytes().length;
+				return texts.get(file).getBytes().length;
 			}
 		}
-		if (images.containsKey(url)) {
+		if (images.containsKey(file)) {
 			return 1; // FIXME, sensible?
 		}
-		if (binaries.containsKey(url)) {
-			return binaries.get(url).length();
+		if (binaries.containsKey(file)) {
+			return binaries.get(file).length();
 		}
-		if (audio.containsKey(url)) {
-			return audio.get(url).length();
+		if (audio.containsKey(file)) {
+			return audio.get(file).length();
 		}
 		return 0;
 	}

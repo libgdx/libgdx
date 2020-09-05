@@ -85,6 +85,7 @@ public class TextButton extends Button {
 	}
 
 	public void setLabel (Label label) {
+		if (label == null) throw new IllegalArgumentException("label cannot be null.");
 		getLabelCell().setActor(label);
 		this.label = label;
 	}
