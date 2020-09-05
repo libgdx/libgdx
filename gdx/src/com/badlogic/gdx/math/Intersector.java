@@ -763,7 +763,7 @@ public final class Intersector {
 			if (tMin > tMax) {
 				return false;
 			}
-		} else if (-e + bounds.min.z > 0.0f && -e + bounds.max.z < 0.0f) {
+		} else if (-e + bounds.min.z > 0.0f || -e + bounds.max.z < 0.0f) {
 			return false;
 		}
 
