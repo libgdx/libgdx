@@ -25,6 +25,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -33,7 +34,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
@@ -78,9 +81,9 @@ public class GwtTestWrapper extends GdxTest {
 		for (final Instancer instancer : tests) {
 			table.row();
 			TextButton button = new TextButton(instancer.instance().getClass().getSimpleName(), skin);
-			button.addListener(new ClickListener() {
+			button.addListener(new ChangeListener() {
 				@Override
-				public void clicked (InputEvent event, float x, float y) {
+				public void changed (ChangeEvent event, Actor actor) {
 					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
 					Gdx.app.log("GdxTestGwt", "Clicked on " + test.getClass().getName());
