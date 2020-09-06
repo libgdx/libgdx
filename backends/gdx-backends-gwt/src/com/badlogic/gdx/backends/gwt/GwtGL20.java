@@ -901,6 +901,9 @@ public class GwtGL20 implements GL20 {
 				if (pixmap.canUseImageElement()) {
 					gl.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement());
 				}
+				else if (pixmap.canUseVideoElement()) {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getVideoElement());
+				}
 				else {
 					gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
 				}
