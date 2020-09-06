@@ -44,6 +44,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -114,12 +116,30 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			this.root = config.rootPanel;
 		} else {
 			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
-			int width = config.width;
-			int height = config.height;
-			if (config.usePhysicalPixels) {
-				double density = GwtGraphics.getNativeScreenDensity();
-				width = (int) (width / density);
-				height = (int) (height / density);
+			int width ;
+			int height;
+
+			if (!config.isFixedSizeApplication()) {
+				// resizable application
+				width = Window.getClientWidth() - config.padHorizontal;
+				height = Window.getClientHeight() - config.padVertical;
+
+				// resizeable application does not need to take the native screen density into
+				// account here - the panel's size is set to logical pixels
+
+				Window.enableScrolling(false);
+				Window.setMargin("0");
+				Window.addResizeHandler(new ResizeListener());
+			} else {
+				// fixed size application
+				width = config.width;
+				height = config.height;
+
+				if (config.usePhysicalPixels) {
+					double density = GwtGraphics.getNativeScreenDensity();
+					width = (int) (width / density);
+					height = (int) (height / density);
+				}
 			}
 
 			if (element == null) {
@@ -627,5 +647,38 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		 * Method called after the setup
 		 */
 		public void afterSetup();
+	}
+
+	/**
+	 * ResizeListener called when browser window is resized
+	 */
+	class ResizeListener implements ResizeHandler {
+		@Override
+		public void onResize(ResizeEvent event) {
+
+			int width = event.getWidth() - config.padHorizontal;
+			int height = event.getHeight() - config.padVertical;
+
+			// ignore 0, 0
+			if (width == 0 || height == 0) {
+				return;
+			}
+
+			getRootPanel().setWidth("" + width + "px");
+			getRootPanel().setHeight("" + height + "px");
+
+			// while preloading and before setupLoop() is called, graphics are not initialized
+			if (graphics != null) {
+				// event calls us with logical pixel size, so if we use physical pixels internally,
+				// we need to convert them
+				if (config.usePhysicalPixels) {
+					double density = GwtGraphics.getNativeScreenDensity();
+					width = (int) (width * density);
+					height = (int) (height * density);
+				}
+				graphics.setCanvasSize(width, height);
+
+			}
+		}
 	}
 }

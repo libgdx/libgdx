@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
@@ -70,7 +71,16 @@ public class GwtGraphics implements Graphics {
 		canvas = canvasWidget.getCanvasElement();
 		root.add(canvasWidget);
 		this.config = config;
-		setCanvasSize(config.width, config.height);
+
+		if (!config.isFixedSizeApplication()) {
+			// resizable application
+			int width = Window.getClientWidth() - config.padHorizontal;
+			int height = Window.getClientHeight() - config.padVertical;
+			double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
+			setCanvasSize((int) (density * width), (int) (density * height));
+		} else {
+			setCanvasSize(config.width, config.height);
+		}
 
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
 		attributes.setAntialias(config.antialiasing);
@@ -247,7 +257,11 @@ public class GwtGraphics implements Graphics {
 
 	private void fullscreenChanged () {
 		if (!isFullscreen()) {
-			setCanvasSize(config.width, config.height);
+			// reset to usual size for fixed size apps. for resizable apps, browser calls
+			// our resizehandler
+			if (config.isFixedSizeApplication()) {
+				setCanvasSize(config.width, config.height);
+			}
 			if (config.fullscreenOrientation != null) unlockOrientation();
 		} else {
 			/* We just managed to go full-screen. Check if the user has requested a specific orientation. */
@@ -360,11 +374,14 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public boolean setWindowedMode (int width, int height) {
 		if (isFullscreenJSNI()) exitFullscreen();
-		setCanvasSize(width, height);
+		// don't set canvas for resizable applications, resize handler will do it
+		if (config.isFixedSizeApplication()) {
+			setCanvasSize(width, height);
+		}
 		return true;
 	}
 
-	private void setCanvasSize(int width, int height) {
+	void setCanvasSize(int width, int height) {
 		canvas.setWidth(width);
 		canvas.setHeight(height);
 
