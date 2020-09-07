@@ -28,11 +28,11 @@ public class Vector2Test {
 
 	@Test
 	public void testAngleRad() {
-		assertEquals(- MathUtils.PI / 2f, new Vector2(0, -1f).angleRad(), MathUtils.FLOAT_ROUNDING_ERROR);
+		assertEquals(- MathUtils.HALF_PI, new Vector2(0, -1f).angleRad(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
 	public void testAngleRadRelative() {
-		assertEquals(- MathUtils.PI / 2f, new Vector2(0, -1f).angleRad(Vector2.X), MathUtils.FLOAT_ROUNDING_ERROR);
+		assertEquals(- MathUtils.HALF_PI, new Vector2(0, -1f).angleRad(Vector2.X), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 }
