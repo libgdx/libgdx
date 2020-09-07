@@ -32,7 +32,6 @@ include ":extensions:gdx-controllers:gdx-controllers-desktop"
 include ":extensions:gdx-controllers:gdx-controllers-lwjgl3"
 include ":extensions:gdx-controllers:gdx-controllers-gwt"
 include ":extensions:gdx-freetype"
-include ":extensions:gdx-jnigen"
 include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
 

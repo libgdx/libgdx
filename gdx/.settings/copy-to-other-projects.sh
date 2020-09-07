@@ -9,7 +9,6 @@ cp -t ../../extensions/gdx-controllers/gdx-controllers/.settings org.eclipse.jdt
 cp -t ../../extensions/gdx-controllers/gdx-controllers-desktop/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
 cp -t ../../extensions/gdx-controllers/gdx-controllers-lwjgl3/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
 cp -t ../../extensions/gdx-freetype/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
-cp -t ../../extensions/gdx-jnigen/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
 cp -t ../../extensions/gdx-tools/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
 cp -t ../../tests/gdx-tests/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
 cp -t ../../tests/gdx-tests-lwjgl/.settings org.eclipse.jdt.core.prefs org.eclipse.jdt.ui.prefs
