@@ -47,7 +47,7 @@ public final class MathUtils {
 	static private final float degToIndex = SIN_COUNT / degFull;
 
 	/** multiply by this to convert from radians to degrees */
-	static public final float radiansToDegrees = 180 / PI;
+	static public final float radiansToDegrees = 180f / PI;
 	static public final float radDeg = radiansToDegrees;
 	/** multiply by this to convert from degrees to radians */
 	static public final float degreesToRadians = PI / 180;
