@@ -67,6 +67,7 @@ import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerInfluencerSingleTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
+import com.badlogic.gdx.tests.g3d.ParticleSystemBlendingTest;
 import com.badlogic.gdx.tests.g3d.PolarAccelerationTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
@@ -204,6 +205,7 @@ public class GdxTests {
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
 		ParticleEmitterChangeSpriteTest.class,
+		ParticleSystemBlendingTest.class,
 		PixelBufferObjectTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
