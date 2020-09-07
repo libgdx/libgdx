@@ -44,7 +44,6 @@ public class VertexBufferObjectWithVAO implements VertexData {
 	final int usage;
 	boolean isDirty = false;
 	boolean isBound = false;
-	boolean isBufferBound = false;
 	int vaoHandle = -1;
 	IntArray cachedLocations = new IntArray();
 
@@ -118,10 +117,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 
 	private void bufferChanged () {
 		if (isBound) {
-			if (!isBufferBound) {
-				Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-				isBufferBound = true;
-			}
+			Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 			Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
@@ -192,7 +188,6 @@ public class VertexBufferObjectWithVAO implements VertexData {
 
 		if (!stillValid) {
 			Gdx.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-			isBufferBound = true;
 			unbindAttributes(shader);
 			this.cachedLocations.clear();
 
@@ -232,7 +227,6 @@ public class VertexBufferObjectWithVAO implements VertexData {
 	private void bindData (GL20 gl) {
 		if (isDirty) {
 			gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-			isBufferBound = true;
 			byteBuffer.limit(buffer.limit() * 4);
 			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
@@ -254,7 +248,6 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		GL30 gl = Gdx.gl30;
 		gl.glBindVertexArray(0);
 		isBound = false;
-		isBufferBound = false;
 	}
 
 	/**
