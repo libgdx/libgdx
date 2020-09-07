@@ -41,6 +41,14 @@ jnigen {
         cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"]
         libraries = "-lX11"
     }
+    add(Linux, x32, ARM) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"]
+        libraries = "-lX11"
+    }
+    add(Linux, x64, ARM) {
+        cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"]
+        libraries = "-lX11"
+    }
     add(MacOsX, x64) {
         cppIncludes = ["*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/mac/*.mm", "ois-v1-4svn/src/mac/MacHIDManager.cpp", "ois-v1-4svn/src/mac/MacJoyStick.cpp"]
         cppFlags += " -x objective-c++"
