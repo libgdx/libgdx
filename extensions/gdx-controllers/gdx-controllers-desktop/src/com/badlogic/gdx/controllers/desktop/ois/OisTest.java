@@ -17,14 +17,12 @@
 package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.controllers.desktop.DesktopControllersBuild;
 import com.badlogic.gdx.controllers.desktop.OisControllers;
 import com.badlogic.gdx.controllers.desktop.ois.OisJoystick.OisPov;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class OisTest {
 	public static void main (String[] args) throws Exception {
-		DesktopControllersBuild.main(null);
 		new SharedLibraryLoader("libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 
 		ApplicationAdapter app = new ApplicationAdapter() {
