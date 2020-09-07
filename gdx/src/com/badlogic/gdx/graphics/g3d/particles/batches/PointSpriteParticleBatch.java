@@ -130,7 +130,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		allocRenderables(capacity);
 	}
 
-	private Renderable allocRenderable () {
+	protected Renderable allocRenderable () {
 		Renderable renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_POINTS;
 		renderable.meshPart.offset = 0;
@@ -226,10 +226,19 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 				vertices[offset + CPU_REGION_OFFSET + 2] = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				vertices[offset + CPU_REGION_OFFSET + 3] = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
 			}
-			int offsetVertices = lastTp * CPU_VERTEX_SIZE;
-			int numVertices = data.controller.particles.size;
-			Vector3 center = data.controller.transform.getTranslation(TMP_V1);
-			addRenderable(offsetVertices, numVertices, center);
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * CPU_VERTEX_SIZE;
+				int numVertices = data.controller.particles.size;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
+		}
+		if(!splitRenderablesPerController){
+			Renderable renderable = allocRenderable();
+			renderable.meshPart.size = bufferedParticlesCount;
+			renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount * CPU_VERTEX_SIZE);
+			renderable.meshPart.update();
+			renderables.add(renderable);
 		}
 	}
 

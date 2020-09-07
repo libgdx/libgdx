@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tests.g3d;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -82,11 +84,13 @@ public class ParticleSystemBlendingTest extends BaseG3dTest {
 
 		pointSpriteParticleBatch = new PointSpriteParticleBatch();
 		pointSpriteParticleBatch.setCamera(cam);
+		pointSpriteParticleBatch.splitRenderablesPerController = true;
 
 		billboardParticleBatch = new BillboardParticleBatch();
 		billboardParticleBatch.setCamera(cam);
 		billboardParticleBatch.setUseGpu(false);
 		billboardParticleBatch.setAlignMode(ParticleShader.AlignMode.ViewPoint);
+		billboardParticleBatch.splitRenderablesPerController = true;
 
 		particleSystem.add(modelInstanceParticleBatch);
 		particleSystem.add(billboardParticleBatch);
@@ -122,13 +126,18 @@ public class ParticleSystemBlendingTest extends BaseG3dTest {
 			addEffect(pfx[(z + 1) % pfx.length], new Vector3(d * 1.5f, 1f, d * z));
 			addEffect(pfx[(z + 3) % pfx.length], new Vector3(d * -1.5f, 1f, d * z));
 
-			// FIXME: Billboard and PointSprite particles intersecting translucent models are not rendered correctly.
-			// addEffect(pfx[(z + 2) % pfx.length], new Vector3(0f, 1.5f, d * z));
+			// Limitation: Billboard and PointSprite particles intersecting translucent models are not rendered correctly.
+			addEffect(pfx[(z + 2) % pfx.length], new Vector3(0f, 1.5f, d * z));
 		}
 	}
 
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			billboardParticleBatch.splitRenderablesPerController = !billboardParticleBatch.splitRenderablesPerController;
+			pointSpriteParticleBatch.splitRenderablesPerController = !pointSpriteParticleBatch.splitRenderablesPerController;
+		}
+
 		for (ModelInstance instance : instances) {
 			batch.render(instance, environment);
 		}

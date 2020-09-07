@@ -395,10 +395,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				putVertex(vertices, baseOffset, px, py, pz, u, v, -sx, sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
 			}
-			int offsetVertices = lastTp * currentVertexSize * 4;
-			int numVertices = data.controller.particles.size * 4;
-			Vector3 center = data.controller.transform.getTranslation(TMP_V1);
-			addRenderable(offsetVertices, numVertices, center);
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
 		}
 	}
 
@@ -543,10 +545,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
 				}
 			}
-			int offsetVertices = lastTp * currentVertexSize * 4;
-			int numVertices = data.controller.particles.size * 4;
-			Vector3 center = data.controller.transform.getTranslation(TMP_V1);
-			addRenderable(offsetVertices, numVertices, center);
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
 		}
 	}
 
@@ -620,10 +624,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
 				}
 			}
-			int offsetVertices = lastTp * currentVertexSize * 4;
-			int numVertices = data.controller.particles.size * 4;
-			Vector3 center = data.controller.transform.getTranslation(TMP_V1);
-			addRenderable(offsetVertices, numVertices, center);
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
 		}
 	}
 
@@ -672,6 +678,20 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			else if (mode == AlignMode.ViewPoint) fillVerticesToViewPointCPU(offsets);
 			// else
 			// fillVerticesToParticleDirectionCPU(offsets);
+		}
+
+		if (!splitRenderablesPerController) {
+			// send vertices to meshes
+			int addedVertexCount = 0;
+			int vCount = bufferedParticlesCount * 4;
+			for (int v = 0; v < vCount; v += addedVertexCount) {
+				addedVertexCount = Math.min(vCount - v, MAX_VERTICES_PER_MESH);
+				Renderable renderable = renderablePool.obtain();
+				renderable.meshPart.size = (addedVertexCount / 4) * 6;
+				renderable.meshPart.mesh.setVertices(vertices, currentVertexSize * v, currentVertexSize * addedVertexCount);
+				renderable.meshPart.update();
+				renderables.add(renderable);
+			}
 		}
 	}
 
