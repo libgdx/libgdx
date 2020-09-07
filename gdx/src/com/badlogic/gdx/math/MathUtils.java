@@ -32,8 +32,8 @@ public final class MathUtils {
 	// ---
 	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
 	static public final float PI = (float) Math.PI;
-	static public final float PI2 = (float) (Math.PI * 2d);
-	static public final float HALF_PI = (float) (Math.PI / 2d);
+	static public final float PI2 = PI * 2;
+	static public final float HALF_PI = PI / 2;
 
 	static public final float E = (float) Math.E;
 
