@@ -22,15 +22,12 @@ import java.nio.FloatBuffer;
 import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int16Array;
@@ -77,6 +74,14 @@ public class GwtGL20 implements GL20 {
 			var value = this[key];
 			delete this[key];
 			return value;
+		}-*/;
+
+		public native int getKey(T value) /*-{
+			for (i = 0; i < this.length; i++) {
+		           if (value === this[i]) {
+		               return i;
+		           }
+		       }
 		}-*/;
 	}
 
@@ -632,6 +637,14 @@ public class GwtGL20 implements GL20 {
 			params.put(1, array.get(1));
 			params.put(2, array.get(2));
 			params.put(3, array.get(3));
+			params.flip();
+		} else if(pname == GL20.GL_FRAMEBUFFER_BINDING) {
+			WebGLFramebuffer fbo = gl.getParametero(pname);
+			if(fbo == null) {
+				params.put(0);
+			} else {
+				params.put(frameBuffers.getKey(fbo));
+			}
 			params.flip();
 		} else
 			throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
