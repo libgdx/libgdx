@@ -30,7 +30,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
-import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -45,6 +44,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -115,20 +116,46 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			this.root = config.rootPanel;
 		} else {
 			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
+			int width ;
+			int height;
+
+			if (!config.isFixedSizeApplication()) {
+				// resizable application
+				width = Window.getClientWidth() - config.padHorizontal;
+				height = Window.getClientHeight() - config.padVertical;
+
+				// resizeable application does not need to take the native screen density into
+				// account here - the panel's size is set to logical pixels
+
+				Window.enableScrolling(false);
+				Window.setMargin("0");
+				Window.addResizeHandler(new ResizeListener());
+			} else {
+				// fixed size application
+				width = config.width;
+				height = config.height;
+
+				if (config.usePhysicalPixels) {
+					double density = GwtGraphics.getNativeScreenDensity();
+					width = (int) (width / density);
+					height = (int) (height / density);
+				}
+			}
+
 			if (element == null) {
 				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
+				panel.setWidth("" + width + "px");
+				panel.setHeight("" + height + "px");
 				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 				RootPanel.get().add(panel);
-				RootPanel.get().setWidth("" + config.width + "px");
-				RootPanel.get().setHeight("" + config.height + "px");
+				RootPanel.get().setWidth("" + width + "px");
+				RootPanel.get().setHeight("" + height + "px");
 				this.root = panel;
 			} else {
 				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
+				panel.setWidth("" + width + "px");
+				panel.setHeight("" + height + "px");
 				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 				element.appendChild(panel.getElement());
@@ -136,28 +163,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		}
 
-		
-		if (config.disableAudio) {
-			preloadAssets();
-		} else {
-			// initialize SoundManager2
-			SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
-
-				@Override
-				public void onready () {
-					preloadAssets();
-				}
-
-				@Override
-				public void ontimeout (String status, String errorType) {
-					error("SoundManager", status + " " + errorType);
-				}
-
-			});
-		}
+		preloadAssets();
 	}
-	
-	void preloadAssets () {
+
+	void preloadAssets() {
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = createPreloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
@@ -638,5 +647,38 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		 * Method called after the setup
 		 */
 		public void afterSetup();
+	}
+
+	/**
+	 * ResizeListener called when browser window is resized
+	 */
+	class ResizeListener implements ResizeHandler {
+		@Override
+		public void onResize(ResizeEvent event) {
+
+			int width = event.getWidth() - config.padHorizontal;
+			int height = event.getHeight() - config.padVertical;
+
+			// ignore 0, 0
+			if (width == 0 || height == 0) {
+				return;
+			}
+
+			getRootPanel().setWidth("" + width + "px");
+			getRootPanel().setHeight("" + height + "px");
+
+			// while preloading and before setupLoop() is called, graphics are not initialized
+			if (graphics != null) {
+				// event calls us with logical pixel size, so if we use physical pixels internally,
+				// we need to convert them
+				if (config.usePhysicalPixels) {
+					double density = GwtGraphics.getNativeScreenDensity();
+					width = (int) (width * density);
+					height = (int) (height * density);
+				}
+				graphics.setCanvasSize(width, height);
+
+			}
+		}
 	}
 }

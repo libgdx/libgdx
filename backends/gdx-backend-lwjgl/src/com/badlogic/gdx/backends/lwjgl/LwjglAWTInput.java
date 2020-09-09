@@ -109,9 +109,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	boolean touchDown = false;
 	boolean justTouched = false;
 	int keyCount = 0;
-	boolean[] keys = new boolean[256];
+	boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[256];
+	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;

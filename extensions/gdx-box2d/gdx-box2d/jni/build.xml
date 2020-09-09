@@ -23,13 +23,13 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-box2d-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-box2d.dll"/>
-			<fileset dir="../libs/windows64" includes="gdx-box2d64.dll"/>
-			<fileset dir="../libs/linux32" includes="libgdx-box2d.so"/>
-			<fileset dir="../libs/linux64" includes="libgdx-box2d64.so"/>
-			<fileset dir="../libs/linuxarm32" includes="libgdx-box2darm.so"/>
-			<fileset dir="../libs/linuxarm64" includes="libgdx-box2darm64.so"/>
-			<fileset dir="../libs/macosx64" includes="libgdx-box2d64.dylib"/>
+			<fileset dir="../libs/windows32" erroronmissingdir="false" includes="gdx-box2d.dll"/>
+			<fileset dir="../libs/windows64" erroronmissingdir="false" includes="gdx-box2d64.dll"/>
+			<fileset dir="../libs/linux32" erroronmissingdir="false" includes="libgdx-box2d.so"/>
+			<fileset dir="../libs/linux64" erroronmissingdir="false" includes="libgdx-box2d64.so"/>
+			<fileset dir="../libs/linuxarm32" erroronmissingdir="false" includes="libgdx-box2darm.so"/>
+			<fileset dir="../libs/linuxarm64" erroronmissingdir="false" includes="libgdx-box2darm64.so"/>
+			<fileset dir="../libs/macosx64" erroronmissingdir="false" includes="libgdx-box2d64.dylib"/>
 
 		</jar>
 	</target>

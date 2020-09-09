@@ -15,7 +15,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html></html>
 		</projects>
 	</extension>
@@ -34,7 +33,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>null</html>
 		</projects>
 	</extension>
@@ -55,7 +53,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
 			</html>
@@ -78,7 +75,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 			</html>
@@ -101,7 +97,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d:sources</dependency>
@@ -129,9 +124,6 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-			<ios-moe>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios-moe</dependency>
-			</ios-moe>
 			<html>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core:sources</dependency>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-html:sources</dependency>
@@ -159,9 +151,6 @@
 			<ios>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios</dependency>
 			</ios>
-			<ios-moe>
-				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
-			</ios-moe>
 			<html>
 		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>
@@ -186,7 +175,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 			</html>
@@ -209,7 +197,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
@@ -233,7 +220,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>

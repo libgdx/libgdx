@@ -189,6 +189,12 @@ public class Slider extends ProgressBar {
 		this.visualInterpolationInverse = interpolation;
 	}
 
+	/** Sets the value using the specified visual percent.
+	 * @see #setVisualInterpolation(Interpolation) */
+	public void setVisualPercent (float percent) {
+		setValue(min + (max - min) * visualInterpolationInverse.apply(percent));
+	}
+
 	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner
 	 * @author Nathan Sweet */

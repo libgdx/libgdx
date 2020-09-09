@@ -365,6 +365,9 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
+
+		setVSync(window.getConfig().vSyncEnabled);
+
 		return true;
 	}
 	
@@ -416,6 +419,8 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setVSync(boolean vsync) {
+		window.getConfig().vSyncEnabled = vsync;
+
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
 	}
 
