@@ -94,7 +94,7 @@ public class GwtGL20 implements GL20 {
 	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
 	float[] floatArray = new float[16000];
 
-	final WebGLRenderingContext gl;
+	public final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
 		this.gl = gl;
