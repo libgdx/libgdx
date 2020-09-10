@@ -132,6 +132,7 @@ public class GdxTests {
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
 		DisplayModeTest.class,
+		DownloadTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
 //		EarClippingTriangulatorTest.class,
