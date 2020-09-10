@@ -30,6 +30,8 @@
 - API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
 - API Addition: Added Slider#setVisualPercent.
 - API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
+- API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
+- API Addition: Added ObjectLongMap.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

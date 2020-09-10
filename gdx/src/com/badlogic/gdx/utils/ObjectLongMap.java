@@ -22,7 +22,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/** An unordered map where the keys and values are unboxed ints. No allocation is done except when growing the table size.
+/** An unordered map where the keys are objects and the values are unboxed longs. Null keys are not allowed. No allocation is done
+ * except when growing the table size.
  * <p>
  * This class performs fast contains and remove (typically O(1), worst case O(n) but that is rare in practice). Add may be
  * slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce collisions and the need to resize. Load factors
@@ -37,52 +38,49 @@ import java.util.NoSuchElementException;
  * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
  * @author Nathan Sweet
  * @author Tommy Ettinger */
-public class IntIntMap implements Iterable<IntIntMap.Entry> {
+public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 	public int size;
 
-	int[] keyTable;
-	int[] valueTable;
+	K[] keyTable;
+	long[] valueTable;
 
-	int zeroValue;
-	boolean hasZeroValue;
+	float loadFactor;
+	int threshold;
 
-	private final float loadFactor;
-	private int threshold;
-
-	/** Used by {@link #place(int)} to bit shift the upper bits of a {@code long} into a usable range (&gt;= 0 and &lt;=
+	/** Used by {@link #place(Object)} to bit shift the upper bits of a {@code long} into a usable range (&gt;= 0 and &lt;=
 	 * {@link #mask}). The shift can be negative, which is convenient to match the number of bits in mask: if mask is a 7-bit
 	 * number, a shift of -7 shifts the upper 7 bits into the lowest 7 positions. This class sets the shift &gt; 32 and &lt; 64,
 	 * which if used with an int will still move the upper bits of an int to the lower bits due to Java's implicit modulus on
 	 * shifts.
 	 * <p>
 	 * {@link #mask} can also be used to mask the low bits of a number, which may be faster for some hashcodes, if
-	 * {@link #place(int)} is overridden. */
+	 * {@link #place(Object)} is overridden. */
 	protected int shift;
 
 	/** A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
-	 * minus 1. If {@link #place(int)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
+	 * minus 1. If {@link #place(Object)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
 	 * hash. */
 	protected int mask;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
+	Entries entries1, entries2;
+	Values values1, values2;
+	Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
-	public IntIntMap () {
+	public ObjectLongMap () {
 		this(51, 0.8f);
 	}
 
 	/** Creates a new map with a load factor of 0.8.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
-	public IntIntMap (int initialCapacity) {
+	public ObjectLongMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
-	public IntIntMap (int initialCapacity, float loadFactor) {
+	public ObjectLongMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -92,18 +90,16 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		mask = tableSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		keyTable = new int[tableSize];
-		valueTable = new int[tableSize];
+		keyTable = (K[])new Object[tableSize];
+		valueTable = new long[tableSize];
 	}
 
 	/** Creates a new map identical to the specified map. */
-	public IntIntMap (IntIntMap map) {
+	public ObjectLongMap (ObjectLongMap<? extends K> map) {
 		this((int)(map.keyTable.length * map.loadFactor), map.loadFactor);
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
-		zeroValue = map.zeroValue;
-		hasZeroValue = map.hasZeroValue;
 	}
 
 	/** Returns an index >= 0 and <= {@link #mask} for the specified {@code item}.
@@ -120,30 +116,23 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	 * This method can be overriden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
 	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
-	protected int place (int item) {
-		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
+	protected int place (K item) {
+		return (int)(item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
 	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
 	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
-	private int locateKey (int key) {
-		int[] keyTable = this.keyTable;
+	int locateKey (K key) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		K[] keyTable = this.keyTable;
 		for (int i = place(key);; i = i + 1 & mask) {
-			int other = keyTable[i];
-			if (other == 0) return -(i + 1); // Empty space is available.
-			if (other == key) return i; // Same key was found.
+			K other = keyTable[i];
+			if (other == null) return -(i + 1); // Empty space is available.
+			if (other.equals(key)) return i; // Same key was found.
 		}
 	}
 
-	public void put (int key, int value) {
-		if (key == 0) {
-			zeroValue = value;
-			if (!hasZeroValue) {
-				hasZeroValue = true;
-				size++;
-			}
-			return;
-		}
+	public void put (K key, long value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			valueTable[i] = value;
@@ -156,20 +145,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	}
 
 	/** Returns the old value associated with the specified key, or the specified default value. */
-	public int put (int key, int value, int defaultValue) {
-		if (key == 0) {
-			int oldValue = zeroValue;
-			zeroValue = value;
-			if (!hasZeroValue) {
-				hasZeroValue = true;
-				size++;
-				return defaultValue;
-			}
-			return oldValue;
-		}
+	public long put (K key, int value, long defaultValue) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
-			int oldValue = valueTable[i];
+			long oldValue = valueTable[i];
 			valueTable[i] = value;
 			return oldValue;
 		}
@@ -180,22 +159,22 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return defaultValue;
 	}
 
-	public void putAll (IntIntMap map) {
+	public void putAll (ObjectLongMap<? extends K> map) {
 		ensureCapacity(map.size);
-		if (map.hasZeroValue) put(0, map.zeroValue);
-		int[] keyTable = map.keyTable;
-		int[] valueTable = map.valueTable;
+		K[] keyTable = map.keyTable;
+		long[] valueTable = map.valueTable;
+		K key;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			int key = keyTable[i];
-			if (key != 0) put(key, valueTable[i]);
+			key = keyTable[i];
+			if (key != null) put(key, valueTable[i]);
 		}
 	}
 
-	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
-	private void putResize (int key, int value) {
-		int[] keyTable = this.keyTable;
+	/** Skips checks for existing keys, doesn't increment size. */
+	private void putResize (K key, long value) {
+		K[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
-			if (keyTable[i] == 0) {
+			if (keyTable[i] == null) {
 				keyTable[i] = key;
 				valueTable[i] = value;
 				return;
@@ -203,29 +182,18 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		}
 	}
 
-	public int get (int key, int defaultValue) {
-		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
+	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	public long get (K key, long defaultValue) {
 		int i = locateKey(key);
-		return i >= 0 ? valueTable[i] : defaultValue;
+		return i < 0 ? defaultValue : valueTable[i];
 	}
 
 	/** Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
 	 * put into the map and defaultValue is returned. */
-	public int getAndIncrement (int key, int defaultValue, int increment) {
-		if (key == 0) {
-			if (!hasZeroValue) {
-				hasZeroValue = true;
-				zeroValue = defaultValue + increment;
-				size++;
-				return defaultValue;
-			}
-			int oldValue = zeroValue;
-			zeroValue += increment;
-			return oldValue;
-		}
+	public long getAndIncrement (K key, long defaultValue, long increment) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
-			int oldValue = valueTable[i];
+			long oldValue = valueTable[i];
 			valueTable[i] += increment;
 			return oldValue;
 		}
@@ -237,20 +205,14 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	}
 
 	/** Returns the value for the removed key, or the default value if the key is not in the map. */
-	public int remove (int key, int defaultValue) {
-		if (key == 0) {
-			if (!hasZeroValue) return defaultValue;
-			hasZeroValue = false;
-			size--;
-			return zeroValue;
-		}
-
+	public long remove (K key, long defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
-		int oldValue = valueTable[i], mask = this.mask, next = i + 1 & mask;
-		while ((key = keyTable[next]) != 0) {
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
+		long oldValue = valueTable[i];
+		int mask = this.mask, next = i + 1 & mask;
+		while ((key = keyTable[next]) != null) {
 			int placement = place(key);
 			if ((next - placement & mask) > (i - placement & mask)) {
 				keyTable[i] = key;
@@ -259,7 +221,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 			}
 			next = next + 1 & mask;
 		}
-		keyTable[i] = 0;
+		keyTable[i] = null;
 		size--;
 		return oldValue;
 	}
@@ -274,7 +236,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return size == 0;
 	}
 
-	/** Reduces the size of the backing arrays to be the specified capacity / locateKey, or less. If the capacity is already less,
+	/** Reduces the size of the backing arrays to be the specified capacity / loadFactor, or less. If the capacity is already less,
 	 * nothing is done. If the map contains more items than the specified capacity, the next highest power of two capacity is used
 	 * instead. */
 	public void shrink (int maximumCapacity) {
@@ -291,44 +253,39 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 			return;
 		}
 		size = 0;
-		hasZeroValue = false;
 		resize(tableSize);
 	}
 
 	public void clear () {
 		if (size == 0) return;
-		Arrays.fill(keyTable, 0);
 		size = 0;
-		hasZeroValue = false;
+		Arrays.fill(keyTable, null);
 	}
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
 	 * be an expensive operation. */
-	public boolean containsValue (int value) {
-		if (hasZeroValue && zeroValue == value) return true;
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
+	public boolean containsValue (long value) {
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--)
-			if (keyTable[i] != 0 && valueTable[i] == value) return true;
+			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
 
-	public boolean containsKey (int key) {
-		if (key == 0) return hasZeroValue;
+	public boolean containsKey (K key) {
 		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
-	public int findKey (int value, int notFound) {
-		if (hasZeroValue && zeroValue == value) return 0;
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
+	public @Null K findKey (long value) {
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--) {
-			int key = keyTable[i];
-			if (key != 0 && valueTable[i] == value) return key;
+			K key = keyTable[i];
+			if (key != null && valueTable[i] == value) return key;
 		}
-		return notFound;
+		return null;
 	}
 
 	/** Increases the size of the backing array to accommodate the specified number of additional items / loadFactor. Useful before
@@ -338,53 +295,48 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
-	private void resize (int newSize) {
+	final void resize (int newSize) {
 		int oldCapacity = keyTable.length;
 		threshold = (int)(newSize * loadFactor);
 		mask = newSize - 1;
 		shift = Long.numberOfLeadingZeros(mask);
 
-		int[] oldKeyTable = keyTable;
-		int[] oldValueTable = valueTable;
+		K[] oldKeyTable = keyTable;
+		long[] oldValueTable = valueTable;
 
-		keyTable = new int[newSize];
-		valueTable = new int[newSize];
+		keyTable = (K[])new Object[newSize];
+		valueTable = new long[newSize];
 
 		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
-				int key = oldKeyTable[i];
-				if (key != 0) putResize(key, oldValueTable[i]);
+				K key = oldKeyTable[i];
+				if (key != null) putResize(key, oldValueTable[i]);
 			}
 		}
 	}
 
 	public int hashCode () {
 		int h = size;
-		if (hasZeroValue) h += zeroValue;
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			int key = keyTable[i];
-			if (key != 0) h += key * 31 + valueTable[i];
+			K key = keyTable[i];
+			if (key != null) h += key.hashCode() + valueTable[i];
 		}
 		return h;
 	}
 
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
-		if (!(obj instanceof IntIntMap)) return false;
-		IntIntMap other = (IntIntMap)obj;
+		if (!(obj instanceof ObjectLongMap)) return false;
+		ObjectLongMap other = (ObjectLongMap)obj;
 		if (other.size != size) return false;
-		if (other.hasZeroValue != hasZeroValue) return false;
-		if (hasZeroValue) {
-			if (other.zeroValue != zeroValue) return false;
-		}
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
-			int key = keyTable[i];
-			if (key != 0) {
-				int otherValue = other.get(key, 0);
+			K key = keyTable[i];
+			if (key != null) {
+				long otherValue = other.get(key, 0);
 				if (otherValue == 0 && !other.containsKey(key)) return false;
 				if (otherValue != valueTable[i]) return false;
 			}
@@ -392,39 +344,42 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return true;
 	}
 
+	public String toString (String separator) {
+		return toString(separator, false);
+	}
+
 	public String toString () {
-		if (size == 0) return "[]";
+		return toString(", ", true);
+	}
+
+	private String toString (String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
-		buffer.append('[');
-		int[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
+		if (braces) buffer.append('{');
+		K[] keyTable = this.keyTable;
+		long[] valueTable = this.valueTable;
 		int i = keyTable.length;
-		if (hasZeroValue) {
-			buffer.append("0=");
-			buffer.append(zeroValue);
-		} else {
-			while (i-- > 0) {
-				int key = keyTable[i];
-				if (key == 0) continue;
-				buffer.append(key);
-				buffer.append('=');
-				buffer.append(valueTable[i]);
-				break;
-			}
+		while (i-- > 0) {
+			K key = keyTable[i];
+			if (key == null) continue;
+			buffer.append(key);
+			buffer.append('=');
+			buffer.append(valueTable[i]);
+			break;
 		}
 		while (i-- > 0) {
-			int key = keyTable[i];
-			if (key == 0) continue;
-			buffer.append(", ");
+			K key = keyTable[i];
+			if (key == null) continue;
+			buffer.append(separator);
 			buffer.append(key);
 			buffer.append('=');
 			buffer.append(valueTable[i]);
 		}
-		buffer.append(']');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
-	public Iterator<Entry> iterator () {
+	public Entries<K> iterator () {
 		return entries();
 	}
 
@@ -432,7 +387,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	 * <p>
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
 	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
-	public Entries entries () {
+	public Entries<K> entries () {
 		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
@@ -453,7 +408,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	/** Returns an iterator for the values in the map. Remove is supported.
 	 * <p>
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
-	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	 * Use the {@link Values} constructor for nested or multithreaded iteration. */
 	public Values values () {
 		if (Collections.allocateIterators) return new Values(this);
 		if (values1 == null) {
@@ -475,8 +430,8 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	/** Returns an iterator for the keys in the map. Remove is supported.
 	 * <p>
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
-	 * Use the {@link Entries} constructor for nested or multithreaded iteration. */
-	public Keys keys () {
+	 * Use the {@link Keys} constructor for nested or multithreaded iteration. */
+	public Keys<K> keys () {
 		if (Collections.allocateIterators) return new Keys(this);
 		if (keys1 == null) {
 			keys1 = new Keys(this);
@@ -494,43 +449,37 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return keys2;
 	}
 
-	static public class Entry {
-		public int key;
-		public int value;
+	static public class Entry<K> {
+		public K key;
+		public long value;
 
 		public String toString () {
 			return key + "=" + value;
 		}
 	}
 
-	static private class MapIterator {
-		static private final int INDEX_ILLEGAL = -2;
-		static final int INDEX_ZERO = -1;
-
+	static private class MapIterator<K> {
 		public boolean hasNext;
 
-		final IntIntMap map;
+		final ObjectLongMap<K> map;
 		int nextIndex, currentIndex;
 		boolean valid = true;
 
-		public MapIterator (IntIntMap map) {
+		public MapIterator (ObjectLongMap<K> map) {
 			this.map = map;
 			reset();
 		}
 
 		public void reset () {
-			currentIndex = INDEX_ILLEGAL;
-			nextIndex = INDEX_ZERO;
-			if (map.hasZeroValue)
-				hasNext = true;
-			else
-				findNextIndex();
+			currentIndex = -1;
+			nextIndex = -1;
+			findNextIndex();
 		}
 
 		void findNextIndex () {
-			int[] keyTable = map.keyTable;
+			K[] keyTable = map.keyTable;
 			for (int n = keyTable.length; ++nextIndex < n;) {
-				if (keyTable[nextIndex] != 0) {
+				if (keyTable[nextIndex] != null) {
 					hasNext = true;
 					return;
 				}
@@ -540,50 +489,41 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 
 		public void remove () {
 			int i = currentIndex;
-			if (i == INDEX_ZERO && map.hasZeroValue) {
-				map.hasZeroValue = false;
-			} else if (i < 0) {
-				throw new IllegalStateException("next must be called before remove.");
-			} else {
-				int[] keyTable = map.keyTable;
-				int[] valueTable = map.valueTable;
-				int mask = map.mask, next = i + 1 & mask, key;
-				while ((key = keyTable[next]) != 0) {
-					int placement = map.place(key);
-					if ((next - placement & mask) > (i - placement & mask)) {
-						keyTable[i] = key;
-						valueTable[i] = valueTable[next];
-						i = next;
-					}
-					next = next + 1 & mask;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
+			K[] keyTable = map.keyTable;
+			long[] valueTable = map.valueTable;
+			int mask = map.mask, next = i + 1 & mask;
+			K key;
+			while ((key = keyTable[next]) != null) {
+				int placement = map.place(key);
+				if ((next - placement & mask) > (i - placement & mask)) {
+					keyTable[i] = key;
+					valueTable[i] = valueTable[next];
+					i = next;
 				}
-				keyTable[i] = 0;
-				if (i != currentIndex) --nextIndex;
+				next = next + 1 & mask;
 			}
-			currentIndex = INDEX_ILLEGAL;
+			keyTable[i] = null;
 			map.size--;
+			if (i != currentIndex) --nextIndex;
+			currentIndex = -1;
 		}
 	}
 
-	static public class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry> {
-		private final Entry entry = new Entry();
+	static public class Entries<K> extends MapIterator<K> implements Iterable<Entry<K>>, Iterator<Entry<K>> {
+		Entry<K> entry = new Entry<K>();
 
-		public Entries (IntIntMap map) {
+		public Entries (ObjectLongMap<K> map) {
 			super(map);
 		}
 
 		/** Note the same entry instance is returned each time this method is called. */
-		public Entry next () {
+		public Entry<K> next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			int[] keyTable = map.keyTable;
-			if (nextIndex == INDEX_ZERO) {
-				entry.key = 0;
-				entry.value = map.zeroValue;
-			} else {
-				entry.key = keyTable[nextIndex];
-				entry.value = map.valueTable[nextIndex];
-			}
+			K[] keyTable = map.keyTable;
+			entry.key = keyTable[nextIndex];
+			entry.value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return entry;
@@ -594,14 +534,14 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 			return hasNext;
 		}
 
-		public Iterator<Entry> iterator () {
+		public Entries<K> iterator () {
 			return this;
 		}
 	}
 
-	static public class Values extends MapIterator {
-		public Values (IntIntMap map) {
-			super(map);
+	static public class Values extends MapIterator<Object> {
+		public Values (ObjectLongMap<?> map) {
+			super((ObjectLongMap<Object>)map);
 		}
 
 		public boolean hasNext () {
@@ -609,10 +549,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 			return hasNext;
 		}
 
-		public int next () {
+		public long next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			int value = map.valueTable[nextIndex];
+			long value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return value;
@@ -623,45 +563,51 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		}
 
 		/** Returns a new array containing the remaining values. */
-		public IntArray toArray () {
-			IntArray array = new IntArray(true, map.size);
+		public LongArray toArray () {
+			LongArray array = new LongArray(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
 
 		/** Adds the remaining values to the specified array. */
-		public IntArray toArray (IntArray array) {
+		public LongArray toArray (LongArray array) {
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
 	}
 
-	static public class Keys extends MapIterator {
-		public Keys (IntIntMap map) {
+	static public class Keys<K> extends MapIterator<K> implements Iterable<K>, Iterator<K> {
+		public Keys (ObjectLongMap<K> map) {
 			super(map);
 		}
 
-		public int next () {
+		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			return hasNext;
+		}
+
+		public K next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			int key = nextIndex == INDEX_ZERO ? 0 : map.keyTable[nextIndex];
+			K key = map.keyTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return key;
 		}
 
-		/** Returns a new array containing the remaining keys. */
-		public IntArray toArray () {
-			IntArray array = new IntArray(true, map.size);
-			while (hasNext)
-				array.add(next());
-			return array;
+		public Keys<K> iterator () {
+			return this;
 		}
 
-		/** Adds the remaining values to the specified array. */
-		public IntArray toArray (IntArray array) {
+		/** Returns a new array containing the remaining keys. */
+		public Array<K> toArray () {
+			return toArray(new Array<K>(true, map.size));
+		}
+
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
 			while (hasNext)
 				array.add(next());
 			return array;
