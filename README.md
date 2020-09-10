@@ -28,10 +28,10 @@ As we switched to Gradle, there's no need to download libGDX itself anymore: thi
 We also provide [javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The javadocs are also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
 
 ## Community & Contributing
-You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). A good way to get in touch with our community is to join the official [libGDX Discord](https://discord.gg/6pgDK9F).
+You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). Another good way to get in touch with our community is to join the official [libGDX Discord](https://discord.gg/6pgDK9F).
 
 ### Reporting Issues
-Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
+Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Please make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
 
 ### Working on the Code
 libGDX has a strong developer community constantly improving the code base. We love to get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing) article describes the process of helping libGDX to become even better. To contribute, you need to work with libGDX' sources directly, something normal users do not have to go through. The [Working with the Source](https://libgdx.com/dev/from_source/) article will give you directions.
