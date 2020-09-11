@@ -19,6 +19,7 @@
 - GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
 - GWT: GwtApplicationConfiguration and GWT backend now support an application to be resizable or fixed size. You can remove your own resizing code from your HTMLLaunchers.
 - GWT: Assets in distribute build are renamed with md5 hash suffix to bypass browser cache on changes
+- API Addition: Pixmap.downloadFromUrl() downloads an image from http(s) URLs and passes it back as a Pixmap on all platforms
 - Added support for Linux ARM builds.
 	- 32-bit: ARMv7/armhf
 	- 64-bit: ARMv8/AArch64
