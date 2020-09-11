@@ -184,6 +184,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
+	/** Returns the value for the removed key, or null if the key is not in the map. */
 	public @Null V remove (K key) {
 		int i = locateKey(key);
 		if (i < 0) return null;

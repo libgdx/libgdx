@@ -25,12 +25,10 @@ import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
-		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320, true);
+		GwtApplicationConfiguration config = new GwtApplicationConfiguration(true);
 		config.useGyroscope = true;
+		config.padVertical = 150;
 		//config.openURLInNewWindow = true;
-		double density = GwtGraphics.getNativeScreenDensity();
-		config.width = (int) (config.width * density);
-		config.height = (int) (config.height * density);
 		return config;
 	}
 

@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.Generator;
@@ -36,7 +37,6 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import org.apache.commons.io.IOUtils;
 
 /** Copies assets from the path specified in the modules gdx.assetpath configuration property to the war/ folder and generates the
  * assets.txt file. The type of a file is determined by an {@link AssetFilter}, which is either created by instantiating the class
@@ -94,7 +94,7 @@ public class PreloaderBundleGenerator extends Generator {
 			if (assetFilter.accept(classpathFile, false)) {
 				try {
 					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
-					byte[] bytes = IOUtils.toByteArray(is);
+					byte[] bytes = StreamUtils.copyStreamToByteArray(is);
 					is.close();
 					FileWrapper origFile = target.child(classpathFile);
 					FileWrapper destFile = target.child(fileNameWithMd5(origFile, bytes));

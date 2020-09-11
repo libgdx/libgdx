@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -59,7 +60,7 @@ public class GwtTestWrapper extends GdxTest {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.app.log("GdxTestGwt", "Setting up for " + tests.length + " tests.");
 
-		ui = new Stage();
+		ui = new Stage(new ExtendViewport(480, 320));
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		container = new Table();
@@ -68,6 +69,7 @@ public class GwtTestWrapper extends GdxTest {
 		Table table = new Table();
 		ScrollPane scroll = new ScrollPane(table);
 		container.add(scroll).expand().fill();
+		container.setFillParent(true);
 		table.pad(10).defaults().expandX().space(4);
 		Arrays.sort(tests, new Comparator<Instancer>() {
 			@Override
@@ -147,7 +149,6 @@ public class GwtTestWrapper extends GdxTest {
 
 	public void resize (int width, int height) {
 		ui.getViewport().update(width, height, true);
-		container.setSize(width, height);
 		if (test != null) {
 			test.resize(width, height);
 		}
@@ -530,6 +531,10 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new FrameBufferTest();
 			}
+		}, new Instancer() {
+		public GdxTest instance () {
+			return new DownloadTest();
+		}
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new FramebufferToTextureTest();

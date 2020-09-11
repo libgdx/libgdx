@@ -110,13 +110,13 @@ public abstract class Interpolation {
 
 	static public final Interpolation sineIn = new Interpolation() {
 		public float apply (float a) {
-			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
+			return 1 - MathUtils.cos(a * MathUtils.HALF_PI);
 		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.sin(a * MathUtils.PI / 2);
+			return MathUtils.sin(a * MathUtils.HALF_PI);
 		}
 	};
 

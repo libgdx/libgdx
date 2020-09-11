@@ -135,6 +135,10 @@ public class Sprite extends TextureRegion {
 		this.height = height;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float x2 = x + width;
 		float y2 = y + height;
@@ -150,8 +154,6 @@ public class Sprite extends TextureRegion {
 
 		vertices[X4] = x2;
 		vertices[Y4] = y;
-
-		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
 	/** Sets the size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale are changed,
@@ -162,6 +164,10 @@ public class Sprite extends TextureRegion {
 		this.height = height;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float x2 = x + width;
 		float y2 = y + height;
@@ -177,15 +183,35 @@ public class Sprite extends TextureRegion {
 
 		vertices[X4] = x2;
 		vertices[Y4] = y;
-
-		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
 	/** Sets the position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
 	public void setPosition (float x, float y) {
-		translate(x - this.x, y - this.y);
+		this.x = x;
+		this.y = y;
+
+		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
+
+		float x2 = x + width;
+		float y2 = y + height;
+		float[] vertices = this.vertices;
+		vertices[X1] = x;
+		vertices[Y1] = y;
+
+		vertices[X2] = x;
+		vertices[Y2] = y2;
+
+		vertices[X3] = x2;
+		vertices[Y3] = y2;
+
+		vertices[X4] = x2;
+		vertices[Y4] = y;
 	}
 
 	/** Sets the position where the sprite will be drawn, relative to its current origin.  */
@@ -197,14 +223,40 @@ public class Sprite extends TextureRegion {
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
 	public void setX (float x) {
-		translateX(x - this.x);
+		this.x = x;
+
+		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
+
+		float x2 = x + width;
+		float[] vertices = this.vertices;
+		vertices[X1] = x;
+		vertices[X2] = x;
+		vertices[X3] = x2;
+		vertices[X4] = x2;
 	}
 
 	/** Sets the y position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
 	public void setY (float y) {
-		translateY(y - this.y);
+		this.y = y;
+
+		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
+
+		float y2 = y + height;
+		float[] vertices = this.vertices;
+		vertices[Y1] = y;
+		vertices[Y2] = y2;
+		vertices[Y3] = y2;
+		vertices[Y4] = y;
 	}
 	
 	/** Sets the x position so that it is centered on the given x parameter */
@@ -219,8 +271,7 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the position so that the sprite is centered on (x, y) */
 	public void setCenter (float x, float y) {
-		setCenterX(x);
-		setCenterY(y);
+		setPosition(x - width / 2, y - height / 2);
 	}
 
 	/** Sets the x position relative to the current position where the sprite will be drawn. If origin, rotation, or scale are
@@ -229,6 +280,10 @@ public class Sprite extends TextureRegion {
 		this.x += xAmount;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float[] vertices = this.vertices;
 		vertices[X1] += xAmount;
@@ -243,6 +298,10 @@ public class Sprite extends TextureRegion {
 		y += yAmount;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float[] vertices = this.vertices;
 		vertices[Y1] += yAmount;
@@ -258,6 +317,10 @@ public class Sprite extends TextureRegion {
 		y += yAmount;
 
 		if (dirty) return;
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) {
+			dirty = true;
+			return;
+		}
 
 		float[] vertices = this.vertices;
 		vertices[X1] += xAmount;

@@ -26,6 +26,7 @@ import static java.awt.GridBagConstraints.SOUTHEAST;
 import static java.awt.GridBagConstraints.WEST;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.GridBagConstraints;
@@ -232,8 +233,9 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setForeground(new Color(255, 255, 255));
 	}
 
-	public void showDialog (SetupCheckBox gwtCheckBox) {
+	public void showDialog (Component parent, SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
+		setLocationRelativeTo(parent);
 		setVisible(true);
 		if (gwtCheckBox.isSelected()) {
 			kotlinBox.setSelected(false);
