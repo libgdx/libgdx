@@ -218,6 +218,7 @@ public class TextField extends Widget implements Disableable {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
+		if (text != null) updateDisplayText();
 		invalidateHierarchy();
 	}
 

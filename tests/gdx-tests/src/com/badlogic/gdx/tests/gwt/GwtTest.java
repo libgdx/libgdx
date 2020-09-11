@@ -87,7 +87,7 @@ public class GwtTest extends GdxTest {
 		cache.setColor(Color.RED);
 		cache.setText("This is a Test", 0, 0);
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 	}
 
 	@Override

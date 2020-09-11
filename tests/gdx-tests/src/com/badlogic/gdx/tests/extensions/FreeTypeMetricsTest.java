@@ -40,7 +40,7 @@ public class FreeTypeMetricsTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		atlas = new TextureAtlas("data/pack");
+		atlas = new TextureAtlas("data/pack.atlas");
 		smallFont = new BitmapFont();
 
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();

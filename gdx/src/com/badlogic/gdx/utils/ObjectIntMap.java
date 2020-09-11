@@ -132,7 +132,6 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		}
 	}
 
-	/** Doesn't return a value, unlike other maps. */
 	public void put (K key, int value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
@@ -143,6 +142,21 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		keyTable[i] = key;
 		valueTable[i] = value;
 		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	/** Returns the old value associated with the specified key, or the specified default value. */
+	public int put (K key, int value, int defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			int oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public void putAll (ObjectIntMap<? extends K> map) {
@@ -190,6 +204,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map. */
 	public int remove (K key, int defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;

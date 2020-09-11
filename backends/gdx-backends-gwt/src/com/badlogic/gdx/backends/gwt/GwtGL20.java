@@ -94,7 +94,7 @@ public class GwtGL20 implements GL20 {
 	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
 	float[] floatArray = new float[16000];
 
-	final WebGLRenderingContext gl;
+	public final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
 		this.gl = gl;
@@ -900,6 +900,9 @@ public class GwtGL20 implements GL20 {
 				// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
 				if (pixmap.canUseImageElement()) {
 					gl.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement());
+				}
+				else if (pixmap.canUseVideoElement()) {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getVideoElement());
 				}
 				else {
 					gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());

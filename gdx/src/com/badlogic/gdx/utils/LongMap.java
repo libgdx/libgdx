@@ -194,6 +194,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
+	/** Returns the value for the removed key, or null if the key is not in the map. */
 	public @Null V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;

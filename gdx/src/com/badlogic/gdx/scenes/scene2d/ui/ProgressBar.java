@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class ProgressBar extends Widget implements Disableable {
 	private ProgressBarStyle style;
-	private float min, max, stepSize;
+	float min, max, stepSize;
 	private float value, animateFromValue;
 	float position;
 	final boolean vertical;
@@ -250,6 +250,11 @@ public class ProgressBar extends Widget implements Disableable {
 		return value;
 	}
 
+	/** Sets the visual value equal to the actual value. This can be used to set the value without animating. */
+	public void updateVisualValue () {
+		animateTime = 0;
+	}
+
 	public float getPercent () {
 		if (min == max) return 0;
 		return (value - min) / (max - min);
@@ -274,7 +279,7 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a
 	 *         listener. */
 	public boolean setValue (float value) {
-		value = clamp(Math.round(value / stepSize) * stepSize);
+		value = clamp(round(value));
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
@@ -295,6 +300,11 @@ public class ProgressBar extends Widget implements Disableable {
 			animateTime = animateDuration;
 		}
 		return true;
+	}
+
+	/** Rouinds the value using the progress bar's step size. This can be overridden to customize or disable rounding. */
+	protected float round (float value) {
+		return Math.round(value / stepSize) * stepSize;
 	}
 
 	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress

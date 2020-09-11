@@ -250,13 +250,18 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
+		boolean offset = offsetX != 0 || offsetY != 0;
 
 		Array<Actor> children = getChildren();
-		for (int i = 0; i < children.size; i++)
-			children.get(i).moveBy(offsetX, offsetY);
+		if (offset) {
+			for (int i = 0; i < children.size; i++)
+				children.get(i).moveBy(offsetX, offsetY);
+		}
 		super.draw(batch, parentAlpha);
-		for (int i = 0; i < children.size; i++)
-			children.get(i).moveBy(-offsetX, -offsetY);
+		if (offset) {
+			for (int i = 0; i < children.size; i++)
+				children.get(i).moveBy(-offsetX, -offsetY);
+		}
 
 		Stage stage = getStage();
 		if (stage != null && stage.getActionsRequestRendering() && isPressed != clickListener.isPressed())

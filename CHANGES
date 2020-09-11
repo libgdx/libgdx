@@ -9,8 +9,30 @@
 - Fixed GestureDetector maxFlingDelay.
 - API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
-- API Addition: Added setProgrammaticChangeEvents to ProgressBar/Slider.
+- Improved text, cursor and selection rendering in TextArea.
+- API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
 - Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
+- API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
+- GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
+- GWT: added possibility to lazy load assets via AssetManager instead of preload them before game start. See GWT specifics wiki article for more information.
+- GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
+- GWT: GwtApplicationConfiguration and GWT backend now support an application to be resizable or fixed size. You can remove your own resizing code from your HTMLLaunchers.
+- GWT: Assets in distribute build are renamed with md5 hash suffix to bypass browser cache on changes
+- API Addition: Pixmap.downloadFromUrl() downloads an image from http(s) URLs and passes it back as a Pixmap on all platforms
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
+- API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
+- API Change: Utility classes are now final and have a private constructor to prevent instantiation.
+- API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+- API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
+- API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
+- API Addition: Added Slider#setVisualPercent.
+- API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
+- API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
+- API Addition: Added ObjectLongMap.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
@@ -54,11 +76,7 @@
 - API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
 - Fixed Label text wrapping when it shouldn't (#6098).
 - Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
-- API Change: glGetActiveUniform and glGetActiveAttrib paramter changed from Buffer to IntBuffer.
-- Added support for Linux ARM builds.
-	- 32-bit: ARMv7/armhf
-	- 64-bit: ARMv8/AArch64
-- API Change: Removed arm abi from SharedLibraryLoader
+- API Change: glGetActiveUniform and glGetActiveAttrib parameter changed from Buffer to IntBuffer.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

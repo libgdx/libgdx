@@ -66,6 +66,7 @@ public class LwjglGraphics implements Graphics {
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
+	volatile boolean forceDisplayModeChange = false;
 	boolean softwareMode;
 	boolean usingGL30;
 
@@ -81,7 +82,7 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
-		this.config = config;
+		this(config);
 		this.canvas = canvas;
 	}
 
@@ -200,6 +201,8 @@ public class LwjglGraphics implements Graphics {
 		if (config.useHDPI) {
 			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
 		}
+
+		setUndecorated(config.undecorated);
 
 		if (canvas != null) {
 			Display.setParent(canvas);
@@ -500,9 +503,12 @@ public class LwjglGraphics implements Graphics {
 	/** Kindly stolen from http://lwjgl.org/wiki/index.php?title=LWJGL_Basics_5_(Fullscreen), not perfect but will do. */
 	@Override
 	public boolean setWindowedMode (int width, int height) {
-		if (getWidth() == width && getHeight() == height && !Display.isFullscreen()) {
+		boolean displaySizeUnchanged = getWidth() == width && getHeight() == height && !Display.isFullscreen();
+		if (displaySizeUnchanged && !forceDisplayModeChange) {
 			return true;
 		}
+
+		this.forceDisplayModeChange = false;
 
 		try {
 			org.lwjgl.opengl.DisplayMode targetDisplayMode = null;
@@ -597,6 +603,8 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setUndecorated (boolean undecorated) {
 		System.setProperty("org.lwjgl.opengl.Window.undecorated", undecorated ? "true" : "false");
+		this.config.undecorated = undecorated;
+		this.forceDisplayModeChange = true;
 	}
 
 	/** Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take effect. */
