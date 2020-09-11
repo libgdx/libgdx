@@ -1049,158 +1049,121 @@ public final class Intersector {
 	}
 
 	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
-	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
-	 * collision with the polygon defined by verts2.
-	 * @param verts1 Vertices of the first polygon.
-	 * @param verts2 Vertices of the second polygon.
+	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by shapeA out of the
+	 * collision with the polygon defined by shapeB.
+	 * @param shapeA Vertices of the first polygon.
+	 * @param shapeB Vertices of the second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether polygons overlap. */
-	public static boolean overlapConvexPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
+	public static boolean overlapConvexPolygons (float[] shapeA, int offsetA, int countA, float[] shapeB, int offsetB, int countB,
 		MinimumTranslationVector mtv) {
-		float overlap = Float.MAX_VALUE;
-		float smallestAxisX = 0;
-		float smallestAxisY = 0;
-		int numInNormalDir;
-
-		int end1 = offset1 + count1;
-		int end2 = offset2 + count2;
-
-		// Get polygon1 axes
-		for (int i = offset1; i < end1; i += 2) {
-			float x1 = verts1[i];
-			float y1 = verts1[i + 1];
-			float x2 = verts1[(i + 2) % count1];
-			float y2 = verts1[(i + 3) % count1];
-
-			float axisX = y1 - y2;
-			float axisY = -(x1 - x2);
-
-			final float length = (float)Math.sqrt(axisX * axisX + axisY * axisY);
-			axisX /= length;
-			axisY /= length;
-
-			// -- Begin check for separation on this axis --//
-
-			// Project polygon1 onto this axis
-			float min1 = axisX * verts1[0] + axisY * verts1[1];
-			float max1 = min1;
-			for (int j = offset1; j < end1; j += 2) {
-				float p = axisX * verts1[j] + axisY * verts1[j + 1];
-				if (p < min1) {
-					min1 = p;
-				} else if (p > max1) {
-					max1 = p;
-				}
-			}
-
-			// Project polygon2 onto this axis
-			numInNormalDir = 0;
-			float min2 = axisX * verts2[0] + axisY * verts2[1];
-			float max2 = min2;
-			for (int j = offset2; j < end2; j += 2) {
-				// Counts the number of points that are within the projected area.
-				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts2[j], verts2[j + 1]);
-				float p = axisX * verts2[j] + axisY * verts2[j + 1];
-				if (p < min2) {
-					min2 = p;
-				} else if (p > max2) {
-					max2 = p;
-				}
-			}
-
-			if (!(min1 <= min2 && max1 >= min2 || min2 <= min1 && max2 >= min1)) {
-				return false;
-			} else {
-				float o = Math.min(max1, max2) - Math.max(min1, min2);
-				if (min1 < min2 && max1 > max2 || min2 < min1 && max2 > max1) {
-					float mins = Math.abs(min1 - min2);
-					float maxs = Math.abs(max1 - max2);
-					if (mins < maxs) {
-						o += mins;
-					} else {
-						o += maxs;
-					}
-				}
-				if (o < overlap) {
-					overlap = o;
-					// Adjusts the direction based on the number of points found
-					smallestAxisX = numInNormalDir >= 0 ? axisX : -axisX;
-					smallestAxisY = numInNormalDir >= 0 ? axisY : -axisY;
-				}
-			}
-			// -- End check for separation on this axis --//
-		}
-
-		// Get polygon2 axes
-		for (int i = offset2; i < end2; i += 2) {
-			float x1 = verts2[i];
-			float y1 = verts2[i + 1];
-			float x2 = verts2[(i + 2) % count2];
-			float y2 = verts2[(i + 3) % count2];
-
-			float axisX = y1 - y2;
-			float axisY = -(x1 - x2);
-
-			final float length = (float)Math.sqrt(axisX * axisX + axisY * axisY);
-			axisX /= length;
-			axisY /= length;
-
-			// -- Begin check for separation on this axis --//
-			numInNormalDir = 0;
-
-			// Project polygon1 onto this axis
-			float min1 = axisX * verts1[0] + axisY * verts1[1];
-			float max1 = min1;
-			for (int j = offset1; j < end1; j += 2) {
-				float p = axisX * verts1[j] + axisY * verts1[j + 1];
-				// Counts the number of points that are within the projected area.
-				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts1[j], verts1[j + 1]);
-				if (p < min1) {
-					min1 = p;
-				} else if (p > max1) {
-					max1 = p;
-				}
-			}
-
-			// Project polygon2 onto this axis
-			float min2 = axisX * verts2[0] + axisY * verts2[1];
-			float max2 = min2;
-			for (int j = offset2; j < end2; j += 2) {
-				float p = axisX * verts2[j] + axisY * verts2[j + 1];
-				if (p < min2) {
-					min2 = p;
-				} else if (p > max2) {
-					max2 = p;
-				}
-			}
-
-			if (!(min1 <= min2 && max1 >= min2 || min2 <= min1 && max2 >= min1)) {
-				return false;
-			} else {
-				float o = Math.min(max1, max2) - Math.max(min1, min2);
-
-				if (min1 < min2 && max1 > max2 || min2 < min1 && max2 > max1) {
-					float mins = Math.abs(min1 - min2);
-					float maxs = Math.abs(max1 - max2);
-					if (mins < maxs) {
-						o += mins;
-					} else {
-						o += maxs;
-					}
-				}
-
-				if (o < overlap) {
-					overlap = o;
-					// Adjusts the direction based on the number of points found
-					smallestAxisX = numInNormalDir < 0 ? axisX : -axisX;
-					smallestAxisY = numInNormalDir < 0 ? axisY : -axisY;
-				}
-			}
-			// -- End check for separation on this axis --//
-		}
+		boolean overlaps;
 		if (mtv != null) {
-			mtv.normal.set(smallestAxisX, smallestAxisY);
-			mtv.depth = overlap;
+			mtv.depth = Float.MAX_VALUE;
+			mtv.normal.setZero();
+		}
+		overlaps = overlapsOnAxisOfShape(shapeB, offsetB, countB, shapeA, offsetA, countA, mtv, true);
+		if (overlaps) {
+			overlaps = overlapsOnAxisOfShape(shapeA, offsetA, countA, shapeB, offsetB, countB, mtv, false);
+		}
+
+		if (!overlaps) {
+			if (mtv != null) {
+				mtv.depth = 0;
+				mtv.normal.setZero();
+			}
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param shapeA        the shapeA
+	 * @param offsetA       offset of shapeA
+	 * @param countA        count of shapeA
+	 * @param shapeB        the shapeB
+	 * @param offsetB       offset of shapeB
+	 * @param countB        count of shapeB
+	 * @param mtv           the minimum translation vector
+	 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for shapeA.
+	 * @return
+	 */
+	private static boolean overlapsOnAxisOfShape(float[] shapeA, int offsetA, int countA, float[] shapeB, int offsetB, int countB, MinimumTranslationVector mtv, boolean shapesShifted) {
+		int endA = offsetA + countA;
+		int endB = offsetB + countB;
+		//get axis of polygon A
+		for (int i = offsetA; i < endA; i += 2) {
+			float x1 = shapeA[i];
+			float y1 = shapeA[i + 1];
+			float x2 = shapeA[(i + 2) % countA];
+			float y2 = shapeA[(i + 3) % countA];
+
+			//Get the Axis for the 2 vertices
+			float axisX = y1 - y2;
+			float axisY = -(x1 - x2);
+
+			float len = (float) Math.sqrt(axisX * axisX + axisY * axisY);
+			//We got a normalized Vector
+			axisX /= len;
+			axisY /= len;
+			float minA = Float.MAX_VALUE;
+			float maxA = -Float.MAX_VALUE;
+			//project shape a on axis
+			for (int v = offsetA; v < endA; v += 2) {
+				float p = shapeA[v] * axisX + shapeA[v + 1] * axisY;
+				minA = Math.min(minA, p);
+				maxA = Math.max(maxA, p);
+			}
+
+			float minB = Float.MAX_VALUE;
+			float maxB = -Float.MAX_VALUE;
+
+			//project shape b on axis
+			for (int v = offsetB; v < endB; v += 2) {
+				float p = shapeB[v] * axisX + shapeB[v + 1] * axisY;
+				minB = Math.min(minB, p);
+				maxB = Math.max(maxB, p);
+			}
+			//There is a gap
+			if (maxA < minB || maxB < minA) {
+				return false;
+			} else {
+				if (mtv != null) {
+					float o = Math.min(maxA, maxB) - Math.max(minA, minB);
+					boolean aContainsB = minA < minB && maxA > maxB;
+					boolean bContainsA = minB < minA && maxB > maxA;
+					//if it contains one or another
+					float mins = 0;
+					float maxs = 0;
+					if (aContainsB || bContainsA) {
+						mins = Math.abs(minA - minB);
+						maxs = Math.abs(maxA - maxB);
+						o += Math.min(mins, maxs);
+					}
+
+					if (mtv.depth > o) {
+						mtv.depth = o;
+						boolean condition;
+						if (shapesShifted) {
+							condition = minA < minB;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						} else {
+							condition = minA > minB;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						}
+
+						if(aContainsB || bContainsA){
+							condition = mins > maxs;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						}
+
+						mtv.normal.set(axisX, axisY);
+					}
+				}
+			}
 		}
 		return true;
 	}

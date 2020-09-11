@@ -167,6 +167,7 @@ public class GdxTests {
 		InputTest.class,
 		IntegerBitmapFontTest.class,
 		InterpolationTest.class,
+		IntersectorOverlapConvexPolygonsTest.class,
 		InverseKinematicsTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,
