@@ -6,7 +6,7 @@
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org&label=version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org&label=snapshot)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)
 
-[![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://discord.gg/7c6Wg8H)
+[![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://libgdx.com/community/discord/)
 
 ## Cross-platform Game Development Framework
 **[libGDX](https://libgdx.com) is a cross-platform Java game development framework based on OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, iOS and your WebGL enabled browser.** It provides a well-tried and robust environment for rapid prototyping and fast iterations. LibGDX does not force a specific design or coding style on you, it rather gives you the freedom to create a game the way you like it.
@@ -28,7 +28,7 @@ As we switched to Gradle, there's no need to download libGDX itself anymore: thi
 We also provide [javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The javadocs are also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
 
 ## Community & Contributing
-You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). Another good way to get in touch with our community is to join the official [libGDX Discord](https://discord.gg/6pgDK9F).
+You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). Another good way to get in touch with our community is to join the official [libGDX Discord](https://libgdx.com/community/discord/).
 
 ### Reporting Issues
 Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Please make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
