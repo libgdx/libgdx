@@ -1049,22 +1049,26 @@ public final class Intersector {
 	}
 
 	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
-	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by shapeA out of the
-	 * collision with the polygon defined by shapeB.
-	 * @param shapeA Vertices of the first polygon.
-	 * @param shapeB Vertices of the second polygon.
+	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
+	 * collision with the polygon defined by verts2.
+	 * @param verts1 Vertices of the first polygon.
+	 * @param offset1 the offset of the verts1 array
+	 * @param count1 the amount that is added to the offset1
+	 * @param verts2 Vertices of the second polygon.
+	 * @param offset2 the offset of the verts2 array
+	 * @param count2 the amount that is added to the offset2
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether polygons overlap. */
-	public static boolean overlapConvexPolygons (float[] shapeA, int offsetA, int countA, float[] shapeB, int offsetB, int countB,
+	public static boolean overlapConvexPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
 		MinimumTranslationVector mtv) {
 		boolean overlaps;
 		if (mtv != null) {
 			mtv.depth = Float.MAX_VALUE;
 			mtv.normal.setZero();
 		}
-		overlaps = overlapsOnAxisOfShape(shapeB, offsetB, countB, shapeA, offsetA, countA, mtv, true);
+		overlaps = overlapsOnAxisOfShape(verts2, offset2, count2, verts1, offset1, count1, mtv, true);
 		if (overlaps) {
-			overlaps = overlapsOnAxisOfShape(shapeA, offsetA, countA, shapeB, offsetB, countB, mtv, false);
+			overlaps = overlapsOnAxisOfShape(verts1, offset1, count1, verts2, offset2, count2, mtv, false);
 		}
 
 		if (!overlaps) {
@@ -1078,25 +1082,25 @@ public final class Intersector {
 	}
 
 	/**
-	 * @param shapeA        the shapeA
-	 * @param offsetA       offset of shapeA
-	 * @param countA        count of shapeA
-	 * @param shapeB        the shapeB
-	 * @param offsetB       offset of shapeB
-	 * @param countB        count of shapeB
+	 * @param verts1        the verts1
+	 * @param offset1       offset of verts1
+	 * @param count1        count of verts1
+	 * @param verts2        the verts2
+	 * @param offset2       offset of verts2
+	 * @param count2        count of verts2
 	 * @param mtv           the minimum translation vector
-	 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for shapeA.
+	 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for verts1.
 	 * @return
 	 */
-	private static boolean overlapsOnAxisOfShape(float[] shapeA, int offsetA, int countA, float[] shapeB, int offsetB, int countB, MinimumTranslationVector mtv, boolean shapesShifted) {
-		int endA = offsetA + countA;
-		int endB = offsetB + countB;
+	private static boolean overlapsOnAxisOfShape(float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2, MinimumTranslationVector mtv, boolean shapesShifted) {
+		int endA = offset1 + count1;
+		int endB = offset2 + count2;
 		//get axis of polygon A
-		for (int i = offsetA; i < endA; i += 2) {
-			float x1 = shapeA[i];
-			float y1 = shapeA[i + 1];
-			float x2 = shapeA[(i + 2) % countA];
-			float y2 = shapeA[(i + 3) % countA];
+		for (int i = offset1; i < endA; i += 2) {
+			float x1 = verts1[i];
+			float y1 = verts1[i + 1];
+			float x2 = verts1[(i + 2) % count1];
+			float y2 = verts1[(i + 3) % count1];
 
 			//Get the Axis for the 2 vertices
 			float axisX = y1 - y2;
@@ -1109,8 +1113,8 @@ public final class Intersector {
 			float minA = Float.MAX_VALUE;
 			float maxA = -Float.MAX_VALUE;
 			//project shape a on axis
-			for (int v = offsetA; v < endA; v += 2) {
-				float p = shapeA[v] * axisX + shapeA[v + 1] * axisY;
+			for (int v = offset1; v < endA; v += 2) {
+				float p = verts1[v] * axisX + verts1[v + 1] * axisY;
 				minA = Math.min(minA, p);
 				maxA = Math.max(maxA, p);
 			}
@@ -1119,8 +1123,8 @@ public final class Intersector {
 			float maxB = -Float.MAX_VALUE;
 
 			//project shape b on axis
-			for (int v = offsetB; v < endB; v += 2) {
-				float p = shapeB[v] * axisX + shapeB[v + 1] * axisY;
+			for (int v = offset2; v < endB; v += 2) {
+				float p = verts2[v] * axisX + verts2[v + 1] * axisY;
 				minB = Math.min(minB, p);
 				maxB = Math.max(maxB, p);
 			}

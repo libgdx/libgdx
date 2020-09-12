@@ -18,14 +18,14 @@ public class IntersectorOverlapConvexPolygonsTest extends GdxTest {
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
 
-    private float triangleWidth = 10f;
-    private float triangleHeight = 10f;
-    //2 triangle polygons intersect at 0,10 - 10,10 will return the wrong direction
-    private float[] vertsTriangle1 = {0f, 0f, triangleWidth, 0f, triangleWidth, triangleHeight};
-    private float[] vertsTriangle2 = {0f, 0f, triangleWidth*2, 0f, triangleWidth*2, triangleHeight*2};
+    private float shapeWidth = 10f;
+    private float shapeHeight = 10f;
+    //the vertices of the 2 shapes. Feel free to play with the values. It must be a convex Polygon.
+    private float[] vertsShape1 = {0f, 0f, shapeWidth, 0f, shapeWidth, shapeHeight};
+    private float[] vertsShape2 = {0f, 0f, shapeWidth *2, 0f, shapeWidth *2, shapeHeight *2,0, shapeHeight};
 
-    private Polygon triangle1 = new Polygon();
-    private Polygon triangle2 = new Polygon();
+    private Polygon shape1 = new Polygon();
+    private Polygon shape2 = new Polygon();
 
     private Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
 
@@ -40,10 +40,10 @@ public class IntersectorOverlapConvexPolygonsTest extends GdxTest {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
         //set inital position
-        triangle1.setVertices(vertsTriangle1);
-        triangle2.setVertices(vertsTriangle2);
-        triangle1.setPosition(0, 0);
-        triangle2.setPosition(10, 0);
+        shape1.setVertices(vertsShape1);
+        shape2.setVertices(vertsShape2);
+        shape1.setPosition(0, 0);
+        shape2.setPosition(10, 0);
     }
 
     @Override
@@ -54,21 +54,21 @@ public class IntersectorOverlapConvexPolygonsTest extends GdxTest {
 
     private void update(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Intersector.overlapConvexPolygons(triangle1, triangle2, mtv);
-            float x = triangle1.getX() + (mtv.normal.x * mtv.depth);
-            float y = triangle1.getY() + (mtv.normal.y * mtv.depth);
-            triangle1.setPosition(x, y);
+            Intersector.overlapConvexPolygons(shape1, shape2, mtv);
+            float x = shape1.getX() + (mtv.normal.x * mtv.depth);
+            float y = shape1.getY() + (mtv.normal.y * mtv.depth);
+            shape1.setPosition(x, y);
             Gdx.app.debug(TAG, mtv.normal + " " + mtv.depth);
         }
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             mouseCoords.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mouseCoords);
-            triangle1.setPosition(mouseCoords.x, mouseCoords.y);
-            boolean overlaps = Intersector.overlapConvexPolygons(triangle1, triangle2, mtv);
+            shape1.setPosition(mouseCoords.x, mouseCoords.y);
+            boolean overlaps = Intersector.overlapConvexPolygons(shape1, shape2, mtv);
             Gdx.app.debug(TAG, mtv.normal + " " + mtv.depth + " overlaps: " + overlaps + " " + mouseCoords);
         } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-            triangle1.rotate(90);
-            boolean overlaps = Intersector.overlapConvexPolygons(triangle1, triangle2, mtv);
+            shape1.rotate(90);
+            boolean overlaps = Intersector.overlapConvexPolygons(shape1, shape2, mtv);
             Gdx.app.debug(TAG, mtv.normal + " " + mtv.depth + " overlaps: " + overlaps);
         }
     }
@@ -82,13 +82,21 @@ public class IntersectorOverlapConvexPolygonsTest extends GdxTest {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GOLD);
-        shapeRenderer.polygon(triangle1.getTransformedVertices());
+        shapeRenderer.polygon(shape1.getTransformedVertices());
         shapeRenderer.setColor(Color.CYAN);
-        shapeRenderer.polygon(triangle2.getTransformedVertices());
+        shapeRenderer.polygon(shape2.getTransformedVertices());
+        //Translate the axis to position 0/0 and show the direction as red line
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.line(mtv.normal.x, mtv.normal.y, mtv.normal.x * 10, mtv.normal.y * 10);
+        shapeRenderer.line(0, 0, (mtv.normal.x * 100)-mtv.normal.x, (mtv.normal.y * 100)-mtv.normal.y);
+        //Translate the axis to position 0/0 and show the opposite direction as dark red line
+        shapeRenderer.setColor(Color.DARK_GRAY);
+        shapeRenderer.line(0, 0, (mtv.normal.x * -100)-mtv.normal.x, (mtv.normal.y * -100)-mtv.normal.y);
+        //Translate the axis to position 0/0 and show the depth as green line
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.line(0, 0, (mtv.normal.x * mtv.depth)-mtv.normal.x, (mtv.normal.y * mtv.depth)-mtv.normal.y);
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle((mtv.normal.x), (mtv.normal.y), 0.5f);
+        //Show origin at 0,0 as green dot
+        shapeRenderer.circle(0, 0, 0.2f);
         shapeRenderer.end();
     }
 }
