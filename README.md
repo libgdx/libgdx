@@ -35,7 +35,7 @@ You can follow the **latest news** about libGDX on our [blog](https://libgdx.com
 Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Please make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
 
 ### Working on the Code
-libGDX has a strong developer community constantly improving the code base. We love to get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing) article describes the process of helping libGDX to become even better. To contribute, you need to work with libGDX' sources directly, something normal users do not have to go through. The [Working with the Source](https://libgdx.com/dev/from_source/) article will give you directions.
+libGDX has a strong developer community constantly improving the code base. We love to get any and all help we can. Our [Contributing Guidelines](https://libgdx.com/dev/contributing/) describe the process of helping libGDX to become even better. To contribute, you need to work with libGDX' sources directly, something normal users do not have to go through. The [Working with the Source](https://libgdx.com/dev/from_source/) article will give you some directions.
 
 You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](https://patreon.com/libgdx)!
 
