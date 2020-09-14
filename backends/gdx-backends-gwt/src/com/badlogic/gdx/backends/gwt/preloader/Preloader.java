@@ -53,6 +53,7 @@ public class Preloader {
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
+	public ObjectMap<String, String> assetNames = new ObjectMap<String, String>();
 
 	public static class Asset {
 		public Asset(String file, String url, AssetType type, long size, String mimeType) {
@@ -159,6 +160,7 @@ public class Preloader {
 						size = 0;
 					}
 					Asset asset = new Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType);
+					assetNames.put(asset.file, asset.url);
                     if (assetPreload || asset.file.startsWith("com/badlogic/"))
                         assets.add(asset);
                     else

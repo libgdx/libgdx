@@ -20,12 +20,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
-import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -163,7 +161,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	public Sound createSound (FileHandle fileHandle) {
 		final WebAudioAPISound newSound = new WebAudioAPISound(audioContext, globalVolumeNode, audioControlGraphPool);
 
-		String url = ((GwtApplication)Gdx.app).getBaseUrl() + fileHandle.path();
+		String url = ((GwtFileHandle) fileHandle).getAssetUrl();
 
 		XMLHttpRequest request = XMLHttpRequest.create();
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
@@ -192,7 +190,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	}
 
 	public Music createMusic (FileHandle fileHandle) {
-		String url = ((GwtApplication)Gdx.app).getBaseUrl() + fileHandle.path();
+		String url = ((GwtFileHandle) fileHandle).getAssetUrl();
 
 		Audio audio = Audio.createIfSupported();
 		audio.setSrc(url);
