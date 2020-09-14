@@ -532,6 +532,10 @@ public class GwtTestWrapper extends GdxTest {
 				return new FrameBufferTest();
 			}
 		}, new Instancer() {
+		public GdxTest instance () {
+			return new DownloadTest();
+		}
+		}, new Instancer() {
 			public GdxTest instance () {
 				return new FramebufferToTextureTest();
 			}

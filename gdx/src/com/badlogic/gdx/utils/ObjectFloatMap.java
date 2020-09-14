@@ -132,11 +132,6 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** You can use {@link #get(Object, float)} with a defaultValue of {@link Float#NaN} if you want to tell with certainty that a
-	 * key is not present; comparing with NaN is tricky but {@link Float#isNaN(float)} makes it easy. If isNaN returns true, you
-	 * can generally act like another Map had returned null in the same situation (meaning the value is unusable). This works
-	 * because this class will never insert a NaN value into the map unless one is explicitly inserted, and since NaN acts so
-	 * strangely in its everyday usage, virtually all code will not place NaN in a map. */
 	public void put (K key, float value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
@@ -147,6 +142,22 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		keyTable[i] = key;
 		valueTable[i] = value;
 		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	/** Returns the old value associated with the specified key, or the specified default value.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
+	public float put (K key, int value, float defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			float oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public void putAll (ObjectFloatMap<? extends K> map) {
@@ -172,7 +183,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	/** Returns the value for the specified key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float get (K key, float defaultValue) {
 		int i = locateKey(key);
 		return i < 0 ? defaultValue : valueTable[i];
@@ -194,6 +206,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float remove (K key, float defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;
