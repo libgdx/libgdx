@@ -40,9 +40,9 @@ public class AndroidNet implements Net {
 	final AndroidApplicationBase app;
 	NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplicationBase app) {
+	public AndroidNet (AndroidApplicationBase app, AndroidApplicationConfiguration configuration) {
 		this.app = app;
-		netJavaImpl = new NetJavaImpl();
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
 	}
 
 	@Override

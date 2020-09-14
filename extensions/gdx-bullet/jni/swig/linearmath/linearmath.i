@@ -1,5 +1,7 @@
 %module(directors="1") LinearMath
-		
+
+%include "arrays_java.i"
+
 %{
 #ifndef BT_INFINITY
 static  int btInfinityMask = 0x7F800000;
@@ -15,12 +17,15 @@ static  int btInfinityMask = 0x7F800000;
 %ignore btTypedObject::getObjectType;
 
 /*
- * btScalar.h defines macros the other types need, so process it first.  
+ * btScalar.h defines macros the other types need, so process it first.
  * It also defines some static functions that end up in gdxBulletJNI.java.
  */
 %ignore btInfMaskConverter;
 %ignore btInfinityMask;
 %ignore btGetInfinityMask();
+%rename(btSwapEndianInt) btSwapEndian(int);
+%rename(operatorbtScalarPtr) operator btScalar*;
+%rename(operatorbtConstScalarPtr) operator const btScalar*;
 %include "LinearMath/btScalar.h"
 
 %include "btTransform.i"
@@ -31,19 +36,20 @@ static  int btInfinityMask = 0x7F800000;
 %include <LinearMath/btVector3.h>
 
 %{
+#include <LinearMath/btQuadWord.h>
+%}
+%include <LinearMath/btQuadWord.h>
+
+%{
 #include <LinearMath/btQuaternion.h>
 %}
 %include <LinearMath/btQuaternion.h>
 
-%{
-#include <LinearMath/btQuadWord.h>
-%}
-#include <LinearMath/btQuadWord.h>
-
+%rename(operatorSubscriptConst) btMatrix3x3::operator [](int) const;
 %{
 #include <LinearMath/btMatrix3x3.h>
 %}
-#include <LinearMath/btMatrix3x3.h>
+%include <LinearMath/btMatrix3x3.h>
 
 %{
 #include <LinearMath/btAabbUtil2.h>
@@ -57,7 +63,7 @@ static  int btInfinityMask = 0x7F800000;
 
 %{
 #include <LinearMath/btGeometryUtil.h>
-	
+
 bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 const&, float)
 {
 	return false;
@@ -75,6 +81,7 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 %}
 %include "LinearMath/btTransformUtil.h"
 
+%rename(operatorSubscriptConst) int4::operator [](int) const;
 %{
 #include <LinearMath/btConvexHull.h>
 %}
@@ -85,6 +92,7 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 %}
 %include "LinearMath/btGrahamScan2dConvexHull.h"
 
+%rename(getPoolAddressConst) btPoolAllocator::getPoolAddress() const;
 %{
 #include <LinearMath/btPoolAllocator.h>
 %}
@@ -100,6 +108,10 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 %}
 %include "LinearMath/btConvexHullComputer.h"
 
+%rename(atConst) btAlignedObjectArray< btVector3 >::at(int) const;
+%rename(atConst) btAlignedObjectArray< btScalar >::at(int) const const;
+%rename(operatorSubscriptConst) btAlignedObjectArray< btVector3 >::operator[](int) const;
+%rename(operatorSubscriptConst) btAlignedObjectArray< btScalar >::operator[](int) const;
 %{
 #include <LinearMath/btAlignedObjectArray.h>
 %}
@@ -115,6 +127,7 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 %}
 %include "LinearMath/btAlignedAllocator.h"
 
+%immutable btHashString::m_string;
 %{
 #include <LinearMath/btHashMap.h>
 %}
@@ -129,6 +142,44 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 #include <LinearMath/btMinMax.h>
 %}
 %include "LinearMath/btMinMax.h"
+
+//%{
+//#include <LinearMath/btCpuFeatureUtility.h>
+//%}
+//%include "LinearMath/btCpuFeatureUtility.h"
+
+%rename(m_colsVar) btMatrixX::m_cols;
+%rename(m_rowsVar) btMatrixX::m_rows;
+%{
+#include <LinearMath/btMatrixX.h>
+%}
+%include "LinearMath/btMatrixX.h"
+
+%{
+#include <LinearMath/btPolarDecomposition.h>
+%}
+%include "LinearMath/btPolarDecomposition.h"
+
+%immutable btDefaultSerializer::m_skipPointers;
+%{
+#include <LinearMath/btSerializer.h>
+%}
+%include "LinearMath/btSerializer.h"
+
+%{
+#include <LinearMath/btSpatialAlgebra.h>
+%}
+%include "LinearMath/btSpatialAlgebra.h"
+
+%{
+#include <LinearMath/btStackAlloc.h>
+%}
+%include "LinearMath/btStackAlloc.h"
+
+%{
+#include <LinearMath/btThreads.h>
+%}
+%include "LinearMath/btThreads.h"
 
 %include "./btMotionState.i"
 

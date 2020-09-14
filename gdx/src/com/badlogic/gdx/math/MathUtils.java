@@ -23,20 +23,25 @@ import java.util.Random;
  * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
  * @author Nathan Sweet */
 public final class MathUtils {
+
+	private MathUtils () {
+	}
+
 	static public final float nanoToSec = 1 / 1000000000f;
 
 	// ---
 	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-	static public final float PI = 3.1415927f;
+	static public final float PI = (float) Math.PI;
 	static public final float PI2 = PI * 2;
+	static public final float HALF_PI = PI / 2;
 
-	static public final float E = 2.7182818f;
+	static public final float E = (float) Math.E;
 
 	static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
 	static private final int SIN_COUNT = SIN_MASK + 1;
 
-	static private final float radFull = PI * 2;
+	static private final float radFull = PI2;
 	static private final float degFull = 360;
 	static private final float radToIndex = SIN_COUNT / radFull;
 	static private final float degToIndex = SIN_COUNT / degFull;
@@ -59,35 +64,39 @@ public final class MathUtils {
 		}
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in radians from a lookup table. For optimal precision, use radians between -PI2 and PI2 (both
+	 * inclusive). */
 	static public float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in radians from a lookup table. For optimal precision, use radians between -PI2 and PI2 (both
+	 * inclusive). */
 	static public float cos (float radians) {
-		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
+		return Sin.table[(int)((radians + HALF_PI) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	 * inclusive). */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians from a lookup table. */
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	 * inclusive). */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
 
 	// ---
 
-	/** Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
-	 * largest error of 0.00488 radians (0.2796 degrees). */
+	/** Returns atan2 in radians, less accurate than Math.atan2 but may be faster. Average error of 0.00231 radians (0.1323
+	 * degrees), largest error of 0.00488 radians (0.2796 degrees). */
 	static public float atan2 (float y, float x) {
 		if (x == 0f) {
-			if (y > 0f) return PI / 2;
+			if (y > 0f) return HALF_PI;
 			if (y == 0f) return 0f;
-			return -PI / 2;
+			return -HALF_PI;
 		}
 		final float atan, z = y / x;
 		if (Math.abs(z) < 1f) {
@@ -95,8 +104,20 @@ public final class MathUtils {
 			if (x < 0f) return atan + (y < 0f ? -PI : PI);
 			return atan;
 		}
-		atan = PI / 2 - z / (z * z + 0.28f);
+		atan = HALF_PI - z / (z * z + 0.28f);
 		return y < 0f ? atan - PI : atan;
+	}
+
+	/** Returns acos in radians, less accurate than Math.acos but may be faster. */
+	static public float acos (float a) {
+		return 1.5707963267948966f - (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
+			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	}
+
+	/** Returns asin in radians, less accurate than Math.asin but may be faster. */
+	static public float asin (float a) {
+		return (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
+			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
 	}
 
 	// ---
@@ -249,6 +270,27 @@ public final class MathUtils {
 		return fromValue + (toValue - fromValue) * progress;
 	}
 
+	/** Linearly normalizes value from a range. Range must not be empty. This is the inverse of {@link #lerp(float, float, float)}.
+	 * @param rangeStart Range start normalized to 0
+	 * @param rangeEnd Range end normalized to 1
+	 * @param value Value to normalize
+	 * @return Normalized value. Values outside of the range are not clamped to 0 and 1 */
+	static public float norm (float rangeStart, float rangeEnd, float value) {
+		return (value - rangeStart) / (rangeEnd - rangeStart);
+	}
+
+	/** Linearly map a value from one range to another. Input range must not be empty. This is the same as chaining
+	 * {@link #norm(float, float, float)} from input range and {@link #lerp(float, float, float)} to output range.
+	 * @param inRangeStart Input range start
+	 * @param inRangeEnd Input range end
+	 * @param outRangeStart Output range start
+	 * @param outRangeEnd Output range end
+	 * @param value Value to map
+	 * @return Mapped value. Values outside of the input range are not clamped to output range */
+	static public float map (float inRangeStart, float inRangeEnd, float outRangeStart, float outRangeEnd, float value) {
+		return outRangeStart + (value - inRangeStart) * (outRangeEnd - outRangeStart) / (inRangeEnd - inRangeStart);
+	}
+
 	/** Linearly interpolates between two angles in radians. Takes into account that angles wrap at two pi and always takes the
 	 * direction with the smallest delta angle.
 	 * 
@@ -296,7 +338,7 @@ public final class MathUtils {
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
 	static public int ceil (float value) {
-		return (int)(value + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
+		return BIG_ENOUGH_INT - (int)(BIG_ENOUGH_FLOOR - value);
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that

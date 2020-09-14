@@ -73,6 +73,11 @@ public class MapLayers implements Iterable<MapLayer> {
 		layers.removeValue(layer, true);
 	}
 
+	/** @return the number of map layers **/
+	public int size () {
+		return layers.size;
+	}
+
 	/** @param type
 	 * @return array with all the layers matching type */
 	public <T extends MapLayer> Array<T> getByType (Class<T> type) {

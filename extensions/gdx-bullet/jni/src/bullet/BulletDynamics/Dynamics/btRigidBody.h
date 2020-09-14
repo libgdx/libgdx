@@ -135,6 +135,8 @@ public:
 		///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
 		///See Bullet/Demos/RollingFrictionDemo for usage
 		btScalar			m_rollingFriction;
+        btScalar			m_spinningFriction;//torsional friction around contact normal
+        
 		///best simulation results using zero restitution.
 		btScalar			m_restitution;
 
@@ -158,6 +160,7 @@ public:
 			m_angularDamping(btScalar(0.)),
 			m_friction(btScalar(0.5)),
 			m_rollingFriction(btScalar(0)),
+            m_spinningFriction(btScalar(0)),
 			m_restitution(btScalar(0.)),
 			m_linearSleepingThreshold(btScalar(0.8)),
 			m_angularSleepingThreshold(btScalar(1.f)),

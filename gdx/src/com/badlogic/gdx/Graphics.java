@@ -135,6 +135,12 @@ public interface Graphics {
 	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
 
+	/** Set the GL20 instance **/
+	public void setGL20 (GL20 gl20);
+
+	/** Set the GL30 instance **/
+	public void setGL30 (GL30 gl30);
+
 	/** @return the width of the client area in logical pixels. */
 	public int getWidth ();
 
@@ -146,6 +152,26 @@ public interface Graphics {
 
 	/** @return the height of the framebuffer in physical pixels */
 	public int getBackBufferHeight ();
+
+	/**
+	 * @return the inset from the left which avoids display cutouts in pixels
+	 */
+	int getSafeInsetLeft();
+
+	/**
+	 * @return the inset from the top which avoids display cutouts in pixels
+	 */
+	int getSafeInsetTop();
+
+	/**
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
+	 */
+	int getSafeInsetBottom();
+
+	/**
+	 * @return the inset from the right which avoids display cutouts in pixels
+	 */
+	int getSafeInsetRight();
 
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
@@ -275,7 +301,9 @@ public interface Graphics {
 	 * <ul>
 	 * <li>A call to {@link #requestRendering()}</li>
 	 * <li>Input events from the touch screen/mouse or keyboard</li>
-	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}</li>
+	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case
+	 * of a multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, 
+	 * post a runnable to the window instead. </li>
 	 * </ul>
 	 *
 	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. This method can be called from any
@@ -294,9 +322,9 @@ public interface Graphics {
 	public boolean isFullscreen ();
 
 	/** Create a new cursor represented by the {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format,
-	 * width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit
-	 * (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the system cursor by calling
-	 * {@link #setCursor(Cursor)} .
+	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a safe bet),
+	 * and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the 
+	 * system cursor by calling {@link #setCursor(Cursor)} .
 	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)

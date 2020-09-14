@@ -52,18 +52,23 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
 
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		// offset in tiled is y down, so we flip it
+		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
 		final float layerTileWidth50 = layerTileWidth * 0.50f;
 		final float layerTileHeight50 = layerTileHeight * 0.50f;
 
-		final int minX = Math.max(0, (int)(((viewBounds.x - layerTileWidth50) / layerTileWidth)));
+		final int minX = Math.max(0, (int)(((viewBounds.x - layerTileWidth50 - layerOffsetX) / layerTileWidth)));
 		final int maxX = Math.min(layerWidth,
-			(int)((viewBounds.x + viewBounds.width + layerTileWidth + layerTileWidth50) / layerTileWidth));
+			(int)((viewBounds.x + viewBounds.width + layerTileWidth + layerTileWidth50 - layerOffsetX) / layerTileWidth));
 
-		final int minY = Math.max(0, (int)(((viewBounds.y - layerTileHeight) / layerTileHeight)));
-		final int maxY = Math.min(layerHeight, (int)((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight50));
+		final int minY = Math.max(0, (int)(((viewBounds.y - layerTileHeight - layerOffsetY) / layerTileHeight)));
+		final int maxY = Math.min(layerHeight,
+			(int)((viewBounds.y + viewBounds.height + layerTileHeight - layerOffsetY) / layerTileHeight50));
 
 		for (int y = maxY - 1; y >= minY; y--) {
 			float offsetX = (y % 2 == 1) ? layerTileWidth50 : 0;
@@ -78,8 +83,8 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 					final int rotations = cell.getRotation();
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x * layerTileWidth - offsetX + tile.getOffsetX() * unitScale;
-					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScale;
+					float x1 = x * layerTileWidth - offsetX + tile.getOffsetX() * unitScale + layerOffsetX;
+					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScale + layerOffsetY;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 

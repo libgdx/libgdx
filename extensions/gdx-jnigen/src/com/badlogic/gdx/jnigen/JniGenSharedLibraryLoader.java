@@ -120,16 +120,21 @@ public class JniGenSharedLibraryLoader {
 		}
 
 		if (extractedCrc == null || !extractedCrc.equals(srcCrc)) {
+			InputStream input = null;
+			ZipFile file = null;
+			FileOutputStream output = null;
 			try {
 				// Extract native from classpath to temp dir.
-				InputStream input = null;
 				if (nativesJar == null)
 					input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
-				else
-					input = getFromJar(nativesJar, sharedLibName);
+				else {
+					file = new ZipFile(nativesJar);
+					ZipEntry entry = file.getEntry(sharedLibName);
+					input = file.getInputStream(entry);
+				}
 				if (input == null) return null;
 				nativeFile.getParentFile().mkdirs();
-				FileOutputStream output = new FileOutputStream(nativeFile);
+				output = new FileOutputStream(nativeFile);
 				byte[] buffer = new byte[4096];
 				while (true) {
 					int length = input.read(buffer);
@@ -141,15 +146,22 @@ public class JniGenSharedLibraryLoader {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				throw new RuntimeException(ex);
+			} finally {
+				try {
+					if (input != null) input.close();
+				} catch (IOException ignored) {
+				}
+				try {
+					if (file != null) file.close();
+				} catch (IOException ignored) {
+				}
+				try {
+					if (output != null) output.close();
+				} catch (IOException ignored) {
+				}
 			}
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
-	}
-
-	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
-		ZipFile file = new ZipFile(nativesJar);
-		ZipEntry entry = file.getEntry(sharedLibrary);
-		return file.getInputStream(entry);
 	}
 
 	/** Loads a shared library with the given name for the platform the application is running on. The name should not contain a
@@ -162,8 +174,8 @@ public class JniGenSharedLibraryLoader {
 		boolean isLinux = System.getProperty("os.name").contains("Linux");
 		boolean isMac = System.getProperty("os.name").contains("Mac");
 		boolean isAndroid = false;
-		boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
-		boolean isArm = System.getProperty("os.arch").equals("arm");
+		boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
+		boolean isArm = System.getProperty("os.arch").equals("arm") || System.getProperty("os.arch").startsWith("aarch64");
 
 		String vm = System.getProperty("java.vm.name");
 		if (vm != null && vm.contains("Dalvik")) {
@@ -188,12 +200,12 @@ public class JniGenSharedLibraryLoader {
 				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, isArm, nativesZip));
 			else if (!is64Bit) {
 				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "Arm.so");
+					loaded = loadLibrary("lib" + sharedLibName + "arm.so");
 				else
 					loaded = loadLibrary("lib" + sharedLibName + ".so");
 			} else {
 				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "Arm64.so");
+					loaded = loadLibrary("lib" + sharedLibName + "arm64.so");
 				else
 					loaded = loadLibrary("lib" + sharedLibName + "64.so");
 			}

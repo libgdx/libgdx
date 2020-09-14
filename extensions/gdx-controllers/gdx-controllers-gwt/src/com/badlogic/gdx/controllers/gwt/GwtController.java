@@ -29,11 +29,15 @@ public class GwtController implements Controller {
 	private int index;
 	
 	private String name;
-	
+
+	private boolean standardMapping;
+
 	protected final float[] axes;
 	
 	protected final IntFloatMap buttons = new IntFloatMap();
-	
+
+	protected int pov = 0;
+
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
 	
 	public GwtController(int index, String name) {
@@ -42,12 +46,15 @@ public class GwtController implements Controller {
 		
 		Gamepad gamepad = Gamepad.getGamepad(index);
 		axes = new float[gamepad.getAxes().length()];
+		standardMapping = gamepad.getMapping().equals("standard");
 	}
 	
 	public int getIndex() {
 		return index;
 	}
-	
+
+	public boolean isStandardMapping() {return standardMapping; }
+
 	@Override
 	public String getName() {
 		return name;
@@ -69,8 +76,28 @@ public class GwtController implements Controller {
 	}
 
 	@Override
-	public PovDirection getPov(int povCode) {
-		return PovDirection.center;
+	public PovDirection getPov(int povIndex) {
+		if (povIndex != 0) return PovDirection.center;
+		switch (pov) {
+			case 0x00000001:
+				return PovDirection.north;
+			case 0x00000010:
+				return PovDirection.south;
+			case 0x00000100:
+				return PovDirection.east;
+			case 0x00001000:
+				return PovDirection.west;
+			case 0x00000101:
+				return PovDirection.northEast;
+			case 0x00000110:
+				return PovDirection.southEast;
+			case 0x00001001:
+				return PovDirection.northWest;
+			case 0x00001010:
+				return PovDirection.southWest;
+			default:
+				return PovDirection.center;
+		}
 	}
 
 	@Override

@@ -45,10 +45,10 @@ public class Lwjgl3TestStarter {
 		new Lwjgl3Application(new TestChooser(), config);
 	}
 
-	private static class TestChooser extends ApplicationAdapter {
+	static class TestChooser extends ApplicationAdapter {
 		private Stage stage;
 		private Skin skin;
-		private TextButton lastClickedTestButton;
+		TextButton lastClickedTestButton;
 
 		public void create () {
 			final Preferences prefs = Gdx.app.getPreferences("lwjgl3-tests");
@@ -89,7 +89,9 @@ public class Lwjgl3TestStarter {
 						prefs.flush();
 						if (testButton != lastClickedTestButton) {
 							testButton.setColor(Color.CYAN);
-							lastClickedTestButton.setColor(Color.WHITE);
+							if (lastClickedTestButton != null) {
+								lastClickedTestButton.setColor(Color.WHITE);
+							}
 							lastClickedTestButton = testButton;
 						}
 					}

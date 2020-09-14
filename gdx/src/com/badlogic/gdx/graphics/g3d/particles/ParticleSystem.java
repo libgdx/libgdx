@@ -29,6 +29,7 @@ public final class ParticleSystem implements RenderableProvider {
 	private static ParticleSystem instance;
 
 	/** @deprecated Please directly use the constructor */
+	@Deprecated
 	public static ParticleSystem get () {
 		if (instance == null) instance = new ParticleSystem();
 		return instance;
@@ -69,6 +70,18 @@ public final class ParticleSystem implements RenderableProvider {
 	public void updateAndDraw () {
 		for (ParticleEffect effect : effects) {
 			effect.update();
+			effect.draw();
+		}		
+	}
+
+	public void update (float deltaTime) {
+		for (ParticleEffect effect : effects) {
+			effect.update(deltaTime);
+		}
+	}
+	public void updateAndDraw(float deltaTime) {
+		for (ParticleEffect effect : effects) {
+			effect.update(deltaTime);
 			effect.draw();
 		}
 	}

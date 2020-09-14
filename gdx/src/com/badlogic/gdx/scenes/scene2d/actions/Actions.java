@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
@@ -71,7 +72,7 @@ public class Actions {
 		return moveTo(x, y, duration, null);
 	}
 
-	static public MoveToAction moveTo (float x, float y, float duration, Interpolation interpolation) {
+	static public MoveToAction moveTo (float x, float y, float duration, @Null Interpolation interpolation) {
 		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y);
 		action.setDuration(duration);
@@ -87,7 +88,7 @@ public class Actions {
 		return moveToAligned(x, y, alignment, duration, null);
 	}
 
-	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration, Interpolation interpolation) {
+	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration, @Null Interpolation interpolation) {
 		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y, alignment);
 		action.setDuration(duration);
@@ -104,7 +105,7 @@ public class Actions {
 		return moveBy(amountX, amountY, duration, null);
 	}
 
-	static public MoveByAction moveBy (float amountX, float amountY, float duration, Interpolation interpolation) {
+	static public MoveByAction moveBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
 		MoveByAction action = action(MoveByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
@@ -121,7 +122,7 @@ public class Actions {
 		return sizeTo(x, y, duration, null);
 	}
 
-	static public SizeToAction sizeTo (float x, float y, float duration, Interpolation interpolation) {
+	static public SizeToAction sizeTo (float x, float y, float duration, @Null Interpolation interpolation) {
 		SizeToAction action = action(SizeToAction.class);
 		action.setSize(x, y);
 		action.setDuration(duration);
@@ -138,7 +139,7 @@ public class Actions {
 		return sizeBy(amountX, amountY, duration, null);
 	}
 
-	static public SizeByAction sizeBy (float amountX, float amountY, float duration, Interpolation interpolation) {
+	static public SizeByAction sizeBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
 		SizeByAction action = action(SizeByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
@@ -155,7 +156,7 @@ public class Actions {
 		return scaleTo(x, y, duration, null);
 	}
 
-	static public ScaleToAction scaleTo (float x, float y, float duration, Interpolation interpolation) {
+	static public ScaleToAction scaleTo (float x, float y, float duration, @Null Interpolation interpolation) {
 		ScaleToAction action = action(ScaleToAction.class);
 		action.setScale(x, y);
 		action.setDuration(duration);
@@ -172,7 +173,7 @@ public class Actions {
 		return scaleBy(amountX, amountY, duration, null);
 	}
 
-	static public ScaleByAction scaleBy (float amountX, float amountY, float duration, Interpolation interpolation) {
+	static public ScaleByAction scaleBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
 		ScaleByAction action = action(ScaleByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
@@ -189,7 +190,7 @@ public class Actions {
 		return rotateTo(rotation, duration, null);
 	}
 
-	static public RotateToAction rotateTo (float rotation, float duration, Interpolation interpolation) {
+	static public RotateToAction rotateTo (float rotation, float duration, @Null Interpolation interpolation) {
 		RotateToAction action = action(RotateToAction.class);
 		action.setRotation(rotation);
 		action.setDuration(duration);
@@ -206,7 +207,7 @@ public class Actions {
 		return rotateBy(rotationAmount, duration, null);
 	}
 
-	static public RotateByAction rotateBy (float rotationAmount, float duration, Interpolation interpolation) {
+	static public RotateByAction rotateBy (float rotationAmount, float duration, @Null Interpolation interpolation) {
 		RotateByAction action = action(RotateByAction.class);
 		action.setAmount(rotationAmount);
 		action.setDuration(duration);
@@ -225,7 +226,7 @@ public class Actions {
 	}
 
 	/** Transitions from the color at the time this action starts to the specified color. */
-	static public ColorAction color (Color color, float duration, Interpolation interpolation) {
+	static public ColorAction color (Color color, float duration, @Null Interpolation interpolation) {
 		ColorAction action = action(ColorAction.class);
 		action.setEndColor(color);
 		action.setDuration(duration);
@@ -244,7 +245,7 @@ public class Actions {
 	}
 
 	/** Transitions from the alpha at the time this action starts to the specified alpha. */
-	static public AlphaAction alpha (float a, float duration, Interpolation interpolation) {
+	static public AlphaAction alpha (float a, float duration, @Null Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(a);
 		action.setDuration(duration);
@@ -258,7 +259,7 @@ public class Actions {
 	}
 
 	/** Transitions from the alpha at the time this action starts to an alpha of 0. */
-	static public AlphaAction fadeOut (float duration, Interpolation interpolation) {
+	static public AlphaAction fadeOut (float duration, @Null Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(0);
 		action.setDuration(duration);
@@ -272,7 +273,7 @@ public class Actions {
 	}
 
 	/** Transitions from the alpha at the time this action starts to an alpha of 1. */
-	static public AlphaAction fadeIn (float duration, Interpolation interpolation) {
+	static public AlphaAction fadeIn (float duration, @Null Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(1);
 		action.setDuration(duration);
@@ -492,5 +493,16 @@ public class Actions {
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
 		return addAction;
+	}
+
+	/**
+	 * Sets the target of an action and returns the action.
+	 * @param target the desired target of the action
+	 * @param action the action on which to set the target
+	 * @return the action with its target set
+	 */
+	static public Action targeting (Actor target, Action action) {
+		action.setTarget(target);
+		return action;
 	}
 }

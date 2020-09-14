@@ -23,8 +23,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
@@ -67,7 +69,6 @@ public class Touchpad extends Widget {
 		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
-			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (touched) return false;
 				touched = true;
@@ -75,12 +76,10 @@ public class Touchpad extends Widget {
 				return true;
 			}
 
-			@Override
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
 			}
 
-			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
 				calculatePositionAndValue(x, y, resetOnTouchUp);
@@ -131,12 +130,12 @@ public class Touchpad extends Widget {
 		return style;
 	}
 
-	@Override
 	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && this.getTouchable() != Touchable.enabled) return null;
+		if (!isVisible()) return null;
 		return touchBounds.contains(x, y) ? this : null;
 	}
 
-	@Override
 	public void layout () {
 		// Recalc pad and deadzone bounds
 		float halfWidth = getWidth() / 2;
@@ -151,7 +150,6 @@ public class Touchpad extends Widget {
 		knobPercent.set(0, 0);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
@@ -174,12 +172,10 @@ public class Touchpad extends Widget {
 		}
 	}
 
-	@Override
 	public float getPrefWidth () {
 		return style.background != null ? style.background.getMinWidth() : 0;
 	}
 
-	@Override
 	public float getPrefHeight () {
 		return style.background != null ? style.background.getMinHeight() : 0;
 	}
@@ -230,15 +226,15 @@ public class Touchpad extends Widget {
 	 * @author Josh Street */
 	public static class TouchpadStyle {
 		/** Stretched in both directions. Optional. */
-		public Drawable background;
+		public @Null Drawable background;
 
 		/** Optional. */
-		public Drawable knob;
+		public @Null Drawable knob;
 
 		public TouchpadStyle () {
 		}
 
-		public TouchpadStyle (Drawable background, Drawable knob) {
+		public TouchpadStyle (@Null Drawable background, @Null Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}

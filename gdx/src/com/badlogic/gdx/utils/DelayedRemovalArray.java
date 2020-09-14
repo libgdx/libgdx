@@ -18,9 +18,13 @@ package com.badlogic.gdx.utils;
 
 import java.util.Comparator;
 
-/** Queues any removals done after {@link #begin()} is called to occur once {@link #end()} is called. This can allow code out of
- * your control to remove items without affecting iteration. Between begin and end, most mutator methods will throw
- * IllegalStateException. Only {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, and add methods are allowed.
+/** An array that queues removal during iteration until the iteration has completed. Queues any removals done after
+ * {@link #begin()} is called to occur once {@link #end()} is called. This can allow code out of your control to remove items
+ * without affecting iteration. Between begin and end, most mutator methods will throw IllegalStateException. Only
+ * {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, {@link #removeRange(int, int)}, {@link #clear()}, and add
+ * methods are allowed.
+ * <p>
+ * Note that DelayedRemovalArray is not for thread safety, only for removal during iteration.
  * <p>
  * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
  * problem.
@@ -28,6 +32,7 @@ import java.util.Comparator;
 public class DelayedRemovalArray<T> extends Array<T> {
 	private int iterating;
 	private IntArray remove = new IntArray(0);
+	private int clear;
 
 	public DelayedRemovalArray () {
 		super();
@@ -69,12 +74,23 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		if (iterating == 0) throw new IllegalStateException("begin must be called before end.");
 		iterating--;
 		if (iterating == 0) {
-			for (int i = 0, n = remove.size; i < n; i++)
-				removeIndex(remove.pop());
+			if (clear > 0 && clear == size) {
+				remove.clear();
+				clear();
+			} else {
+				for (int i = 0, n = remove.size; i < n; i++) {
+					int index = remove.pop();
+					if (index >= clear) removeIndex(index);
+				}
+				for (int i = clear - 1; i >= 0; i--)
+					removeIndex(i);
+			}
+			clear = 0;
 		}
 	}
 
 	private void remove (int index) {
+		if (index < clear) return;
 		for (int i = 0, n = remove.size; i < n; i++) {
 			int removeIndex = remove.get(i);
 			if (index == removeIndex) return;
@@ -112,6 +128,14 @@ public class DelayedRemovalArray<T> extends Array<T> {
 			super.removeRange(start, end);
 	}
 
+	public void clear () {
+		if (iterating > 0) {
+			clear = size;
+			return;
+		}
+		super.clear();
+	}
+
 	public void set (int index, T value) {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.set(index, value);
@@ -122,6 +146,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super.insert(index, value);
 	}
 
+	public void insertRange (int index, int count) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		super.insertRange(index, count);
+	}
+
 	public void swap (int first, int second) {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.swap(first, second);
@@ -130,11 +159,6 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	public T pop () {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		return super.pop();
-	}
-
-	public void clear () {
-		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-		super.clear();
 	}
 
 	public void sort () {

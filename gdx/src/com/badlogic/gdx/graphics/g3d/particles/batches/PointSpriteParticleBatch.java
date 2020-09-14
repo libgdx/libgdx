@@ -74,13 +74,17 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	}
 
 	public PointSpriteParticleBatch (int capacity) {
+		this(capacity, new ParticleShader.Config(ParticleType.Point));
+	}
+	
+	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig) {
 		super(PointSpriteControllerRenderData.class);
 
 		if (!pointSpritesEnabled) enablePointSprites();
 
 		allocRenderable();
 		ensureCapacity(capacity);
-		renderable.shader = new ParticleShader(renderable, new ParticleShader.Config(ParticleType.Point));
+		renderable.shader = new ParticleShader(renderable, shaderConfig);
 		renderable.shader.init();
 	}
 

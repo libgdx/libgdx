@@ -36,6 +36,16 @@ protected:
 	btMultiBodyConstraintSolver*	m_multiBodyConstraintSolver;
 	MultiBodyInplaceSolverIslandCallback*	m_solverMultiBodyIslandCallback;
 
+	//cached data to avoid memory allocations
+	btAlignedObjectArray<btQuaternion> m_scratch_world_to_local;
+	btAlignedObjectArray<btVector3> m_scratch_local_origin;
+	btAlignedObjectArray<btQuaternion> m_scratch_world_to_local1;
+	btAlignedObjectArray<btVector3> m_scratch_local_origin1;
+	btAlignedObjectArray<btScalar> m_scratch_r;
+	btAlignedObjectArray<btVector3> m_scratch_v;
+	btAlignedObjectArray<btMatrix3x3> m_scratch_m;
+
+	
 	virtual void	calculateSimulationIslands();
 	virtual void	updateActivationState(btScalar timeStep);
 	virtual void	solveConstraints(btContactSolverInfo& solverInfo);
@@ -48,7 +58,7 @@ public:
 
 	virtual ~btMultiBodyDynamicsWorld ();
 
-	virtual void	addMultiBody(btMultiBody* body, short group= btBroadphaseProxy::DefaultFilter, short mask=btBroadphaseProxy::AllFilter);
+	virtual void	addMultiBody(btMultiBody* body, int group= btBroadphaseProxy::DefaultFilter, int mask=btBroadphaseProxy::AllFilter);
 
 	virtual void	removeMultiBody(btMultiBody* body);
 
@@ -58,6 +68,11 @@ public:
 	}
 
 	btMultiBody*	getMultiBody(int mbIndex)
+	{
+		return m_multiBodies[mbIndex];
+	}
+
+	const btMultiBody*	getMultiBody(int mbIndex) const
 	{
 		return m_multiBodies[mbIndex];
 	}

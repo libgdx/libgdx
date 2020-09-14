@@ -107,6 +107,8 @@ void	btQuantizedBvh::setQuantizationValues(const btVector3& bvhAabbMin,const btV
 			v = unQuantize(vecIn);
 			m_bvhAabbMin.setMin(v-clampValue);
 		}
+        aabbSize = m_bvhAabbMax - m_bvhAabbMin;
+        m_bvhQuantization = btVector3(btScalar(65533.0),btScalar(65533.0),btScalar(65533.0)) / aabbSize;
 		{
 			quantize(vecIn,m_bvhAabbMax,true);
 			v = unQuantize(vecIn);
@@ -1334,6 +1336,8 @@ const char*	btQuantizedBvh::serialize(void* dataBuffer, btSerializer* serializer
 			memPtr->m_escapeIndex = m_contiguousNodes[i].m_escapeIndex;
 			memPtr->m_subPart = m_contiguousNodes[i].m_subPart;
 			memPtr->m_triangleIndex = m_contiguousNodes[i].m_triangleIndex;
+			// Fill padding with zeros to appease msan.
+			memset(memPtr->m_pad, 0, sizeof(memPtr->m_pad));
 		}
 		serializer->finalizeChunk(chunk,"btOptimizedBvhNodeData",BT_ARRAY_CODE,(void*)&m_contiguousNodes[0]);
 	}

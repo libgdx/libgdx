@@ -35,7 +35,11 @@ import com.badlogic.gdx.net.SocketHints;
  * @author Jon Renner */
 public class HeadlessNet implements Net {
 
-	NetJavaImpl netJavaImpl = new NetJavaImpl();
+	NetJavaImpl netJavaImpl;
+
+	public HeadlessNet(HeadlessApplicationConfiguration configuration) {
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
+	}
 
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {

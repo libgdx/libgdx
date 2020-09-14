@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="gdx-setup" default="all" basedir=".">
-    <!-- ****************************************************************** -->
+	<!-- ****************************************************************** -->
 	<!-- Definitions -->
 	<!-- ****************************************************************** -->
 
@@ -21,7 +21,7 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<copy todir="bin/"><fileset dir="src/" excludes="**/*.java"/></copy>
+		<copy todir="bin/"><fileset dir="res/" /></copy>
 		
 		<jar destfile="${name}.jar" basedir="bin/">
 			<manifest>

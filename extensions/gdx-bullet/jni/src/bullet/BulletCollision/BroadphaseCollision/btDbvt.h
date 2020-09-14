@@ -122,6 +122,7 @@ subject to the following restrictions:
 #error "DBVT_INT0_IMPL undefined"
 #endif
 
+
 //
 // Defaults volumes
 //
@@ -187,6 +188,9 @@ struct	btDbvtNode
 		int		dataAsInt;
 	};
 };
+
+typedef btAlignedObjectArray<const btDbvtNode*> btNodeStack;
+
 
 ///The btDbvt class implements a fast dynamic bounding volume tree based on axis aligned bounding boxes (aabb tree).
 ///This btDbvt is used for soft body collision detection and for the btDbvtBroadphase. It has a fast insert, remove and update of nodes.
@@ -263,7 +267,6 @@ struct	btDbvt
 
 	
 	btAlignedObjectArray<sStkNN>	m_stkStack;
-	mutable btAlignedObjectArray<const btDbvtNode*>	m_rayTestStack;
 
 
 	// Methods
@@ -325,6 +328,16 @@ struct	btDbvt
 		void		collideTV(	const btDbvtNode* root,
 		const btDbvtVolume& volume,
 		DBVT_IPOLICY) const;
+	
+	DBVT_PREFIX
+	void		collideTVNoStackAlloc(	const btDbvtNode* root,
+						  const btDbvtVolume& volume,
+						  btNodeStack& stack,
+						  DBVT_IPOLICY) const;
+	
+	
+	
+	
 	///rayTest is a re-entrant ray test, and can be called in parallel as long as the btAlignedAlloc is thread-safe (uses locking etc)
 	///rayTest is slower than rayTestInternal, because it builds a local stack, using memory allocations, and it recomputes signs/rayDirectionInverses each time
 	DBVT_PREFIX
@@ -343,6 +356,7 @@ struct	btDbvt
 								btScalar lambda_max,
 								const btVector3& aabbMin,
 								const btVector3& aabbMax,
+                                btAlignedObjectArray<const btDbvtNode*>& stack,
 								DBVT_IPOLICY) const;
 
 	DBVT_PREFIX
@@ -917,38 +931,77 @@ inline void		btDbvt::collideTT(	const btDbvtNode* root0,
 }
 #endif 
 
-//
 DBVT_PREFIX
 inline void		btDbvt::collideTV(	const btDbvtNode* root,
 								  const btDbvtVolume& vol,
 								  DBVT_IPOLICY) const
 {
 	DBVT_CHECKTYPE
-		if(root)
-		{
-			ATTRIBUTE_ALIGNED16(btDbvtVolume)		volume(vol);
-			btAlignedObjectArray<const btDbvtNode*>	stack;
-			stack.resize(0);
-			stack.reserve(SIMPLE_STACKSIZE);
-			stack.push_back(root);
-			do	{
-				const btDbvtNode*	n=stack[stack.size()-1];
-				stack.pop_back();
-				if(Intersect(n->volume,volume))
+	if(root)
+	{
+		ATTRIBUTE_ALIGNED16(btDbvtVolume)		volume(vol);
+		btAlignedObjectArray<const btDbvtNode*>	stack;
+		stack.resize(0);
+#ifndef BT_DISABLE_STACK_TEMP_MEMORY
+		char tempmemory[SIMPLE_STACKSIZE*sizeof(const btDbvtNode*)];
+		stack.initializeFromBuffer(tempmemory, 0, SIMPLE_STACKSIZE);
+#else
+		stack.reserve(SIMPLE_STACKSIZE);
+#endif //BT_DISABLE_STACK_TEMP_MEMORY
+
+		stack.push_back(root);
+		do	{
+			const btDbvtNode*	n=stack[stack.size()-1];
+			stack.pop_back();
+			if(Intersect(n->volume,volume))
+			{
+				if(n->isinternal())
 				{
-					if(n->isinternal())
-					{
-						stack.push_back(n->childs[0]);
-						stack.push_back(n->childs[1]);
-					}
-					else
-					{
-						policy.Process(n);
-					}
+					stack.push_back(n->childs[0]);
+					stack.push_back(n->childs[1]);
 				}
-			} while(stack.size()>0);
-		}
+				else
+				{
+					policy.Process(n);
+				}
+			}
+		} while(stack.size()>0);
+	}
 }
+
+//
+DBVT_PREFIX
+inline void		btDbvt::collideTVNoStackAlloc(	const btDbvtNode* root,
+											 const btDbvtVolume& vol,
+											 btNodeStack& stack,
+											 DBVT_IPOLICY) const
+{
+	DBVT_CHECKTYPE
+	if(root)
+	{
+		ATTRIBUTE_ALIGNED16(btDbvtVolume)		volume(vol);
+		stack.resize(0);
+		stack.reserve(SIMPLE_STACKSIZE);
+		stack.push_back(root);
+		do	{
+			const btDbvtNode*	n=stack[stack.size()-1];
+			stack.pop_back();
+			if(Intersect(n->volume,volume))
+			{
+				if(n->isinternal())
+				{
+					stack.push_back(n->childs[0]);
+					stack.push_back(n->childs[1]);
+				}
+				else
+				{
+					policy.Process(n);
+				}
+			}
+		} while(stack.size()>0);
+	}
+}
+
 
 DBVT_PREFIX
 inline void		btDbvt::rayTestInternal(	const btDbvtNode* root,
@@ -959,7 +1012,8 @@ inline void		btDbvt::rayTestInternal(	const btDbvtNode* root,
 								btScalar lambda_max,
 								const btVector3& aabbMin,
 								const btVector3& aabbMax,
-								DBVT_IPOLICY) const
+                                btAlignedObjectArray<const btDbvtNode*>& stack,
+                                DBVT_IPOLICY ) const
 {
         (void) rayTo;
 	DBVT_CHECKTYPE
@@ -969,7 +1023,6 @@ inline void		btDbvt::rayTestInternal(	const btDbvtNode* root,
 
 		int								depth=1;
 		int								treshold=DOUBLE_STACKSIZE-2;
-		btAlignedObjectArray<const btDbvtNode*>&	stack = m_rayTestStack;
 		stack.resize(DOUBLE_STACKSIZE);
 		stack[0]=root;
 		btVector3 bounds[2];
@@ -1031,7 +1084,12 @@ inline void		btDbvt::rayTest(	const btDbvtNode* root,
 			int								depth=1;
 			int								treshold=DOUBLE_STACKSIZE-2;
 
+			char tempmemory[DOUBLE_STACKSIZE * sizeof(const btDbvtNode*)];
+#ifndef BT_DISABLE_STACK_TEMP_MEMORY
+			stack.initializeFromBuffer(tempmemory, DOUBLE_STACKSIZE, DOUBLE_STACKSIZE);
+#else//BT_DISABLE_STACK_TEMP_MEMORY
 			stack.resize(DOUBLE_STACKSIZE);
+#endif //BT_DISABLE_STACK_TEMP_MEMORY
 			stack[0]=root;
 			btVector3 bounds[2];
 			do	{
@@ -1196,23 +1254,32 @@ inline void		btDbvt::collideOCL(	const btDbvtNode* root,
 							
 							//void * memmove ( void * destination, const void * source, size_t num );
 							
-//#if DBVT_USE_MEMMOVE
-//							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
-//#else
-							for(int k=stack.size()-1;k>j;--k) 
-							{
+#if DBVT_USE_MEMMOVE
+                     {
+                     int num_items_to_move = stack.size()-1-j;
+                     if(num_items_to_move > 0)
+                        memmove(&stack[j+1],&stack[j],sizeof(int)*num_items_to_move);
+                     }
+#else
+                     for(int k=stack.size()-1;k>j;--k) {
 								stack[k]=stack[k-1];
-							}
-//#endif
+                     }
+#endif
 							stack[j]=allocate(ifree,stock,nes[q]);
 							/* Insert 1	*/ 
 							j=nearest(&stack[0],&stock[0],nes[1-q].value,j,stack.size());
 							stack.push_back(0);
-//#if DBVT_USE_MEMMOVE
-//							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
-//#else
-							for(int k=stack.size()-1;k>j;--k) stack[k]=stack[k-1];
-//#endif
+#if DBVT_USE_MEMMOVE
+                     {
+                     int num_items_to_move = stack.size()-1-j;
+                     if(num_items_to_move > 0)
+                        memmove(&stack[j+1],&stack[j],sizeof(int)*num_items_to_move);
+                     }
+#else
+                     for(int k=stack.size()-1;k>j;--k) {
+                        stack[k]=stack[k-1];
+                     }
+#endif
 							stack[j]=allocate(ifree,stock,nes[1-q]);
 						}
 						else

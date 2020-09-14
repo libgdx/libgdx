@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class SoundTest extends GdxTest {
 	Sound sound;
@@ -45,9 +46,10 @@ public class SoundTest extends GdxTest {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.ogg", FileType.Internal));
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		ui = new Stage();
+		ui = new Stage(new FitViewport(640, 400));
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);
+		TextButton loop = new TextButton("Loop", skin);
 		final Slider pitch = new Slider(0.1f, 4, 0.1f, false, skin);
 		pitch.setValue(1);
 		final Label pitchValue = new Label("1.0", skin);
@@ -64,6 +66,7 @@ public class SoundTest extends GdxTest {
 		table.columnDefaults(0).expandX().right().uniformX();
 		table.columnDefaults(2).expandX().left().uniformX();
 		table.add(play);
+		table.add(loop).left();
 		table.add(stop).left();
 		table.row();
 		table.add(new Label("Pitch", skin));
@@ -87,9 +90,21 @@ public class SoundTest extends GdxTest {
 			}
 		});
 
+		loop.addListener(new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+				if (soundId == 0) {
+					soundId = sound.loop(volume.getValue());
+					sound.setPitch(soundId, pitch.getValue());
+					sound.setPan(soundId, pan.getValue(), volume.getValue());
+				} else {
+					sound.setLooping(soundId, true);
+				}
+			}
+		});
 		stop.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				sound.stop(soundId);
+				soundId = 0;
 			}
 		});
 		pitch.addListener(new ChangeListener() {

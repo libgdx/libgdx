@@ -44,9 +44,7 @@ btDefaultCollisionConfiguration::btDefaultCollisionConfiguration(const btDefault
 //btDefaultCollisionConfiguration::btDefaultCollisionConfiguration(btStackAlloc*	stackAlloc,btPoolAllocator*	persistentManifoldPool,btPoolAllocator*	collisionAlgorithmPool)
 {
 
-	void* mem = btAlignedAlloc(sizeof(btVoronoiSimplexSolver),16);
-	m_simplexSolver = new (mem)btVoronoiSimplexSolver();
-
+    void* mem = NULL;
 	if (constructionInfo.m_useEpaPenetrationAlgorithm)
 	{
 		mem = btAlignedAlloc(sizeof(btGjkEpaPenetrationDepthSolver),16);
@@ -59,7 +57,7 @@ btDefaultCollisionConfiguration::btDefaultCollisionConfiguration(const btDefault
 	
 	//default CreationFunctions, filling the m_doubleDispatch table
 	mem = btAlignedAlloc(sizeof(btConvexConvexAlgorithm::CreateFunc),16);
-	m_convexConvexCreateFunc = new(mem) btConvexConvexAlgorithm::CreateFunc(m_simplexSolver,m_pdSolver);
+	m_convexConvexCreateFunc = new(mem) btConvexConvexAlgorithm::CreateFunc(m_pdSolver);
 	mem = btAlignedAlloc(sizeof(btConvexConcaveCollisionAlgorithm::CreateFunc),16);
 	m_convexConcaveCreateFunc = new (mem)btConvexConcaveCollisionAlgorithm::CreateFunc;
 	mem = btAlignedAlloc(sizeof(btConvexConcaveCollisionAlgorithm::CreateFunc),16);
@@ -123,6 +121,7 @@ btDefaultCollisionConfiguration::btDefaultCollisionConfiguration(const btDefault
 		m_persistentManifoldPool = new (mem) btPoolAllocator(sizeof(btPersistentManifold),constructionInfo.m_defaultMaxPersistentManifoldPoolSize);
 	}
 	
+	collisionAlgorithmMaxElementSize = (collisionAlgorithmMaxElementSize+16)&0xffffffffffff0;
 	if (constructionInfo.m_collisionAlgorithmPool)
 	{
 		m_ownsCollisionAlgorithmPool = false;
@@ -192,9 +191,6 @@ btDefaultCollisionConfiguration::~btDefaultCollisionConfiguration()
 	m_planeConvexCF->~btCollisionAlgorithmCreateFunc();
 	btAlignedFree( m_planeConvexCF);
 
-	m_simplexSolver->~btVoronoiSimplexSolver();
-	btAlignedFree(m_simplexSolver);
-
 	m_pdSolver->~btConvexPenetrationDepthSolver();
 	
 	btAlignedFree(m_pdSolver);
@@ -202,6 +198,86 @@ btDefaultCollisionConfiguration::~btDefaultCollisionConfiguration()
 
 }
 
+btCollisionAlgorithmCreateFunc* btDefaultCollisionConfiguration::getClosestPointsAlgorithmCreateFunc(int proxyType0, int proxyType1)
+{
+
+
+	if ((proxyType0 == SPHERE_SHAPE_PROXYTYPE) && (proxyType1 == SPHERE_SHAPE_PROXYTYPE))
+	{
+		return	m_sphereSphereCF;
+	}
+#ifdef USE_BUGGY_SPHERE_BOX_ALGORITHM
+	if ((proxyType0 == SPHERE_SHAPE_PROXYTYPE) && (proxyType1 == BOX_SHAPE_PROXYTYPE))
+	{
+		return	m_sphereBoxCF;
+	}
+
+	if ((proxyType0 == BOX_SHAPE_PROXYTYPE) && (proxyType1 == SPHERE_SHAPE_PROXYTYPE))
+	{
+		return	m_boxSphereCF;
+	}
+#endif //USE_BUGGY_SPHERE_BOX_ALGORITHM
+
+
+	if ((proxyType0 == SPHERE_SHAPE_PROXYTYPE) && (proxyType1 == TRIANGLE_SHAPE_PROXYTYPE))
+	{
+		return	m_sphereTriangleCF;
+	}
+
+	if ((proxyType0 == TRIANGLE_SHAPE_PROXYTYPE) && (proxyType1 == SPHERE_SHAPE_PROXYTYPE))
+	{
+		return	m_triangleSphereCF;
+	}
+
+	if (btBroadphaseProxy::isConvex(proxyType0) && (proxyType1 == STATIC_PLANE_PROXYTYPE))
+	{
+		return m_convexPlaneCF;
+	}
+
+	if (btBroadphaseProxy::isConvex(proxyType1) && (proxyType0 == STATIC_PLANE_PROXYTYPE))
+	{
+		return m_planeConvexCF;
+	}
+
+
+
+	if (btBroadphaseProxy::isConvex(proxyType0) && btBroadphaseProxy::isConvex(proxyType1))
+	{
+		return m_convexConvexCreateFunc;
+	}
+
+	if (btBroadphaseProxy::isConvex(proxyType0) && btBroadphaseProxy::isConcave(proxyType1))
+	{
+		return m_convexConcaveCreateFunc;
+	}
+
+	if (btBroadphaseProxy::isConvex(proxyType1) && btBroadphaseProxy::isConcave(proxyType0))
+	{
+		return m_swappedConvexConcaveCreateFunc;
+	}
+
+
+	if (btBroadphaseProxy::isCompound(proxyType0) && btBroadphaseProxy::isCompound(proxyType1))
+	{
+		return m_compoundCompoundCreateFunc;
+	}
+
+	if (btBroadphaseProxy::isCompound(proxyType0))
+	{
+		return m_compoundCreateFunc;
+	}
+	else
+	{
+		if (btBroadphaseProxy::isCompound(proxyType1))
+		{
+			return m_swappedCompoundCreateFunc;
+		}
+	}
+
+	//failed to find an algorithm
+	return m_emptyCreateFunc;
+
+}
 
 btCollisionAlgorithmCreateFunc* btDefaultCollisionConfiguration::getCollisionAlgorithmCreateFunc(int proxyType0,int proxyType1)
 {

@@ -68,7 +68,7 @@ struct GdxPooledObject {
 	const bool autoFree;
 
 	GdxPooledObject(JNIEnv * const &e, GdxPool * const &pool, const bool &autoFree);
-	GdxPooledObject(JNIEnv * const &e, GdxPool &pool, const bool &autoFree);
+	GdxPooledObject(JNIEnv * const &e, GdxPool * &pool, const bool &autoFree);
 	virtual ~GdxPooledObject();
 
 	void free();

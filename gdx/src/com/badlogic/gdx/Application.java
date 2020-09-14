@@ -151,6 +151,12 @@ public interface Application {
 	/** Gets the log level. */
 	public int getLogLevel ();
 
+	/** Sets the current Application logger. Calls to {@link #log(String, String)} are delegated to this {@link ApplicationLogger} */
+	public void setApplicationLogger (ApplicationLogger applicationLogger);
+
+	/** @return the current {@link ApplicationLogger} */
+	public ApplicationLogger getApplicationLogger ();
+
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 
@@ -171,6 +177,12 @@ public interface Application {
 	public Clipboard getClipboard ();
 
 	/** Posts a {@link Runnable} on the main loop thread.
+	 * 
+	 * In a multi-window application, the {@linkplain Gdx#graphics} and {@linkplain Gdx#input} values may be
+	 * unpredictable at the time the Runnable is executed. If graphics or input are needed, they can be copied
+	 * to a variable to be used in the Runnable. For example:
+	 * <p><code>
+	 * final Graphics graphics = Gdx.graphics;
 	 * 
 	 * @param runnable the runnable. */
 	public void postRunnable (Runnable runnable);

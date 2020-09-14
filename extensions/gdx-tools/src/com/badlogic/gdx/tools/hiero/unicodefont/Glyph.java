@@ -80,8 +80,8 @@ public class Glyph {
 			char[] chars = Character.toChars(codePoint);
 			GlyphVector charVector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
 				Font.LAYOUT_LEFT_TO_RIGHT);
-			GlyphMetrics charMetrics = vector.getGlyphMetrics(0);
-			xOffset = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0, 0).x - unicodeFont.getPaddingLeft();
+			GlyphMetrics charMetrics = charVector.getGlyphMetrics(0);
+			xOffset = charVector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0, 0).x - unicodeFont.getPaddingLeft();
 			xAdvance = (int)(metrics.getAdvanceX() + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft()
 				+ unicodeFont.getPaddingRight());
 

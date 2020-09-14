@@ -43,6 +43,15 @@ public:
 	btScalar getRadius() const { return m_radius;}
 	btScalar getHeight() const { return m_height;}
 
+	void setRadius(const btScalar radius)
+	{
+		m_radius = radius;
+	}
+	void setHeight(const btScalar height)
+	{
+		m_height = height;
+	}
+
 
 	virtual void	calculateLocalInertia(btScalar mass,btVector3& inertia) const
 	{
@@ -159,11 +168,17 @@ SIMD_FORCE_INLINE	int	btConeShape::calculateSerializeBufferSize() const
 SIMD_FORCE_INLINE	const char*	btConeShape::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 	btConeShapeData* shapeData = (btConeShapeData*) dataBuffer;
-	
+
 	btConvexInternalShape::serialize(&shapeData->m_convexInternalShapeData,serializer);
-	
+
 	shapeData->m_upIndex = m_coneIndices[1];
-	
+
+	// Fill padding with zeros to appease msan.
+	shapeData->m_padding[0] = 0;
+	shapeData->m_padding[1] = 0;
+	shapeData->m_padding[2] = 0;
+	shapeData->m_padding[3] = 0;
+
 	return "btConeShapeData";
 }
 

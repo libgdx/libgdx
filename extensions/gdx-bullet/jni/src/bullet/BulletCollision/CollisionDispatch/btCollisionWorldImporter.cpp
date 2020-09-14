@@ -579,13 +579,13 @@ btCollisionShape* btCollisionWorldImporter::convertCollisionShape(  btCollisionS
 				btCompoundShapeData* compoundData = (btCompoundShapeData*)shapeData;
 				btCompoundShape* compoundShape = createCompoundShape();
 
-				btCompoundShapeChildData* childShapeDataArray = &compoundData->m_childShapePtr[0];
+				//btCompoundShapeChildData* childShapeDataArray = &compoundData->m_childShapePtr[0];
 
 
 				btAlignedObjectArray<btCollisionShape*> childShapes;
 				for (int i=0;i<compoundData->m_numChildShapes;i++)
 				{
-					btCompoundShapeChildData* ptr = &compoundData->m_childShapePtr[i];
+					//btCompoundShapeChildData* ptr = &compoundData->m_childShapePtr[i];
 
 					btCollisionShapeData* cd = compoundData->m_childShapePtr[i].m_childShape;
 

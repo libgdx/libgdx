@@ -20,6 +20,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,12 +33,19 @@ public class BuildExecutor {
 	 * @param buildFile
 	 * @param params
 	 * @return whether the Ant succeeded */
-	public static boolean executeAnt (String buildFile, String params) {
+	public static boolean executeAnt (String buildFile, String... params) {
 		FileDescriptor build = new FileDescriptor(buildFile);
 		String ant = System.getProperty("os.name").contains("Windows") ? "ant.bat" : "ant";
-		String command = ant + " -f \"" + build.file().getAbsolutePath() + "\" " + params;
+
+		List<String> command = new ArrayList();
+		command.add(ant);
+		command.add("-f");
+		command.add(build.file.getAbsolutePath());
+		command.addAll(Arrays.asList(params));
+
+		String[] args = command.toArray(new String[0]);
 		System.out.println("Executing '" + command + "'");
-		return startProcess(command, build.parent().file());
+		return startProcess(build.parent().file(), args);
 	}
 
 	/** Execute ndk-build in the given directory
@@ -43,12 +53,15 @@ public class BuildExecutor {
 	public static void executeNdk (String directory) {
 		FileDescriptor build = new FileDescriptor(directory);
 		String command = "ndk-build";
-		startProcess(command, build.file());
+		startProcess(build.file(), command);
 	}
 
-	private static boolean startProcess (String command, File directory) {
+	private static boolean startProcess (File directory, String... command) {
 		try {
-			final Process process = new ProcessBuilder(command.split(" ")).redirectErrorStream(true).start();
+			final Process process = new ProcessBuilder(command)
+					.redirectErrorStream(true)
+					.directory(directory)
+					.start();
 
 			Thread t = new Thread(new Runnable() {
 				@Override

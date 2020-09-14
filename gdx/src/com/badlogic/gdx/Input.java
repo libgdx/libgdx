@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /** <p>
@@ -242,11 +241,13 @@ public interface Input {
 		public static final int F11 = 254;
 		public static final int F12 = 255;
 
+		public static final int MAX_KEYCODE = 255;
+
 		/** @return a human readable representation of the keycode. The returned value can be used in
 		 *         {@link Input.Keys#valueOf(String)} */
 		public static String toString (int keycode) {
 			if (keycode < 0) throw new IllegalArgumentException("keycode cannot be negative, keycode: " + keycode);
-			if (keycode > 255) throw new IllegalArgumentException("keycode cannot be greater than 255, keycode: " + keycode);
+			if (keycode > MAX_KEYCODE) throw new IllegalArgumentException("keycode cannot be greater than 255, keycode: " + keycode);
 			switch (keycode) {
 			// META* variables should not be used with this method.
 			case UNKNOWN:
@@ -558,24 +559,30 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
 	}
 
-	/** @return The rate of rotation around the x axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
 	public float getAccelerometerX ();
 
-	/** @return The rate of rotation around the y axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the Y axis, including the force of gravity */
 	public float getAccelerometerY ();
 
-	/** @return The rate of rotation around the z axis. (rad/s) */
+	/** @return The acceleration force in m/s^2 applied to the device in the Z axis, including the force of gravity */
 	public float getAccelerometerZ ();
 
+	/** @return The rate of rotation in rad/s around the X axis */
 	public float getGyroscopeX ();
 
+	/** @return The rate of rotation in rad/s around the Y axis */
 	public float getGyroscopeY ();
 
+	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
 	
+	/** @return The maximum number of pointers supported */
+	public int getMaxPointers ();
+
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
@@ -624,16 +631,35 @@ public interface Input {
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer
 	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
 
-	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
+	/** @return the pressure of the first pointer */
+	public float getPressure ();
+
+	/** Returns the pressure of the given pointer, where 0 is untouched. On Android it should be
+	 * up to 1.0, but it can go above that slightly and its not consistent between devices. On iOS 1.0 is the normal touch
+	 * and significantly more of hard touch. Check relevant manufacturer documentation for details.
+	 * Check availability with {@link Input#isPeripheralAvailable(Peripheral)}. If not supported, returns 1.0 when touched.
+	 *
+	 * @param pointer the pointer id.
+	 * @return the pressure */
+	public float getPressure (int pointer);
+
+	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
 	 * constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
+
+	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
+	 * constant is meaningful before version 4.0. On WebGL (GWT), only LEFT, RIGHT and MIDDLE buttons are supported.
+	 *
+	 * @param button the button to check.
+	 * @return true or false. */
+	public boolean isButtonJustPressed (int button);
 
 	/** Returns whether the key is pressed.
 	 * 
@@ -709,23 +735,55 @@ public interface Input {
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();
 
-	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.
-	 * 
+	 *
 	 * @param catchBack whether to catch the back button */
+	@Deprecated
 	public void setCatchBackKey (boolean catchBack);
 
-	/** @return whether the back button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the back button is currently being caught */
+	@Deprecated
 	public boolean isCatchBackKey ();
 
-	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
+	/**
+	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	 *
+	 * Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
 	 * @param catchMenu whether to catch the menu button */
+	@Deprecated
 	public void setCatchMenuKey (boolean catchMenu);
 	
-	/** @return whether the menu button is currently being caught */
+	/**
+	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	 * @return whether the menu button is currently being caught */
+	@Deprecated
 	public boolean isCatchMenuKey ();
+
+	/**
+	 * Sets whether the given key on Android should be caught. No effect on other platforms.
+	 * All keys that are not caught may be handled by other apps or background processes. For example, media or volume
+	 * buttons are handled by background media players if present. If you use these keys to control your game, they
+	 * must be catched to prevent unintended behaviour.
+	 *
+	 * @param keycode  keycode to catch
+	 * @param catchKey whether to catch the given keycode
+	 */
+	public void setCatchKey (int keycode, boolean catchKey);
+
+	/**
+	 *
+	 * @param keycode keycode to check if caught
+	 * @return true if the given keycode is configured to be caught
+	 */
+	public boolean isCatchKey (int keycode);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
