@@ -146,7 +146,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 	/** Returns the old value associated with the specified key, or the specified default value.
 	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
-	public float put (K key, int value, float defaultValue) {
+	public float put (K key, float value, float defaultValue) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			float oldValue = valueTable[i];

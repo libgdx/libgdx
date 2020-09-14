@@ -145,7 +145,7 @@ public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 	}
 
 	/** Returns the old value associated with the specified key, or the specified default value. */
-	public long put (K key, int value, long defaultValue) {
+	public long put (K key, long value, long defaultValue) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			long oldValue = valueTable[i];
