@@ -1025,7 +1025,7 @@ public final class Intersector {
 		return closestX + closestY < c.radius * c.radius;
 	}
 
-	/** Check whether specified counter-clockwise wound convex polygons overlap.
+	/** Check whether specified convex polygons overlap (clockwise or counter-clockwise wound doesn't matter).
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
 	 * @return Whether polygons overlap. */
@@ -1033,7 +1033,7 @@ public final class Intersector {
 		return overlapConvexPolygons(p1, p2, null);
 	}
 
-	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum
+	/** Check whether convex polygons overlap (clockwise or counter-clockwise wound doesn't matter). If they do, optionally obtain a Minimum
 	 * Translation Vector indicating the minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
@@ -1048,7 +1048,7 @@ public final class Intersector {
 		return overlapConvexPolygons(verts1, 0, verts1.length, verts2, 0, verts2.length, mtv);
 	}
 
-	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
+	/** Check whether polygons defined by the given vertex arrays overlap (clockwise or counter-clockwise wound doesn't matter). If they do, optionally obtain a
 	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
 	 * collision with the polygon defined by verts2.
 	 * @param verts1 Vertices of the first polygon.
@@ -1082,6 +1082,7 @@ public final class Intersector {
 	}
 
 	/**
+	 * Implementation of the separating axis theorem (SAT) algorithm
 	 * @param verts1        the verts1
 	 * @param offset1       offset of verts1
 	 * @param count1        count of verts1
