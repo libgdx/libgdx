@@ -303,8 +303,8 @@ public class Preloader {
 		return directories.containsKey(file);
 	}
 
-	private boolean isChild(String path, String file) {
-		return path.startsWith(file) && (path.indexOf('/', file.length() + 1) < 0);
+	private boolean isChild(String filePath, String directory) {
+		return filePath.startsWith(directory + "/") && (filePath.indexOf('/', directory.length() + 1) < 0);
 	}
 
 	public FileHandle[] list (final String file) {
@@ -363,28 +363,20 @@ public class Preloader {
 		return 0;
 	}
 
-	private static interface FilePathFilter {
-		public boolean accept (String path);
+	private interface FilePathFilter {
+		boolean accept (String path);
 	}
 
 	private FileHandle[] getMatchedAssetFiles (FilePathFilter filter) {
 		Array<FileHandle> files = new Array<FileHandle>();
-		addMatchedPathesToFileHandleArray(directories.keys(), filter, files);
-		addMatchedPathesToFileHandleArray(images.keys(), filter, files);
-		addMatchedPathesToFileHandleArray(audio.keys(), filter, files);
-		addMatchedPathesToFileHandleArray(texts.keys(), filter, files);
-		addMatchedPathesToFileHandleArray(binaries.keys(), filter, files);
+		for (String file : assetNames.keys()) {
+			if (filter.accept(file)) {
+				files.add(new GwtFileHandle(this, file, FileType.Internal));
+			}
+		}
 
 		FileHandle[] filesArray = new FileHandle[files.size];
 		System.arraycopy(files.items, 0, filesArray, 0, filesArray.length);
 		return filesArray;
-	}
-
-	private void addMatchedPathesToFileHandleArray (Iterable<String> pathesIter, FilePathFilter filter, Array<FileHandle> into) {
-		for (String path : pathesIter) {
-			if (filter.accept(path)) {
-				into.add(new GwtFileHandle(this, path, FileType.Internal));
-			}
-		}
 	}
 }
