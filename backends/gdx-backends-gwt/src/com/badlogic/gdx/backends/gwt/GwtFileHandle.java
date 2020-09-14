@@ -56,6 +56,11 @@ public class GwtFileHandle extends FileHandle {
 		this.file = fixSlashes(path);
 	}
 
+	/** @return The full url to an asset, e.g. http://localhost:8080/assets/data/shotgun-e5f56587d6f025bff049632853ae4ff9.ogg */
+	public String getAssetUrl() {
+		return preloader.baseUrl + preloader.assetNames.get(file, file);
+	}
+
 	public String path () {
 		return file;
 	}
