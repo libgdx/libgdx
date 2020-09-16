@@ -435,7 +435,7 @@ public class ScrollPane extends WidgetGroup {
 			if (hScrollKnob != null) {
 				float x = scrollbarsOnTop ? bgLeftWidth : widgetArea.x;
 				float y = hScrollOnBottom ? bgBottomHeight : height - bgTopHeight - scrollbarHeight;
-				hScrollBounds.set(x, y, widgetArea.width, scrollbarWidth);
+				hScrollBounds.set(x, y, widgetArea.width, scrollbarHeight);
 				if (scrollY && scrollbarsOnTop) {
 					hScrollBounds.width -= scrollbarWidth;
 					if (!vScrollOnRight) hScrollBounds.x += scrollbarWidth;
