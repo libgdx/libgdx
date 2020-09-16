@@ -523,6 +523,10 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
+			return new FilesTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
 			return new FilterPerformanceTest();
 		}
 	},
