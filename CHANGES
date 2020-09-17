@@ -35,6 +35,7 @@
 - API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
 - API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
 - API Addition: Added ObjectLongMap.
+- Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
 
 [1.9.11]
 - Update to MobiVM 2.3.8

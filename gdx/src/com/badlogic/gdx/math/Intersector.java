@@ -656,6 +656,123 @@ public final class Intersector {
 
 		return max >= 0 && max >= min;
 	}
+	
+	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	 *
+	 * Based on code at: https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp#L83
+	 * @param ray The ray
+	 * @param bounds The bounding box
+	 * @param matrix The orientation of the bounding box
+	 * @return Whether the ray and the oriented bounding box intersect. */
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 matrix) {
+		float tMin = 0.0f;
+		float tMax = Float.MAX_VALUE;
+		float t1, t2;
+
+		Vector3 oBBposition = matrix.getTranslation(tmp);
+		Vector3 delta = oBBposition.sub(ray.origin);
+
+		// Test intersection with the 2 planes perpendicular to the OBB's X axis
+		Vector3 xaxis = tmp1;
+		tmp1.set(matrix.val[Matrix4.M00], matrix.val[Matrix4.M10], matrix.val[Matrix4.M20]);
+		float e = xaxis.dot(delta);
+		float f = ray.direction.dot(xaxis);
+
+		if (Math.abs(f) > MathUtils.FLOAT_ROUNDING_ERROR) { // Standard case
+			t1 = (e + bounds.min.x) / f; // Intersection with the "left" plane
+			t2 = (e + bounds.max.x) / f; // Intersection with the "right" plane
+			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+
+			// We want t1 to represent the nearest intersection,
+			// so if it's not the case, invert t1 and t2
+			if (t1 > t2) {
+				float w = t1;
+				t1 = t2;
+				t2 = w;
+			}
+			// tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+			if (t2 < tMax) {
+				tMax = t2;
+			}
+			// tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+			if (t1 > tMin) {
+				tMin = t1;
+			}
+
+			// And here's the trick :
+			// If "far" is closer than "near", then there is NO intersection.
+			// See the images in the tutorials for the visual explanation.
+			if (tMax < tMin) {
+				return false;
+			}
+			// Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
+		} else if (-e + bounds.min.x > 0.0f || -e + bounds.max.x < 0.0f) {
+			return false;
+		}
+
+		// Test intersection with the 2 planes perpendicular to the OBB's Y axis
+		// Exactly the same thing than above.
+		Vector3 yaxis = tmp2;
+		tmp2.set(matrix.val[Matrix4.M01], matrix.val[Matrix4.M11], matrix.val[Matrix4.M21]);
+
+		e = yaxis.dot(delta);
+		f = ray.direction.dot(yaxis);
+
+		if (Math.abs(f) > MathUtils.FLOAT_ROUNDING_ERROR) {
+			t1 = (e + bounds.min.y) / f;
+			t2 = (e + bounds.max.y) / f;
+
+			if (t1 > t2) {
+				float w = t1;
+				t1 = t2;
+				t2 = w;
+			}
+			if (t2 < tMax) {
+				tMax = t2;
+			}
+			if (t1 > tMin) {
+				tMin = t1;
+			}
+			if (tMin > tMax) {
+				return false;
+			}
+
+		} else if (-e + bounds.min.y > 0.0f || -e + bounds.max.y < 0.0f) {
+			return false;
+		}
+
+		// Test intersection with the 2 planes perpendicular to the OBB's Z axis
+		// Exactly the same thing than above.
+		Vector3 zaxis = tmp3;
+		tmp3.set(matrix.val[Matrix4.M02], matrix.val[Matrix4.M12], matrix.val[Matrix4.M22]);
+
+		e = zaxis.dot(delta);
+		f = ray.direction.dot(zaxis);
+
+		if (Math.abs(f) > MathUtils.FLOAT_ROUNDING_ERROR) {
+			t1 = (e + bounds.min.z) / f;
+			t2 = (e + bounds.max.z) / f;
+
+			if (t1 > t2) {
+				float w = t1;
+				t1 = t2;
+				t2 = w;
+			}
+			if (t2 < tMax) {
+				tMax = t2;
+			}
+			if (t1 > tMin) {
+				tMin = t1;
+			}
+			if (tMin > tMax) {
+				return false;
+			}
+		} else if (-e + bounds.min.z > 0.0f || -e + bounds.max.z < 0.0f) {
+			return false;
+		}
+
+		return true;
+	}
 
 	static Vector3 best = new Vector3();
 	static Vector3 tmp = new Vector3();
