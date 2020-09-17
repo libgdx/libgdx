@@ -1,4 +1,5 @@
 [1.9.12]
+- Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
 - Update to MobiVM 2.3.10
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
 - API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
