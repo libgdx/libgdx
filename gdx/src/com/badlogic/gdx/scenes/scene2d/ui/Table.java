@@ -174,7 +174,18 @@ public class Table extends WidgetGroup {
 		return super.hit(x, y, touchable);
 	}
 
-	/** Causes the contents to be clipped if they exceed the table actor's bounds. Enabling clipping will set
+	/** Sets clip to true. */
+	public Table clip () {
+		setClip(true);
+		return this;
+	}
+
+	public Table clip (boolean enabled) {
+		setClip(enabled);
+		return this;
+	}
+
+	/** Causes the contents to be clipped if they exceed the table's bounds. Enabling clipping will set
 	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {
 		clip = enabled;

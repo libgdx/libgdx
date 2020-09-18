@@ -36,6 +36,7 @@
 - API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
 - API Addition: Added ObjectLongMap.
 - Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
+- API Addition: Added Table#clip() and Container#clip() methods.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
