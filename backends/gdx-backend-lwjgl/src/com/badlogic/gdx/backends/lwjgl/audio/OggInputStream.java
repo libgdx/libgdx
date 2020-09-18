@@ -362,7 +362,7 @@ public class OggInputStream extends InputStream {
 												convbuffer[ptr] = (byte)(val);
 												convbuffer[ptr + 1] = (byte)(val >>> 8);
 											}
-											ptr += 2 * (oggInfo.channels);
+											ptr += 2 * oggInfo.channels;
 										}
 									}
 
