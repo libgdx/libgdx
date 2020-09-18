@@ -291,7 +291,6 @@ public class ParticleEditor extends JFrame {
 		private int maxActive, lastMaxActive;
 		private boolean mouseDown;
 		private int activeCount;
-		private int mouseX, mouseY;
 		private BitmapFont font;
 		private SpriteBatch spriteBatch;
 
@@ -483,11 +482,6 @@ public class ParticleEditor extends JFrame {
 				maxActiveTimer = 0;
 				lastMaxActive = maxActive;
 				maxActive = 0;
-			}
-
-			if (mouseDown) {
-				// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
-				// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
 			}
 
 			spriteBatch.setProjectionMatrix(textCamera.combined);
