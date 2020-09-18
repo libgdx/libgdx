@@ -33,10 +33,15 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
-/** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
- * {@link Touchable#childrenOnly}.
+/** A group that sizes and positions children using table constraints.
  * <p>
- * The preferred and minimum sizes are that of the children when laid out in columns and rows.
+ * Children added with {@link #add(Actor...)} (and similar methods returning a {@link Cell}) are laid out in rows and columns.
+ * Other children may be added with {@link #addActor(Actor)} (and similar methods) but are not laid out automatically and don't
+ * affect the preferred or minimum sizes.
+ * <p>
+ * By default, {@link #getTouchable()} is {@link Touchable#childrenOnly}.
+ * <p>
+ * The preferred and minimum sizes are that of the children laid out in columns and rows.
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	static public Color debugTableColor = new Color(0, 0, 1, 1);

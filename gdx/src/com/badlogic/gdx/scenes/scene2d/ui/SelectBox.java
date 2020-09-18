@@ -121,6 +121,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	public void setStyle (SelectBoxStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
 		if (selectBoxList != null) {
 			selectBoxList.setStyle(style.scrollStyle);
 			selectBoxList.list.setStyle(style.listStyle);
@@ -557,13 +558,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 	static public class SelectBoxStyle {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
-		/** Optional. */
 		public @Null Color overFontColor, disabledFontColor;
-		/** Optional. */
 		public @Null Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;
-		/** Optional. */
 		public @Null Drawable backgroundOver, backgroundOpen, backgroundDisabled;
 
 		public SelectBoxStyle () {
@@ -579,16 +577,19 @@ public class SelectBox<T> extends Widget implements Disableable {
 		}
 
 		public SelectBoxStyle (SelectBoxStyle style) {
-			this.font = style.font;
-			this.fontColor.set(style.fontColor);
-			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
-			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
-			this.background = style.background;
-			this.backgroundOver = style.backgroundOver;
-			this.backgroundOpen = style.backgroundOpen;
-			this.backgroundDisabled = style.backgroundDisabled;
-			this.scrollStyle = new ScrollPaneStyle(style.scrollStyle);
-			this.listStyle = new ListStyle(style.listStyle);
+			font = style.font;
+			fontColor.set(style.fontColor);
+
+			if (style.overFontColor != null) overFontColor = new Color(style.overFontColor);
+			if (style.disabledFontColor != null) disabledFontColor = new Color(style.disabledFontColor);
+
+			background = style.background;
+			scrollStyle = new ScrollPaneStyle(style.scrollStyle);
+			listStyle = new ListStyle(style.listStyle);
+
+			backgroundOver = style.backgroundOver;
+			backgroundOpen = style.backgroundOpen;
+			backgroundDisabled = style.backgroundDisabled;
 		}
 	}
 }

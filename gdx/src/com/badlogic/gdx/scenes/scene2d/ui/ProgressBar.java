@@ -408,13 +408,10 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
-		/** The progress bar background, stretched only in one direction. Optional. */
+		/** The progress bar background, stretched only in one direction. */
 		public @Null Drawable background;
-		/** Optional. **/
 		public @Null Drawable disabledBackground;
-		/** Optional, centered on the background. */
 		public @Null Drawable knob, disabledKnob;
-		/** Optional. */
 		public @Null Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public ProgressBarStyle () {
@@ -426,14 +423,16 @@ public class ProgressBar extends Widget implements Disableable {
 		}
 
 		public ProgressBarStyle (ProgressBarStyle style) {
-			this.background = style.background;
-			this.disabledBackground = style.disabledBackground;
-			this.knob = style.knob;
-			this.disabledKnob = style.disabledKnob;
-			this.knobBefore = style.knobBefore;
-			this.knobAfter = style.knobAfter;
-			this.disabledKnobBefore = style.disabledKnobBefore;
-			this.disabledKnobAfter = style.disabledKnobAfter;
+			background = style.background;
+			disabledBackground = style.disabledBackground;
+
+			knob = style.knob;
+			disabledKnob = style.disabledKnob;
+
+			knobBefore = style.knobBefore;
+			knobAfter = style.knobAfter;
+			disabledKnobBefore = style.disabledKnobBefore;
+			disabledKnobAfter = style.disabledKnobAfter;
 		}
 	}
 }

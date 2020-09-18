@@ -65,6 +65,7 @@ public class ImageButton extends Button {
 		if (!(style instanceof ImageButtonStyle)) throw new IllegalArgumentException("style must be an ImageButtonStyle.");
 		super.setStyle(style);
 		this.style = (ImageButtonStyle)style;
+
 		if (image != null) updateImage();
 	}
 
@@ -72,20 +73,25 @@ public class ImageButton extends Button {
 		return style;
 	}
 
-	/** Updates the Image with the appropriate Drawable from the style before it is drawn. */
+	/** Returns the appropriate image drawable from the style based on the current button state. */
+	protected @Null Drawable getImageDrawable () {
+		if (isDisabled() && style.imageDisabled != null) return style.imageDisabled;
+		if (isPressed()) {
+			if (isChecked() && style.imageCheckedDown != null) return style.imageCheckedDown;
+			if (style.imageDown != null) return style.imageDown;
+		}
+		if (isOver()) {
+			if (isChecked() && style.imageCheckedOver != null) return style.imageCheckedOver;
+			if (style.imageOver != null) return style.imageOver;
+		}
+		if (isChecked() && style.imageChecked != null) return style.imageChecked;
+		return style.imageUp;
+	}
+
+	/** Sets the image drawable based on the current button state. The default implementation sets the image drawable using
+	 * {@link #getImageDrawable()}. */
 	protected void updateImage () {
-		Drawable drawable = null;
-		if (isDisabled() && style.imageDisabled != null)
-			drawable = style.imageDisabled;
-		else if (isPressed() && style.imageDown != null)
-			drawable = style.imageDown;
-		else if (isChecked && style.imageChecked != null)
-			drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
-		else if (isOver() && style.imageOver != null)
-			drawable = style.imageOver;
-		else if (style.imageUp != null) //
-			drawable = style.imageUp;
-		image.setDrawable(drawable);
+		image.setDrawable(getImageDrawable());
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
@@ -113,8 +119,8 @@ public class ImageButton extends Button {
 	/** The style for an image button, see {@link ImageButton}.
 	 * @author Nathan Sweet */
 	static public class ImageButtonStyle extends ButtonStyle {
-		/** Optional. */
-		public @Null Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+		public @Null Drawable imageUp, imageDown, imageOver, imageDisabled;
+		public @Null Drawable imageChecked, imageCheckedDown, imageCheckedOver;
 
 		public ImageButtonStyle () {
 		}
@@ -129,12 +135,14 @@ public class ImageButton extends Button {
 
 		public ImageButtonStyle (ImageButtonStyle style) {
 			super(style);
-			this.imageUp = style.imageUp;
-			this.imageDown = style.imageDown;
-			this.imageOver = style.imageOver;
-			this.imageChecked = style.imageChecked;
-			this.imageCheckedOver = style.imageCheckedOver;
-			this.imageDisabled = style.imageDisabled;
+			imageUp = style.imageUp;
+			imageDown = style.imageDown;
+			imageOver = style.imageOver;
+			imageDisabled = style.imageDisabled;
+
+			imageChecked = style.imageChecked;
+			imageCheckedDown = style.imageCheckedDown;
+			imageCheckedOver = style.imageCheckedOver;
 		}
 
 		public ImageButtonStyle (ButtonStyle style) {

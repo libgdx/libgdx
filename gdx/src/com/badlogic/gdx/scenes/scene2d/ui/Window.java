@@ -197,6 +197,7 @@ public class Window extends Table {
 	public void setStyle (WindowStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
 		setBackground(style.background);
 		titleLabel.setStyle(new LabelStyle(style.titleFont, style.titleFontColor));
 		invalidateHierarchy();
@@ -338,27 +339,25 @@ public class Window extends Table {
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
-		/** Optional. */
 		public @Null Drawable background;
 		public BitmapFont titleFont;
-		/** Optional. */
-		public Color titleFontColor = new Color(1, 1, 1, 1);
-		/** Optional. */
+		public @Null Color titleFontColor = new Color(1, 1, 1, 1);
 		public @Null Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
 		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Null Drawable background) {
-			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
+			this.background = background;
 		}
 
 		public WindowStyle (WindowStyle style) {
-			this.background = style.background;
-			this.titleFont = style.titleFont;
-			this.titleFontColor = new Color(style.titleFontColor);
+			background = style.background;
+			titleFont = style.titleFont;
+			if (style.titleFontColor != null) titleFontColor = new Color(style.titleFontColor);
+			background = style.background;
 		}
 	}
 }

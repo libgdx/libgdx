@@ -37,6 +37,9 @@
 - API Addition: Added ObjectLongMap.
 - Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
 - API Addition: Added Table#clip() and Container#clip() methods.
+- API Addition: Added getBackgroundDrawable() to Button.
+- API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
+- API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

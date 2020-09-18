@@ -199,7 +199,6 @@ public class Slider extends ProgressBar {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
-		/** Optional. */
 		public @Null Drawable knobOver, knobDown;
 
 		public SliderStyle () {
@@ -211,8 +210,8 @@ public class Slider extends ProgressBar {
 
 		public SliderStyle (SliderStyle style) {
 			super(style);
-			this.knobOver = style.knobOver;
-			this.knobDown = style.knobDown;
+			knobOver = style.knobOver;
+			knobDown = style.knobDown;
 		}
 	}
 }

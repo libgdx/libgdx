@@ -363,8 +363,8 @@ public interface Net {
 		void cancelled ();
 	}
 
-	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
-	 * .
+	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified
+	 * {@link HttpResponseListener}.
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
