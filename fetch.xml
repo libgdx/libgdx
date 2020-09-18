@@ -12,25 +12,25 @@
     <property name="lwjgl-version" value="3.2.3"/>
 
     <!--    Begin robovm snapshot hacks-->
-    <exec executable="/bin/bash" outputproperty="robovm-snapshot.cacerts">
+    <exec executable="/bin/sh" outputproperty="robovm-snapshot.cacerts">
         <arg value="extractLatestSnapshot.sh"/>
         <arg value="robovm-cacerts-full"/>
         <arg value="${robovm-snapshoturl}/robovm-cacerts-full/${robovm-version}/"/>
     </exec>
 
-    <exec executable="/bin/bash" outputproperty="robovm-snapshot.cocoatouch">
+    <exec executable="/bin/sh" outputproperty="robovm-snapshot.cocoatouch">
         <arg value="extractLatestSnapshot.sh"/>
         <arg value="robovm-cocoatouch"/>
         <arg value="${robovm-snapshoturl}/robovm-cocoatouch/${robovm-version}/"/>
     </exec>
 
-    <exec executable="/bin/bash" outputproperty="robovm-snapshot.objc">
+    <exec executable="/bin/sh" outputproperty="robovm-snapshot.objc">
         <arg value="extractLatestSnapshot.sh"/>
         <arg value="robovm-objc"/>
         <arg value="${robovm-snapshoturl}/robovm-objc/${robovm-version}/"/>
     </exec>
 
-    <exec executable="/bin/bash" outputproperty="robovm-snapshot.rt">
+    <exec executable="/bin/sh" outputproperty="robovm-snapshot.rt">
         <arg value="extractLatestSnapshot.sh"/>
         <arg value="robovm-rt"/>
         <arg value="${robovm-snapshoturl}/robovm-rt/${robovm-version}/"/>
