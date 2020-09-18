@@ -116,7 +116,7 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public Preferences put (Map<String, ?> vals) {
-		for (Map.Entry<Key<String>, ?> entry: vals.entrySet()) {
+		for (Map.Entry<String, ?> entry: vals.entrySet()) {
                         String key = entry.getKey();
                         Object val = entry.getValue();
 			values.put(key, val);
