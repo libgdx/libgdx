@@ -81,8 +81,11 @@ public class ImageButton extends Button {
 			if (style.imageDown != null) return style.imageDown;
 		}
 		if (isOver()) {
-			if (isChecked() && style.imageCheckedOver != null) return style.imageCheckedOver;
-			if (style.imageOver != null) return style.imageOver;
+			if (isChecked()) {
+				if (style.imageCheckedOver != null) return style.imageCheckedOver;
+			} else {
+				if (style.imageOver != null) return style.imageOver;
+			}
 		}
 		if (isChecked() && style.imageChecked != null) return style.imageChecked;
 		return style.imageUp;

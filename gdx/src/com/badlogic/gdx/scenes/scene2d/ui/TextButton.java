@@ -77,8 +77,11 @@ public class TextButton extends Button {
 			if (style.downFontColor != null) return style.downFontColor;
 		}
 		if (isOver()) {
-			if (isChecked() && style.checkedOverFontColor != null) return style.checkedOverFontColor;
-			if (style.overFontColor != null) return style.overFontColor;
+			if (isChecked()) {
+				if (style.checkedOverFontColor != null) return style.checkedOverFontColor;
+			} else {
+				if (style.overFontColor != null) return style.overFontColor;
+			}
 		}
 		boolean focused = hasKeyboardFocus();
 		if (isChecked()) {

@@ -94,8 +94,11 @@ public class ImageTextButton extends Button {
 			if (style.imageDown != null) return style.imageDown;
 		}
 		if (isOver()) {
-			if (isChecked() && style.imageCheckedOver != null) return style.imageCheckedOver;
-			if (style.imageOver != null) return style.imageOver;
+			if (isChecked()) {
+				if (style.imageCheckedOver != null) return style.imageCheckedOver;
+			} else {
+				if (style.imageOver != null) return style.imageOver;
+			}
 		}
 		if (isChecked() && style.imageChecked != null) return style.imageChecked;
 		return style.imageUp;
@@ -115,8 +118,11 @@ public class ImageTextButton extends Button {
 			if (style.downFontColor != null) return style.downFontColor;
 		}
 		if (isOver()) {
-			if (isChecked() && style.checkedOverFontColor != null) return style.checkedOverFontColor;
-			if (style.overFontColor != null) return style.overFontColor;
+			if (isChecked()) {
+				if (style.checkedOverFontColor != null) return style.checkedOverFontColor;
+			} else {
+				if (style.overFontColor != null) return style.overFontColor;
+			}
 		}
 		boolean focused = hasKeyboardFocus();
 		if (isChecked()) {

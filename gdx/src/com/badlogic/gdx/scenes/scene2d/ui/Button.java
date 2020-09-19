@@ -190,8 +190,11 @@ public class Button extends Table implements Disableable {
 			if (style.down != null) return style.down;
 		}
 		if (isOver()) {
-			if (isChecked() && style.checkedOver != null) return style.checkedOver;
-			if (style.over != null) return style.over;
+			if (isChecked()) {
+				if (style.checkedOver != null) return style.checkedOver;
+			} else {
+				if (style.over != null) return style.over;
+			}
 		}
 		boolean focused = hasKeyboardFocus();
 		if (isChecked()) {
