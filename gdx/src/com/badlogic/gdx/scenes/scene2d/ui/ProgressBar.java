@@ -266,7 +266,8 @@ public class ProgressBar extends Widget implements Disableable {
 	}
 
 	protected @Null Drawable getKnobDrawable () {
-		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		if (disabled && style.disabledKnob != null) return style.disabledKnob;
+		return style.knob;
 	}
 
 	/** Returns progress bar visual position within the range. */

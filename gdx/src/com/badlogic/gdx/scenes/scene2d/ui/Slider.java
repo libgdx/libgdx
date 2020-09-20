@@ -109,10 +109,11 @@ public class Slider extends ProgressBar {
 	}
 
 	protected @Null Drawable getKnobDrawable () {
-		SliderStyle style = getStyle();
-		return (disabled && style.disabledKnob != null) ? style.disabledKnob
-			: (isDragging() && style.knobDown != null) ? style.knobDown
-				: ((mouseOver && style.knobOver != null) ? style.knobOver : style.knob);
+		SliderStyle style = (SliderStyle)super.getStyle();
+		if (disabled && style.disabledKnob != null) return style.disabledKnob;
+		if (isDragging() && style.knobDown != null) return style.knobDown;
+		if (mouseOver && style.knobOver != null) return style.knobOver;
+		return style.knob;
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
