@@ -100,7 +100,10 @@ public class ImageTextButton extends Button {
 				if (style.imageOver != null) return style.imageOver;
 			}
 		}
-		if (isChecked() && style.imageChecked != null) return style.imageChecked;
+		if (isChecked()) {
+			if (style.imageChecked != null) return style.imageChecked;
+			if (isOver() && style.imageOver != null) return style.imageOver;
+		}
 		return style.imageUp;
 	}
 
@@ -128,6 +131,7 @@ public class ImageTextButton extends Button {
 		if (isChecked()) {
 			if (focused && style.checkedFocusedFontColor != null) return style.checkedFocusedFontColor;
 			if (style.checkedFontColor != null) return style.checkedFontColor;
+			if (isOver() && style.overFontColor != null) return style.overFontColor;
 		}
 		if (focused && style.focusedFontColor != null) return style.focusedFontColor;
 		return style.fontColor;

@@ -200,6 +200,7 @@ public class Button extends Table implements Disableable {
 		if (isChecked()) {
 			if (focused && style.checkedFocused != null) return style.checkedFocused;
 			if (style.checked != null) return style.checked;
+			if (isOver() && style.over != null) return style.over;
 		}
 		if (focused && style.focused != null) return style.focused;
 		return style.up;

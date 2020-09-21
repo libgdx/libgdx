@@ -87,6 +87,7 @@ public class TextButton extends Button {
 		if (isChecked()) {
 			if (focused && style.checkedFocusedFontColor != null) return style.checkedFocusedFontColor;
 			if (style.checkedFontColor != null) return style.checkedFontColor;
+			if (isOver() && style.overFontColor != null) return style.overFontColor;
 		}
 		if (focused && style.focusedFontColor != null) return style.focusedFontColor;
 		return style.fontColor;
