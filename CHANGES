@@ -41,6 +41,7 @@
 - API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
 - API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
 - API Addition: Added wrapReverse setting to HorizontalGroup.
+- API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

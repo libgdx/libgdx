@@ -108,6 +108,14 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
+	protected @Null Drawable getBackgroundDrawable () {
+		SliderStyle style = (SliderStyle)super.getStyle();
+		if (disabled && style.disabledBackground != null) return style.disabledBackground;
+		if (isDragging() && style.backgroundDown != null) return style.backgroundDown;
+		if (mouseOver && style.backgroundOver != null) return style.backgroundOver;
+		return style.background;
+	}
+
 	protected @Null Drawable getKnobDrawable () {
 		SliderStyle style = (SliderStyle)super.getStyle();
 		if (disabled && style.disabledKnob != null) return style.disabledKnob;
@@ -116,10 +124,26 @@ public class Slider extends ProgressBar {
 		return style.knob;
 	}
 
+	protected Drawable getKnobBeforeDrawable () {
+		SliderStyle style = (SliderStyle)super.getStyle();
+		if (disabled && style.disabledKnobBefore != null) return style.disabledKnobBefore;
+		if (isDragging() && style.knobBeforeDown != null) return style.knobBeforeDown;
+		if (mouseOver && style.knobBeforeOver != null) return style.knobBeforeOver;
+		return style.knobBefore;
+	}
+
+	protected Drawable getKnobAfterDrawable () {
+		SliderStyle style = (SliderStyle)super.getStyle();
+		if (disabled && style.disabledKnobAfter != null) return style.disabledKnobAfter;
+		if (isDragging() && style.knobAfterDown != null) return style.knobAfterDown;
+		if (mouseOver && style.knobAfterOver != null) return style.knobAfterOver;
+		return style.knobAfter;
+	}
+
 	boolean calculatePositionAndValue (float x, float y) {
 		SliderStyle style = getStyle();
 		Drawable knob = style.knob;
-		Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		Drawable bg = getBackgroundDrawable();
 
 		float value;
 		float oldPosition = position;
@@ -200,7 +224,10 @@ public class Slider extends ProgressBar {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
+		public @Null Drawable backgroundOver, backgroundDown;
 		public @Null Drawable knobOver, knobDown;
+		public @Null Drawable knobBeforeOver, knobBeforeDown;
+		public @Null Drawable knobAfterOver, knobAfterDown;
 
 		public SliderStyle () {
 		}
@@ -211,8 +238,17 @@ public class Slider extends ProgressBar {
 
 		public SliderStyle (SliderStyle style) {
 			super(style);
+			backgroundOver = style.backgroundOver;
+			backgroundDown = style.backgroundDown;
+			
 			knobOver = style.knobOver;
 			knobDown = style.knobDown;
+
+			knobBeforeOver = style.knobBeforeOver;
+			knobBeforeDown = style.knobBeforeDown;
+
+			knobAfterOver = style.knobAfterOver;
+			knobAfterDown = style.knobAfterDown;
 		}
 	}
 }
