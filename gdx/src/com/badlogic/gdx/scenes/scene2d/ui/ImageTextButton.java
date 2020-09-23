@@ -68,8 +68,8 @@ public class ImageTextButton extends Button {
 
 	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof ImageTextButtonStyle)) throw new IllegalArgumentException("style must be a ImageTextButtonStyle.");
-		super.setStyle(style);
 		this.style = (ImageTextButtonStyle)style;
+		super.setStyle(style);
 
 		if (image != null) updateImage();
 
