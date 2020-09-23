@@ -43,7 +43,7 @@ public class HorizontalGroup extends WidgetGroup {
 	private FloatArray rowSizes; // row width, row height, ...
 
 	private int align = Align.left, rowAlign;
-	private boolean reverse, round = true, wrap, expand;
+	private boolean reverse, round = true, wrap, wrapReverse, expand;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public HorizontalGroup () {
@@ -211,14 +211,18 @@ public class HorizontalGroup extends WidgetGroup {
 
 		int align = this.align;
 		boolean round = this.round;
-		float space = this.space, padBottom = this.padBottom, fill = this.fill, wrapSpace = this.wrapSpace;
+		float space = this.space, fill = this.fill, wrapSpace = this.wrapSpace;
 		float maxWidth = prefWidth - padLeft - padRight;
-		float rowY = prefHeight - padTop, groupWidth = getWidth(), xStart = padLeft, x = 0, rowHeight = 0;
+		float rowY = prefHeight - padTop, groupWidth = getWidth(), xStart = padLeft, x = 0, rowHeight = 0, rowDir = -1;
 
 		if ((align & Align.top) != 0)
 			rowY += getHeight() - prefHeight;
 		else if ((align & Align.bottom) == 0) // center
 			rowY += (getHeight() - prefHeight) / 2;
+		if (wrapReverse) {
+			rowY -= prefHeight + rowSizes.get(1);
+			rowDir = 1;
+		}
 
 		if ((align & Align.right) != 0)
 			xStart += groupWidth - prefWidth;
@@ -258,8 +262,8 @@ public class HorizontalGroup extends WidgetGroup {
 				else if ((align & Align.left) == 0) // center
 					x += (maxWidth - rowSizes.get(r)) / 2;
 				rowHeight = rowSizes.get(r + 1);
-				if (r > 0) rowY -= wrapSpace;
-				rowY -= rowHeight;
+				if (r > 0) rowY += wrapSpace * rowDir;
+				rowY += rowHeight * rowDir;
 				r += 2;
 			}
 
@@ -305,7 +309,7 @@ public class HorizontalGroup extends WidgetGroup {
 
 	/** The children will be displayed last to first. */
 	public HorizontalGroup reverse () {
-		this.reverse = true;
+		reverse = true;
 		return this;
 	}
 
@@ -317,6 +321,22 @@ public class HorizontalGroup extends WidgetGroup {
 
 	public boolean getReverse () {
 		return reverse;
+	}
+
+	/** Rows will wrap above the previous rows. */
+	public HorizontalGroup wrapReverse () {
+		wrapReverse = true;
+		return this;
+	}
+
+	/** If true, rows will wrap above the previous rows. */
+	public HorizontalGroup wrapReverse (boolean wrapReverse) {
+		this.wrapReverse = wrapReverse;
+		return this;
+	}
+
+	public boolean getWrapReverse () {
+		return wrapReverse;
 	}
 
 	/** Sets the horizontal space between children. */
