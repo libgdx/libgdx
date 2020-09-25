@@ -20,12 +20,16 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.swing.JFrame;
+
+import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.ApplicationListener;
 
@@ -113,6 +117,18 @@ public class LwjglFrame extends JFrame {
 		Point location = getLocation();
 		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
 		lwjglCanvas.getCanvas().setSize(size);
+
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowLostFocus (WindowEvent event) {
+				// Display.update swaps buffers and calls Display.reshape when the size changes.
+				// Display.reshape sizes and positions the OpenGL window to match the canvas.
+				// LwjglCanvas doesn't call Display.update when rendering is not needed (it swaps buffers which would flicker).
+				// Both of these are needed in this order.
+				// Display.setLocation calls Display.reshape (despite javadocs saying it's a no-op when a canvas is set).
+				Display.setLocation(0, 0);
+				Display.update(false);
+			}
+		});
 
 		// Finish with invokeLater so any LwjglFrame super constructor has a chance to initialize.
 		EventQueue.invokeLater(new Runnable() {
