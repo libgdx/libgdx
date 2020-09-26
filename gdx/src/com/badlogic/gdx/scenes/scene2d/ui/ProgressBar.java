@@ -128,7 +128,7 @@ public class ProgressBar extends Widget implements Disableable {
 				if (round)
 					bg.draw(batch, Math.round(x + (width - bg.getMinWidth()) * 0.5f), y, Math.round(bg.getMinWidth()), height);
 				else
-					bg.draw(batch, x + width - bg.getMinWidth() * 0.5f, y, bg.getMinWidth(), height);
+					bg.draw(batch, x + (width - bg.getMinWidth()) * 0.5f, y, bg.getMinWidth(), height);
 				bgTopHeight = bg.getTopHeight();
 				bgBottomHeight = bg.getBottomHeight();
 				positionHeight -= bgTopHeight + bgBottomHeight;
