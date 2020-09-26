@@ -282,7 +282,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return style.knobAfter;
 	}
 
-	/** Returns progress bar visual position within the range. */
+	/** Returns progress bar visual position within the range (as it was last calculated in {@link #draw(Batch, float)}). */
 	protected float getKnobPosition () {
 		return this.position;
 	}
