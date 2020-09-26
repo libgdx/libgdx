@@ -125,8 +125,10 @@ public class LwjglFrame extends JFrame {
 				// LwjglCanvas doesn't call Display.update when rendering is not needed (it swaps buffers which would flicker).
 				// Both of these are needed in this order.
 				// Display.setLocation calls Display.reshape (despite javadocs saying it's a no-op when a canvas is set).
-				Display.setLocation(0, 0);
-				Display.update(false);
+				if (Display.isCreated()) {
+					Display.setLocation(0, 0);
+					Display.update(false);
+				}
 			}
 		});
 
