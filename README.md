@@ -52,6 +52,11 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 <td style="text-align: center;"><a href="https://bit.ly/saikoagdx"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/saikoa.png" alt="Saikoa" /></a></td>
 <td style="text-align: center;"><a href="https://bit.ly/intelgdx"><img src="https://libgdx.com/assets/images/sponsors/intel.png" alt="intel Software Partner" /></a></td>
 </tr>
+
+<tr>
+<td style="text-align: center;"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/excelsior.png" alt="Excelsior JET"></td>
+<td style="text-align: center;"><img src="https://libgdx.com/assets/images/sponsors/nextpeer.png"></td>
+</tr>
 </table>
 
 ###### Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
