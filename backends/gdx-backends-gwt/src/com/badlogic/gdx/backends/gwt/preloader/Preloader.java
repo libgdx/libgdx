@@ -53,6 +53,7 @@ public class Preloader {
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
+	public ObjectMap<String, String> assetNames = new ObjectMap<String, String>();
 
 	public static class Asset {
 		public Asset(String file, String url, AssetType type, long size, String mimeType) {
@@ -159,6 +160,7 @@ public class Preloader {
 						size = 0;
 					}
 					Asset asset = new Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType);
+					assetNames.put(asset.file, asset.url);
                     if (assetPreload || asset.file.startsWith("com/badlogic/"))
                         assets.add(asset);
                     else
@@ -301,56 +303,44 @@ public class Preloader {
 		return directories.containsKey(file);
 	}
 
-	private boolean isChild(String path, String file) {
-		return path.startsWith(file) && (path.indexOf('/', file.length() + 1) < 0);
+	private boolean isChild(String filePath, String directory) {
+		return filePath.startsWith(directory + "/") && (filePath.indexOf('/', directory.length() + 1) < 0);
 	}
 
-	public FileHandle[] list(String file) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, file)) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String file) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, file);
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
-	public FileHandle[] list(String file, FileFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, file) && filter.accept(new File(path))) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String file, final FileFilter filter) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, file) && filter.accept(new File(path));
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
-	public FileHandle[] list(String file, FilenameFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, file) && filter.accept(new File(file), path.substring(file.length() + 1))) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String file, final FilenameFilter filter) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, file) && filter.accept(new File(file), path.substring(file.length() + 1));
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
-	public FileHandle[] list(String file, String suffix) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, file) && path.endsWith(suffix)) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String file, final String suffix) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, file) && path.endsWith(suffix);
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
 	public long length(String file) {
@@ -373,4 +363,20 @@ public class Preloader {
 		return 0;
 	}
 
+	private interface FilePathFilter {
+		boolean accept (String path);
+	}
+
+	private FileHandle[] getMatchedAssetFiles (FilePathFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String file : assetNames.keys()) {
+			if (filter.accept(file)) {
+				files.add(new GwtFileHandle(this, file, FileType.Internal));
+			}
+		}
+
+		FileHandle[] filesArray = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, filesArray, 0, filesArray.length);
+		return filesArray;
+	}
 }

@@ -99,6 +99,7 @@ public class TextArea extends TextField {
 		// same as super(), just different textHeight. no super() so we don't do same work twice
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
 		// no extra descent to fake line height
 		textHeight = style.font.getCapHeight() - style.font.getDescent();
 		if (text != null) updateDisplayText();

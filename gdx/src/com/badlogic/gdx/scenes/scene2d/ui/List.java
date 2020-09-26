@@ -432,7 +432,6 @@ public class List<T> extends Widget implements Cullable {
 		public Color fontColorSelected = new Color(1, 1, 1, 1);
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
-		/** Optional. */
 		public @Null Drawable down, over, background;
 
 		public ListStyle () {
@@ -446,13 +445,14 @@ public class List<T> extends Widget implements Cullable {
 		}
 
 		public ListStyle (ListStyle style) {
-			this.font = style.font;
-			this.fontColorSelected.set(style.fontColorSelected);
-			this.fontColorUnselected.set(style.fontColorUnselected);
-			this.selection = style.selection;
-			this.down = style.down;
-			this.over = style.over;
-			this.background = style.background;
+			font = style.font;
+			fontColorSelected.set(style.fontColorSelected);
+			fontColorUnselected.set(style.fontColorUnselected);
+			selection = style.selection;
+
+			down = style.down;
+			over = style.over;
+			background = style.background;
 		}
 	}
 }

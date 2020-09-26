@@ -217,8 +217,11 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		// Update over actor for the mouse on the desktop.
 		ApplicationType type = Gdx.app.getType();
-		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
+		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL) {
+			// if (mouseOverActor != null) mouseOverActor.setDebug(false);
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
+			// if (mouseOverActor != null) mouseOverActor.setDebug(true);
+		}
 
 		root.act(delta);
 	}
@@ -759,9 +762,9 @@ public class Stage extends InputAdapter implements Disposable {
 		viewport.calculateScissors(transformMatrix, localRect, scissorRect);
 	}
 
-	/** If true, any actions executed during a call to {@link #act()}) will result in a call to {@link Graphics#requestRendering()}
-	 * . Widgets that animate or otherwise require additional rendering may check this setting before calling
-	 * {@link Graphics#requestRendering()}. Default is true. */
+	/** If true, any actions executed during a call to {@link #act()}) will result in a call to
+	 * {@link Graphics#requestRendering()}. Widgets that animate or otherwise require additional rendering may check this setting
+	 * before calling {@link Graphics#requestRendering()}. Default is true. */
 	public void setActionsRequestRendering (boolean actionsRequestRendering) {
 		this.actionsRequestRendering = actionsRequestRendering;
 	}

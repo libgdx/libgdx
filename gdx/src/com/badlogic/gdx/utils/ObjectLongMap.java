@@ -22,8 +22,8 @@ import java.util.NoSuchElementException;
 
 import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
-/** An unordered map where the keys are objects and the values are unboxed floats. Null keys are not allowed. No allocation is
- * done except when growing the table size.
+/** An unordered map where the keys are objects and the values are unboxed longs. Null keys are not allowed. No allocation is done
+ * except when growing the table size.
  * <p>
  * This class performs fast contains and remove (typically O(1), worst case O(n) but that is rare in practice). Add may be
  * slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce collisions and the need to resize. Load factors
@@ -38,11 +38,11 @@ import static com.badlogic.gdx.utils.ObjectSet.tableSize;
  * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
  * @author Nathan Sweet
  * @author Tommy Ettinger */
-public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
+public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 	public int size;
 
 	K[] keyTable;
-	float[] valueTable;
+	long[] valueTable;
 
 	float loadFactor;
 	int threshold;
@@ -67,20 +67,20 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
-	public ObjectFloatMap () {
+	public ObjectLongMap () {
 		this(51, 0.8f);
 	}
 
 	/** Creates a new map with a load factor of 0.8.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
-	public ObjectFloatMap (int initialCapacity) {
+	public ObjectLongMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
-	public ObjectFloatMap (int initialCapacity, float loadFactor) {
+	public ObjectLongMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -91,12 +91,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		shift = Long.numberOfLeadingZeros(mask);
 
 		keyTable = (K[])new Object[tableSize];
-		valueTable = new float[tableSize];
+		valueTable = new long[tableSize];
 	}
 
 	/** Creates a new map identical to the specified map. */
-	public ObjectFloatMap (ObjectFloatMap<? extends K> map) {
-		this((int)Math.floor(map.keyTable.length * map.loadFactor), map.loadFactor);
+	public ObjectLongMap (ObjectLongMap<? extends K> map) {
+		this((int)(map.keyTable.length * map.loadFactor), map.loadFactor);
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
@@ -132,7 +132,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	public void put (K key, float value) {
+	public void put (K key, long value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			valueTable[i] = value;
@@ -144,12 +144,11 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
-	/** Returns the old value associated with the specified key, or the specified default value.
-	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
-	public float put (K key, float value, float defaultValue) {
+	/** Returns the old value associated with the specified key, or the specified default value. */
+	public long put (K key, long value, long defaultValue) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
-			float oldValue = valueTable[i];
+			long oldValue = valueTable[i];
 			valueTable[i] = value;
 			return oldValue;
 		}
@@ -160,10 +159,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return defaultValue;
 	}
 
-	public void putAll (ObjectFloatMap<? extends K> map) {
+	public void putAll (ObjectLongMap<? extends K> map) {
 		ensureCapacity(map.size);
 		K[] keyTable = map.keyTable;
-		float[] valueTable = map.valueTable;
+		long[] valueTable = map.valueTable;
 		K key;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			key = keyTable[i];
@@ -172,7 +171,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	}
 
 	/** Skips checks for existing keys, doesn't increment size. */
-	private void putResize (K key, float value) {
+	private void putResize (K key, long value) {
 		K[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
 			if (keyTable[i] == null) {
@@ -183,19 +182,18 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** Returns the value for the specified key, or the default value if the key is not in the map.
-	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
-	public float get (K key, float defaultValue) {
+	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	public long get (K key, long defaultValue) {
 		int i = locateKey(key);
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
 	/** Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
 	 * put into the map and defaultValue is returned. */
-	public float getAndIncrement (K key, float defaultValue, float increment) {
+	public long getAndIncrement (K key, long defaultValue, long increment) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
-			float oldValue = valueTable[i];
+			long oldValue = valueTable[i];
 			valueTable[i] += increment;
 			return oldValue;
 		}
@@ -206,14 +204,13 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return defaultValue;
 	}
 
-	/** Returns the value for the removed key, or the default value if the key is not in the map.
-	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
-	public float remove (K key, float defaultValue) {
+	/** Returns the value for the removed key, or the default value if the key is not in the map. */
+	public long remove (K key, long defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
-		float oldValue = valueTable[i];
+		long[] valueTable = this.valueTable;
+		long oldValue = valueTable[i];
 		int mask = this.mask, next = i + 1 & mask;
 		while ((key = keyTable[next]) != null) {
 			int placement = place(key);
@@ -267,21 +264,11 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
 	 * be an expensive operation. */
-	public boolean containsValue (float value) {
+	public boolean containsValue (long value) {
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
+		long[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != null && valueTable[i] == value) return true;
-		return false;
-	}
-
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
-	 * be an expensive operation. */
-	public boolean containsValue (float value, float epsilon) {
-		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i >= 0; i--)
-			if (keyTable[i] != null && Math.abs(valueTable[i] - value) <= epsilon) return true;
 		return false;
 	}
 
@@ -291,24 +278,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
-	public @Null K findKey (float value) {
+	public @Null K findKey (long value) {
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
+		long[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
-		}
-		return null;
-	}
-
-	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
-	 * every value, which may be an expensive operation. */
-	public @Null K findKey (float value, float epsilon) {
-		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i >= 0; i--) {
-			K key = keyTable[i];
-			if (key != null && Math.abs(valueTable[i] - value) <= epsilon) return key;
 		}
 		return null;
 	}
@@ -327,10 +302,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		shift = Long.numberOfLeadingZeros(mask);
 
 		K[] oldKeyTable = keyTable;
-		float[] oldValueTable = valueTable;
+		long[] oldValueTable = valueTable;
 
 		keyTable = (K[])new Object[newSize];
-		valueTable = new float[newSize];
+		valueTable = new long[newSize];
 
 		if (size > 0) {
 			for (int i = 0; i < oldCapacity; i++) {
@@ -343,25 +318,25 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	public int hashCode () {
 		int h = size;
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
+		long[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			K key = keyTable[i];
-			if (key != null) h += key.hashCode() + NumberUtils.floatToRawIntBits(valueTable[i]);
+			if (key != null) h += key.hashCode() + valueTable[i];
 		}
 		return h;
 	}
 
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
-		if (!(obj instanceof ObjectFloatMap)) return false;
-		ObjectFloatMap other = (ObjectFloatMap)obj;
+		if (!(obj instanceof ObjectLongMap)) return false;
+		ObjectLongMap other = (ObjectLongMap)obj;
 		if (other.size != size) return false;
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
+		long[] valueTable = this.valueTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			K key = keyTable[i];
 			if (key != null) {
-				float otherValue = other.get(key, 0);
+				long otherValue = other.get(key, 0);
 				if (otherValue == 0 && !other.containsKey(key)) return false;
 				if (otherValue != valueTable[i]) return false;
 			}
@@ -382,7 +357,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
 		if (braces) buffer.append('{');
 		K[] keyTable = this.keyTable;
-		float[] valueTable = this.valueTable;
+		long[] valueTable = this.valueTable;
 		int i = keyTable.length;
 		while (i-- > 0) {
 			K key = keyTable[i];
@@ -476,7 +451,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 	static public class Entry<K> {
 		public K key;
-		public float value;
+		public long value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -486,11 +461,11 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	static private class MapIterator<K> {
 		public boolean hasNext;
 
-		final ObjectFloatMap<K> map;
+		final ObjectLongMap<K> map;
 		int nextIndex, currentIndex;
 		boolean valid = true;
 
-		public MapIterator (ObjectFloatMap<K> map) {
+		public MapIterator (ObjectLongMap<K> map) {
 			this.map = map;
 			reset();
 		}
@@ -516,7 +491,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			int i = currentIndex;
 			if (i < 0) throw new IllegalStateException("next must be called before remove.");
 			K[] keyTable = map.keyTable;
-			float[] valueTable = map.valueTable;
+			long[] valueTable = map.valueTable;
 			int mask = map.mask, next = i + 1 & mask;
 			K key;
 			while ((key = keyTable[next]) != null) {
@@ -538,7 +513,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	static public class Entries<K> extends MapIterator<K> implements Iterable<Entry<K>>, Iterator<Entry<K>> {
 		Entry<K> entry = new Entry<K>();
 
-		public Entries (ObjectFloatMap<K> map) {
+		public Entries (ObjectLongMap<K> map) {
 			super(map);
 		}
 
@@ -565,8 +540,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	}
 
 	static public class Values extends MapIterator<Object> {
-		public Values (ObjectFloatMap<?> map) {
-			super((ObjectFloatMap<Object>)map);
+		public Values (ObjectLongMap<?> map) {
+			super((ObjectLongMap<Object>)map);
 		}
 
 		public boolean hasNext () {
@@ -574,10 +549,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			return hasNext;
 		}
 
-		public float next () {
+		public long next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			float value = map.valueTable[nextIndex];
+			long value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return value;
@@ -588,15 +563,15 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 
 		/** Returns a new array containing the remaining values. */
-		public FloatArray toArray () {
-			FloatArray array = new FloatArray(true, map.size);
+		public LongArray toArray () {
+			LongArray array = new LongArray(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
 
 		/** Adds the remaining values to the specified array. */
-		public FloatArray toArray (FloatArray array) {
+		public LongArray toArray (LongArray array) {
 			while (hasNext)
 				array.add(next());
 			return array;
@@ -604,7 +579,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	}
 
 	static public class Keys<K> extends MapIterator<K> implements Iterable<K>, Iterator<K> {
-		public Keys (ObjectFloatMap<K> map) {
+		public Keys (ObjectLongMap<K> map) {
 			super(map);
 		}
 

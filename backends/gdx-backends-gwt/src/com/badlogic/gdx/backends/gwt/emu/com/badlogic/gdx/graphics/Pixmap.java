@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -101,7 +102,26 @@ public class Pixmap implements Disposable {
 		this(((GwtFileHandle)file).preloader.images.get(file.path()));
 		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 	}
-	
+
+	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+		new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
+			@Override
+			public void onProgress(double amount) {
+				// nothing to do
+			}
+
+			@Override
+			public void onFailure() {
+				responseListener.downloadFailed(new Exception("Failed to download image"));
+			}
+
+			@Override
+			public void onSuccess(ImageElement result) {
+				responseListener.downloadComplete(new Pixmap(result));
+			}
+		});
+	}
+
 	public Context2d getContext() {
 		ensureCanvasExists();
 		return context;
@@ -569,5 +589,9 @@ public class Pixmap implements Disposable {
 	private enum DrawType {
 		FILL, STROKE
 	}
-	
+
+	public interface DownloadPixmapResponseListener {
+		void downloadComplete(Pixmap pixmap);
+		void downloadFailed(Throwable t);
+	}
 }
