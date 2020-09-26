@@ -44,6 +44,7 @@
 - API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
 - Fixed LwjglFrame not hiding the canvas in some situations.
 - API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
+- Fixed blurry NinePatch rendering when using a single center region.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
