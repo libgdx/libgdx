@@ -108,6 +108,10 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
+	public boolean isOver () {
+		return mouseOver;
+	}
+
 	protected @Null Drawable getBackgroundDrawable () {
 		SliderStyle style = (SliderStyle)super.getStyle();
 		if (disabled && style.disabledBackground != null) return style.disabledBackground;
@@ -240,7 +244,7 @@ public class Slider extends ProgressBar {
 			super(style);
 			backgroundOver = style.backgroundOver;
 			backgroundDown = style.backgroundDown;
-			
+
 			knobOver = style.knobOver;
 			knobDown = style.knobDown;
 

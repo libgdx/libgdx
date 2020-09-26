@@ -144,7 +144,7 @@ public class ProgressBar extends Widget implements Disableable {
 				position = (positionHeight - knobHeight) * percent;
 				position = Math.min(positionHeight - knobHeight, position) + bgBottomHeight;
 			}
-			position = Math.max(Math.min(0, bgBottomHeight), position);
+			position = Math.max(bgBottomHeight, position);
 
 			if (knobBefore != null) {
 				if (round) {
@@ -201,7 +201,7 @@ public class ProgressBar extends Widget implements Disableable {
 				position = (positionWidth - knobWidth) * percent;
 				position = Math.min(positionWidth - knobWidth, position) + bgLeftWidth;
 			}
-			position = Math.max(Math.min(0, bgLeftWidth), position);
+			position = Math.max(bgLeftWidth, position);
 
 			if (knobBefore != null) {
 				if (round) {
