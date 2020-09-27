@@ -128,6 +128,7 @@ public class LwjglFrame extends JFrame {
 				if (Display.isCreated()) {
 					Display.setLocation(0, 0);
 					Display.update(false);
+					lwjglCanvas.graphics.requestRendering();
 				}
 			}
 		});
