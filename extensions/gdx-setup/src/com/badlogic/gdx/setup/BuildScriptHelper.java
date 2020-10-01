@@ -43,6 +43,7 @@ public class BuildScriptHelper {
 		write(wr, "dependencies {");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "classpath '" + DependencyBank.gwtPluginImport + "'");
+			write(wr, "classpath '" + DependencyBank.grettyPluginImport + "'");
 		}
 		if (projects.contains(ProjectType.ANDROID)) {
 			write(wr, "classpath '" + DependencyBank.androidPluginImport + "'");
