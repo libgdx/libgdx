@@ -320,7 +320,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void getIndices (short[] out, int destOffset) {
 		if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
 		if ((destOffset < 0) || (destOffset > out.length - indices.size))
-			throw new GdxRuntimeException("Array to small or offset out of range");
+			throw new GdxRuntimeException("Array too small or offset out of range");
 		System.arraycopy(indices.items, 0, out, destOffset, indices.size);
 	}
 
