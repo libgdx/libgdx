@@ -40,6 +40,12 @@
 - API Addition: Added getBackgroundDrawable() to Button.
 - API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
 - API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
+- API Addition: Added wrapReverse setting to HorizontalGroup.
+- API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
+- Fixed LwjglFrame not hiding the canvas in some situations.
+- API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
+- Fixed blurry NinePatch rendering when using a single center region.
+- API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

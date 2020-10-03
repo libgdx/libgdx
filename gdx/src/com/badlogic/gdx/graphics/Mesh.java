@@ -815,7 +815,7 @@ public class Mesh implements Disposable {
 		case 3:
 			if (numIndices > 0) {
 				for (int i = offset; i < end; i++) {
-					final int idx = (index.get(i) &0xFFFF) * vertexSize + posoff;
+					final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
 					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
 					if (transform != null) tmpV.mul(transform);
 					out.ext(tmpV);

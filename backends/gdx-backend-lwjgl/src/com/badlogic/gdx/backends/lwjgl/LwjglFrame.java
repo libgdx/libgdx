@@ -16,18 +16,22 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GraphicsConfiguration;
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.swing.JFrame;
 
+import org.lwjgl.opengl.Display;
+
 import com.badlogic.gdx.ApplicationListener;
+
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GraphicsConfiguration;
+import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
@@ -113,6 +117,21 @@ public class LwjglFrame extends JFrame {
 		Point location = getLocation();
 		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
 		lwjglCanvas.getCanvas().setSize(size);
+
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowLostFocus (WindowEvent event) {
+				// Display.reshape sizes and positions the OpenGL window to match the canvas.
+				// Normally Display.reshape is called from Display.update when the size changes, but LwjglCanvas doesn't call
+				// Display.update when rendering is not needed because it also swaps buffers and would flicker.
+				// After losing focus rendering may not be needed so Display.reshape must be called, else the OpenGL window may be
+				// left in the wrong place.
+				// Display.setLocation calls Display.reshape, despite javadocs saying it's a no-op when a canvas is set.
+				if (Display.isCreated()) {
+					Display.setLocation(0, 0);
+					lwjglCanvas.graphics.requestRendering();
+				}
+			}
+		});
 
 		// Finish with invokeLater so any LwjglFrame super constructor has a chance to initialize.
 		EventQueue.invokeLater(new Runnable() {
