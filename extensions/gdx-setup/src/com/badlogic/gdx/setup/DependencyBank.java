@@ -40,7 +40,8 @@ public class DependencyBank {
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.9";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
+	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
 	static String androidPluginImport = "com.android.tools.build:gradle:3.4.1";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
