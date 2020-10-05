@@ -43,12 +43,16 @@ protected:
 	btMultiBodyConstraint**					m_tmpMultiBodyConstraints;
 	int										m_tmpNumMultiBodyConstraints;
 
-	void resolveSingleConstraintRowGeneric(const btMultiBodySolverConstraint& c);
-	void resolveSingleConstraintRowGenericMultiBody(const btMultiBodySolverConstraint& c);
+	btScalar resolveSingleConstraintRowGeneric(const btMultiBodySolverConstraint& c);
+	
 
 	void convertContacts(btPersistentManifold** manifoldPtr,int numManifolds, const btContactSolverInfo& infoGlobal);
-	btMultiBodySolverConstraint&	addMultiBodyFrictionConstraint(const btVector3& normalAxis,btPersistentManifold* manifold,int frictionIndex,btManifoldPoint& cp,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, const btContactSolverInfo& infoGlobal, btScalar desiredVelocity=0, btScalar cfmSlip=0);
+    
+    btMultiBodySolverConstraint&	addMultiBodyFrictionConstraint(const btVector3& normalAxis,btPersistentManifold* manifold,int frictionIndex,btManifoldPoint& cp,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, const btContactSolverInfo& infoGlobal, btScalar desiredVelocity=0, btScalar cfmSlip=0);
 
+    btMultiBodySolverConstraint&	addMultiBodyTorsionalFrictionConstraint(const btVector3& normalAxis,btPersistentManifold* manifold,int frictionIndex,btManifoldPoint& cp,
+                                                            btScalar combinedTorsionalFriction,
+                                                            btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, const btContactSolverInfo& infoGlobal, btScalar desiredVelocity=0, btScalar cfmSlip=0);
 
 	void setupMultiBodyJointLimitConstraint(btMultiBodySolverConstraint& constraintRow, 
 																 btScalar* jacA,btScalar* jacB,
@@ -60,6 +64,15 @@ protected:
 																 btManifoldPoint& cp, const btContactSolverInfo& infoGlobal,
 																 btScalar& relaxation,
 																 bool isFriction, btScalar desiredVelocity=0, btScalar cfmSlip=0);
+    
+    //either rolling or spinning friction
+    void setupMultiBodyTorsionalFrictionConstraint(btMultiBodySolverConstraint& solverConstraint,
+                                         const btVector3& contactNormal,
+                                         btManifoldPoint& cp,
+                                        btScalar combinedTorsionalFriction,
+                                        const btContactSolverInfo& infoGlobal,
+                                         btScalar& relaxation,
+                                         bool isFriction, btScalar desiredVelocity=0, btScalar cfmSlip=0);
 
 	void convertMultiBodyContact(btPersistentManifold* manifold,const btContactSolverInfo& infoGlobal);
 	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,11 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
+
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -40,9 +43,15 @@ import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
+import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIPress;
+import org.robovm.apple.uikit.UIPressesEvent;
+import org.robovm.apple.uikit.UIRectEdge;
+import org.robovm.apple.uikit.UIView;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
@@ -53,11 +62,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	private static final String tag = "IOSGraphics";
 
-	static class IOSUIViewController extends GLKViewController {
+	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
 
-		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
@@ -72,6 +81,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		@Override
 		public void viewDidAppear (boolean animated) {
+			super.viewDidAppear(animated);
 			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 		}
 
@@ -105,6 +115,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
+			return app.config.screenEdgesDeferringSystemGestures;
+		}
+
+		@Override
 		public void viewDidLayoutSubviews () {
 			super.viewDidLayoutSubviews();
 			// get the view size and update graphics
@@ -114,16 +129,42 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			// Layout may happen without bounds changing, don't trigger resize in that case
 			if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
 				graphics.makeCurrent();
+				graphics.updateSafeInsets();
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
+
 		}
-		
+
+		@Override
+		public boolean prefersStatusBarHidden () {
+			return !app.config.statusBarVisible;
+		}
+
+		@Override
+		public boolean prefersHomeIndicatorAutoHidden() {
+			return app.config.hideHomeIndicator;
+		}
+
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
 		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
 			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
+
+        @Override
+        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+                super.pressesBegan(presses, event);
+            }
+        }
+
+        @Override
+        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+                super.pressesEnded(presses, event);
+            }
+        }
 	}
 
 	IOSApplication app;
@@ -131,6 +172,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GL20 gl20;
 	GL30 gl30;
 	IOSScreenBounds screenBounds;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -209,7 +251,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = new IOSUIViewController(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
@@ -242,7 +284,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi/160f : app.pixelsPerPoint;
@@ -298,14 +340,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			final int width = screenBounds.width;
 			final int height = screenBounds.height;
 			gl20.glViewport(0, 0, width, height);
-			app.listener.create();
-			app.listener.resize(width, height);
-			created = true;
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
+
+			updateSafeInsets();
+			app.listener.create();
+			app.listener.resize(width, height);
+			created = true;
 		}
 		if (appPaused) {
 			return;
@@ -353,6 +397,38 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
+	}
+
+
+	@Override
 	public int getWidth () {
 		return screenBounds.width;
 	}
@@ -363,12 +439,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public int getBackBufferWidth () {
+	public int getBackBufferWidth() {
 		return screenBounds.backBufferWidth;
 	}
 
 	@Override
-	public int getBackBufferHeight () {
+	public int getBackBufferHeight() {
 		return screenBounds.backBufferHeight;
 	}
 
@@ -442,7 +518,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
 			+ bufferFormat.b + bufferFormat.a);
 	}
-	
+
 	@Override
 	public Monitor getPrimaryMonitor() {
 		return new IOSMonitor(0, 0, "Primary Monitor");
@@ -468,6 +544,48 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return getDisplayMode();
 	}
 
+	protected void updateSafeInsets() {
+		safeInsetTop = 0;
+		safeInsetLeft = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Foundation.getMajorSystemVersion() >= 11) {
+			UIView view = UIApplication.getSharedApplication().getKeyWindow().getRootViewController().getView();
+			UIEdgeInsets edgeInsets = view.getSafeAreaInsets();
+
+			double top = edgeInsets.getTop() * view.getContentScaleFactor();
+			double bottom = edgeInsets.getBottom() * view.getContentScaleFactor();
+			double left = edgeInsets.getLeft() * view.getContentScaleFactor();
+			double right = edgeInsets.getRight() * view.getContentScaleFactor();
+
+			safeInsetTop = (int) top;
+			safeInsetLeft = (int) left;
+			safeInsetRight = (int) right;
+			safeInsetBottom = (int) bottom;
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
+	}
+
 	@Override
 	public boolean setFullscreenMode (DisplayMode displayMode) {
 		return false;
@@ -480,6 +598,14 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setTitle (String title) {
+	}
+
+	@Override
+	public void setUndecorated(boolean undecorated) {
+	}
+
+	@Override
+	public void setResizable(boolean resizable) {
 	}
 
 	@Override
@@ -525,20 +651,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
-	}
-
-	@Override
 	public long getFrameId () {
 		return frameId;
 	}
-	
+
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return null;
@@ -547,17 +663,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public void setCursor (Cursor cursor) {
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	private class IOSDisplayMode extends DisplayMode {
 		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
 	}
-	
+
 	private class IOSMonitor extends Monitor {
 		protected IOSMonitor(int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);

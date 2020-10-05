@@ -51,7 +51,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 			return deps;
 		}
 
-		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
+		data = new BitmapFontData(file, parameter != null && parameter.flip);
 		if (parameter != null && parameter.atlasName != null) {
 			deps.add(new AssetDescriptor(parameter.atlasName, TextureAtlas.class));
 		} else {

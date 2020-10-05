@@ -24,10 +24,7 @@ package com.badlogic.gdx.backends.lwjgl.audio;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
-import org.lwjgl.BufferUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -45,7 +42,7 @@ import com.jcraft.jorbis.Info;
  * @author kevin */
 public class OggInputStream extends InputStream {
 	private final static int BUFFER_SIZE = 512;
-	
+
 	/** The conversion buffer size */
 	private int convsize = BUFFER_SIZE * 4;
 	/** The buffer used to read OGG file */
@@ -87,7 +84,8 @@ public class OggInputStream extends InputStream {
 	/** The index into the byte array we currently read from */
 	private int readIndex;
 	/** The byte array store used to hold the data read from the ogg */
-	private ByteBuffer pcmBuffer;
+	private byte[] outBuffer;
+	private int outIndex;
 	/** The total number of bytes */
 	private int total;
 
@@ -104,13 +102,13 @@ public class OggInputStream extends InputStream {
 	 *
 	 * @param input The input stream from which to read the OGG file
 	 * @param previousStream The stream instance to reuse buffers from, may be null */
-	OggInputStream (InputStream input, OggInputStream previousStream) {
+	public OggInputStream (InputStream input, OggInputStream previousStream) {
 		if (previousStream == null) {
 			convbuffer = new byte[convsize];
-			pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);
+			outBuffer = new byte[4096 * 500];
 		} else {
 			convbuffer = previousStream.convbuffer;
-			pcmBuffer = previousStream.pcmBuffer;
+			outBuffer = previousStream.outBuffer;
 		}
 
 		this.input = input;
@@ -369,10 +367,12 @@ public class OggInputStream extends InputStream {
 									}
 
 									int bytesToWrite = 2 * oggInfo.channels * bout;
-									if (bytesToWrite > pcmBuffer.remaining()) {
-										throw new GdxRuntimeException("Ogg block too big to be buffered: " + bytesToWrite + " :: " + pcmBuffer.remaining());
+									if (outIndex + bytesToWrite > outBuffer.length) {
+										throw new GdxRuntimeException(
+											"Ogg block too big to be buffered: " + bytesToWrite + ", " + (outBuffer.length - outIndex));
 									} else {
-										pcmBuffer.put(convbuffer, 0, bytesToWrite);
+										System.arraycopy(convbuffer, 0, outBuffer, outIndex, bytesToWrite);
+										outIndex += bytesToWrite;
 									}
 
 									wrote = true;
@@ -430,26 +430,22 @@ public class OggInputStream extends InputStream {
 	}
 
 	public int read () {
-		if (readIndex >= pcmBuffer.position()) {
-			pcmBuffer.clear();
+		if (readIndex >= outIndex) {
+			outIndex = 0;
 			readPCM();
 			readIndex = 0;
-		}
-		if (readIndex >= pcmBuffer.position()) {
-			return -1;
+			if (outIndex == 0) return -1;
 		}
 
-		int value = pcmBuffer.get(readIndex);
-		if (value < 0) {
-			value = 256 + value;
-		}
+		int value = outBuffer[readIndex];
+		if (value < 0) value = 256 + value;
 		readIndex++;
 
 		return value;
 	}
 
 	public boolean atEnd () {
-		return endOfStream && (readIndex >= pcmBuffer.position());
+		return endOfStream && (readIndex >= outIndex);
 	}
 
 	public int read (byte[] b, int off, int len) {
@@ -458,14 +454,10 @@ public class OggInputStream extends InputStream {
 			if (value >= 0) {
 				b[i] = (byte)value;
 			} else {
-				if (i == 0) {
-					return -1;
-				} else {
-					return i;
-				}
+				if (i == 0) return -1;
+				return i;
 			}
 		}
-
 		return len;
 	}
 

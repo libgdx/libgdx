@@ -96,9 +96,9 @@ public abstract class OcclusionCuller implements Disposable {
 
 	private final FloatBuffer frustumNormals = BufferUtils.newFloatBuffer(NUM_PLANES * 4);
 	private final FloatBuffer frustumOffsets = BufferUtils.newFloatBuffer(NUM_PLANES);
-	private final Vector3 tmpV1 = new Vector3();
-	private final Vector3 tmpV2 = new Vector3();
-	private OcclusionBuffer oclBuffer;
+	final Vector3 tmpV1 = new Vector3();
+	final Vector3 tmpV2 = new Vector3();
+	OcclusionBuffer oclBuffer;
 
 	private final Collider collider = new Collider();
 

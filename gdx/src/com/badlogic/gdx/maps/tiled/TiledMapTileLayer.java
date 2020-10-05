@@ -24,8 +24,8 @@ public class TiledMapTileLayer extends MapLayer {
 	private int width;
 	private int height;
 
-	private float tileWidth;
-	private float tileHeight;
+	private int tileWidth;
+	private int tileHeight;
 
 	private Cell[][] cells;
 
@@ -40,12 +40,12 @@ public class TiledMapTileLayer extends MapLayer {
 	}
 
 	/** @return tiles' width in pixels */
-	public float getTileWidth () {
+	public int getTileWidth () {
 		return tileWidth;
 	}
 
 	/** @return tiles' height in pixels */
-	public float getTileHeight () {
+	public int getTileHeight () {
 		return tileHeight;
 	}
 
@@ -102,9 +102,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets the tile to be used for this cell.
 		 * 
-		 * @param tile the {@link TiledMapTile} to use for this cell. */
-		public void setTile (TiledMapTile tile) {
+		 * @param tile the {@link TiledMapTile} to use for this cell. 
+		 * @return this, for method chaining */
+		public Cell setTile (TiledMapTile tile) {
 			this.tile = tile;
+			return this;
 		}
 
 		/** @return Whether the tile should be flipped horizontally. */
@@ -114,9 +116,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile horizontally.
 		 * 
-		 * @param flipHorizontally whether or not to flip the tile horizontally. */
-		public void setFlipHorizontally (boolean flipHorizontally) {
+		 * @param flipHorizontally whether or not to flip the tile horizontally. 
+		 * @return this, for method chaining */
+		public Cell setFlipHorizontally (boolean flipHorizontally) {
 			this.flipHorizontally = flipHorizontally;
+			return this;
 		}
 
 		/** @return Whether the tile should be flipped vertically. */
@@ -126,21 +130,25 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile vertically.
 		 * 
-		 * @param flipVertically whether or not this tile should be flipped vertically. */
-		public void setFlipVertically (boolean flipVertically) {
+		 * @param flipVertically whether or not this tile should be flipped vertically. 
+		 * @return this, for method chaining */
+		public Cell setFlipVertically (boolean flipVertically) {
 			this.flipVertically = flipVertically;
+			return this;
 		}
 
-		/** @return The rotation of this cell, in degrees. */
+		/** @return The rotation of this cell, in 90 degree increments. */
 		public int getRotation () {
 			return rotation;
 		}
 
-		/** Sets the rotation of this cell, in degrees.
+		/** Sets the rotation of this cell, in 90 degree increments.
 		 * 
-		 * @param rotation the rotation in degrees. */
-		public void setRotation (int rotation) {
+		 * @param rotation the rotation in 90 degree increments (see ints below). 
+		 * @return this, for method chaining */
+		public Cell setRotation (int rotation) {
 			this.rotation = rotation;
+			return this;
 		}
 
 		public static final int ROTATE_0 = 0;

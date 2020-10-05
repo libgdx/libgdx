@@ -85,6 +85,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform cameraPosition = new Uniform("u_cameraPosition");
 		public final static Uniform cameraDirection = new Uniform("u_cameraDirection");
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
+		public final static Uniform cameraNearFar = new Uniform("u_cameraNearFar");
 
 		public final static Uniform worldTrans = new Uniform("u_worldTrans");
 		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
@@ -157,6 +158,12 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, shader.camera.up);
 			}
 		};
+		public final static Setter cameraNearFar = new GlobalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, shader.camera.near, shader.camera.far);
+			}
+		};
 		public final static Setter worldTrans = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
@@ -198,10 +205,12 @@ public class DefaultShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				for (int i = 0; i < bones.length; i++) {
+				for (int i = 0; i < bones.length; i += 16) {
 					final int idx = i / 16;
-					bones[i] = (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null) ? idtMatrix.val[i % 16]
-						: renderable.bones[idx].val[i % 16];
+					if (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null)
+						System.arraycopy(idtMatrix.val, 0, bones, i, 16);
+					else
+						System.arraycopy(renderable.bones[idx].val, 0, bones, i, 16);
 				}
 				shader.program.setUniformMatrix4fv(shader.loc(inputID), bones, 0, bones.length);
 			}
@@ -410,6 +419,7 @@ public class DefaultShader extends BaseShader {
 	public final int u_cameraPosition;
 	public final int u_cameraDirection;
 	public final int u_cameraUp;
+	public final int u_cameraNearFar;
 	public final int u_time;
 	// Object uniforms
 	public final int u_worldTrans;
@@ -490,7 +500,7 @@ public class DefaultShader extends BaseShader {
 	private Renderable renderable;
 	/** The attributes that this shader supports */
 	protected final long attributesMask;
-	private long vertexMask;
+	private final long vertexMask;
 	protected final Config config;
 	/** Attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
@@ -523,7 +533,7 @@ public class DefaultShader extends BaseShader {
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
 		this.renderable = renderable;
 		attributesMask = attributes.getMask() | optionalAttributes;
-		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
+		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
 
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
 		for (int i = 0; i < directionalLights.length; i++)
@@ -545,6 +555,7 @@ public class DefaultShader extends BaseShader {
 		u_cameraPosition = register(Inputs.cameraPosition, Setters.cameraPosition);
 		u_cameraDirection = register(Inputs.cameraDirection, Setters.cameraDirection);
 		u_cameraUp = register(Inputs.cameraUp, Setters.cameraUp);
+		u_cameraNearFar = register(Inputs.cameraNearFar, Setters.cameraNearFar);
 		u_time = register(new Uniform("u_time"));
 		// Object uniforms
 		u_worldTrans = register(Inputs.worldTrans, Setters.worldTrans);
@@ -628,6 +639,13 @@ public class DefaultShader extends BaseShader {
 		return tmpAttributes;
 	}
 
+	private static final long combineAttributeMasks (final Renderable renderable) {
+		long mask = 0;
+		if (renderable.environment != null) mask |= renderable.environment.getMask();
+		if (renderable.material != null) mask |= renderable.material.getMask();
+		return mask;
+	}
+
 	public static String createPrefix (final Renderable renderable, final Config config) {
 		final Attributes attributes = combineAttributes(renderable);
 		String prefix = "";
@@ -703,9 +721,9 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean canRender (final Renderable renderable) {
-		final Attributes attributes = combineAttributes(renderable);
-		return (attributesMask == (attributes.getMask() | optionalAttributes))
-			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting;
+		final long renderableMask = combineAttributeMasks(renderable);
+		return (attributesMask == (renderableMask | optionalAttributes))
+			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked()) && (renderable.environment != null) == lighting;
 	}
 
 	@Override
@@ -717,15 +735,14 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof DefaultShader) ? equals((DefaultShader)obj) : false;
+		return (obj instanceof DefaultShader) && equals((DefaultShader) obj);
 	}
 
 	public boolean equals (DefaultShader obj) {
 		return (obj == this);
 	}
 
-	private Matrix3 normalMatrix = new Matrix3();
-	private Camera camera;
+	private final Matrix3 normalMatrix = new Matrix3();
 	private float time;
 	private boolean lightsSet;
 

@@ -42,6 +42,8 @@ public class TextureUnpacker {
 	private static final String HELP = "Usage: atlasFile [imageDir] [outputDir]";
 	private static final String ATLAS_FILE_EXTENSION = ".atlas";
 
+	private boolean quiet;
+
 	/** Checks the command line arguments for correctness.
 	 * @return 0 If arguments are invalid, Number of arguments otherwise. */
 	private int parseArguments (String[] args) {
@@ -75,20 +77,22 @@ public class TextureUnpacker {
 		File outputDirFile = new File(outputDir);
 		if (!outputDirFile.exists()) {
 			outputDirFile.mkdirs();
-			System.out.println(String.format("Creating directory: %s", outputDirFile.getPath()));
+			if (!quiet) System.out.println(String.format("Creating directory: %s", outputDirFile.getPath()));
 		}
 
 		for (Page page : atlas.getPages()) {
 			// load the image file belonging to this page as a Buffered Image
+			File file = page.textureFile.file();
+			if (!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
 			BufferedImage img = null;
 			try {
-				img = ImageIO.read(page.textureFile.file());
+				img = ImageIO.read(file);
 			} catch (IOException e) {
 				printExceptionAndExit(e);
 			}
 			for (Region region : atlas.getRegions()) {
-				System.out.println(String.format("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
-					region.left, region.top, region.width, region.height, region.rotate));
+				if (!quiet) System.out.println(String.format("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]",
+					region.name, region.left, region.top, region.width, region.height, region.rotate));
 
 				// check if the page this region is in is currently loaded in a Buffered Image
 				if (region.page == page) {
@@ -98,6 +102,13 @@ public class TextureUnpacker {
 					// check if the region is a ninepatch or a normal image and delegate accordingly
 					if (region.splits == null) {
 						splitImage = extractImage(img, region, outputDirFile, 0);
+						if (region.width != region.originalWidth || region.height != region.originalHeight) {
+						    BufferedImage originalImg = new BufferedImage(region.originalWidth, region.originalHeight, img.getType());
+						    Graphics2D g2 = originalImg.createGraphics();
+						    g2.drawImage(splitImage, (int) region.offsetX, (int) (region.originalHeight - region.height - region.offsetY), null);
+						    g2.dispose();
+						    splitImage = originalImg;
+						}
 						extension = OUTPUT_TYPE;
 					} else {
 						splitImage = extractNinePatch(img, region, outputDirFile);
@@ -105,17 +116,18 @@ public class TextureUnpacker {
 					}
 
 					// check if the parent directories of this image file exist and create them if not
-					File imgOutput = new File(outputDirFile, String.format("%s.%s", region.index == -1?region.name:region.name + "_" + region.index, extension));
+					File imgOutput = new File(outputDirFile,
+						String.format("%s.%s", region.index == -1 ? region.name : region.name + "_" + region.index, extension));
 					File imgDir = imgOutput.getParentFile();
 					if (!imgDir.exists()) {
-						System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
+						if (!quiet) System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
 						imgDir.mkdirs();
 					}
 
 					// save the image
 					try {
 						ImageIO.write(splitImage, OUTPUT_TYPE, imgOutput);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						printExceptionAndExit(e);
 					}
 				}
@@ -193,6 +205,10 @@ public class TextureUnpacker {
 		System.exit(1);
 	}
 
+	public void setQuiet (boolean quiet) {
+		this.quiet = quiet;
+	}
+
 	public static void main (String[] args) {
 		TextureUnpacker unpacker = new TextureUnpacker();
 
@@ -211,7 +227,8 @@ public class TextureUnpacker {
 			atlasFile = args[0];
 		}
 
-		File atlasFileHandle = new File(atlasFile);
+		File atlasFileHandle = new File(atlasFile).getAbsoluteFile();
+		if (!atlasFileHandle.exists()) throw new RuntimeException("Atlas file not found: " + atlasFileHandle.getAbsolutePath());
 		String atlasParentPath = atlasFileHandle.getParentFile().getAbsolutePath();
 
 		// Set the directory variables to a default when they weren't given in the variables

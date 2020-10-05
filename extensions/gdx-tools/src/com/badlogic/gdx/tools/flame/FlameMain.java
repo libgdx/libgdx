@@ -198,7 +198,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	AppRenderer renderer;
 	AssetManager assetManager;
 	JComboBox influencerBox;
-	
+	TextureAtlas textureAtlas;
+
 	private ParticleEffect effect;
 	/** READ only */
 	public Array<ControllerData> controllersData;
@@ -750,17 +751,17 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		}
 
 		public void render () {
-			//float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
-			update();
+			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
+			update(delta);
 			renderWorld();
 		}
 
-		private void update () {
+		private void update (float delta) {
 			worldCamera.fieldOfView = fovValue.getValue();
 			worldCamera.update();
 			cameraInputController.update();
 			if(isUpdate){
-				particleSystem.update();
+				particleSystem.update(delta);
 				//Update ui
 				stringBuilder.delete(0, stringBuilder.length);
 				stringBuilder.append("Point Sprites : ").append(pointSpriteBatch.getBufferedCount());
@@ -894,9 +895,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	public ModelInstanceParticleBatch getModelInstanceParticleBatch () {
 		return renderer.modelInstanceParticleBatch;
 	}
-	
-	public void setAtlas(TextureAtlas atlas){
-		//currentAtlas = atlas;
+	public void setAtlas(TextureAtlas atlas) {
+		this.textureAtlas = atlas;
 		setTexture(atlas.getTextures().first());
 	}
 	
@@ -920,6 +920,13 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	
 	public TextureAtlas getAtlas(){
 		return getAtlas(renderer.billboardBatch.getTexture());
+	}
+
+	public String getAtlasFilename() {
+		if (textureAtlas == null) {
+			return null;
+		}
+		return assetManager.getAssetFileName(textureAtlas);
 	}
 	
 	public boolean isUsingDefaultTexture () {

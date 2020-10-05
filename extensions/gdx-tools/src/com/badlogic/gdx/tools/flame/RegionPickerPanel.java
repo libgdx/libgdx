@@ -35,7 +35,7 @@ public class RegionPickerPanel extends JPanel{
 	}
 	
 	public interface Listener{
-		void onRegionsSelected(Array<TextureRegion> regions);
+		void onRegionsSelected(Array<TextureRegion> regions, String atlasFilename);
 	}
 	
 	TextureAtlasPanel atlasPanel;
@@ -109,7 +109,8 @@ public class RegionPickerPanel extends JPanel{
 			public void actionPerformed (ActionEvent arg0) {
 				JPanel panel = ((CustomCardLayout)content.getLayout()).getCurrentCard(content);
 				TexturePanel currentTexturePanel = panel == atlasPanel ? atlasPanel.getCurrentRegionPanel() : texturePanel;
-				listener.onRegionsSelected(currentTexturePanel.selectedRegions);
+				String atlasName = panel == atlasPanel ? atlasPanel.getAtlasName() : null;
+				listener.onRegionsSelected(currentTexturePanel.selectedRegions, atlasName);
 			}
 		});
 		
@@ -178,9 +179,9 @@ public class RegionPickerPanel extends JPanel{
 		}
 	}
 
-	public void setAtlas (TextureAtlas atlas) {
+	public void setAtlas(TextureAtlas atlas, String atlasFilename) {
 		atlasPanel.clearSelection();
-		atlasPanel.setAtlas(atlas);
+		atlasPanel.setAtlas(atlas, atlasFilename);
 		CustomCardLayout cardLayout = (CustomCardLayout)content.getLayout();
 		cardLayout.show(content, "atlas");
 		showGenerationPanel(false);

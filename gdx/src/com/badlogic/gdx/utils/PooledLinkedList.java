@@ -62,6 +62,24 @@ public class PooledLinkedList<T> {
 		size++;
 	}
 
+	/** Adds the specified object to the head of the list regardless of iteration status */
+	public void addFirst (T object) {
+		Item<T> item = pool.obtain();
+		item.payload = object;
+		item.next = head;
+		item.prev = null;
+
+		if (head != null) {
+			head.prev = item;
+		} else {
+			tail = item;
+		}
+
+		head = item;
+
+		size++;
+	}
+
 	/** Returns the number of items in the list */
 	public int size () {
 		return size;
@@ -71,7 +89,7 @@ public class PooledLinkedList<T> {
 	public void iter () {
 		iter = head;
 	}
-	
+
 	/** Starts iterating over the list's items from the tail of the list */
 	public void iterReverse () {
 		iter = tail;
@@ -80,7 +98,7 @@ public class PooledLinkedList<T> {
 	/** Gets the next item in the list
 	 * 
 	 * @return the next item in the list or null if there are no more items */
-	public T next () {
+	public @Null T next () {
 		if (iter == null) return null;
 
 		T payload = iter.payload;
@@ -88,11 +106,11 @@ public class PooledLinkedList<T> {
 		iter = iter.next;
 		return payload;
 	}
-	
+
 	/** Gets the previous item in the list
 	 * 
 	 * @return the previous item in the list or null if there are no more items */
-	public T previous () {
+	public @Null T previous () {
 		if (iter == null) return null;
 
 		T payload = iter.payload;
@@ -106,11 +124,11 @@ public class PooledLinkedList<T> {
 		if (curr == null) return;
 
 		size--;
-		pool.free(curr);
 
 		Item<T> c = curr;
 		Item<T> n = curr.next;
 		Item<T> p = curr.prev;
+		pool.free(curr);
 		curr = null;
 
 		if (size == 0) {
@@ -133,6 +151,30 @@ public class PooledLinkedList<T> {
 
 		p.next = n;
 		n.prev = p;
+	}
+
+	/** Removes the tail of the list regardless of iteration status */
+	public @Null T removeLast () {
+		if (tail == null) {
+			return null;
+		}
+
+		T payload = tail.payload;
+
+		size--;
+
+		Item<T> p = tail.prev;
+		pool.free(tail);
+
+		if (size == 0) {
+			head = null;
+			tail = null;
+		} else {
+			tail = p;
+			tail.next = null;
+		}
+
+		return payload;
 	}
 
 	public void clear () {

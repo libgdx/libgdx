@@ -18,14 +18,14 @@ package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import static com.badlogic.gdx.graphics.profiling.GLProfiler.resolveErrorNumber;
+import static com.badlogic.gdx.graphics.profiling.GLInterceptor.resolveErrorNumber;
 
 /** @see GLProfiler
  * @author Jan Polák */
 public interface GLErrorListener {
 
 	/** Put your error logging code here.
-	 * @see GLProfiler#resolveErrorNumber(int) */
+	 * @see GLInterceptor#resolveErrorNumber(int) */
 	public void onError (int error);
 
 	// Basic implementations
@@ -54,18 +54,18 @@ public interface GLErrorListener {
 			if (place != null) {
 				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
 			} else {
-				StringBuffer buffer = new StringBuffer("Error ");
-				buffer.append(resolveErrorNumber(error));
-				buffer.append(" at:\n");
+				StringBuilder sb = new StringBuilder("Error ");
+				sb.append(resolveErrorNumber(error));
+				sb.append(" at:\n");
 				try {
 					final StackTraceElement[] stack = exc.getStackTrace();
 					for (int i = 0; i < stack.length; i++) {
-						buffer.append(stack[i].toString()).append('\n');
+						sb.append(stack[i].toString()).append('\n');
 					}
 				} catch (Exception ignored) {
-					buffer.append(" (Failed to print stack trace: ").append(ignored).append(")");
+					sb.append(" (Failed to print stack trace: ").append(ignored).append(")");
 				}
-				Gdx.app.error("GLProfiler", buffer.toString());
+				Gdx.app.error("GLProfiler", sb.toString());
 				// GWT backend seems to have trouble printing stack traces reliably
 			}
 		}

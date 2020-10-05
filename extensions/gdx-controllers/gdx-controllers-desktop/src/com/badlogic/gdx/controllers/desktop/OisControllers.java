@@ -74,11 +74,25 @@ public class OisControllers {
 						ois = new Ois(newWindowHandle);
 
 						ArrayList<OisJoystick> joysticks = ois.getJoysticks();
+						OisController[] oldControllers = controllers;
 						controllers = new OisController[joysticks.size()];
 						manager.controllers.clear();
 						for (int i = 0, n = joysticks.size(); i < n; i++) {
 							OisJoystick joystick = joysticks.get(i);
 							controllers[i] = new OisController(joystick);
+							if (controllers.length == oldControllers.length && oldControllers[i].getName().equals(controllers[i].getName())) {
+								if (oldControllers[i].listeners.size != 0) {
+									controllers[i].listeners.addAll(oldControllers[i].listeners);
+								}
+							}
+							else {
+								for (int j = 0; j < oldControllers.length; j++) {
+									if (oldControllers[j].listeners.size != 0 && oldControllers[j].getName().equals(controllers[i].getName())) {
+										controllers[i].listeners.addAll(oldControllers[j].listeners);
+										break;
+									}
+								}
+							}
 							manager.controllers.add(controllers[i]);
 						}
 					}
@@ -100,50 +114,50 @@ public class OisControllers {
 				public void buttonReleased (OisJoystick joystick, int buttonIndex) {
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).buttonUp(OisController.this, buttonIndex);
+						if (allListeners.get(ii).buttonUp(OisController.this, buttonIndex)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).buttonUp(OisController.this, buttonIndex);
+						if (listeners.get(ii).buttonUp(OisController.this, buttonIndex)) break;
 				}
 
 				public void buttonPressed (OisJoystick joystick, int buttonIndex) {
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).buttonDown(OisController.this, buttonIndex);
+						if (allListeners.get(ii).buttonDown(OisController.this, buttonIndex)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).buttonDown(OisController.this, buttonIndex);
+						if (listeners.get(ii).buttonDown(OisController.this, buttonIndex)) break;
 				}
 
 				public void axisMoved (OisJoystick joystick, int axisIndex, float value) {
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).axisMoved(OisController.this, axisIndex, value);
+						if (allListeners.get(ii).axisMoved(OisController.this, axisIndex, value)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).axisMoved(OisController.this, axisIndex, value);
+						if (listeners.get(ii).axisMoved(OisController.this, axisIndex, value)) break;
 				}
 
 				public void povMoved (OisJoystick joystick, int povIndex, OisPov ignored) {
 					PovDirection value = getPov(povIndex);
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).povMoved(OisController.this, povIndex, value);
+						if (allListeners.get(ii).povMoved(OisController.this, povIndex, value)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).povMoved(OisController.this, povIndex, value);
+						if (listeners.get(ii).povMoved(OisController.this, povIndex, value)) break;
 				}
 
 				public void xSliderMoved (OisJoystick joystick, int sliderIndex, boolean value) {
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value);
+						if (allListeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value);
+						if (listeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value)) break;
 				}
 
 				public void ySliderMoved (OisJoystick joystick, int sliderIndex, boolean value) {
 					Array<ControllerListener> allListeners = manager.listeners;
 					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
-						allListeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value);
+						if (allListeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value)) break;
 					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
-						listeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value);
+						if (listeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value)) break;
 				}
 			});
 		}

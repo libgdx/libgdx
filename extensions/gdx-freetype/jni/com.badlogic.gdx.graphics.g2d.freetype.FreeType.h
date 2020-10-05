@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType
+ * Method:    getLastErrorCode
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_getLastErrorCode
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType
  * Method:    initFreeTypeJni
  * Signature: ()J
  */

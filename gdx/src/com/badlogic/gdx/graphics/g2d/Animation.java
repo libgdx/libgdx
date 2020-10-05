@@ -18,15 +18,19 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** <p>
- * An Animation stores a list of {@link TextureRegion}s representing an animated sequence, e.g. for running or jumping. Each
- * region of an Animation is called a key frame, multiple key frames make up the animation.
- * </p>
+ * An Animation stores a list of objects representing an animated sequence, e.g. for running or jumping. Each
+ * object in the Animation is called a key frame, and multiple key frames make up the animation.
+ * <p>
+ * The animation's type is the class representing a frame of animation. For example, a typical 2D animation could be made
+ * up of {@link com.badlogic.gdx.graphics.g2d.TextureRegion TextureRegions} and would be specified as:
+ * <p><code>Animation&lt;TextureRegion&gt; myAnimation = new Animation&lt;TextureRegion&gt;(...);</code>
  * 
  * @author mzechner */
-public class Animation {
-
+public class Animation<T> {
+	
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
 		NORMAL,
@@ -36,8 +40,9 @@ public class Animation {
 		LOOP_PINGPONG,
 		LOOP_RANDOM,
 	}
-
-	final TextureRegion[] keyFrames;
+	
+	/** Length must not be modified without updating {@link #animationDuration}. See {@link #setKeyFrames(T[])}. */
+	T[] keyFrames;
 	private float frameDuration;
 	private float animationDuration;
 	private int lastFrameNumber;
@@ -48,54 +53,45 @@ public class Animation {
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
-	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames) {
+	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can return the
+	 *           correct type of array. Otherwise, it returns an Object[]. */
+	public Animation (float frameDuration, Array<? extends T> keyFrames) {
 		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size];
+		Class arrayType = keyFrames.items.getClass().getComponentType();
+		T[] frames = (T[])ArrayReflection.newInstance(arrayType, keyFrames.size);
 		for (int i = 0, n = keyFrames.size; i < n; i++) {
-			this.keyFrames[i] = keyFrames.get(i);
+			frames[i] = keyFrames.get(i);
 		}
-
-		this.playMode = PlayMode.NORMAL;
-	}
-
-	/** Constructor, storing the frame duration, key frames and play type.
-	 * 
-	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the {@link TextureRegion}s representing the frames.
-	 * @param playMode the animation playback mode. */
-	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames, PlayMode playMode) {
-
-		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size];
-		for (int i = 0, n = keyFrames.size; i < n; i++) {
-			this.keyFrames[i] = keyFrames.get(i);
-		}
-
-		this.playMode = playMode;
+		setKeyFrames(frames);
 	}
 
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
-	public Animation (float frameDuration, TextureRegion... keyFrames) {
-		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.length * frameDuration;
-		this.keyFrames = keyFrames;
-		this.playMode = PlayMode.NORMAL;
+	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can
+	 * return the correct type of array. Otherwise, it returns an Object[].*/
+	public Animation (float frameDuration, Array<? extends T> keyFrames, PlayMode playMode) {
+		this(frameDuration, keyFrames);
+		setPlayMode(playMode);
 	}
 
-	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
+	/** Constructor, storing the frame duration and key frames.
+	 * 
+	 * @param frameDuration the time between frames in seconds.
+	 * @param keyFrames the objects representing the frames. */
+	public Animation (float frameDuration, T... keyFrames) {
+		this.frameDuration = frameDuration;
+		setKeyFrames(keyFrames);
+	}
+
+	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
 	 * state this Animation instance represents, e.g. running, jumping and so on. The mode specifies whether the animation is
 	 * looping or not.
 	 * 
 	 * @param stateTime the time spent in the state represented by this animation.
 	 * @param looping whether the animation is looping or not.
-	 * @return the TextureRegion representing the frame of animation for the given state time. */
-	public TextureRegion getKeyFrame (float stateTime, boolean looping) {
+	 * @return the frame of animation for the given state time. */
+	public T getKeyFrame (float stateTime, boolean looping) {
 		// we set the play mode by overriding the previous mode based on looping
 		// parameter value
 		PlayMode oldPlayMode = playMode;
@@ -111,18 +107,18 @@ public class Animation {
 				playMode = PlayMode.LOOP;
 		}
 
-		TextureRegion frame = getKeyFrame(stateTime);
+		T frame = getKeyFrame(stateTime);
 		playMode = oldPlayMode;
 		return frame;
 	}
 
-	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
+	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
 	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
 	 * {@link #setPlayMode(PlayMode)} method.
 	 * 
 	 * @param stateTime
-	 * @return the TextureRegion representing the frame of animation for the given state time. */
-	public TextureRegion getKeyFrame (float stateTime) {
+	 * @return the frame of animation for the given state time. */
+	public T getKeyFrame (float stateTime) {
 		int frameNumber = getKeyFrameIndex(stateTime);
 		return keyFrames[frameNumber];
 	}
@@ -168,10 +164,16 @@ public class Animation {
 		return frameNumber;
 	}
 
-	/** Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
-	 * @return keyFrames[] field */
-	public TextureRegion[] getKeyFrames () {
+	/** Returns the keyframes[] array where all the frames of the animation are stored.
+	 * @return The keyframes[] field. This array is an Object[] if the animation was instantiated with an Array that was not
+	 *         type-aware. */
+	public T[] getKeyFrames () {
 		return keyFrames;
+	}
+	
+	protected void setKeyFrames (T... keyFrames) {
+		this.keyFrames = keyFrames;
+		this.animationDuration = keyFrames.length * frameDuration;
 	}
 
 	/** Returns the animation play mode. */

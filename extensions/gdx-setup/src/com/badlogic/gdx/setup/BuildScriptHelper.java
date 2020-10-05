@@ -27,20 +27,23 @@ public class BuildScriptHelper {
 
 	private static int indent = 0;
 
-	public static void addBuildScript(List<ProjectType> projects, BufferedWriter wr) throws IOException {
+	public static void addBuildScript(Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
 		write(wr, "buildscript {");
+		write(wr, language.buildScript + "\n");
 		//repos
 		write(wr, "repositories {");
+		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, "maven { url \"" + DependencyBank.gradlePlugins + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		if (projects.contains(ProjectType.HTML)) {
-			write(wr, DependencyBank.jCenter);
-		}
+		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "classpath '" + DependencyBank.gwtPluginImport + "'");
+			write(wr, "classpath '" + DependencyBank.grettyPluginImport + "'");
 		}
 		if (projects.contains(ProjectType.ANDROID)) {
 			write(wr, "classpath '" + DependencyBank.androidPluginImport + "'");
@@ -48,6 +51,7 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
 		}
+		write(wr, language.buildScriptDependencies + "\n");
 		write(wr, "}");
 		write(wr, "}");
 		space(wr);
@@ -56,7 +60,6 @@ public class BuildScriptHelper {
 	public static void addAllProjects(BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
 		write(wr, "apply plugin: \"eclipse\"");
-		write(wr, "apply plugin: \"idea\"");
 		space(wr);
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
@@ -69,30 +72,33 @@ public class BuildScriptHelper {
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
+		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
 		write(wr, "}");
 		write(wr, "}");
 	}
 
-	public static void addProject(ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
+	public static void addProject(Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
 		space(wr);
 		write(wr, "project(\":" + project.getName() + "\") {");
-		for (String plugin : project.getPlugins()) {
+		for (String plugin : project.getPlugins(language)) {
 			write(wr, "apply plugin: \"" + plugin + "\"");
 		}
 		space(wr);
 		addConfigurations(project, wr);
 		space(wr);
-		addDependencies(project, dependencies, wr);
+		addDependencies(language, project, dependencies, wr);
 		write(wr, "}");
 	}
 
-	private static void addDependencies(ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
-			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
 		}
 		for (Dependency dep : dependencyList) {
 			if (dep.getDependencies(project) == null) continue;
@@ -101,10 +107,11 @@ public class BuildScriptHelper {
 				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
-					write(wr, "compile \"" + moduleDependency + "\"");
+					write(wr, "api \"" + moduleDependency + "\"");
 				}
 			}
 		}
+		write(wr, language.dependencies);
 		write(wr, "}");
 	}
 

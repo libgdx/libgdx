@@ -16,6 +16,26 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import java.io.File;
+
+import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSMutableDictionary;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSProcessInfo;
+import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
+import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIPasteboard;
+import org.robovm.apple.uikit.UIScreen;
+import org.robovm.apple.uikit.UIViewController;
+import org.robovm.apple.uikit.UIWindow;
+import org.robovm.rt.bro.Bro;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -30,24 +50,6 @@ import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSMutableDictionary;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSString;
-import org.robovm.apple.foundation.NSThread;
-import org.robovm.apple.uikit.UIApplication;
-import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
-import org.robovm.apple.uikit.UIApplicationLaunchOptions;
-import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
-import org.robovm.apple.uikit.UIPasteboard;
-import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UIViewController;
-import org.robovm.apple.uikit.UIWindow;
-import org.robovm.rt.bro.Bro;
-
-import java.io.File;
 
 public class IOSApplication implements Application {
 
@@ -95,6 +97,7 @@ public class IOSApplication implements Application {
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float pixelsPerPoint;
@@ -111,6 +114,7 @@ public class IOSApplication implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -121,18 +125,17 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
 		// iOS counts in "points" instead of pixels. Points are logical pixels
-		pixelsPerPoint = (float)(getIosVersion() >= 8 ?
-				UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen().getScale());
+		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
 		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
 
 		// setup libgdx
-		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(this, config, input, config.useGL30);
+		this.input = createInput();
+		this.graphics = createGraphics();
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio(config);
-		this.net = new IOSNet(this);
+		this.audio = createAudio(config);
+		this.net = new IOSNet(this, config);
 
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
@@ -149,10 +152,20 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
-	private int getIosVersion () {
-		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
-		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
-		return version;
+	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
+		return new OALIOSAudio(config);
+	}
+
+	protected IOSGraphics createGraphics() {
+		 return new IOSGraphics(this, config, input, config.useGL30);
+	}
+
+	protected IOSGraphics.IOSUIViewController createUIViewController (IOSGraphics graphics) {
+		return new IOSGraphics.IOSUIViewController(this, graphics);
+	}
+
+	protected IOSInput createInput() {
+		 return new DefaultIOSInput(this);
 	}
 
 	/** Return the UI view controller of IOSApplication
@@ -184,9 +197,8 @@ public class IOSApplication implements Application {
 		case LandscapeLeft:
 		case LandscapeRight:
 			if (screenHeight > screenWidth) {
-				if (logLevel >= LOG_DEBUG)
-					debug("IOSApplication", "Switching reported width and height (original was w=" + screenWidth + " h="
-						+ screenHeight + ")");
+				debug("IOSApplication", "Switching reported width and height (original was w=" + screenWidth + " h="
+							+ screenHeight + ")");
 				double tmp = screenHeight;
 				// noinspection SuspiciousNameCombination
 				screenHeight = screenWidth;
@@ -195,12 +207,11 @@ public class IOSApplication implements Application {
 		}
 
 		if (statusBarHeight != 0.0) {
-			if (logLevel >= LOG_DEBUG) debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
+			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
 			screenHeight -= statusBarHeight;
 		} else {
-			if (logLevel >= LOG_DEBUG) debug("IOSApplication", "Status bar is not visible");
+			debug("IOSApplication", "Status bar is not visible");
 		}
-
 		final int offsetX = 0;
 		final int offsetY = (int)Math.round(statusBarHeight);
 
@@ -210,9 +221,8 @@ public class IOSApplication implements Application {
 		final int backBufferWidth = (int)Math.round(screenWidth * pixelsPerPoint);
 		final int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
 
-		if (logLevel >= LOG_DEBUG)
-			debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
-				+ backBufferWidth + " bbH= " + backBufferHeight);
+		debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
+					+ backBufferWidth + " bbH= " + backBufferHeight);
 
 		return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
 	}
@@ -229,9 +239,15 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 		if (config.allowIpod) {
-			OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+			if (audio != null) {
+				audio.setUseHardwareIfAvailable(false);
+			}
 		}
 		graphics.makeCurrent();
 		graphics.resume();
@@ -240,14 +256,17 @@ public class IOSApplication implements Application {
 	final void willEnterForeground (UIApplication uiApp) {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 	}
 
 	final void willResignActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.makeCurrent();
 		graphics.pause();
-		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
 	}
 
 	final void willTerminate (UIApplication uiApp) {
@@ -260,7 +279,7 @@ public class IOSApplication implements Application {
 			}
 		}
 		listener.dispose();
-		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
 	}
 
 	@Override
@@ -294,48 +313,33 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void log (String tag, String message, Throwable exception) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
+	}
+
+	@Override
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
+	}
+
+	@Override
+	public void log (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
+	}
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
+	}
+
+	@Override
+	public void error (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -349,13 +353,23 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
+	}
+
+	@Override
 	public ApplicationType getType () {
 		return ApplicationType.iOS;
 	}
 
 	@Override
 	public int getVersion () {
-		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
+		return (int) NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
 	}
 
 	@Override
@@ -410,7 +424,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		NSThread.exit();
+		System.exit(0);
 	}
 
 	@Override

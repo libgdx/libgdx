@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable {
 	static private final float tolerance = 0.00001f;
 	static protected final int NUM_VERTICES = 20;
-	
+
 	protected final TiledMap map;
 	protected final SpriteCache spriteCache;
 
@@ -217,11 +217,17 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final int col1 = Math.max(0, (int)(cacheBounds.x / layerTileWidth));
-		final int col2 = Math.min(layerWidth, (int)((cacheBounds.x + cacheBounds.width + layerTileWidth) / layerTileWidth));
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		// offset in tiled is y down, so we flip it
+		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
 
-		final int row1 = Math.max(0, (int)(cacheBounds.y / layerTileHeight));
-		final int row2 = Math.min(layerHeight, (int)((cacheBounds.y + cacheBounds.height + layerTileHeight) / layerTileHeight));
+		final int col1 = Math.max(0, (int)((cacheBounds.x - layerOffsetX) / layerTileWidth));
+		final int col2 = Math.min(layerWidth,
+			(int)((cacheBounds.x + cacheBounds.width + layerTileWidth - layerOffsetX) / layerTileWidth));
+
+		final int row1 = Math.max(0, (int)((cacheBounds.y - layerOffsetY) / layerTileHeight));
+		final int row2 = Math.min(layerHeight,
+			(int)((cacheBounds.y + cacheBounds.height + layerTileHeight - layerOffsetY) / layerTileHeight));
 
 		canCacheMoreN = row2 < layerHeight;
 		canCacheMoreE = col2 < layerWidth;
@@ -245,8 +251,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 				final TextureRegion region = tile.getTextureRegion();
 				final Texture texture = region.getTexture();
 
-				final float x1 = col * layerTileWidth + tile.getOffsetX() * unitScale;
-				final float y1 = row * layerTileHeight + tile.getOffsetY() * unitScale;
+				final float x1 = col * layerTileWidth + tile.getOffsetX() * unitScale + layerOffsetX;
+				final float y1 = row * layerTileHeight + tile.getOffsetY() * unitScale + layerOffsetY;
 				final float x2 = x1 + region.getRegionWidth() * unitScale;
 				final float y2 = y1 + region.getRegionHeight() * unitScale;
 
@@ -348,14 +354,14 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 			}
 		}
 	}
-	
+
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final float color = Color.toFloatBits(1.0f, 1.0f, 1.0f, layer.getOpacity());
 		final float[] vertices = this.vertices;
-		
+
 		TextureRegion region = layer.getTextureRegion();
-		
+
 		if (region == null) {
 			return;
 		}

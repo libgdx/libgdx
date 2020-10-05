@@ -19,6 +19,7 @@ subject to the following restrictions:
 
 #include "LinearMath/btQuickprof.h"
 #include "LinearMath/btAlignedObjectArray.h"
+#include <stdio.h>
 
 //#define BT_DEBUG_OSTREAM
 #ifdef BT_DEBUG_OSTREAM
@@ -293,16 +294,16 @@ struct btMatrixX
 
 	void	printMatrix(const char* msg)
 	{
-		//printf("%s ---------------------\n",msg);
+		printf("%s ---------------------\n",msg);
 		for (int i=0;i<rows();i++)
 		{
-			//printf("\n");
+			printf("\n");
 			for (int j=0;j<cols();j++)
 			{
-				//printf("%2.1f\t",(*this)(i,j));
+				printf("%2.1f\t",(*this)(i,j));
 			}
 		}
-		//printf("\n---------------------\n");
+		printf("\n---------------------\n");
 
 	}
 

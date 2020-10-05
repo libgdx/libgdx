@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -58,6 +59,7 @@ public final class ScreenUtils {
 
 		final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
 		final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
+		potPixmap.setBlending(Blending.None);
 		potPixmap.drawPixmap(pixmap, 0, 0);
 		Texture texture = new Texture(potPixmap);
 		TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);

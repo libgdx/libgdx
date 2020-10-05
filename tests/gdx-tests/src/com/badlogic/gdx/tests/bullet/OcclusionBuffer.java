@@ -35,8 +35,7 @@ import java.nio.FloatBuffer;
  * @author jsjolund */
 public class OcclusionBuffer implements Disposable {
 
-	private static class GridPoint3 extends com.badlogic.gdx.math.GridPoint3 {
-
+	static class GridPoint3 extends com.badlogic.gdx.math.GridPoint3 {
 		public GridPoint3 add (GridPoint3 other) {
 			return (GridPoint3)set(x + other.x, y + other.y, z + other.z);
 		}
@@ -86,8 +85,7 @@ public class OcclusionBuffer implements Disposable {
 		}
 	}
 
-	private static class Quaternion extends com.badlogic.gdx.math.Quaternion {
-
+	static class Quaternion extends com.badlogic.gdx.math.Quaternion {
 		/** Left-multiplies the quaternion by the given matrix.
 		 * @param matrix The matrix
 		 * @return This vector for chaining */

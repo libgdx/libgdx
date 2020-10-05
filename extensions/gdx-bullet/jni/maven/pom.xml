@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.9.3-SNAPSHOT</version>
+        <version>1.9.12-SNAPSHOT</version>
         <relativePath>../../../../</relativePath>
     </parent>
     
@@ -15,14 +15,6 @@
     <properties>
         <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
     </properties>
-    
-    <dependencies>
-        <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>gdx-bullet</artifactId>
-        <version>${project.version}</version>        
-    </dependency>
-    </dependencies>
     
     <build>
         <sourceDirectory>src</sourceDirectory>
@@ -139,7 +131,8 @@
                             <resources>
                                 <resource><directory>${basedir}/../../libs/linux32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
-                                <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/linuxarm32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/linuxarm64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>

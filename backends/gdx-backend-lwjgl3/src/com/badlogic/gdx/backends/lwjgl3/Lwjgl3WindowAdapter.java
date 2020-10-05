@@ -8,11 +8,15 @@ package com.badlogic.gdx.backends.lwjgl3;
  */
 public class Lwjgl3WindowAdapter implements Lwjgl3WindowListener {
 	@Override
-	public void iconified() {
+	public void created(Lwjgl3Window window) {
 	}
 
 	@Override
-	public void deiconified() {
+	public void iconified(boolean isIconified) {
+	}
+
+	@Override
+	public void maximized(boolean isMaximized) {
 	}
 
 	@Override
@@ -30,5 +34,9 @@ public class Lwjgl3WindowAdapter implements Lwjgl3WindowListener {
 	
 	@Override
 	public void filesDropped(String[] files) {	
+	}
+
+	@Override
+	public void refreshRequested() {
 	}
 }

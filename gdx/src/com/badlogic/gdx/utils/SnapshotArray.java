@@ -18,23 +18,27 @@ package com.badlogic.gdx.utils;
 
 import java.util.Comparator;
 
-/** Guarantees that array entries provided by {@link #begin()} between indexes 0 and {@link #size} at the time begin was called
- * will not be modified until {@link #end()} is called. If modification of the SnapshotArray occurs between begin/end, the backing
- * array is copied prior to the modification, ensuring that the backing array that was returned by {@link #begin()} is unaffected.
- * To avoid allocation, an attempt is made to reuse any extra array created as a result of this copy on subsequent copies.
+/** An array that allows modification during iteration. Guarantees that array entries provided by {@link #begin()} between indexes
+ * 0 and {@link #size} at the time begin was called will not be modified until {@link #end()} is called. If modification of the
+ * SnapshotArray occurs between begin/end, the backing array is copied prior to the modification, ensuring that the backing array
+ * that was returned by {@link #begin()} is unaffected. To avoid allocation, an attempt is made to reuse any extra array created
+ * as a result of this copy on subsequent copies.
+ * <p>
+ * Note that SnapshotArray is not for thread safety, only for modification during iteration.
  * <p>
  * It is suggested iteration be done in this specific way:
  * 
  * <pre>
- * SnapshotArray array = new SnapshotArray();
+ * SnapshotArray<Item> array = new SnapshotArray();
  * // ...
  * Object[] items = array.begin();
  * for (int i = 0, n = array.size; i &lt; n; i++) {
- * 	Object item = items[i];
+ * 	Item item = (Item)items[i];
  * 	// ...
  * }
  * array.end();
  * </pre>
+ * 
  * @author Nathan Sweet */
 public class SnapshotArray<T> extends Array<T> {
 	private T[] snapshot, recycled;
@@ -114,6 +118,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super.insert(index, value);
 	}
 
+	public void insertRange (int index, int count) {
+		modified();
+		super.insertRange(index, count);
+	}
+
 	public void swap (int first, int second) {
 		modified();
 		super.swap(first, second);
@@ -172,6 +181,11 @@ public class SnapshotArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		modified();
 		super.truncate(newSize);
+	}
+
+	public T[] setSize (int newSize) {
+		modified();
+		return super.setSize(newSize);
 	}
 
 	/** @see #SnapshotArray(Object[]) */

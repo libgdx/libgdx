@@ -28,25 +28,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
- * </p>
- * 
  * <p>
- * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object. This class
- * can be used seamlessly with OpenGL ES 1.x and 2.0.
- * </p>
- * 
+ * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object.
  * <p>
- * In case OpenGL ES 2.0 is used in the application the data is bound via glVertexAttribPointer() according to the attribute
- * aliases specified via {@link VertexAttributes} in the constructor.
- * </p>
- * 
- * <p>
- * Uses indirect Buffers on Android 1.5/1.6 to fix GC invocation due to leaking PlatformAddress instances.
- * </p>
- * 
+ * The data is bound via glVertexAttribPointer() according to the attribute aliases specified via {@link VertexAttributes} 
+ * in the constructor.
  * <p>
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
- * </p>
  * 
  * @author mzechner */
 public class VertexBufferObjectSubData implements VertexData {
@@ -59,15 +47,24 @@ public class VertexBufferObjectSubData implements VertexData {
 	final int usage;
 	boolean isDirty = false;
 	boolean isBound = false;
+	
+	/** Constructs a new interleaved VertexBufferObject.
+	 * 
+	 * @param isStatic whether the vertex data is static.
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttributes}. */
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(isStatic, numVertices, new VertexAttributes(attributes));
+	}
 
 	/** Constructs a new interleaved VertexBufferObject.
 	 * 
 	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttribute}s. */
-	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttributes attributes) {
 		this.isStatic = isStatic;
-		this.attributes = new VertexAttributes(attributes);
+		this.attributes = attributes;
 		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		isDirect = true;
 

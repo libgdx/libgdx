@@ -25,6 +25,7 @@ import static java.awt.GridBagConstraints.SOUTH;
 import static java.awt.GridBagConstraints.SOUTHEAST;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -109,8 +110,9 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		setLocationRelativeTo(null);
 	}
 
-	public void showDialog () {
+	public void showDialog (Component parent) {
 		takeSnapshot();
+		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
 

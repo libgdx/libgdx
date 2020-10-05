@@ -47,10 +47,13 @@ public class PixmapBlendingTest extends GdxTest {
 
 		pixS1 = new Pixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
 		pixS2 = new Pixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
-		pixD = new Pixmap(64, 128, Pixmap.Format.RGBA8888);
+		pixD = new Pixmap(512, 1024, Pixmap.Format.RGBA8888);
 
-		pixD.drawPixmap(pixS1, 0, 0, 0, 0, 76, 76);
-		pixD.drawPixmap(pixS2, 0, 0, 0, 0, 76, 76);
+		pixD.setBlending(Pixmap.Blending.SourceOver);
+		pixD.setFilter(Pixmap.Filter.NearestNeighbour);
+
+		pixD.drawPixmap(pixS1, 0, 0, 38, 76, 0, 0, 512, 1024);
+		pixD.drawPixmap(pixS2, 0, 0, 38, 76, 0, 0, 512, 1024);
 
 		logoSprite = new Sprite(new Texture(pixD));
 		logoSprite.flip(false, true);
@@ -67,6 +70,7 @@ public class PixmapBlendingTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		spriteBatch.begin();
+		logoSprite.setSize(256, 256);
 		logoSprite.draw(spriteBatch);
 		spriteBatch.end();
 

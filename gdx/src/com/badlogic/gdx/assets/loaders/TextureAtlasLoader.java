@@ -45,7 +45,9 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			page.texture = texture;
 		}
 
-		return new TextureAtlas(data);
+	 	TextureAtlas atlas = new TextureAtlas(data);
+ 		data = null;
+ 		return atlas;
 	}
 
 	@Override

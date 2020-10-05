@@ -107,7 +107,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	private ModelInstance frustumInstance;
 	private PerspectiveCamera overviewCam;
 
-	private final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
+	final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
 
 	// Program state variables
 	private CullingPolicy cullingPolicy = CullingPolicy.OCCLUSION;
@@ -124,6 +124,8 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	// For drawing occlusion buffer debug image
 	private ShapeRenderer shapeRenderer;
 	private SpriteBatch spriteBatch;
+
+	private GLProfiler glProfiler;
 
 	/** Adds an occluder entity of specified type
 	 *
@@ -164,7 +166,9 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	public void create () {
 		Gdx.input.setOnscreenKeyboardVisible(true);
 		super.create();
-		GLProfiler.enable();
+
+		glProfiler = new GLProfiler(Gdx.graphics);
+		glProfiler.enable();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Swipe for next test\n");
@@ -291,7 +295,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	@Override
 	public void dispose () {
 		Gdx.input.setOnscreenKeyboardVisible(false);
-		GLProfiler.disable();
+		glProfiler.disable();
 		visibleEntities.clear();
 		rng.setSeed(0);
 		state = 0;
@@ -362,8 +366,8 @@ public class OcclusionCullingTest extends BaseBulletTest {
 		performance.append(", Culling: ").append(cullingPolicy.name());
 		performance.append(", Visible: ").append(visibleEntities.size).append("/").append(world.entities.size);
 		performance.append(", Buffer: ").append(OCL_BUFFER_EXTENTS[bufferExtentIndex]).append("px ");
-		performance.append(", GL Draw calls: ").append(GLProfiler.drawCalls);
-		GLProfiler.reset();
+		performance.append(", GL Draw calls: ").append(glProfiler.getDrawCalls());
+		glProfiler.reset();
 	}
 
 	private void renderOclDebugImage () {

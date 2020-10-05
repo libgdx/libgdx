@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 public class AnimationTest extends GdxTest {
 
@@ -48,8 +49,8 @@ public class AnimationTest extends GdxTest {
 		}
 	}
 
-	Animation leftWalk;
-	Animation rightWalk;
+	Animation<TextureRegion> leftWalk;
+	Animation<TextureRegion> rightWalk;
 	Caveman[] cavemen;
 	Texture texture;
 	SpriteBatch batch;
@@ -59,14 +60,18 @@ public class AnimationTest extends GdxTest {
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/walkanim.png"));
 		TextureRegion[] leftWalkFrames = TextureRegion.split(texture, 64, 64)[0];
-		TextureRegion[] rightWalkFrames = new TextureRegion[leftWalkFrames.length];
-		for (int i = 0; i < rightWalkFrames.length; i++) {
+		Array<TextureRegion> rightWalkFrames = new Array(TextureRegion.class);
+		for (int i = 0; i < leftWalkFrames.length; i++) {
 			TextureRegion frame = new TextureRegion(leftWalkFrames[i]);
 			frame.flip(true, false);
-			rightWalkFrames[i] = frame;
+			rightWalkFrames.add(frame);
 		}
-		leftWalk = new Animation(0.25f, leftWalkFrames);
-		rightWalk = new Animation(0.25f, rightWalkFrames);
+		leftWalk = new Animation<TextureRegion>(0.25f, leftWalkFrames);
+		rightWalk = new Animation<TextureRegion>(0.25f, rightWalkFrames);
+		
+		TextureRegion[] rightRegions = rightWalk.getKeyFrames(); // testing backing array type
+		TextureRegion firstRightRegion = rightRegions[0];
+		Gdx.app.log("AnimationTest", "First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {
@@ -79,6 +84,7 @@ public class AnimationTest extends GdxTest {
 
 	@Override
 	public void render () {
+		Gdx.gl.glClearColor(0.1f, 0f, 0.25f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		for (int i = 0; i < cavemen.length; i++) {

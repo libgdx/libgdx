@@ -94,7 +94,7 @@ public class OneSidedPlatform extends Box2DTest {
 
 			@Override
 			public boolean shouldCollide (Fixture fixtureA, Fixture fixtureB) {
-				if ((fixtureA == m_platform && fixtureB == m_character) || (fixtureA == m_platform && fixtureB == m_character)) {
+				if ((fixtureA == m_platform && fixtureB == m_character) || (fixtureB == m_platform && fixtureA == m_character)) {
 					Vector2 position = m_character.getBody().getPosition();
 					if (position.y < m_top + m_radius - 3.0f * 0.005f)
 						return false;

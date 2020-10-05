@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
@@ -34,9 +35,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
@@ -72,23 +75,27 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	private BitmapFont multiPageFont;
 	private TextureAtlas tex2;
 	private Texture tex1;
+	private ShaderProgram shader;
 
 	private void load () {
 // Gdx.app.setLogLevel(Logger.DEBUG);
 		start = TimeUtils.nanoTime();
 		tex1 = new Texture("data/animation.png");
-		tex2 = new TextureAtlas(Gdx.files.internal("data/pack"));
+		tex2 = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 		font2 = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
 // tex3 = new Texture("data/test.etc1");
 // map = TiledLoader.createMap(Gdx.files.internal("data/tiledmap/tilemap csv.tmx"));
 // atlas = new TileAtlas(map, Gdx.files.internal("data/tiledmap/"));
 // renderer = new TileMapRenderer(map, atlas, 8, 8);
+		shader = new ShaderProgram(Gdx.files.internal("data/g2d/batchCommon.vert").readString(), Gdx.files.internal("data/g2d/monochrome.frag").readString());
 		System.out.println("plain took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 
 		start = TimeUtils.nanoTime();
+		// this is a test for lazy loading on GWT
+		manager.load("data/animation_gwt_lazy.png", Texture.class);
 		manager.load("data/animation.png", Texture.class);
 // manager.load("data/pack1.png", Texture.class);
-		manager.load("data/pack", TextureAtlas.class);
+		manager.load("data/pack.atlas", TextureAtlas.class);
 // manager.load("data/verdana39.png", Texture.class);
 		manager.load("data/verdana39.fnt", BitmapFont.class);
 // manager.load("data/multipagefont.fnt", BitmapFont.class);
@@ -97,6 +104,12 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // manager.load("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class, new
 // TileMapRendererLoader.TileMapParameter("data/tiledmap/", 8, 8));
 		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
+		manager.load("data/g2d/monochrome.frag", ShaderProgram.class, new ShaderProgramLoader.ShaderProgramParameter(){
+			{
+				vertexFile = "data/g2d/batchCommon.vert";
+			}
+		});
+		
 	}
 
 	private void unload () {
@@ -106,10 +119,12 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // tex3.dispose();
 // atlas.dispose();
 // renderer.dispose();
+		shader.dispose();
 
+		manager.unload("data/animation_gwt_lazy.png");
 		manager.unload("data/animation.png");
 // manager.unload("data/pack1.png");
-		manager.unload("data/pack");
+		manager.unload("data/pack.atlas");
 // manager.unload("data/verdana39.png");
 		manager.unload("data/verdana39.fnt");
 // manager.unload("data/multipagefont.fnt");
@@ -117,6 +132,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // manager.unload("data/test.etc1");
 // manager.unload("data/tiledmap/tilemap csv.tmx");
 		manager.unload("data/i18n/message2");
+		manager.unload("data/g2d/monochrome.frag");
 	}
 
 	private void invalidateTexture (Texture texture) {
@@ -146,11 +162,15 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		}
 		frame++;
 
+		if (manager.isLoaded("data/g2d/monochrome.frag")) batch.setShader(manager.get("data/g2d/monochrome.frag", ShaderProgram.class));
+		else batch.setShader(null);
+		
 		batch.begin();
+		if (manager.isLoaded("data/animation_gwt_lazy.png")) batch.draw(manager.get("data/animation_gwt_lazy.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
-		if (manager.isLoaded("data/pack"))
-			batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
+		if (manager.isLoaded("data/pack.atlas"))
+			batch.draw(manager.get("data/pack.atlas", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt"))
 			manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 80);
 		if (manager.isLoaded("data/multipagefont.fnt"))

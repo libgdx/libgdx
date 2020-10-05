@@ -19,7 +19,7 @@ package com.badlogic.gdx.utils;
 /** Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.
  * @author Nathan Sweet */
 public class SerializationException extends RuntimeException {
-	private StringBuffer trace;
+	private StringBuilder trace;
 
 	public SerializationException () {
 		super();
@@ -51,19 +51,19 @@ public class SerializationException extends RuntimeException {
 
 	public String getMessage () {
 		if (trace == null) return super.getMessage();
-		StringBuffer buffer = new StringBuffer(512);
-		buffer.append(super.getMessage());
-		if (buffer.length() > 0) buffer.append('\n');
-		buffer.append("Serialization trace:");
-		buffer.append(trace);
-		return buffer.toString();
+		StringBuilder sb = new StringBuilder(512);
+		sb.append(super.getMessage());
+		if (sb.length() > 0) sb.append('\n');
+		sb.append("Serialization trace:");
+		sb.append(trace);
+		return sb.toString();
 	}
 
 	/** Adds information to the exception message about where in the the object graph serialization failure occurred. Serializers
 	 * can catch {@link SerializationException}, add trace information, and rethrow the exception. */
 	public void addTrace (String info) {
 		if (info == null) throw new IllegalArgumentException("info cannot be null.");
-		if (trace == null) trace = new StringBuffer(512);
+		if (trace == null) trace = new StringBuilder(512);
 		trace.append('\n');
 		trace.append(info);
 	}

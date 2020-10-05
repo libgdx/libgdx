@@ -28,7 +28,18 @@ public class ScaleToAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		target.setScale(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
+		float x, y;
+		if (percent == 0) {
+			x = startX;
+			y = startY;
+		} else if (percent == 1) {
+			x = endX;
+			y = endY;
+		} else {
+			x = startX + (endX - startX) * percent;
+			y = startY + (endY - startY) * percent;
+		}
+		target.setScale(x, y);
 	}
 
 	public void setScale (float x, float y) {

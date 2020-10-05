@@ -29,14 +29,17 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Headless implementation of the {@link com.badlogic.gdx.Net} API, based on LWJGL implementation
  * @author acoppes
  * @author Jon Renner */
 public class HeadlessNet implements Net {
 
-	NetJavaImpl netJavaImpl = new NetJavaImpl();
+	NetJavaImpl netJavaImpl;
+
+	public HeadlessNet(HeadlessApplicationConfiguration configuration) {
+		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
+	}
 
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {

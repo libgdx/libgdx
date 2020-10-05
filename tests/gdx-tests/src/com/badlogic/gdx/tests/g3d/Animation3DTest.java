@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
@@ -47,6 +48,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	ModelInstance skydome;
 	Model floorModel;
 	ModelInstance character;
+	Node ship;
 	ModelInstance tree;
 	AnimationController animation;
 	DirectionalShadowLight shadowLight;
@@ -70,6 +72,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 		assets.load("data/g3d/skydome.g3db", Model.class);
 		assets.load("data/g3d/concrete.png", Texture.class);
 		assets.load("data/tree.png", Texture.class);
+		assets.load("data/g3d/ship.obj", Model.class);
 		loading = true;
 		trForward.translation.set(0, 0, 8f);
 		trBackward.translation.set(0, 0, -8f);
@@ -116,7 +119,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	public void render () {
 		if (character != null) {
 			animation.update(Gdx.graphics.getDeltaTime());
-			if (upKey) {
+			if (Gdx.input.isKeyPressed(Keys.UP)) {
 				if (!animation.inAction) {
 					trTmp.idt().lerp(trForward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
@@ -125,7 +128,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 					animation.animate("Walk", -1, 1f, null, 0.2f);
 					status = walk;
 				}
-			} else if (downKey) {
+			} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 				if (!animation.inAction) {
 					trTmp.idt().lerp(trBackward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
@@ -138,16 +141,18 @@ public class Animation3DTest extends BaseG3dHudTest {
 				animation.animate("Idle", -1, 1f, null, 0.2f);
 				status = idle;
 			}
-			if (rightKey && (status == walk || status == back) && !animation.inAction) {
+			if (Gdx.input.isKeyPressed(Keys.RIGHT) && (status == walk || status == back) && !animation.inAction) {
 				trTmp.idt().lerp(trRight, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
-			} else if (leftKey && (status == walk || status == back) && !animation.inAction) {
+			} else if (Gdx.input.isKeyPressed(Keys.LEFT) && (status == walk || status == back) && !animation.inAction) {
 				trTmp.idt().lerp(trLeft, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 			}
-			if (spaceKey && !animation.inAction) {
+			if (Gdx.input.isKeyPressed(Keys.SPACE) && !animation.inAction) {
 				animation.action("Attack", 1, 1f, null, 0.2f);
 			}
+			if (Gdx.input.isKeyJustPressed(Keys.Z))
+				ship.parts.get(0).enabled = !ship.parts.get(0).enabled; 
 		}
 
 		if (character != null) {
@@ -170,7 +175,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	@Override
 	protected void getStatus (StringBuilder stringBuilder) {
 		super.getStatus(stringBuilder);
-		stringBuilder.append(" use arrow keys to walk around, space to attack.");
+		stringBuilder.append(" use arrow keys to walk around, space to attack, Z to toggle attached node.");
 	}
 
 	@Override
@@ -201,29 +206,15 @@ public class Animation3DTest extends BaseG3dHudTest {
 			status = idle;
 			for (Animation anim : character.animations)
 				Gdx.app.log("Test", anim.id);
+			// Now attach the node of another model at the tip of this knights sword:
+			ship = assets.get("data/g3d/ship.obj", Model.class).nodes.get(0).copy();
+			ship.detach();
+			ship.translation.x = 10f; // offset from the sword node to the tip of the sword, in rest pose
+			ship.rotation.set(Vector3.Z, 90f);
+			ship.scale.scl(5f);
+			ship.parts.get(0).enabled = false;
+			character.getNode("sword").addChild(ship);
 		}
-	}
-
-	boolean rightKey, leftKey, upKey, downKey, spaceKey;
-
-	@Override
-	public boolean keyUp (int keycode) {
-		if (keycode == Keys.LEFT) leftKey = false;
-		if (keycode == Keys.RIGHT) rightKey = false;
-		if (keycode == Keys.UP) upKey = false;
-		if (keycode == Keys.DOWN) downKey = false;
-		if (keycode == Keys.SPACE) spaceKey = false;
-		return super.keyUp(keycode);
-	}
-
-	@Override
-	public boolean keyDown (int keycode) {
-		if (keycode == Keys.LEFT) leftKey = true;
-		if (keycode == Keys.RIGHT) rightKey = true;
-		if (keycode == Keys.UP) upKey = true;
-		if (keycode == Keys.DOWN) downKey = true;
-		if (keycode == Keys.SPACE) spaceKey = true;
-		return super.keyDown(keycode);
 	}
 
 	@Override

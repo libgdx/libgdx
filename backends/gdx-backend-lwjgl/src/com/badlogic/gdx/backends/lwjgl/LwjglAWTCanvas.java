@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import com.badlogic.gdx.ApplicationLogger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
@@ -47,7 +48,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -60,7 +61,7 @@ public class LwjglAWTCanvas implements Application {
 	static int instanceCount;
 
 	LwjglGraphics graphics;
-	OpenALAudio audio;
+	OpenALLwjglAudio audio;
 	LwjglFiles files;
 	LwjglAWTInput input;
 	LwjglNet net;
@@ -73,6 +74,7 @@ public class LwjglAWTCanvas implements Application {
 	int lastWidth;
 	int lastHeight;
 	int logLevel = LOG_INFO;
+	ApplicationLogger applicationLogger;
 	final String logTag = "LwjglAWTCanvas";
 	Cursor cursor;
 
@@ -94,6 +96,7 @@ public class LwjglAWTCanvas implements Application {
 		if (config == null) config = new LwjglApplicationConfiguration();
 
 		LwjglNativesLoader.load();
+		setApplicationLogger(new LwjglApplicationLogger());
 		instanceCount++;
 
 		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ? sharedContextCanvas.canvas : null;
@@ -162,9 +165,9 @@ public class LwjglAWTCanvas implements Application {
 			}
 		};
 
-		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALAudio();
+		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALLwjglAudio();
 		if (Gdx.files == null) files = new LwjglFiles();
-		if (Gdx.net == null) net = new LwjglNet();
+		if (Gdx.net == null) net = new LwjglNet(config);
 		input = new LwjglAWTInput(this);
 		setGlobals();
 	}
@@ -396,47 +399,32 @@ public class LwjglAWTCanvas implements Application {
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -447,6 +435,16 @@ public class LwjglAWTCanvas implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

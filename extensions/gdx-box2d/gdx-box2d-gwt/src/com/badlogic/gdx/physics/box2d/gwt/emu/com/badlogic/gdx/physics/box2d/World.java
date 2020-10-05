@@ -316,6 +316,15 @@ public final class World implements Disposable {
 		}
 	}
 
+	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
+	public void getFixtures (Array<com.badlogic.gdx.physics.box2d.Fixture> fixtures) {
+		fixtures.clear();
+		fixtures.ensureCapacity(this.fixtures.size);
+		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
+			fixtures.add(iter.next());
+		}
+	}
+
 	/** @return all joints currently in the simulation */
 	public void getJoints (Array<Joint> joints) {
 		joints.clear();
@@ -349,12 +358,16 @@ public final class World implements Disposable {
 	Vector2 normal = new Vector2();
 
 	public void rayCast (final RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		rayCast(callback, point1.x, point1.y, point2.x, point2.y);
+	}
+
+	public void rayCast (final RayCastCallback callback, float point1X, float point1Y, float point2X, float point2Y) {
 		// FIXME pool RayCastCallback?
 		world.raycast(new org.jbox2d.callbacks.RayCastCallback() {
 			@Override
 			public float reportFixture (org.jbox2d.dynamics.Fixture f, Vec2 p, Vec2 n, float fraction) {
 				return callback.reportRayFixture(fixtures.get(f), point.set(p.x, p.y), normal.set(n.x, n.y), fraction);
 			}
-		}, this.point1.set(point1.x, point1.y), this.point2.set(point2.x, point2.y));
+		}, this.point1.set(point1X, point1Y), this.point2.set(point2X, point2Y));
 	}
 }

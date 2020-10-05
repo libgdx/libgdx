@@ -214,7 +214,7 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 			}
 			// m_swingCorrection is always positive or 0
 			info->m_lowerLimit[srow] = 0;
-			info->m_upperLimit[srow] = SIMD_INFINITY;
+			info->m_upperLimit[srow] = (m_bMotorEnabled && m_maxMotorImpulse >= 0.0f) ? m_maxMotorImpulse : SIMD_INFINITY;
 			srow += info->rowskip;
 		}
 	}
@@ -642,7 +642,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 		btTransform trDeltaAB = trB * trPose * trA.inverse();
 		btQuaternion qDeltaAB = trDeltaAB.getRotation();
 		btVector3 swingAxis = 	btVector3(qDeltaAB.x(), qDeltaAB.y(), qDeltaAB.z());
-		float swingAxisLen2 = swingAxis.length2();
+		btScalar swingAxisLen2 = swingAxis.length2();
 		if(btFuzzyZero(swingAxisLen2))
 		{
 		   return;
@@ -903,7 +903,7 @@ btVector3 btConeTwistConstraint::GetPointForAngle(btScalar fAngleInRadians, btSc
 	//  a^2   b^2
 	// Do the math and it should be clear.
 
-	float swingLimit = m_swingSpan1; // if xEllipse == 0, just use axis b (1)
+	btScalar swingLimit = m_swingSpan1; // if xEllipse == 0, just use axis b (1)
 	if (fabs(xEllipse) > SIMD_EPSILON)
 	{
 		btScalar surfaceSlope2 = (yEllipse*yEllipse)/(xEllipse*xEllipse);

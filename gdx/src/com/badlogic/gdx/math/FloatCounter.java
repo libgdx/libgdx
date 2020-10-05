@@ -72,7 +72,7 @@ public class FloatCounter {
 		count = 0;
 		total = 0f;
 		min = Float.MAX_VALUE;
-		max = Float.MIN_VALUE;
+		max = -Float.MAX_VALUE;
 		average = 0f;
 		latest = 0f;
 		value = 0f;
