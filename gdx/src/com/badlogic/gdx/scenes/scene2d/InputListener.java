@@ -62,8 +62,10 @@ public class InputListener implements EventListener {
 		switch (event.getType()) {
 		case touchDown:
 			boolean handled = touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
-			if (handled && event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
-				event.getPointer(), event.getButton());
+			if (handled && event.getTouchFocus()) {
+				event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(), event.getPointer(),
+					event.getButton());
+			}
 			return handled;
 		case touchUp:
 			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
