@@ -73,6 +73,11 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T sub (T v);
 
+	/** Subtracts the given value from each component of this vector.
+	 * @param v The value
+	 * @return This vector for chaining */
+	T sub(float v);
+
 	/** Normalizes this vector. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	T nor ();
@@ -81,6 +86,11 @@ public interface Vector<T extends Vector<T>> {
 	 * @param v The vector
 	 * @return This vector for chaining */
 	T add (T v);
+
+	/** Adds the given value to each component of this vector.
+	 * @param v The value
+	 * @return This vector for chaining */
+	T add(float v);
 
 	/** @param v The other vector
 	 * @return The dot product between this and the other vector */

@@ -152,12 +152,9 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.x + x, this.y + y, this.z + z);
 	}
 
-	/** Adds the given value to all three components of the vector.
-	 *
-	 * @param values The value
-	 * @return This vector for chaining */
-	public Vector3 add (float values) {
-		return this.set(this.x + values, this.y + values, this.z + values);
+	@Override
+	public Vector3 add (float value) {
+		return this.add(value, value, value);
 	}
 
 	@Override
@@ -175,22 +172,19 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.x - x, this.y - y, this.z - z);
 	}
 
-	/** Subtracts the given value from all components of this vector
-	 *
-	 * @param value The value
-	 * @return This vector for chaining */
+	@Override
 	public Vector3 sub (float value) {
-		return this.set(this.x - value, this.y - value, this.z - value);
+		return this.sub(value, value, value);
 	}
 
 	@Override
 	public Vector3 scl (float scalar) {
-		return this.set(this.x * scalar, this.y * scalar, this.z * scalar);
+		return this.scl(scalar, scalar, scalar);
 	}
 
 	@Override
 	public Vector3 scl (final Vector3 other) {
-		return this.set(x * other.x, y * other.y, z * other.z);
+		return this.scl(other.x, other.y, other.z);
 	}
 
 	/** Scales this vector by the given values
@@ -225,7 +219,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public float len () {
-		return (float)Math.sqrt(x * x + y * y + z * z);
+		return len(x, y, z);
 	}
 
 	/** @return The squared euclidean length */
@@ -235,7 +229,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public float len2 () {
-		return x * x + y * y + z * z;
+		return len2(x, y, z);
 	}
 
 	/** @param vector The other vector
@@ -254,18 +248,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public float dst (final Vector3 vector) {
-		final float a = vector.x - x;
-		final float b = vector.y - y;
-		final float c = vector.z - z;
-		return (float)Math.sqrt(a * a + b * b + c * c);
+		return dst(vector.x, vector.y, vector.z);
 	}
 
 	/** @return the distance between this point and the given point */
 	public float dst (float x, float y, float z) {
-		final float a = x - this.x;
-		final float b = y - this.y;
-		final float c = z - this.z;
-		return (float)Math.sqrt(a * a + b * b + c * c);
+		return dst(this.x, this.y, this.z, x, y, z);
 	}
 
 	/** @return the squared distance between the given points */
@@ -278,10 +266,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public float dst2 (Vector3 point) {
-		final float a = point.x - x;
-		final float b = point.y - y;
-		final float c = point.z - z;
-		return a * a + b * b + c * c;
+		return dst2(point.x, point.y, point.z);
 	}
 
 	/** Returns the squared distance between this point and the given point
@@ -290,10 +275,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param z The z-component of the other point
 	 * @return The squared distance */
 	public float dst2 (float x, float y, float z) {
-		final float a = x - this.x;
-		final float b = y - this.y;
-		final float c = z - this.z;
-		return a * a + b * b + c * c;
+		return dst2(this.x, this.y, this.z, x, y, z);
 	}
 
 	@Override
@@ -310,7 +292,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public float dot (final Vector3 vector) {
-		return x * vector.x + y * vector.y + z * vector.z;
+		return dot(vector.x, vector.y, vector.z);
 	}
 
 	/** Returns the dot product between this and the given vector.
@@ -319,14 +301,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param z The z-component of the other vector
 	 * @return The dot product */
 	public float dot (float x, float y, float z) {
-		return this.x * x + this.y * y + this.z * z;
+		return dot(this.x, this.y, this.z, x, y, z);
 	}
 
 	/** Sets this vector to the cross product between it and the other vector.
 	 * @param vector The other vector
 	 * @return This vector for chaining */
 	public Vector3 crs (final Vector3 vector) {
-		return this.set(y * vector.z - z * vector.y, z * vector.x - x * vector.z, x * vector.y - y * vector.x);
+		return crs(vector.x, vector.y, vector.z);
 	}
 
 	/** Sets this vector to the cross product between it and the other vector.

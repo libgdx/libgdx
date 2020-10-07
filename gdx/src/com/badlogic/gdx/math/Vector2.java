@@ -64,7 +64,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public float len () {
-		return (float)Math.sqrt(x * x + y * y);
+		return len(x, y);
 	}
 
 	public static float len2 (float x, float y) {
@@ -73,14 +73,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public float len2 () {
-		return x * x + y * y;
+		return len2(x, y);
 	}
 
 	@Override
 	public Vector2 set (Vector2 v) {
-		x = v.x;
-		y = v.y;
-		return this;
+		return set(v.x, v.y);
 	}
 
 	/** Sets the components of this vector
@@ -95,9 +93,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public Vector2 sub (Vector2 v) {
-		x -= v.x;
-		y -= v.y;
-		return this;
+		return sub(v.x, v.y);
 	}
 
 	/** Substracts the other vector from this vector.
@@ -108,6 +104,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.x -= x;
 		this.y -= y;
 		return this;
+	}
+
+	@Override
+	public Vector2 sub(float v) {
+		return sub(v, v);
 	}
 
 	@Override
@@ -122,9 +123,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public Vector2 add (Vector2 v) {
-		x += v.x;
-		y += v.y;
-		return this;
+		return add(v.x, v.y);
 	}
 
 	/** Adds the given components to this vector
@@ -137,24 +136,27 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
+	@Override
+	public Vector2 add(float v) {
+		return add(v, v);
+	}
+
 	public static float dot (float x1, float y1, float x2, float y2) {
 		return x1 * x2 + y1 * y2;
 	}
 
 	@Override
 	public float dot (Vector2 v) {
-		return x * v.x + y * v.y;
+		return dot(v.x, v.y);
 	}
 
 	public float dot (float ox, float oy) {
-		return x * ox + y * oy;
+		return dot(x, y, ox, oy);
 	}
 
 	@Override
 	public Vector2 scl (float scalar) {
-		x *= scalar;
-		y *= scalar;
-		return this;
+		return scl(scalar, scalar);
 	}
 
 	/** Multiplies this vector by a scalar
@@ -167,9 +169,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public Vector2 scl (Vector2 v) {
-		this.x *= v.x;
-		this.y *= v.y;
-		return this;
+		return scl(v.x, v.y);
 	}
 
 	@Override
@@ -194,18 +194,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public float dst (Vector2 v) {
-		final float x_d = v.x - x;
-		final float y_d = v.y - y;
-		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
+		return dst(v.x, v.y);
 	}
 
 	/** @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
 	 * @return the distance between this and the other vector */
 	public float dst (float x, float y) {
-		final float x_d = x - this.x;
-		final float y_d = y - this.y;
-		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
+		return dst(this.x, this.y, x, y);
 	}
 
 	public static float dst2 (float x1, float y1, float x2, float y2) {
@@ -216,18 +212,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public float dst2 (Vector2 v) {
-		final float x_d = v.x - x;
-		final float y_d = v.y - y;
-		return x_d * x_d + y_d * y_d;
+		return dst2(v.x, v.y);
 	}
 
 	/** @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
 	 * @return the squared distance between this and the other vector */
 	public float dst2 (float x, float y) {
-		final float x_d = x - this.x;
-		final float y_d = y - this.y;
-		return x_d * x_d + y_d * y_d;
+		return dst2(this.x, this.y, x, y);
 	}
 
 	@Override
@@ -305,7 +297,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * @param v the other vector
 	 * @return the cross product */
 	public float crs (Vector2 v) {
-		return this.x * v.y - this.y * v.x;
+		return crs(v.x, v.y);
 	}
 
 	/** Calculates the 2D cross product between this and the given vector.
