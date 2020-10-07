@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -36,8 +37,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public boolean ordered;
 
 	private Entries entries1, entries2;
-	private Values valuesIter1, valuesIter2;
-	private Keys keysIter1, keysIter2;
+	private Values values1, values2;
+	private Keys keys1, keys2;
 
 	/** Creates an ordered map with a capacity of 16. */
 	public ArrayMap () {
@@ -108,11 +109,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return index;
 	}
 
-	public void putAll (ArrayMap map) {
+	public void putAll (ArrayMap<? extends K, ? extends V> map) {
 		putAll(map, 0, map.size);
 	}
 
-	public void putAll (ArrayMap map, int offset, int length) {
+	public void putAll (ArrayMap<? extends K, ? extends V> map, int offset, int length) {
 		if (offset + length > map.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + map.size);
 		int sizeNeeded = size + length - offset;
@@ -122,9 +123,15 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size += length;
 	}
 
-	/** Returns the value for the specified key. Note this does a .equals() comparison of each key in reverse order until the
-	 * specified key is found. */
-	public V get (K key) {
+	/** Returns the value (which may be null) for the specified key, or null if the key is not in the map. Note this does a
+	 * .equals() comparison of each key in reverse order until the specified key is found. */
+	public @Null V get (K key) {
+		return get(key, null);
+	}
+
+	/** Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. Note this
+	 * does a .equals() comparison of each key in reverse order until the specified key is found. */
+	public @Null V get (K key, @Null V defaultValue) {
 		Object[] keys = this.keys;
 		int i = size - 1;
 		if (key == null) {
@@ -134,13 +141,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			for (; i >= 0; i--)
 				if (key.equals(keys[i])) return values[i];
 		}
-		return null;
+		return defaultValue;
 	}
 
 	/** Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
 	 * value is found.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
-	public K getKey (V value, boolean identity) {
+	public @Null K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
 		if (identity || value == null) {
@@ -249,7 +256,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return -1;
 	}
 
-	public V removeKey (K key) {
+	public @Null V removeKey (K key) {
 		Object[] keys = this.keys;
 		if (key == null) {
 			for (int i = 0, n = size; i < n; i++) {
@@ -307,6 +314,16 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		values[size] = null;
 	}
 
+	/** Returns true if the map has one or more items. */
+	public boolean notEmpty () {
+		return size > 0;
+	}
+
+	/** Returns true if the map is empty. */
+	public boolean isEmpty () {
+		return size == 0;
+	}
+
 	/** Returns the last key. */
 	public K peekKey () {
 		return keys[size - 1];
@@ -328,12 +345,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	public void clear () {
-		K[] keys = this.keys;
-		V[] values = this.values;
-		for (int i = 0, n = size; i < n; i++) {
-			keys[i] = null;
-			values[i] = null;
-		}
+		Arrays.fill(keys, 0, size, null);
+		Arrays.fill(values, 0, size, null);
 		size = 0;
 	}
 
@@ -347,8 +360,9 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Increases the size of the backing arrays to accommodate the specified number of additional entries. Useful before adding
 	 * many entries to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
+		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= keys.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > keys.length) resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 	}
 
 	protected void resize (int newSize) {
@@ -414,7 +428,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public boolean equals (Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof ArrayMap)) return false;
-		ArrayMap<K, V> other = (ArrayMap) obj;
+		ArrayMap other = (ArrayMap)obj;
 		if (other.size != size) return false;
 		K[] keys = this.keys;
 		V[] values = this.values;
@@ -422,15 +436,24 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			K key = keys[i];
 			V value = values[i];
 			if (value == null) {
-				if (!other.containsKey(key) || other.get(key) != null) {
-					return false;
-				}
+				if (other.get(key, ObjectMap.dummy) != null) return false;
 			} else {
-				if (!value.equals(other.get(key))) {
-					return false;
-				}
+				if (!value.equals(other.get(key))) return false;
 			}
 		}
+		return true;
+	}
+
+	/** Uses == for comparison of each value. */
+	public boolean equalsIdentity (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ArrayMap)) return false;
+		ArrayMap other = (ArrayMap)obj;
+		if (other.size != size) return false;
+		K[] keys = this.keys;
+		V[] values = this.values;
+		for (int i = 0, n = size; i < n; i++)
+			if (values[i] != other.get(keys[i], ObjectMap.dummy)) return false;
 		return true;
 	}
 
@@ -457,9 +480,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries();
 	}
 
-	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the entries in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Entries<K, V> entries () {
+		if (Collections.allocateIterators) return new Entries(this);
 		if (entries1 == null) {
 			entries1 = new Entries(this);
 			entries2 = new Entries(this);
@@ -476,42 +503,50 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return entries2;
 	}
 
-	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the values in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Values<V> values () {
-		if (valuesIter1 == null) {
-			valuesIter1 = new Values(this);
-			valuesIter2 = new Values(this);
+		if (Collections.allocateIterators) return new Values(this);
+		if (values1 == null) {
+			values1 = new Values(this);
+			values2 = new Values(this);
 		}
-		if (!valuesIter1.valid) {
-			valuesIter1.index = 0;
-			valuesIter1.valid = true;
-			valuesIter2.valid = false;
-			return valuesIter1;
+		if (!values1.valid) {
+			values1.index = 0;
+			values1.valid = true;
+			values2.valid = false;
+			return values1;
 		}
-		valuesIter2.index = 0;
-		valuesIter2.valid = true;
-		valuesIter1.valid = false;
-		return valuesIter2;
+		values2.index = 0;
+		values2.valid = true;
+		values1.valid = false;
+		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported.
+	 * <p>
+	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
+	 * Use the {@link Entries} constructor for nested or multithreaded iteration.
+	 * @see Collections#allocateIterators */
 	public Keys<K> keys () {
-		if (keysIter1 == null) {
-			keysIter1 = new Keys(this);
-			keysIter2 = new Keys(this);
+		if (Collections.allocateIterators) return new Keys(this);
+		if (keys1 == null) {
+			keys1 = new Keys(this);
+			keys2 = new Keys(this);
 		}
-		if (!keysIter1.valid) {
-			keysIter1.index = 0;
-			keysIter1.valid = true;
-			keysIter2.valid = false;
-			return keysIter1;
+		if (!keys1.valid) {
+			keys1.index = 0;
+			keys1.valid = true;
+			keys2.valid = false;
+			return keys1;
 		}
-		keysIter2.index = 0;
-		keysIter2.valid = true;
-		keysIter1.valid = false;
-		return keysIter2;
+		keys2.index = 0;
+		keys2.valid = true;
+		keys1.valid = false;
+		return keys2;
 	}
 
 	static public class Entries<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {

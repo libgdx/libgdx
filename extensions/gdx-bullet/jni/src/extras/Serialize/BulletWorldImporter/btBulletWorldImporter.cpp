@@ -307,8 +307,6 @@ bool	btBulletWorldImporter::convertAllObjects(  bParse::btBulletFile* bulletFile
 	for (i=0;i<bulletFile2->m_constraints.size();i++)
 	{
 		btTypedConstraintData2* constraintData = (btTypedConstraintData2*)bulletFile2->m_constraints[i];
-		btTypedConstraintFloatData* singleC = (btTypedConstraintFloatData*)bulletFile2->m_constraints[i];
-		btTypedConstraintDoubleData* doubleC = (btTypedConstraintDoubleData*)bulletFile2->m_constraints[i];
 
 		btCollisionObject** colAptr = m_bodyMap.find(constraintData->m_rbA);
 		btCollisionObject** colBptr = m_bodyMap.find(constraintData->m_rbB);

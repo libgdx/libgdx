@@ -18,18 +18,18 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_newChainS
 /*
  * Class:     com_badlogic_gdx_physics_box2d_ChainShape
  * Method:    jniCreateLoop
- * Signature: (J[FI)V
+ * Signature: (J[FII)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateLoop
-  (JNIEnv *, jobject, jlong, jfloatArray, jint);
+  (JNIEnv *, jobject, jlong, jfloatArray, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_ChainShape
  * Method:    jniCreateChain
- * Signature: (J[FI)V
+ * Signature: (J[FII)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateChain
-  (JNIEnv *, jobject, jlong, jfloatArray, jint);
+  (JNIEnv *, jobject, jlong, jfloatArray, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_ChainShape

@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 public class TextureAtlasPanel extends JPanel {
 	JPanel regionsPanel;
 	TextureAtlas atlas;
+	String atlasFilename;
 	
 	public TextureAtlasPanel(){
 		initializeComponents();
@@ -58,7 +59,7 @@ public class TextureAtlasPanel extends JPanel {
 		});	
 	}
 	
-	public void setAtlas(TextureAtlas atlas){
+       public void setAtlas(TextureAtlas atlas, String atlasFilename){
 		if(atlas == this.atlas) return;
 		regionsPanel.removeAll();
 		 Array<AtlasRegion> atlasRegions = atlas.getRegions();
@@ -70,6 +71,10 @@ public class TextureAtlasPanel extends JPanel {
 		}
 		layout.first(regionsPanel);
 		this.atlas = atlas;
+		this.atlasFilename = atlasFilename;
+	}
+	public String getAtlasName() {
+		return atlasFilename;
 	}
 	
 	protected Array<TextureRegion> getRegions (Texture texture, Array<AtlasRegion> atlasRegions, Array<TextureRegion> out) {

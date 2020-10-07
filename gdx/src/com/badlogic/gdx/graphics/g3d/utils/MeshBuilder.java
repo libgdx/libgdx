@@ -53,6 +53,11 @@ import com.badlogic.gdx.utils.ShortArray;
  * {@link #end()}.
  * @author Xoppa */
 public class MeshBuilder implements MeshPartBuilder {
+	/** maximum number of vertices mesh builder can hold (64k) */
+	public static final int MAX_VERTICES = 1 << 16;
+	/** highest index mesh builder can get (64k - 1) */
+	public static final int MAX_INDEX = MAX_VERTICES - 1;
+
 	private final static ShortArray tmpIndices = new ShortArray();
 	private final static FloatArray tmpVertices = new FloatArray();
 
@@ -292,7 +297,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void getVertices (float[] out, int destOffset) {
 		if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
 		if ((destOffset < 0) || (destOffset > out.length - vertices.size))
-			throw new GdxRuntimeException("Array to small or offset out of range");
+			throw new GdxRuntimeException("Array too small or offset out of range");
 		System.arraycopy(vertices.items, 0, out, destOffset, vertices.size);
 	}
 
@@ -315,7 +320,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void getIndices (short[] out, int destOffset) {
 		if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
 		if ((destOffset < 0) || (destOffset > out.length - indices.size))
-			throw new GdxRuntimeException("Array to small or offset out of range");
+			throw new GdxRuntimeException("Array too small or offset out of range");
 		System.arraycopy(indices.items, 0, out, destOffset, indices.size);
 	}
 
@@ -363,11 +368,14 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setUVRange (TextureRegion region) {
-		if (!(hasUVTransform = (region != null))) {
+		if (region == null) {
+			hasUVTransform = false;
 			uOffset = vOffset = 0f;
 			uScale = vScale = 1f;
-		} else
+		} else {
+			hasUVTransform = true;
 			setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+		}
 	}
 
 	@Override
@@ -377,7 +385,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setVertexTransform (Matrix4 transform) {
-		if ((vertexTransformationEnabled = (transform != null)) == true) {
+		vertexTransformationEnabled = transform != null;
+		if (vertexTransformationEnabled) {
 			positionTransform.set(transform);
 			normalTransform.set(transform).inv().transpose();
 		} else {
@@ -455,16 +464,17 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureRectangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureRectangles (int numRectangles) {
 		ensureVertices(4 * numRectangles);
 		ensureRectangleIndices(numRectangles);
 	}
 
-	private short lastIndex = -1;
+	private int lastIndex = -1;
 
 	@Override
 	public short lastIndex () {
-		return lastIndex;
+		return (short)lastIndex;
 	}
 
 	private final static Vector3 vTmp = new Vector3();
@@ -500,7 +510,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final void addVertex (final float[] values, final int offset) {
 		final int o = vertices.size;
 		vertices.addAll(values, offset, stride);
-		lastIndex = (short)(vindex++);
+		lastIndex = vindex++;
 
 		if (vertexTransformationEnabled) {
 			transformPosition(vertices.items, o + posOffset, posSize, positionTransform);
@@ -521,8 +531,8 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertices.items[o + colOffset + 2] *= color.b;
 				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
 			} else if (cpOffset >= 0) {
-				vertices.items[o + cpOffset] = tempC1.set(NumberUtils.floatToIntColor(vertices.items[o + cpOffset])).mul(color)
-					.toFloatBits();
+				Color.abgr8888ToColor(tempC1, vertices.items[o + cpOffset]);
+				vertices.items[o + cpOffset] = tempC1.mul(color).toFloatBits();
 			}
 		}
 
@@ -536,7 +546,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
-		if (vindex > Short.MAX_VALUE) throw new GdxRuntimeException("Too many vertices used");
+		if (vindex > MAX_INDEX) throw new GdxRuntimeException("Too many vertices used");
 
 		vertex[posOffset] = pos.x;
 		if (posSize > 1) vertex[posOffset + 1] = pos.y;
@@ -566,7 +576,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 
 		addVertex(vertex, 0);
-		return lastIndex;
+		return (short)lastIndex;
 	}
 
 	@Override
@@ -574,7 +584,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final int n = values.length - stride;
 		for (int i = 0; i <= n; i += stride)
 			addVertex(values, i);
-		return lastIndex;
+		return (short)lastIndex;
 	}
 
 	@Override
@@ -768,7 +778,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final int numVertices = vertices.length / stride;
 		ensureVertices(numVertices < numIndices ? numVertices : numIndices);
 		for (int i = 0; i < numIndices; i++) {
-			final int sidx = indices[indexOffset + i];
+			final int sidx = indices[indexOffset + i] & 0xFFFF;
 			int didx = indicesMap.get(sidx, -1);
 			if (didx < 0) {
 				addVertex(vertices, sidx * stride);
@@ -780,7 +790,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void addMesh (float[] vertices, short[] indices) {
-		final short offset = (short)(lastIndex + 1);
+		final int offset = lastIndex + 1;
 
 		final int numVertices = vertices.length / stride;
 		ensureVertices(numVertices);

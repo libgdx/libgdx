@@ -15,17 +15,20 @@
 package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
+import android.app.WallpaperColors;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface dedicated for android live wallpapers.
@@ -474,6 +477,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		// end of lifecycle methods ////////////////////////////////////////////////////////
 
 		// input
+		
+		boolean iconDropConsumed = true;
+		int xIconDrop, yIconDrop;
 
 		@Override
 		public Bundle onCommand (final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras,
@@ -481,8 +487,35 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (DEBUG)
 				Log.d(TAG, " > AndroidWallpaperEngine - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
 					+ pResultRequested + ")" + ", linked: " + (linkedEngine == this));
+			
+			if (pAction.equals("android.home.drop")){
+				iconDropConsumed = false;
+				xIconDrop = pX;
+				yIconDrop = pY;
+				notifyIconDropped();
+			}
 
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
+		}
+		
+		protected void notifyIconDropped () {
+			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {
+				if (!iconDropConsumed) { // same type of synchronization as in notifyOffsetsChanged()
+					iconDropConsumed = true;
+
+					app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							boolean isCurrent = false;
+							synchronized (sync) {
+								isCurrent = (linkedEngine == AndroidWallpaperEngine.this);
+							}
+							if (isCurrent)
+								((AndroidWallpaperListener)app.listener).iconDropped(xIconDrop, yIconDrop);
+						}
+					});
+				}
+			}
 		}
 
 		@Override
@@ -576,5 +609,22 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				});
 			}
 		}
+
+		@Override
+		public WallpaperColors onComputeColors () {
+			Application app = Gdx.app;
+			if (Build.VERSION.SDK_INT >= 27 && app instanceof AndroidLiveWallpaper) {
+				AndroidLiveWallpaper liveWallpaper = (AndroidLiveWallpaper) app;
+				Color[] colors = liveWallpaper.wallpaperColors;
+				if (colors != null)
+					return new WallpaperColors(
+							android.graphics.Color.valueOf(colors[0].r, colors[0].g, colors[0].b, colors[0].a),
+							android.graphics.Color.valueOf(colors[1].r, colors[1].g, colors[1].b, colors[1].a),
+							android.graphics.Color.valueOf(colors[2].r, colors[2].g, colors[2].b, colors[2].a)
+					);
+			}
+			return super.onComputeColors();
+		}
+
 	}
 }

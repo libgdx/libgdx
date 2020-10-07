@@ -17,19 +17,19 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
-	private Array<InputProcessor> processors = new Array(4);
+	private SnapshotArray<InputProcessor> processors = new SnapshotArray(4);
 
 	public InputMultiplexer () {
 	}
 
 	public InputMultiplexer (InputProcessor... processors) {
-		for (int i = 0; i < processors.length; i++)
-			this.processors.add(processors[i]);
+		this.processors.addAll(processors);
 	}
 
 	public void addProcessor (int index, InputProcessor processor) {
@@ -59,61 +59,105 @@ public class InputMultiplexer implements InputProcessor {
 		processors.clear();
 	}
 
-	public void setProcessors (Array<InputProcessor> processors) {
-		this.processors = processors;
+	public void setProcessors (InputProcessor... processors) {
+		this.processors.clear();
+		this.processors.addAll(processors);
 	}
 
-	public Array<InputProcessor> getProcessors () {
+	public void setProcessors (Array<InputProcessor> processors) {
+		this.processors.clear();
+		this.processors.addAll(processors);
+	}
+
+	public SnapshotArray<InputProcessor> getProcessors () {
 		return processors;
 	}
 
 	public boolean keyDown (int keycode) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyDown(keycode)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).keyDown(keycode)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean keyUp (int keycode) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyUp(keycode)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).keyUp(keycode)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean keyTyped (char character) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).keyTyped(character)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).keyTyped(character)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).touchDown(screenX, screenY, pointer, button)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).touchUp(screenX, screenY, pointer, button)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).touchDragged(screenX, screenY, pointer)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
-	@Override
 	public boolean mouseMoved (int screenX, int screenY) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).mouseMoved(screenX, screenY)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).mouseMoved(screenX, screenY)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 
-	@Override
 	public boolean scrolled (int amount) {
-		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).scrolled(amount)) return true;
+		Object[] items = processors.begin();
+		try {
+			for (int i = 0, n = processors.size; i < n; i++)
+				if (((InputProcessor)items[i]).scrolled(amount)) return true;
+		} finally {
+			processors.end();
+		}
 		return false;
 	}
 }

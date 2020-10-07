@@ -1336,6 +1336,8 @@ const char*	btQuantizedBvh::serialize(void* dataBuffer, btSerializer* serializer
 			memPtr->m_escapeIndex = m_contiguousNodes[i].m_escapeIndex;
 			memPtr->m_subPart = m_contiguousNodes[i].m_subPart;
 			memPtr->m_triangleIndex = m_contiguousNodes[i].m_triangleIndex;
+			// Fill padding with zeros to appease msan.
+			memset(memPtr->m_pad, 0, sizeof(memPtr->m_pad));
 		}
 		serializer->finalizeChunk(chunk,"btOptimizedBvhNodeData",BT_ARRAY_CODE,(void*)&m_contiguousNodes[0]);
 	}

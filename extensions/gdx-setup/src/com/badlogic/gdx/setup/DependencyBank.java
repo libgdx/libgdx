@@ -22,28 +22,30 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.9.6";
+	static String libgdxVersion = "1.9.11";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.9.7-SNAPSHOT";
-	static String roboVMVersion = "2.3.1";
-	static String moeVersion = "1.3.6";
-	static String buildToolsVersion = "23.0.1";
-	static String androidAPILevel = "20";
-	static String gwtVersion = "2.8.0";
+	static String libgdxNightlyVersion = "1.9.12-SNAPSHOT";
+	static String roboVMVersion = "2.3.10";
+	static String buildToolsVersion = "29.0.2";
+	static String androidAPILevel = "29";
+	static String gwtVersion = "2.8.2";
 
 	//Repositories
 	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
+	static String google = "google()";
+	static String gradlePlugins = "https://plugins.gradle.org/m2/";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.5.0";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
+	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
+	static String androidPluginImport = "com.android.tools.build:gradle:3.4.1";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
-	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
-	
+
+
 	//Extension versions
 	static String box2DLightsVersion = "1.4";
 	static String ashleyVersion = "1.7.0";
@@ -59,7 +61,6 @@ public class DependencyBank {
 					projectDep.getDependencies(ProjectType.DESKTOP),
 					projectDep.getDependencies(ProjectType.ANDROID),
 					projectDep.getDependencies(ProjectType.IOS),
-					projectDep.getDependencies(ProjectType.IOSMOE),
 					projectDep.getDependencies(ProjectType.HTML));
 			gdxDependencies.put(projectDep, dependency);
 		}
@@ -85,7 +86,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.mobidevelop.robovm:robovm-rt:$roboVMVersion", "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
-			new String[]{"com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			
@@ -96,7 +96,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
-			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
 			null,
 			null,
 			
@@ -106,7 +105,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"},
-			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
 			null,
 			null,
@@ -120,7 +118,6 @@ public class DependencyBank {
 			new String[]{},
 			new String[]{},
 			new String[]{},
-			new String[]{},
 			
 			"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"
 		),
@@ -128,7 +125,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
-			new String[]{}, // works on iOS but never reports any controllers :)
 			new String[]{}, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.controllers.controllers-gwt"},
@@ -140,7 +136,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"},
 			
@@ -150,7 +145,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
-			new String[]{},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
 			new String[]{"Box2DLights"},
@@ -162,7 +156,6 @@ public class DependencyBank {
 			new String[]{},
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{},
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
 			new String[]{"com.badlogic.ashley_gwt"},
 			
@@ -172,7 +165,6 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
-			new String[]{},
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
 			new String[]{"com.badlogic.gdx.ai"},
@@ -184,17 +176,15 @@ public class DependencyBank {
 		private String[] desktopDependencies;
 		private String[] androidDependencies;
 		private String[] iosDependencies;
-		private String[] iosMoeDependencies;
 		private String[] gwtDependencies;
 		private String[] gwtInherits;
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] iosMoeDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
+		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
 			this.coreDependencies = coreDeps;
 			this.desktopDependencies = desktopDeps;
 			this.androidDependencies = androidDeps;
 			this.iosDependencies = iosDeps;
-			this.iosMoeDependencies = iosMoeDeps;
 			this.gwtDependencies = gwtDeps;
 			this.gwtInherits = gwtInhertis;
 			this.description = description;
@@ -210,8 +200,6 @@ public class DependencyBank {
 					return androidDependencies;
 				case IOS:
 					return iosDependencies;
-				case IOSMOE:
-					return iosMoeDependencies;
 				case HTML:
 					return gwtDependencies;
 			}
@@ -229,27 +217,24 @@ public class DependencyBank {
 
 
 	public enum ProjectType {
-		CORE("core", new String[]{"java"}),
-		DESKTOP("desktop", new String[]{"java"}),
-		ANDROID("android", new String[]{"android"}),
-		IOS("ios", new String[]{"java", "robovm"}),
-		IOSMOE("ios-moe", new String[] {"moe"}),
-		HTML("html", new String[]{"gwt", "war"});
+		CORE("core"),
+		DESKTOP("desktop"),
+		ANDROID("android"),
+		IOS("ios"),
+		HTML("html");
 
 		private final String name;
-		private final String[] plugins;
 
-		ProjectType(String name, String plugins[]) {
+		ProjectType(String name) {
 			this.name = name;
-			this.plugins = plugins;
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		public String[] getPlugins() {
-			return plugins;
+		public String[] getPlugins(Language sourceLanguage) {
+			return sourceLanguage.platformPlugins[ordinal()];
 		}
 	}
 

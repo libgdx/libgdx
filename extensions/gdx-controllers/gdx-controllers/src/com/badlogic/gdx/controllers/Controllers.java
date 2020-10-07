@@ -16,14 +16,11 @@
 
 package com.badlogic.gdx.controllers;
 
-import java.util.Collection;
-
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -38,6 +35,11 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 public class Controllers {
 	private static final String TAG = "Controllers";
 	static final ObjectMap<Application, ControllerManager> managers = new ObjectMap<Application, ControllerManager>();
+    /**
+     * The class name of a preferred {@link ControllerManager}. If this is null then an appropriate ControllerManager will
+     *  automatically be selected. This must be set before any controllers or managers are found.
+     */
+	public static String preferredManager = null;
 
 	/** Returns an array of connected {@link Controller} instances. This method should only be called on the rendering thread.
 	 * 
@@ -85,13 +87,10 @@ public class Controllers {
 		ApplicationType type = Gdx.app.getType();
 		ControllerManager manager = null;
 
-		if (type == ApplicationType.Android) {
-			if (Gdx.app.getVersion() >= 12) {
-				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
-			} else {
-				Gdx.app.log(TAG, "No controller manager is available for Android versions < API level 12");
-				manager = new ControllerManagerStub();
-			}
+		if (preferredManager != null) {
+			className = preferredManager;
+		} else if (type == ApplicationType.Android) {
+			className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 		} else if (type == ApplicationType.Desktop) {
 			if(Gdx.graphics.getType() == GraphicsType.LWJGL3) {
 				className = "com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager";

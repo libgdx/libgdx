@@ -22,7 +22,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+
+import java.nio.FloatBuffer;
 
 /** Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.
  * Also provides some (protected) static methods to create TextureData and upload image data.
@@ -35,6 +39,8 @@ public abstract class GLTexture implements Disposable {
 	protected TextureFilter magFilter = TextureFilter.Nearest;
 	protected TextureWrap uWrap = TextureWrap.ClampToEdge;
 	protected TextureWrap vWrap = TextureWrap.ClampToEdge;
+	protected float anisotropicFilterLevel = 1.0f;
+	private static float maxAnisotropicFilterLevel = 0;
 
 	/** @return the width of the texture in pixels */
 	public abstract int getWidth ();
@@ -111,11 +117,11 @@ public abstract class GLTexture implements Disposable {
 	 * @param force True to always set the values, even if they are the same as the current values. */
 	public void unsafeSetWrap (TextureWrap u, TextureWrap v, boolean force) {
 		if (u != null && (force || uWrap != u)) {
-			Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
+			Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
 			uWrap = u;
 		}
 		if (v != null && (force || vWrap != v)) {
-			Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
+			Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
 			vWrap = v;
 		}
 	}
@@ -127,8 +133,8 @@ public abstract class GLTexture implements Disposable {
 		this.uWrap = u;
 		this.vWrap = v;
 		bind();
-		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
-		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
+		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
+		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
 	}
 
 	/** Sets the {@link TextureFilter} for this texture for minification and magnification. Assumes the texture is bound and active!
@@ -144,11 +150,11 @@ public abstract class GLTexture implements Disposable {
 	 * @param force True to always set the values, even if they are the same as the current values. */
 	public void unsafeSetFilter (TextureFilter minFilter, TextureFilter magFilter, boolean force) {
 		if (minFilter != null && (force || this.minFilter != minFilter)) {
-			Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
+			Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
 			this.minFilter = minFilter;
 		}
 		if (magFilter != null && (force || this.magFilter != magFilter)) {
-			Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
+			Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
 			this.magFilter = magFilter;
 		}
 	}
@@ -160,8 +166,77 @@ public abstract class GLTexture implements Disposable {
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
 		bind();
-		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
-		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
+		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
+		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
+	}
+
+	/**
+	 * Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	 *
+	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float unsafeSetAnisotropicFilter (float level) {
+		return unsafeSetAnisotropicFilter(level, false);
+	}
+
+	/**
+	 * Sets the anisotropic filter level for the texture. Assumes the texture is bound and active!
+	 *
+	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
+	 * @param force True to always set the value, even if it is the same as the current values.
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float unsafeSetAnisotropicFilter (float level, boolean force) {
+		float max = getMaxAnisotropicFilterLevel();
+		if (max == 1f)
+			return 1f;
+		level = Math.min(level, max);
+		if (!force && MathUtils.isEqual(level, anisotropicFilterLevel, 0.1f))
+			return anisotropicFilterLevel;
+		Gdx.gl20.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
+		return anisotropicFilterLevel = level;
+	}
+
+	/**
+	 * Sets the anisotropic filter level for the texture. This will bind the texture!
+	 *
+	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
+	 * @return The actual level set, which may be lower than the provided value due to device limitations.
+	 */
+	public float setAnisotropicFilter (float level) {
+		float max = getMaxAnisotropicFilterLevel();
+		if (max == 1f)
+			return 1f;
+		level = Math.min(level, max);
+		if (MathUtils.isEqual(level, anisotropicFilterLevel, 0.1f))
+			return level;
+		bind();
+		Gdx.gl20.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
+		return anisotropicFilterLevel = level;
+	}
+
+	/**
+	 * @return The currently set anisotropic filtering level for the texture, or 1.0f if none has been set.
+	 */
+	public float getAnisotropicFilter () {
+		return anisotropicFilterLevel;
+	}
+
+	/**
+	 * @return The maximum supported anisotropic filtering level supported by the device.
+	 */
+	public static float getMaxAnisotropicFilterLevel () {
+		if (maxAnisotropicFilterLevel > 0)
+			return maxAnisotropicFilterLevel;
+		if (Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")) {
+			FloatBuffer buffer = BufferUtils.newFloatBuffer(16);
+			buffer.position(0);
+			buffer.limit(buffer.capacity());
+			Gdx.gl20.glGetFloatv(GL20.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, buffer);
+			return maxAnisotropicFilterLevel = buffer.get(0);
+		}
+		return maxAnisotropicFilterLevel = 1f;
 	}
 
 	/** Destroys the OpenGL Texture as specified by the glHandle. */

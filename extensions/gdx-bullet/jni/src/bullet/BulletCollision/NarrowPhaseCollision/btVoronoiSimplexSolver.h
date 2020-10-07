@@ -26,8 +26,12 @@ subject to the following restrictions:
 
 ///disable next define, or use defaultCollisionConfiguration->getSimplexSolver()->setEqualVertexThreshold(0.f) to disable/configure
 #define BT_USE_EQUAL_VERTEX_THRESHOLD
-#define VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD 0.0001f
 
+#ifdef BT_USE_DOUBLE_PRECISION
+#define VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD 1e-12f
+#else
+#define VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD 0.0001f
+#endif//BT_USE_DOUBLE_PRECISION
 
 struct btUsageBitfield{
 	btUsageBitfield()

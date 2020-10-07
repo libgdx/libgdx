@@ -91,6 +91,15 @@
     <Filter Include="Source Files\bullet\BulletDynamics\MLCPSolvers">
       <UniqueIdentifier>{95104f21-6997-4d0f-a2eb-56789f467fd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\bullet\BulletInverseDynamics">
+      <UniqueIdentifier>{f359d136-8a65-4379-8e17-cb274f58975f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletInverseDynamics\details">
+      <UniqueIdentifier>{0ae604e8-efc2-48ed-b22f-66059b196049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\inversedynamicsextra">
+      <UniqueIdentifier>{70bc482d-2f5b-43e8-a2db-4f7f7167c75b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\swig-src\linearmath\linearmath_wrap.cpp">
@@ -136,9 +145,6 @@
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp">
-      <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp">
@@ -584,6 +590,78 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\btMultiBodyTreeCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CloneTreeCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CoilCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\DillCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\IDRandomUtil.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\invdyn_bullet_comparison.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyNameMap.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeDebugGraph.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\RandomTreeCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\SimpleTreeCreator.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\User2InternalIndex.cpp">
+      <Filter>Source Files\inversedynamicsextra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.cpp">
+      <Filter>Source Files\bullet\BulletInverseDynamics\details</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp">
+      <Filter>Source Files\bullet\BulletInverseDynamics\details</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\IDMath.cpp">
+      <Filter>Source Files\bullet\BulletInverseDynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\MultiBodyTree.cpp">
+      <Filter>Source Files\bullet\BulletInverseDynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\swig-src\inversedynamics\inversedynamics_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btThreads.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcherMt.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyGearConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer64.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

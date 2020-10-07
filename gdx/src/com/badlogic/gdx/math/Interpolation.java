@@ -53,7 +53,7 @@ public abstract class Interpolation {
 	/** By Ken Perlin. */
 	static public final Interpolation smoother = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
+			return a * a * a * (a * (a * 6 - 15) + 10);
 		}
 	};
 	static public final Interpolation fade = smoother;
@@ -63,15 +63,19 @@ public abstract class Interpolation {
 	static public final Pow pow2 = new Pow(2);
 	/** Slow, then fast. */
 	static public final PowIn pow2In = new PowIn(2);
+	static public final PowIn slowFast = pow2In;
 	/** Fast, then slow. */
 	static public final PowOut pow2Out = new PowOut(2);
+	static public final PowOut fastSlow = pow2Out;
 	static public final Interpolation pow2InInverse = new Interpolation() {
 		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
 			return (float)Math.sqrt(a);
 		}
 	};
 	static public final Interpolation pow2OutInverse = new Interpolation() {
 		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
 			return 1 - (float)Math.sqrt(-(a - 1));
 		}
 	};
@@ -106,13 +110,13 @@ public abstract class Interpolation {
 
 	static public final Interpolation sineIn = new Interpolation() {
 		public float apply (float a) {
-			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
+			return 1 - MathUtils.cos(a * MathUtils.HALF_PI);
 		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.sin(a * MathUtils.PI / 2);
+			return MathUtils.sin(a * MathUtils.HALF_PI);
 		}
 	};
 

@@ -211,7 +211,10 @@ const char*	btConvexHullShape::serialize(void* dataBuffer, btSerializer* seriali
 		}
 		serializer->finalizeChunk(chunk,btVector3DataName,BT_ARRAY_CODE,(void*)&m_unscaledPoints[0]);
 	}
-	
+
+	// Fill padding with zeros to appease msan.
+	memset(shapeData->m_padding3, 0, sizeof(shapeData->m_padding3));
+
 	return "btConvexHullShapeData";
 }
 

@@ -18,9 +18,11 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 
 btCollisionObject::btCollisionObject()
-	:	m_anisotropicFriction(1.f,1.f,1.f),
-	m_hasAnisotropicFriction(false),
-	m_contactProcessingThreshold(BT_LARGE_FLOAT),
+	:	m_interpolationLinearVelocity(0.f, 0.f, 0.f),
+		m_interpolationAngularVelocity(0.f, 0.f, 0.f),
+		m_anisotropicFriction(1.f,1.f,1.f),
+		m_hasAnisotropicFriction(false),
+		m_contactProcessingThreshold(BT_LARGE_FLOAT),
 		m_broadphaseHandle(0),
 		m_collisionShape(0),
 		m_extensionPointer(0),
@@ -28,6 +30,7 @@ btCollisionObject::btCollisionObject()
 		m_collisionFlags(btCollisionObject::CF_STATIC_OBJECT),
 		m_islandTag1(-1),
 		m_companionId(-1),
+        m_worldArrayIndex(-1),
 		m_activationState1(1),
 		m_deactivationTime(btScalar(0.)),
 		m_friction(btScalar(0.5)),
@@ -47,6 +50,7 @@ btCollisionObject::btCollisionObject()
 		m_updateRevision(0)
 {
 	m_worldTransform.setIdentity();
+	m_interpolationWorldTransform.setIdentity();
 }
 
 btCollisionObject::~btCollisionObject()
@@ -110,6 +114,9 @@ const char* btCollisionObject::serialize(void* dataBuffer, btSerializer* seriali
 	dataOut->m_ccdSweptSphereRadius = m_ccdSweptSphereRadius;
 	dataOut->m_ccdMotionThreshold = m_ccdMotionThreshold;
 	dataOut->m_checkCollideWith = m_checkCollideWith;
+
+	// Fill padding with zeros to appease msan.
+	memset(dataOut->m_padding, 0, sizeof(dataOut->m_padding));
 
 	return btCollisionObjectDataName;
 }

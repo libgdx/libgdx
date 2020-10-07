@@ -21,9 +21,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
@@ -32,17 +32,19 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 public class DragAndDrop {
 	static final Vector2 tmpVector = new Vector2();
 
+	Source dragSource;
 	Payload payload;
 	Actor dragActor;
+	boolean removeDragActor;
 	Target target;
 	boolean isValidTarget;
-	Array<Target> targets = new Array();
-	ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
+	final Array<Target> targets = new Array();
+	final ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
 	private float tapSquareSize = 8;
 	private int button;
 	float dragActorX = 0, dragActorY = 0;
 	float touchOffsetX, touchOffsetY;
-	long dragStartTime;
+	long dragValidTime;
 	int dragTime = 250;
 	int activePointer = -1;
 	boolean cancelTouchFocus = true;
@@ -58,31 +60,43 @@ public class DragAndDrop {
 
 				activePointer = pointer;
 
-				dragStartTime = System.currentTimeMillis();
+				dragValidTime = System.currentTimeMillis() + dragTime;
+				dragSource = source;
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
 
-				if (cancelTouchFocus && payload != null) source.getActor().getStage().cancelTouchFocusExcept(this, source.getActor());
+				if (cancelTouchFocus && payload != null) {
+					Stage stage = source.getActor().getStage();
+					if (stage != null) stage.cancelTouchFocusExcept(this, source.getActor());
+				}
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
 				if (payload == null) return;
 				if (pointer != activePointer) return;
 
+				source.drag(event, x, y, pointer);
+
 				Stage stage = event.getStage();
 
-				Touchable dragActorTouchable = null;
-				if (dragActor != null) {
-					dragActorTouchable = dragActor.getTouchable();
-					dragActor.setTouchable(Touchable.disabled);
+				// Move the drag actor away, so it cannot be hit.
+				Actor oldDragActor = dragActor;
+				float oldDragActorX = 0, oldDragActorY = 0;
+				if (oldDragActor != null) {
+					oldDragActorX = oldDragActor.getX();
+					oldDragActorY = oldDragActor.getY();
+					oldDragActor.setPosition(Integer.MAX_VALUE, Integer.MAX_VALUE);
 				}
+
+				float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
+				Actor hit = event.getStage().hit(stageX, stageY, true); // Prefer touchable actors.
+				if (hit == null) hit = event.getStage().hit(stageX, stageY, false);
+
+				if (oldDragActor != null) oldDragActor.setPosition(oldDragActorX, oldDragActorY);
 
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
-				float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
-				Actor hit = event.getStage().hit(stageX, stageY, true); // Prefer touchable actors.
-				if (hit == null) hit = event.getStage().hit(stageX, stageY, false);
 				if (hit != null) {
 					for (int i = 0, n = targets.size; i < n; i++) {
 						Target target = targets.get(i);
@@ -92,26 +106,29 @@ public class DragAndDrop {
 						break;
 					}
 				}
+
 				// If over a new target, notify the former target that it's being left behind.
 				if (newTarget != target) {
 					if (target != null) target.reset(source, payload);
 					target = newTarget;
 				}
+
 				// Notify new target of drag.
 				if (newTarget != null) isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 
-				if (dragActor != null) dragActor.setTouchable(dragActorTouchable);
-
-				// Add/remove and position the drag actor.
+				// Determine the drag actor, remove the old one if it was added by DragAndDrop, and add the new one.
 				Actor actor = null;
 				if (target != null) actor = isValidTarget ? payload.validDragActor : payload.invalidDragActor;
 				if (actor == null) actor = payload.dragActor;
-				if (actor == null) return;
-				if (dragActor != actor) {
-					if (dragActor != null) dragActor.remove();
+				if (actor != oldDragActor) {
+					if (oldDragActor != null && removeDragActor) oldDragActor.remove();
 					dragActor = actor;
-					stage.addActor(actor);
+					removeDragActor = actor.getStage() == null; // Only remove later if not already in the stage now.
+					if (removeDragActor) stage.addActor(actor);
 				}
+				if (actor == null) return;
+
+				// Position the drag actor.
 				float actorX = event.getStageX() - actor.getWidth() + dragActorX;
 				float actorY = event.getStageY() + dragActorY;
 				if (keepWithinStage) {
@@ -128,8 +145,8 @@ public class DragAndDrop {
 				activePointer = -1;
 				if (payload == null) return;
 
-				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
-				if (dragActor != null) dragActor.remove();
+				if (System.currentTimeMillis() < dragValidTime) isValidTarget = false;
+				if (dragActor != null && removeDragActor) dragActor.remove();
 				if (isValidTarget) {
 					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
 					target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
@@ -137,6 +154,7 @@ public class DragAndDrop {
 				}
 				source.dragStop(event, x, y, pointer, payload, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
+				dragSource = null;
 				payload = null;
 				target = null;
 				isValidTarget = false;
@@ -170,6 +188,14 @@ public class DragAndDrop {
 		sourceListeners.clear();
 	}
 
+	/** Cancels the touch focus for everything except the specified source. */
+	public void cancelTouchFocusExcept (Source except) {
+		DragListener listener = sourceListeners.get(except);
+		if (listener == null) return;
+		Stage stage = except.getActor().getStage();
+		if (stage != null) stage.cancelTouchFocusExcept(listener, except.getActor());
+	}
+
 	/** Sets the distance a touch must travel before being considered a drag. */
 	public void setTapSquareSize (float halfTapSquareSize) {
 		tapSquareSize = halfTapSquareSize;
@@ -197,14 +223,33 @@ public class DragAndDrop {
 	}
 
 	/** Returns the current drag actor, or null. */
-	public Actor getDragActor () {
+	public @Null Actor getDragActor () {
 		return dragActor;
+	}
+
+	/** Returns the current drag payload, or null. */
+	public @Null Payload getDragPayload () {
+		return payload;
+	}
+
+	/** Returns the current drag source, or null. */
+	public @Null Source getDragSource () {
+		return dragSource;
 	}
 
 	/** Time in milliseconds that a drag must take before a drop will be considered valid. This ignores an accidental drag and drop
 	 * that was meant to be a click. Default is 250. */
 	public void setDragTime (int dragMillis) {
 		this.dragTime = dragMillis;
+	}
+
+	public int getDragTime () {
+		return dragTime;
+	}
+
+	/** Returns true if a drag is in progress and the {@link #setDragTime(int) drag time} has elapsed since the drag started. */
+	public boolean isDragValid () {
+		return payload != null && System.currentTimeMillis() >= dragValidTime;
 	}
 
 	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled if
@@ -230,12 +275,16 @@ public class DragAndDrop {
 
 		/** Called when a drag is started on the source. The coordinates are in the source's local coordinate system.
 		 * @return If null the drag will not affect any targets. */
-		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
+		abstract public @Null Payload dragStart (InputEvent event, float x, float y, int pointer);
+
+		/** Called repeatedly during a drag which started on this source. */
+		public void drag (InputEvent event, float x, float y, int pointer) {
+		}
 
 		/** Called when a drag for the source is stopped. The coordinates are in the source's local coordinate system.
 		 * @param payload null if dragStart returned null.
 		 * @param target null if not dropped on a valid target. */
-		public void dragStop (InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+		public void dragStop (InputEvent event, float x, float y, int pointer, @Null Payload payload, @Null Target target) {
 		}
 
 		public Actor getActor () {
@@ -260,11 +309,13 @@ public class DragAndDrop {
 		 * @return true if this is a valid target for the payload. */
 		abstract public boolean drag (Source source, Payload payload, float x, float y, int pointer);
 
-		/** Called when the payload is no longer over the target, whether because the touch was moved or a drop occurred. */
+		/** Called when the payload is no longer over the target, whether because the touch was moved or a drop occurred. This is
+		 * called even if {@link #drag(Source, Payload, float, float, int)} returned false. */
 		public void reset (Source source, Payload payload) {
 		}
 
-		/** Called when the payload is dropped on the target. The coordinates are in the target's local coordinate system. */
+		/** Called when the payload is dropped on the target. The coordinates are in the target's local coordinate system. This is
+		 * not called if {@link #drag(Source, Payload, float, float, int)} returned false. */
 		abstract public void drop (Source source, Payload payload, float x, float y, int pointer);
 
 		public Actor getActor () {
@@ -273,41 +324,41 @@ public class DragAndDrop {
 	}
 
 	/** The payload of a drag and drop operation. Actors can be optionally provided to follow the cursor and change when over a
-	 * target. Such Actors will be added and removed from the stage automatically during the drag operation. Care should be taken
-	 * when using the source Actor as a payload drag actor. */
+	 * target. Such actors will be added the stage automatically during the drag operation as necessary and they will only be
+	 * removed from the stage if they were added automatically. A source actor can be used a payload drag actor. */
 	static public class Payload {
-		Actor dragActor, validDragActor, invalidDragActor;
-		Object object;
+		@Null Actor dragActor, validDragActor, invalidDragActor;
+		@Null Object object;
 
-		public void setDragActor (Actor dragActor) {
+		public void setDragActor (@Null Actor dragActor) {
 			this.dragActor = dragActor;
 		}
 
-		public Actor getDragActor () {
+		public @Null Actor getDragActor () {
 			return dragActor;
 		}
 
-		public void setValidDragActor (Actor validDragActor) {
+		public void setValidDragActor (@Null Actor validDragActor) {
 			this.validDragActor = validDragActor;
 		}
 
-		public Actor getValidDragActor () {
+		public @Null Actor getValidDragActor () {
 			return validDragActor;
 		}
 
-		public void setInvalidDragActor (Actor invalidDragActor) {
+		public void setInvalidDragActor (@Null Actor invalidDragActor) {
 			this.invalidDragActor = invalidDragActor;
 		}
 
-		public Actor getInvalidDragActor () {
+		public @Null Actor getInvalidDragActor () {
 			return invalidDragActor;
 		}
 
-		public Object getObject () {
+		public @Null Object getObject () {
 			return object;
 		}
 
-		public void setObject (Object object) {
+		public void setObject (@Null Object object) {
 			this.object = object;
 		}
 	}

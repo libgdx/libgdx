@@ -106,7 +106,10 @@ const char*	btCollisionShape::serialize(void* dataBuffer, btSerializer* serializ
 		serializer->serializeName(name);
 	}
 	shapeData->m_shapeType = m_shapeType;
-	//shapeData->m_padding//??
+
+	// Fill padding with zeros to appease msan.
+	memset(shapeData->m_padding, 0, sizeof(shapeData->m_padding));
+
 	return "btCollisionShapeData";
 }
 

@@ -39,7 +39,7 @@ subject to the following restrictions:
 #endif
 
 
-#define BT_SHUFFLE(x,y,z,w) ((w)<<6 | (z)<<4 | (y)<<2 | (x))
+#define BT_SHUFFLE(x, y, z, w) (((w) << 6 | (z) << 4 | (y) << 2 | (x)) & 0xff)
 //#define bt_pshufd_ps( _a, _mask ) (__m128) _mm_shuffle_epi32((__m128i)(_a), (_mask) )
 #define bt_pshufd_ps( _a, _mask ) _mm_shuffle_ps((_a), (_a), (_mask) )
 #define bt_splat3_ps( _a, _i ) bt_pshufd_ps((_a), BT_SHUFFLE(_i,_i,_i, 3) )
@@ -291,14 +291,16 @@ public:
 
 	SIMD_FORCE_INLINE btVector3& safeNormalize() 
 	{
-		btVector3 absVec = this->absolute();
-		int maxIndex = absVec.maxAxis();
-		if (absVec[maxIndex]>0)
+		btScalar l2 = length2();
+		//triNormal.normalize();
+		if (l2 >= SIMD_EPSILON*SIMD_EPSILON)
 		{
-			*this /= absVec[maxIndex];
-			return *this /= length();
+			(*this) /= btSqrt(l2);
 		}
-		setValue(1,0,0);
+		else
+		{
+			setValue(1, 0, 0);
+		}
 		return *this;
 	}
 
@@ -1157,7 +1159,6 @@ public:
 		if (m_floats[3] > maxVal)
 		{
 			maxIndex = 3;
-			maxVal = m_floats[3];
 		}
 
 		return maxIndex;

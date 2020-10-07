@@ -11,14 +11,14 @@
 package java.io;
 
 public class StringWriter extends Writer {
-	private final StringBuilder out;
+	private final StringBuffer out;
 
 	public StringWriter() {
-		out = new StringBuilder();
+		out = new StringBuffer();
 	}
 	
 	public StringWriter(int initialCapacity) {
-		out = new StringBuilder(initialCapacity);
+		out = new StringBuffer(initialCapacity);
 	}
 	
 	public void write (char[] b, int offset, int length) throws IOException {
@@ -27,6 +27,10 @@ public class StringWriter extends Writer {
 
 	public String toString () {
 		return out.toString();
+	}
+	
+	public StringBuffer getBuffer() {
+		return out;
 	}
 
 	public void flush () throws IOException {

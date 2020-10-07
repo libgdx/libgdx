@@ -66,5 +66,8 @@
     <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp">
       <Filter>Source Files\custom\gdx\linearmath</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btThreads.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

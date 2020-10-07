@@ -87,7 +87,7 @@ public class GwtTest extends GdxTest {
 		cache.setColor(Color.RED);
 		cache.setText("This is a Test", 0, 0);
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 	}
 
 	@Override
@@ -95,11 +95,10 @@ public class GwtTest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		texture.bind(0);
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_projView", matrix);
 		shader.setUniformi("u_texture", 0);
 		mesh.render(shader, GL20.GL_TRIANGLES);
-		shader.end();
 
 		batch.begin();
 		batch.draw(atlas.findRegion("font"), 0, 100);

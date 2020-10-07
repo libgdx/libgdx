@@ -135,6 +135,12 @@ public interface Graphics {
 	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
 
+	/** Set the GL20 instance **/
+	public void setGL20 (GL20 gl20);
+
+	/** Set the GL30 instance **/
+	public void setGL30 (GL30 gl30);
+
 	/** @return the width of the client area in logical pixels. */
 	public int getWidth ();
 
@@ -146,6 +152,26 @@ public interface Graphics {
 
 	/** @return the height of the framebuffer in physical pixels */
 	public int getBackBufferHeight ();
+
+	/**
+	 * @return the inset from the left which avoids display cutouts in pixels
+	 */
+	int getSafeInsetLeft();
+
+	/**
+	 * @return the inset from the top which avoids display cutouts in pixels
+	 */
+	int getSafeInsetTop();
+
+	/**
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
+	 */
+	int getSafeInsetBottom();
+
+	/**
+	 * @return the inset from the right which avoids display cutouts in pixels
+	 */
+	int getSafeInsetRight();
 
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of

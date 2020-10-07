@@ -31,6 +31,7 @@ public class SpawnInfluencer extends Influencer {
 
 	public SpawnShapeValue spawnShapeValue;
 	FloatChannel positionChannel;
+	FloatChannel rotationChannel;
 
 	public SpawnInfluencer () {
 		spawnShapeValue = new PointSpawnShapeValue();
@@ -52,6 +53,7 @@ public class SpawnInfluencer extends Influencer {
 	@Override
 	public void allocateChannels () {
 		positionChannel = controller.particles.addChannel(ParticleChannels.Position);
+		rotationChannel = controller.particles.addChannel(ParticleChannels.Rotation3D);
 	}
 
 	@Override
@@ -67,6 +69,13 @@ public class SpawnInfluencer extends Influencer {
 			positionChannel.data[i + ParticleChannels.XOffset] = TMP_V1.x;
 			positionChannel.data[i + ParticleChannels.YOffset] = TMP_V1.y;
 			positionChannel.data[i + ParticleChannels.ZOffset] = TMP_V1.z;
+		}
+		for (int i = startIndex * rotationChannel.strideSize, c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
+			controller.transform.getRotation(TMP_Q, true);
+			rotationChannel.data[i + ParticleChannels.XOffset] = TMP_Q.x;
+			rotationChannel.data[i + ParticleChannels.YOffset] = TMP_Q.y;
+			rotationChannel.data[i + ParticleChannels.ZOffset] = TMP_Q.z;
+			rotationChannel.data[i + ParticleChannels.WOffset] = TMP_Q.w;
 		}
 	}
 

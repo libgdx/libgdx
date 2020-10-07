@@ -28,7 +28,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -41,6 +41,9 @@
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++"/>
 	<property name="libraries" value=""/>
+
+	<!-- define stripper -->
+	<property name="stripper" value="${compilerPrefix}strip${compilerSuffix}"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -67,6 +70,23 @@
 		</condition>
 		<condition property="has-compiler">
 			<equals arg1="${compiler-found}" arg2="true"/>
+		</condition>
+		<condition property="stripper-found">
+			<or>
+				<!-- Include both b/c Windows might be either -->
+				<available file="${stripper}" filepath="${env.PATH}"/>
+				<available file="${stripper}" filepath="${env.Path}"/>
+			</or>
+		</condition>
+		<condition property="should-strip">
+			<and>
+				<equals arg1="${stripper-found}" arg2="true"/>
+				<equals arg1="${release}" arg2="true"/>
+				<!-- Don't strip mac osx libs -->
+				<not>
+					<contains string="${libName}" substring="dylib"/>
+				</not>
+			</and>
 		</condition>
 		
 	</target>
@@ -96,6 +116,7 @@
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -114,6 +135,7 @@
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -143,8 +165,16 @@
 			<arg line="${libraries}" />
 		</exec>
 	</target>	
+
+	<!-- strips the shared library of debug symbols -->
+	<target name="strip" depends="link" if="should-strip">
+		<exec executable="${stripper}" failonerror="true" dir="${buildDir}">
+			<arg value="--strip-unneeded"/>
+			<arg path="${libsDir}/${libName}" />
+		</exec>
+	</target>
 	
-	<target name="postcompile" depends="link">
+	<target name="postcompile" depends="strip">
 		
 	</target>
 </project>

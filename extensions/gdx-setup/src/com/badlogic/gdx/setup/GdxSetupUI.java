@@ -154,6 +154,8 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter a game class name.");
 			return;
 		}
+		
+		final Language languageEnum = ui.settings.kotlinBox.isSelected() ? Language.KOTLIN : Language.JAVA;
 
 		final String destination = ui.form.destinationText.getText().trim();
 		if (destination.length() == 0) {
@@ -171,6 +173,12 @@ public class GdxSetupUI extends JFrame {
 					.showMessageDialog(this,
 							"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
+		}
+		
+		if (modules.contains(ProjectType.HTML) && !languageEnum.gwtSupported) {
+			JOptionPane.showMessageDialog(this, "HTML sub-projects are not supported by the selected programming language.");
+			ui.form.gwtCheckBox.setSelected(false);
+			modules.remove(ProjectType.HTML);
 		}
 
 		if (modules.contains(ProjectType.ANDROID)) {
@@ -201,7 +209,7 @@ public class GdxSetupUI extends JFrame {
 		List<String> incompatList = builder.buildProject(modules, dependencies);
 		if (incompatList.size() == 0) {
 			try {
-				builder.build();
+				builder.build(languageEnum);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -242,7 +250,7 @@ public class GdxSetupUI extends JFrame {
 				return;
 			} else {
 				try {
-					builder.build();
+					builder.build(languageEnum);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -253,21 +261,16 @@ public class GdxSetupUI extends JFrame {
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(builder, destination, name, pack, clazz, sdkLocation, new CharCallback() {
+				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						log(c);
 					}
 				}, ui.settings.getGradleArgs());
 				log("Done!");
-				if (ui.settings.getGradleArgs().contains("eclipse") || ui.settings.getGradleArgs().contains("idea")) {
-					log("To import in Eclipse: File -> Import -> General -> Existing Projects into Workspace");
-					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
-				} else {
-					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-					log("To import to Intellij IDEA: File -> Open -> build.gradle");
-					log("To import to NetBeans: File -> Open Project...");
-				}
+				log("To import in Eclipse: File -> Import -> Gradle -> Existing Gradle Project");
+				log("To import to Intellij IDEA: File -> Open -> build.gradle");
+				log("To import to NetBeans: File -> Open Project...");
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -298,7 +301,7 @@ public class GdxSetupUI extends JFrame {
 
 	class UI extends JPanel {
 		Form form = new Form();
-		SettingsDialog settings = new SettingsDialog();
+		SettingsDialog settings;
 		SetupButton generateButton = new SetupButton("Generate");
 		SetupButton advancedButton = new SetupButton("Advanced");
 		JPanel buttonPanel = new JPanel();
@@ -378,7 +381,8 @@ public class GdxSetupUI extends JFrame {
 			textArea.setEditable(false);
 			textArea.setLineWrap(true);
 			uiLayout();
-			uiEvents();
+			uiEvents(); 
+			settings = new SettingsDialog(form.gwtCheckBox);
 			titleEvents(minimize, exit);
 		}
 
@@ -422,7 +426,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog();
+					settings.showDialog(form, form.gwtCheckBox);
 				}
 			});
 			generateButton.addActionListener(new ActionListener() {
@@ -457,6 +461,7 @@ public class GdxSetupUI extends JFrame {
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
 		SetupButton showMoreExtensionsButton = new SetupButton("Show Third Party Extensions");
+		SetupCheckBox gwtCheckBox;
 
 		{
 			uiLayout();
@@ -488,6 +493,12 @@ public class GdxSetupUI extends JFrame {
 				extensionPanel.setOpaque(true);
 				extensionPanel.setBackground(new Color(46, 46, 46));
 			}
+
+			nameLabel.setToolTipText("The name of the application used in gradle");
+			packageLabel.setToolTipText("The package name of the application");
+			gameClassLabel.setToolTipText("The name of the main class implementing ApplicationListener");
+			destinationLabel.setToolTipText("The root directory of the project, it will be created if it does not exist");
+			sdkLocationLabel.setToolTipText("The location of your Android SDK");
 		}
 
 		private void uiLayout () {
@@ -520,12 +531,16 @@ public class GdxSetupUI extends JFrame {
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
-				}				
-				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
-				if (projectType != ProjectType.IOSMOE) {
-					modules.add(projectType);
-					checkBox.setSelected(true);
 				}
+
+				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
+				if (projectType == ProjectType.HTML) {
+					gwtCheckBox = checkBox;
+				} 
+
+				modules.add(projectType);
+				checkBox.setSelected(true);
+
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override
@@ -602,10 +617,10 @@ public class GdxSetupUI extends JFrame {
 			add(showMoreExtensionsButton, new GridBagConstraints(0, 12, 0, 1, 0, 0, CENTER, WEST, new Insets(10, 0, 10, 0), 0, 0));
 		}
 
-		File getDirectory () {
+		File getDirectory (String dialogTitle) {
 			if (System.getProperty("os.name").contains("Mac")) {
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
-				FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
+				FileDialog dialog = new FileDialog(GdxSetupUI.this, dialogTitle, FileDialog.LOAD);
 				dialog.setVisible(true);
 				String name = dialog.getFile();
 				String dir = dialog.getDirectory();
@@ -614,8 +629,8 @@ public class GdxSetupUI extends JFrame {
 			} else {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				chooser.setDialogTitle("Choose destination");
-				int result = chooser.showOpenDialog(null);
+				chooser.setDialogTitle(dialogTitle);
+				int result = chooser.showOpenDialog(GdxSetupUI.this);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File dir = chooser.getSelectedFile();
 					if (dir == null) return null;
@@ -630,7 +645,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			destinationButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					File path = getDirectory();
+					File path = getDirectory("Choose destination");
 					if (path != null) {
 						destinationText.setText(path.getAbsolutePath());
 					}
@@ -639,7 +654,7 @@ public class GdxSetupUI extends JFrame {
 			sdkLocationButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed (ActionEvent e) {
-					File path = getDirectory();
+					File path = getDirectory("Choose Android SDK");
 					if (path != null) {
 						sdkLocationText.setText(path.getAbsolutePath());
 						prefs.putString("ANDROID_HOME", path.getAbsolutePath());
@@ -649,7 +664,7 @@ public class GdxSetupUI extends JFrame {
 			});
 			showMoreExtensionsButton.addActionListener(new ActionListener() {
 				 public void actionPerformed (ActionEvent e) {
-					  externalExtensionsDialog.showDialog();
+					  externalExtensionsDialog.showDialog(Form.this);
 				 }
 			});
 		}
