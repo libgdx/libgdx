@@ -17,6 +17,7 @@
 ext {
     mainTestClass = "com.badlogic.gdx.tests.lwjgl3.Lwjgl3TestStarter"
 }
+sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -43,4 +44,14 @@ task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
 configure (launchTestsLwjgl3) {
     group "LibGDX"
     description = "Run the Lwjgl3 tests"
+}
+task dist(type: Jar, dependsOn: classes) {
+    manifest {
+        attributes 'Main-Class': project.mainTestClass
+    }
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
