@@ -111,6 +111,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
+	public Vector2 sub(float v) {
+		x -= v;
+		y -= v;
+		return this;
+	}
+
+	@Override
 	public Vector2 nor () {
 		float len = len();
 		if (len != 0) {
@@ -134,6 +141,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 add (float x, float y) {
 		this.x += x;
 		this.y += y;
+		return this;
+	}
+
+	@Override
+	public Vector2 add(float v) {
+		x += v;
+		y += v;
 		return this;
 	}
 
@@ -327,13 +341,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the negative y-axis
-	 *         (typically clockwise) between -180 and +180 
+	 *         (typically clockwise) between -180 and +180
 	 * @deprecated  use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the range. */
 	@Deprecated
 	public float angle (Vector2 reference) {
 		return (float)Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
 	}
-	
+
 	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
 	 *         (typically counter-clockwise) and in the [0, 360) range. */
 	public float angleDeg () {
@@ -369,7 +383,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 setAngle (float degrees) {
 		return setAngleRad(degrees * MathUtils.degreesToRadians);
 	}
-	
+
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
 	 * @param degrees The angle in degrees to set. */
 	public Vector2 setAngleDeg (float degrees) {
@@ -386,7 +400,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
-	 * @param degrees the angle in degrees 
+	 * @param degrees the angle in degrees
 	 * @deprecated  use {@link #rotateDeg(float)} instead. */
 	@Deprecated
 	public Vector2 rotate (float degrees) {
@@ -429,7 +443,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotateAroundDeg (Vector2 reference, float degrees) {
 		return this.sub(reference).rotateDeg(degrees).add(reference);
 	}
-	
+
 	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
 	 * @param radians the angle in radians
 	 * @param reference center Vector2 */
