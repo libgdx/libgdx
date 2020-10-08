@@ -145,7 +145,7 @@ public class btCollisionShape extends BulletBase {
 */
     }
 
-    throw new RuntimeException("Unknown shape type " + Integer.toString(shapeType));
+    throw new RuntimeException("Unknown shape type " + shapeType);
   }
 
   public long operatorNew(long sizeInBytes) {
