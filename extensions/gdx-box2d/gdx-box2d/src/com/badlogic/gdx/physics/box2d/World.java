@@ -850,7 +850,7 @@ b2ContactFilter defaultFilter;
 		jniQueryAABB(addr, lowerX, lowerY, upperX, upperY);
 	}
 
-	private QueryCallback queryCallback = null;;
+	private QueryCallback queryCallback = null;
 
 	private native void jniQueryAABB (long addr, float lowX, float lowY, float upX, float upY); /*
 		b2World* world = (b2World*)addr;

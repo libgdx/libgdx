@@ -43,7 +43,7 @@ public class RevoluteJointDef extends JointDef {
 	public final Vector2 localAnchorA = new Vector2();
 
 	/** The local anchor point relative to body2's origin. */
-	public final Vector2 localAnchorB = new Vector2();;
+	public final Vector2 localAnchorB = new Vector2();
 
 	/** The body2 angle minus body1 angle in the reference state (radians). */
 	public float referenceAngle = 0;
