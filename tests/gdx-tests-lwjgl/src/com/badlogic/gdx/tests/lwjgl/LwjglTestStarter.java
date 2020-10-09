@@ -47,7 +47,7 @@ import com.badlogic.gdx.tests.utils.GdxTests;
 import com.badlogic.gdx.utils.Array;
 
 public class LwjglTestStarter extends JFrame {
-	private static CommandLineOptions options;
+	static CommandLineOptions options;
 
 	public LwjglTestStarter () throws HeadlessException {
 		super("libgdx Tests");
