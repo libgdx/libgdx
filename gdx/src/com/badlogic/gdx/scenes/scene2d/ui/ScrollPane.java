@@ -99,6 +99,17 @@ public class ScrollPane extends WidgetGroup {
 		setActor(widget);
 		setSize(150, 150);
 
+		addListeners();
+	}
+
+	/** Adds all the default listeners. */
+	protected void addListeners() {
+		addCaptureListener();
+		addFlickScrollListener();
+		addScrollListener();
+	}
+
+	protected void addCaptureListener() {
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
@@ -173,7 +184,9 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 		});
+	}
 
+	protected void addFlickScrollListener() {
 		flickScrollListener = new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				setScrollbarsVisible(true);
@@ -206,7 +219,9 @@ public class ScrollPane extends WidgetGroup {
 			}
 		};
 		addListener(flickScrollListener);
+	}
 
+	protected void addScrollListener() {
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				setScrollbarsVisible(true);
