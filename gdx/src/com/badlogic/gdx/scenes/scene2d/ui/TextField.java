@@ -885,7 +885,9 @@ public class TextField extends Widget implements Disableable {
 			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 
 			if (!hasKeyboardFocus()) return false;
-
+            
+            if (checkFocusTraversal(keycode)) next(UIUtils.shift());
+			
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
 			boolean jump = ctrl && !passwordMode;
@@ -1016,6 +1018,15 @@ public class TextField extends Widget implements Disableable {
 			return focusTraversal && (character == TAB
 				|| ((character == CARRIAGE_RETURN || character == NEWLINE) && (UIUtils.isAndroid || UIUtils.isIos)));
 		}
+        
+        /** Checks if focus traversal should be triggered. The default implementation uses {@link TextField#focusTraversal} and the
+         * typed keyCode, depending on the OS.
+         * @param keycode The keyCode that triggered a possible focus traversal.
+         * @return true if the focus should change to the {@link TextField#next(boolean) next} input field. */
+        protected boolean checkFocusTraversal (int keycode) {
+            return focusTraversal && (keycode == Keys.TAB
+                    || (keycode == Keys.ENTER && (UIUtils.isAndroid || UIUtils.isIos)));
+        }
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
@@ -1035,9 +1046,7 @@ public class TextField extends Widget implements Disableable {
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if (checkFocusTraversal(character))
-				next(UIUtils.shift());
-			else {
+			if (!checkFocusTraversal(character)) {
 				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
