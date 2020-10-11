@@ -47,6 +47,7 @@
 - API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
 - Fixed blurry NinePatch rendering when using a single center region.
 - API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
+- Fixed DepthShaderProvider no longer creates one DepthShader per bones count. Now it creates only one skinned variant and one non-skinned variant based on DepthShader/Config numBones.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
