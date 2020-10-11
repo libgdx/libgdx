@@ -47,6 +47,7 @@
 - API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
 - Fixed blurry NinePatch rendering when using a single center region.
 - API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
+- Added Intersector#intersectPlanes to calculate the point intersected by three planes
 
 [1.9.11]
 - Update to MobiVM 2.3.8
