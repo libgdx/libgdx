@@ -916,6 +916,16 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public boolean isCursorCatched () {
 		return catched;
 	}
+    
+    @Override
+    public void setCursorHidden (boolean hidden) {
+        setCursorCatched(hidden);
+    }
+    
+    @Override
+    public boolean isCursorHidden () {
+        return isCursorCatched();
+    }
 
 	@Override
 	public int getDeltaX () {

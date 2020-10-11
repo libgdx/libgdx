@@ -264,6 +264,16 @@ public class MockInput implements Input {
 	public boolean isCursorCatched() {
 		return false;
 	}
+    
+    @Override
+    public void setCursorHidden (boolean hidden) {
+    
+    }
+    
+    @Override
+    public boolean isCursorHidden () {
+        return false;
+    }
 
 	@Override
 	public void setCursorPosition(int x, int y) {

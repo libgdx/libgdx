@@ -818,6 +818,14 @@ public interface Input {
 
 	/** @return whether the mouse cursor is catched. */
 	public boolean isCursorCatched ();
+    
+    /** Only viable on the LWJGL3 backend. Will hide the mouse cursor, however the mouse cursor will not be confined to
+     * the window.
+     * @param hidden whether to hide or not to hide the mouse cursor */
+    public void setCursorHidden (boolean hidden);
+    
+    /** @return whether the mouse cursor is hidden. */
+    public boolean isCursorHidden ();
 
 	/** Only viable on the desktop. Will set the mouse cursor location to the given window coordinates (origin top-left corner).
 	 * @param x the x-position
