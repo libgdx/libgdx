@@ -1,3 +1,53 @@
+[1.9.12]
+- Fixed vertices returned by Decal.getVertices() not being updated
+- Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
+- Update to MobiVM 2.3.10
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- Fixed GlyphLayout not laying out correctly with color markup.
+- Fixed TileDrawable not applying its scale correctly.
+- API Addition: Added epsilon methods to maps with float values.
+- API Addition: Added an insertRange method to array collections.
+- Fixed GestureDetector maxFlingDelay.
+- API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
+- Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- Improved text, cursor and selection rendering in TextArea.
+- API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
+- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
+- API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
+- GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
+- GWT: added possibility to lazy load assets via AssetManager instead of preload them before game start. See GWT specifics wiki article for more information.
+- GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
+- GWT: GwtApplicationConfiguration and GWT backend now support an application to be resizable or fixed size. You can remove your own resizing code from your HTMLLaunchers.
+- GWT: Assets in distribute build are renamed with md5 hash suffix to bypass browser cache on changes
+- GWT: Fixed GwtFileHandle that was only returning text assets when listing a directory, now returns all children
+- API Addition: Pixmap.downloadFromUrl() downloads an image from http(s) URLs and passes it back as a Pixmap on all platforms
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
+- API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
+- API Change: Utility classes are now final and have a private constructor to prevent instantiation.
+- API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+- API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
+- API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
+- API Addition: Added Slider#setVisualPercent.
+- API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
+- API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
+- API Addition: Added ObjectLongMap.
+- Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
+- API Addition: Added Table#clip() and Container#clip() methods.
+- API Addition: Added getBackgroundDrawable() to Button.
+- API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
+- API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
+- API Addition: Added wrapReverse setting to HorizontalGroup.
+- API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
+- Fixed LwjglFrame not hiding the canvas in some situations.
+- API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
+- Fixed blurry NinePatch rendering when using a single center region.
+- API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3
@@ -36,6 +86,11 @@
 - API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
 - API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
 - API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
+- API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
+- API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
+- Fixed Label text wrapping when it shouldn't (#6098).
+- Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
+- API Change: glGetActiveUniform and glGetActiveAttrib parameter changed from Buffer to IntBuffer.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

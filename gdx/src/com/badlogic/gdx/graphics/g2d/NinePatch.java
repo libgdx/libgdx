@@ -38,7 +38,7 @@ public class NinePatch {
 	static public final int MIDDLE_CENTER = 4;
 	static public final int MIDDLE_RIGHT = 5;
 	static public final int BOTTOM_LEFT = 6;
-	/** Indices for {@link #NinePatch(TextureRegion...)} constructor */
+	/** Indices for the {@link #NinePatch(TextureRegion...)} constructor. */
 	static public final int BOTTOM_CENTER = 7; // This field has the javadoc comment because it appears first in the javadocs.
 	static public final int BOTTOM_RIGHT = 8;
 
@@ -214,7 +214,7 @@ public class NinePatch {
 		} else
 			bottomLeft = -1;
 		if (patches[BOTTOM_CENTER] != null) {
-			bottomCenter = add(patches[BOTTOM_CENTER], true, false);
+			bottomCenter = add(patches[BOTTOM_CENTER], patches[BOTTOM_LEFT] != null || patches[BOTTOM_RIGHT] != null, false);
 			middleWidth = Math.max(middleWidth, patches[BOTTOM_CENTER].getRegionWidth());
 			bottomHeight = Math.max(bottomHeight, patches[BOTTOM_CENTER].getRegionHeight());
 		} else
@@ -226,19 +226,20 @@ public class NinePatch {
 		} else
 			bottomRight = -1;
 		if (patches[MIDDLE_LEFT] != null) {
-			middleLeft = add(patches[MIDDLE_LEFT], false, true);
+			middleLeft = add(patches[MIDDLE_LEFT], false, patches[TOP_LEFT] != null || patches[BOTTOM_LEFT] != null);
 			leftWidth = Math.max(leftWidth, patches[MIDDLE_LEFT].getRegionWidth());
 			middleHeight = Math.max(middleHeight, patches[MIDDLE_LEFT].getRegionHeight());
 		} else
 			middleLeft = -1;
 		if (patches[MIDDLE_CENTER] != null) {
-			middleCenter = add(patches[MIDDLE_CENTER], true, true);
+			middleCenter = add(patches[MIDDLE_CENTER], patches[MIDDLE_LEFT] != null || patches[MIDDLE_RIGHT] != null,
+				patches[TOP_CENTER] != null || patches[BOTTOM_CENTER] != null);
 			middleWidth = Math.max(middleWidth, patches[MIDDLE_CENTER].getRegionWidth());
 			middleHeight = Math.max(middleHeight, patches[MIDDLE_CENTER].getRegionHeight());
 		} else
 			middleCenter = -1;
 		if (patches[MIDDLE_RIGHT] != null) {
-			middleRight = add(patches[MIDDLE_RIGHT], false, true);
+			middleRight = add(patches[MIDDLE_RIGHT], false, patches[TOP_RIGHT] != null || patches[BOTTOM_RIGHT] != null);
 			rightWidth = Math.max(rightWidth, patches[MIDDLE_RIGHT].getRegionWidth());
 			middleHeight = Math.max(middleHeight, patches[MIDDLE_RIGHT].getRegionHeight());
 		} else
@@ -250,7 +251,7 @@ public class NinePatch {
 		} else
 			topLeft = -1;
 		if (patches[TOP_CENTER] != null) {
-			topCenter = add(patches[TOP_CENTER], true, false);
+			topCenter = add(patches[TOP_CENTER], patches[TOP_LEFT] != null || patches[TOP_RIGHT] != null, false);
 			middleWidth = Math.max(middleWidth, patches[TOP_CENTER].getRegionWidth());
 			topHeight = Math.max(topHeight, patches[TOP_CENTER].getRegionHeight());
 		} else

@@ -20,10 +20,16 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultGwtAudio implements GwtAudio {
+	private WebAudioAPIManager webAudioAPIManager = null;
+
+	public DefaultGwtAudio () {
+		webAudioAPIManager = new WebAudioAPIManager();
+	}
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
@@ -37,11 +43,11 @@ public class DefaultGwtAudio implements GwtAudio {
 
 	@Override
 	public Sound newSound (FileHandle fileHandle) {
-		return new GwtSound(fileHandle);
+		return webAudioAPIManager.createSound(fileHandle);
 	}
 
 	@Override
 	public Music newMusic (FileHandle file) {
-		return new GwtMusic(file);
+		return webAudioAPIManager.createMusic(file);
 	}
 }

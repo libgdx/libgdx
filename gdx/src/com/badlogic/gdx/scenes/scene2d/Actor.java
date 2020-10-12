@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -185,19 +184,8 @@ public class Actor {
 
 		try {
 			listeners.begin();
-			for (int i = 0, n = listeners.size; i < n; i++) {
-				EventListener listener = listeners.get(i);
-				if (listener.handle(event)) {
-					event.handle();
-					if (event instanceof InputEvent) {
-						InputEvent inputEvent = (InputEvent)event;
-						if (inputEvent.getType() == Type.touchDown) {
-							event.getStage().addTouchFocus(listener, this, inputEvent.getTarget(), inputEvent.getPointer(),
-								inputEvent.getButton());
-						}
-					}
-				}
-			}
+			for (int i = 0, n = listeners.size; i < n; i++)
+				if (listeners.get(i).handle(event)) event.handle();
 			listeners.end();
 		} catch (RuntimeException ex) {
 			String context = toString();
@@ -402,6 +390,7 @@ public class Actor {
 	}
 
 	/** @deprecated Use {@link #ascendantsVisible()}. */
+	@Deprecated
 	public boolean ancestorsVisible () {
 		return ascendantsVisible();
 	}
@@ -600,6 +589,10 @@ public class Actor {
 	protected void sizeChanged () {
 	}
 
+	/** Called when the actor's scale has been changed. */
+	protected void scaleChanged () {
+	}
+
 	/** Called when the actor's rotation has been changed. */
 	protected void rotationChanged () {
 	}
@@ -689,7 +682,10 @@ public class Actor {
 	}
 
 	public void setScaleX (float scaleX) {
-		this.scaleX = scaleX;
+		if (this.scaleX != scaleX) {
+			this.scaleX = scaleX;
+			scaleChanged();
+		}
 	}
 
 	public float getScaleY () {
@@ -697,31 +693,46 @@ public class Actor {
 	}
 
 	public void setScaleY (float scaleY) {
-		this.scaleY = scaleY;
+		if (this.scaleY != scaleY) {
+			this.scaleY = scaleY;
+			scaleChanged();
+		}
 	}
 
 	/** Sets the scale for both X and Y */
 	public void setScale (float scaleXY) {
-		this.scaleX = scaleXY;
-		this.scaleY = scaleXY;
+		if (this.scaleX != scaleXY || this.scaleY != scaleXY) {
+			this.scaleX = scaleXY;
+			this.scaleY = scaleXY;
+			scaleChanged();
+		}
 	}
 
 	/** Sets the scale X and scale Y. */
 	public void setScale (float scaleX, float scaleY) {
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
+		if (this.scaleX != scaleX || this.scaleY != scaleY) {
+			this.scaleX = scaleX;
+			this.scaleY = scaleY;
+			scaleChanged();
+		}
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy (float scale) {
-		scaleX += scale;
-		scaleY += scale;
+		if (scale != 0) {
+			scaleX += scale;
+			scaleY += scale;
+			scaleChanged();
+		}
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy (float scaleX, float scaleY) {
-		this.scaleX += scaleX;
-		this.scaleY += scaleY;
+		if (scaleX != 0 || scaleY != 0) {
+			this.scaleX += scaleX;
+			this.scaleY += scaleY;
+			scaleChanged();
+		}
 	}
 
 	public float getRotation () {

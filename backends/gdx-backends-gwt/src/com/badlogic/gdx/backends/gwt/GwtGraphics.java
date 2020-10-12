@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,6 +28,8 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
@@ -69,9 +70,17 @@ public class GwtGraphics implements Graphics {
 		if (canvasWidget == null) throw new GdxRuntimeException("Canvas not supported");
 		canvas = canvasWidget.getCanvasElement();
 		root.add(canvasWidget);
-		canvas.setWidth(config.width);
-		canvas.setHeight(config.height);
 		this.config = config;
+
+		if (!config.isFixedSizeApplication()) {
+			// resizable application
+			int width = Window.getClientWidth() - config.padHorizontal;
+			int height = Window.getClientHeight() - config.padVertical;
+			double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
+			setCanvasSize((int) (density * width), (int) (density * height));
+		} else {
+			setCanvasSize(config.width, config.height);
+		}
 
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
 		attributes.setAntialias(config.antialiasing);
@@ -169,27 +178,27 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getPpiX () {
-		return 96;
+		return 96f * (float) getNativeScreenDensity();
 	}
 
 	@Override
 	public float getPpiY () {
-		return 96;
+		return 96f * (float) getNativeScreenDensity();
 	}
 
 	@Override
 	public float getPpcX () {
-		return 96 / 2.54f;
+		return getPpiX() / 2.54f;
 	}
 
 	@Override
 	public float getPpcY () {
-		return 96 / 2.54f;
+		return getPpiY() / 2.54f;
 	}
 
 	@Override
 	public boolean supportsDisplayModeChange () {
-		return supportsFullscreenJSNI();
+		return GwtFeaturePolicy.allowsFeature("fullscreen") && supportsFullscreenJSNI();
 	}
 
 	private native boolean supportsFullscreenJSNI () /*-{
@@ -210,7 +219,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[] {new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8) {}};
+		return new DisplayMode[] {getDisplayMode()};
 	}
 
 	private native int getScreenWidthJSNI () /*-{
@@ -248,8 +257,11 @@ public class GwtGraphics implements Graphics {
 
 	private void fullscreenChanged () {
 		if (!isFullscreen()) {
-			canvas.setWidth(config.width);
-			canvas.setHeight(config.height);
+			// reset to usual size for fixed size apps. for resizable apps, browser calls
+			// our resizehandler
+			if (config.isFixedSizeApplication()) {
+				setCanvasSize(config.width, config.height);
+			}
 			if (config.fullscreenOrientation != null) unlockOrientation();
 		} else {
 			/* We just managed to go full-screen. Check if the user has requested a specific orientation. */
@@ -257,11 +269,11 @@ public class GwtGraphics implements Graphics {
 		}
 	}
 
-	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element) /*-{
+	private native boolean setFullscreenJSNI(GwtGraphics graphics, CanvasElement element, int screenWidth, int screenHeight)/*-{
 		// Attempt to use the non-prefixed standard API (https://fullscreen.spec.whatwg.org)
 		if (element.requestFullscreen) {
-			element.width = $wnd.screen.width;
-			element.height = $wnd.screen.height;
+			element.width = screenWidth;
+			element.height = screenHeight;
 			element.requestFullscreen();
 			$doc
 					.addEventListener(
@@ -273,8 +285,8 @@ public class GwtGraphics implements Graphics {
 		}
 		// Attempt to the vendor specific variants of the API
 		if (element.webkitRequestFullScreen) {
-			element.width = $wnd.screen.width;
-			element.height = $wnd.screen.height;
+			element.width = screenWidth;
+			element.height = screenHeight;
 			element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 			$doc
 					.addEventListener(
@@ -285,8 +297,8 @@ public class GwtGraphics implements Graphics {
 			return true;
 		}
 		if (element.mozRequestFullScreen) {
-			element.width = $wnd.screen.width;
-			element.height = $wnd.screen.height;
+			element.width = screenWidth;
+			element.height = screenHeight;
 			element.mozRequestFullScreen();
 			$doc
 					.addEventListener(
@@ -297,8 +309,8 @@ public class GwtGraphics implements Graphics {
 			return true;
 		}
 		if (element.msRequestFullscreen) {
-			element.width = $wnd.screen.width;
-			element.height = $wnd.screen.height;
+			element.width = screenWidth;
+			element.height = screenHeight;
 			element.msRequestFullscreen();
 			$doc
 					.addEventListener(
@@ -327,7 +339,9 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public DisplayMode getDisplayMode () {
-		return new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8) {};
+		double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
+		return new DisplayMode((int) (getScreenWidthJSNI() * density),
+				(int) (getScreenHeightJSNI() * density), 60, 8) {};
 	}
 
 	@Override
@@ -352,16 +366,30 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean setFullscreenMode (DisplayMode displayMode) {
-		if (displayMode.width != getScreenWidthJSNI() && displayMode.height != getScreenHeightJSNI()) return false;
-		return setFullscreenJSNI(this, canvas);
+		DisplayMode supportedMode = getDisplayMode();
+		if (displayMode.width != supportedMode.width && displayMode.height != supportedMode.height) return false;
+		return setFullscreenJSNI(this, canvas, displayMode.width, displayMode.height);
 	}
 
 	@Override
 	public boolean setWindowedMode (int width, int height) {
 		if (isFullscreenJSNI()) exitFullscreen();
+		// don't set canvas for resizable applications, resize handler will do it
+		if (config.isFixedSizeApplication()) {
+			setCanvasSize(width, height);
+		}
+		return true;
+	}
+
+	void setCanvasSize(int width, int height) {
 		canvas.setWidth(width);
 		canvas.setHeight(height);
-		return true;
+
+		if (config.usePhysicalPixels) {
+			double density = getNativeScreenDensity();
+			canvas.getStyle().setWidth(width / density, Style.Unit.PX);
+			canvas.getStyle().setHeight(height / density, Style.Unit.PX);
+		}
 	}
 
 
@@ -490,8 +518,19 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		return 96.0f / 160;
+		return (getPpiX()) / 160;
 	}
+
+	/**
+	 * See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
+	 *
+	 * @return value indicating the ratio of the display's resolution in physical pixels to the resolution in CSS
+	 * pixels. A value of 1 indicates a classic 96 DPI (76 DPI on some platforms) display, while a value of 2
+	 * is expected for HiDPI/Retina displays.
+	 */
+	public static native double getNativeScreenDensity() /*-{
+		return $wnd.devicePixelRatio || 1;
+	}-*/;
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {

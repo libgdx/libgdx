@@ -1,7 +1,7 @@
         Individual Contributor License Agreement ("Agreement") V2.0
                    http://www.apache.org/licenses/
 
-Thank you for your interest in libgdx. In order to clarify the intellectual 
+Thank you for your interest in libGDX. In order to clarify the intellectual 
 property license granted with Contributions from any person or entity, Mario  
 Zechner and Nathan Sweet ("Project Owners") must have a Contributor License Agreement ("CLA") 
 on file that has been signed by each Contributor, indicating agreement to the 

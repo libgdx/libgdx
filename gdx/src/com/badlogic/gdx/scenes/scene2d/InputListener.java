@@ -38,6 +38,12 @@ import com.badlogic.gdx.utils.Null;
 public class InputListener implements EventListener {
 	static private final Vector2 tmpCoords = new Vector2();
 
+	/** Try to handle the given event, if it is an {@link InputEvent}.
+	 * <p>
+	 * If the input event is of type {@link InputEvent.Type#touchDown} and {@link InputEvent#getTouchFocus()} is true and
+	 * {@link #touchDown(InputEvent, float, float, int, int)} returns true (indicating the event was handled) then this listener is
+	 * added to the stage's {@link Stage#addTouchFocus(EventListener, Actor, Actor, int, int) touch focus} so it will receive all
+	 * touch dragged events until the next touch up event. */
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
@@ -55,7 +61,12 @@ public class InputListener implements EventListener {
 
 		switch (event.getType()) {
 		case touchDown:
-			return touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			boolean handled = touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			if (handled && event.getTouchFocus()) {
+				event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(), event.getPointer(),
+					event.getButton());
+			}
+			return handled;
 		case touchUp:
 			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;

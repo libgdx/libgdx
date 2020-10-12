@@ -20,7 +20,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Null;
 
-/** Event for actor input: touch, mouse, keyboard, and scroll.
+/** Event for actor input: touch, mouse, touch/mouse actor enter/exit, mouse scroll, and keyboard events.
  * @see InputListener */
 public class InputEvent extends Event {
 	private Type type;
@@ -28,6 +28,7 @@ public class InputEvent extends Event {
 	private int pointer, button, keyCode, scrollAmount;
 	private char character;
 	private @Null Actor relatedActor;
+	private boolean touchFocus = true;
 
 	public void reset () {
 		super.reset();
@@ -130,9 +131,19 @@ public class InputEvent extends Event {
 		return actorCoords;
 	}
 
-	/** Returns true of this event is a touchUp triggered by {@link Stage#cancelTouchFocus()}. */
+	/** Returns true if this event is a touchUp triggered by {@link Stage#cancelTouchFocus()}. */
 	public boolean isTouchFocusCancel () {
 		return stageX == Integer.MIN_VALUE || stageY == Integer.MIN_VALUE;
+	}
+
+	/** If false, {@link InputListener#handle(Event)} will not add the listener to the stage's touch focus when a touch down event
+	 * is handled. Default is true. */
+	public boolean getTouchFocus () {
+		return touchFocus;
+	}
+
+	public void setTouchFocus (boolean touchFocus) {
+		this.touchFocus = touchFocus;
 	}
 
 	public String toString () {

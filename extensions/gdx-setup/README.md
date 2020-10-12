@@ -3,7 +3,7 @@ Libgdx gradle setup
 
 Modular setup powered by gradle, allowing any combination of sub projects and official extensions to get you up and running in a few clicks.  Although this tool will handle setup for you, LEARN GRADLE!
 
-![Setup Ui](http://i.imgur.com/7fUXXM3.png)
+![Setup Ui](http://i.imgur.com/M1e5TLU.png)
 
 Example of use:
 

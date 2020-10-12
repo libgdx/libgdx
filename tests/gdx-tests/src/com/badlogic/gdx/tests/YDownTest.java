@@ -56,7 +56,7 @@ public class YDownTest extends GdxTest {
 		region.flip(false, true);
 
 		// a texture atlas, note the boolean
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"), true);
 
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");

@@ -217,7 +217,9 @@ public class TextField extends Widget implements Disableable {
 	public void setStyle (TextFieldStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
 		textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
+		if (text != null) updateDisplayText();
 		invalidateHierarchy();
 	}
 
@@ -290,10 +292,10 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	private @Null Drawable getBackgroundDrawable () {
-		boolean focused = hasKeyboardFocus();
-		return (disabled && style.disabledBackground != null) ? style.disabledBackground
-			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
+	protected @Null Drawable getBackgroundDrawable () {
+		if (disabled && style.disabledBackground != null) return style.disabledBackground;
+		if (style.focusedBackground != null && hasKeyboardFocus()) return style.focusedBackground;
+		return style.background;
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
@@ -632,8 +634,8 @@ public class TextField extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes
-	 * the text. */
+	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when the user
+	 * changes the text. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
@@ -1070,9 +1072,9 @@ public class TextField extends Widget implements Disableable {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
+						updateDisplayText();
 					} else
 						cursor = oldCursor;
-					updateDisplayText();
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);
@@ -1086,13 +1088,9 @@ public class TextField extends Widget implements Disableable {
 	static public class TextFieldStyle {
 		public BitmapFont font;
 		public Color fontColor;
-		/** Optional. */
 		public @Null Color focusedFontColor, disabledFontColor;
-		/** Optional. */
 		public @Null Drawable background, focusedBackground, disabledBackground, cursor, selection;
-		/** Optional. */
 		public @Null BitmapFont messageFont;
-		/** Optional. */
 		public @Null Color messageFontColor;
 
 		public TextFieldStyle () {
@@ -1100,25 +1098,27 @@ public class TextField extends Widget implements Disableable {
 
 		public TextFieldStyle (BitmapFont font, Color fontColor, @Null Drawable cursor, @Null Drawable selection,
 			@Null Drawable background) {
-			this.background = background;
-			this.cursor = cursor;
 			this.font = font;
 			this.fontColor = fontColor;
+			this.cursor = cursor;
 			this.selection = selection;
+			this.background = background;
 		}
 
 		public TextFieldStyle (TextFieldStyle style) {
-			this.messageFont = style.messageFont;
-			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
-			this.background = style.background;
-			this.focusedBackground = style.focusedBackground;
-			this.disabledBackground = style.disabledBackground;
-			this.cursor = style.cursor;
-			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			if (style.focusedFontColor != null) this.focusedFontColor = new Color(style.focusedFontColor);
-			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
-			this.selection = style.selection;
+			font = style.font;
+			if (style.fontColor != null) fontColor = new Color(style.fontColor);
+			if (style.focusedFontColor != null) focusedFontColor = new Color(style.focusedFontColor);
+			if (style.disabledFontColor != null) disabledFontColor = new Color(style.disabledFontColor);
+
+			background = style.background;
+			focusedBackground = style.focusedBackground;
+			disabledBackground = style.disabledBackground;
+			cursor = style.cursor;
+			selection = style.selection;
+
+			messageFont = style.messageFont;
+			if (style.messageFontColor != null) messageFontColor = new Color(style.messageFontColor);
 		}
 	}
 }

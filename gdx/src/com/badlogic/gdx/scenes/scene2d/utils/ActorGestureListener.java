@@ -38,7 +38,7 @@ public class ActorGestureListener implements EventListener {
 
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
-		this(20, 0.4f, 1.1f, 0.15f);
+		this(20, 0.4f, 1.1f, Integer.MAX_VALUE);
 	}
 
 	/** @see GestureDetector#GestureDetector(float, float, float, float, com.badlogic.gdx.input.GestureDetector.GestureListener) */
@@ -112,6 +112,8 @@ public class ActorGestureListener implements EventListener {
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
 			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			if (event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
+				event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			if (event.isTouchFocusCancel()) {

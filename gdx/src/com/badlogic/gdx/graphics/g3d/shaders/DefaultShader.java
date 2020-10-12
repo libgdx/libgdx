@@ -205,10 +205,12 @@ public class DefaultShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				for (int i = 0; i < bones.length; i++) {
+				for (int i = 0; i < bones.length; i += 16) {
 					final int idx = i / 16;
-					bones[i] = (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null) ? idtMatrix.val[i % 16]
-						: renderable.bones[idx].val[i % 16];
+					if (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null)
+						System.arraycopy(idtMatrix.val, 0, bones, i, 16);
+					else
+						System.arraycopy(renderable.bones[idx].val, 0, bones, i, 16);
 				}
 				shader.program.setUniformMatrix4fv(shader.loc(inputID), bones, 0, bones.length);
 			}
