@@ -405,16 +405,16 @@ public class GwtTestWrapper extends GdxTest {
 		public boolean isCursorCatched () {
 			return input.isCursorCatched();
 		}
-        
-        @Override
-        public void setCursorHidden (boolean hidden) {
-            input.setCursorHidden(hidden);
-        }
-        
-        @Override
-        public boolean isCursorHidden () {
-            return input.isCursorHidden();
-        }
+
+		@Override
+		public void setCursorHidden (boolean hidden) {
+			input.setCursorHidden(hidden);
+		}
+
+		@Override
+		public boolean isCursorHidden () {
+			return input.isCursorHidden();
+		}
 
 		@Override
 		public void setCursorPosition (int x, int y) {
