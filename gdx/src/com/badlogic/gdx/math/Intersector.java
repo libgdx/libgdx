@@ -408,35 +408,30 @@ public final class Intersector {
 	}
 
 	/**
-	 * Code from MonoGame.BoundingFrustum.IntersectionPoint
+	 * Code from MonoGame.BoundingFrustum.IntersectionPoint (MIT License)
 	 * https://github.com/MonoGame/MonoGame/blob/master/MonoGame.Framework/BoundingFrustum.cs#L529
 	 *
 	 * @param a The plane a
 	 * @param b The plane b
 	 * @param c The plane c
 	 * @param intersection The point where the three planes intersect
-	 * @return Whether an intersection is present.
+	 * @return Whether an intersection point exists.
 	 */
 	public static boolean intersectPlanes (Plane a, Plane b, Plane c, Vector3 intersection) {
-		tmp1.set(a.normal);
-		tmp1.crs(b.normal);
-
-		tmp2.set(b.normal);
-		tmp2.crs(c.normal);
-
-		tmp3.set(c.normal);
-		tmp3.crs(a.normal);
+		tmp1.set(a.normal).crs(b.normal);
+		tmp2.set(b.normal).crs(c.normal);
+		tmp3.set(c.normal).crs(a.normal);
 
 		float f = -a.normal.dot(tmp2);
 		if (Math.abs(f) < MathUtils.FLOAT_ROUNDING_ERROR) {
 			return false;
 		}
 
-		Vector3 v1 = (tmp2.scl(a.d));
-		Vector3 v2 = (tmp3.scl(b.d));
-		Vector3 v3 = (tmp1.scl(c.d));
+		tmp1.scl(c.d);
+		tmp2.scl(a.d);
+		tmp3.scl(b.d);
 
-		intersection.set(v1.x + v2.x + v3.x, v1.y + v2.y + v3.y, v1.z + v2.z + v3.z);
+		intersection.set(tmp1.x + tmp2.x + tmp3.x, tmp1.y + tmp2.y + tmp3.y, tmp1.z + tmp2.z + tmp3.z);
 		intersection.scl(1 / f);
 		return true;
 	}

@@ -156,7 +156,6 @@ public class IntersectorTest {
 		camera.far = 100f;
 		camera.update();
 		Plane[] planes = camera.frustum.planes;*/
-
 		Plane[] planes = new Plane[6];
 		planes[NEAR] = new Plane(new Vector3(0.0f,0.0f,1.0f), -0.1f);
 		planes[FAR] = new Plane(new Vector3(0.0f,-0.0f,-1.0f), 99.99771f);
