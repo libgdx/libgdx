@@ -408,8 +408,7 @@ public final class Intersector {
 	}
 
 	/**
-	 * Code from MonoGame.BoundingFrustum.IntersectionPoint (MIT License)
-	 * https://github.com/MonoGame/MonoGame/blob/master/MonoGame.Framework/BoundingFrustum.cs#L529
+	 * Intersect three {@link Plane}, returning the intersection point in intersection if any.
 	 *
 	 * @param a The plane a
 	 * @param b The plane b
