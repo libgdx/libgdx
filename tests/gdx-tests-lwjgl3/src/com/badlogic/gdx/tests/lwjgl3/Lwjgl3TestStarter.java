@@ -44,7 +44,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Lwjgl3TestStarter {
 	
-	private static CommandLineOptions options;
+	static CommandLineOptions options;
 
 	/**
 	 * Runs libgdx tests.
