@@ -12,7 +12,8 @@
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
 - Improved text, cursor and selection rendering in TextArea.
 - API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
-- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- iOS: Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- iOS: Changed how Retina/hdpi handled on iOS, see #3709
 - API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
 - API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
 - GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
