@@ -65,7 +65,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
-		boolean created = false;
 
 		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
@@ -124,14 +123,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		public void viewDidLayoutSubviews () {
 			super.viewDidLayoutSubviews();
 			// get the view size and update graphics
-			CGRect bounds = app.getBounds();
-			graphics.width = (int)bounds.getWidth();
-			graphics.height = (int)bounds.getHeight();
-			graphics.makeCurrent();
-			if (graphics.created) {
+			final IOSScreenBounds oldBounds = graphics.screenBounds;
+			final IOSScreenBounds newBounds = app.computeBounds();
+			graphics.screenBounds = newBounds;
+			// Layout may happen without bounds changing, don't trigger resize in that case
+			if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
+				graphics.makeCurrent();
 				graphics.updateSafeInsets();
-				app.listener.resize(graphics.width, graphics.height);
+				app.listener.resize(newBounds.width, newBounds.height);
 			}
+
 		}
 
 		@Override
@@ -166,19 +167,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
         }
 	}
 
-	static class IOSUIView extends GLKView {
-
-		public IOSUIView (CGRect frame, EAGLContext context) {
-			super(frame, context);
-		}
-	}
-
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
 	GL30 gl30;
-	int width;
-	int height;
+	IOSScreenBounds screenBounds;
 	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	long lastFrameTime;
 	float deltaTime;
@@ -205,13 +198,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+	public IOSGraphics (IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
 		this.config = config;
 
-		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
-		width = (int)bounds.getWidth();
-		height = (int)bounds.getHeight();
+		screenBounds = app.computeBounds();
 
 		if (useGLES30) {
 			context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
@@ -226,7 +217,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
+		view = new GLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.onTouch(touches);
@@ -296,7 +287,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
-		density = device != null ? device.ppi/160f : scale;
+		density = device != null ? device.ppi/160f : app.pixelsPerPoint;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -346,6 +337,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
+			final int width = screenBounds.width;
+			final int height = screenBounds.height;
 			gl20.glViewport(0, 0, width, height);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
@@ -437,22 +430,27 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public int getWidth () {
-		return width;
+		return screenBounds.width;
 	}
 
 	@Override
 	public int getHeight () {
-		return height;
+		return screenBounds.height;
 	}
 
 	@Override
 	public int getBackBufferWidth() {
-		return width;
+		return screenBounds.backBufferWidth;
 	}
 
 	@Override
 	public int getBackBufferHeight() {
-		return height;
+		return screenBounds.backBufferHeight;
+	}
+
+	/** @return amount of pixels per point */
+	public float getBackBufferScale() {
+		return app.pixelsPerPoint;
 	}
 
 	@Override

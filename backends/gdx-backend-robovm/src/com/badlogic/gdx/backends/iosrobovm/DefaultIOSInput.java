@@ -808,16 +808,16 @@ public class DefaultIOSInput implements IOSInput {
 	private void toTouchEvents (long touches) {
 		long array = NSSetExtensions.allObjects(touches);
 		int length = (int)NSArrayExtensions.count(array);
+		final IOSScreenBounds screenBounds = app.getScreenBounds();
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
 			final int locX, locY;
 			// Get and map the location to our drawing space
 			{
-				CGPoint loc = touch.getLocationInView(touch.getWindow());
-				final CGRect bounds = app.getCachedBounds();
-				locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
-				locY = (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
+				CGPoint loc = touch.getLocationInView(app.graphics.view);
+				locX = (int)(loc.getX() - screenBounds.x);
+				locY = (int)(loc.getY() - screenBounds.y);
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
