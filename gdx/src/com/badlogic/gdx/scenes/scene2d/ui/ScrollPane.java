@@ -434,7 +434,7 @@ public class ScrollPane extends WidgetGroup {
 			if (hScrollKnob != null) {
 				float x = scrollbarsOnTop ? bgLeftWidth : widgetArea.x;
 				float y = hScrollOnBottom ? bgBottomHeight : height - bgTopHeight - scrollbarHeight;
-				hScrollBounds.set(x, y, widgetArea.width, scrollbarWidth);
+				hScrollBounds.set(x, y, widgetArea.width, scrollbarHeight);
 				if (scrollY && scrollbarsOnTop) {
 					hScrollBounds.width -= scrollbarWidth;
 					if (!vScrollOnRight) hScrollBounds.x += scrollbarWidth;
@@ -1064,11 +1064,8 @@ public class ScrollPane extends WidgetGroup {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
-		/** Optional. */
 		public @Null Drawable background, corner;
-		/** Optional. */
 		public @Null Drawable hScroll, hScrollKnob;
-		/** Optional. */
 		public @Null Drawable vScroll, vScrollKnob;
 
 		public ScrollPaneStyle () {
@@ -1084,12 +1081,14 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		public ScrollPaneStyle (ScrollPaneStyle style) {
-			this.background = style.background;
-			this.corner = style.corner;
-			this.hScroll = style.hScroll;
-			this.hScrollKnob = style.hScrollKnob;
-			this.vScroll = style.vScroll;
-			this.vScrollKnob = style.vScrollKnob;
+			background = style.background;
+			corner = style.corner;
+
+			hScroll = style.hScroll;
+			hScrollKnob = style.hScrollKnob;
+
+			vScroll = style.vScroll;
+			vScrollKnob = style.vScrollKnob;
 		}
 	}
 }

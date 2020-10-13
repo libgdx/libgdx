@@ -54,10 +54,14 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private int fps;
 	private int windowPosXBeforeFullscreen;
 	private int windowPosYBeforeFullscreen;
+	private int windowWidthBeforeFullscreen;
+	private int windowHeightBeforeFullscreen;
 	private DisplayMode displayModeBeforeFullscreen = null;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer3 = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer4 = BufferUtils.createIntBuffer(1);
 
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
@@ -374,6 +378,8 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private void storeCurrentWindowPositionAndDisplayMode() {
 		windowPosXBeforeFullscreen = window.getPositionX();
 		windowPosYBeforeFullscreen = window.getPositionY();
+		windowWidthBeforeFullscreen = logicalWidth;
+		windowHeightBeforeFullscreen = logicalHeight;
 		displayModeBeforeFullscreen = getDisplayMode();
 	}
 
@@ -381,15 +387,28 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public boolean setWindowedMode(int width, int height) {
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
+			if (width != logicalWidth || height != logicalHeight) {
+				//Center window
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
+				window.setPosition(tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
+			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 		} else {
 			if (displayModeBeforeFullscreen == null) {
 				storeCurrentWindowPositionAndDisplayMode();
 			}
-				
-			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
-					displayModeBeforeFullscreen.refreshRate);
+			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) {
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+						tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2, width, height,
+						displayModeBeforeFullscreen.refreshRate);
+			} else {
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+						windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
+						displayModeBeforeFullscreen.refreshRate);
+			}
 		}
 		updateFramebufferInfo();
 		return true;

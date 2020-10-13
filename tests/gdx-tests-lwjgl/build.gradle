@@ -17,6 +17,7 @@
 ext {
     mainTestClass = "com.badlogic.gdx.tests.lwjgl.LwjglTestStarter"
 }
+sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
 dependencies {
     compile project(":tests:gdx-tests")
@@ -35,4 +36,14 @@ task launchTestsLwjgl (dependsOn: classes, type: JavaExec) {
 configure (launchTestsLwjgl) {
     group "LibGDX"
     description = "Run the Lwjgl tests"
+}
+task dist(type: Jar, dependsOn: classes) {
+    manifest {
+        attributes 'Main-Class': project.mainTestClass
+    }
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }

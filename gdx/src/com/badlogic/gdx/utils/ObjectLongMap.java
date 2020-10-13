@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are objects and the values are unboxed longs. Null keys are not allowed. No allocation is done
  * except when growing the table size.
@@ -145,7 +145,7 @@ public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 	}
 
 	/** Returns the old value associated with the specified key, or the specified default value. */
-	public long put (K key, int value, long defaultValue) {
+	public long put (K key, long value, long defaultValue) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			long oldValue = valueTable[i];

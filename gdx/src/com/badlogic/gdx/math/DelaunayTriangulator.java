@@ -314,7 +314,7 @@ public class DelaunayTriangulator {
 				originalIndices[up / 2] = tempIndex;
 			}
 		}
-		if(value > values[up]) {
+		if (value > values[up]) {
 			values[lower] = values[up];
 			values[up] = value;
 

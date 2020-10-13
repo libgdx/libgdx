@@ -77,6 +77,7 @@ import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -165,8 +166,10 @@ public class GdxTests {
 		ImmediateModeRendererTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
+		InstancedRenderingTest.class,
 		IntegerBitmapFontTest.class,
 		InterpolationTest.class,
+		IntersectorOverlapConvexPolygonsTest.class,
 		InverseKinematicsTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,
@@ -336,7 +339,7 @@ public class GdxTests {
 		return names;
 	}
 
-	private static Class<? extends GdxTest> forName (String name) {
+	public static Class<? extends GdxTest> forName (String name) {
 		name = originalToObfuscated.get(name, name);
 		for (Class clazz : tests)
 			if (clazz.getSimpleName().equals(name)) return clazz;

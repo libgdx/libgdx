@@ -378,6 +378,7 @@ public class Decal {
 	 * 
 	 * @return vertex array backing the decal */
 	public float[] getVertices () {
+		update();
 		return vertices;
 	}
 

@@ -20,9 +20,10 @@ ext {
     testnatives = [:]
 }
 
-versions.robovm = "2.3.10-SNAPSHOT"
+versions.robovm = "2.3.10"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.0.9"
+versions.gretty = "3.0.2"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
 versions.lwjgl3 = "3.2.3"

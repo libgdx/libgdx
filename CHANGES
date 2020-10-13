@@ -1,4 +1,6 @@
 [1.9.12]
+- Fixed vertices returned by Decal.getVertices() not being updated
+- Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
 - Update to MobiVM 2.3.10
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
 - API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
@@ -11,7 +13,8 @@
 - Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
 - Improved text, cursor and selection rendering in TextArea.
 - API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
-- Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- iOS: Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- iOS: Changed how Retina/hdpi handled on iOS, see #3709
 - API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
 - API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
 - GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
@@ -19,6 +22,7 @@
 - GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
 - GWT: GwtApplicationConfiguration and GWT backend now support an application to be resizable or fixed size. You can remove your own resizing code from your HTMLLaunchers.
 - GWT: Assets in distribute build are renamed with md5 hash suffix to bypass browser cache on changes
+- GWT: Fixed GwtFileHandle that was only returning text assets when listing a directory, now returns all children
 - API Addition: Pixmap.downloadFromUrl() downloads an image from http(s) URLs and passes it back as a Pixmap on all platforms
 - Added support for Linux ARM builds.
 	- 32-bit: ARMv7/armhf
@@ -34,6 +38,17 @@
 - API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
 - API Addition: Added ObjectLongMap.
 - API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters.
+- Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
+- API Addition: Added Table#clip() and Container#clip() methods.
+- API Addition: Added getBackgroundDrawable() to Button.
+- API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
+- API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
+- API Addition: Added wrapReverse setting to HorizontalGroup.
+- API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
+- Fixed LwjglFrame not hiding the canvas in some situations.
+- API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
+- Fixed blurry NinePatch rendering when using a single center region.
+- API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
 
 [1.9.11]
 - Update to MobiVM 2.3.8

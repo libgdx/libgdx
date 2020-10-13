@@ -956,7 +956,6 @@ public class Cell<T extends Actor> implements Poolable {
 		uniformY = cell.uniformY;
 	}
 
-	/** @param cell May be null. */
 	void merge (@Null Cell cell) {
 		if (cell == null) return;
 		if (cell.minWidth != null) minWidth = cell.minWidth;

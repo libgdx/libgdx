@@ -417,7 +417,7 @@ public class SplitPane extends WidgetGroup {
 		}
 
 		public SplitPaneStyle (SplitPaneStyle style) {
-			this.handle = style.handle;
+			handle = style.handle;
 		}
 	}
 }

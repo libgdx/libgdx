@@ -94,7 +94,8 @@ public class ConvexHull {
 		return computeIndices(polygon, 0, polygon.length, sorted, yDown);
 	}
 
-	/** Computes a hull the same as {@link #computePolygon(float[], int, int, boolean)} but returns indices of the specified points. */
+	/** Computes a hull the same as {@link #computePolygon(float[], int, int, boolean)} but returns indices of the specified
+	 * points. */
 	public IntArray computeIndices (float[] points, int offset, int count, boolean sorted, boolean yDown) {
 		if (count > 32767) throw new IllegalArgumentException("count must be <= " + 32767);
 		int end = offset + count;
@@ -208,12 +209,13 @@ public class ConvexHull {
 				values[up + 1] = temp;
 			}
 		}
-		values[lower] = values[up];
-		values[up] = x;
+		if (x > values[up] || (x == values[up] && y < values[up + 1])) {
+			values[lower] = values[up];
+			values[up] = x;
 
-		values[lower + 1] = values[up + 1];
-		values[up + 1] = y;
-
+			values[lower + 1] = values[up + 1];
+			values[up + 1] = y;
+		}
 		return up;
 	}
 
@@ -250,7 +252,8 @@ public class ConvexHull {
 		}
 	}
 
-	private int quicksortPartitionWithIndices (final float[] values, int lower, int upper, boolean yDown, short[] originalIndices) {
+	private int quicksortPartitionWithIndices (final float[] values, int lower, int upper, boolean yDown,
+		short[] originalIndices) {
 		float x = values[lower];
 		float y = values[lower + 1];
 		int up = upper;
@@ -281,16 +284,17 @@ public class ConvexHull {
 				originalIndices[up / 2] = tempIndex;
 			}
 		}
-		values[lower] = values[up];
-		values[up] = x;
+		if (x > values[up] || (x == values[up] && (yDown ? y < values[up + 1] : y > values[up + 1]))) {
+			values[lower] = values[up];
+			values[up] = x;
 
-		values[lower + 1] = values[up + 1];
-		values[up + 1] = y;
+			values[lower + 1] = values[up + 1];
+			values[up + 1] = y;
 
-		tempIndex = originalIndices[lower / 2];
-		originalIndices[lower / 2] = originalIndices[up / 2];
-		originalIndices[up / 2] = tempIndex;
-
+			tempIndex = originalIndices[lower / 2];
+			originalIndices[lower / 2] = originalIndices[up / 2];
+			originalIndices[up / 2] = tempIndex;
+		}
 		return up;
 	}
 }

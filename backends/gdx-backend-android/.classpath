@@ -4,6 +4,11 @@
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/android-9.0.jar"/>
-	<classpathentry kind="lib" path="libs/support-v4-19.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/activity-1.1.0.jar"/>
+	<classpathentry kind="lib" path="libs/core-1.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/fragment-1.2.3.jar"/>
+	<classpathentry kind="lib" path="libs/lifecycle-common-2.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lifecycle-viewmodel-2.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/savedstate-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
