@@ -1,4 +1,7 @@
 [1.9.12]
+- [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
+- [BREAKING CHANGE] API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters. See #6154.
+- [BREAKING CHANGE] API Change: Vector2 angleRad(Vector2) now correctly returns counter-clockwise angles. See #5428
 - Fixed vertices returned by Decal.getVertices() not being updated
 - Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
 - Update to MobiVM 2.3.10
@@ -14,7 +17,6 @@
 - Improved text, cursor and selection rendering in TextArea.
 - API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
 - iOS: Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
-- iOS: Changed how Retina/hdpi handled on iOS, see #3709
 - API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
 - API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
 - GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
@@ -32,12 +34,10 @@
 - API Change: Utility classes are now final and have a private constructor to prevent instantiation.
 - API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
 - API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
-- API Change: Vector2 angleRad(Vector2) now correctly return counter-clockwise angles.
 - API Addition: Added Slider#setVisualPercent.
 - API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
 - API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
 - API Addition: Added ObjectLongMap.
-- API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters.
 - Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
 - API Addition: Added Table#clip() and Container#clip() methods.
 - API Addition: Added getBackgroundDrawable() to Button.
