@@ -51,6 +51,7 @@
 - API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
 - Fixed DepthShaderProvider no longer creates one DepthShader per bones count. Now it creates only one skinned variant and one non-skinned variant based on DepthShader/Config numBones.
 - API Addition: Added Intersector#intersectPlanes to calculate the point intersected by three planes, see https://github.com/libgdx/libgdx/pull/6217
+- TOOLS Features: Blending mode can be changed in Flame particle 3D editor.
 
 [1.9.11]
 - Update to MobiVM 2.3.8
