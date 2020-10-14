@@ -99,11 +99,6 @@ public class ScrollPane extends WidgetGroup {
 		setActor(widget);
 		setSize(150, 150);
 
-		addListeners();
-	}
-
-	/** Adds all the default listeners. */
-	private void addListeners() {
 		addCaptureListener();
 		this.flickScrollListener = getFlickScrollListener();
 		addListener(this.flickScrollListener);
