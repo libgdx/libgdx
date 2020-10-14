@@ -93,7 +93,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -383,7 +383,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
-						processor.scrolled(e.scrollAmount);
+						processor.scrolled(0, e.scrollAmount);
 						break;
 					}
 					usedTouchEvents.free(e);
