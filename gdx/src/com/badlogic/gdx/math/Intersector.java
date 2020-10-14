@@ -407,15 +407,8 @@ public final class Intersector {
 		return -1;
 	}
 
-	/**
-	 * Intersect three {@link Plane}, returning the intersection point in intersection if any.
-	 *
-	 * @param a The plane a
-	 * @param b The plane b
-	 * @param c The plane c
-	 * @param intersection The point where the three planes intersect
-	 * @return Whether an intersection point exists.
-	 */
+	/** Returns true if the three {@link Plane planes} intersect, setting the point of intersection in {@code intersection}, if any.
+	 * @param intersection The point where the three planes intersect */
 	public static boolean intersectPlanes (Plane a, Plane b, Plane c, Vector3 intersection) {
 		tmp1.set(a.normal).crs(b.normal);
 		tmp2.set(b.normal).crs(c.normal);
