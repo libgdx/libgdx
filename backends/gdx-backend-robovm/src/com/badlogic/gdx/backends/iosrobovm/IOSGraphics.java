@@ -551,18 +551,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		safeInsetBottom = 0;
 
 		if (Foundation.getMajorSystemVersion() >= 11) {
-			UIView view = UIApplication.getSharedApplication().getKeyWindow().getRootViewController().getView();
-			UIEdgeInsets edgeInsets = view.getSafeAreaInsets();
-
-			double top = edgeInsets.getTop() * view.getContentScaleFactor();
-			double bottom = edgeInsets.getBottom() * view.getContentScaleFactor();
-			double left = edgeInsets.getLeft() * view.getContentScaleFactor();
-			double right = edgeInsets.getRight() * view.getContentScaleFactor();
-
-			safeInsetTop = (int) top;
-			safeInsetLeft = (int) left;
-			safeInsetRight = (int) right;
-			safeInsetBottom = (int) bottom;
+			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+			safeInsetTop = (int) edgeInsets.getTop();
+			safeInsetLeft = (int) edgeInsets.getLeft();
+			safeInsetRight = (int) edgeInsets.getRight();
+			safeInsetBottom = (int) edgeInsets.getBottom();
 		}
 	}
 
