@@ -100,7 +100,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
 	 * {@link FileType#Absolute} and {@link FileType#External} file handles. */
 	public File file () {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("file() not supported in GWT backend");
 	}
 
 	/** Returns a stream for reading this file as bytes.

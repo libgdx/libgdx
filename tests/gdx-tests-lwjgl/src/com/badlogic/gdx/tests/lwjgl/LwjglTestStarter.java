@@ -41,10 +41,14 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.backends.lwjgl.LwjglPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.Array;
 
 public class LwjglTestStarter extends JFrame {
+	static CommandLineOptions options;
+
 	public LwjglTestStarter () throws HeadlessException {
 		super("libgdx Tests");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +66,7 @@ public class LwjglTestStarter extends JFrame {
 	 * @return {@code true} if the test was found and run, {@code false} otherwise
 	 */
 	public static boolean runTest (String testName) {
-		boolean useGL30 = false;
+		boolean useGL30 = options.gl30;
 		GdxTest test = GdxTests.newTest(testName);
 		if (test == null) {
 			return false;
@@ -91,7 +95,7 @@ public class LwjglTestStarter extends JFrame {
 
 			final JButton button = new JButton("Run Test");
 
-			final JList list = new JList(GdxTests.getNames().toArray());
+			final JList list = new JList(options.getCompatibleTests());
 			JScrollPane pane = new JScrollPane(list);
 
 			DefaultListSelectionModel m = new DefaultListSelectionModel();
@@ -139,12 +143,14 @@ public class LwjglTestStarter extends JFrame {
 	 * 
 	 * If no arguments are provided on the command line, shows a list of tests to choose from.
 	 * If an argument is present, the test with that name will immediately be run.
+	 * Additional options can be passed, see {@link CommandLineOptions}
 	 * 
 	 * @param argv command line arguments
 	 */
 	public static void main (String[] argv) throws Exception {
-		if (argv.length > 0) {
-			if (runTest(argv[0])) {
+		options = new CommandLineOptions(argv);
+		if (options.startupTestName != null) {
+			if (runTest(options.startupTestName)) {
 				return;
 				// Otherwise, fall back to showing the list
 			}

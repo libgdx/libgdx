@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public abstract class BaseShaderProvider implements ShaderProvider {
 	protected Array<Shader> shaders = new Array<Shader>();
@@ -32,6 +33,7 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 			if (shader.canRender(renderable)) return shader;
 		}
 		final Shader shader = createShader(renderable);
+		if (!shader.canRender(renderable)) throw new GdxRuntimeException("unable to provide a shader for this renderable");
 		shader.init();
 		shaders.add(shader);
 		return shader;
