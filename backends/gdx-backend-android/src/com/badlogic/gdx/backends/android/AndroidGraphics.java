@@ -76,7 +76,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 	protected long frameId = -1;
 	protected int frames = 0;
 	protected int fps;
-	protected WindowedMean mean = new WindowedMean(5);
 
 	volatile boolean created = false;
 	volatile boolean running = false;
@@ -304,7 +303,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
-		this.mean = new WindowedMean(5);
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
@@ -406,15 +404,14 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = time;
-
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
-			mean.addValue(deltaTime);
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
 			deltaTime = 0;
 		}
+		lastFrameTime = time;
+
 
 		boolean lrunning = false;
 		boolean lpause = false;
@@ -514,7 +511,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	/** {@inheritDoc} */
 	@Override
 	public float getDeltaTime () {
-		return mean.getMean() == 0 ? deltaTime : mean.getMean();
+		return deltaTime;
 	}
 
 	@Override
@@ -720,7 +717,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 			this.isContinuous = enforceContinuousRendering || isContinuous;
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			view.setRenderMode(renderMode);
-			mean.clear();
 		}
 	}
 
