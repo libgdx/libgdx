@@ -2,6 +2,7 @@
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
 - [BREAKING CHANGE] API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters. See #6154.
 - [BREAKING CHANGE] API Change: Vector2 angleRad(Vector2) now correctly returns counter-clockwise angles. See #5428
+- [BREAKING CHANGE] Android: getDeltaTime() now returns the raw delta time instead of a smoothed one. See #6228.
 - Fixed vertices returned by Decal.getVertices() not being updated
 - Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
 - Update to MobiVM 2.3.10
