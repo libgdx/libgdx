@@ -87,7 +87,7 @@ public class Vector2dTest extends GdxTest {
 		renderer.setColor(Color.WHITE);
 
 		renderVectorAt(2, 2, rotating);
-		rotating.rotate(93 * changeRate);
+		rotating.rotateDeg(93 * changeRate);
 
 		renderVectorAt(2, -2, scalingX);
 		scalingX.set(0, MathUtils.sin((System.currentTimeMillis() - start) / 520.0f));

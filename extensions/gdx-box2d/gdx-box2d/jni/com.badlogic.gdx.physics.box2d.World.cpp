@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.physics.box2d.World.h>
 
-//@line:56
+//@line:57
 
 #include <Box2D/Box2D.h>
 
@@ -132,7 +132,7 @@ b2ContactFilter defaultFilter;
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_newWorld(JNIEnv* env, jobject object, jfloat gravityX, jfloat gravityY, jboolean doSleep) {
 
 
-//@line:237
+//@line:238
 
 		// we leak one global ref. 
 		if(!worldClass) {
@@ -156,7 +156,7 @@ b2ContactFilter defaultFilter;
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setUseDefaultContactFilter(JNIEnv* env, jobject object, jboolean use) {
 
 
-//@line:268
+//@line:269
 
 		// FIXME
 	
@@ -166,7 +166,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setUseDefaultCo
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody(JNIEnv* env, jobject object, jlong addr, jint type, jfloat positionX, jfloat positionY, jfloat angle, jfloat linearVelocityX, jfloat linearVelocityY, jfloat angularVelocity, jfloat linearDamping, jfloat angularDamping, jboolean allowSleep, jboolean awake, jboolean fixedRotation, jboolean bullet, jboolean active, jfloat inertiaScale) {
 
 
-//@line:294
+//@line:295
 
 		b2BodyDef bodyDef;
 		bodyDef.type = getBodyType(type);
@@ -193,7 +193,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody(JNIEnv* env, jobject object, jlong addr, jlong bodyAddr) {
 
 
-//@line:336
+//@line:337
 
 		b2World* world = (b2World*)addr;
 		b2Body* body = (b2Body*)bodyAddr;
@@ -211,7 +211,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyFixture(JNIEnv* env, jobject object, jlong addr, jlong bodyAddr, jlong fixtureAddr) {
 
 
-//@line:356
+//@line:357
 
 		b2World* world = (b2World*)(addr);
 		b2Body* body = (b2Body*)(bodyAddr);
@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyFixtu
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDeactivateBody(JNIEnv* env, jobject object, jlong addr, jlong bodyAddr) {
 
 
-//@line:376
+//@line:377
 
 		b2World* world = (b2World*)(addr);
 		b2Body* body = (b2Body*)(bodyAddr);	
@@ -248,7 +248,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDeactivateBo
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWheelJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat localAxisAX, jfloat localAxisAY, jboolean enableMotor, jfloat maxMotorTorque, jfloat motorSpeed, jfloat frequencyHz, jfloat dampingRatio) {
 
 
-//@line:481
+//@line:483
 
 		b2World* world = (b2World*)addr;
 		b2WheelJointDef def;
@@ -272,7 +272,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWheel
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRopeJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat maxLength) {
 
 
-//@line:500
+//@line:502
 
 		b2World* world = (b2World*)addr;
 		b2RopeJointDef def;
@@ -291,7 +291,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRopeJ
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDistanceJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat length, jfloat frequencyHz, jfloat dampingRatio) {
 
 
-//@line:514
+//@line:516
 
 		b2World* world = (b2World*)addr;
 		b2DistanceJointDef def;
@@ -312,7 +312,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDista
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateFrictionJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat maxForce, jfloat maxTorque) {
 
 
-//@line:530
+//@line:532
 
 		b2World* world = (b2World*)addr;
 		b2FrictionJointDef def;
@@ -331,7 +331,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateFrict
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jlong joint1, jlong joint2, jfloat ratio) {
 
 
-//@line:544
+//@line:546
 
 		b2World* world = (b2World*)addr;
 		b2GearJointDef def;
@@ -349,7 +349,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJ
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMotorJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat linearOffsetX, jfloat linearOffsetY, jfloat angularOffset, jfloat maxForce, jfloat maxTorque, jfloat correctionFactor) {
 
 
-//@line:557
+//@line:559
 
 		b2World* world = (b2World*)addr;
 		b2MotorJointDef def;
@@ -369,7 +369,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMotor
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMouseJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat targetX, jfloat targetY, jfloat maxForce, jfloat frequencyHz, jfloat dampingRatio) {
 
 
-//@line:572
+//@line:574
 
 		b2World* world = (b2World*)addr;
 		b2MouseJointDef def;
@@ -388,7 +388,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMouse
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrismaticJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat localAxisAX, jfloat localAxisAY, jfloat referenceAngle, jboolean enableLimit, jfloat lowerTranslation, jfloat upperTranslation, jboolean enableMotor, jfloat maxMotorForce, jfloat motorSpeed) {
 
 
-//@line:588
+//@line:590
 
 		b2World* world = (b2World*)addr;
 		b2PrismaticJointDef def;
@@ -413,7 +413,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrism
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulleyJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat groundAnchorAX, jfloat groundAnchorAY, jfloat groundAnchorBX, jfloat groundAnchorBY, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat lengthA, jfloat lengthB, jfloat ratio) {
 
 
-//@line:609
+//@line:611
 
 		b2World* world = (b2World*)addr;
 		b2PulleyJointDef def;
@@ -436,7 +436,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulle
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRevoluteJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat referenceAngle, jboolean enableLimit, jfloat lowerAngle, jfloat upperAngle, jboolean enableMotor, jfloat motorSpeed, jfloat maxMotorTorque) {
 
 
-//@line:628
+//@line:630
 
 		b2World* world = (b2World*)addr;
 		b2RevoluteJointDef def;
@@ -460,7 +460,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRevol
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJoint(JNIEnv* env, jobject object, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat referenceAngle, jfloat frequencyHz, jfloat dampingRatio) {
 
 
-//@line:647
+//@line:649
 
 		b2World* world = (b2World*)addr;
 		b2WeldJointDef def;
@@ -481,7 +481,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJ
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyJoint(JNIEnv* env, jobject object, jlong addr, jlong jointAddr) {
 
 
-//@line:672
+//@line:674
 
 		b2World* world = (b2World*)addr;
 		b2Joint* joint = (b2Joint*)jointAddr;
@@ -499,7 +499,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyJoint
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep(JNIEnv* env, jobject object, jlong addr, jfloat timeStep, jint velocityIterations, jint positionIterations) {
 
 
-//@line:692
+//@line:694
 
 		b2World* world = (b2World*)addr;
 		CustomContactFilter contactFilter(env, object);
@@ -516,7 +516,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep(JNIEnv*
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniClearForces(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:712
+//@line:714
 
 		b2World* world = (b2World*)addr;
 		world->ClearForces();
@@ -527,7 +527,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniClearForces(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetWarmStarting(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:722
+//@line:724
 
 		b2World* world = (b2World*)addr;
 		world->SetWarmStarting(flag);
@@ -538,7 +538,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetWarmStart
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetContiousPhysics(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:732
+//@line:734
 
 		b2World* world = (b2World*)addr;
 		world->SetContinuousPhysics(flag);
@@ -549,7 +549,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetContiousP
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetProxyCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:742
+//@line:744
 
 		b2World* world = (b2World*)addr;
 		return world->GetProxyCount();
@@ -560,7 +560,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetProxyCoun
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetBodyCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:752
+//@line:754
 
 		b2World* world = (b2World*)addr;
 		return world->GetBodyCount();
@@ -571,7 +571,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetBodyCount
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetJointcount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:767
+//@line:769
 
 		b2World* world = (b2World*)addr;
 		return world->GetJointCount();
@@ -582,7 +582,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetJointcoun
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:777
+//@line:779
 
 		b2World* world = (b2World*)addr;
 		return world->GetContactCount();
@@ -593,7 +593,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactCo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetGravity(JNIEnv* env, jobject object, jlong addr, jfloat gravityX, jfloat gravityY) {
 
 
-//@line:787
+//@line:789
 
 		b2World* world = (b2World*)addr;
 		world->SetGravity( b2Vec2( gravityX, gravityY ) );
@@ -605,7 +605,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetGravity(J
 	float* gravity = (float*)env->GetPrimitiveArrayCritical(obj_gravity, 0);
 
 
-//@line:803
+//@line:805
 
 		b2World* world = (b2World*)addr;
 		b2Vec2 g = world->GetGravity();
@@ -619,7 +619,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetGravity(J
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniIsLocked(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:815
+//@line:817
 
 		b2World* world = (b2World*)addr;
 		return world->IsLocked();
@@ -630,7 +630,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniIsLocked
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetAutoClearForces(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:825
+//@line:827
 
 		b2World* world = (b2World*)addr;
 		world->SetAutoClearForces(flag);
@@ -641,7 +641,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniSetAutoClear
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetAutoClearForces(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:835
+//@line:837
 
 		b2World* world = (b2World*)addr;
 		return world->GetAutoClearForces();
@@ -652,7 +652,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetAutoC
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniQueryAABB(JNIEnv* env, jobject object, jlong addr, jfloat lowX, jfloat lowY, jfloat upX, jfloat upY) {
 
 
-//@line:853
+//@line:855
 
 		b2World* world = (b2World*)addr;
 		b2AABB aabb;
@@ -669,7 +669,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactLi
 	long long* contacts = (long long*)env->GetPrimitiveArrayCritical(obj_contacts, 0);
 
 
-//@line:938
+//@line:940
 
 		b2World* world = (b2World*)addr;
 	
@@ -688,7 +688,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactLi
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDispose(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:954
+//@line:956
 
 		b2World* world = (b2World*)(addr);
 		delete world;
@@ -699,7 +699,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDispose(JNIE
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setVelocityThreshold(JNIEnv* env, jclass clazz, jfloat threshold) {
 
 
-//@line:1014
+//@line:1024
 
 		b2_velocityThreshold = threshold;
 	
@@ -709,7 +709,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setVelocityThre
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_World_getVelocityThreshold(JNIEnv* env, jclass clazz) {
 
 
-//@line:1019
+//@line:1029
 
 		return b2_velocityThreshold;
 	
@@ -719,7 +719,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_World_getVelocityTh
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast(JNIEnv* env, jobject object, jlong addr, jfloat aX, jfloat aY, jfloat bX, jfloat bY) {
 
 
-//@line:1044
+//@line:1054
 
 		b2World *world = (b2World*)addr;
 		CustomRayCastCallback callback( env, object );	

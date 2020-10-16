@@ -44,7 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-/** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
+/** Represents a file or directory on the filesystem, classpath, Android app storage, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * 
  * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk

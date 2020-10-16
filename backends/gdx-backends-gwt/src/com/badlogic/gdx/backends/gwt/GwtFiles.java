@@ -50,17 +50,17 @@ public class GwtFiles implements Files {
 
 	@Override
 	public FileHandle external (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("external() not supported in GWT backend");
 	}
 
 	@Override
 	public FileHandle absolute (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("absolute() not supported in GWT backend");
 	}
 
 	@Override
 	public FileHandle local (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("local() not supported in GWT backend");
 	}
 
 	@Override

@@ -426,7 +426,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 	}
 
-	private Object castProperty (String name, String value, String type) {
+	protected Object castProperty (String name, String value, String type) {
 		if (type == null) {
 			return value;
 		} else if (type.equals("int")) {

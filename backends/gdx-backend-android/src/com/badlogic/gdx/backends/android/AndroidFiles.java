@@ -16,11 +16,13 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.AssetManager;
 import android.os.Environment;
 
@@ -32,20 +34,25 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** @author mzechner
  * @author Nathan Sweet */
 public class AndroidFiles implements Files {
-	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+	protected final String externalFilesPath;
 	protected final String localpath;
 
 	protected final AssetManager assets;
 	private ZipResourceFile expansionFile = null;
 
-	public AndroidFiles (AssetManager assets) {
+	public AndroidFiles (AssetManager assets, ContextWrapper contextWrapper) {
 		this.assets = assets;
-		localpath = sdcard;
-	}
 
-	public AndroidFiles (AssetManager assets, String localpath) {
-		this.assets = assets;
-		this.localpath = localpath.endsWith("/") ? localpath : localpath + "/";
+		String localPath = contextWrapper.getFilesDir().getAbsolutePath();
+		this.localpath = localPath.endsWith("/") ? localPath : localPath + "/";
+
+		File externalFilesDir = contextWrapper.getExternalFilesDir(null);
+		if (externalFilesDir != null) {
+			String externalFilesPath = externalFilesDir.getAbsolutePath();
+			this.externalFilesPath = externalFilesPath.endsWith("/") ? externalFilesPath : externalFilesPath + "/";
+		} else {
+			this.externalFilesPath = null;
+		}
 	}
 
 	@Override
@@ -98,12 +105,12 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public String getExternalStoragePath () {
-		return sdcard;
+		return externalFilesPath;
 	}
 
 	@Override
 	public boolean isExternalStorageAvailable () {
-		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+		return externalFilesPath != null;
 	}
 
 	@Override

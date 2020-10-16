@@ -1,5 +1,3 @@
-#version 300 es
-
 in vec4 a_position;
 in vec2 i_offset;
 in vec4 i_color;

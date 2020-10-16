@@ -259,8 +259,8 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	public void setSoundPan (long soundId, float pan, float volume) {
 		int sourceId = soundIdToSource.get(soundId, -1);
 		if (sourceId != -1) {
-			AL10.alSource3f(sourceId, AL10.AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
-				MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+			AL10.alSource3f(sourceId, AL10.AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.HALF_PI), 0,
+				MathUtils.sin((pan + 1) * MathUtils.HALF_PI));
 			AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 		}
 	}

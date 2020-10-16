@@ -114,7 +114,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		input = createInput(this, this, graphics.view, config);
 		audio = createAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(this.getAssets(), this);
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();

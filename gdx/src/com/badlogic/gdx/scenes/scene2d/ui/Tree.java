@@ -870,7 +870,6 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public class TreeStyle {
 		public Drawable plus, minus;
-		/** Optional. */
 		public @Null Drawable plusOver, minusOver;
 		public @Null Drawable over, selection, background;
 
@@ -884,13 +883,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		public TreeStyle (TreeStyle style) {
-			this.plus = style.plus;
-			this.minus = style.minus;
-			this.plusOver = style.plusOver;
-			this.minusOver = style.minusOver;
-			this.over = style.over;
-			this.selection = style.selection;
-			this.background = style.background;
+			plus = style.plus;
+			minus = style.minus;
+
+			plusOver = style.plusOver;
+			minusOver = style.minusOver;
+
+			over = style.over;
+			selection = style.selection;
+			background = style.background;
 		}
 	}
 }

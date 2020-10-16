@@ -1,0 +1,170 @@
+<project name="gdx-box2d-Linux-arm64" basedir="." default="postcompile">
+	<!-- include the environment -->
+	<property environment="env"/>	
+	<!-- output directory for temporary object files -->
+	<property name="buildDir" value="target/linuxarm64" />
+	<!-- output directory for the shared library -->
+	<property name="libsDir" value="../libs/linuxarm64" />
+	<!-- the name of the shared library -->
+	<property name="libName" value="libgdx-box2darm64.so"/>
+	<!-- the jni header jniPlatform to use -->
+	<property name="jniPlatform" value="linux"/>
+	<!-- the compilerPrefix for the C & C++ compilers -->
+	<property name="compilerPrefix" value="aarch64-linux-gnu-"/>
+	<!--  the compilerSuffix for the C & C++ compilers -->	
+	<property name="compilerSuffix" value="" />	
+	
+	<!-- define gcc compiler, options and files to compile -->
+	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
+	<property name="gcc-opts" value="-c -Wall -O2 -fmessage-length=0 -fPIC"/>
+	<fileset id="gcc-files" dir="./">
+		<exclude name="target/"/>		
+				<include name="memcpy_wrap.c"/>
+		<include name="**/*.c"/>
+
+		
+	</fileset>
+	
+	<!-- define g++ compiler, options and files to compile -->
+	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="g++-opts" value="-c -Wall -O2 -fmessage-length=0 -fPIC"/>
+	<fileset id="g++-files" dir="./">
+		<exclude name="target/"/>
+				<include name="**/*.cpp"/>
+
+		
+	</fileset>
+
+	<!-- define linker and options -->
+	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="linker-opts" value="-shared"/>
+	<property name="libraries" value=""/>
+
+	<!-- define stripper -->
+	<property name="stripper" value="${compilerPrefix}strip${compilerSuffix}"/>
+	
+	<!-- cleans the build directory, removes all object files and shared libs -->
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${buildDir}"/>
+			<fileset dir="${libsDir}" includes="**/*" excludes="**/.svn"/>
+		</delete>
+	</target>
+	
+	<target name="precompile">
+		<condition property="compiler-found">
+			<and>
+				<or>
+					<!-- Include both b/c Windows might be either -->
+					<available file="${g++}" filepath="${env.PATH}"/>
+					<available file="${g++}" filepath="${env.Path}"/>
+				</or>
+				<or>
+					<!-- Include both b/c Windows might be either -->
+					<available file="${gcc}" filepath="${env.PATH}"/>
+					<available file="${gcc}" filepath="${env.Path}"/>
+				</or>
+			</and>
+		</condition>
+		<condition property="has-compiler">
+			<equals arg1="${compiler-found}" arg2="true"/>
+		</condition>
+		<condition property="stripper-found">
+			<or>
+				<!-- Include both b/c Windows might be either -->
+				<available file="${stripper}" filepath="${env.PATH}"/>
+				<available file="${stripper}" filepath="${env.Path}"/>
+			</or>
+		</condition>
+		<condition property="should-strip">
+			<and>
+				<equals arg1="${stripper-found}" arg2="true"/>
+				<equals arg1="${release}" arg2="true"/>
+				<!-- Don't strip mac osx libs -->
+				<not>
+					<contains string="${libName}" substring="dylib"/>
+				</not>
+			</and>
+		</condition>
+		
+	</target>
+	
+	<target name="create-build-dir" depends="precompile" if="has-compiler">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
+			<fileset refid="g++-files"/>
+			<fileset refid="gcc-files"/>
+		</copy>
+		<delete>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- compiles all C and C++ files to object files in the build directory -->
+	<target name="compile" depends="create-build-dir" if="has-compiler">
+		<mkdir dir="${buildDir}"/>
+		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
+			<arg line="${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.c" to="*.o"/>
+				<mapper type="glob" from="*.m" to="*.o"/>
+			</compositemapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->	
+	<target name="link" depends="compile" if="has-compiler">
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg value="-o" />
+			<arg path="${libsDir}/${libName}" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
+	</target>	
+
+	<!-- strips the shared library of debug symbols -->
+	<target name="strip" depends="link" if="should-strip">
+		<exec executable="${stripper}" failonerror="true" dir="${buildDir}">
+			<arg value="--strip-unneeded"/>
+			<arg path="${libsDir}/${libName}" />
+		</exec>
+	</target>
+	
+	<target name="postcompile" depends="strip">
+		
+	</target>
+</project>

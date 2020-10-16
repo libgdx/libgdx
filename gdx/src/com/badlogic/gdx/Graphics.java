@@ -154,22 +154,22 @@ public interface Graphics {
 	public int getBackBufferHeight ();
 
 	/**
-	 * @return the inset from the left which avoids display cutouts in pixels
+	 * @return the inset from the left which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetLeft();
 
 	/**
-	 * @return the inset from the top which avoids display cutouts in pixels
+	 * @return the inset from the top which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetTop();
 
 	/**
-	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels
 	 */
 	int getSafeInsetBottom();
 
 	/**
-	 * @return the inset from the right which avoids display cutouts in pixels
+	 * @return the inset from the right which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetRight();
 

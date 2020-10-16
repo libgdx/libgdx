@@ -38,9 +38,9 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * A specific Shader instance might be (and usually is) dedicated to a specific type of {@link Renderable}. For example it might
  * use a {@link ShaderProgram} that is compiled with uniforms (shader input) for specific {@link Attribute} types. Therefore the
- * {@link #canRender(Renderable)} method can be used to check if the Shader instance can be used for a specific {@link Renderable}
- * . Rendering a {@link Renderable} using a Shader for which {@link #canRender(Renderable)} returns false might result in
- * unpredicted behavior or crash the application.</p>
+ * {@link #canRender(Renderable)} method can be used to check if the Shader instance can be used for a specific
+ * {@link Renderable}. Rendering a {@link Renderable} using a Shader for which {@link #canRender(Renderable)} returns false might
+ * result in unpredicted behavior or crash the application.</p>
  * 
  * To manage multiple shaders and create a new shader when required, a {@link ShaderProvider} can be used. Therefore, in practice,
  * a specific Shader implementation is usually accompanied by a specific {@link ShaderProvider} implementation (usually extending

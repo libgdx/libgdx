@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed ints and values are unboxed floats. No allocation is done except when growing the
  * table size.
@@ -157,6 +157,32 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
+	/** Returns the old value associated with the specified key, or the specified default value.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
+	public float put (int key, float value, float defaultValue) {
+		if (key == 0) {
+			float oldValue = zeroValue;
+			zeroValue = value;
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				size++;
+				return defaultValue;
+			}
+			return oldValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			float oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (IntFloatMap map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);
@@ -180,6 +206,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		}
 	}
 
+	/** @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float get (int key, float defaultValue) {
 		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
 		int i = locateKey(key);
@@ -213,6 +240,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float remove (int key, float defaultValue) {
 		if (key == 0) {
 			if (!hasZeroValue) return defaultValue;

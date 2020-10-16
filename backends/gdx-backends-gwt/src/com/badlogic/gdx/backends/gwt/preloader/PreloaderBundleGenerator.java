@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.backends.gwt.preloader;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.math.BigInteger;
 import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.Generator;
@@ -43,10 +44,12 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author mzechner */
 public class PreloaderBundleGenerator extends Generator {
 	private class Asset {
+		String filePathOrig;
 		FileWrapper file;
 		AssetType type;
 
-		public Asset (FileWrapper file, AssetType type) {
+		public Asset(String filePathOrig, FileWrapper file, AssetType type) {
+			this.filePathOrig = filePathOrig;
 			this.file = file;
 			this.type = type;
 		}
@@ -91,10 +94,12 @@ public class PreloaderBundleGenerator extends Generator {
 			if (assetFilter.accept(classpathFile, false)) {
 				try {
 					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
-					FileWrapper dest = target.child(classpathFile);
-					dest.write(is, false);
-					assets.add(new Asset(dest, assetFilter.getType(dest.path())));
+					byte[] bytes = StreamUtils.copyStreamToByteArray(is);
 					is.close();
+					FileWrapper origFile = target.child(classpathFile);
+					FileWrapper destFile = target.child(fileNameWithMd5(origFile, bytes));
+					destFile.writeBytes(bytes, false);
+					assets.add(new Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}			
@@ -106,7 +111,7 @@ public class PreloaderBundleGenerator extends Generator {
 			String bundleName = assetFilter.getBundleName(asset.file.path());
 			if (bundleName == null) {
 				bundleName = "assets";
-			}			
+			}
 			ArrayList<Asset> bundleAssets = bundles.get(bundleName);
 			if (bundleAssets == null) {
 				bundleAssets = new ArrayList<Asset>();
@@ -115,19 +120,26 @@ public class PreloaderBundleGenerator extends Generator {
 			bundleAssets.add(asset);
 		}
 
+		// Write the tokens for Preloader.preload()
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
 			StringBuilder sb = new StringBuilder();
 			for (Asset asset : bundle.getValue()) {
-				String path = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
-				if (path.startsWith("/")) path = path.substring(1);
+                String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+				if (pathOrig.startsWith("/")) pathOrig = pathOrig.substring(1);
+                String pathMd5 = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+                if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
 				sb.append(asset.type.code);
 				sb.append(":");
-				sb.append(path);
+				sb.append(pathOrig);
 				sb.append(":");
+                sb.append(pathMd5);
+                sb.append(":");
 				sb.append(asset.file.isDirectory() ? 0 : asset.file.length());
 				sb.append(":");
 				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
 				sb.append(mimetype == null ? "application/unknown" : mimetype);
+                sb.append(":");
+                sb.append(asset.file.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
 				sb.append("\n");
 			}
 			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);
@@ -135,29 +147,31 @@ public class PreloaderBundleGenerator extends Generator {
 		return createDummyClass(logger, context);
 	}
 
-	private void copyFile (FileWrapper source, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets) {
-		if (!filter.accept(dest.path(), false)) return;
+	private void copyFile(FileWrapper source, String filePathOrig, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets) {
+		if (!filter.accept(filePathOrig, false)) return;
 		try {
-			assets.add(new Asset(dest, filter.getType(dest.path())));
+			assets.add(new Asset(filePathOrig, dest, filter.getType(dest.path())));
 			dest.write(source.read(), false);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error copying source file: " + source + "\n" //
-				+ "To destination: " + dest, ex);
+					+ "To destination: " + dest, ex);
 		}
 	}
 
-	private void copyDirectory (FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, ArrayList<Asset> assets) {
+	private void copyDirectory(FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, ArrayList<Asset> assets) {
 		if (!filter.accept(destDir.path(), true)) return;
-		assets.add(new Asset(destDir, AssetType.Directory));
+		assets.add(new Asset(destDir.path(), destDir, AssetType.Directory));
 		destDir.mkdirs();
 		FileWrapper[] files = sourceDir.list();
 		for (int i = 0, n = files.length; i < n; i++) {
 			FileWrapper srcFile = files[i];
-			FileWrapper destFile = destDir.child(srcFile.name());
-			if (srcFile.isDirectory())
+			if (srcFile.isDirectory()) {
+				FileWrapper destFile = destDir.child(srcFile.name());
 				copyDirectory(srcFile, destFile, filter, assets);
-			else
-				copyFile(srcFile, destFile, filter, assets);
+			} else {
+				FileWrapper destFile = destDir.child(fileNameWithMd5(srcFile, srcFile.readBytes()));
+				copyFile(srcFile, destDir.child(srcFile.name()).path(), destFile, filter, assets);
+			}
 		}
 	}
 
@@ -266,4 +280,24 @@ public class PreloaderBundleGenerator extends Generator {
 		sourceWriter.commit(logger);
 		return packageName + "." + className;
 	}
+
+	private static String fileNameWithMd5(FileWrapper fw, byte[] bytes) {
+		String md5;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update(bytes);
+			md5 = String.format("%032x", new BigInteger(1, digest.digest()));
+		} catch (NoSuchAlgorithmException e) {
+			// Fallback
+			md5 = String.valueOf(System.currentTimeMillis());
+		}
+
+		String nameWithMd5 = fw.nameWithoutExtension() + "-" + md5;
+		String extension = fw.extension();
+		if (!extension.isEmpty() || fw.name().endsWith(".")) {
+			nameWithMd5 = nameWithMd5 + "." + extension;
+		}
+		return nameWithMd5;
+	}
+
 }

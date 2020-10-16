@@ -55,6 +55,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -68,6 +69,7 @@ import java.util.Map;
  * Thanks to http://www.blendswap.com/blends/view/73922 for the cannon model, licensed under CC-BY-SA
  *
  /** @author Tomski */
+@GdxTestConfig(requireGL30=true)
 public class MultipleRenderTargetTest extends GdxTest {
 
 	RenderContext renderContext;

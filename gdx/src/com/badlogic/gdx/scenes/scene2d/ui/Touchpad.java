@@ -225,10 +225,8 @@ public class Touchpad extends Widget {
 	/** The style for a {@link Touchpad}.
 	 * @author Josh Street */
 	public static class TouchpadStyle {
-		/** Stretched in both directions. Optional. */
+		/** Stretched in both directions. */
 		public @Null Drawable background;
-
-		/** Optional. */
 		public @Null Drawable knob;
 
 		public TouchpadStyle () {
@@ -240,8 +238,8 @@ public class Touchpad extends Widget {
 		}
 
 		public TouchpadStyle (TouchpadStyle style) {
-			this.background = style.background;
-			this.knob = style.knob;
+			background = style.background;
+			knob = style.knob;
 		}
 	}
 }

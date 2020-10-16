@@ -150,11 +150,11 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		Object[] items = processors.begin();
 		try {
 			for (int i = 0, n = processors.size; i < n; i++)
-				if (((InputProcessor)items[i]).scrolled(amount)) return true;
+				if (((InputProcessor)items[i]).scrolled(amountX, amountY)) return true;
 		} finally {
 			processors.end();
 		}

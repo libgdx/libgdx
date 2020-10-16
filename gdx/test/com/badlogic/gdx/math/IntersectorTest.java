@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -138,5 +139,50 @@ public class IntersectorTest {
 		assertTrue(intersects);
 		assertTrue(mtv.normal.equals(new Vector2(0, 1f)) || mtv.normal.equals(new Vector2(0f, -1f)));
 		assertTrue(mtv.depth == 4f);
+	}
+
+	@Test
+	public void testIntersectPlanes () {
+		final int NEAR = 0;
+		final int FAR = 1;
+		final int LEFT = 2;
+		final int RIGHT = 3;
+		final int TOP = 4;
+		final int BOTTOM = 5;
+
+		/*camera = new PerspectiveCamera(60, 1280, 720);
+		camera.direction.set(0, 0, 1);
+		camera.near = 0.1f;
+		camera.far = 100f;
+		camera.update();
+		Plane[] planes = camera.frustum.planes;*/
+		Plane[] planes = new Plane[6];
+		planes[NEAR] = new Plane(new Vector3(0.0f,0.0f,1.0f), -0.1f);
+		planes[FAR] = new Plane(new Vector3(0.0f,-0.0f,-1.0f), 99.99771f);
+		planes[LEFT] = new Plane(new Vector3(-0.69783056f,0.0f,0.71626294f), -9.3877316E-7f);
+		planes[RIGHT] = new Plane(new Vector3(0.6978352f,0.0f,0.71625835f), -0.0f);
+		planes[TOP] = new Plane(new Vector3(0.0f,-0.86602545f,0.5f), -0.0f);
+		planes[BOTTOM] = new Plane(new Vector3(-0.0f,0.86602545f,0.5f), -0.0f);
+
+		Vector3 intersection = new Vector3();
+		Intersector.intersectPlanes(planes[TOP], planes[FAR], planes[LEFT], intersection);
+		assertEquals(102.63903f, intersection.x, 0.1f);
+		assertEquals(57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[TOP], planes[FAR], planes[RIGHT], intersection);
+		assertEquals(-102.63903f, intersection.x, 0.1f);
+		assertEquals(57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[BOTTOM], planes[FAR], planes[LEFT], intersection);
+		assertEquals(102.63903f, intersection.x, 0.1f);
+		assertEquals(-57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[BOTTOM], planes[FAR], planes[RIGHT], intersection);
+		assertEquals(-102.63903f, intersection.x, 0.1f);
+		assertEquals(-57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
 	}
 }

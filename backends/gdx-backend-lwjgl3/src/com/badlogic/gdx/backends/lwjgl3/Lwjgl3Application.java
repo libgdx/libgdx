@@ -74,6 +74,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private static GLFWErrorCallback errorCallback;
 	private static GLVersion glVersion;
 	private static Callback glDebugCallback;
+	private final Sync sync;
 
 	static void initializeGlfw() {
 		if (errorCallback == null) {
@@ -107,6 +108,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		this.files = Gdx.files = new Lwjgl3Files();
 		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
+
+		this.sync = new Sync();
 
 		Lwjgl3Window window = createWindow(config, listener, 0);
 		windows.add(window);
@@ -187,6 +190,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				} catch (InterruptedException e) {
 					// ignore
 				}
+			} else if(config.foregroundFPS > 0) {
+				sync.sync(config.foregroundFPS); // sleep as needed to meet the target framerate
 			}
 		}
 	}

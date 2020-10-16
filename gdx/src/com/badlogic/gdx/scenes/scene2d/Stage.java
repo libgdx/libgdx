@@ -217,8 +217,11 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		// Update over actor for the mouse on the desktop.
 		ApplicationType type = Gdx.app.getType();
-		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
+		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL) {
+			// if (mouseOverActor != null) mouseOverActor.setDebug(false);
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
+			// if (mouseOverActor != null) mouseOverActor.setDebug(true);
+		}
 
 		root.act(delta);
 	}
@@ -386,7 +389,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		Actor target = scrollFocus == null ? root : scrollFocus;
 
 		screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
@@ -394,7 +397,8 @@ public class Stage extends InputAdapter implements Disposable {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.scrolled);
-		event.setScrollAmount(amount);
+		event.setScrollAmountX(amountX);
+		event.setScrollAmountY(amountY);
 		event.setStageX(tempCoords.x);
 		event.setStageY(tempCoords.y);
 		target.fire(event);
@@ -515,7 +519,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Cancels touch focus for all listeners except the specified listener.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocusExcept (EventListener exceptListener, Actor exceptActor) {
+	public void cancelTouchFocusExcept (@Null EventListener exceptListener, @Null Actor exceptActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -759,9 +763,9 @@ public class Stage extends InputAdapter implements Disposable {
 		viewport.calculateScissors(transformMatrix, localRect, scissorRect);
 	}
 
-	/** If true, any actions executed during a call to {@link #act()}) will result in a call to {@link Graphics#requestRendering()}
-	 * . Widgets that animate or otherwise require additional rendering may check this setting before calling
-	 * {@link Graphics#requestRendering()}. Default is true. */
+	/** If true, any actions executed during a call to {@link #act()}) will result in a call to
+	 * {@link Graphics#requestRendering()}. Widgets that animate or otherwise require additional rendering may check this setting
+	 * before calling {@link Graphics#requestRendering()}. Default is true. */
 	public void setActionsRequestRendering (boolean actionsRequestRendering) {
 		this.actionsRequestRendering = actionsRequestRendering;
 	}

@@ -715,6 +715,17 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.round = round;
 	}
 
+	/** Sets clip to true. */
+	public Container<T> clip () {
+		setClip(true);
+		return this;
+	}
+
+	public Container<T> clip (boolean enabled) {
+		setClip(enabled);
+		return this;
+	}
+
 	/** Causes the contents to be clipped if they exceed the container bounds. Enabling clipping will set
 	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {

@@ -1,5 +1,3 @@
-apply plugin: "%LANG%"
-
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../%ASSET_PATH%"]

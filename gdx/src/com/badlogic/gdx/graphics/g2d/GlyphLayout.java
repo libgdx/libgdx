@@ -202,6 +202,8 @@ public class GlyphLayout implements Poolable {
 						}
 
 						// Wrap.
+						y += down;
+						lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -234,8 +236,6 @@ public class GlyphLayout implements Poolable {
 							next = wrap(fontData, run, wrapIndex, i);
 							if (next == null) { // All wrapped glyphs were whitespace.
 								x = 0;
-								y += down;
-								lastGlyph = null;
 								break;
 							}
 							runs.add(next);
@@ -246,12 +246,10 @@ public class GlyphLayout implements Poolable {
 						xAdvances = next.xAdvances.items;
 						x = xAdvances[0];
 						if (n > 1) x += xAdvances[1];
-						y += down;
 						next.x = 0;
 						next.y = y;
 						i = 1;
 						run = next;
-						lastGlyph = null;
 					}
 				}
 
@@ -269,14 +267,14 @@ public class GlyphLayout implements Poolable {
 				color = nextColor;
 			}
 		}
+		height = fontData.capHeight + Math.abs(y);
 
 		// Calculate run widths and the entire layout width.
 		float width = 0;
 		Object[] runsItems = runs.items;
 		int runsSize = runs.size;
-		GlyphRun run = null;
 		for (int i = 0; i < runsSize; i++) {
-			run = (GlyphRun)runsItems[i];
+			GlyphRun run = (GlyphRun)runsItems[i];
 			float[] xAdvances = run.xAdvances.items;
 			float runWidth = xAdvances[0], max = 0;
 			Object[] glyphs = run.glyphs.items;
@@ -291,7 +289,6 @@ public class GlyphLayout implements Poolable {
 			width = Math.max(width, run.x + run.width);
 		}
 		this.width = width;
-		height = fontData.capHeight + Math.abs(run.y);
 
 		// Align runs to center or right of targetWidth.
 		if ((halign & Align.left) == 0) { // Not left aligned, so must be center or right aligned.
@@ -299,7 +296,7 @@ public class GlyphLayout implements Poolable {
 			float lineWidth = 0, lineY = Integer.MIN_VALUE;
 			int lineStart = 0;
 			for (int i = 0; i < runsSize; i++) {
-				run = (GlyphRun)runsItems[i];
+				GlyphRun run = (GlyphRun)runsItems[i];
 				if (run.y != lineY) {
 					lineY = run.y;
 					float shift = targetWidth - lineWidth;

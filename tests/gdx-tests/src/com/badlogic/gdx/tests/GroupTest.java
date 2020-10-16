@@ -206,7 +206,7 @@ public class GroupTest extends GdxTest {
 
 		public void draw (Batch batch, float parentAlpha) {
 			// Use Stage#toScreenCoordinates, which we know is correct.
-			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY()).rotate(getRotation())
+			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY()).rotateDeg(getRotation())
 				.add(getOriginX(), getOriginY()).add(getX(), getY());
 			getStage().toScreenCoordinates(toScreenCoordinates, batch.getTransformMatrix());
 

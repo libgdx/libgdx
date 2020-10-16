@@ -524,7 +524,8 @@ public class Matrix3 implements Serializable {
 		position.y = val[M12];
 		return position;
 	}
-
+	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
+	 * @return The provided vector for chaining. */
 	public Vector2 getScale (Vector2 scale) {
 		float[] val = this.val;
 		scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);

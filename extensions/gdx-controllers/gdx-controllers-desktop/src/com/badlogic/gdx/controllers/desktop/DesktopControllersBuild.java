@@ -18,7 +18,6 @@ package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
-import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
@@ -66,14 +65,24 @@ public class DesktopControllersBuild {
 		lin64.cppIncludes = linuxSrc;
 		lin64.headerDirs = includes;
 		lin64.libraries = "-lX11";
-		
+
+		BuildTarget linarm32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false, true);
+		linarm32.cppIncludes = linuxSrc;
+		linarm32.headerDirs = includes;
+		linarm32.libraries = "-lX11";
+
+		BuildTarget linarm64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true, true);
+		linarm64.cppIncludes = linuxSrc;
+		linarm64.headerDirs = includes;
+		linarm64.libraries = "-lX11";
+
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.cppIncludes = mac64Src;
 		mac64.headerDirs = includes;
 		mac64.cppFlags += " -x objective-c++";
 		mac64.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac64);
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, linarm32, linarm64, mac64);
 //		if (!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
 //			throw new Exception("build failed");
 //		}

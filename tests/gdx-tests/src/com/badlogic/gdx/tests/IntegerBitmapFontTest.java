@@ -35,7 +35,7 @@ public class IntegerBitmapFontTest extends GdxTest {
 	SpriteBatch batch;
 
 	public void create () {
-		TextureAtlas textureAtlas = new TextureAtlas("data/pack");
+		TextureAtlas textureAtlas = new TextureAtlas("data/pack.atlas");
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), textureAtlas.findRegion("verdana39"), false);
 		singleLineCache = new BitmapFontCache(font, true);
 		multiLineCache = new BitmapFontCache(font, true);

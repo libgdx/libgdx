@@ -117,6 +117,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 
 	private void bufferChanged () {
 		if (isBound) {
+			Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 			Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}

@@ -121,7 +121,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		return false;
 	}
 

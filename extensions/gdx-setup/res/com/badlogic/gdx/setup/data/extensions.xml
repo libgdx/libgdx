@@ -15,7 +15,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html></html>
 		</projects>
 	</extension>
@@ -34,7 +33,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>null</html>
 		</projects>
 	</extension>
@@ -55,7 +53,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
 			</html>
@@ -78,7 +75,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 			</html>
@@ -101,7 +97,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d:sources</dependency>
@@ -129,9 +124,6 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-			<ios-moe>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios-moe</dependency>
-			</ios-moe>
 			<html>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core:sources</dependency>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-html:sources</dependency>
@@ -159,9 +151,6 @@
 			<ios>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios</dependency>
 			</ios>
-			<ios-moe>
-				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
-			</ios-moe>
 			<html>
 		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>
@@ -186,7 +175,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 			</html>
@@ -209,7 +197,6 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
@@ -233,12 +220,38 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
-			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml-vis:sources</dependency>
 				<dependency external="true">com.kotcrab.vis:vis-ui:1.3.0:sources</dependency>
+			</html>
+		</projects>
+	</extension>
+	<extension>
+		<name>gdx-gamesvcs</name>
+		<description>Provides support for Google Play Games, Apple Game Center, GameJolt API</description>
+		<package>de.golfgl.gdxgamesvcs</package>
+		<version>1.0.2</version>
+		<compatibility>1.9.8</compatibility>
+		<website>https://github.com/MrStahlfelge/gdx-gamesvcs</website>
+		<gwtInherits>de.golfgl.gdxgamesvcs.gdx_gamesvcs_gwt</gwtInherits>
+		<projects>
+			<core>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core</dependency>
+			</core>
+			<desktop>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core-gamejolt</dependency>
+			</desktop>
+			<android>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-android-gpgs</dependency>
+			</android>
+			<ios>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-ios-gamecenter</dependency>
+			</ios>
+			<html>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core:sources</dependency>
+				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core-gamejolt:sources</dependency>
 			</html>
 		</projects>
 	</extension>

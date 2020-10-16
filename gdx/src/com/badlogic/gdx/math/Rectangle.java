@@ -375,8 +375,8 @@ public class Rectangle implements Serializable, Shape2D {
 		return "[" + x + "," + y + "," + width + "," + height + "]";
 	}
 
-	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}
-	 * .
+	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of
+	 * {@link #toString()}.
 	 * @param v the string.
 	 * @return this rectangle for chaining */
 	public Rectangle fromString (String v) {

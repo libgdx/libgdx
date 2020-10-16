@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed longs and values are objects. No allocation is done except when growing the table
  * size.
@@ -194,6 +194,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
+	/** Returns the value for the removed key, or null if the key is not in the map. */
 	public @Null V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;

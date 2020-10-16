@@ -36,7 +36,8 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		nodes = new Node[capacity];
 	}
 
-	/** Adds the node to the heap using its current value. The node should not already be in the heap. */
+	/** Adds the node to the heap using its current value. The node should not already be in the heap.
+	 * @return The specified node. */
 	public T add (T node) {
 		// Expand if necessary.
 		if (size == nodes.length) {
@@ -51,7 +52,8 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return node;
 	}
 
-	/** Sets the node's value and adds it to the heap. The node should not already be in the heap. */
+	/** Sets the node's value and adds it to the heap. The node should not already be in the heap.
+	 * @return The specified node. */
 	public T add (T node, float value) {
 		node.value = value;
 		return add(node);
@@ -91,6 +93,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return (T)removed;
 	}
 
+	/** @return The specified node. */
 	public T remove (T node) {
 		if (--size > 0) {
 			Node moved = nodes[size];

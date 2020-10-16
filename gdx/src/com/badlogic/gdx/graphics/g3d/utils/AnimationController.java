@@ -179,11 +179,11 @@ public class AnimationController extends BaseAnimationController {
 		}
 		if (current == null || current.loopCount == 0 || current.animation == null) return;
 		final float remain = current.update(delta);
-		if (remain != 0f && queued != null) {
+		if (queued != null) {
 			inAction = false;
 			animate(queued, queuedTransitionTime);
 			queued = null;			
-			update(remain);
+			if(remain != 0f) update(remain);
 			return;
 		}
 		if (previous != null)
@@ -357,7 +357,7 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Changes the current animation by blending the new on top of the old during the transition time. */
 	protected AnimationDesc animate (final AnimationDesc anim, float transitionTime) {
-		if (current == null)
+		if (current == null || current.loopCount == 0)
 			current = anim;
 		else if (inAction)
 			queue(anim, transitionTime);

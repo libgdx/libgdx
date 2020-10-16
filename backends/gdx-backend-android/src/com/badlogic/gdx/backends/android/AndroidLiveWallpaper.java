@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.*;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
@@ -52,6 +54,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
+	protected volatile Color[] wallpaperColors = null;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
 		this.service = service;
@@ -74,7 +77,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(this.getService().getAssets(), this.getService());
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		clipboard = new AndroidClipboard(this.getService());
@@ -374,4 +377,23 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Notify the wallpaper engine that the significant colors of the wallpaper have changed. This
+	 * method may be called before initializing the live wallpaper.
+	 * @param primaryColor The most visually significant color.
+	 * @param secondaryColor The second most visually significant color.
+	 * @param tertiaryColor The third most visually significant color.
+	 */
+	public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color tertiaryColor) {
+		if (Build.VERSION.SDK_INT < 27)
+			return;
+		final Color[] colors = new Color[3];
+		colors[0] = new Color(primaryColor);
+		colors[1] = new Color(secondaryColor);
+		colors[2] = new Color(tertiaryColor);
+		wallpaperColors = colors;
+		AndroidLiveWallpaperService.AndroidWallpaperEngine engine = service.linkedEngine;
+		if (engine != null)
+			engine.notifyColorsChanged();
+	}
 }

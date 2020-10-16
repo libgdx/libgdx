@@ -392,7 +392,10 @@ public class Skin implements Disposable {
 		return newDrawable;
 	}
 
-	private void scale (Drawable drawble) {
+	/** Scales the drawable's {@link Drawable#getLeftWidth()}, {@link Drawable#getRightWidth()},
+	 * {@link Drawable#getBottomHeight()}, {@link Drawable#getTopHeight()}, {@link Drawable#getMinWidth()}, and
+	 * {@link Drawable#getMinHeight()}. */
+	public void scale (Drawable drawble) {
 		drawble.setLeftWidth(drawble.getLeftWidth() * scale);
 		drawble.setRightWidth(drawble.getRightWidth() * scale);
 		drawble.setBottomHeight(drawble.getBottomHeight() * scale);

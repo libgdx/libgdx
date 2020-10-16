@@ -94,20 +94,62 @@ public interface Net {
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
 	 * <ul>
-	 * <li>GET</li>
-	 * <li>POST</li>
-	 * <li>PUT</li>
-	 * <li>DELETE</li>
-	 * <li>PATCH</li>
-	 * </ul> */
+	 * <li>
+	 * <b>HEAD</b> Asks for a response identical to that of a GET request but without the response body.
+	 * </li>
+	 * <li>
+	 * <b>GET</b> requests a representation of the specified resource.
+	 * Requests using GET should only retrieve data.
+	 * </li>
+	 * <li>
+	 * <b>POST</b> is used to submit an entity to the specified resource,
+	 * often causing a change in state or side effects on the server.
+	 * </li>
+	 * <li>
+	 * <b>PUT</b> replaces all current representations of the target resource with the request payload.
+	 * </li>
+	 * <li>
+	 * <b>PATCH</b> method is used to apply partial modifications to a resource.
+	 * </li>
+	 * <li>
+	 * <b>DELETE</b> deletes the specified resource.
+	 * </li>
+	 * </ul>
+	 * */
 	public static interface HttpMethods {
+		/**
+		 * The HEAD method asks for a response identical to that of a GET request,
+		 * but without the response body.
+		 **/
+		public static final String HEAD = "HEAD";
 
+		/**
+		 * The GET method requests a representation of the specified resource.
+		 * Requests using GET should only retrieve data.
+		 **/
 		public static final String GET = "GET";
+
+		/**
+		 * The POST method is used to submit an entity to the specified resource,
+		 * often causing a change in state or side effects on the server.
+		 **/
 		public static final String POST = "POST";
+
+		/**
+		 * The PUT method replaces all current representations of the target
+		 * resource with the request payload.
+		 **/
 		public static final String PUT = "PUT";
-		public static final String DELETE = "DELETE";
+
+		/**
+		 * The PATCH method is used to apply partial modifications to a resource.
+		 **/
 		public static final String PATCH = "PATCH";
 
+		/**
+		 * The DELETE method deletes the specified resource.
+		 **/
+		public static final String DELETE = "DELETE";
 	}
 
 	/** Contains getters and setters for the following parameters:
@@ -321,8 +363,8 @@ public interface Net {
 		void cancelled ();
 	}
 
-	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
-	 * .
+	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified
+	 * {@link HttpResponseListener}.
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */

@@ -36,6 +36,13 @@ public interface AssetFilter {
 	 * @return whether to include the file in the war/ folder or not. */
 	public boolean accept (String file, boolean isDirectory);
 
+	/**
+	 *
+	 * @param file the file to filter
+	 * @return whether to preload the file, or to lazy load it via AssetManager
+	 */
+	public boolean preload (String file);
+
 	/** @param file the file to get the type for
 	 * @return the type of the file, one of {@link AssetType} */
 	public AssetType getType (String file);

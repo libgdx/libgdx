@@ -119,9 +119,9 @@ public class InterpolationTest extends GdxTest {
 		stage.addActor(table);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-			public boolean scrolled (int amount) {
+			public boolean scrolled (float amountX, float amountY) {
 				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) return false;
-				duration -= amount / 15f;
+				duration -= amountY / 15f;
 				duration = MathUtils.clamp(duration, 0, Float.POSITIVE_INFINITY);
 				return true;
 			}

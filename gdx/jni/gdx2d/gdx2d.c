@@ -845,9 +845,9 @@ static inline void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pix
 			const void* src_ptr = src_pixmap->pixels + sx * sbpp + sy * spitch;
 			uint32_t c1 = 0, c2 = 0, c3 = 0, c4 = 0;
 			c1 = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
-			if(sx + 1 < src_width) c2 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + sbpp))); else c2 = c1;
-			if(sy + 1< src_height) c3 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + spitch))); else c3 = c1;
-			if(sx + 1< src_width && sy + 1 < src_height) c4 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + spitch + sbpp))); else c4 = c1;
+			if(sx + 1 < src_width) c2 = to_RGBA8888(src_pixmap->format, pget((void*)((char*)src_ptr + sbpp))); else c2 = c1;
+			if(sy + 1< src_height) c3 = to_RGBA8888(src_pixmap->format, pget((void*)((char*)src_ptr + spitch))); else c3 = c1;
+			if(sx + 1< src_width && sy + 1 < src_height) c4 = to_RGBA8888(src_pixmap->format, pget((void*)((char*)src_ptr + spitch + sbpp))); else c4 = c1;
 
 			float ta = (1 - x_diff) * (1 - y_diff);
 			float tb = (x_diff) * (1 - y_diff);

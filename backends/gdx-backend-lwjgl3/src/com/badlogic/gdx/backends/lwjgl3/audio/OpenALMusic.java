@@ -154,8 +154,8 @@ public abstract class OpenALMusic implements Music {
 		this.pan = pan;
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
-			MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.HALF_PI), 0,
+			MathUtils.sin((pan + 1) * MathUtils.HALF_PI));
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 

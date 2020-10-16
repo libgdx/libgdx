@@ -29,9 +29,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-public class SetupPreferences {	
+public class SetupPreferences {
+
+	private static final File[] files = new File[] {
+		// $CONFIG_HOME/gdxsetup/config
+		new File(new File(new File(findConfigHomePath()), "gdxsetup"), "config"),
+		// $HOME/.gdxsetup
+		new File(new File(System.getProperty("user.home")), ".gdxsetup")};
+
+	private static final String findConfigHomePath () {
+		Map<String, String> env = System.getenv();
+		if (env.containsKey("XDG_CONFIG_HOME")) return env.get("XDG_CONFIG_HOME");
+		// TODO add windows and mac config home paths
+		return System.getProperty("user.home") + "/.config";
+	}
+
+	private static final File findFile () {
+		for (File i : files) {
+			if (i.exists()) return i;
+		}
+		return files[files.length-1]; // default to $HOME/.gdxsetup
+	}
+
 	private final Properties properties = new Properties();
-	private final File file = new File(new File(System.getProperty("user.home")), ".gdxsetup");
+	private final File file = findFile();
 
 	public SetupPreferences () {		
 		if (!file.exists()) return;

@@ -80,6 +80,7 @@ public class Label extends Widget {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
+
 		cache = style.font.newFontCache();
 		invalidateHierarchy();
 	}
@@ -371,9 +372,7 @@ public class Label extends Widget {
 	 * @author Nathan Sweet */
 	static public class LabelStyle {
 		public BitmapFont font;
-		/** Optional. */
 		public @Null Color fontColor;
-		/** Optional. */
 		public @Null Drawable background;
 
 		public LabelStyle () {
@@ -385,7 +384,7 @@ public class Label extends Widget {
 		}
 
 		public LabelStyle (LabelStyle style) {
-			this.font = style.font;
+			font = style.font;
 			if (style.fontColor != null) fontColor = new Color(style.fontColor);
 			background = style.background;
 		}

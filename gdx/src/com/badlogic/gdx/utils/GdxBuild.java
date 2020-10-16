@@ -18,7 +18,6 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
-import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
@@ -50,6 +49,10 @@ public class GdxBuild {
 		lin32.cppExcludes = excludeCpp;
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cppExcludes = excludeCpp;
+		BuildTarget linarm32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false, true);
+		linarm32.cppExcludes = excludeCpp;
+		BuildTarget linarm64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true, true);
+		linarm64.cppExcludes = excludeCpp;
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.linkerFlags += " -llog";
 		android.cppExcludes = excludeCpp;
@@ -58,7 +61,7 @@ public class GdxBuild {
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.headerDirs = new String[] {"iosgl"};
 		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac64, win32home, win32,
-			win64, lin32, lin64, android, ios);
+			win64, lin32, lin64, linarm32, linarm64, android, ios);
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

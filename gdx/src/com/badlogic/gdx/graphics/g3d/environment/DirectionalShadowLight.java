@@ -28,9 +28,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
-/** @deprecated Experimental, likely to change, do not use!
- * @author Xoppa */
-@Deprecated
+/** @author Xoppa */
 public class DirectionalShadowLight extends DirectionalLight implements ShadowMap, Disposable {
 	protected FrameBuffer fbo;
 	protected Camera cam;
@@ -39,8 +37,6 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 	protected final Vector3 tmpV = new Vector3();
 	protected final TextureDescriptor textureDesc;
 
-	/** @deprecated Experimental, likely to change, do not use! */
-	@Deprecated
 	public DirectionalShadowLight (int shadowMapWidth, int shadowMapHeight, float shadowViewportWidth, float shadowViewportHeight,
 		float shadowNear, float shadowFar) {
 		fbo = new FrameBuffer(Format.RGBA8888, shadowMapWidth, shadowMapHeight, true);
@@ -59,10 +55,8 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 	}
 
 	public void update (final Vector3 center, final Vector3 forward) {
-		// cam.position.set(10,10,10);
 		cam.position.set(direction).scl(-halfDepth).add(center);
 		cam.direction.set(direction).nor();
-		// cam.up.set(forward).nor();
 		cam.normalizeUp();
 		cam.update();
 	}

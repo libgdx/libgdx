@@ -62,8 +62,10 @@ public class InputListener implements EventListener {
 		switch (event.getType()) {
 		case touchDown:
 			boolean handled = touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
-			if (handled && event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
-				event.getPointer(), event.getButton());
+			if (handled && event.getTouchFocus()) {
+				event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(), event.getPointer(),
+					event.getButton());
+			}
 			return handled;
 		case touchUp:
 			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
@@ -74,7 +76,7 @@ public class InputListener implements EventListener {
 		case mouseMoved:
 			return mouseMoved(event, tmpCoords.x, tmpCoords.y);
 		case scrolled:
-			return scrolled(event, tmpCoords.x, tmpCoords.y, event.getScrollAmount());
+			return scrolled(event, tmpCoords.x, tmpCoords.y, event.getScrollAmountX(), event.getScrollAmountY());
 		case enter:
 			enter(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getRelatedActor());
 			return false;
@@ -128,7 +130,7 @@ public class InputListener implements EventListener {
 	}
 
 	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean scrolled (InputEvent event, float x, float y, int amount) {
+	public boolean scrolled (InputEvent event, float x, float y, float amountX, float amountY) {
 		return false;
 	}
 

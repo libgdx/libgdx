@@ -17,8 +17,7 @@ _Please provide the version(s) affected._
 
 #### Please select the affected platforms
 - [ ] Android
-- [ ] iOS (robovm)
-- [ ] iOS (MOE)
+- [ ] iOS
 - [ ] HTML/GWT
 - [ ] Windows
 - [ ] Linux

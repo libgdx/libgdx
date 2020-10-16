@@ -350,11 +350,11 @@ public class ParticleEditor extends JFrame {
 			}
 
 			@Override
-			public boolean scrolled (int amount) {
-				worldCamera.zoom += amount * 0.01f;
+			public boolean scrolled (float amountX, float amountY) {
+				worldCamera.zoom += amountY * 0.01f;
 				worldCamera.zoom = MathUtils.clamp(worldCamera.zoom, 0.01f, 5000);
 				worldCamera.update();
-				return super.scrolled(amount);
+				return super.scrolled(amountX, amountY);
 			}
 
 			@Override
@@ -599,7 +599,7 @@ public class ParticleEditor extends JFrame {
 		}
 
 		@Override
-		public boolean scrolled (int amount) {
+		public boolean scrolled (float amountX, float amountY) {
 			return false;
 		}
 

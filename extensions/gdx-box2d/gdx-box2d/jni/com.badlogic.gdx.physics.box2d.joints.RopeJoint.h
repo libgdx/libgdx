@@ -34,9 +34,9 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jn
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_RopeJoint
  * Method:    jniSetMaxLength
- * Signature: (JF)F
+ * Signature: (JF)V
  */
-JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniSetMaxLength
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniSetMaxLength
   (JNIEnv *, jobject, jlong, jfloat);
 
 #ifdef __cplusplus

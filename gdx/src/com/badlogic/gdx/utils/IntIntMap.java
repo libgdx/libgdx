@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys and values are unboxed ints. No allocation is done except when growing the table size.
  * <p>
@@ -135,7 +135,6 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		}
 	}
 
-	/** Doesn't return a value, unlike other maps. */
 	public void put (int key, int value) {
 		if (key == 0) {
 			zeroValue = value;
@@ -154,6 +153,31 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		keyTable[i] = key;
 		valueTable[i] = value;
 		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	/** Returns the old value associated with the specified key, or the specified default value. */
+	public int put (int key, int value, int defaultValue) {
+		if (key == 0) {
+			int oldValue = zeroValue;
+			zeroValue = value;
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				size++;
+				return defaultValue;
+			}
+			return oldValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			int oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public void putAll (IntIntMap map) {
@@ -212,6 +236,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map. */
 	public int remove (int key, int defaultValue) {
 		if (key == 0) {
 			if (!hasZeroValue) return defaultValue;

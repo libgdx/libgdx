@@ -25,7 +25,10 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 
 /** Provides utility methods to work with the {@link HttpRequest} content and parameters. */
-public class HttpParametersUtils {
+public final class HttpParametersUtils {
+
+	private HttpParametersUtils () {
+	}
 
 	public static String defaultEncoding = "UTF-8";
 	public static String nameValueSeparator = "=";

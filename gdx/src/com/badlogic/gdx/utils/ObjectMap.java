@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys and values are objects. Null keys are not allowed. No allocation is done except when growing
  * the table size.
@@ -184,6 +184,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
+	/** Returns the value for the removed key, or null if the key is not in the map. */
 	public @Null V remove (K key) {
 		int i = locateKey(key);
 		if (i < 0) return null;

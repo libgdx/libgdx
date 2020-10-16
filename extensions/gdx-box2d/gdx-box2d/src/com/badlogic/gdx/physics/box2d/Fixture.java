@@ -31,6 +31,9 @@ public class Fixture {
 	/** the address of the fixture **/
 	protected long addr;
 
+	/** the fixture filter data, initialized lazily **/
+	private Filter filter;
+
 	/** the shape, initialized lazy **/
 	protected Shape shape;
 
@@ -141,6 +144,9 @@ public class Fixture {
 	 * awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
 		jniSetFilterData(addr, filter.categoryBits, filter.maskBits, filter.groupIndex);
+		if (this.filter == null)
+			this.filter = new Filter();
+		this.filter.set(filter);
 	}
 
 	private native void jniSetFilterData (long addr, short categoryBits, short maskBits, short groupIndex); /*
@@ -154,14 +160,18 @@ public class Fixture {
 
 	/** Get the contact filtering data. */
 	private final short[] tmp = new short[3];
-	private final Filter filter = new Filter();
+	private final Filter tmpFilter = new Filter();
 
 	public Filter getFilterData () {
-		jniGetFilterData(addr, tmp);
-		filter.maskBits = tmp[0];
-		filter.categoryBits = tmp[1];
-		filter.groupIndex = tmp[2];
-		return filter;
+		if (filter == null) {
+			jniGetFilterData(addr, tmp);
+			filter = new Filter();
+			filter.maskBits = tmp[0];
+			filter.categoryBits = tmp[1];
+			filter.groupIndex = tmp[2];
+		}
+		tmpFilter.set(filter);
+		return tmpFilter;
 	}
 
 	private native void jniGetFilterData (long addr, short[] filter); /*
