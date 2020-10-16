@@ -156,6 +156,11 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+
+	}
+
+	@Override
 	public void vibrate(int milliseconds) {
 
 	}
