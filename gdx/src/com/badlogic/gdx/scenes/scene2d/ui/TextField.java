@@ -886,7 +886,10 @@ public class TextField extends Widget implements Disableable {
 
 			if (!hasKeyboardFocus()) return false;
 
-			if (checkFocusTraversal(keycode)) next(UIUtils.shift());
+			if (checkFocusTraversal(keycode)) {
+				next(UIUtils.shift());
+				return true;
+			}
 			
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
