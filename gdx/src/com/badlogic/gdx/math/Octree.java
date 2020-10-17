@@ -29,21 +29,15 @@ public class Octree {
     public Octree(Vector3 minimum, Vector3 maximum) {
         super();
 
-        Vector3 realMin = new Vector3(
-            Math.min(minimum.x, maximum.x),
-            Math.min(minimum.y, maximum.y),
-            Math.min(minimum.z, maximum.z));
-
-        Vector3 realMax = new Vector3(
-            Math.max(minimum.x, maximum.x),
-            Math.max(minimum.y, maximum.y),
-            Math.max(minimum.z, maximum.z));
+        Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y), Math.min(minimum.z, maximum.z));
+        Vector3 realMax = new Vector3(Math.max(minimum.x, maximum.x), Math.max(minimum.y, maximum.y), Math.max(minimum.z, maximum.z));
 
         this.root = new OctreeNode(realMin, realMax);
+        this.root.setMaxDepth(maxDepth);
     }
 
     public void insert(BoundingBox aabb) {
-        root.insert(aabb, maxDepth);
+        root.insert(aabb);
     }
 
     public void remove(BoundingBox aabb) {
@@ -55,8 +49,7 @@ public class Octree {
     }
 
     private void getAll(OctreeNode node, ObjectSet<Object> resultSet) {
-        // Check if the node is leaf to avoid re adding geometries
-        if (node.isLeaf()) {
+        if (node.geometries != null) {
             resultSet.addAll(node.getGeometries());
             return;
         }
@@ -71,8 +64,9 @@ public class Octree {
 
     /**
      * Method that represents the broad phase
+     *
      * @param frustum
-     * @param result set populated with objects near from the frustum
+     * @param result  set populated with objects near from the frustum
      */
     public void query(Frustum frustum, ObjectSet<Object> result) {
         root.query(frustum, result);
@@ -80,6 +74,7 @@ public class Octree {
 
     public Octree setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
+        this.root.setMaxDepth(maxDepth);
         return this;
     }
 
@@ -113,66 +108,34 @@ public class Octree {
             float midy = (box.max.y + box.min.y) * 0.5f;
             float midz = (box.max.z + box.min.z) * 0.5f;
 
-            children[TopLeftFront] = new OctreeNode(
-                    box.min.x, midy, midz,
-                    midx, box.max.y, box.max.z)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[TopRightFront] = new OctreeNode(
-                    midx, midy, midz,
-                    box.max.x, box.max.y, box.max.z)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[TopRightBack] = new OctreeNode(
-                    midx, midy, box.min.z,
-                    box.max.x, box.max.y, midz)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[TopLeftBack] = new OctreeNode(
-                    box.min.x, midy, box.min.z,
-                    midx, box.max.y, midz)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[BottomLeftFront] = new OctreeNode(
-                    box.min.x, box.min.y, midz,
-                    midx, midy, box.max.z)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[BottomRightFront] = new OctreeNode(
-                    midx, box.min.y, midz,
-                    box.max.x, midy, box.max.z)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[BottomRightBack] = new OctreeNode(
-                    midx, box.min.y, box.min.z,
-                    box.max.x, midy, midz)
-                    .setMaxDepth(maxDepth + 1);
-
-            children[BottomLeftBack] = new OctreeNode(
-                    box.min.x, box.min.y, box.min.z,
-                    midx, midy, midz)
-                    .setMaxDepth(maxDepth + 1);
+            children[TopLeftFront] = new OctreeNode(box.min.x, midy, midz, midx, box.max.y, box.max.z).setMaxDepth(maxDepth - 1);
+            children[TopRightFront] = new OctreeNode(midx, midy, midz, box.max.x, box.max.y, box.max.z).setMaxDepth(maxDepth - 1);
+            children[TopRightBack] = new OctreeNode(midx, midy, box.min.z, box.max.x, box.max.y, midz).setMaxDepth(maxDepth - 1);
+            children[TopLeftBack] = new OctreeNode(box.min.x, midy, box.min.z, midx, box.max.y, midz).setMaxDepth(maxDepth - 1);
+            children[BottomLeftFront] = new OctreeNode(box.min.x, box.min.y, midz, midx, midy, box.max.z).setMaxDepth(maxDepth - 1);
+            children[BottomRightFront] = new OctreeNode(midx, box.min.y, midz, box.max.x, midy, box.max.z).setMaxDepth(maxDepth - 1);
+            children[BottomRightBack] = new OctreeNode(midx, box.min.y, box.min.z, box.max.x, midy, midz).setMaxDepth(maxDepth - 1);
+            children[BottomLeftBack] = new OctreeNode(box.min.x, box.min.y, box.min.z, midx, midy, midz).setMaxDepth(maxDepth - 1);
         }
 
         public boolean intersects(BoundingBox aabb) {
             return box.intersects(aabb);
         }
 
-        public void insert(BoundingBox aabb, int maxDepth) {
+        public void insert(BoundingBox aabb) {
             if (!intersects(aabb)) {
                 return;
             }
 
             addGeometry(aabb);
-
-            // If is not Leaf
-            if (this.maxDepth < maxDepth) {
+            
+            if (maxDepth != 0) {
                 if (children == null) {
                     initChildren();
                 }
 
                 for (Octree.OctreeNode child : children) {
-                    child.insert(aabb, maxDepth);
+                    child.insert(aabb);
                 }
             }
         }
@@ -201,7 +164,7 @@ public class Octree {
                 return;
             }
 
-            if (isLeaf()) {
+            if (geometries != null) {
                 result.addAll(geometries);
                 return;
             }
@@ -220,9 +183,6 @@ public class Octree {
             return this;
         }
 
-        public boolean isLeaf() {
-            return geometries != null;
-        }
     }
 
 }
