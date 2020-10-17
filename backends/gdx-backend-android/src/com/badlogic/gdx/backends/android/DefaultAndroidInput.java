@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -653,6 +654,7 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -661,6 +663,7 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void vibrate (long[] pattern, int repeat) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
@@ -669,6 +672,7 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void cancelVibrate () {
 		vibrator.cancel();
 	}
