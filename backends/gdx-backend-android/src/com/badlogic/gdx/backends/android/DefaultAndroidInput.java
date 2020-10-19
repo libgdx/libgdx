@@ -614,8 +614,11 @@ public class DefaultAndroidInput implements AndroidInput {
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
-					((GLSurfaceView20)view).onscreenKeyboardType = type == null ? OnscreenKeyboardType.Default : type;
-					manager.restartInput(view);
+					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
+					if(((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
+						((GLSurfaceView20) view).onscreenKeyboardType = tmp;
+						manager.restartInput(view);
+					}
 
 					view.setFocusable(true);
 					view.setFocusableInTouchMode(true);
