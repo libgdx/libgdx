@@ -47,8 +47,8 @@ public class DependencyBank {
 
 
 	//Extension versions
-	static String box2DLightsVersion = "1.4";
-	static String ashleyVersion = "1.7.0";
+	static String box2DLightsVersion = "1.5";
+	static String ashleyVersion = "1.7.3";
 	static String aiVersion = "1.8.2";	
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
