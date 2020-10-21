@@ -204,6 +204,7 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		return sound;
 	}
 	
+	/** Overwrite to do some post processing on the sound right after instantiation. */
 	protected Sound postProcessSound(AndroidSound sound) {
 		return sound;
 	}

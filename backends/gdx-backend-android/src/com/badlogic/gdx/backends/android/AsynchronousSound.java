@@ -3,9 +3,8 @@ package com.badlogic.gdx.backends.android;
 import android.os.Handler;
 import com.badlogic.gdx.audio.Sound;
 
-
 public class AsynchronousSound implements Sound {
-	
+
 	private final AndroidSound sound;
 	private final Handler handler;
 
@@ -18,7 +17,7 @@ public class AsynchronousSound implements Sound {
 	public long play () {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.play();
 			}
 		});
@@ -29,7 +28,7 @@ public class AsynchronousSound implements Sound {
 	public long play (final float volume) {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.play(volume);
 			}
 		});
@@ -40,7 +39,7 @@ public class AsynchronousSound implements Sound {
 	public long play (final float volume, final float pitch, final float pan) {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.play(volume, pitch, pan);
 			}
 		});
@@ -51,7 +50,7 @@ public class AsynchronousSound implements Sound {
 	public long loop () {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.loop();
 			}
 		});
@@ -62,7 +61,7 @@ public class AsynchronousSound implements Sound {
 	public long loop (final float volume) {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.loop(volume);
 			}
 		});
@@ -73,7 +72,7 @@ public class AsynchronousSound implements Sound {
 	public long loop (final float volume, final float pitch, final float pan) {
 		handler.post(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				sound.loop(volume, pitch, pan);
 			}
 		});

@@ -5,6 +5,13 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import com.badlogic.gdx.audio.Sound;
 
+/** A performance oriented implementation of the {@link AndroidAudio} interface.
+ * 
+ * Sounds are played on a separate thread. This avoids waiting for sound ids on methods that can 
+ * potentially lock main thread for considerable amount of time, especially when playing several
+ * sounds at the same time. The limitation of this approach is that methods that require a sound id
+ * are not supported.
+*/
 public class AsynchronousAndroidAudio extends DefaultAndroidAudio {
 
 	private final HandlerThread handlerThread;
