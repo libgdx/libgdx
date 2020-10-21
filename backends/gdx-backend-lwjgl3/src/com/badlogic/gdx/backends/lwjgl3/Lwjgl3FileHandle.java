@@ -57,6 +57,7 @@ public final class Lwjgl3FileHandle extends FileHandle {
 	public File file () {
 		if (type == FileType.External) return new File(Lwjgl3Files.externalPath, file.getPath());
 		if (type == FileType.Local) return new File(Lwjgl3Files.localPath, file.getPath());
+		if (type == FileType.Cache) return new File(Lwjgl3Files.cachePath, file.getPath());
 		return file;
 	}
 }

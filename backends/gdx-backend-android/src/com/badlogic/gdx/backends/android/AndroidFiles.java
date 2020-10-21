@@ -35,7 +35,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Nathan Sweet */
 public class AndroidFiles implements Files {
 	protected final String externalFilesPath;
-	protected final String localpath;
+	protected final String localPath;
+	protected final String cachePath;
 
 	protected final AssetManager assets;
 	private ZipResourceFile expansionFile = null;
@@ -44,7 +45,10 @@ public class AndroidFiles implements Files {
 		this.assets = assets;
 
 		String localPath = contextWrapper.getFilesDir().getAbsolutePath();
-		this.localpath = localPath.endsWith("/") ? localPath : localPath + "/";
+		this.localPath = localPath.endsWith("/") ? localPath : localPath + "/";
+
+		String cachePath = contextWrapper.getCacheDir().getAbsolutePath();
+		this.cachePath = cachePath.endsWith("/") ? cachePath : cachePath + "/";
 
 		File externalFilesDir = contextWrapper.getExternalFilesDir(null);
 		if (externalFilesDir != null) {
@@ -104,6 +108,11 @@ public class AndroidFiles implements Files {
 	}
 
 	@Override
+	public FileHandle cache (String path) {
+		return new AndroidFileHandle(null, path, FileType.Cache);
+	}
+
+	@Override
 	public String getExternalStoragePath () {
 		return externalFilesPath;
 	}
@@ -115,7 +124,12 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public String getLocalStoragePath () {
-		return localpath;
+		return localPath;
+	}
+
+	@Override
+	public String getCacheStoragePath () {
+		return cachePath;
 	}
 
 	@Override

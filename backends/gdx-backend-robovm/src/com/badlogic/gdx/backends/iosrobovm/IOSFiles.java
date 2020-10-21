@@ -27,6 +27,7 @@ public class IOSFiles implements Files {
 	static final String appDir = System.getenv("HOME");
 	static final String externalPath = appDir + "/Documents/";
 	static final String localPath = appDir + "/Library/local/";
+	static final String cachePath = appDir + "/Library/Caches/";
 	static final String internalPath = NSBundle.getMainBundle().getBundlePath();
 
 	public IOSFiles () {
@@ -65,6 +66,11 @@ public class IOSFiles implements Files {
 	}
 
 	@Override
+	public FileHandle cache (String path) {
+		return new IOSFileHandle(path, FileType.Cache);
+	}
+
+	@Override
 	public String getExternalStoragePath () {
 		return externalPath;
 	}
@@ -82,5 +88,10 @@ public class IOSFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
+	}
+
+	@Override
+	public String getCacheStoragePath () {
+		return cachePath;
 	}
 }
