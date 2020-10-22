@@ -27,6 +27,7 @@ versions.gretty = "3.0.2"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
 versions.lwjgl3 = "3.2.3"
+versions.lwjgl3Awt = "0.1.8"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
@@ -96,7 +97,8 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
-        "org.jcraft:jorbis:${versions.jorbis}"
+        "org.jcraft:jorbis:${versions.jorbis}",
+        "org.lwjglx:lwjgl3-awt:${versions.lwjgl3Awt}"
 ]
 
 libraries.robovm = [
