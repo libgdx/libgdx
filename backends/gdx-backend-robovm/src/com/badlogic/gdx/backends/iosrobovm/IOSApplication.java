@@ -168,6 +168,17 @@ public class IOSApplication implements Application {
 		 return new DefaultIOSInput(this);
 	}
 
+	/** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
+	protected int guessUnknownPpi() {
+		int ppi;
+		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad)
+			ppi = 132 * (int) pixelsPerPoint;
+		else
+			ppi = 164 * (int) pixelsPerPoint;
+		error("IOSApplication", "Device PPI unknown. PPI value has been guessed to " + ppi + " but may be wrong");
+		return ppi;
+	}
+
 	/** Return the UI view controller of IOSApplication
 	 * @return the view controller of IOSApplication */
 	public UIViewController getUIViewController () {
