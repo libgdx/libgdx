@@ -200,15 +200,9 @@ public class DefaultAndroidAudio implements AndroidAudio {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
-		Sound sound = postProcessSound(androidSound);
-		return sound;
+		return androidSound;
 	}
 	
-	/** Overwrite to do some post processing on the sound right after instantiation. */
-	protected Sound postProcessSound(AndroidSound sound) {
-		return sound;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {

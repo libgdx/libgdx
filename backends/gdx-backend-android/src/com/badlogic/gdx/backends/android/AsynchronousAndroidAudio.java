@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 
 /** A performance oriented implementation of the {@link AndroidAudio} interface.
  * 
@@ -38,7 +39,8 @@ public class AsynchronousAndroidAudio extends DefaultAndroidAudio {
 	}
 
 	@Override
-	protected Sound postProcessSound (AndroidSound sound) {
+	public Sound newSound (FileHandle file) {
+		Sound sound = super.newSound(file);
 		return new AsynchronousSound(sound, handler);
 	}
 }

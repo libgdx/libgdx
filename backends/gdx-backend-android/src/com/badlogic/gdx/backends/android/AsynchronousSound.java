@@ -5,10 +5,10 @@ import com.badlogic.gdx.audio.Sound;
 
 public class AsynchronousSound implements Sound {
 
-	private final AndroidSound sound;
+	private final Sound sound;
 	private final Handler handler;
 
-	public AsynchronousSound (AndroidSound sound, Handler handler) {
+	public AsynchronousSound (Sound sound, Handler handler) {
 		this.sound = sound;
 		this.handler = handler;
 	}
