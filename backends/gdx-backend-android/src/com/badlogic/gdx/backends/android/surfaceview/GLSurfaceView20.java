@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 
 /** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
@@ -47,6 +48,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 	final ResolutionStrategy resolutionStrategy;
 	static int targetGLESVersion;
+	public OnscreenKeyboardType onscreenKeyboardType = OnscreenKeyboardType.Default;
 
 	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
@@ -78,7 +80,15 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
-			outAttrs.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_NULL;
+
+			switch(onscreenKeyboardType){
+				default: outAttrs.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD; break;
+				case NumberPad: outAttrs.inputType = InputType.TYPE_CLASS_NUMBER; break;
+				case PhonePad: outAttrs.inputType = InputType.TYPE_CLASS_PHONE; break;
+				case Email: outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS; break;
+				case Password: outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD; break;
+				case URI: outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI; break;
+			}
 		}
 
 		BaseInputConnection connection = new BaseInputConnection(this, false) {

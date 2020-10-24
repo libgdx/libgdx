@@ -682,10 +682,20 @@ public interface Input {
 	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text, String hint);
 
-	/** Sets the on-screen keyboard visible if available.
+	/** Sets the on-screen keyboard visible if available. Will use the Default keyboard type.
 	 * 
 	 * @param visible visible or not */
 	public void setOnscreenKeyboardVisible (boolean visible);
+
+	/** Sets the on-screen keyboard visible if available.
+	 *
+	 * @param visible visible or not
+	 * @param type which type of keyboard we wish to display. Can be null when hiding */
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
+
+	public enum OnscreenKeyboardType {
+		Default, NumberPad, PhonePad, Email, Password, URI
+	}
 
 	/** Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.

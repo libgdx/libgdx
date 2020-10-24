@@ -459,9 +459,25 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 		if (textfield == null) createDefaultTextField();
 		softkeyboardActive = visible;
 		if (visible) {
+			UIKeyboardType preferredInputType;
+			if(type == null) type = OnscreenKeyboardType.Default;
+			switch(type){
+				case Password: //no equivalent in UIKeyboardType?
+				default: preferredInputType = UIKeyboardType.Default; break;
+				case NumberPad: preferredInputType = UIKeyboardType.NumberPad; break;
+				case PhonePad: preferredInputType = UIKeyboardType.PhonePad; break;
+				case Email: preferredInputType = UIKeyboardType.EmailAddress; break;
+				case URI: preferredInputType = UIKeyboardType.URL; break;
+			}
+			textfield.setKeyboardType(preferredInputType);
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {

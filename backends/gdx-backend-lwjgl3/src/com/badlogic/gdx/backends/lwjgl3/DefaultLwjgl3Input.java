@@ -866,9 +866,13 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	public Orientation getNativeOrientation() {
 		return Orientation.Landscape;
 	}
-	
+
 	@Override
 	public void setOnscreenKeyboardVisible(boolean visible) {
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override

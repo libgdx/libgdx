@@ -300,6 +300,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+			input.setOnscreenKeyboardVisible(visible, type);
+		}
+
+		@Override
 		public void vibrate (int milliseconds) {
 			input.vibrate(milliseconds);
 		}

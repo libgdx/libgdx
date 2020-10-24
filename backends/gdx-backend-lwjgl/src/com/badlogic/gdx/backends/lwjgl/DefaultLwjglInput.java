@@ -298,6 +298,11 @@ final public class DefaultLwjglInput implements LwjglInput {
 	}
 
 	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+
+	}
+
+	@Override
 	public void setCatchBackKey (boolean catchBack) {
 
 	}

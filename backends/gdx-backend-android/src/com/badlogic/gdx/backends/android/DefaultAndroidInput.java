@@ -32,8 +32,8 @@ import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.View.OnGenericMotionListener;
+import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -42,6 +42,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -603,11 +604,22 @@ public class DefaultAndroidInput implements AndroidInput {
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
+					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
+					if(((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
+						((GLSurfaceView20) view).onscreenKeyboardType = tmp;
+						manager.restartInput(view);
+					}
+
 					view.setFocusable(true);
 					view.setFocusableInTouchMode(true);
 					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);

@@ -448,6 +448,11 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+
+	}
+
+	@Override
 	public void mouseDragged (MouseEvent e) {
 		synchronized (this) {
 			TouchEvent event = usedTouchEvents.obtain();
