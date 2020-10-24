@@ -836,9 +836,9 @@ public class Actor {
 		tableBounds.height = height;
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
-		if (ScissorStack.pushScissors(scissorBounds)) return true;
+		boolean pushed = ScissorStack.pushScissors(scissorBounds);
 		Pools.free(scissorBounds);
-		return false;
+		return pushed;
 	}
 
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
