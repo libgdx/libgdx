@@ -30,6 +30,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.*;
+import com.badlogic.gdx.backends.android.textureview.GLTextureView;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -59,7 +60,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * kill the current process to avoid ANR */
 	static volatile boolean enforceContinuousRendering = false;
 
-	final GLSurfaceView20 view;
+	final View view;
 	int width;
 	int height;
 	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
@@ -112,31 +113,47 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	protected void preserveEGLContextOnPause () {
-		view.setPreserveEGLContextOnPause(true);
+		if (view instanceof GLSurfaceView20) ((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
+		if (view instanceof GLTextureView) ((GLTextureView) view).setPreserveEGLContextOnPause(true);
 	}
 
-	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
+	protected View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
-		if (configChooser != null)
-			view.setEGLConfigChooser(configChooser);
-		else
-			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-		view.setRenderer(this);
-		return view;
+		if (config.useTextureView) {
+			GLTextureView view = new GLTextureView(application.getContext(), resolutionStrategy, this.config.useGL30 ? 3 : 2);
+			if (configChooser != null) {
+				view.setEGLConfigChooser(configChooser);
+			} else {
+				view.setEGLConfigChooser(this.config.r, this.config.g, this.config.b, this.config.a, this.config.depth, this.config.stencil);
+			}
+
+			view.setOpaque(false);
+			view.setRenderer(this);
+			return view;
+		} else {
+			GLSurfaceView view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		}
 	}
 
 	public void onPauseGLSurfaceView () {
 		if (view != null) {
-			view.onPause();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onPause();
+			if (view instanceof GLTextureView) ((GLTextureView)view).onPause();
 		}
 	}
 
 	public void onResumeGLSurfaceView () {
 		if (view != null) {
-			view.onResume();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onResume();
+			if (view instanceof GLTextureView) ((GLTextureView)view).onResume();
 		}
 	}
 
@@ -719,7 +736,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 			// ignore setContinuousRendering(false) while pausing
 			this.isContinuous = enforceContinuousRendering || isContinuous;
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			view.setRenderMode(renderMode);
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+            if (view instanceof GLTextureView) ((GLTextureView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
 	}
@@ -732,7 +750,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
-			view.requestRender();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+            if (view instanceof GLTextureView) ((GLTextureView)view).requestRender();
 		}
 	}
 

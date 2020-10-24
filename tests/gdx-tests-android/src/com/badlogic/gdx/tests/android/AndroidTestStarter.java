@@ -31,6 +31,9 @@ import android.widget.ListView;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 public class AndroidTestStarter extends ListActivity {
+
+	private static String TEXTURE_VIEW_TEST = "TextureViewTest";
+
 	SharedPreferences prefs;
 
 	@Override
@@ -40,8 +43,8 @@ public class AndroidTestStarter extends ListActivity {
 		if (!GdxTests.tests.contains(APKExpansionTest.class))
 			GdxTests.tests.add(APKExpansionTest.class);
 		List<String> testNames = GdxTests.getNames();
+		testNames.add(TEXTURE_VIEW_TEST);
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames));
-
 		prefs = getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
 		getListView().setSelectionFromTop(prefs.getInt("index", 0), prefs.getInt("top", 0));
 	}
@@ -56,6 +59,11 @@ public class AndroidTestStarter extends ListActivity {
 
 		Object o = this.getListAdapter().getItem(position);
 		String testName = o.toString();
+
+		if (TEXTURE_VIEW_TEST.equals(testName)) {
+			startActivity(new Intent(this, TextureViewTestActivity.class));
+			return;
+		}
 
 		Bundle bundle = new Bundle();
 		bundle.putString("test", testName);
