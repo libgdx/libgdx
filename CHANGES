@@ -5,7 +5,7 @@
 - [BREAKING CHANGE] Android: getDeltaTime() now returns the raw delta time instead of a smoothed one. See #6228.
 - Fixed vertices returned by Decal.getVertices() not being updated
 - Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
-- Update to MobiVM 2.3.10
+- Update to MobiVM 2.3.11
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
 - API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
 - Fixed GlyphLayout not laying out correctly with color markup.
