@@ -547,6 +547,10 @@ public class DefaultIOSInput implements IOSInput {
 				uiTextField.setPlaceholder(placeholder);
 				uiTextField.setText(text);
 				uiTextField.setKeyboardType(getIosInputType(type));
+				if (type == OnscreenKeyboardType.Password) {
+					uiTextField.setSecureTextEntry(true);
+				}
+
 			}
 		});
 		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {

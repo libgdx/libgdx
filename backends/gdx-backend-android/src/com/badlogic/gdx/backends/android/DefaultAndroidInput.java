@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -237,6 +238,9 @@ public class DefaultAndroidInput implements AndroidInput {
 				input.setHint(hint);
 				input.setText(text);				
 				input.setSingleLine();
+				if (type == OnscreenKeyboardType.Password) {
+					input.setTransformationMethod(new PasswordTransformationMethod());
+				}
 				alert.setView(input);
 				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
