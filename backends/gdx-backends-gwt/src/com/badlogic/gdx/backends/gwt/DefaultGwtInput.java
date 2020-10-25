@@ -280,7 +280,13 @@ public class DefaultGwtInput implements GwtInput {
 		return justPressedKeys[key];
 	}
 
-	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		TextInputDialogBox dialog = new TextInputDialogBox(title, text, hint);
 		final TextInputListener capturedListener = listener;
 		dialog.setListener(new TextInputDialogListener() {

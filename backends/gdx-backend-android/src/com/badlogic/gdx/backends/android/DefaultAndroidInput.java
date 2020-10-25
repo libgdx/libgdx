@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -221,12 +222,18 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint, final OnscreenKeyboardType type) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
+				input.setInputType(getAndroidInputType(type));
 				input.setHint(hint);
 				input.setText(text);				
 				input.setSingleLine();
@@ -265,6 +272,31 @@ public class DefaultAndroidInput implements AndroidInput {
 				alert.show();
 			}
 		});
+	}
+
+	public static int getAndroidInputType(OnscreenKeyboardType type) {
+		int inputType;
+		switch (type) {
+			case NumberPad:
+				inputType = InputType.TYPE_CLASS_NUMBER;
+				break;
+			case PhonePad:
+				inputType = InputType.TYPE_CLASS_PHONE;
+				break;
+			case Email:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+				break;
+			case Password:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+				break;
+			case URI:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+				break;
+			default:
+				inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+				break;
+		}
+		return inputType;
 	}
 
 	@Override
