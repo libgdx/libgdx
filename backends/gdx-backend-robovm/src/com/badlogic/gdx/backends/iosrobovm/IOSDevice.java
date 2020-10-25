@@ -30,6 +30,7 @@ public class IOSDevice {
 		this.ppi = ppi;
 	}
 
+	/** The devices information can be obtained from https://github.com/lmirosevic/GBDeviceInfo or https://gist.github.com/adamawolf/3048717 */
 	static ObjectMap<String, IOSDevice> populateWithKnownDevices() {
 		ObjectMap<String, IOSDevice> deviceMap = new ObjectMap<String, IOSDevice>();
 
