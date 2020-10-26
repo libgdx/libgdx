@@ -39,11 +39,19 @@ public class FPSLogger {
 
 	/** Logs the current frames per second to the console. */
 	public void log () {
+		log(1);
+	}
+	
+	public void log(int interval) {
 		final long nanoTime = TimeUtils.nanoTime();
-		if (nanoTime - startTime > 1000000000) /* 1,000,000,000ns == one second */ {
+		if (nanoTime - startTime > (1000000000 * interval)) /* 1,000,000,000ns == one second */ {
 			final int fps = Gdx.graphics.getFramesPerSecond();
 			if (fps < bound) {
-				Gdx.app.log("FPSLogger", "fps: " + fps);
+				if(bound != Integer.MAX_VALUE) {
+					Gdx.app.error("FPSLogger", "fps: " + fps);
+				} else	{
+					Gdx.app.log("FPSLogger", "fps: " + fps);
+				}
 				startTime = nanoTime;
 			}
 		}
