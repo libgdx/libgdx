@@ -81,7 +81,7 @@ public interface Audio {
 	 * {@link ApplicationListener#resume()} is called.
 	 * 
 	 * @param file the FileHandle
-	 * @return the new Music or null if the Music could not be loaded
+	 * @return the new Music
 	 * @throws GdxRuntimeException in case the music could not be loaded */
 	public Music newMusic (FileHandle file);
 }

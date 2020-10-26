@@ -18,6 +18,8 @@ package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 
+import javax.annotation.Nullable;
+
 /** Interface used to select items within an iterator against a predicate.
  * @author Xoppa */
 public interface Predicate<T> {
@@ -68,7 +70,7 @@ public interface Predicate<T> {
 		}
 
 		@Override
-		public T next () {
+		public @Nullable T next () {
 			if (next == null && !hasNext()) return null;
 			final T result = next;
 			next = null;

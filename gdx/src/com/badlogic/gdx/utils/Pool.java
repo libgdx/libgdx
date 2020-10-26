@@ -58,7 +58,7 @@ abstract public class Pool<T> {
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times. */
 	public void free (T object) {
-		if (object == null) throw new IllegalArgumentException("object cannot be null.");
+		if (object == null) throw new NullPointerException("object cannot be null.");
 		if (freeObjects.size < max) {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
@@ -87,7 +87,7 @@ abstract public class Pool<T> {
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times.
 	 * @see #free(Object) */
 	public void freeAll (Array<T> objects) {
-		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
+		if (objects == null) throw new NullPointerException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
 		for (int i = 0, n = objects.size; i < n; i++) {

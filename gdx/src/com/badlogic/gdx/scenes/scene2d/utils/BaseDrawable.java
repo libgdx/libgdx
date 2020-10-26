@@ -17,13 +17,15 @@
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+
+import javax.annotation.Nullable;
 
 /** Drawable that stores the size information but doesn't draw anything.
  * @author Nathan Sweet */
 public class BaseDrawable implements Drawable {
-	private @Null String name;
+	private @Nullable
+	String name;
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
 
 	public BaseDrawable () {
@@ -103,15 +105,15 @@ public class BaseDrawable implements Drawable {
 		setMinHeight(minHeight);
 	}
 
-	public @Null String getName () {
+	public @Nullable String getName () {
 		return name;
 	}
 
-	public void setName (@Null String name) {
+	public void setName (@Nullable String name) {
 		this.name = name;
 	}
 
-	public @Null String toString () {
+	public @Nullable String toString () {
 		if (name == null) return ClassReflection.getSimpleName(getClass());
 		return name;
 	}

@@ -31,6 +31,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 
+import javax.annotation.Nullable;
+
 /** This interface encapsulates communication with the graphics processor. Depending on the available hardware and the current
  * {@link Application} configuration, access to {@link GL20} and {@link GL30} are provided here.
  * <p>
@@ -133,7 +135,7 @@ public interface Graphics {
 	public GL20 getGL20 ();
 
 	/** @return the {@link GL30} instance or null if not supported */
-	public GL30 getGL30 ();
+	public @Nullable GL30 getGL30 ();
 
 	/** Set the GL20 instance **/
 	public void setGL20 (GL20 gl20);
@@ -332,7 +334,7 @@ public interface Graphics {
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @return a cursor object that can be used by calling {@link #setCursor(Cursor)} or null if not supported */
-	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
+	public @Nullable Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
 
 	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
 	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to

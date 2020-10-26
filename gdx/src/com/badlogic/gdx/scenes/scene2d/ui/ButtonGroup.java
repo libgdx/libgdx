@@ -17,7 +17,8 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Null;
+
+import javax.annotation.Nullable;
 
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
  * functionality and more. A button may only be in one group at a time.
@@ -127,7 +128,7 @@ public class ButtonGroup<T extends Button> {
 	}
 
 	/** @return The first checked button, or null. */
-	public @Null T getChecked () {
+	public @Nullable T getChecked () {
 		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
 	}

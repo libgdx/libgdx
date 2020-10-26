@@ -27,6 +27,8 @@ import java.io.Reader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import javax.annotation.Nullable;
+
 /** Lightweight XML parser. Supports a subset of XML features: elements, attributes, text, predefined entities, CDATA, mixed
  * content. Namespaces are parsed as part of the element or attribute name. Prologs and doctypes are ignored. Only 8-bit character
  * encodings are supported. Input is assumed to be well formed.<br>
@@ -428,7 +430,7 @@ public class XmlReader {
 		current.setAttribute(name, value);
 	}
 
-	protected @Null String entity (String name) {
+	protected @Nullable String entity (String name) {
 		if (name.equals("lt")) return "<";
 		if (name.equals("gt")) return ">";
 		if (name.equals("amp")) return "&";
@@ -476,7 +478,7 @@ public class XmlReader {
 			return value;
 		}
 
-		public String getAttribute (String name, String defaultValue) {
+		public String getAttribute (String name, @Nullable String defaultValue) {
 			if (attributes == null) return defaultValue;
 			String value = attributes.get(name);
 			if (value == null) return defaultValue;
@@ -577,7 +579,7 @@ public class XmlReader {
 
 		/** @param name the name of the child {@link Element}
 		 * @return the first child having the given name or null, does not recurse */
-		public @Null Element getChildByName (String name) {
+		public @Nullable Element getChildByName (String name) {
 			if (children == null) return null;
 			for (int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
@@ -593,7 +595,7 @@ public class XmlReader {
 
 		/** @param name the name of the child {@link Element}
 		 * @return the first child having the given name or null, recurses */
-		public @Null Element getChildByNameRecursive (String name) {
+		public @Nullable Element getChildByNameRecursive (String name) {
 			if (children == null) return null;
 			for (int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
@@ -681,7 +683,7 @@ public class XmlReader {
 
 		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
 		 * @throws GdxRuntimeException if no attribute or child was not found. */
-		public String get (String name, String defaultValue) {
+		public String get (String name, @Nullable String defaultValue) {
 			if (attributes != null) {
 				String value = attributes.get(name);
 				if (value != null) return value;

@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.NumberUtils;
 
+import javax.annotation.Nullable;
+
 /** Queues events that are later passed to the wrapped {@link InputProcessor}.
  * @author Nathan Sweet */
 public class InputEventQueue implements InputProcessor {
@@ -33,7 +35,7 @@ public class InputEventQueue implements InputProcessor {
 	static private final int MOUSE_MOVED = 6;
 	static private final int SCROLLED = 7;
 
-	private InputProcessor processor;
+	private @Nullable InputProcessor processor;
 	private final IntArray queue = new IntArray();
 	private final IntArray processingQueue = new IntArray();
 	private long currentEventTime;
@@ -41,15 +43,15 @@ public class InputEventQueue implements InputProcessor {
 	public InputEventQueue () {
 	}
 
-	public InputEventQueue (InputProcessor processor) {
+	public InputEventQueue (@Nullable InputProcessor processor) {
 		this.processor = processor;
 	}
 
-	public void setProcessor (InputProcessor processor) {
+	public void setProcessor (@Nullable InputProcessor processor) {
 		this.processor = processor;
 	}
 
-	public InputProcessor getProcessor () {
+	public @Nullable InputProcessor getProcessor () {
 		return processor;
 	}
 

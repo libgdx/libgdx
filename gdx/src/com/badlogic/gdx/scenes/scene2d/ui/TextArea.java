@@ -27,9 +27,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+
+import javax.annotation.Nullable;
 
 /** A text input field with multiple lines. */
 public class TextArea extends TextField {
@@ -217,7 +218,7 @@ public class TextArea extends TextField {
 		linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
 	}
 
-	protected float getTextY (BitmapFont font, @Null Drawable background) {
+	protected float getTextY (BitmapFont font, @Nullable Drawable background) {
 		float textY = getHeight();
 		if (background != null) {
 			textY = textY - background.getTopHeight();

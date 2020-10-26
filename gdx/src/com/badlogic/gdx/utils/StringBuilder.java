@@ -19,6 +19,8 @@ package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
 
+import javax.annotation.Nullable;
+
 /** A {@link java.lang.StringBuilder} that implements equals and hashcode.
  * @see CharSequence
  * @see Appendable
@@ -151,7 +153,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		chars[length++] = ch;
 	}
 
-	final void append0 (String string) {
+	final void append0 (@Nullable String string) {
 		if (string == null) {
 			appendNull();
 			return;
@@ -165,7 +167,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		length = newSize;
 	}
 
-	final void append0 (CharSequence s, int start, int end) {
+	final void append0 (@Nullable CharSequence s, int start, int end) {
 		if (s == null) {
 			s = "null";
 		}
@@ -292,7 +294,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		length++;
 	}
 
-	final void insert0 (int index, String string) {
+	final void insert0 (int index, @Nullable String string) {
 		if (0 <= index && index <= length) {
 			if (string == null) {
 				string = "null";
@@ -308,7 +310,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 	}
 
-	final void insert0 (int index, CharSequence s, int start, int end) {
+	final void insert0 (int index, @Nullable CharSequence s, int start, int end) {
 		if (s == null) {
 			s = "null";
 		}
@@ -900,7 +902,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	 * @param obj the {@code Object} to append.
 	 * @return this builder.
 	 * @see String#valueOf(Object) */
-	public StringBuilder append (Object obj) {
+	public StringBuilder append (@Nullable Object obj) {
 		if (obj == null) {
 			appendNull();
 		} else {
@@ -1126,7 +1128,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	 * @return this builder.
 	 * @throws StringIndexOutOfBoundsException if {@code offset} is negative or greater than the current {@code length()}.
 	 * @see String#valueOf(Object) */
-	public StringBuilder insert (int offset, Object obj) {
+	public StringBuilder insert (int offset, @Nullable Object obj) {
 		insert0(offset, obj == null ? "null" : obj.toString()); //$NON-NLS-1$
 		return this;
 	}
@@ -1181,7 +1183,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	 * @return this builder.
 	 * @throws IndexOutOfBoundsException if {@code offset} is negative or greater than the current {@code length()}.
 	 * @see CharSequence#toString() */
-	public StringBuilder insert (int offset, CharSequence s) {
+	public StringBuilder insert (int offset, @Nullable CharSequence s) {
 		insert0(offset, s == null ? "null" : s.toString()); //$NON-NLS-1$
 		return this;
 	}
@@ -1282,7 +1284,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		return true;
 	}
 
-	public boolean equalsIgnoreCase (@Null StringBuilder other) {
+	public boolean equalsIgnoreCase (@Nullable StringBuilder other) {
 		if (this == other) return true;
 		if (other == null) return false;
 		int length = this.length;
@@ -1296,7 +1298,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		return true;
 	}
 
-	public boolean equalsIgnoreCase (@Null String other) {
+	public boolean equalsIgnoreCase (@Nullable String other) {
 		if (other == null) return false;
 		int length = this.length;
 		if (length != other.length()) return false;

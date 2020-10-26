@@ -37,6 +37,11 @@ versions.androidSdk = 29
 versions.androidBuildTools = "28.0.3"
 versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
+versions.jsr305 = "3.0.2"
+
+libraries.gdx = [
+        "com.google.code.findbugs:jsr305:${versions.jsr305}"
+]
 
 libraries.lwjgl = [
         "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",

@@ -32,10 +32,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+
+import javax.annotation.Nullable;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -272,13 +273,13 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Returns the first selected item, or null. */
-	public @Null T getSelected () {
+	public @Nullable T getSelected () {
 		return selection.first();
 	}
 
 	/** Sets the selection to only the passed item, if it is a possible choice.
 	 * @param item May be null. */
-	public void setSelected (@Null T item) {
+	public void setSelected (@Nullable T item) {
 		if (items.contains(item, false))
 			selection.set(item);
 		else if (selection.getRequired() && items.size > 0)
@@ -316,7 +317,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** @return null if not over an item. */
-	public @Null T getItemAt (float y) {
+	public @Nullable T getItemAt (float y) {
 		int index = getItemIndexAt(y);
 		if (index == -1) return null;
 		return items.get(index);
@@ -400,7 +401,7 @@ public class List<T> extends Widget implements Cullable {
 		return object.toString();
 	}
 
-	public void setCullingArea (@Null Rectangle cullingArea) {
+	public void setCullingArea (@Nullable Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
@@ -432,7 +433,7 @@ public class List<T> extends Widget implements Cullable {
 		public Color fontColorSelected = new Color(1, 1, 1, 1);
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
-		public @Null Drawable down, over, background;
+		public @Nullable Drawable down, over, background;
 
 		public ListStyle () {
 		}

@@ -4,17 +4,18 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
 import java.util.Iterator;
 
+import javax.annotation.Nullable;
+
 /** Manages selected objects. Optionally fires a {@link ChangeEvent} on an actor. Selection changes can be vetoed via
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	private @Null Actor actor;
+	private @Nullable Actor actor;
 	final OrderedSet<T> selected = new OrderedSet();
 	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
@@ -22,10 +23,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean multiple;
 	boolean required;
 	private boolean programmaticChangeEvents = true;
-	@Null T lastSelected;
+	@Nullable T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
-	public void setActor (@Null Actor actor) {
+	public void setActor (@Nullable Actor actor) {
 		this.actor = actor;
 	}
 
@@ -82,7 +83,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** Returns the first selected item, or null. */
-	public @Null T first () {
+	public @Nullable T first () {
 		return selected.size == 0 ? null : selected.first();
 	}
 
@@ -229,13 +230,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	/** @param item May be null (returns false). */
-	public boolean contains (@Null T item) {
+	public boolean contains (@Nullable T item) {
 		if (item == null) return false;
 		return selected.contains(item);
 	}
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
-	public @Null T getLastSelected () {
+	public @Nullable T getLastSelected () {
 		if (lastSelected != null) {
 			return lastSelected;
 		} else if (selected.size > 0) {

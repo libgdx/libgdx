@@ -18,6 +18,8 @@ package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.ObjectIntMap;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
@@ -691,7 +693,7 @@ public interface Input {
 	 *
 	 * @param visible visible or not
 	 * @param type which type of keyboard we wish to display. Can be null when hiding */
-	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
+	public void setOnscreenKeyboardVisible (boolean visible, @Nullable OnscreenKeyboardType type);
 
 	public enum OnscreenKeyboardType {
 		Default, NumberPad, PhonePad, Email, Password, URI
@@ -799,10 +801,10 @@ public interface Input {
 	 * {@link ApplicationListener#render()} method each frame.
 	 * 
 	 * @param processor the InputProcessor */
-	public void setInputProcessor (InputProcessor processor);
+	public void setInputProcessor (@Nullable InputProcessor processor);
 
 	/** @return the currently set {@link InputProcessor} or null. */
-	public InputProcessor getInputProcessor ();
+	public @Nullable InputProcessor getInputProcessor ();
 
 	/** Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
 	 * this returns the whether the keyboard is currently slid out or not.

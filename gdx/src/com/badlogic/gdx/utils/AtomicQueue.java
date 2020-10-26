@@ -25,6 +25,8 @@ package com.badlogic.gdx.utils;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.annotation.Nullable;
+
 /** A queue that allows one thread to call {@link #put(Object)} and another thread to call {@link #poll()}. Multiple threads must
  * not call these methods.
  * @author Matthias Mann */
@@ -41,7 +43,7 @@ public class AtomicQueue<T> {
 		return (idx + 1) % queue.length();
 	}
 
-	public boolean put (@Null T value) {
+	public boolean put (@Nullable T value) {
 		int write = writeIndex.get();
 		int read = readIndex.get();
 		int next = next(write);
@@ -51,7 +53,7 @@ public class AtomicQueue<T> {
 		return true;
 	}
 
-	public @Null T poll () {
+	public @Nullable T poll () {
 		int read = readIndex.get();
 		int write = writeIndex.get();
 		if (read == write) return null;

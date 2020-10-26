@@ -24,6 +24,8 @@ import java.util.NoSuchElementException;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
+import javax.annotation.Nullable;
+
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
  * @author Nathan Sweet */
@@ -195,7 +197,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
-	public boolean contains (@Null T value, boolean identity) {
+	public boolean contains (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
@@ -232,7 +234,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of first occurrence of value in array or -1 if no such value exists */
-	public int indexOf (@Null T value, boolean identity) {
+	public int indexOf (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
@@ -249,7 +251,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of last occurrence of value in array or -1 if no such value exists */
-	public int lastIndexOf (@Null T value, boolean identity) {
+	public int lastIndexOf (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = size - 1; i >= 0; i--)
@@ -265,7 +267,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
-	public boolean removeValue (@Null T value, boolean identity) {
+	public boolean removeValue (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++) {
@@ -513,7 +515,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns a random item from the array, or null if the array is empty. */
-	public @Null T random () {
+	public @Nullable T random () {
 		if (size == 0) return null;
 		return items[MathUtils.random(0, size - 1)];
 	}

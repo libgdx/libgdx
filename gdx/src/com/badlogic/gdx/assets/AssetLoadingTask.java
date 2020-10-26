@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
 
+import javax.annotation.Nullable;
+
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}.
  * Please don't forget to update the overriding emu file on GWT backend when changing this file!
  * 
@@ -58,7 +60,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 
 	/** Loads parts of the asset asynchronously if the loader is an {@link AsynchronousAssetLoader}. */
 	@Override
-	public Void call () throws Exception {
+	public @Nullable Void call () throws Exception {
 		if (cancel) return null;
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
 		if (!dependenciesLoaded) {

@@ -32,6 +32,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
+import javax.annotation.Nullable;
+
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
 public class ParticleEffect implements Disposable {
@@ -165,7 +167,7 @@ public class ParticleEffect implements Disposable {
 		load(effectFile, atlas, null);
 	}
 
-	public void load (FileHandle effectFile, TextureAtlas atlas, String atlasPrefix) {
+	public void load (FileHandle effectFile, TextureAtlas atlas, @Nullable String atlasPrefix) {
 		loadEmitters(effectFile);
 		loadEmitterImages(atlas, atlasPrefix);
 	}
@@ -192,7 +194,7 @@ public class ParticleEffect implements Disposable {
 		loadEmitterImages(atlas, null);
 	}
 
-	public void loadEmitterImages (TextureAtlas atlas, String atlasPrefix) {
+	public void loadEmitterImages (TextureAtlas atlas, @Nullable String atlasPrefix) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			if (emitter.getImagePaths().size == 0) continue;

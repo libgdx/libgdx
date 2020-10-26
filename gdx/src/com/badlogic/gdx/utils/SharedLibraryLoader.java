@@ -29,6 +29,8 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.annotation.Nullable;
+
 /** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
  * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
  * @author mzechner
@@ -175,7 +177,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
 	 * @return null if a writable path could not be found. */
-	private @Null File getExtractedFile (String dirName, String fileName) {
+	private @Nullable File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
 		File idealFile = new File(
 			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
@@ -317,7 +319,7 @@ public class SharedLibraryLoader {
 	}
 
 	/** @return null if the file was extracted and loaded. */
-	private @Null Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+	private @Nullable Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
 		try {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;

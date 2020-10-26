@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -32,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** {@link AssetLoader} for {@link BitmapFont} instances. Loads the font description file (.fnt) asynchronously, loads the
  * {@link Texture} containing the glyphs as a dependency. The {@link BitmapFontParameter} allows you to set things like texture
  * filters or whether to flip the glyphs vertically.
@@ -44,7 +45,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	BitmapFontData data;
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, BitmapFontParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, @Nullable BitmapFontParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter != null && parameter.bitmapFontData != null) {
 			data = parameter.bitmapFontData;
@@ -76,11 +77,11 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, @Nullable BitmapFontParameter parameter) {
 	}
 
 	@Override
-	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
+	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, @Nullable BitmapFontParameter parameter) {
 		if (parameter != null && parameter.atlasName != null) {
 			TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
 			String name = file.sibling(data.imagePaths[0]).nameWithoutExtension().toString();
@@ -121,6 +122,6 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 		/** The name of the {@link TextureAtlas} to load the {@link BitmapFont} itself from. Optional; if {@code null}, will look for
 		 * a separate image */
-		public String atlasName = null;
+		public @Nullable String atlasName = null;
 	}
 }

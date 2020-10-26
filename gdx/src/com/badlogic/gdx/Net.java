@@ -31,8 +31,9 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
+
+import javax.annotation.Nullable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -63,7 +64,7 @@ public interface Net {
 		 * </p>
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
-		byte[] getResult ();
+		@Nullable byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
 		 * <p>
@@ -71,7 +72,7 @@ public interface Net {
 		 * </p>
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
-		String getResultAsString ();
+		@Nullable String getResultAsString ();
 
 		/** Returns the data of the HTTP response as an {@link InputStream}. <b><br>
 		 * Warning:</b> Do not store a reference to this InputStream outside of
@@ -85,7 +86,7 @@ public interface Net {
 
 		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. See
 		 * {@link HttpResponseHeader}. */
-		String getHeader (String name);
+		@Nullable String getHeader (String name);
 
 		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
 		 * represent the corresponding header values. See {@link HttpResponseHeader}. */
@@ -368,7 +369,7 @@ public interface Net {
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
-	public void sendHttpRequest (HttpRequest httpRequest, @Null HttpResponseListener httpResponseListener);
+	public void sendHttpRequest (HttpRequest httpRequest, @Nullable HttpResponseListener httpResponseListener);
 
 	public void cancelHttpRequest (HttpRequest httpRequest);
 
@@ -387,7 +388,7 @@ public interface Net {
 	 *           by the system.
 	 * @return the {@link ServerSocket}
 	 * @throws GdxRuntimeException in case the socket couldn't be opened */
-	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints);
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, @Nullable ServerSocketHints hints);
 
 	/** Creates a new server socket on the given port, using the given {@link Protocol}, waiting for incoming connections.
 	 * 
@@ -396,7 +397,7 @@ public interface Net {
 	 *           by the system.
 	 * @return the {@link ServerSocket}
 	 * @throws GdxRuntimeException in case the socket couldn't be opened */
-	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints);
+	public ServerSocket newServerSocket (Protocol protocol, int port, @Nullable ServerSocketHints hints);
 
 	/** Creates a new TCP client socket that connects to the given host and port.
 	 * 
@@ -405,7 +406,7 @@ public interface Net {
 	 * @param hints additional {@link SocketHints} used to create the socket. Input null to use the default setting provided by the
 	 *           system.
 	 * @throws GdxRuntimeException in case the socket couldn't be opened */
-	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints);
+	public Socket newClientSocket (Protocol protocol, String host, int port, @Nullable SocketHints hints);
 
 	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the
 	 * application registered for handling URIs of the specified type is invoked. The application is determined from the protocol

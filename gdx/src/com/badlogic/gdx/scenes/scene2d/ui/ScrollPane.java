@@ -34,7 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.utils.Null;
+
+import javax.annotation.Nullable;
 
 /** A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
  * <p>
@@ -78,22 +79,22 @@ public class ScrollPane extends WidgetGroup {
 	int draggingPointer = -1;
 
 	/** @param widget May be null. */
-	public ScrollPane (@Null Actor widget) {
+	public ScrollPane (@Nullable Actor widget) {
 		this(widget, new ScrollPaneStyle());
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (@Null Actor widget, Skin skin) {
+	public ScrollPane (@Nullable Actor widget, Skin skin) {
 		this(widget, skin.get(ScrollPaneStyle.class));
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (@Null Actor widget, Skin skin, String styleName) {
+	public ScrollPane (@Nullable Actor widget, Skin skin, String styleName) {
 		this(widget, skin.get(styleName, ScrollPaneStyle.class));
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (@Null Actor widget, ScrollPaneStyle style) {
+	public ScrollPane (@Nullable Actor widget, ScrollPaneStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setActor(widget);
@@ -626,7 +627,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param actor May be null to remove any current actor. */
-	public void setActor (@Null Actor actor) {
+	public void setActor (@Nullable Actor actor) {
 		if (widget == this) throw new IllegalArgumentException("widget cannot be the ScrollPane.");
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = actor;
@@ -634,19 +635,19 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** Returns the actor embedded in this scroll pane, or null. */
-	public @Null Actor getActor () {
+	public @Nullable Actor getActor () {
 		return widget;
 	}
 
 	/** @deprecated Use {@link #setActor(Actor)}. */
 	@Deprecated
-	public void setWidget (@Null Actor actor) {
+	public void setWidget (@Nullable Actor actor) {
 		setActor(actor);
 	}
 
 	/** @deprecated Use {@link #getActor()}. */
 	@Deprecated
-	public @Null Actor getWidget () {
+	public @Nullable Actor getWidget () {
 		return widget;
 	}
 
@@ -698,7 +699,7 @@ public class ScrollPane extends WidgetGroup {
 		return actor;
 	}
 
-	public @Null Actor hit (float x, float y, boolean touchable) {
+	public @Nullable Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		if (touchable && getTouchable() == Touchable.enabled && isVisible()) {
 			if (scrollX && touchScrollH && hScrollBounds.contains(x, y)) return this;
@@ -1064,15 +1065,15 @@ public class ScrollPane extends WidgetGroup {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
-		public @Null Drawable background, corner;
-		public @Null Drawable hScroll, hScrollKnob;
-		public @Null Drawable vScroll, vScrollKnob;
+		public @Nullable Drawable background, corner;
+		public @Nullable Drawable hScroll, hScrollKnob;
+		public @Nullable Drawable vScroll, vScrollKnob;
 
 		public ScrollPaneStyle () {
 		}
 
-		public ScrollPaneStyle (@Null Drawable background, @Null Drawable hScroll, @Null Drawable hScrollKnob,
-			@Null Drawable vScroll, @Null Drawable vScrollKnob) {
+		public ScrollPaneStyle (@Nullable Drawable background, @Nullable Drawable hScroll, @Nullable Drawable hScrollKnob,
+			@Nullable Drawable vScroll, @Nullable Drawable vScrollKnob) {
 			this.background = background;
 			this.hScroll = hScroll;
 			this.hScrollKnob = hScrollKnob;

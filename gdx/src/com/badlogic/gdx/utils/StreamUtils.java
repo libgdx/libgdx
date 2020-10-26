@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 
+import javax.annotation.Nullable;
+
 /** Provides utility methods to copy streams. */
 public final class StreamUtils {
 	public static final int DEFAULT_BUFFER_SIZE = 4096;
@@ -106,7 +108,7 @@ public final class StreamUtils {
 	/** Copy the data from an {@link InputStream} to a string using the specified charset.
 	 * @param estimatedSize Used to allocate the output buffer to possibly avoid an array copy.
 	 * @param charset May be null to use the platform's default charset. */
-	public static String copyStreamToString (InputStream input, int estimatedSize, @Null String charset) throws IOException {
+	public static String copyStreamToString (InputStream input, int estimatedSize, @Nullable String charset) throws IOException {
 		InputStreamReader reader = charset == null ? new InputStreamReader(input) : new InputStreamReader(input, charset);
 		StringWriter writer = new StringWriter(Math.max(0, estimatedSize));
 		char[] buffer = new char[DEFAULT_BUFFER_SIZE];

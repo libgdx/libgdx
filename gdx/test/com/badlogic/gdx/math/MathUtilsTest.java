@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.math;
 
-import static com.badlogic.gdx.math.MathUtils.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;

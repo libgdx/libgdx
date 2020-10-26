@@ -63,6 +63,8 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.ThreadUtils;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
+import javax.annotation.Nullable;
+
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
  * @author mzechner */
 public class AssetManager implements Disposable {
@@ -76,7 +78,7 @@ public class AssetManager implements Disposable {
 	final AsyncExecutor executor;
 
 	final Stack<AssetLoadingTask> tasks = new Stack();
-	AssetErrorListener listener;
+	@Nullable AssetErrorListener listener;
 	int loaded;
 	int toLoad;
 	int peakTasks;
@@ -277,7 +279,7 @@ public class AssetManager implements Disposable {
 
 	/** @param asset the asset
 	 * @return the filename of the asset or null */
-	public synchronized <T> String getAssetFileName (T asset) {
+	public synchronized @Nullable <T> String getAssetFileName (T asset) {
 		for (Class assetType : assets.keys()) {
 			ObjectMap<String, RefCountedContainer> assetsByType = assets.get(assetType);
 			for (String fileName : assetsByType.keys()) {
@@ -314,7 +316,7 @@ public class AssetManager implements Disposable {
 	/** Returns the default loader for the given type.
 	 * @param type The type of the loader to get
 	 * @return The loader capable of loading the type, or null if none exists */
-	public <T> AssetLoader getLoader (final Class<T> type) {
+	public @Nullable <T> AssetLoader getLoader (final Class<T> type) {
 		return getLoader(type, null);
 	}
 
@@ -323,7 +325,7 @@ public class AssetManager implements Disposable {
 	 * @param type The type of the loader to get
 	 * @param fileName The filename of the asset to get a loader for, or null to get the default loader
 	 * @return The loader capable of loading the type and filename, or null if none exists */
-	public <T> AssetLoader getLoader (final Class<T> type, final String fileName) {
+	public @Nullable <T> AssetLoader getLoader (final Class<T> type, final @Nullable String fileName) {
 		final ObjectMap<String, AssetLoader> loaders = this.loaders.get(type);
 		if (loaders == null || loaders.size < 1) return null;
 		if (fileName == null) return loaders.get("");
@@ -645,7 +647,7 @@ public class AssetManager implements Disposable {
 	 * @param type the type of the asset
 	 * @param suffix the suffix the filename must have for this loader to be used or null to specify the default loader.
 	 * @param loader the loader */
-	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, String suffix,
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, @Nullable String suffix,
 		AssetLoader<T, P> loader) {
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		if (loader == null) throw new IllegalArgumentException("loader cannot be null.");
@@ -677,7 +679,7 @@ public class AssetManager implements Disposable {
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
 	 * @param listener the listener or null */
-	public synchronized void setErrorListener (AssetErrorListener listener) {
+	public synchronized void setErrorListener (@Nullable AssetErrorListener listener) {
 		this.listener = listener;
 	}
 
@@ -788,7 +790,7 @@ public class AssetManager implements Disposable {
 	}
 
 	/** @return the dependencies of an asset or null if the asset has no dependencies. */
-	public synchronized Array<String> getDependencies (String fileName) {
+	public synchronized @Nullable Array<String> getDependencies (String fileName) {
 		return assetDependencies.get(fileName);
 	}
 

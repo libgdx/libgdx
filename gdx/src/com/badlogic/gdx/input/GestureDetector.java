@@ -88,7 +88,7 @@ public class GestureDetector extends InputAdapter {
 	 *           {@link GestureListener#fling(float, float, int)} */
 	public GestureDetector (float halfTapRectangleWidth, float halfTapRectangleHeight, float tapCountInterval,
 		float longPressDuration, float maxFlingDelay, GestureListener listener) {
-		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
+		if (listener == null) throw new NullPointerException("listener cannot be null.");
 		this.tapRectangleWidth = halfTapRectangleWidth;
 		this.tapRectangleHeight = halfTapRectangleHeight;
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);

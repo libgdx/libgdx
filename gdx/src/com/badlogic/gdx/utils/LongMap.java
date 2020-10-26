@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nullable;
+
 import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed longs and values are objects. No allocation is done except when growing the table
@@ -136,7 +138,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
-	public @Null V put (long key, @Null V value) {
+	public @Nullable V put (long key, @Nullable V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
@@ -171,7 +173,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
-	private void putResize (long key, @Null V value) {
+	private void putResize (long key, @Nullable V value) {
 		long[] keyTable = this.keyTable;
 		for (int i = place(key);; i = (i + 1) & mask) {
 			if (keyTable[i] == 0) {
@@ -182,20 +184,20 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		}
 	}
 
-	public @Null V get (long key) {
+	public @Nullable V get (long key) {
 		if (key == 0) return hasZeroValue ? zeroValue : null;
 		int i = locateKey(key);
 		return i >= 0 ? valueTable[i] : null;
 	}
 
-	public V get (long key, @Null V defaultValue) {
+	public V get (long key, @Nullable V defaultValue) {
 		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
 		int i = locateKey(key);
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
 	/** Returns the value for the removed key, or null if the key is not in the map. */
-	public @Null V remove (long key) {
+	public @Nullable V remove (long key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
 			hasZeroValue = false;
@@ -270,7 +272,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public boolean containsValue (@Null Object value, boolean identity) {
+	public boolean containsValue (@Nullable Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return true;
@@ -299,7 +301,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * and compares every value, which may be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	public long findKey (@Null Object value, boolean identity, long notFound) {
+	public long findKey (@Nullable Object value, boolean identity, long notFound) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return 0;
@@ -391,7 +393,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	/** Uses == for comparison of each value. */
-	public boolean equalsIdentity (@Null Object obj) {
+	public boolean equalsIdentity (@Nullable Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof LongMap)) return false;
 		LongMap other = (LongMap)obj;
@@ -511,7 +513,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 
 	static public class Entry<V> {
 		public long key;
-		public @Null V value;
+		public @Nullable V value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -625,7 +627,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			return hasNext;
 		}
 
-		public @Null V next () {
+		public @Nullable V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value;

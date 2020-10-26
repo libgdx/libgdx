@@ -25,6 +25,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.I18NBundle;
 
+import javax.annotation.Nullable;
+
 /** {@link AssetLoader} for {@link I18NBundle} instances. The I18NBundle is loaded asynchronously.
  * <p>
  * Notice that you can't load two bundles with the same base name and different locale or encoding using the same {@link AssetManager}.
@@ -51,7 +53,7 @@ public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBu
 	I18NBundle bundle;
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle file, I18NBundleParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, @Nullable I18NBundleParameter parameter) {
 		this.bundle = null;
 		Locale locale;
 		String encoding;
@@ -70,30 +72,30 @@ public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBu
 	}
 
 	@Override
-	public I18NBundle loadSync (AssetManager manager, String fileName, FileHandle file, I18NBundleParameter parameter) {
+	public I18NBundle loadSync (AssetManager manager, String fileName, FileHandle file, @Nullable I18NBundleParameter parameter) {
 		I18NBundle bundle = this.bundle;
 		this.bundle = null;
 		return bundle;
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, I18NBundleParameter parameter) {
+	public @Nullable Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, @Nullable I18NBundleParameter parameter) {
 		return null;
 	}
 
 	static public class I18NBundleParameter extends AssetLoaderParameters<I18NBundle> {
-		public final Locale locale;
-		public final String encoding;
+		public final @Nullable Locale locale;
+		public final @Nullable String encoding;
 
 		public I18NBundleParameter () {
 			this(null, null);
 		}
 
-		public I18NBundleParameter (Locale locale) {
+		public I18NBundleParameter (@Nullable Locale locale) {
 			this(locale, null);
 		}
 
-		public I18NBundleParameter (Locale locale, String encoding) {
+		public I18NBundleParameter (@Nullable Locale locale, @Nullable String encoding) {
 			this.locale = locale;
 			this.encoding = encoding;
 		}

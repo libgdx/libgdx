@@ -18,6 +18,8 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
+import javax.annotation.Nullable;
+
 /** A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the
  * {@code BitmapFontCache} class uses this class to retrieve colors and the user can define his own colors.
  * 
@@ -41,7 +43,7 @@ public final class Colors {
 	 * @param name the name of the color
 	 * @return the color to which the specified {@code name} is mapped, or {@code null} if there was no mapping for {@code name}
 	 *         . */
-	public static Color get (String name) {
+	public static @Nullable Color get (String name) {
 		return map.get(name);
 	}
 

@@ -18,8 +18,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
+
+import javax.annotation.Nullable;
 
 /** A button with a child {@link Image} to display an image. This is useful when the button must be larger than the image and the
  * image centered on the button. If the image is the size of the button, a {@link Button} without any children can be used, where
@@ -49,15 +50,15 @@ public class ImageButton extends Button {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public ImageButton (@Null Drawable imageUp) {
+	public ImageButton (@Nullable Drawable imageUp) {
 		this(new ImageButtonStyle(null, null, null, imageUp, null, null));
 	}
 
-	public ImageButton (@Null Drawable imageUp, @Null Drawable imageDown) {
+	public ImageButton (@Nullable Drawable imageUp, @Nullable Drawable imageDown) {
 		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, null));
 	}
 
-	public ImageButton (@Null Drawable imageUp, @Null Drawable imageDown, @Null Drawable imageChecked) {
+	public ImageButton (@Nullable Drawable imageUp, @Nullable Drawable imageDown, @Nullable Drawable imageChecked) {
 		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
 	}
 
@@ -74,7 +75,7 @@ public class ImageButton extends Button {
 	}
 
 	/** Returns the appropriate image drawable from the style based on the current button state. */
-	protected @Null Drawable getImageDrawable () {
+	protected @Nullable Drawable getImageDrawable () {
 		if (isDisabled() && style.imageDisabled != null) return style.imageDisabled;
 		if (isPressed()) {
 			if (isChecked() && style.imageCheckedDown != null) return style.imageCheckedDown;
@@ -125,14 +126,14 @@ public class ImageButton extends Button {
 	/** The style for an image button, see {@link ImageButton}.
 	 * @author Nathan Sweet */
 	static public class ImageButtonStyle extends ButtonStyle {
-		public @Null Drawable imageUp, imageDown, imageOver, imageDisabled;
-		public @Null Drawable imageChecked, imageCheckedDown, imageCheckedOver;
+		public @Nullable Drawable imageUp, imageDown, imageOver, imageDisabled;
+		public @Nullable Drawable imageChecked, imageCheckedDown, imageCheckedOver;
 
 		public ImageButtonStyle () {
 		}
 
-		public ImageButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, @Null Drawable imageUp,
-			@Null Drawable imageDown, @Null Drawable imageChecked) {
+		public ImageButtonStyle (@Nullable Drawable up, @Nullable Drawable down, @Nullable Drawable checked, @Nullable Drawable imageUp,
+			@Nullable Drawable imageDown, @Nullable Drawable imageChecked) {
 			super(up, down, checked);
 			this.imageUp = imageUp;
 			this.imageDown = imageDown;

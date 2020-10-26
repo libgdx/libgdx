@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.net;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 import com.badlogic.gdx.Net.Protocol;

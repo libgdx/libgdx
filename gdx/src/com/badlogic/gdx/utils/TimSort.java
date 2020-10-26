@@ -16,6 +16,8 @@ package com.badlogic.gdx.utils;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import javax.annotation.Nullable;
+
 /** A stable, adaptive, iterative mergesort that requires far fewer than n lg(n) comparisons when running on partially sorted
  * arrays, while offering performance comparable to a traditional mergesort when run on random arrays. Like all proper mergesorts,
  * this sort is stable and runs O(n log n) time (worst case). In the worst case, this sort requires temporary storage space for
@@ -179,7 +181,7 @@ class TimSort<T> {
 		sort(a, 0, a.length, c);
 	}
 
-	static <T> void sort (T[] a, int lo, int hi, Comparator<? super T> c) {
+	static <T> void sort (T[] a, int lo, int hi, @Nullable Comparator<? super T> c) {
 		if (c == null) {
 			Arrays.sort(a, lo, hi);
 			return;

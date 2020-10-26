@@ -24,7 +24,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Null;
+
+import javax.annotation.Nullable;
 
 /** A stack of {@link Rectangle} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
  * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
@@ -86,7 +87,7 @@ public class ScissorStack {
 	}
 
 	/** @return null if there are no scissors. */
-    @Null
+    @Nullable
     public static Rectangle peekScissors () {
 		if (scissors.size == 0) return null;
 		return scissors.peek();

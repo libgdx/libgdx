@@ -3,7 +3,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
