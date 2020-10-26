@@ -42,14 +42,14 @@ public class DependencyBank {
 	//Project plugins
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
 	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
-	static String androidPluginImport = "com.android.tools.build:gradle:3.4.1";
+	static String androidPluginImport = "com.android.tools.build:gradle:3.4.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
 
 	//Extension versions
-	static String box2DLightsVersion = "1.4";
-	static String ashleyVersion = "1.7.0";
-	static String aiVersion = "1.8.0";	
+	static String box2DLightsVersion = "1.5";
+	static String ashleyVersion = "1.7.3";
+	static String aiVersion = "1.8.2";	
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 
@@ -74,7 +74,7 @@ public class DependencyBank {
 	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
 	 * and allow the option to choose extensions as the user wishes.
 	 * <p/>
-	 * These depedency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
+	 * These dependency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
 	 * project generation
 	 *
 	 * @see Dependency for the object that handles sub-module dependencies. If no dependency is found for a sub-module, ie
