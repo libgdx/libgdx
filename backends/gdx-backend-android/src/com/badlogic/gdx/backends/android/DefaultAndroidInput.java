@@ -228,17 +228,19 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
-	public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint, final OnscreenKeyboardType type) {
+	public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint, final OnscreenKeyboardType keyboardType) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
-				input.setInputType(getAndroidInputType(type));
+				if (keyboardType != OnscreenKeyboardType.Default) {
+					input.setInputType(getAndroidInputType(keyboardType));
+				}
 				input.setHint(hint);
 				input.setText(text);				
 				input.setSingleLine();
-				if (type == OnscreenKeyboardType.Password) {
+				if (keyboardType == OnscreenKeyboardType.Password) {
 					input.setTransformationMethod(new PasswordTransformationMethod());
 				}
 				alert.setView(input);
