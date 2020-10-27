@@ -30,7 +30,6 @@ compileJava {
 
 dependencies {
     compileOnly project(":extensions:gdx-jnigen")
-    compileOnly libraries.gdx
     testCompile libraries.junit
 }
 

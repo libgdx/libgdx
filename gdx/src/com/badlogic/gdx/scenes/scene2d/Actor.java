@@ -304,7 +304,7 @@ public class Actor {
 
 	/** Called by the framework when this actor or any ascendant is added to a group that is in the stage.
 	 * @param stage May be null if the actor or any ascendant is no longer in a stage. */
-	protected void setStage (@org.jetbrains.annotations.Nullable Stage stage) {
+	protected void setStage (@Nullable Stage stage) {
 		this.stage = stage;
 	}
 
