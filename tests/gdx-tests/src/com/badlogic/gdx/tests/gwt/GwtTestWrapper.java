@@ -295,6 +295,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+			input.getTextInput(listener, title, text, hint, type);
+		}
+
+		@Override
 		public void setOnscreenKeyboardVisible (boolean visible) {
 			input.setOnscreenKeyboardVisible(visible);
 		}

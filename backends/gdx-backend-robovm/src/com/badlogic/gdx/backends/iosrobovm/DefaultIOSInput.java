@@ -406,7 +406,12 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint);
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint, type);
 		app.getUIViewController().presentViewController(uiAlertController, true, null);
 	}	
 
@@ -469,22 +474,37 @@ public class DefaultIOSInput implements IOSInput {
 		if (visible) {
 			UIKeyboardType preferredInputType;
 			if(type == null) type = OnscreenKeyboardType.Default;
-			switch(type){
-				case Password: //no equivalent in UIKeyboardType?
-				default: preferredInputType = UIKeyboardType.Default; break;
-				case NumberPad: preferredInputType = UIKeyboardType.NumberPad; break;
-				case PhonePad: preferredInputType = UIKeyboardType.PhonePad; break;
-				case Email: preferredInputType = UIKeyboardType.EmailAddress; break;
-				case URI: preferredInputType = UIKeyboardType.URL; break;
-			}
-			textfield.setKeyboardType(preferredInputType);
+			textfield.setKeyboardType(getIosInputType(type));
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {
 			textfield.resignFirstResponder();
 		}
 	}
-	
+
+	protected UIKeyboardType getIosInputType(OnscreenKeyboardType type) {
+		UIKeyboardType preferredInputType;
+		switch (type) {
+			case NumberPad:
+				preferredInputType = UIKeyboardType.NumberPad;
+				break;
+			case PhonePad:
+				preferredInputType = UIKeyboardType.PhonePad;
+				break;
+			case Email:
+				preferredInputType = UIKeyboardType.EmailAddress;
+				break;
+			case URI:
+				preferredInputType = UIKeyboardType.URL;
+				break;
+			case Password: //no equivalent in UIKeyboardType?
+			default:
+				preferredInputType = UIKeyboardType.Default;
+				break;
+		}
+		return preferredInputType;
+	}
+
 	/**
 	 * Set the keyboard to close when the UITextField return key is pressed
 	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
@@ -517,14 +537,20 @@ public class DefaultIOSInput implements IOSInput {
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
+	 * @param type
 	 * @return UIAlertController */
-	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder) {
+	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder, final OnscreenKeyboardType type) {
 		final UIAlertController uiAlertController = new UIAlertController(title, text, UIAlertControllerStyle.Alert);
 		uiAlertController.addTextField(new VoidBlock1<UITextField>() {
 			@Override
 			public void invoke(UITextField uiTextField) {
 				uiTextField.setPlaceholder(placeholder);
 				uiTextField.setText(text);
+				uiTextField.setKeyboardType(getIosInputType(type));
+				if (type == OnscreenKeyboardType.Password) {
+					uiTextField.setSecureTextEntry(true);
+				}
+
 			}
 		});
 		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {
