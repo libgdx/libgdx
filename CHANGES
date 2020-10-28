@@ -54,6 +54,7 @@
 - API Addition: Added Intersector#intersectPlanes to calculate the point intersected by three planes, see https://github.com/libgdx/libgdx/pull/6217
 - API Addition: Added alternative Android Audio implementation for performant sound. See https://github.com/libgdx/libgdx/pull/6243.
 - API Addition: Expose SpriteBatch and PolygonSpriteBatch setupMatrices() as protected.
+- API Addition: New parameter OnscreenKeyboardType for Input.setOnscreenKeyboardVisible and Input.getTextInput 
 
 [1.9.11]
 - Update to MobiVM 2.3.8
