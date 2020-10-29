@@ -20,6 +20,8 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** A server socket that accepts new incoming connections, returning {@link Socket} instances. The {@link #accept(SocketHints)}
  * method should preferably be called in a separate thread as it is blocking.
  * 
@@ -37,5 +39,5 @@ public interface ServerSocket extends Disposable {
 	 *           provided by the system.
 	 * @return the accepted {@link Socket}
 	 * @throws GdxRuntimeException in case an error occurred */
-	public Socket accept (SocketHints hints);
+	public Socket accept (@Nullable SocketHints hints);
 }

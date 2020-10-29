@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.math;
 
+import javax.annotation.Nullable;
+
 /** Track properties of a stream of float values. The properties (total value, minimum, etc) are updated as values are
  * {@link #put(float)} into the stream.
  * 
@@ -36,7 +38,7 @@ public class FloatCounter {
 	/** The current windowed mean value */
 	public float value;
 	/** Provides access to the WindowedMean if any (can be null) */
-	public final WindowedMean mean;
+	public final @Nullable WindowedMean mean;
 
 	/** Construct a new FloatCounter
 	 * @param windowSize The size of the mean window or 1 or below to not use a windowed mean. */

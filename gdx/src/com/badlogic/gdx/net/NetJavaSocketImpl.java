@@ -25,6 +25,8 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** Socket implementation using java.net.Socket.
  * 
  * @author noblemaster */
@@ -33,7 +35,7 @@ public class NetJavaSocketImpl implements Socket {
 	/** Our socket or null for disposed, aka closed. */
 	private java.net.Socket socket;
 
-	public NetJavaSocketImpl (Protocol protocol, String host, int port, SocketHints hints) {
+	public NetJavaSocketImpl (Protocol protocol, String host, int port, @Nullable SocketHints hints) {
 		try {
 			// create the socket
 			socket = new java.net.Socket();
@@ -51,12 +53,12 @@ public class NetJavaSocketImpl implements Socket {
 		}
 	}
 
-	public NetJavaSocketImpl (java.net.Socket socket, SocketHints hints) {
+	public NetJavaSocketImpl (java.net.Socket socket, @Nullable SocketHints hints) {
 		this.socket = socket;
 		applyHints(hints);
 	}
 
-	private void applyHints (SocketHints hints) {
+	private void applyHints (@Nullable SocketHints hints) {
 		if (hints != null) {
 			try {
 				socket.setPerformancePreferences(hints.performancePrefConnectionTime, hints.performancePrefLatency,

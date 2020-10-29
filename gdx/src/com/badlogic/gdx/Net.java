@@ -281,17 +281,17 @@ public interface Net {
 		}
 
 		/** Returns the URL of the HTTP request. */
-		public String getUrl () {
+		public @Nullable String getUrl () {
 			return url;
 		}
 
 		/** Returns the content string to be used for the HTTP request. */
-		public String getContent () {
+		public @Nullable String getContent () {
 			return content;
 		}
 
 		/** Returns the content stream. */
-		public InputStream getContentStream () {
+		public @Nullable InputStream getContentStream () {
 			return contentStream;
 		}
 

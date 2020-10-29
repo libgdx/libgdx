@@ -21,6 +21,8 @@ import java.io.IOException;
 import com.badlogic.gdx.utils.compression.ICodeProgress;
 import com.badlogic.gdx.utils.compression.rangecoder.BitTreeEncoder;
 
+import javax.annotation.Nullable;
+
 public class Encoder {
 	public static final int EMatchFinderTypeBT2 = 0;
 	public static final int EMatchFinderTypeBT4 = 1;
@@ -1124,7 +1126,7 @@ public class Encoder {
 	boolean[] finished = new boolean[1];
 
 	public void Code (java.io.InputStream inStream, java.io.OutputStream outStream, long inSize, long outSize,
-		ICodeProgress progress) throws IOException {
+					  @Nullable ICodeProgress progress) throws IOException {
 		_needReleaseMFStream = false;
 		try {
 			SetStreams(inStream, outStream, inSize, outSize);

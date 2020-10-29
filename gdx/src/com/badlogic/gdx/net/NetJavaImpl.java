@@ -40,6 +40,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
+import javax.annotation.Nullable;
+
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
  * @author acoppes */
@@ -114,7 +116,7 @@ public class NetJavaImpl {
 			return connection.getHeaderFields();
 		}
 
-		private InputStream getInputStream () {
+		private @Nullable InputStream getInputStream () {
 			try {
 				return connection.getInputStream();
 			} catch (IOException e) {
@@ -270,7 +272,7 @@ public class NetJavaImpl {
 		listeners.put(httpRequest, httpResponseListener);
 	}
 
-	synchronized HttpResponseListener getFromListeners (HttpRequest httpRequest) {
+	synchronized @Nullable HttpResponseListener getFromListeners (HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 		return httpResponseListener;
 	}
