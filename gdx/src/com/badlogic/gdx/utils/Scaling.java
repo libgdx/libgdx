@@ -1,12 +1,12 @@
-/*******************************************************************************
+/* ******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,10 @@ public enum Scaling {
 	/** Scales the source to fill the target in the y direction while keeping the same aspect ratio. This may cause the source to be
 	 * smaller or larger than the target in the x direction. */
 	fillY,
+	/** Scales the source to be contained within the target while keeping the same aspect ratio. This may cause the source to be
+	 * smaller than the target in one direction. If the source is smaller than the target on both sides it will not be scaled at
+	 * all. */
+	contain,
 	/** Scales the source to fill the target. This may cause the source to not keep the same aspect ratio. */
 	stretch,
 	/** Scales the source to fill the target in the x direction, without changing the y direction. This may cause the source to not
@@ -74,6 +78,17 @@ public enum Scaling {
 		}
 		case fillY: {
 			float scale = targetHeight / sourceHeight;
+			temp.x = sourceWidth * scale;
+			temp.y = sourceHeight * scale;
+			break;
+		}
+		case contain: {
+			float targetRatio = targetHeight / targetWidth;
+			float sourceRatio = sourceHeight / sourceWidth;
+			float scale = targetRatio > sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
+			if (scale > 1) {
+				scale = 1;   // If we're going to scale up, then don't.
+			}
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
 			break;
