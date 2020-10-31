@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.12-SNAPSHOT</version>
+  <version>1.9.12</version>
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
@@ -38,7 +38,7 @@
     <connection>scm:git:https://github.com/libgdx/libgdx.git</connection>
     <developerConnection>scm:git:https://github.com/libgdx/libgdx.git</developerConnection>
     <url>http://github.com/libgdx/libgdx</url>
-    <tag>HEAD</tag>
+    <tag>gdx-parent-1.9.12</tag>
   </scm>
 
   <properties>
