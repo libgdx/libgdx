@@ -283,9 +283,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = config.knownDevices.get(machineString);
-		density = app.pixelsPerPoint;
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : app.guessUnknownPpi();
+		density = ppi / 160f;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
