@@ -164,6 +164,8 @@ public class Fixture {
 	/** Get the contact filtering data. */
 	private final short[] tmp = new short[3];
 
+	/** Get the contact filtering data. Modifying the returned {@code Filter} without calling {@link #setFilterData} can result in
+	 * unpredictable behaviour. */
 	public Filter getFilterData () {
 		if (dirtyFilter) {
 			jniGetFilterData(addr, tmp);
