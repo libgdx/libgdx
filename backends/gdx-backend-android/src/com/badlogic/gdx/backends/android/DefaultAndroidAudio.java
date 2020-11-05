@@ -42,7 +42,7 @@ import java.util.List;
 /** An implementation of the {@link Audio} interface for Android.
  * 
  * @author mzechner */
-public final class DefaultAndroidAudio implements AndroidAudio {
+public class DefaultAndroidAudio implements AndroidAudio {
 	private final SoundPool soundPool;
 	private final AudioManager manager;
 	private final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
@@ -182,26 +182,27 @@ public final class DefaultAndroidAudio implements AndroidAudio {
 		if (soundPool == null) {
 			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
 		}
+		AndroidSound androidSound;
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 		if (aHandle.type() == FileType.Internal) {
 			try {
 				AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
+				androidSound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
 				descriptor.close();
-				return sound;
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file
 					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
+				androidSound = new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
+		return androidSound;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {

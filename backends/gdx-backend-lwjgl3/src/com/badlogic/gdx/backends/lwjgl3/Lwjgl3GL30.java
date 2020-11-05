@@ -181,7 +181,10 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glDrawBuffers (int n, IntBuffer bufs) {
+		int limit = bufs.limit();
+		bufs.limit(n);
 		GL20.glDrawBuffers(bufs);
+		bufs.limit(limit);
 	}
 
 	@Override

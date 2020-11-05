@@ -180,10 +180,12 @@ public interface Graphics {
 	 * @return the id of the current frame */
 	public long getFrameId ();
 
-	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
+	/** @return the time span between the current frame and the last frame in seconds. */
 	public float getDeltaTime ();
 
-	/** @return the time span between the current frame and the last frame in seconds, without smoothing **/
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing 
+	 * @deprecated use {@link #getDeltaTime()} instead. */
+	@Deprecated
 	public float getRawDeltaTime ();
 
 	/** @return the average number of frames per second */

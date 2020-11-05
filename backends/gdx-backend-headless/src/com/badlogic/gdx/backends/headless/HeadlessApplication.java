@@ -105,7 +105,7 @@ public class HeadlessApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	void mainLoop () {
+	protected void mainLoop () {
 		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		listener.create();

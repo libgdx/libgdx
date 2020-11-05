@@ -2,9 +2,10 @@
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
 - [BREAKING CHANGE] API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters. See #6154.
 - [BREAKING CHANGE] API Change: Vector2 angleRad(Vector2) now correctly returns counter-clockwise angles. See #5428
+- [BREAKING CHANGE] Android: getDeltaTime() now returns the raw delta time instead of a smoothed one. See #6228.
 - Fixed vertices returned by Decal.getVertices() not being updated
 - Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
-- Update to MobiVM 2.3.10
+- Update to MobiVM 2.3.11
 - API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
 - API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
 - Fixed GlyphLayout not laying out correctly with color markup.
@@ -51,6 +52,9 @@
 - API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
 - Fixed DepthShaderProvider no longer creates one DepthShader per bones count. Now it creates only one skinned variant and one non-skinned variant based on DepthShader/Config numBones.
 - API Addition: Added Intersector#intersectPlanes to calculate the point intersected by three planes, see https://github.com/libgdx/libgdx/pull/6217
+- API Addition: Added alternative Android Audio implementation for performant sound. See https://github.com/libgdx/libgdx/pull/6243.
+- API Addition: Expose SpriteBatch and PolygonSpriteBatch setupMatrices() as protected.
+- API Addition: New parameter OnscreenKeyboardType for Input.setOnscreenKeyboardVisible and Input.getTextInput 
 
 [1.9.11]
 - Update to MobiVM 2.3.8
