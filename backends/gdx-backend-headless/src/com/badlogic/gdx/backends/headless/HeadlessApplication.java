@@ -121,7 +121,7 @@ public class HeadlessApplication implements Application {
 						long sleep = t - n;
 						Thread.sleep(sleep / 1000000, (int) (sleep % 1000000));
 					} catch (InterruptedException e) {}
-					t = TimeUtils.nanoTime() + renderInterval;
+					t = t + renderInterval;
 				} else
 					t = n + renderInterval;
 				
