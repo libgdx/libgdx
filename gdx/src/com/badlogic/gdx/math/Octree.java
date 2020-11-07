@@ -1,108 +1,97 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
-public class Octree {
+public class Octree<T> {
 
     private int maxDepth = 8;
     private int maxItemsPerNode = 32;
 
-    protected static final int TopLeftFront = 0;
-    protected static final int TopRightFront = 1;
-    protected static final int TopLeftBack = 2;
-    protected static final int TopRightBack = 3;
-    protected static final int BottomLeftFront = 4;
-    protected static final int BottomRightFront = 5;
-    protected static final int BottomLeftBack = 6;
-    protected static final int BottomRightBack = 7;
-
     protected OctreeNode root;
+    protected Collider<T> collider;
 
-    public Octree(Vector3 minimum, Vector3 maximum) {
+    public Octree(Vector3 minimum, Vector3 maximum, Collider<T> collider) {
         super();
 
         Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y), Math.min(minimum.z, maximum.z));
         Vector3 realMax = new Vector3(Math.max(minimum.x, maximum.x), Math.max(minimum.y, maximum.y), Math.max(minimum.z, maximum.z));
 
         this.root = new OctreeNode(realMin, realMax, maxDepth);
+        this.collider = collider;
     }
 
-    public void add(BoundingBox aabb) {
+    public void add(T aabb) {
         root.add(aabb, maxItemsPerNode);
     }
 
-    public void remove(BoundingBox aabb) {
+    public void remove(T aabb) {
         root.remove(aabb);
     }
 
-    public ObjectSet<BoundingBox> getAll(ObjectSet<BoundingBox> resultSet) {
-        getAll(root, resultSet);
+    /**
+     * Method to retrieve all the geometries
+     *
+     * @param resultSet
+     * @return the result set
+     */
+    public ObjectSet<T> getAll(ObjectSet<T> resultSet) {
+        root.getAll(resultSet);
         return resultSet;
     }
 
-    private void getAll(OctreeNode node, ObjectSet<BoundingBox> resultSet) {
-        if (!node.isLeaf()) {
-            for (OctreeNode child : node.children) {
-                getAll(child, resultSet);
-            }
-        }
-        if (node.geometries != null) {
-            resultSet.addAll(node.getGeometries());
-        }
-    }
-
     /**
-     * Method that represents the broad phase
+     * Method to query geometries inside nodes that the aabb intersects
+     * Can be used as broad phase
      *
-     * @param aabb
-     * @param result set populated with objects inside the BoundingBox
+     * @param aabb - The bounding box to query
+     * @param result - Set to be populated with objects inside the BoundingBoxes
      */
-    public ObjectSet<BoundingBox> query(BoundingBox aabb, ObjectSet<BoundingBox> result) {
+    public ObjectSet<T> query(BoundingBox aabb, ObjectSet<T> result) {
         root.query(aabb, result);
         return result;
     }
 
     /**
-     * Method that represents the broad phase
+     * Method to query geometries inside nodes that the frustum intersects
+     * Can be used as broad phase
      *
-     * @param frustum
+     * @param frustum - The frustum to query
      * @param result set populated with objects near from the frustum
      */
-    public ObjectSet<BoundingBox> query(Frustum frustum, ObjectSet<BoundingBox> result) {
+    public ObjectSet<T> query(Frustum frustum, ObjectSet<T> result) {
         root.query(frustum, result);
         return result;
     }
 
-    public Octree setMaxDepth(int maxDepth) {
+    public void setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
         this.root.setLevel(maxDepth);
-        return this;
     }
 
-    public Octree setMaxItemsPerNode(int maxItemsPerNode) {
+    public void setMaxItemsPerNode(int maxItemsPerNode) {
         this.maxItemsPerNode = maxItemsPerNode;
-        return this;
     }
 
     /**
      * Method to get nodes boxes. Useful for render purpose
      * @param boxes
      */
-    public ObjectSet<BoundingBox> getNodesAsBox(ObjectSet<BoundingBox> boxes) {
+    public ObjectSet<BoundingBox> getNodesBoxes(ObjectSet<BoundingBox> boxes) {
         root.getBoundingBox(boxes);
         return boxes;
     }
 
-    protected static class OctreeNode {
+    protected class OctreeNode {
 
         protected int level;
 
         // Represents the boundary of the node
         private BoundingBox bounds;
 
-        private OctreeNode[] children;
-        private ObjectSet<BoundingBox> geometries = null;
+        private Array<OctreeNode> children;
+        private ObjectSet<T> geometries = null;
 
         public OctreeNode(Vector3 min, Vector3 max, int level) {
             this(min.x, min.y, min.z, max.x, max.y, max.z, level);
@@ -114,7 +103,7 @@ public class Octree {
         }
 
         protected void split(int maxItemsPerNode) {
-            children = new OctreeNode[8];
+            children = new Array(8);
 
             float midx = (bounds.max.x + bounds.min.x) * 0.5f;
             float midy = (bounds.max.y + bounds.min.y) * 0.5f;
@@ -122,39 +111,39 @@ public class Octree {
 
             int deeperLevel = level - 1;
 
-            children[TopLeftFront] = new OctreeNode(bounds.min.x, midy, midz, midx, bounds.max.y, bounds.max.z, deeperLevel);
-            children[TopRightFront] = new OctreeNode(midx, midy, midz, bounds.max.x, bounds.max.y, bounds.max.z, deeperLevel);
-            children[TopRightBack] = new OctreeNode(midx, midy, bounds.min.z, bounds.max.x, bounds.max.y, midz, deeperLevel);
-            children[TopLeftBack] = new OctreeNode(bounds.min.x, midy, bounds.min.z, midx, bounds.max.y, midz, deeperLevel);
-            children[BottomLeftFront] = new OctreeNode(bounds.min.x, bounds.min.y, midz, midx, midy, bounds.max.z, deeperLevel);
-            children[BottomRightFront] = new OctreeNode(midx, bounds.min.y, midz, bounds.max.x, midy, bounds.max.z, deeperLevel);
-            children[BottomRightBack] = new OctreeNode(midx, bounds.min.y, bounds.min.z, bounds.max.x, midy, midz, deeperLevel);
-            children[BottomLeftBack] = new OctreeNode(bounds.min.x, bounds.min.y, bounds.min.z, midx, midy, midz, deeperLevel);
+            children.add(new OctreeNode(bounds.min.x, midy, midz, midx, bounds.max.y, bounds.max.z, deeperLevel));
+            children.add(new OctreeNode(midx, midy, midz, bounds.max.x, bounds.max.y, bounds.max.z, deeperLevel));
+            children.add(new OctreeNode(midx, midy, bounds.min.z, bounds.max.x, bounds.max.y, midz, deeperLevel));
+            children.add(new OctreeNode(bounds.min.x, midy, bounds.min.z, midx, bounds.max.y, midz, deeperLevel));
+            children.add(new OctreeNode(bounds.min.x, bounds.min.y, midz, midx, midy, bounds.max.z, deeperLevel));
+            children.add(new OctreeNode(midx, bounds.min.y, midz, bounds.max.x, midy, bounds.max.z, deeperLevel));
+            children.add(new OctreeNode(midx, bounds.min.y, bounds.min.z, bounds.max.x, midy, midz, deeperLevel));
+            children.add(new OctreeNode(bounds.min.x, bounds.min.y, bounds.min.z, midx, midy, midz, deeperLevel));
 
-            ObjectSet<BoundingBox> geometries = this.geometries;
+            ObjectSet<T> geometries = this.geometries;
             this.geometries = null;
             // Move geometries from parent to children
-            for (Octree.OctreeNode child : children) {
-                for (BoundingBox geometry : geometries) {
+            for (OctreeNode child : children) {
+                for (T geometry : geometries) {
                     child.add(geometry, maxItemsPerNode);
                 }
             }
         }
 
-        public boolean intersects(BoundingBox aabb) {
-            return bounds.intersects(aabb);
+        public boolean contains(T geometry) {
+            return Octree.this.collider.contains(bounds, geometry);
         }
 
-        public void add(BoundingBox aabb, int maxItemsPerNode) {
+        public void add(T aabb, int maxItemsPerNode) {
             // If is not leaf, check children
             if (!isLeaf()) {
-                for (Octree.OctreeNode child : children) {
+                for (OctreeNode child : children) {
                     child.add(aabb, maxItemsPerNode);
                 }
                 return;
             }
 
-            if (!intersects(aabb)) {
+            if (!contains(aabb)) {
                 return;
             }
 
@@ -164,7 +153,7 @@ public class Octree {
             }
         }
 
-        public void remove(BoundingBox aabb) {
+        public void remove(T aabb) {
             if (isLeaf()) {
                 if (geometries != null) {
                     geometries.remove(aabb);
@@ -180,14 +169,14 @@ public class Octree {
             return children == null;
         }
 
-        private void addGeometry(BoundingBox geometry) {
+        private void addGeometry(T geometry) {
             if (geometries == null) {
-                geometries = new ObjectSet<BoundingBox>();
+                geometries = new ObjectSet<>();
             }
             geometries.add(geometry);
         }
 
-        public void query(BoundingBox aabb, ObjectSet<BoundingBox> result) {
+        public void query(BoundingBox aabb, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(aabb, result);
@@ -200,7 +189,7 @@ public class Octree {
             }
         }
 
-        public void query(Frustum frustum, ObjectSet<BoundingBox> result) {
+        public void query(Frustum frustum, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(frustum, result);
@@ -213,12 +202,27 @@ public class Octree {
             }
         }
 
-        public ObjectSet<BoundingBox> getGeometries() {
+        public ObjectSet<T> getGeometries() {
             return geometries;
         }
 
         public void setLevel(int level) {
             this.level = level;
+        }
+
+        /**
+         * Get all geometries using Depth-First Search recursion
+         * @param resultSet
+         */
+        public void getAll(ObjectSet<T> resultSet) {
+            if (!isLeaf()) {
+                for (OctreeNode child : children) {
+                    child.getAll(resultSet);
+                }
+            }
+            if (geometries != null) {
+                resultSet.addAll(geometries);
+            }
         }
 
         /**
@@ -233,6 +237,10 @@ public class Octree {
             }
             bounds.add(this.bounds);
         }
+    }
+
+    public interface Collider<T> {
+        boolean contains(BoundingBox nodeBounds, T geometry);
     }
 }
   
