@@ -21,16 +21,16 @@ public class OctreeTest {
         assertTrue(octree.root.isLeaf());
 
         BoundingBox box = new BoundingBox(new Vector3(0,0,0), new Vector3(1,1,1));
-        octree.insert(box);
+        octree.add(box);
 
-        octree.insert(new BoundingBox(new Vector3(2,2,2), new Vector3(3,3,3)));
+        octree.add(new BoundingBox(new Vector3(2, 2, 2), new Vector3(3, 3, 3)));
         assertFalse(octree.root.isLeaf());
 
         ObjectSet<BoundingBox> result = new ObjectSet<BoundingBox>();
         octree.getAll(result);
         assertEquals(2, result.size);
 
-        BoundingBox resultBox = (BoundingBox) result.iterator().next();
+        BoundingBox resultBox = result.iterator().next();
         assertEquals(box, resultBox);
 
         // Refill result geometries
