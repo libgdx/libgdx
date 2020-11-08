@@ -33,10 +33,11 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.BoundsOctree;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Octree;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -52,7 +53,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 	public Environment lights;
 	public boolean loading;
 
-	public BoundsOctree octree;
+	public Octree<BoundingBox> octree;
 	public Array<ModelInstance> blocks = new Array<ModelInstance>();
 	public Array<ModelInstance> invaders = new Array<ModelInstance>();
 	public ModelInstance ship;
@@ -77,7 +78,19 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 
 		Vector3 min = new Vector3(-OCTREE_SIZE / 2, -OCTREE_SIZE / 2, -OCTREE_SIZE / 2);
 		Vector3 max = new Vector3(OCTREE_SIZE / 2, OCTREE_SIZE / 2, OCTREE_SIZE / 2);
-		octree = new BoundsOctree(min, max);
+		octree = new Octree<>(min, max, new Octree.Collider<BoundingBox>() {
+			@Override public boolean intersects(BoundingBox nodeBounds, BoundingBox geometry) {
+				return nodeBounds.contains(geometry);
+			}
+
+			final Vector3 tmp = new Vector3();
+			@Override public float intersects(Ray ray, BoundingBox geometry) {
+				if (!Intersector.intersectRayBounds(ray, geometry, tmp)) {
+					return tmp.dst2(ray.origin);
+				}
+				return Float.POSITIVE_INFINITY;
+			}
+		});
 		octree.setMaxItemsPerNode(3);
 		octree.setMaxDepth(6);
 

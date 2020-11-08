@@ -66,15 +66,15 @@ public class Octree<T> {
         return result;
     }
 
-    public RayCastResult<T> rayCast (Ray ray, Collider<T> narrowPhase) {
-        return rayCast(ray, narrowPhase, Float.POSITIVE_INFINITY);
+    public T rayCast (Ray ray) {
+        return rayCast(ray, Float.POSITIVE_INFINITY);
     }
 
-    public RayCastResult<T> rayCast (Ray ray, Collider<T> narrowPhase, float maxDistance) {
+    public T rayCast (Ray ray, float maxDistance) {
         RayCastResult<T> result = new RayCastResult<>();
         result.distance = Float.NEGATIVE_INFINITY;
-        root.rayCast(ray, maxDistance, narrowPhase, result);
-        return result;
+        root.rayCast(ray, maxDistance, collider, result);
+        return result.geometry;
     }
 
     public void setMaxDepth (int maxDepth) {
@@ -282,12 +282,26 @@ public class Octree<T> {
     }
 
     public interface Collider<T> {
-        boolean intersects (BoundingBox aabb, T geometry);
+        /**
+         * Method to calculate intersection between aabb and the geometry
+         *
+         * @param nodeBounds
+         * @param geometry
+         * @return if they are intersecting
+         */
+        boolean intersects (BoundingBox nodeBounds, T geometry);
 
+        /**
+         * Method to calculate intersection between ray and the geometry
+         *
+         * @param ray
+         * @param geometry
+         * @return distance between ray and geometry
+         */
         float intersects (Ray ray, T geometry);
     }
 
-    public static class RayCastResult<T> {
+    private static class RayCastResult<T> {
         T geometry;
         float distance;
     }
