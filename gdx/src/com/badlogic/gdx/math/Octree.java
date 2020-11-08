@@ -1,6 +1,7 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -131,7 +132,7 @@ public class Octree<T> {
         }
 
         public boolean contains(T geometry) {
-            return Octree.this.collider.contains(bounds, geometry);
+            return Octree.this.collider.intersects(bounds, geometry);
         }
 
         public void add(T aabb, int maxItemsPerNode) {
@@ -184,7 +185,11 @@ public class Octree<T> {
             }
             if (aabb.contains(bounds)) {
                 if (geometries != null) {
-                    result.addAll(geometries);
+                    for(T geometry: geometries) {
+                        if (collider.intersects(aabb, geometry)) {
+                            result.add(geometry);
+                        }
+                    }
                 }
             }
         }
@@ -197,13 +202,13 @@ public class Octree<T> {
             }
             if (frustum.boundsInFrustum(bounds)) {
                 if (geometries != null) {
-                    result.addAll(geometries);
+                    for(T geometry: geometries) {
+                        if (collider.intersects(frustum, geometry)) {
+                            result.add(geometry);
+                        }
+                    }
                 }
             }
-        }
-
-        public ObjectSet<T> getGeometries() {
-            return geometries;
         }
 
         public void setLevel(int level) {
@@ -240,7 +245,9 @@ public class Octree<T> {
     }
 
     public interface Collider<T> {
-        boolean contains(BoundingBox nodeBounds, T geometry);
+        boolean intersects(BoundingBox aabb, T geometry);
+        boolean intersects(Frustum frustum, T geometry);
+        float intersects(Ray ray, T geometry);
     }
 }
   
