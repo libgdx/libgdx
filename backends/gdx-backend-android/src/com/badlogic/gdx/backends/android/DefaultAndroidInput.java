@@ -29,11 +29,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.View.OnGenericMotionListener;
+import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -42,6 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -220,15 +223,26 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint, final OnscreenKeyboardType keyboardType) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
+				if (keyboardType != OnscreenKeyboardType.Default) {
+					input.setInputType(getAndroidInputType(keyboardType));
+				}
 				input.setHint(hint);
 				input.setText(text);				
 				input.setSingleLine();
+				if (keyboardType == OnscreenKeyboardType.Password) {
+					input.setTransformationMethod(new PasswordTransformationMethod());
+				}
 				alert.setView(input);
 				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
@@ -264,6 +278,31 @@ public class DefaultAndroidInput implements AndroidInput {
 				alert.show();
 			}
 		});
+	}
+
+	public static int getAndroidInputType(OnscreenKeyboardType type) {
+		int inputType;
+		switch (type) {
+			case NumberPad:
+				inputType = InputType.TYPE_CLASS_NUMBER;
+				break;
+			case PhonePad:
+				inputType = InputType.TYPE_CLASS_PHONE;
+				break;
+			case Email:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+				break;
+			case Password:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+				break;
+			case URI:
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+				break;
+			default:
+				inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+				break;
+		}
+		return inputType;
 	}
 
 	@Override
@@ -603,11 +642,22 @@ public class DefaultAndroidInput implements AndroidInput {
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
+					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
+					if(((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
+						((GLSurfaceView20) view).onscreenKeyboardType = tmp;
+						manager.restartInput(view);
+					}
+
 					view.setFocusable(true);
 					view.setFocusableInTouchMode(true);
 					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);

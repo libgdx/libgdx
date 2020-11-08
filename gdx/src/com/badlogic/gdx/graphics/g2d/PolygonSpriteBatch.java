@@ -1299,7 +1299,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		if (drawing) setupMatrices();
 	}
 
-	private void setupMatrices () {
+	protected void setupMatrices () {
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 		if (customShader != null) {
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);

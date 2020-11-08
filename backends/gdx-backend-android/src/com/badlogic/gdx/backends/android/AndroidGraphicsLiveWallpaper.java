@@ -111,15 +111,13 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = time;
-
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
-			mean.addValue(deltaTime);
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
 			deltaTime = 0;
 		}
+		lastFrameTime = time;
 
 		boolean lrunning = false;
 		boolean lpause = false;

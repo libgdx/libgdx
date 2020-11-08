@@ -29,6 +29,7 @@ import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
 import org.robovm.apple.uikit.UIScreen;
@@ -119,7 +120,7 @@ public class IOSApplication implements Application {
 		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
-		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
+		uiApp.setIdleTimerDisabled(config.preventScreenDimming);
 
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
@@ -127,6 +128,10 @@ public class IOSApplication implements Application {
 		// iOS counts in "points" instead of pixels. Points are logical pixels
 		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
 		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
+
+		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
+		this.uiWindow.makeKeyAndVisible();
+		uiApp.getDelegate().setWindow(uiWindow);
 
 		// setup libgdx
 		this.input = createInput();
@@ -145,9 +150,7 @@ public class IOSApplication implements Application {
 
 		this.input.setupPeripherals();
 
-		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
 		this.uiWindow.setRootViewController(this.graphics.viewController);
-		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
@@ -168,6 +171,17 @@ public class IOSApplication implements Application {
 		 return new DefaultIOSInput(this);
 	}
 
+	/** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
+	protected int guessUnknownPpi() {
+		int ppi;
+		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad)
+			ppi = 132 * (int) pixelsPerPoint;
+		else
+			ppi = 164 * (int) pixelsPerPoint;
+		error("IOSApplication", "Device PPI unknown. PPI value has been guessed to " + ppi + " but may be wrong");
+		return ppi;
+	}
+
 	/** Return the UI view controller of IOSApplication
 	 * @return the view controller of IOSApplication */
 	public UIViewController getUIViewController () {
@@ -183,28 +197,12 @@ public class IOSApplication implements Application {
 	/** @see IOSScreenBounds for detailed explanation
 	 * @return logical dimensions of space we draw to, adjusted for device orientation */
 	protected IOSScreenBounds computeBounds () {
-		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+		CGRect screenBounds = uiWindow.getBounds();
 		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
-
-		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
+		double statusBarHeight = statusBarFrame.getHeight();
 
 		double screenWidth = screenBounds.getWidth();
 		double screenHeight = screenBounds.getHeight();
-
-		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
-		switch (statusBarOrientation) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			if (screenHeight > screenWidth) {
-				debug("IOSApplication", "Switching reported width and height (original was w=" + screenWidth + " h="
-							+ screenHeight + ")");
-				double tmp = screenHeight;
-				// noinspection SuspiciousNameCombination
-				screenHeight = screenWidth;
-				screenWidth = tmp;
-			}
-		}
 
 		if (statusBarHeight != 0.0) {
 			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
