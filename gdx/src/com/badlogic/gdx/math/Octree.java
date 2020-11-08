@@ -11,7 +11,6 @@ public class Octree<T> {
     private int maxItemsPerNode = 32;
 
     protected OctreeNode root;
-
     private final Collider<T> collider;
 
     public Octree (Vector3 minimum, Vector3 maximum, Collider<T> collider) {

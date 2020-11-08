@@ -80,7 +80,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		Vector3 max = new Vector3(OCTREE_SIZE / 2, OCTREE_SIZE / 2, OCTREE_SIZE / 2);
 		octree = new Octree<>(min, max, new Octree.Collider<BoundingBox>() {
 			@Override public boolean intersects(BoundingBox nodeBounds, BoundingBox geometry) {
-				return nodeBounds.contains(geometry);
+				return nodeBounds.intersects(geometry);
 			}
 
 			final Vector3 tmp = new Vector3();
@@ -148,7 +148,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		modelBatch.end();
 	}
 
-	private void generateOctreeInstances(Octree octree, Array<ModelInstance> instances) {
+	private void generateOctreeInstances(Octree<BoundingBox> octree, Array<ModelInstance> instances) {
 		ObjectSet<BoundingBox> boxes = new ObjectSet<>();
 		octree.getNodesBoxes(boxes);
 
