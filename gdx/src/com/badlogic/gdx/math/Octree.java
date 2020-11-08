@@ -14,7 +14,7 @@ public class Octree<T> {
 
     protected OctreeNode root;
 
-    public Octree(Vector3 minimum, Vector3 maximum) {
+    public Octree (Vector3 minimum, Vector3 maximum) {
         super();
 
         Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y), Math.min(minimum.z, maximum.z));
@@ -23,11 +23,11 @@ public class Octree<T> {
         this.root = new OctreeNode(realMin, realMax, maxDepth);
     }
 
-    public void add(T aabb, BoundingBoxHandler<T> boundingBoxHandler) {
+    public void add (T aabb, BoundingBoxHandler<T> boundingBoxHandler) {
         root.add(aabb, maxItemsPerNode, boundingBoxHandler);
     }
 
-    public void remove(T aabb) {
+    public void remove (T aabb) {
         root.remove(aabb);
     }
 
@@ -37,7 +37,7 @@ public class Octree<T> {
      * @param resultSet
      * @return the result set
      */
-    public ObjectSet<T> getAll(ObjectSet<T> resultSet) {
+    public ObjectSet<T> getAll (ObjectSet<T> resultSet) {
         root.getAll(resultSet);
         return resultSet;
     }
@@ -49,7 +49,7 @@ public class Octree<T> {
      * @param result - Set to be populated with objects inside the BoundingBoxes
      * @param boundingBoxHandler
      */
-    public ObjectSet<T> query(BoundingBox aabb, ObjectSet<T> result, BoundingBoxHandler<T> boundingBoxHandler) {
+    public ObjectSet<T> query (BoundingBox aabb, ObjectSet<T> result, BoundingBoxHandler<T> boundingBoxHandler) {
         root.query(aabb, boundingBoxHandler, result);
         return result;
     }
@@ -62,28 +62,28 @@ public class Octree<T> {
      * @param result set populated with objects near from the frustum
      * @param frustumHandler
      */
-    public ObjectSet<T> query(Frustum frustum, ObjectSet<T> result, FrustrumHandler<T> frustrumHandler) {
+    public ObjectSet<T> query (Frustum frustum, ObjectSet<T> result, FrustrumHandler<T> frustrumHandler) {
         root.query(frustum, frustrumHandler, result);
         return result;
     }
 
-    public RayCastResult<T> rayCast(Ray ray, RayCastHandler<T> narrowPhase) {
+    public RayCastResult<T> rayCast (Ray ray, RayCastHandler<T> narrowPhase) {
         return rayCast(ray, narrowPhase, Float.POSITIVE_INFINITY);
     }
 
-    public RayCastResult<T> rayCast(Ray ray, RayCastHandler<T> narrowPhase, float maxDistance) {
+    public RayCastResult<T> rayCast (Ray ray, RayCastHandler<T> narrowPhase, float maxDistance) {
         RayCastResult<T> result = new RayCastResult<>();
         result.distance = Float.NEGATIVE_INFINITY;
         root.rayCast(ray, maxDistance, narrowPhase, result);
         return result;
     }
 
-    public void setMaxDepth(int maxDepth) {
+    public void setMaxDepth (int maxDepth) {
         this.maxDepth = maxDepth;
         this.root.setLevel(maxDepth);
     }
 
-    public void setMaxItemsPerNode(int maxItemsPerNode) {
+    public void setMaxItemsPerNode (int maxItemsPerNode) {
         this.maxItemsPerNode = maxItemsPerNode;
     }
 
@@ -91,7 +91,7 @@ public class Octree<T> {
      * Method to get nodes boxes. Useful for render purpose
      * @param boxes
      */
-    public ObjectSet<BoundingBox> getNodesBoxes(ObjectSet<BoundingBox> boxes) {
+    public ObjectSet<BoundingBox> getNodesBoxes (ObjectSet<BoundingBox> boxes) {
         root.getBoundingBox(boxes);
         return boxes;
     }
@@ -106,17 +106,17 @@ public class Octree<T> {
         private Array<OctreeNode> children;
         private ObjectSet<T> geometries = null;
 
-        public OctreeNode(Vector3 min, Vector3 max, int level) {
+        public OctreeNode (Vector3 min, Vector3 max, int level) {
             this(min.x, min.y, min.z, max.x, max.y, max.z, level);
         }
 
-        public OctreeNode(float x1, float y1, float z1, float x2, float y2, float z2, int level) {
+        public OctreeNode (float x1, float y1, float z1, float x2, float y2, float z2, int level) {
             bounds = new BoundingBox(new Vector3(x1, y1, z1), new Vector3(x2, y2, z2));
             this.level = level;
         }
 
-        protected void split(int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
-            children = new Array(8);
+        protected void split (int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
+            children = new Array<>(8);
 
             float midx = (bounds.max.x + bounds.min.x) * 0.5f;
             float midy = (bounds.max.y + bounds.min.y) * 0.5f;
@@ -143,11 +143,11 @@ public class Octree<T> {
             }
         }
 
-        public boolean contains(BoundingBoxHandler<T> boundingBoxHandler, T geometry) {
+        public boolean contains (BoundingBoxHandler<T> boundingBoxHandler, T geometry) {
             return boundingBoxHandler.intersects(bounds, geometry);
         }
 
-        public void add(T geometry, int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
+        public void add (T geometry, int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
             // If is not leaf, check children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
@@ -166,7 +166,7 @@ public class Octree<T> {
             }
         }
 
-        public void remove(T aabb) {
+        public void remove (T aabb) {
             if (isLeaf()) {
                 if (geometries != null) {
                     geometries.remove(aabb);
@@ -178,18 +178,18 @@ public class Octree<T> {
             }
         }
 
-        public boolean isLeaf() {
+        public boolean isLeaf () {
             return children == null;
         }
 
-        private void addGeometry(T geometry) {
+        private void addGeometry (T geometry) {
             if (geometries == null) {
                 geometries = new ObjectSet<>();
             }
             geometries.add(geometry);
         }
 
-        public ObjectSet<T> query(BoundingBox aabb, BoundingBoxHandler<T> narrowPhase, ObjectSet<T> result) {
+        public ObjectSet<T> query (BoundingBox aabb, BoundingBoxHandler<T> narrowPhase, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(aabb, narrowPhase, result);
@@ -207,7 +207,7 @@ public class Octree<T> {
             return result;
         }
 
-        public ObjectSet<T> query(Frustum frustum, FrustrumHandler<T> narrowPhase, ObjectSet<T> result) {
+        public ObjectSet<T> query (Frustum frustum, FrustrumHandler<T> narrowPhase, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(frustum, narrowPhase, result);
@@ -226,7 +226,7 @@ public class Octree<T> {
         }
 
         Vector3 tmp = new Vector3();
-        public void rayCast(Ray ray, float maxDistance, RayCastHandler<T> narrowPhase, RayCastResult<T> result) {
+        public void rayCast (Ray ray, float maxDistance, RayCastHandler<T> narrowPhase, RayCastResult<T> result) {
             // Check intersection with node
             boolean intersect = Intersector.intersectRayBounds(ray, bounds, tmp);
             if (!intersect) {
@@ -261,7 +261,7 @@ public class Octree<T> {
             }
         }
 
-        public void setLevel(int level) {
+        public void setLevel (int level) {
             this.level = level;
         }
 
@@ -269,7 +269,7 @@ public class Octree<T> {
          * Get all geometries using Depth-First Search recursion
          * @param resultSet
          */
-        public void getAll(ObjectSet<T> resultSet) {
+        public void getAll (ObjectSet<T> resultSet) {
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
                     child.getAll(resultSet);
@@ -295,21 +295,20 @@ public class Octree<T> {
     }
 
     public interface BoundingBoxHandler<T> {
-        boolean intersects(BoundingBox aabb, T geometry);
+        boolean intersects (BoundingBox aabb, T geometry);
     }
 
     public interface FrustrumHandler<T> {
-        boolean intersects(Frustum frustum, T geometry);
+        boolean intersects (Frustum frustum, T geometry);
     }
 
     public interface RayCastHandler<T> {
-        Vector3 intersects(Ray ray, T geometry);
+        Vector3 intersects (Ray ray, T geometry);
     }
 
-    public class RayCastResult<T> {
+    public static class RayCastResult<T> {
+        T geometry;
         float distance;
         Vector3 position;
-        T geometry;
     }
 }
-  
