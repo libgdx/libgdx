@@ -7,24 +7,24 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class Octree<T> {
 
+    public static final Vector3 NOT_INTERSECTING = new Vector3(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+
     private int maxDepth = 8;
     private int maxItemsPerNode = 32;
 
     protected OctreeNode root;
-    protected Collider<T> collider;
 
-    public Octree(Vector3 minimum, Vector3 maximum, Collider<T> collider) {
+    public Octree(Vector3 minimum, Vector3 maximum) {
         super();
 
         Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y), Math.min(minimum.z, maximum.z));
         Vector3 realMax = new Vector3(Math.max(minimum.x, maximum.x), Math.max(minimum.y, maximum.y), Math.max(minimum.z, maximum.z));
 
         this.root = new OctreeNode(realMin, realMax, maxDepth);
-        this.collider = collider;
     }
 
-    public void add(T aabb) {
-        root.add(aabb, maxItemsPerNode);
+    public void add(T aabb, BoundingBoxHandler<T> boundingBoxHandler) {
+        root.add(aabb, maxItemsPerNode, boundingBoxHandler);
     }
 
     public void remove(T aabb) {
@@ -45,12 +45,12 @@ public class Octree<T> {
     /**
      * Method to query geometries inside nodes that the aabb intersects
      * Can be used as broad phase
-     *
-     * @param aabb - The bounding box to query
+     *  @param aabb - The bounding box to query
      * @param result - Set to be populated with objects inside the BoundingBoxes
+     * @param boundingBoxHandler
      */
-    public ObjectSet<T> query(BoundingBox aabb, ObjectSet<T> result) {
-        root.query(aabb, result);
+    public ObjectSet<T> query(BoundingBox aabb, ObjectSet<T> result, BoundingBoxHandler<T> boundingBoxHandler) {
+        root.query(aabb, boundingBoxHandler, result);
         return result;
     }
 
@@ -60,9 +60,21 @@ public class Octree<T> {
      *
      * @param frustum - The frustum to query
      * @param result set populated with objects near from the frustum
+     * @param frustumHandler
      */
-    public ObjectSet<T> query(Frustum frustum, ObjectSet<T> result) {
-        root.query(frustum, result);
+    public ObjectSet<T> query(Frustum frustum, ObjectSet<T> result, FrustrumHandler<T> frustrumHandler) {
+        root.query(frustum, frustrumHandler, result);
+        return result;
+    }
+
+    public RayCastResult<T> rayCast(Ray ray, RayCastHandler<T> narrowPhase) {
+        return rayCast(ray, narrowPhase, Float.POSITIVE_INFINITY);
+    }
+
+    public RayCastResult<T> rayCast(Ray ray, RayCastHandler<T> narrowPhase, float maxDistance) {
+        RayCastResult<T> result = new RayCastResult<>();
+        result.distance = Float.NEGATIVE_INFINITY;
+        root.rayCast(ray, maxDistance, narrowPhase, result);
         return result;
     }
 
@@ -103,7 +115,7 @@ public class Octree<T> {
             this.level = level;
         }
 
-        protected void split(int maxItemsPerNode) {
+        protected void split(int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
             children = new Array(8);
 
             float midx = (bounds.max.x + bounds.min.x) * 0.5f;
@@ -126,31 +138,31 @@ public class Octree<T> {
             // Move geometries from parent to children
             for (OctreeNode child : children) {
                 for (T geometry : geometries) {
-                    child.add(geometry, maxItemsPerNode);
+                    child.add(geometry, maxItemsPerNode, boundingBoxHandler);
                 }
             }
         }
 
-        public boolean contains(T geometry) {
-            return Octree.this.collider.intersects(bounds, geometry);
+        public boolean contains(BoundingBoxHandler<T> boundingBoxHandler, T geometry) {
+            return boundingBoxHandler.intersects(bounds, geometry);
         }
 
-        public void add(T aabb, int maxItemsPerNode) {
+        public void add(T geometry, int maxItemsPerNode, BoundingBoxHandler<T> boundingBoxHandler) {
             // If is not leaf, check children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
-                    child.add(aabb, maxItemsPerNode);
+                    child.add(geometry, maxItemsPerNode, boundingBoxHandler);
                 }
                 return;
             }
 
-            if (!contains(aabb)) {
+            if (!boundingBoxHandler.intersects(bounds, geometry)) {
                 return;
             }
 
-            addGeometry(aabb);
+            addGeometry(geometry);
             if (geometries.size > maxItemsPerNode && level > 0) {
-                split(maxItemsPerNode);
+                split(maxItemsPerNode, boundingBoxHandler);
             }
         }
 
@@ -177,34 +189,72 @@ public class Octree<T> {
             geometries.add(geometry);
         }
 
-        public void query(BoundingBox aabb, ObjectSet<T> result) {
+        public ObjectSet<T> query(BoundingBox aabb, BoundingBoxHandler<T> narrowPhase, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
-                    node.query(aabb, result);
+                    node.query(aabb, narrowPhase, result);
                 }
             }
             if (aabb.contains(bounds)) {
                 if (geometries != null) {
                     for(T geometry: geometries) {
-                        if (collider.intersects(aabb, geometry)) {
+                        if (narrowPhase.intersects(aabb, geometry)) {
                             result.add(geometry);
                         }
                     }
                 }
             }
+            return result;
         }
 
-        public void query(Frustum frustum, ObjectSet<T> result) {
+        public ObjectSet<T> query(Frustum frustum, FrustrumHandler<T> narrowPhase, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
-                    node.query(frustum, result);
+                    node.query(frustum, narrowPhase, result);
                 }
             }
             if (frustum.boundsInFrustum(bounds)) {
                 if (geometries != null) {
                     for(T geometry: geometries) {
-                        if (collider.intersects(frustum, geometry)) {
+                        if (narrowPhase.intersects(frustum, geometry)) {
                             result.add(geometry);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        Vector3 tmp = new Vector3();
+        public void rayCast(Ray ray, float maxDistance, RayCastHandler<T> narrowPhase, RayCastResult<T> result) {
+            // Check intersection with node
+            boolean intersect = Intersector.intersectRayBounds(ray, bounds, tmp);
+            if (!intersect) {
+                return;
+            } else {
+                float dst2 = tmp.dst2(ray.origin);
+                if (dst2 > maxDistance) {
+                    return;
+                }
+            }
+
+            // Check intersection with children
+            if (!isLeaf()) {
+                for (OctreeNode child : children) {
+                    child.rayCast(ray, maxDistance, narrowPhase, result);
+                }
+            } else {
+                // Check intersection with geometries
+                if (geometries != null) {
+                    for (T geometry: geometries) {
+                        Vector3 intersection = narrowPhase.intersects(ray, geometry);
+                        if (intersection != NOT_INTERSECTING) {
+                            float distance = intersection.dst2(ray.origin);
+                            if (result.geometry == null || distance < result.distance) {
+                                result.position.set(intersection);
+                                result.geometry = geometry;
+                                result.distance = distance;
+                            }
                         }
                     }
                 }
@@ -244,10 +294,22 @@ public class Octree<T> {
         }
     }
 
-    public interface Collider<T> {
+    public interface BoundingBoxHandler<T> {
         boolean intersects(BoundingBox aabb, T geometry);
+    }
+
+    public interface FrustrumHandler<T> {
         boolean intersects(Frustum frustum, T geometry);
-        float intersects(Ray ray, T geometry);
+    }
+
+    public interface RayCastHandler<T> {
+        Vector3 intersects(Ray ray, T geometry);
+    }
+
+    public class RayCastResult<T> {
+        float distance;
+        Vector3 position;
+        T geometry;
     }
 }
   
