@@ -45,8 +45,7 @@ public class OctreeTest {
         octree.getAll(result);
         assertEquals(2, result.size);
 
-        BoundingBox resultBox = result.iterator().next();
-        assertEquals(box, resultBox);
+        result.contains(box);
 
         // Refill result geometries
         octree.remove(box);
@@ -54,7 +53,7 @@ public class OctreeTest {
         octree.getAll(result);
         assertEquals(1, result.size);
 
-        assertTrue(result.iterator().hasNext());
+        assertFalse(result.contains(box));
     }
 
 }
