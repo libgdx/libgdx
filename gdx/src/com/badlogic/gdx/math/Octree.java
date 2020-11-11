@@ -25,7 +25,7 @@ public class Octree<T> {
     }
 
     public void add (T object) {
-        root.add(object, collider);
+        root.add(object);
     }
 
     public void remove (T object) {
@@ -85,7 +85,7 @@ public class Octree<T> {
         protected final int level;
 
         // Represents the boundary of the node
-        private BoundingBox bounds;
+        private final BoundingBox bounds;
 
         private Array<OctreeNode> children;
         private ObjectSet<T> geometries = null;
@@ -95,7 +95,7 @@ public class Octree<T> {
             this.level = level;
         }
 
-        private void split (Collider<T> collider) {
+        private void split () {
             children = new Array<>(8);
 
             float midx = (bounds.max.x + bounds.min.x) * 0.5f;
@@ -118,7 +118,7 @@ public class Octree<T> {
             // Move geometries from parent to children
             for (OctreeNode child : children) {
                 for (T geometry : geometries) {
-                    child.add(geometry, collider);
+                    child.add(geometry);
                 }
             }
         }
@@ -127,22 +127,21 @@ public class Octree<T> {
             return boundingBoxHandler.intersects(bounds, geometry);
         }
 
-        protected void add (T geometry, Collider<T> collider) {
+        protected void add (T geometry) {
             // If is not leaf, check children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
-                    child.add(geometry, collider);
+                    child.add(geometry);
                 }
                 return;
-            }
-
-            if (!collider.intersects(bounds, geometry)) {
+            } else if (!collider.intersects(bounds, geometry)) {
+                // If leaf but doesn't collide with the geometry, return
                 return;
             }
 
             addGeometry(geometry);
             if (geometries.size > maxItemsPerNode && level > 0) {
-                split(collider);
+                split();
             }
         }
 
@@ -174,10 +173,14 @@ public class Octree<T> {
                 for (OctreeNode node : children) {
                     node.query(aabb, result);
                 }
-            }
-            if (aabb.contains(bounds)) {
+            } else if (aabb.contains(bounds)) {
                 if (geometries != null) {
-                    result.addAll(geometries);
+                    for (T geometry:geometries) {
+                        // Filter geometries using collider
+                        if (collider.intersects(bounds, geometry)) {
+                            result.add(geometry);
+                        }
+                    }
                 }
             }
             return result;
@@ -188,8 +191,7 @@ public class Octree<T> {
                 for (OctreeNode node : children) {
                     node.query(frustum, result);
                 }
-            }
-            if (frustum.boundsInFrustum(bounds)) {
+            } else if (frustum.boundsInFrustum(bounds)) {
                 if (geometries != null) {
                     result.addAll(geometries);
                 }
