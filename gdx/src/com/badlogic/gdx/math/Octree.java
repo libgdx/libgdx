@@ -67,12 +67,7 @@ public class Octree<T> {
     }
 
     public T rayCast (Ray ray, RayCastResult<T> result) {
-        return rayCast(ray, result, Float.MAX_VALUE);
-    }
-
-    public T rayCast (Ray ray, RayCastResult<T> result, float maxDistance) {
-        result.distance = maxDistance;
-        root.rayCast(ray, maxDistance, collider, result);
+        root.rayCast(ray, result);
         return result.geometry;
     }
 
@@ -87,7 +82,7 @@ public class Octree<T> {
 
     protected class OctreeNode {
 
-        protected int level;
+        protected final int level;
 
         // Represents the boundary of the node
         private BoundingBox bounds;
@@ -100,8 +95,7 @@ public class Octree<T> {
             this.level = level;
         }
 
-
-        protected void split (Collider<T> collider) {
+        private void split (Collider<T> collider) {
             children = new Array<>(8);
 
             float midx = (bounds.max.x + bounds.min.x) * 0.5f;
@@ -129,11 +123,11 @@ public class Octree<T> {
             }
         }
 
-        public boolean contains (Collider<T> boundingBoxHandler, T geometry) {
+        protected boolean contains (Collider<T> boundingBoxHandler, T geometry) {
             return boundingBoxHandler.intersects(bounds, geometry);
         }
 
-        public void add (T geometry, Collider<T> collider) {
+        protected void add (T geometry, Collider<T> collider) {
             // If is not leaf, check children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
@@ -152,7 +146,7 @@ public class Octree<T> {
             }
         }
 
-        public void remove (T aabb) {
+        protected void remove (T aabb) {
             if (isLeaf()) {
                 if (geometries != null) {
                     geometries.remove(aabb);
@@ -164,18 +158,18 @@ public class Octree<T> {
             }
         }
 
-        public boolean isLeaf () {
+        protected boolean isLeaf () {
             return children == null;
         }
 
-        private void addGeometry (T geometry) {
+        protected void addGeometry (T geometry) {
             if (geometries == null) {
                 geometries = new ObjectSet<>();
             }
             geometries.add(geometry);
         }
 
-        public ObjectSet<T> query (BoundingBox aabb, ObjectSet<T> result) {
+        protected ObjectSet<T> query (BoundingBox aabb, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(aabb, result);
@@ -189,7 +183,7 @@ public class Octree<T> {
             return result;
         }
 
-        public ObjectSet<T> query (Frustum frustum, ObjectSet<T> result) {
+        protected ObjectSet<T> query (Frustum frustum, ObjectSet<T> result) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(frustum, result);
@@ -203,14 +197,14 @@ public class Octree<T> {
             return result;
         }
 
-        public void rayCast (Ray ray, float maxDistance, Collider<T> narrowPhase, RayCastResult<T> result) {
+        protected void rayCast (Ray ray, RayCastResult<T> result) {
             // Check intersection with node
             boolean intersect = Intersector.intersectRayBounds(ray, bounds, tmp);
             if (!intersect) {
                 return;
             } else {
                 float dst2 = tmp.dst2(ray.origin);
-                if (dst2 > maxDistance) {
+                if (dst2 >= result.distance) {
                     return;
                 }
             }
@@ -218,13 +212,13 @@ public class Octree<T> {
             // Check intersection with children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
-                    child.rayCast(ray, maxDistance, narrowPhase, result);
+                    child.rayCast(ray, result);
                 }
             } else {
                 // Check intersection with geometries
                 if (geometries != null) {
                     for (T geometry: geometries) {
-                        float distance = narrowPhase.intersects(ray, geometry);
+                        float distance = collider.intersects(ray, geometry);
                         if (result.geometry == null || distance < result.distance) {
                             result.geometry = geometry;
                             result.distance = distance;
@@ -234,15 +228,11 @@ public class Octree<T> {
             }
         }
 
-        public void setLevel (int level) {
-            this.level = level;
-        }
-
         /**
          * Get all geometries using Depth-First Search recursion
          * @param resultSet
          */
-        public void getAll (ObjectSet<T> resultSet) {
+        protected void getAll (ObjectSet<T> resultSet) {
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
                     child.getAll(resultSet);
@@ -257,7 +247,7 @@ public class Octree<T> {
          * Get bounding boxes using Depth-First Search recursion
          * @param bounds
          */
-        public void getBoundingBox(ObjectSet<BoundingBox> bounds) {
+        protected void getBoundingBox(ObjectSet<BoundingBox> bounds) {
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.getBoundingBox(bounds);
@@ -290,5 +280,6 @@ public class Octree<T> {
     public static class RayCastResult<T> {
         T geometry;
         float distance;
+        float maxDistance = Float.MAX_VALUE;
     }
 }
