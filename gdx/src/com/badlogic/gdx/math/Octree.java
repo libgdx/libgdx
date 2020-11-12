@@ -5,6 +5,11 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
+/**
+ * A static Octree implementation.
+ *
+ * @param <T>
+ */
 public class Octree<T> {
 
     private final int maxItemsPerNode;
@@ -32,9 +37,12 @@ public class Octree<T> {
         root.remove(object);
     }
 
-    /**
-     * Method to retrieve all the geometries
-     *
+    public void update (T object) {
+        root.remove(object);
+        root.add(object);
+    }
+
+    /** Method to retrieve all the geometries.
      * @param resultSet
      * @return the result set
      */
@@ -43,9 +51,8 @@ public class Octree<T> {
         return resultSet;
     }
 
-    /**
-     * Method to query geometries inside nodes that the aabb intersects
-     * Can be used as broad phase
+    /** Method to query geometries inside nodes that the aabb intersects.
+     * Can be used as broad phase.
      * @param aabb - The bounding box to query
      * @param result - Set to be populated with objects inside the BoundingBoxes
      */
@@ -54,9 +61,8 @@ public class Octree<T> {
         return result;
     }
 
-    /**
-     * Method to query geometries inside nodes that the frustum intersects
-     * Can be used as broad phase
+    /** Method to query geometries inside nodes that the frustum intersects.
+     * Can be used as broad phase.
      *
      * @param frustum - The frustum to query
      * @param result set populated with objects near from the frustum
@@ -72,8 +78,8 @@ public class Octree<T> {
         return result.geometry;
     }
 
-    /**
-     * Method to get nodes boxes. Useful for debug purpose
+    /** Method to get nodes as bounding boxes. Useful for debug purpose.
+     *
      * @param boxes
      */
     public ObjectSet<BoundingBox> getNodesBoxes (ObjectSet<BoundingBox> boxes) {
@@ -235,8 +241,7 @@ public class Octree<T> {
             }
         }
 
-        /**
-         * Get all geometries using Depth-First Search recursion
+        /** Get all geometries using Depth-First Search recursion
          * @param resultSet
          */
         protected void getAll (ObjectSet<T> resultSet) {
@@ -250,8 +255,7 @@ public class Octree<T> {
             }
         }
 
-        /**
-         * Get bounding boxes using Depth-First Search recursion
+        /** Get bounding boxes using Depth-First Search recursion
          * @param bounds
          */
         protected void getBoundingBox(ObjectSet<BoundingBox> bounds) {
@@ -292,10 +296,14 @@ public class Octree<T> {
         return frustumIsInsideBounds;
     }
 
-
+    /** Interface used by octree to handle geometries' collisions
+     * against BoundingBox, Frustum and Ray
+     *
+     * @param <T>
+     */
     public interface Collider<T> {
-        /**
-         * Method to calculate intersection between aabb and the geometry
+
+        /** Method to calculate intersection between aabb and the geometry
          *
          * @param nodeBounds
          * @param geometry
@@ -303,8 +311,7 @@ public class Octree<T> {
          */
         boolean intersects (BoundingBox nodeBounds, T geometry);
 
-        /**
-         * Method to calculate intersection between frustum and the geometry
+        /** Method to calculate intersection between frustum and the geometry
          *
          * @param frustum
          * @param geometry
@@ -312,8 +319,7 @@ public class Octree<T> {
          */
         boolean intersects (Frustum frustum, T geometry);
 
-        /**
-         * Method to calculate intersection between ray and the geometry
+        /** Method to calculate intersection between ray and the geometry
          *
          * @param ray
          * @param geometry

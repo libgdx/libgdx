@@ -20,8 +20,14 @@ public class OctreeTest {
         Vector3 max = new Vector3(5f,5f,5f);
 
         Octree<BoundingBox> octree = new Octree<>(min, max, maxDepth, maxItemsPerNode, new Octree.Collider<BoundingBox>() {
-            @Override public boolean intersects (BoundingBox nodeBounds, BoundingBox geometry) {
+            @Override
+            public boolean intersects (BoundingBox nodeBounds, BoundingBox geometry) {
                 return nodeBounds.intersects(geometry);
+            }
+
+            @Override
+            public boolean intersects(Frustum frustum, BoundingBox geometry) {
+                return false;
             }
 
             final Vector3 tmp = new Vector3();
