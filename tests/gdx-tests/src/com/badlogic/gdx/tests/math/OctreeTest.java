@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.math;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -30,9 +31,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Octree;
 import com.badlogic.gdx.math.Vector3;
@@ -42,22 +43,28 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
+import java.util.Random;
+
 public class OctreeTest extends GdxTest implements ApplicationListener {
-	private static final float OCTREE_SIZE = 20;
+    private static final float AREA_SIZE = 100;
+    private static final float BOXES = 5000;
+    public static final int MAX_DEPTH = 8;
+    public static final int MAX_ITEMS_PER_NODE = 30;
+
+    public boolean octreeVisible = true;
 
 	public PerspectiveCamera cam;
 	public FirstPersonCameraController camController;
 	public ModelBatch modelBatch;
 	public AssetManager assets;
-	public Array<ModelInstance> instances = new Array<ModelInstance>();
 	public Environment lights;
-	public boolean loading;
 
-	public Octree<BoundingBox> octree;
-	public Array<ModelInstance> blocks = new Array<ModelInstance>();
-	public Array<ModelInstance> invaders = new Array<ModelInstance>();
-	public ModelInstance ship;
-	public ModelInstance space;
+	public Octree<GameObject> octree;
+	public ObjectSet<GameObject> tmpResult = new ObjectSet<>();
+	public Array<GameObject> gameObjects = new Array<>();
+    public Array<ModelInstance> octreeBounds = new Array<>();
+
+	GameObject lastSelected;
 
 	@Override
 	public void create () {
@@ -67,88 +74,147 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(0f, 7f, 10f);
-		cam.lookAt(0, 0, 0);
+		cam.position.set(0f, 0f, 15f);
+		cam.lookAt(0, 0, 1);
 		cam.near = 0.1f;
 		cam.far = 300f;
-		cam.update();
+		cam.update(true);
 
 		camController = new FirstPersonCameraController(cam);
-		Gdx.input.setInputProcessor(camController);
+		Gdx.input.setInputProcessor(this);
 
-		Vector3 min = new Vector3(-OCTREE_SIZE / 2, -OCTREE_SIZE / 2, -OCTREE_SIZE / 2);
-		Vector3 max = new Vector3(OCTREE_SIZE / 2, OCTREE_SIZE / 2, OCTREE_SIZE / 2);
-		octree = new Octree<>(min, max, new Octree.Collider<BoundingBox>() {
-			@Override public boolean intersects(BoundingBox nodeBounds, BoundingBox geometry) {
-				return nodeBounds.intersects(geometry);
+		Vector3 min = new Vector3(-AREA_SIZE / 2, -AREA_SIZE / 2, -AREA_SIZE / 2);
+		Vector3 max = new Vector3(AREA_SIZE / 2, AREA_SIZE / 2, AREA_SIZE / 2);
+		octree = new Octree<>(min, max, MAX_DEPTH, MAX_ITEMS_PER_NODE, new Octree.Collider<GameObject>() {
+			@Override
+            public boolean intersects(BoundingBox nodeBounds, GameObject geometry) {
+				return nodeBounds.intersects(geometry.box);
+			}
+
+			@Override
+			public boolean intersects(Frustum frustum, GameObject geometry) {
+				return frustum.boundsInFrustum(geometry.box);
 			}
 
 			final Vector3 tmp = new Vector3();
-			@Override public float intersects(Ray ray, BoundingBox geometry) {
-				if (!Intersector.intersectRayBounds(ray, geometry, tmp)) {
+			@Override
+			public float intersects(Ray ray, GameObject geometry) {
+				if (Intersector.intersectRayBounds(ray, geometry.box, tmp)) {
 					return tmp.dst2(ray.origin);
 				}
 				return Float.POSITIVE_INFINITY;
 			}
 		});
-		octree.setMaxItemsPerNode(3);
-		octree.setMaxDepth(6);
 
-		assets = new AssetManager();
-		assets.load("data/g3d/invaders.g3dj", Model.class);
-		loading = true;
-	}
-
-	private void doneLoading () {
-		Model model = assets.get("data/g3d/invaders.g3dj", Model.class);
-		for (int i = 0; i < model.nodes.size; i++) {
-			String id = model.nodes.get(i).id;
-			ModelInstance instance = new ModelInstance(model, id);
-			Node node = instance.getNode(id);
-
-			instance.transform.set(node.globalTransform);
-			node.translation.set(0, 0, 0);
-			node.scale.set(1, 1, 1);
-			node.rotation.idt();
-			instance.calculateTransforms();
-
-			if (id.equals("space")) {
-				space = instance;
-				continue;
-			}
-
-			instances.add(instance);
-			octree.add(instance.calculateBoundingBox(new BoundingBox()));
-
-			if (id.equals("ship"))
-				ship = instance;
-			else if (id.startsWith("block"))
-				blocks.add(instance);
-			else if (id.startsWith("invader")) invaders.add(instance);
-		}
-
-		generateOctreeInstances(octree, instances);
-
-		loading = false;
+        generateGameObjects();
+        generateOctreeInstances();
 	}
 
 	@Override
 	public void render () {
-		if (loading && assets.update()) doneLoading();
 		camController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);
-		for (ModelInstance instance : instances)
-			modelBatch.render(instance, lights);
-		if (space != null) modelBatch.render(space);
+
+		octree.query(cam.frustum, tmpResult);
+		for (GameObject gameObject : tmpResult) {
+			//Gdx.app.log("", "Rendering: " + tmpResult.size);
+			modelBatch.render(gameObject.instance, lights);
+			modelBatch.render(gameObject.boxEdges);
+		}
+		tmpResult.clear();
+
+		if (octreeVisible) {
+		    for (ModelInstance instance : octreeBounds) {
+                modelBatch.render(instance);
+            }
+        }
 
 		modelBatch.end();
 	}
 
-	private void generateOctreeInstances(Octree<BoundingBox> octree, Array<ModelInstance> instances) {
+	@Override
+	public boolean keyDown(int keycode) {
+		camController.keyDown(keycode);
+		// Space toggle octree render
+		if (keycode == Input.Keys.SPACE) {
+			octreeVisible = !octreeVisible;
+		}
+		return super.keyDown(keycode);
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		camController.keyUp(keycode);
+		return super.keyUp(keycode);
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		camController.touchDragged(screenX, screenY, pointer);
+		return super.touchDragged(screenX, screenY, pointer);
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		selectGameObject(cam.getPickRay(screenX, screenY));
+		return super.touchDown(screenX, screenY, pointer, button);
+	}
+
+	private void selectGameObject(Ray ray) {
+		GameObject selected = octree.rayCast(ray, new Octree.RayCastResult<GameObject>());
+		if (selected != null) {
+			selected.select();
+			if (lastSelected != null) {
+				lastSelected.deselect();
+			}
+			lastSelected = selected;
+		}
+	}
+
+	private void generateGameObjects() {
+	    Random random = new Random();
+	    ModelBuilder modelBuilder = new ModelBuilder();
+
+	    Material objectMaterial = new Material();
+	    objectMaterial.set(ColorAttribute.createDiffuse(Color.WHITE));
+
+		Material wireframeMaterial = new Material();
+		wireframeMaterial.set(ColorAttribute.createDiffuse(Color.RED));
+
+        for (int i = 0; i < BOXES; i++) {
+            float width = random.nextFloat() * 3;
+            float height = random.nextFloat() * 3;
+            float depth = random.nextFloat() * 3;
+
+	        Vector3 center = new Vector3(-AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE,
+	                                     random.nextFloat() * AREA_SIZE / 2,
+	                                     -AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE);
+
+	        GameObject gameObject = new GameObject();
+	        Model modelBox = modelBuilder
+			        .createBox(width, height, depth, GL20.GL_TRIANGLES, objectMaterial, VertexAttributes.Usage.Position);
+	        gameObject.instance = new ModelInstance(modelBox);
+	        gameObject.instance.transform.translate(center);
+
+	        Vector3 min = new Vector3(center).sub(width / 2, height / 2, depth / 2);
+	        Vector3 max = new Vector3(center).add(width / 2, height / 2, depth / 2);
+
+			gameObject.box = new BoundingBox(min, max);
+
+	        modelBox = modelBuilder.createBox(width, height, depth, GL20.GL_LINES, wireframeMaterial, VertexAttributes.Usage.Position);
+	        gameObject.boxEdges = new ModelInstance(modelBox);
+	        gameObject.boxEdges.transform.translate(center);
+
+			gameObjects.add(gameObject);
+			octree.add(gameObject);
+		}
+	}
+
+	private void generateOctreeInstances() {
 		ObjectSet<BoundingBox> boxes = new ObjectSet<>();
 		octree.getNodesBoxes(boxes);
 
@@ -165,14 +231,28 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 			ModelInstance instance = new ModelInstance(model);
 			instance.transform.translate(box.getCenterX(), box.getCenterY(), box.getCenterZ());
 
-			instances.add(instance);
+			octreeBounds.add(instance);
 		}
 	}
 
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
-		instances.clear();
+		gameObjects.clear();
 		assets.dispose();
+	}
+
+	private static class GameObject {
+		ModelInstance instance;
+		ModelInstance boxEdges;
+		BoundingBox box;
+
+		public void select() {
+			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLUE));
+		}
+
+		public void deselect() {
+			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
+		}
 	}
 }

@@ -67,6 +67,7 @@ public class Octree<T> {
     }
 
     public T rayCast (Ray ray, RayCastResult<T> result) {
+        result.distance = result.maxDistanceSq;
         root.rayCast(ray, result);
         return result.geometry;
     }
@@ -128,31 +129,31 @@ public class Octree<T> {
         }
 
         protected void add (T geometry) {
+            if (!collider.intersects(bounds, geometry)) {
+                return;
+            }
+
             // If is not leaf, check children
             if (!isLeaf()) {
                 for (OctreeNode child : children) {
                     child.add(geometry);
                 }
-                return;
-            } else if (!collider.intersects(bounds, geometry)) {
-                // If leaf but doesn't collide with the geometry, return
-                return;
-            }
-
-            addGeometry(geometry);
-            if (geometries.size > maxItemsPerNode && level > 0) {
-                split();
+            } else {
+                addGeometry(geometry);
+                if (geometries.size > maxItemsPerNode && level > 0) {
+                    split();
+                }
             }
         }
 
-        protected void remove (T aabb) {
-            if (isLeaf()) {
-                if (geometries != null) {
-                    geometries.remove(aabb);
+        protected void remove (T object) {
+            if (!isLeaf()) {
+                for (OctreeNode node : children) {
+                    node.remove(object);
                 }
             } else {
-                for (OctreeNode node : children) {
-                    node.remove(aabb);
+                if (geometries != null) {
+                    geometries.remove(object);
                 }
             }
         }
@@ -168,35 +169,41 @@ public class Octree<T> {
             geometries.add(geometry);
         }
 
-        protected ObjectSet<T> query (BoundingBox aabb, ObjectSet<T> result) {
+        protected void query (BoundingBox aabb, ObjectSet<T> result) {
+            if (!aabb.intersects(bounds)) {
+                return;
+            }
+
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(aabb, result);
                 }
-            } else if (aabb.contains(bounds)) {
-                if (geometries != null) {
-                    for (T geometry:geometries) {
-                        // Filter geometries using collider
-                        if (collider.intersects(bounds, geometry)) {
-                            result.add(geometry);
-                        }
+            } else if (geometries != null) {
+                for (T geometry : geometries) {
+                    // Filter geometries using collider
+                    if (collider.intersects(bounds, geometry)) {
+                        result.add(geometry);
                     }
                 }
             }
-            return result;
         }
 
-        protected ObjectSet<T> query (Frustum frustum, ObjectSet<T> result) {
+        protected void query (Frustum frustum, ObjectSet<T> result) {
+            if (!frustumIntersectsBounds(frustum, bounds)) {
+                return;
+            }
             if (!isLeaf()) {
                 for (OctreeNode node : children) {
                     node.query(frustum, result);
                 }
-            } else if (frustum.boundsInFrustum(bounds)) {
-                if (geometries != null) {
-                    result.addAll(geometries);
+            } else if (geometries != null) {
+                for (T geometry : geometries) {
+                    // Filter geometries using collider
+                    if (collider.intersects(frustum, geometry)) {
+                        result.add(geometry);
+                    }
                 }
             }
-            return result;
         }
 
         protected void rayCast (Ray ray, RayCastResult<T> result) {
@@ -206,7 +213,7 @@ public class Octree<T> {
                 return;
             } else {
                 float dst2 = tmp.dst2(ray.origin);
-                if (dst2 >= result.distance) {
+                if (dst2 >= result.maxDistanceSq) {
                     return;
                 }
             }
@@ -216,15 +223,13 @@ public class Octree<T> {
                 for (OctreeNode child : children) {
                     child.rayCast(ray, result);
                 }
-            } else {
-                // Check intersection with geometries
-                if (geometries != null) {
-                    for (T geometry: geometries) {
-                        float distance = collider.intersects(ray, geometry);
-                        if (result.geometry == null || distance < result.distance) {
-                            result.geometry = geometry;
-                            result.distance = distance;
-                        }
+            } else if (geometries != null) {
+                for (T geometry: geometries) {
+                    // Check intersection with geometries
+                    float distance = collider.intersects(ray, geometry);
+                    if (result.geometry == null || distance < result.distance) {
+                        result.geometry = geometry;
+                        result.distance = distance;
                     }
                 }
             }
@@ -259,6 +264,35 @@ public class Octree<T> {
         }
     }
 
+    /** Returns whether the given {@link BoundingBox} is in the frustum.
+     *
+     * @param frustum The frustum
+     * @param bounds The bounding box
+     * @return Whether the bounding box is in the frustum */
+    private boolean frustumIntersectsBounds(Frustum frustum, BoundingBox bounds) {
+
+        boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp)) ||
+               frustum.pointInFrustum(bounds.getCorner001(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner010(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner011(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner100(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner101(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner110(tmp)) ||
+                frustum.pointInFrustum(bounds.getCorner111(tmp));
+
+        if (boundsIntersectsFrustum) {
+            return true;
+        }
+
+        boolean frustumIsInsideBounds = false;
+        for (Vector3 point : frustum.planePoints) {
+            frustumIsInsideBounds |= bounds.contains(point);
+        }
+
+        return frustumIsInsideBounds;
+    }
+
+
     public interface Collider<T> {
         /**
          * Method to calculate intersection between aabb and the geometry
@@ -268,6 +302,15 @@ public class Octree<T> {
          * @return if they are intersecting
          */
         boolean intersects (BoundingBox nodeBounds, T geometry);
+
+        /**
+         * Method to calculate intersection between frustum and the geometry
+         *
+         * @param frustum
+         * @param geometry
+         * @return if they are intersecting
+         */
+        boolean intersects (Frustum frustum, T geometry);
 
         /**
          * Method to calculate intersection between ray and the geometry
@@ -282,6 +325,6 @@ public class Octree<T> {
     public static class RayCastResult<T> {
         T geometry;
         float distance;
-        float maxDistance = Float.MAX_VALUE;
+        float maxDistanceSq = Float.MAX_VALUE;
     }
 }
