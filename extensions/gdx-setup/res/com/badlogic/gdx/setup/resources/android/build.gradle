@@ -18,7 +18,7 @@ android {
     }
     defaultConfig {
         applicationId "%PACKAGE%"
-        minSdkVersion 14
+        minSdkVersion 26
         targetSdkVersion %API_LEVEL%
         versionCode 1
         versionName "1.0"
@@ -28,6 +28,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        targetCompatibility = "8"
+        sourceCompatibility = "8"
     }
 }
 

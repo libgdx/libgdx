@@ -26,7 +26,7 @@ public class DependencyBank {
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.9.13-SNAPSHOT";
 	static String roboVMVersion = "2.3.11";
-	static String buildToolsVersion = "29.0.2";
+	static String buildToolsVersion = "29.0.3";
 	static String androidAPILevel = "29";
 	static String gwtVersion = "2.8.2";
 
@@ -44,7 +44,6 @@ public class DependencyBank {
 	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
 	static String androidPluginImport = "com.android.tools.build:gradle:3.4.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
-
 
 	//Extension versions
 	static String box2DLightsVersion = "1.5";
