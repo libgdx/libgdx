@@ -28,3 +28,14 @@ jar {
 		attributes 'Main-Class': project.mainClassName
 	}
 }
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/'
+        }
+        resources {
+            srcDir 'res/' 
+        }
+    }
+}
