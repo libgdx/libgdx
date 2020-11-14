@@ -95,11 +95,12 @@ public class Octree<T> {
         private final BoundingBox bounds;
 
         private Array<OctreeNode> children;
-        private ObjectSet<T> geometries = null;
+        private final ObjectSet<T> geometries;
 
         public OctreeNode (Vector3 min, Vector3 max, int level) {
             bounds = new BoundingBox(min, max);
             this.level = level;
+            this.geometries = new ObjectSet<T>(maxItemsPerNode);
         }
 
         private void split () {
@@ -120,14 +121,13 @@ public class Octree<T> {
             children.add(new OctreeNode(new Vector3(midx, bounds.min.y, bounds.min.z), new Vector3(bounds.max.x, midy, midz), deeperLevel));
             children.add(new OctreeNode(new Vector3(bounds.min.x, bounds.min.y, bounds.min.z), new Vector3(midx, midy, midz), deeperLevel));
 
-            ObjectSet<T> geometries = this.geometries;
-            this.geometries = null;
             // Move geometries from parent to children
             for (OctreeNode child : children) {
-                for (T geometry : geometries) {
+                for (T geometry : this.geometries) {
                     child.add(geometry);
                 }
             }
+            this.geometries.clear();
         }
 
         protected boolean contains (Collider<T> boundingBoxHandler, T geometry) {
@@ -145,7 +145,7 @@ public class Octree<T> {
                     child.add(geometry);
                 }
             } else {
-                addGeometry(geometry);
+                geometries.add(geometry);
                 if (geometries.size > maxItemsPerNode && level > 0) {
                     split();
                 }
@@ -158,21 +158,12 @@ public class Octree<T> {
                     node.remove(object);
                 }
             } else {
-                if (geometries != null) {
-                    geometries.remove(object);
-                }
+                geometries.remove(object);
             }
         }
 
         protected boolean isLeaf () {
             return children == null;
-        }
-
-        protected void addGeometry (T geometry) {
-            if (geometries == null) {
-                geometries = new ObjectSet<>();
-            }
-            geometries.add(geometry);
         }
 
         protected void query (BoundingBox aabb, ObjectSet<T> result) {
@@ -184,7 +175,7 @@ public class Octree<T> {
                 for (OctreeNode node : children) {
                     node.query(aabb, result);
                 }
-            } else if (geometries != null) {
+            } else {
                 for (T geometry : geometries) {
                     // Filter geometries using collider
                     if (collider.intersects(bounds, geometry)) {
