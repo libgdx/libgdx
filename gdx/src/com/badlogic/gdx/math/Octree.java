@@ -135,13 +135,25 @@ public class Octree<T> {
             this.geometries.clear();
         }
 
+        private void merge() {
+            for (OctreeNode node : children) {
+                geometries.addAll(node.geometries);
+                freeNode(node);
+            }
+            children.clear();
+        }
+
         private OctreeNode createNode(Vector3 min, Vector3 max, int level) {
             OctreeNode node = nodePool.obtain();
             node.bounds.set(min, max);
             node.level = level;
-            node.children.clear();
-            node.geometries.clear();
             return node;
+        }
+
+        private void freeNode(OctreeNode node) {
+            node.geometries.clear();
+            node.children.clear();
+            nodePool.free(node);
         }
 
         protected boolean contains (Collider<T> boundingBoxHandler, T geometry) {
@@ -166,13 +178,24 @@ public class Octree<T> {
             }
         }
 
-        protected void remove (T object) {
+        protected boolean remove (T object) {
             if (!isLeaf()) {
+                boolean removed = false;
+                int childrenSum = 0;
                 for (OctreeNode node : children) {
-                    node.remove(object);
+                    childrenSum += node.geometries.size;
+                    removed |= node.remove(object);
                 }
+
+                if (removed) {
+                    if (childrenSum <= maxItemsPerNode) {
+                        merge();
+                    }
+                }
+
+                return removed;
             } else {
-                geometries.remove(object);
+                return geometries.remove(object);
             }
         }
 
