@@ -711,19 +711,6 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
-		else
-			vibrator.vibrate(pattern, repeat);
-	}
-
-	@Override
-	public void cancelVibrate () {
-		vibrator.cancel();
-	}
-
-	@Override
 	public boolean justTouched () {
 		return justTouched;
 	}

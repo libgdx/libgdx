@@ -577,16 +577,6 @@ public class DefaultIOSInput implements IOSInput {
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-		// FIXME implement this
-	}
-
-	@Override
-	public void cancelVibrate () {
-		// FIXME implement this
-	}
-
-	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}

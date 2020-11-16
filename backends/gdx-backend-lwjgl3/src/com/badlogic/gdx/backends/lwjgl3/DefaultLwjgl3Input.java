@@ -885,14 +885,6 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	}
 
 	@Override
-	public void vibrate(long[] pattern, int repeat) {
-	}
-
-	@Override
-	public void cancelVibrate() {
-	}
-
-	@Override
 	public float getAzimuth() {
 		return 0;
 	}

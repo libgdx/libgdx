@@ -472,16 +472,6 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-
-	}
-
-	@Override
-	public void cancelVibrate () {
-
-	}
-
-	@Override
 	public float getAzimuth () {
 		return compass[0];
 	}

@@ -315,16 +315,6 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void vibrate (long[] pattern, int repeat) {
-			input.vibrate(pattern, repeat);
-		}
-
-		@Override
-		public void cancelVibrate () {
-			input.cancelVibrate();
-		}
-
-		@Override
 		public float getAzimuth () {
 			return input.getAzimuth();
 		}
