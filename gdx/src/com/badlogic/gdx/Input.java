@@ -707,12 +707,20 @@ public interface Input {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
-	/** Vibrates for the given amount of time. Note that you'll need the permission
+	/** Vibrates for the given amount of time. Note that on Android backend you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
 	 * 
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
+	public void vibrate (int milliseconds, int amplitude);
+
+	public void vibrate (VibrationType vibrationType);
+	
+	public enum VibrationType {
+		LIGHT, MEDIUM, HEAVY; 
+	}
+	
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
 	 * 

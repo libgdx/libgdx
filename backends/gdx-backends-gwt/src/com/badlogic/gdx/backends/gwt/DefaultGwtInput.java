@@ -319,6 +319,14 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
+	public void vibrate (int milliseconds, int amplitude) {
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
+	}
+
+	@Override
 	public float getAzimuth () {
 		return 0;
 	}

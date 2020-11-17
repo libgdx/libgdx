@@ -468,7 +468,14 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public void vibrate (int milliseconds) {
+	}
 
+	@Override
+	public void vibrate (int milliseconds, int amplitude) {
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

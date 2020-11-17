@@ -573,7 +573,17 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		AudioServices.playSystemSound(4095);
+		// TODO Implement
+	}
+
+	@Override
+	public void vibrate (int milliseconds, int amplitude) {
+		// TODO Implement
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
+		// TODO Implement
 	}
 
 	@Override

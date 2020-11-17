@@ -315,6 +315,16 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void vibrate (int milliseconds, int amplitude) {
+			input.vibrate(milliseconds, amplitude);
+		}
+
+		@Override
+		public void vibrate (VibrationType vibrationType) {
+			input.vibrate(vibrationType);
+		}
+
+		@Override
 		public float getAzimuth () {
 			return input.getAzimuth();
 		}
