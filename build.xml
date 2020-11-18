@@ -238,7 +238,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-android.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-9.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-30.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
