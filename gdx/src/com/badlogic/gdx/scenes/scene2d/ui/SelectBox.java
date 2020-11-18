@@ -92,7 +92,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				if (disabled) return false;
+				if (isDisabled()) return false;
 				if (selectBoxList.hasParent())
 					hideList();
 				else
@@ -221,28 +221,27 @@ public class SelectBox<T> extends Widget implements Disableable {
 		layoutPool.free(layout);
 	}
 
+	/** Returns appropriate background drawable from the style based on the current select box state. */
+	protected @Null Drawable getBackgroundDrawable () {
+		if (isDisabled() && style.backgroundDisabled != null) return style.backgroundDisabled;
+		if (selectBoxList.hasParent() && style.backgroundOpen != null) return style.backgroundOpen;
+		if (isOver() && style.backgroundOver != null) return style.backgroundOver;
+		return style.background;
+	}
+
+	/** Returns the appropriate label font color from the style based on the current button state. */
+	protected @Null Color getFontColor () {
+		if (isDisabled() && style.disabledFontColor != null) return style.disabledFontColor;
+		if (style.overFontColor != null && (isOver() || selectBoxList.hasParent())) return style.overFontColor;
+		return style.fontColor;
+	}
+
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
-		Drawable background;
-		if (disabled && style.backgroundDisabled != null)
-			background = style.backgroundDisabled;
-		else if (selectBoxList.hasParent() && style.backgroundOpen != null)
-			background = style.backgroundOpen;
-		else if (clickListener.isOver() && style.backgroundOver != null)
-			background = style.backgroundOver;
-		else if (style.background != null)
-			background = style.background;
-		else
-			background = null;
+		Drawable background = getBackgroundDrawable();
+		Color fontColor = getFontColor();
 		BitmapFont font = style.font;
-		Color fontColor;
-		if (disabled && style.disabledFontColor != null)
-			fontColor = style.disabledFontColor;
-		else if (style.overFontColor != null && (clickListener.isOver() || selectBoxList.hasParent()))
-			fontColor = style.overFontColor;
-		else
-			fontColor = style.fontColor;
 
 		Color color = getColor();
 		float x = getX(), y = getY();
@@ -376,6 +375,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Returns the scroll pane containing the list that is shown when the select box is open. */
 	public ScrollPane getScrollPane () {
 		return selectBoxList;
+	}
+
+	public boolean isOver () {
+		return clickListener.isOver();
+	}
+
+	public ClickListener getClickListener () {
+		return clickListener;
 	}
 
 	protected void onShow (Actor selectBoxList, boolean below) {
