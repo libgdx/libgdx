@@ -18,28 +18,62 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class VibratorTest extends GdxTest {
 
+	Stage stage;
 	SpriteBatch batch;
-	BitmapFont font;
+	Skin skin;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		stage = new Stage();
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Gdx.input.setInputProcessor(stage);
+
+		// Create a table that fills the screen. Everything else will go inside this table.
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
+
+		final Button button = new Button(skin);
+		Label vibrateLabel = new Label("Vibrate", skin);
+		button.add(vibrateLabel);
+		button.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.input.vibrate(100);
+			}
+		});
+		table.add(button).size(100f);
+
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		font.draw(batch, "Touch screen to vibrate", 100, 100);
-		batch.end();
+		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.draw();
+	}
 
-		if (Gdx.input.justTouched()) Gdx.input.vibrate(100);
+	@Override
+	public void resize (int width, int height) {
+		stage.getViewport().update(width, height, true);
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		skin.dispose();
 	}
 }
