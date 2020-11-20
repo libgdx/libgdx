@@ -1,5 +1,5 @@
 [1.9.13]
-- GWT: Key codes set with Gwt.input.setCatchKey prevent default browser behaviour
+- GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
