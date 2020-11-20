@@ -53,7 +53,7 @@ public class IOSHaptics {
 		}
 	}
 	
-	public void vibrate(int milliseconds) {
+	public void vibrate(int milliseconds, boolean fallback) {
 		if (hapticsSupport) {
 			CHHapticPatternDict dict = new CHHapticPatternDict();
 			NSArray<CHHapticEventParameter> parameters = new NSArray<>();
@@ -72,7 +72,7 @@ public class IOSHaptics {
 			} catch (NSErrorException e) {
 				Gdx.app.error("IOSHaptics", "Error creating haptics player. " + e.getMessage());
 			}
-		} else {
+		} else if (fallback) {
 			AudioServices.playSystemSound(4095);
 		}
 	}
@@ -97,8 +97,8 @@ public class IOSHaptics {
 			} catch (NSErrorException e) {
 				Gdx.app.error("IOSHaptics", "Error creating haptics player. " + e.getMessage());
 			}
-		} else if (fallback) {
-			vibrate(milliseconds);
+		} else {
+			vibrate(milliseconds, fallback);
 		}
 	}
 
@@ -121,8 +121,8 @@ public class IOSHaptics {
 			}
 			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = new UIImpactFeedbackGenerator(uiImpactFeedbackStyle);
 			uiImpactFeedbackGenerator.impactOccurred();
-		} else if (fallback) {
-			vibrate(DEFAULT_LENGTH);
+		} else {
+			vibrate(DEFAULT_LENGTH, fallback);
 		}
 	}
 	

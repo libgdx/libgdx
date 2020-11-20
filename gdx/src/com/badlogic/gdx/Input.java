@@ -713,6 +713,8 @@ public interface Input {
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
+	public void vibrate (int milliseconds, boolean fallback);
+	
 	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
 	public void vibrate (VibrationType vibrationType, boolean fallback);

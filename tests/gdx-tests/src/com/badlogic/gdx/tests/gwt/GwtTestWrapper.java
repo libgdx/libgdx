@@ -315,6 +315,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void vibrate (int milliseconds, boolean fallback) {
+			input.vibrate(milliseconds, fallback);
+		}
+
+		@Override
 		public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 			input.vibrate(milliseconds, amplitude, fallback);
 		}

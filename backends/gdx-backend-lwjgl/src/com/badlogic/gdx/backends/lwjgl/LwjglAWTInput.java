@@ -838,6 +838,10 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+	}
+
+	@Override
 	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 	}
 

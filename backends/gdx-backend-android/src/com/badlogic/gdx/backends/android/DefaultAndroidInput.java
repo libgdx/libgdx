@@ -705,6 +705,11 @@ public class DefaultAndroidInput implements AndroidInput {
 	}
 
 	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+		haptics.vibrate(milliseconds);
+	}
+
+	@Override
 	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 		haptics.vibrate(milliseconds, amplitude, fallback);
 	}

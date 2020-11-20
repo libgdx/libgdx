@@ -885,6 +885,10 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	}
 
 	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+	}
+
+	@Override
 	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 	}
 

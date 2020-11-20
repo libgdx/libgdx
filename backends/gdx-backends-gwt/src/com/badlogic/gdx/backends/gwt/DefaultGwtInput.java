@@ -319,6 +319,10 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+	}
+
+	@Override
 	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 	}
 

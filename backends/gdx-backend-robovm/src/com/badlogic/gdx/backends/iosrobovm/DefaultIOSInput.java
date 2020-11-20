@@ -569,7 +569,12 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		haptics.vibrate(milliseconds);
+		haptics.vibrate(milliseconds, true);
+	}
+
+	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+		haptics.vibrate(milliseconds, fallback);
 	}
 
 	@Override
