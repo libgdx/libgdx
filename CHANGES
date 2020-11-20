@@ -1,3 +1,6 @@
+[1.9.13]
+- GWT: Key codes set with Gwt.input.setCatchKey prevent default browser behaviour
+
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
 - [BREAKING CHANGE] API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters. See #6154.
