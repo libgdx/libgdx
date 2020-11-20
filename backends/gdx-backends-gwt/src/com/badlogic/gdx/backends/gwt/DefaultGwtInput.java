@@ -55,6 +55,7 @@ public class DefaultGwtInput implements GwtInput {
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
 	GwtGyroscope gyroscope;
+	private IntSet keysToCatch = new IntSet();
 
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
@@ -102,6 +103,9 @@ public class DefaultGwtInput implements GwtInput {
 			}
 		}
 		hookEvents();
+
+		// backwards compatibility: backspace was caught in older versions
+		keysToCatch.add(Keys.BACKSPACE);
 	}
 
 	@Override
@@ -352,30 +356,36 @@ public class DefaultGwtInput implements GwtInput {
 
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
+		setCatchKey(Keys.BACK, catchBack);
 	}
 
 	@Override
 	public boolean isCatchBackKey () {
-		return false;
+		return keysToCatch.contains(Keys.BACK);
 	}
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
+		setCatchKey(Keys.MENU, catchMenu);
 	}
 
 	@Override
 	public boolean isCatchMenuKey () {
-		return false;
+		return keysToCatch.contains(Keys.MENU);
 	}
 
 	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
-
+		if (!catchKey) {
+			keysToCatch.remove(keycode);
+		} else if (catchKey) {
+			keysToCatch.add(keycode);
+		}
 	}
 
 	@Override
 	public boolean isCatchKey (int keycode) {
-		return false;
+		return keysToCatch.contains(keycode);
 	}
 
 	@Override
@@ -735,8 +745,10 @@ public class DefaultGwtInput implements GwtInput {
 			if (e.getType().equals("keydown")) {
 				// Gdx.app.log("DefaultGwtInput", "keydown");
 				int code = keyForCode(e.getKeyCode());
-				if (code == 67) {
+				if (isCatchKey(code)) {
 					e.preventDefault();
+				}
+				if (code == Keys.BACKSPACE) {
 					if (processor != null) {
 						processor.keyDown(code);
 						processor.keyTyped('\b');
@@ -764,6 +776,9 @@ public class DefaultGwtInput implements GwtInput {
 			if (e.getType().equals("keyup")) {
 				// Gdx.app.log("DefaultGwtInput", "keyup");
 				int code = keyForCode(e.getKeyCode());
+				if (isCatchKey(code)) {
+					e.preventDefault();
+				}
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
@@ -878,7 +893,7 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	/** borrowed from PlayN, thanks guys **/
-	private static int keyForCode (int keyCode) {
+	protected int keyForCode (int keyCode) {
 		switch (keyCode) {
 		case KeyCodes.KEY_ALT:
 			return Keys.ALT_LEFT;
