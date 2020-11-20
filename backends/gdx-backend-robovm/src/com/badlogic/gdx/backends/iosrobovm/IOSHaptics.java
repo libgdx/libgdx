@@ -56,7 +56,7 @@ public class IOSHaptics {
 	public void vibrate(int milliseconds, boolean fallback) {
 		if (hapticsSupport) {
 			CHHapticPatternDict dict = new CHHapticPatternDict();
-			NSArray<CHHapticEventParameter> parameters = new NSArray<>();
+			NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
 			parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, 0.5f));
 			dict.setEventType(CHHapticEventType.HapticTransient);
 			dict.setEventParameters(parameters);
@@ -81,7 +81,7 @@ public class IOSHaptics {
 		if (hapticsSupport) {
 			float intensity = MathUtils.clamp(amplitude / 255f, 0, 1);
 			CHHapticPatternDict dict = new CHHapticPatternDict();
-			NSArray<CHHapticEventParameter> parameters = new NSArray<>();
+			NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
 			parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity));
 			dict.setEventType(CHHapticEventType.HapticTransient);
 			dict.setEventParameters(parameters);
