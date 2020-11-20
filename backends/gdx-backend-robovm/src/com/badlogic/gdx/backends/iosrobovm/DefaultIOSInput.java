@@ -28,7 +28,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
-import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSExtensions;
@@ -38,7 +37,6 @@ import org.robovm.apple.uikit.UIAlertAction;
 import org.robovm.apple.uikit.UIAlertActionStyle;
 import org.robovm.apple.uikit.UIAlertController;
 import org.robovm.apple.uikit.UIAlertControllerStyle;
-import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIForceTouchCapability;
 import org.robovm.apple.uikit.UIKey;
 import org.robovm.apple.uikit.UIKeyboardHIDUsage;
@@ -120,7 +118,7 @@ public class DefaultIOSInput implements IOSInput {
 	float[] R = new float[9];
 	InputProcessor inputProcessor = null;
 
-	boolean hasVibrator;
+	private IOSHaptics haptics;
 	//CMMotionManager motionManager;
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
@@ -145,9 +143,7 @@ public class DefaultIOSInput implements IOSInput {
 		//motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
-		UIDevice device = UIDevice.getCurrentDevice();
-		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
-
+		haptics = new IOSHaptics();
 		if (app.getVersion() >= 9){
 			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
@@ -573,17 +569,17 @@ public class DefaultIOSInput implements IOSInput {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		// TODO Implement
+		haptics.vibrate(milliseconds);
 	}
 
 	@Override
-	public void vibrate (int milliseconds, int amplitude) {
-		// TODO Implement
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+		haptics.vibrate(milliseconds, amplitude, fallback);
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType) {
-		// TODO Implement
+	public void vibrate (VibrationType vibrationType, boolean fallback) {
+		haptics.vibrate(vibrationType, fallback);
 	}
 
 	@Override
@@ -639,7 +635,7 @@ public class DefaultIOSInput implements IOSInput {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return true;
-		if (peripheral == Peripheral.Vibrator) return hasVibrator;
+		if (peripheral == Peripheral.Vibrator) return haptics.isHapticsSupported();
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;

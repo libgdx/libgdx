@@ -713,9 +713,9 @@ public interface Input {
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
-	public void vibrate (int milliseconds, int amplitude);
+	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
-	public void vibrate (VibrationType vibrationType);
+	public void vibrate (VibrationType vibrationType, boolean fallback);
 	
 	public enum VibrationType {
 		LIGHT, MEDIUM, HEAVY; 

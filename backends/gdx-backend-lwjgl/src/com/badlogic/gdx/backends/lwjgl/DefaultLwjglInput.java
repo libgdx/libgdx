@@ -986,11 +986,11 @@ final public class DefaultLwjglInput implements LwjglInput {
 	}
 
 	@Override
-	public void vibrate (int milliseconds, int amplitude) {
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public void vibrate (VibrationType vibrationType, boolean fallback) {
 	}
 
 	@Override
