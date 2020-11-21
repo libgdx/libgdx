@@ -542,6 +542,28 @@ public interface Input {
 				return "F11";
 			case F12:
 				return "F12";
+			case NUMPAD_DIVIDE:
+				return "Num /";
+			case NUMPAD_MULTIPLY:
+				return "Num *";
+			case NUMPAD_SUBTRACT:
+				return "Num -";
+			case NUMPAD_ADD:
+				return "Num +";
+			case NUMPAD_DOT:
+				return "Num .";
+			case NUMPAD_COMMA:
+				return "Num ,";
+			case NUMPAD_ENTER:
+				return "Num Enter";
+			case NUMPAD_EQUALS:
+				return "Num =";
+			case NUMPAD_LEFT_PAREN:
+				return "Num (";
+			case NUMPAD_RIGHT_PAREN:
+				return "Num )";
+			case NUM_LOCK:
+				return "Num Lock";
 				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 			default:
 				// key name not found
