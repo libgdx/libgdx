@@ -217,6 +217,9 @@ public interface Input {
 		public static final int NUMPAD_COMMA= 159;
 		public static final int NUMPAD_ENTER = 160;
 		public static final int NUMPAD_EQUALS = 161;
+		public static final int NUMPAD_LEFT_PAREN = 162;
+		public static final int NUMPAD_RIGHT_PAREN = 163;
+		public static final int NUM_LOCK = 143;
 
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
