@@ -165,14 +165,13 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void beforeGroups () {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
 		shader.setUniformi("u_texture", 0);
 	}
 
 	@Override
 	public void afterGroups () {
-		shader.end();
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 
@@ -203,7 +202,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "}";
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
+		if (!shader.isCompiled()) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 
 	@Override

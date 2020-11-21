@@ -69,11 +69,13 @@ public abstract class Interpolation {
 	static public final PowOut fastSlow = pow2Out;
 	static public final Interpolation pow2InInverse = new Interpolation() {
 		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
 			return (float)Math.sqrt(a);
 		}
 	};
 	static public final Interpolation pow2OutInverse = new Interpolation() {
 		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
 			return 1 - (float)Math.sqrt(-(a - 1));
 		}
 	};
@@ -108,13 +110,13 @@ public abstract class Interpolation {
 
 	static public final Interpolation sineIn = new Interpolation() {
 		public float apply (float a) {
-			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
+			return 1 - MathUtils.cos(a * MathUtils.HALF_PI);
 		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.sin(a * MathUtils.PI / 2);
+			return MathUtils.sin(a * MathUtils.HALF_PI);
 		}
 	};
 

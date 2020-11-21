@@ -55,6 +55,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -68,6 +69,7 @@ import java.util.Map;
  * Thanks to http://www.blendswap.com/blends/view/73922 for the cannon model, licensed under CC-BY-SA
  *
  /** @author Tomski */
+@GdxTestConfig(requireGL30=true)
 public class MultipleRenderTargetTest extends GdxTest {
 
 	RenderContext renderContext;
@@ -149,7 +151,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGBA8, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE);
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
-		frameBufferBuilder.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT32F, GL30.GL_FLOAT);
+		frameBufferBuilder.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT, GL30.GL_UNSIGNED_SHORT);
 
 		frameBuffer = frameBufferBuilder.build();
 
@@ -251,7 +253,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 
 		frameBuffer.end();
 
-		mrtSceneShader.begin();
+		mrtSceneShader.bind();
 		mrtSceneShader.setUniformi("u_diffuseTexture",
 			renderContext.textureBinder.bind(frameBuffer.getTextureAttachments().get(DIFFUSE_ATTACHMENT)));
 		mrtSceneShader.setUniformi("u_normalTexture",
@@ -267,7 +269,6 @@ public class MultipleRenderTargetTest extends GdxTest {
 		mrtSceneShader.setUniformf("u_viewPos", camera.position);
 		mrtSceneShader.setUniformMatrix("u_inverseProjectionMatrix", camera.invProjectionView);
 		quad.render(mrtSceneShader, GL30.GL_TRIANGLE_FAN);
-		mrtSceneShader.end();
 		renderContext.end();
 
 
@@ -422,7 +423,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		@Override
 		public void begin (Camera camera, RenderContext context) {
 			this.context = context;
-			shaderProgram.begin();
+			shaderProgram.bind();
 			shaderProgram.setUniformMatrix("u_projViewTrans", camera.combined);
 			context.setDepthTest(GL20.GL_LEQUAL);
 			context.setCullFace(GL20.GL_BACK);

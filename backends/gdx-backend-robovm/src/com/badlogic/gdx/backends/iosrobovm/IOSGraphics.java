@@ -30,7 +30,9 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -41,9 +43,12 @@ import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
+import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIPress;
+import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
@@ -55,12 +60,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	private static final String tag = "IOSGraphics";
 
-	static class IOSUIViewController extends GLKViewController {
+	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
-		boolean created = false;
 
-		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
@@ -75,6 +79,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		@Override
 		public void viewDidAppear (boolean animated) {
+			super.viewDidAppear(animated);
 			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 		}
 
@@ -108,7 +113,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public UIRectEdge preferredScreenEdgesDeferringSystemGestures() {
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
 			return app.config.screenEdgesDeferringSystemGestures;
 		}
 
@@ -116,13 +121,26 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		public void viewDidLayoutSubviews () {
 			super.viewDidLayoutSubviews();
 			// get the view size and update graphics
-			CGRect bounds = app.getBounds();
-			graphics.width = (int)bounds.getWidth();
-			graphics.height = (int)bounds.getHeight();
-			graphics.makeCurrent();
-			if (graphics.created) {
-				app.listener.resize(graphics.width, graphics.height);
+			final IOSScreenBounds oldBounds = graphics.screenBounds;
+			final IOSScreenBounds newBounds = app.computeBounds();
+			graphics.screenBounds = newBounds;
+			// Layout may happen without bounds changing, don't trigger resize in that case
+			if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
+				graphics.makeCurrent();
+				graphics.updateSafeInsets();
+				app.listener.resize(newBounds.width, newBounds.height);
 			}
+
+		}
+
+		@Override
+		public boolean prefersStatusBarHidden () {
+			return !app.config.statusBarVisible;
+		}
+
+		@Override
+		public boolean prefersHomeIndicatorAutoHidden() {
+			return app.config.hideHomeIndicator;
 		}
 
 		@Callback
@@ -131,21 +149,28 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
-	}
 
-	static class IOSUIView extends GLKView {
+        @Override
+        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+                super.pressesBegan(presses, event);
+            }
+        }
 
-		public IOSUIView (CGRect frame, EAGLContext context) {
-			super(frame, context);
-		}
+        @Override
+        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+                super.pressesEnded(presses, event);
+            }
+        }
 	}
 
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
 	GL30 gl30;
-	int width;
-	int height;
+	IOSScreenBounds screenBounds;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -171,13 +196,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+	public IOSGraphics (IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
 		this.config = config;
 
-		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
-		width = (int)bounds.getWidth();
-		height = (int)bounds.getHeight();
+		screenBounds = app.computeBounds();
 
 		if (useGLES30) {
 			context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
@@ -192,7 +215,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
+		view = new GLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.onTouch(touches);
@@ -226,7 +249,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = new IOSUIViewController(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
@@ -259,10 +282,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
-		int ppi = device != null ? device.ppi : 163;
-		density = device != null ? device.ppi/160f : scale;
+		int ppi = device != null ? device.ppi : app.guessUnknownPpi();
+		density = ppi / 160f;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -312,6 +335,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
+			final int width = screenBounds.width;
+			final int height = screenBounds.height;
 			gl20.glViewport(0, 0, width, height);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
@@ -319,6 +344,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
+			updateSafeInsets();
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
@@ -402,22 +428,27 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public int getWidth () {
-		return width;
+		return screenBounds.width;
 	}
 
 	@Override
 	public int getHeight () {
-		return height;
+		return screenBounds.height;
 	}
 
 	@Override
 	public int getBackBufferWidth() {
-		return width;
+		return screenBounds.backBufferWidth;
 	}
 
 	@Override
 	public int getBackBufferHeight() {
-		return height;
+		return screenBounds.backBufferHeight;
+	}
+
+	/** @return amount of pixels per point */
+	public float getBackBufferScale() {
+		return app.pixelsPerPoint;
 	}
 
 	@Override
@@ -509,6 +540,41 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public DisplayMode getDisplayMode(Monitor monitor) {
 		return getDisplayMode();
+	}
+
+	protected void updateSafeInsets() {
+		safeInsetTop = 0;
+		safeInsetLeft = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Foundation.getMajorSystemVersion() >= 11) {
+			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+			safeInsetTop = (int) edgeInsets.getTop();
+			safeInsetLeft = (int) edgeInsets.getLeft();
+			safeInsetRight = (int) edgeInsets.getRight();
+			safeInsetBottom = (int) edgeInsets.getBottom();
+		}
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return safeInsetLeft;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return safeInsetTop;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return safeInsetBottom;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return safeInsetRight;
 	}
 
 	@Override

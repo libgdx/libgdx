@@ -19,20 +19,20 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.foundation.NSString;
-import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
 import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
 import org.robovm.rt.bro.Bro;
@@ -49,7 +49,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -102,9 +101,9 @@ public class IOSApplication implements Application {
 	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
-	float displayScaleFactor;
+	float pixelsPerPoint;
 
-	private CGRect lastScreenBounds = null;
+	private IOSScreenBounds lastScreenBounds = null;
 
 	Array<Runnable> runnables = new Array<Runnable>();
 	Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -121,43 +120,27 @@ public class IOSApplication implements Application {
 		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
-		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
+		uiApp.setIdleTimerDisabled(config.preventScreenDimming);
 
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
-		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
-
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
-			.getScale());
-		if (scale >= 2.0f) {
-			Gdx.app.debug("IOSApplication", "scale: " + scale);
-			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
-			} else {
-				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
-			}
-		} else {
-			// no retina screen: no scaling!
-			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfNonRetina;
-			} else {
-				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfNonRetina;
-			}
-		}
+		// iOS counts in "points" instead of pixels. Points are logical pixels
+		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
+		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
+
+		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
+		this.uiWindow.makeKeyAndVisible();
+		uiApp.getDelegate().setWindow(uiWindow);
 
 		// setup libgdx
 		this.input = createInput();
-		this.graphics = createGraphics(scale);
+		this.graphics = createGraphics();
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio(config);
-		this.net = new IOSNet(this);
+		this.audio = createAudio(config);
+		this.net = new IOSNet(this, config);
 
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
@@ -167,25 +150,36 @@ public class IOSApplication implements Application {
 
 		this.input.setupPeripherals();
 
-		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
 		this.uiWindow.setRootViewController(this.graphics.viewController);
-		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
 
-	protected IOSGraphics createGraphics(float scale) {
-		 return new IOSGraphics(scale, this, config, input, config.useGL30);
+	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
+		return new OALIOSAudio(config);
+	}
+
+	protected IOSGraphics createGraphics() {
+		 return new IOSGraphics(this, config, input, config.useGL30);
+	}
+
+	protected IOSGraphics.IOSUIViewController createUIViewController (IOSGraphics graphics) {
+		return new IOSGraphics.IOSUIViewController(this, graphics);
 	}
 
 	protected IOSInput createInput() {
-		 return new IOSInput(this);
+		 return new DefaultIOSInput(this);
 	}
 
-	private int getIosVersion () {
-		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
-		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
-		return version;
+	/** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
+	protected int guessUnknownPpi() {
+		int ppi;
+		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad)
+			ppi = 132 * (int) pixelsPerPoint;
+		else
+			ppi = 164 * (int) pixelsPerPoint;
+		error("IOSApplication", "Device PPI unknown. PPI value has been guessed to " + ppi + " but may be wrong");
+		return ppi;
 	}
 
 	/** Return the UI view controller of IOSApplication
@@ -200,53 +194,41 @@ public class IOSApplication implements Application {
 		return uiWindow;
 	}
 
-	/** GL View spans whole screen, that is, even under the status bar. iOS can also rotate the screen, which is not handled
-	 * consistently over iOS versions. This method returns, in pixels, rectangle in which libGDX draws.
-	 *
-	 * @return dimensions of space we draw to, adjusted for device orientation */
-	protected CGRect getBounds () {
-		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+	/** @see IOSScreenBounds for detailed explanation
+	 * @return logical dimensions of space we draw to, adjusted for device orientation */
+	protected IOSScreenBounds computeBounds () {
+		CGRect screenBounds = uiWindow.getBounds();
 		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
-
-		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
+		double statusBarHeight = statusBarFrame.getHeight();
 
 		double screenWidth = screenBounds.getWidth();
 		double screenHeight = screenBounds.getHeight();
 
-		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
-		switch (statusBarOrientation) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			if (screenHeight > screenWidth) {
-				debug("IOSApplication", "Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
-				double tmp = screenHeight;
-				// noinspection SuspiciousNameCombination
-				screenHeight = screenWidth;
-				screenWidth = tmp;
-			}
-		}
-
-		// update width/height depending on display scaling selected
-		screenWidth *= displayScaleFactor;
-		screenHeight *= displayScaleFactor;
-
 		if (statusBarHeight != 0.0) {
 			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
-			statusBarHeight *= displayScaleFactor;
 			screenHeight -= statusBarHeight;
 		} else {
 			debug("IOSApplication", "Status bar is not visible");
 		}
+		final int offsetX = 0;
+		final int offsetY = (int)Math.round(statusBarHeight);
 
-		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
+		final int width = (int)Math.round(screenWidth);
+		final int height = (int)Math.round(screenHeight);
 
-		return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
+		final int backBufferWidth = (int)Math.round(screenWidth * pixelsPerPoint);
+		final int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
+
+		debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
+					+ backBufferWidth + " bbH= " + backBufferHeight);
+
+		return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
 	}
 
-	protected CGRect getCachedBounds () {
+	/** @return area of screen in UIKit points on which libGDX draws, with 0,0 being upper left corner */
+	public IOSScreenBounds getScreenBounds () {
 		if (lastScreenBounds == null)
-			return getBounds();
+			return computeBounds();
 		else
 			return lastScreenBounds;
 	}
@@ -385,7 +367,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public int getVersion () {
-		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
+		return (int) NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
 	}
 
 	@Override
@@ -440,7 +422,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		NSThread.exit();
+		System.exit(0);
 	}
 
 	@Override

@@ -18,13 +18,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 
 /** Base class for actions that transition over time using the percent complete.
  * @author Nathan Sweet */
 abstract public class TemporalAction extends Action {
 	private float duration, time;
-	private Interpolation interpolation;
+	private @Null Interpolation interpolation;
 	private boolean reverse, began, complete;
 
 	public TemporalAction () {
@@ -34,7 +35,7 @@ abstract public class TemporalAction extends Action {
 		this.duration = duration;
 	}
 
-	public TemporalAction (float duration, Interpolation interpolation) {
+	public TemporalAction (float duration, @Null Interpolation interpolation) {
 		this.duration = duration;
 		this.interpolation = interpolation;
 	}
@@ -50,13 +51,8 @@ abstract public class TemporalAction extends Action {
 			}
 			time += delta;
 			complete = time >= duration;
-			float percent;
-			if (complete)
-				percent = 1;
-			else {
-				percent = time / duration;
-				if (interpolation != null) percent = interpolation.apply(percent);
-			}
+			float percent = complete ? 1 : time / duration;
+			if (interpolation != null) percent = interpolation.apply(percent);
 			update(reverse ? 1 - percent : percent);
 			if (complete) end();
 			return complete;
@@ -115,11 +111,11 @@ abstract public class TemporalAction extends Action {
 		this.duration = duration;
 	}
 
-	public Interpolation getInterpolation () {
+	public @Null Interpolation getInterpolation () {
 		return interpolation;
 	}
 
-	public void setInterpolation (Interpolation interpolation) {
+	public void setInterpolation (@Null Interpolation interpolation) {
 		this.interpolation = interpolation;
 	}
 
@@ -130,5 +126,10 @@ abstract public class TemporalAction extends Action {
 	/** When true, the action's progress will go from 100% to 0%. */
 	public void setReverse (boolean reverse) {
 		this.reverse = reverse;
+	}
+
+	/** Returns true after {@link #act(float)} has been called where time >= duration. */
+	public boolean isComplete () {
+		return complete;
 	}
 }

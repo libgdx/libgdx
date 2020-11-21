@@ -28,6 +28,8 @@ import android.view.KeyEvent;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
+import com.badlogic.gdx.backends.android.DefaultAndroidInput;
 
 /** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
@@ -46,6 +48,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 	final ResolutionStrategy resolutionStrategy;
 	static int targetGLESVersion;
+	public OnscreenKeyboardType onscreenKeyboardType = OnscreenKeyboardType.Default;
 
 	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
@@ -77,6 +80,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+			outAttrs.inputType = DefaultAndroidInput.getAndroidInputType(onscreenKeyboardType);
 		}
 
 		BaseInputConnection connection = new BaseInputConnection(this, false) {
@@ -106,6 +110,11 @@ public class GLSurfaceView20 extends GLSurfaceView {
 			}
 		};
 		return connection;
+	}
+
+	@Override
+	public void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
 	}
 
 	private void init (boolean translucent, int depth, int stencil) {

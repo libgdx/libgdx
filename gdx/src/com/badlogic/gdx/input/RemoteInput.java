@@ -185,6 +185,8 @@ public class RemoteInput implements Runnable, Input {
 		}
 	}
 
+	private static final int MAX_TOUCHES = 20;
+
 	public static int DEFAULT_PORT = 8190;
 	private ServerSocket serverSocket;
 	private float[] accel = new float[3];
@@ -199,11 +201,11 @@ public class RemoteInput implements Runnable, Input {
 	boolean[] keys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
-	int[] deltaX = new int[20];
-	int[] deltaY = new int[20];
-	int[] touchX = new int[20];
-	int[] touchY = new int[20];
-	boolean isTouched[] = new boolean[20];
+	int[] deltaX = new int[MAX_TOUCHES];
+	int[] deltaY = new int[MAX_TOUCHES];
+	int[] touchX = new int[MAX_TOUCHES];
+	int[] touchY = new int[MAX_TOUCHES];
+	boolean isTouched[] = new boolean[MAX_TOUCHES];
 	boolean justTouched = false;
 	InputProcessor processor = null;
 	private final int port;
@@ -362,6 +364,11 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		return touchX[0];
 	}
@@ -397,11 +404,26 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isButtonPressed (int button) {
 		if (button != Buttons.LEFT) return false;
 		for (int i = 0; i < isTouched.length; i++)
 			if (isTouched[i]) return true;
 		return false;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
@@ -432,7 +454,16 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint, type);
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override
@@ -485,6 +516,15 @@ public class RemoteInput implements Runnable, Input {
 		return false;
 	}
 
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
 
 	@Override
 	public void setInputProcessor (InputProcessor processor) {

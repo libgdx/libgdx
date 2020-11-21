@@ -3,8 +3,6 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.Array;
 
 /** A selection that supports range selection by knowing about the array of items being selected.
@@ -12,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 public class ArraySelection<T> extends Selection<T> {
 	private Array<T> array;
 	private boolean rangeSelect = true;
-	private int rangeStart;
+	private T rangeStart;
 
 	public ArraySelection (Array<T> array) {
 		this.array = array;
@@ -21,29 +19,43 @@ public class ArraySelection<T> extends Selection<T> {
 	public void choose (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
-		int index = array.indexOf(item, false);
-		if (selected.size > 0 && rangeSelect && multiple && UIUtils.shift()) {
-			int oldRangeState = rangeStart;
-			snapshot();
-			// Select new range.
-			int start = rangeStart, end = index;
-			if (start > end) {
-				int temp = end;
-				end = start;
-				start = temp;
-			}
-			if (!UIUtils.ctrl()) selected.clear();
-			for (int i = start; i <= end; i++)
-				selected.add(array.get(i));
-			if (fireChangeEvent()) {
-				rangeStart = oldRangeState;
-				revert();
-			}
-			cleanup();
+
+		if (!rangeSelect || !multiple) {
+			super.choose(item);
 			return;
-		} else
-			rangeStart = index;
+		}
+
+		if (selected.size > 0 && UIUtils.shift()) {
+			int rangeStartIndex = rangeStart == null ? -1 : array.indexOf(rangeStart, false);
+			if (rangeStartIndex != -1) {
+				T oldRangeStart = rangeStart;
+				snapshot();
+				// Select new range.
+				int start = rangeStartIndex, end = array.indexOf(item, false);
+				if (start > end) {
+					int temp = end;
+					end = start;
+					start = temp;
+				}
+				if (!UIUtils.ctrl()) selected.clear(8);
+				for (int i = start; i <= end; i++)
+					selected.add(array.get(i));
+				if (fireChangeEvent())
+					revert();
+				else
+					changed();
+				rangeStart = oldRangeStart;
+				cleanup();
+				return;
+			}
+		}
 		super.choose(item);
+		rangeStart = item;
+	}
+
+	/** Called after the selection changes, clears the range start item. */
+	protected void changed () {
+		rangeStart = null;
 	}
 
 	public boolean getRangeSelect () {
@@ -62,10 +74,17 @@ public class ArraySelection<T> extends Selection<T> {
 			clear();
 			return;
 		}
+		boolean changed = false;
 		for (Iterator<T> iter = items().iterator(); iter.hasNext();) {
 			T selected = iter.next();
-			if (!array.contains(selected, false)) iter.remove();
+			if (!array.contains(selected, false)) {
+				iter.remove();
+				changed = true;
+			}
 		}
-		if (required && selected.size == 0) set(array.first());
+		if (required && selected.size == 0)
+			set(array.first());
+		else if (changed) //
+			changed();
 	}
 }

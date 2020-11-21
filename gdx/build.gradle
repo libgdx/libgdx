@@ -16,11 +16,11 @@
 
 apply plugin: "java"
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["res"]
 sourceSets.test.java.srcDirs = ["test"]
 
 compileJava {
@@ -32,3 +32,16 @@ dependencies {
     compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+// Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
+task copyIdeaResources(type: Copy) {
+    from "${projectDir}/res"
+    into "${buildDir}/classes/java/main/"
+}
+processResources.dependsOn copyIdeaResources

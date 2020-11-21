@@ -18,9 +18,13 @@ package com.badlogic.gdx.backends.android;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -29,6 +33,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** @author mzechner
  * @author Nathan Sweet */
@@ -78,6 +83,26 @@ public class AndroidFileHandle extends FileHandle {
 			}
 		}
 		return super.read();
+	}
+
+	public ByteBuffer map (FileChannel.MapMode mode) {
+		if (type == FileType.Internal) {
+			FileInputStream input = null;
+			try {
+				AssetFileDescriptor fd = getAssetFileDescriptor();
+				long startOffset = fd.getStartOffset();
+				long declaredLength = fd.getDeclaredLength();
+				input = new FileInputStream(fd.getFileDescriptor());
+				ByteBuffer map = input.getChannel().map(mode, startOffset, declaredLength);
+				map.order(ByteOrder.nativeOrder());
+				return map;
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
+			} finally {
+				StreamUtils.closeQuietly(input);
+			}
+		}
+		return super.map(mode);
 	}
 
 	public FileHandle[] list () {

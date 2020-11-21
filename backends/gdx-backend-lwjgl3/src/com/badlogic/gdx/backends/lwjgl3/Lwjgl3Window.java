@@ -28,6 +28,7 @@ import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 import org.lwjgl.glfw.GLFWWindowMaximizeCallback;
 import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files;
@@ -38,9 +39,10 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Window implements Disposable {
 	private long windowHandle;
-	private final ApplicationListener listener;
+	final ApplicationListener listener;
+	final Lwjgl3ApplicationBase application;
 	private boolean listenerInitialized = false;
-	private Lwjgl3WindowListener windowListener;
+	Lwjgl3WindowListener windowListener;
 	private Lwjgl3Graphics graphics;
 	private Lwjgl3Input input;
 	private final Lwjgl3ApplicationConfiguration config;
@@ -48,7 +50,7 @@ public class Lwjgl3Window implements Disposable {
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();
 	private final IntBuffer tmpBuffer;
 	private final IntBuffer tmpBuffer2;
-	private boolean iconified = false;
+	boolean iconified = false;
 	private boolean requestRendering = false;
 	
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
@@ -152,17 +154,18 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 
-	Lwjgl3Window(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
+	Lwjgl3Window(ApplicationListener listener, Lwjgl3ApplicationConfiguration config, Lwjgl3ApplicationBase application) {
 		this.listener = listener;
 		this.windowListener = config.windowListener;
 		this.config = config;
+		this.application = application;
 		this.tmpBuffer = BufferUtils.createIntBuffer(1);
 		this.tmpBuffer2 = BufferUtils.createIntBuffer(1);
 	}
 
 	void create(long windowHandle) {
 		this.windowHandle = windowHandle;
-		this.input = new Lwjgl3Input(this);
+		this.input = application.createInput(this);
 		this.graphics = new Lwjgl3Graphics(this);
 
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
@@ -277,8 +280,9 @@ public class Lwjgl3Window implements Disposable {
 	/**
 	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
 	 * @param image One or more images. The one closest to the system's desired size will be scaled. Good sizes include
-	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
-	 * have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not disposed.
+	 * 16x16, 32x32 and 48x48. Pixmap format {@link com.badlogic.gdx.graphics.Pixmap.Format#RGBA8888 RGBA8888} is preferred
+	 * so the images will not have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not
+	 * disposed.
 	 */
 	public void setIcon (Pixmap... image) {
 		setIcon(windowHandle, image);

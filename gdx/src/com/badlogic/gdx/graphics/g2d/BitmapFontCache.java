@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.Pools;
  * @author Alexander Dorokhov */
 public class BitmapFontCache {
 	static private final Color tempColor = new Color(1, 1, 1, 1);
-	static private final float whiteTint = Color.WHITE.toFloatBits();
 
 	private final BitmapFont font;
 	private boolean integer;
@@ -188,7 +187,7 @@ public class BitmapFontCache {
 	public void setColors (float color, int start, int end) {
 		if (pageVertices.length == 1) { // One page.
 			float[] vertices = pageVertices[0];
-			for (int i = start * 20 + 2, n = end * 20; i < n; i += 5)
+			for (int i = start * 20 + 2, n = Math.min(end * 20, idx[0]); i < n; i += 5)
 				vertices[i] = color;
 			return;
 		}
@@ -327,7 +326,7 @@ public class BitmapFontCache {
 	private void requirePageGlyphs (int page, int glyphCount) {
 		if (pageGlyphIndices != null) {
 			if (glyphCount > pageGlyphIndices[page].items.length)
-				pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].items.length);
+				pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].size);
 		}
 
 		int vertexCount = idx[page] + glyphCount * 20;
@@ -381,7 +380,7 @@ public class BitmapFontCache {
 			}
 		}
 
-		currentTint = whiteTint; // Cached glyphs have changed, reset the current tint.
+		currentTint = Color.WHITE_FLOAT_BITS; // Cached glyphs have changed, reset the current tint.
 	}
 
 	private void addGlyph (Glyph glyph, float x, float y, float color) {

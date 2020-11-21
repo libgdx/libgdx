@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.util.Arrays;
 
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.graphics.Color;
@@ -32,15 +33,17 @@ public class Lwjgl3WindowConfiguration {
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	boolean windowMaximized = false;
+	Lwjgl3Graphics.Lwjgl3Monitor maximizedMonitor;
 	boolean autoIconify = false;
 	FileType windowIconFileType;
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
-	
+	boolean vSyncEnabled = true;
+
 	void setWindowConfiguration (Lwjgl3WindowConfiguration config){
 		windowX = config.windowX;
 		windowY = config.windowY;
@@ -53,6 +56,7 @@ public class Lwjgl3WindowConfiguration {
 		windowResizable = config.windowResizable;
 		windowDecorated = config.windowDecorated;
 		windowMaximized = config.windowMaximized;
+		maximizedMonitor = config.maximizedMonitor;
 		autoIconify = config.autoIconify;
 		windowIconFileType = config.windowIconFileType;
 		if (config.windowIconPaths != null) 
@@ -62,6 +66,7 @@ public class Lwjgl3WindowConfiguration {
 		title = config.title;
 		initialBackgroundColor = config.initialBackgroundColor;
 		initialVisible = config.initialVisible;
+		vSyncEnabled = config.vSyncEnabled;
 	}
 	
 	/**
@@ -104,6 +109,13 @@ public class Lwjgl3WindowConfiguration {
 	public void setMaximized(boolean maximized) {
 		this.windowMaximized = maximized;
 	}
+	
+	/**
+	 * @param monitor what monitor the window should maximize to
+	 */
+	public void setMaximizedMonitor(Graphics.Monitor monitor) {
+		this.maximizedMonitor = (Lwjgl3Graphics.Lwjgl3Monitor) monitor;
+	}
 
 	/**
 	 * @param autoIconify whether the window should automatically iconify and restore previous video mode on input focus loss. (default false)
@@ -114,8 +126,8 @@ public class Lwjgl3WindowConfiguration {
 	}
 
 	/**
-	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for both coordinates for centered.
+	 * Sets the position of the window in windowed mode.
+	 * Default -1 for both coordinates for centered on primary monitor.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
@@ -163,7 +175,7 @@ public class Lwjgl3WindowConfiguration {
 
 	/**
 	 * Sets the app to use fullscreen mode. Use the static methods like
-	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
+	 * {@link Lwjgl3ApplicationConfiguration#getDisplayMode()} on this class to enumerate connected monitors
 	 * and their fullscreen display modes.
 	 */
 	public void setFullscreenMode(DisplayMode mode) {
@@ -182,5 +194,17 @@ public class Lwjgl3WindowConfiguration {
 	 */
 	public void setInitialBackgroundColor(Color color) {
 		initialBackgroundColor = color;
+	}
+
+	/**
+	 * Sets whether to use vsync. This setting can be changed anytime at runtime
+	 * via {@link Graphics#setVSync(boolean)}.
+	 *
+	 * For multi-window applications, only one (the main) window should enable vsync.
+	 * Otherwise, every window will wait for the vertical blank on swap individually,
+	 * effectively cutting the frame rate to (refreshRate / numberOfWindows).
+	 */
+	public void useVsync(boolean vsync) {
+		this.vSyncEnabled = vsync;
 	}
 }

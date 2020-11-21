@@ -25,13 +25,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.IOException;
 
 public class PixmapPackerTest extends GdxTest {
 
@@ -44,6 +45,15 @@ public class PixmapPackerTest extends GdxTest {
 	int pageToShow = 0;
 	Array<TextureRegion> textureRegions;
 
+	NinePatch ninePatch;
+	NinePatch officialPatch;
+
+	Animation<TextureRegion> animation;
+
+	Skin skin;
+
+	float stateTime = 0;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -53,15 +63,23 @@ public class PixmapPackerTest extends GdxTest {
 		camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 		camera.update();
 
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
 		Pixmap pixmap1 = new Pixmap(Gdx.files.internal("data/badlogic.jpg"));
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
+		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
+		Pixmap pixmap5 = new Pixmap(Gdx.files.internal("data/badlogic-with-whitespace.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false);
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false,
+				true, true, new PixmapPacker.GuillotineStrategy());
+		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
+			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace " + count, pixmap5);
 		}
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
@@ -73,13 +91,24 @@ public class PixmapPackerTest extends GdxTest {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
 			packer.pack("isotile " + count, pixmap3);
+			packer.pack("textfield-" + count + ".9", pixmap4);
+			packer.pack("badlogic-whitespace -" + count, pixmap5);
 		}
+
+		packer.pack("badlogic-anim_0", pixmap1);
+		packer.pack("badlogic-anim_1", pixmap5);
+		packer.pack("badlogic-anim_2", pixmap1);
+		packer.pack("badlogic-anim_3", pixmap5);
 
 		pixmap1.dispose();
 		pixmap2.dispose();
 		pixmap3.dispose();
+		pixmap4.dispose();
+		pixmap5.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
+		animation = new Animation<TextureRegion>(0.33f, atlas.findRegions("badlogic-anim"), Animation.PlayMode.LOOP);
+
 		textureRegions = new Array<TextureRegion>();
 		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmapPackerTest", "Number of updated textures: " + atlas.getTextures().size);
@@ -95,6 +124,12 @@ public class PixmapPackerTest extends GdxTest {
 				return super.keyDown(keycode);
 			}
 		});
+
+		ninePatch = atlas.createPatch("textfield-1");
+		officialPatch = skin.getPatch("textfield");
+		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+
 	}
 
 	@Override
@@ -102,17 +137,24 @@ public class PixmapPackerTest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		int quarterSize = (int) (size/4f);
 		batch.begin();
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
+		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);
+		officialPatch.draw(batch, (int)(size * 0.25f + 20), 10, quarterSize, quarterSize);
+		batch.draw(animation.getKeyFrame(stateTime), 30 + (quarterSize * 2), 10, quarterSize, quarterSize);
 		batch.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(0, 0, size, size);
 		shapeRenderer.end();
+
+		stateTime += Gdx.graphics.getDeltaTime();
 	}
 
 	@Override
 	public void dispose () {
 		atlas.dispose();
+		skin.dispose();
 	}
 }

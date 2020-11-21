@@ -16,15 +16,14 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Canvas;
 import java.io.File;
 
-import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -32,17 +31,19 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import java.awt.Canvas;
+
 /** An OpenGL surface fullscreen or in a lightweight window. */
-public class LwjglApplication implements Application {
+public class LwjglApplication implements LwjglApplicationBase {
 	protected final LwjglGraphics graphics;
-	protected OpenALAudio audio;
+	protected LwjglAudio audio;
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
@@ -51,7 +52,8 @@ public class LwjglApplication implements Application {
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	protected String preferencesdir;
@@ -85,16 +87,15 @@ public class LwjglApplication implements Application {
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio) {
 			try {
-				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-					config.audioDeviceBufferSize);
+				audio = createAudio(config);
 			} catch (Throwable t) {
 				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
 				LwjglApplicationConfiguration.disableAudio = true;
 			}
 		}
 		files = new LwjglFiles();
-		input = new LwjglInput();
-		net = new LwjglNet();
+		input = createInput(config);
+		net = new LwjglNet(config);
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
 		this.preferencesFileType = config.preferencesFileType;
@@ -137,7 +138,7 @@ public class LwjglApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	void mainLoop () {
+	protected void mainLoop () {
 		SnapshotArray<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		try {
@@ -153,24 +154,26 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
-		boolean wasActive = true;
+		boolean wasPaused = false;
 		while (running) {
 			Display.processMessages();
 			if (Display.isCloseRequested()) exit();
 
-			boolean isActive = Display.isActive();
-			if (wasActive && !isActive) { // if it's just recently minimized from active state
-				wasActive = false;
+			boolean isMinimized = graphics.config.pauseWhenMinimized && !Display.isVisible();
+			boolean isBackground = !Display.isActive();
+			boolean paused = isMinimized || (isBackground && graphics.config.pauseWhenBackground);
+			if (!wasPaused && paused) { // just been minimized
+				wasPaused = true;
 				synchronized (lifecycleListeners) {
 					LifecycleListener[] listeners = lifecycleListeners.begin();
 					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
-						 listeners[i].pause();
+						listeners[i].pause();
 					lifecycleListeners.end();
 				}
 				listener.pause();
 			}
-			if (!wasActive && isActive) { // if it's just recently focused from minimized state
-				wasActive = true;
+			if (wasPaused && !paused) { // just been restore from being minimized
+				wasPaused = false;
 				synchronized (lifecycleListeners) {
 					LifecycleListener[] listeners = lifecycleListeners.begin();
 					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
@@ -203,7 +206,7 @@ public class LwjglApplication implements Application {
 					graphics.config.height = (int)(Display.getHeight() * Display.getPixelScaleFactor());
 					Gdx.gl.glViewport(0, 0, graphics.config.width, graphics.config.height);
 					if (listener != null) listener.resize(graphics.config.width, graphics.config.height);
-					graphics.requestRendering();
+					shouldRender = true;
 				}
 			}
 
@@ -213,12 +216,16 @@ public class LwjglApplication implements Application {
 			if (!running) break;
 
 			input.update();
-			shouldRender |= graphics.shouldRender();
+			if (graphics.shouldRender()) shouldRender = true;
 			input.processEvents();
 			if (audio != null) audio.update();
 
-			if (!isActive && graphics.config.backgroundFPS == -1) shouldRender = false;
-			int frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
+			if (isMinimized)
+				shouldRender = false;
+			else if (isBackground && graphics.config.backgroundFPS == -1) //
+				shouldRender = false;
+
+			int frameRate = isBackground ? graphics.config.backgroundFPS : graphics.config.foregroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
 				graphics.frameId++;
@@ -264,6 +271,17 @@ public class LwjglApplication implements Application {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+	@Override
+	public LwjglAudio createAudio(LwjglApplicationConfiguration config) {
+		return new OpenALLwjglAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+			config.audioDeviceBufferSize);
+	}
+
+	@Override
+	public LwjglInput createInput(LwjglApplicationConfiguration config) {
+		return new DefaultLwjglInput();
 	}
 
 	@Override
@@ -394,7 +412,6 @@ public class LwjglApplication implements Application {
 	public ApplicationLogger getApplicationLogger () {
 		return applicationLogger;
 	}
-
 
 	@Override
 	public void exit () {

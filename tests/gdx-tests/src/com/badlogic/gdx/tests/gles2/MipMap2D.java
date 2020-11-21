@@ -86,7 +86,7 @@ public class MipMap2D extends GdxTest {
 
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
 		texture.bind();
-		shader.begin();
+		shader.bind();
 		shader.setUniformf("s_texture", 0);
 
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_NEAREST);
@@ -96,7 +96,5 @@ public class MipMap2D extends GdxTest {
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_LINEAR_MIPMAP_LINEAR);
 		shader.setUniformf("u_offset", 0.6f);
 		mesh.render(shader, GL20.GL_TRIANGLES);
-
-		shader.end();
 	}
 }

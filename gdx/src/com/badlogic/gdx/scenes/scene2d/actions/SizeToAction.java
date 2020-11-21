@@ -28,7 +28,18 @@ public class SizeToAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		target.setSize(startWidth + (endWidth - startWidth) * percent, startHeight + (endHeight - startHeight) * percent);
+		float width, height;
+		if (percent == 0) {
+			width = startWidth;
+			height = startHeight;
+		} else if (percent == 1) {
+			width = endWidth;
+			height = endHeight;
+		} else {
+			width = startWidth + (endWidth - startWidth) * percent;
+			height = startHeight + (endHeight - startHeight) * percent;
+		}
+		target.setSize(width, height);
 	}
 
 	public void setSize (float width, float height) {

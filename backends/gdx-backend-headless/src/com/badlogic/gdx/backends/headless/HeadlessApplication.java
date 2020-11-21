@@ -67,7 +67,7 @@ public class HeadlessApplication implements Application {
 		setApplicationLogger(new HeadlessApplicationLogger());
 		this.listener = listener;
 		this.files = new HeadlessFiles();
-		this.net = new HeadlessNet();
+		this.net = new HeadlessNet(config);
 		// the following elements are not applicable for headless applications
 		// they are only implemented as mock objects
 		this.graphics = new MockGraphics();
@@ -105,7 +105,7 @@ public class HeadlessApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	void mainLoop () {
+	protected void mainLoop () {
 		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		listener.create();
@@ -118,9 +118,10 @@ public class HeadlessApplication implements Application {
 				final long n = TimeUtils.nanoTime();
 				if (t > n) {
 					try {
-						Thread.sleep((t - n) / 1000000);
+						long sleep = t - n;
+						Thread.sleep(sleep / 1000000, (int) (sleep % 1000000));
 					} catch (InterruptedException e) {}
-					t = TimeUtils.nanoTime() + renderInterval;
+					t = t + renderInterval;
 				} else
 					t = n + renderInterval;
 				

@@ -162,8 +162,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		return tests[testIndex].scrolled(amount);
+	public boolean scrolled (float amountX, float amountY) {
+		return tests[testIndex].scrolled(amountX, amountY);
 	}
 
 	@Override

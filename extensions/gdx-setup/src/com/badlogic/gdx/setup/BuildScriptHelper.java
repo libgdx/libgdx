@@ -34,22 +34,22 @@ public class BuildScriptHelper {
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, "maven { url \"" + DependencyBank.gradlePlugins + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "classpath '" + DependencyBank.gwtPluginImport + "'");
+			write(wr, "classpath '" + DependencyBank.grettyPluginImport + "'");
 		}
 		if (projects.contains(ProjectType.ANDROID)) {
 			write(wr, "classpath '" + DependencyBank.androidPluginImport + "'");
 		}
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
-		}
-		if (projects.contains(ProjectType.IOSMOE)) {
-			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
 		}
 		write(wr, language.buildScriptDependencies + "\n");
 		write(wr, "}");
@@ -60,7 +60,6 @@ public class BuildScriptHelper {
 	public static void addAllProjects(BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
 		write(wr, "apply plugin: \"eclipse\"");
-		write(wr, "apply plugin: \"idea\"");
 		space(wr);
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
@@ -75,6 +74,8 @@ public class BuildScriptHelper {
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
+		write(wr, DependencyBank.jCenter);
+		write(wr, DependencyBank.google);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
 		write(wr, "}");
@@ -97,16 +98,16 @@ public class BuildScriptHelper {
 	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
-			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
 		}
 		for (Dependency dep : dependencyList) {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
+				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
-					write(wr, "compile \"" + moduleDependency + "\"");
+					write(wr, "api \"" + moduleDependency + "\"");
 				}
 			}
 		}
@@ -115,7 +116,7 @@ public class BuildScriptHelper {
 	}
 
 	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
+		if (project.equals(ProjectType.ANDROID)) {
 			write(wr, "configurations { natives }");
 		}
 	}

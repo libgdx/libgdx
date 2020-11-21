@@ -179,7 +179,10 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glDrawBuffers (int n, IntBuffer bufs) {
+		int limit = bufs.limit();
+		bufs.limit(n);
 		GL20.glDrawBuffers(bufs);
+		bufs.limit(limit);
 	}
 
 	@Override
@@ -480,7 +483,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetActiveUniformBlockiv (int program, int uniformBlockIndex, int pname, IntBuffer params) {
-		params.put(GL31.glGetActiveUniformBlocki(program, uniformBlockIndex, pname));
+		GL31.glGetActiveUniformBlock(program, uniformBlockIndex, pname, params);
 	}
 
 	@Override

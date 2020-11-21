@@ -16,14 +16,11 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.content.Context;
 import android.view.InputDevice;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
+import com.badlogic.gdx.backends.android.DefaultAndroidInput.TouchEvent;
 
 /** Mouse handler for devices running Android >= 3.1.
  * 
@@ -32,13 +29,14 @@ public class AndroidMouseHandler {
 	private int deltaX = 0;
 	private int deltaY = 0;
 
-	public boolean onGenericMotion (MotionEvent event, AndroidInput input) {
+	public boolean onGenericMotion (MotionEvent event, DefaultAndroidInput input) {
 		if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) == 0) return false;
 
 		final int action = event.getAction() & MotionEvent.ACTION_MASK;
 
 		int x = 0, y = 0;
-		int scrollAmount = 0;
+		int scrollAmountX = 0;
+		int scrollAmountY = 0;
 
 		long timeStamp = System.nanoTime();
 		synchronized (input) {
@@ -47,15 +45,16 @@ public class AndroidMouseHandler {
 				x = (int)event.getX();
 				y = (int)event.getY();
 				if ((x != deltaX) || (y != deltaY)) { // Avoid garbage events
-					postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, 0, timeStamp);
+					postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, 0, 0, timeStamp);
 					deltaX = x;
 					deltaY = y;
 				}
 				break;
 
 			case MotionEvent.ACTION_SCROLL:
-				scrollAmount = (int)-Math.signum(event.getAxisValue(MotionEvent.AXIS_VSCROLL));
-				postTouchEvent(input, TouchEvent.TOUCH_SCROLLED, 0, 0, scrollAmount, timeStamp);
+				scrollAmountY = (int)-Math.signum(event.getAxisValue(MotionEvent.AXIS_VSCROLL));
+				scrollAmountX = (int)-Math.signum(event.getAxisValue(MotionEvent.AXIS_HSCROLL));
+				postTouchEvent(input, TouchEvent.TOUCH_SCROLLED, 0, 0, scrollAmountX, scrollAmountY, timeStamp);
 
 			}
 		}
@@ -78,13 +77,14 @@ public class AndroidMouseHandler {
 		Gdx.app.log("AndroidMouseHandler", "action " + actionStr);
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int scrollAmount, long timeStamp) {
+	private void postTouchEvent (DefaultAndroidInput input, int type, int x, int y, int scrollAmountX, int scrollAmountY, long timeStamp) {
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.x = x;
 		event.y = y;
 		event.type = type;
-		event.scrollAmount = scrollAmount;
+		event.scrollAmountX = scrollAmountX;
+		event.scrollAmountY = scrollAmountY;
 		input.touchEvents.add(event);
 	}
 

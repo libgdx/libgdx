@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -48,11 +49,14 @@ public class MusicTest extends GdxTest {
 	Slider slider;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
+	TextButton btLoop;
 
 	enum Song {
-		MP3, OGG, WAV
+		MP3, OGG, WAV, MP3_CLOCK
 	}
 
+	private float time;
+	
 	@Override
 	public void create () {
 
@@ -79,13 +83,25 @@ public class MusicTest extends GdxTest {
 				setSong(musicBox.getSelected());
 			}
 		});
+
+		btLoop = new TextButton("loop", skin, "toggle");
+		btLoop.setChecked(true);
+		btLoop.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				if(music != null) music.setLooping(btLoop.isChecked());
+			}
+		});
+		
 		setSong(musicBox.getSelected());
 
+		
 		Table table = new Table(skin);
 		table.add(musicBox);
+		table.add(btLoop);
 		table.setFillParent(true);
 		stage.addActor(table);
-
+		
 		stage.addActor(slider);
 
 		Gdx.input.setInputProcessor(stage);
@@ -97,6 +113,10 @@ public class MusicTest extends GdxTest {
 		}
 		switch (song) {
 		default:
+		case MP3_CLOCK:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/60bpm.mp3"));
+			songDuration = 5 * 60 + 4;
+			break;
 		case MP3:
 			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
 			songDuration = 183;
@@ -110,8 +130,9 @@ public class MusicTest extends GdxTest {
 			songDuration = 4;
 			break;
 		}
-		music.setLooping(true);
+		music.setLooping(btLoop.isChecked());
 		music.play();
+		time = 0;
 	}
 
 	@Override
@@ -143,6 +164,7 @@ public class MusicTest extends GdxTest {
 			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
 				if (Gdx.input.getX() < 64) {
 					music.play();
+					time = 0;
 				}
 				if (Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
 					music.stop();
@@ -151,6 +173,10 @@ public class MusicTest extends GdxTest {
 					music.pause();
 				}
 			}
+		}
+		if(music.isPlaying()){
+			time += Gdx.graphics.getDeltaTime();
+			System.out.println("realtime: " + time + " music time: " + currentPosition);
 		}
 	}
 

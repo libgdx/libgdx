@@ -153,6 +153,26 @@ public interface Graphics {
 	/** @return the height of the framebuffer in physical pixels */
 	public int getBackBufferHeight ();
 
+	/**
+	 * @return the inset from the left which avoids display cutouts in logical pixels
+	 */
+	int getSafeInsetLeft();
+
+	/**
+	 * @return the inset from the top which avoids display cutouts in logical pixels
+	 */
+	int getSafeInsetTop();
+
+	/**
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels
+	 */
+	int getSafeInsetBottom();
+
+	/**
+	 * @return the inset from the right which avoids display cutouts in logical pixels
+	 */
+	int getSafeInsetRight();
+
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
 	 * the first frame is 0; the id of subsequent frames is guaranteed to take increasing values for 2<sup>63</sup>-1 rendering
@@ -160,10 +180,12 @@ public interface Graphics {
 	 * @return the id of the current frame */
 	public long getFrameId ();
 
-	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
+	/** @return the time span between the current frame and the last frame in seconds. */
 	public float getDeltaTime ();
 
-	/** @return the time span between the current frame and the last frame in seconds, without smoothing **/
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing 
+	 * @deprecated use {@link #getDeltaTime()} instead. */
+	@Deprecated
 	public float getRawDeltaTime ();
 
 	/** @return the average number of frames per second */
