@@ -535,6 +535,10 @@ public class DefaultGwtInput implements GwtInput {
 		return event.movementY || event.webkitMovementY || 0;
 	}-*/;
 
+	private native int getKeyLocationJSNI (NativeEvent event) /*-{
+		return event.location || 0;
+	}-*/;
+
 	private static native boolean isTouchScreen () /*-{
 		return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
 	}-*/;
@@ -744,7 +748,7 @@ public class DefaultGwtInput implements GwtInput {
 		if (hasFocus && !e.getType().equals("blur")) {
 			if (e.getType().equals("keydown")) {
 				// Gdx.app.log("DefaultGwtInput", "keydown");
-				int code = keyForCode(e.getKeyCode());
+				int code = keyForCode(e.getKeyCode(), getKeyLocationJSNI(e));
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
@@ -775,7 +779,7 @@ public class DefaultGwtInput implements GwtInput {
 
 			if (e.getType().equals("keyup")) {
 				// Gdx.app.log("DefaultGwtInput", "keyup");
-				int code = keyForCode(e.getKeyCode());
+				int code = keyForCode(e.getKeyCode(), getKeyLocationJSNI(e));
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
@@ -893,14 +897,14 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	/** borrowed from PlayN, thanks guys **/
-	protected int keyForCode (int keyCode) {
+	protected int keyForCode (int keyCode, int location) {
 		switch (keyCode) {
 		case KeyCodes.KEY_ALT:
-			return Keys.ALT_LEFT;
+			return location == LOCATION_RIGHT ? Keys.ALT_RIGHT : Keys.ALT_LEFT;
 		case KeyCodes.KEY_BACKSPACE:
 			return Keys.BACKSPACE;
 		case KeyCodes.KEY_CTRL:
-			return Keys.CONTROL_LEFT;
+			return location == LOCATION_RIGHT ? Keys.CONTROL_RIGHT : Keys.CONTROL_LEFT;
 		case KeyCodes.KEY_DELETE:
 			return Keys.DEL;
 		case KeyCodes.KEY_DOWN:
@@ -922,7 +926,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_RIGHT:
 			return Keys.RIGHT;
 		case KeyCodes.KEY_SHIFT:
-			return Keys.SHIFT_LEFT;
+			return location == LOCATION_RIGHT ? Keys.SHIFT_RIGHT : Keys.SHIFT_LEFT;
 		case KeyCodes.KEY_TAB:
 			return Keys.TAB;
 		case KeyCodes.KEY_UP:
@@ -1034,7 +1038,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_NUMPAD9:
 			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.STAR;
 		case KEY_ADD:
 			return Keys.PLUS;
 		case KEY_SUBTRACT:
@@ -1042,7 +1046,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_DECIMAL_POINT_KEY:
 			return Keys.PERIOD;
 		case KEY_DIVIDE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.SLASH;
 		case KEY_F1:
 			return Keys.F1;
 		case KEY_F2:
@@ -1183,4 +1187,8 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
 
+	private static final int LOCATION_STANDARD = 0;
+	private static final int LOCATION_LEFT = 1;
+	private static final int LOCATION_RIGHT = 2;
+	private static final int LOCATION_NUMPAD = 3;
 }
