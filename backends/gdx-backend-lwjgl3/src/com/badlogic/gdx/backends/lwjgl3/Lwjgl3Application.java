@@ -425,15 +425,13 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, config.windowMaximized ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_AUTO_ICONIFY, config.autoIconify ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 
-		if(sharedContextWindow == 0) {
-			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
-			GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
-			GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, config.b);
-			GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, config.a);
-			GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, config.stencil);
-			GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
-			GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
-		}
+		GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
+		GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
+		GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, config.b);
+		GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, config.a);
+		GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, config.stencil);
+		GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
+		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 
 		if (config.useGL30) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
