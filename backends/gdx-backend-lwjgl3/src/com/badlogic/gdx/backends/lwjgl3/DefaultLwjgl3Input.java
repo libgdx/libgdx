@@ -508,7 +508,6 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return Input.Keys.END;
 		case GLFW.GLFW_KEY_CAPS_LOCK:
 		case GLFW.GLFW_KEY_SCROLL_LOCK:
-		case GLFW.GLFW_KEY_NUM_LOCK:
 		case GLFW.GLFW_KEY_PRINT_SCREEN:
 		case GLFW.GLFW_KEY_PAUSE:
 			return Input.Keys.UNKNOWN;
@@ -550,6 +549,8 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 		case GLFW.GLFW_KEY_F24:
 		case GLFW.GLFW_KEY_F25:
 			return Input.Keys.UNKNOWN;
+		case GLFW.GLFW_KEY_NUM_LOCK:
+			return Keys.NUM_LOCK;
 		case GLFW.GLFW_KEY_KP_0:
 			return Input.Keys.NUMPAD_0;
 		case GLFW.GLFW_KEY_KP_1:
@@ -571,19 +572,19 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 		case GLFW.GLFW_KEY_KP_9:
 			return Input.Keys.NUMPAD_9;
 		case GLFW.GLFW_KEY_KP_DECIMAL:
-			return Input.Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case GLFW.GLFW_KEY_KP_DIVIDE:
-			return Input.Keys.SLASH;
+			return Keys.NUMPAD_DIVIDE;
 		case GLFW.GLFW_KEY_KP_MULTIPLY:
-			return Input.Keys.STAR;
+			return Keys.NUMPAD_MULTIPLY;
 		case GLFW.GLFW_KEY_KP_SUBTRACT:
-			return Input.Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case GLFW.GLFW_KEY_KP_ADD:
-			return Input.Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case GLFW.GLFW_KEY_KP_ENTER:
-			return Input.Keys.ENTER;
+			return Keys.NUMPAD_ENTER;
 		case GLFW.GLFW_KEY_KP_EQUAL:
-			return Input.Keys.EQUALS;
+			return Keys.NUMPAD_EQUALS;
 		case GLFW.GLFW_KEY_LEFT_SHIFT:
 			return Input.Keys.SHIFT_LEFT;
 		case GLFW.GLFW_KEY_LEFT_CONTROL:
@@ -753,6 +754,8 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return GLFW.GLFW_KEY_F11;
 		case Input.Keys.F12:
 			return GLFW.GLFW_KEY_F12;
+		case Keys.NUM_LOCK:
+			return GLFW.GLFW_KEY_NUM_LOCK;
 		case Input.Keys.NUMPAD_0:
 			return GLFW.GLFW_KEY_KP_0;
 		case Input.Keys.NUMPAD_1:
@@ -773,14 +776,20 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return GLFW.GLFW_KEY_KP_8;
 		case Input.Keys.NUMPAD_9:
 			return GLFW.GLFW_KEY_KP_9;
-		case Input.Keys.SLASH:
+		case Keys.NUMPAD_DIVIDE:
 			return GLFW.GLFW_KEY_KP_DIVIDE;
-		case Input.Keys.STAR:
+		case Keys.NUMPAD_MULTIPLY:
 			return GLFW.GLFW_KEY_KP_MULTIPLY;
-		case Input.Keys.MINUS:
+		case Keys.NUMPAD_SUBTRACT:
 			return GLFW.GLFW_KEY_KP_SUBTRACT;
-		case Input.Keys.PLUS:
+		case Keys.NUMPAD_ADD:
 			return GLFW.GLFW_KEY_KP_ADD;
+		case Keys.NUMPAD_ENTER:
+			return GLFW.GLFW_KEY_KP_ENTER;
+		case Keys.NUMPAD_EQUALS:
+			return GLFW.GLFW_KEY_KP_EQUAL;
+		case Keys.NUMPAD_DOT:
+			return GLFW.GLFW_KEY_KP_DECIMAL;
 		case Input.Keys.SHIFT_LEFT:
 			return GLFW.GLFW_KEY_LEFT_SHIFT;
 		case Input.Keys.CONTROL_LEFT:
