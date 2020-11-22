@@ -735,11 +735,14 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			return Input.Keys.HOME;
 		case java.awt.event.KeyEvent.VK_MINUS:
 			return Input.Keys.MINUS;
+		case java.awt.event.KeyEvent.VK_SUBTRACT:
+			return Keys.NUMPAD_SUBTRACT;
 		case java.awt.event.KeyEvent.VK_PERIOD:
 			return Input.Keys.PERIOD;
 		case java.awt.event.KeyEvent.VK_PLUS:
-		case java.awt.event.KeyEvent.VK_ADD:
 			return Input.Keys.PLUS;
+		case java.awt.event.KeyEvent.VK_ADD:
+			return Keys.NUMPAD_ADD;
 		case java.awt.event.KeyEvent.VK_SEMICOLON:
 			return Input.Keys.SEMICOLON;
 		case java.awt.event.KeyEvent.VK_SHIFT:
@@ -755,10 +758,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		case java.awt.event.KeyEvent.VK_QUOTE:
 			return Input.Keys.APOSTROPHE;
 		case java.awt.event.KeyEvent.VK_ASTERISK:
-		case java.awt.event.KeyEvent.VK_MULTIPLY:
 			return Input.Keys.STAR;
-		case java.awt.event.KeyEvent.VK_SUBTRACT:
-			return Input.Keys.MINUS;
+		case java.awt.event.KeyEvent.VK_MULTIPLY:
+			return Keys.NUMPAD_MULTIPLY;
 		case java.awt.event.KeyEvent.VK_CONTROL:
 			return Input.Keys.CONTROL_LEFT;
 		case java.awt.event.KeyEvent.VK_ESCAPE:
@@ -798,25 +800,33 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		case java.awt.event.KeyEvent.VK_COLON:
 			return Input.Keys.COLON;
 		case java.awt.event.KeyEvent.VK_NUMPAD0:
-			return Input.Keys.NUM_0;
+			return Keys.NUMPAD_0;
 		case java.awt.event.KeyEvent.VK_NUMPAD1:
-			return Input.Keys.NUM_1;
+			return Keys.NUMPAD_1;
 		case java.awt.event.KeyEvent.VK_NUMPAD2:
-			return Input.Keys.NUM_2;
+			return Keys.NUMPAD_2;
 		case java.awt.event.KeyEvent.VK_NUMPAD3:
-			return Input.Keys.NUM_3;
+			return Keys.NUMPAD_3;
 		case java.awt.event.KeyEvent.VK_NUMPAD4:
-			return Input.Keys.NUM_4;
+			return Keys.NUMPAD_4;
 		case java.awt.event.KeyEvent.VK_NUMPAD5:
-			return Input.Keys.NUM_5;
+			return Keys.NUMPAD_5;
 		case java.awt.event.KeyEvent.VK_NUMPAD6:
-			return Input.Keys.NUM_6;
+			return Keys.NUMPAD_6;
 		case java.awt.event.KeyEvent.VK_NUMPAD7:
-			return Input.Keys.NUM_7;
+			return Keys.NUMPAD_7;
 		case java.awt.event.KeyEvent.VK_NUMPAD8:
-			return Input.Keys.NUM_8;
+			return Keys.NUMPAD_8;
 		case java.awt.event.KeyEvent.VK_NUMPAD9:
-			return Input.Keys.NUM_9;
+			return Keys.NUMPAD_9;
+		case java.awt.event.KeyEvent.VK_SEPARATOR:
+			return Keys.NUMPAD_COMMA;
+		case java.awt.event.KeyEvent.VK_DECIMAL:
+			return Keys.NUMPAD_DOT;
+		case java.awt.event.KeyEvent.VK_DIVIDE:
+			return Keys.NUMPAD_DIVIDE;
+		case java.awt.event.KeyEvent.VK_NUM_LOCK:
+			return Keys.NUM_LOCK;
 		}
 		return Input.Keys.UNKNOWN;
 	}
