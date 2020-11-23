@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,17 +47,39 @@ public class VibratorTest extends GdxTest {
 		table.setFillParent(true);
 		stage.addActor(table);
 
-		final Button button = new Button(skin);
-		Label vibrateLabel = new Label("Vibrate", skin);
-		button.add(vibrateLabel);
+		final Button button = getButton("Vibrate");
 		button.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.input.vibrate(100);
+				Gdx.input.vibrate(50);
 			}
 		});
-		table.add(button).size(100f);
+		final Button buttonVibrateAmplitude = getButton("Vibrate \n Amplitude");
+		buttonVibrateAmplitude.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.input.vibrate(200, 100, false);
+			}
+		});
+		final Button buttonVibrateType = getButton("Vibrate \n Type");
+		buttonVibrateType.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.input.vibrate(Input.VibrationType.LIGHT, false);
+			}
+		});
+		table.defaults().pad(20f);
+		table.add(button).size(120f);
+		table.add(buttonVibrateAmplitude).size(120f);
+		table.add(buttonVibrateType).size(120f);
 
+	}
+
+	private Button getButton (String text) {
+		final Button button = new Button(skin);
+		Label label = new Label(text, skin);
+		button.add(label);
+		return button;
 	}
 
 	@Override
