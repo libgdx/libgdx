@@ -13,6 +13,7 @@ import org.robovm.apple.corehaptic.CHHapticPatternDict;
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSErrorException;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.uikit.UIImpactFeedbackGenerator;
 import org.robovm.apple.uikit.UIImpactFeedbackStyle;
@@ -27,10 +28,10 @@ public class IOSHaptics {
 		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
 			hapticsSupport = CHHapticEngine.capabilitiesForHardware().supportsHaptics();
 			if (hapticsSupport) {
-				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
-				hapticEngine = new CHHapticEngine(ptr);
-				if (ptr.get() != null) {
-					Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled.");
+				try {
+					hapticEngine = new CHHapticEngine();
+				} catch (NSErrorException e) {
+					Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled. " + e);
 					hapticsSupport = false;
 				}
 				hapticEngine.setPlaysHapticsOnly(true);
@@ -55,15 +56,10 @@ public class IOSHaptics {
 	
 	public void vibrate(int milliseconds, boolean fallback) {
 		if (hapticsSupport) {
-			CHHapticPatternDict dict = new CHHapticPatternDict();
-			NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
-			parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, 0.5f));
-			dict.setEventType(CHHapticEventType.HapticTransient);
-			dict.setEventParameters(parameters);
-			dict.setEventDuration(milliseconds / 1000f);
-			dict.setTime(0);
+			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, 0.5f);
+			System.out.println(hapticDict);
 			try {
-				CHHapticPattern pattern = new CHHapticPattern(dict);
+				CHHapticPattern pattern = new CHHapticPattern(hapticDict);
 				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
 				hapticEngine.createPlayer(pattern).start(0, ptr);
 				if (ptr.get() != null) {
@@ -76,19 +72,13 @@ public class IOSHaptics {
 			AudioServices.playSystemSound(4095);
 		}
 	}
-	
+
 	public void vibrate(int milliseconds, int amplitude, boolean fallback) {
 		if (hapticsSupport) {
 			float intensity = MathUtils.clamp(amplitude / 255f, 0, 1);
-			CHHapticPatternDict dict = new CHHapticPatternDict();
-			NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
-			parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity));
-			dict.setEventType(CHHapticEventType.HapticTransient);
-			dict.setEventParameters(parameters);
-			dict.setEventDuration(milliseconds / 1000f);
-			dict.setTime(0);
+			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, intensity);
 			try {
-				CHHapticPattern pattern = new CHHapticPattern(dict);
+				CHHapticPattern pattern = new CHHapticPattern(hapticDict);
 				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
 				hapticEngine.createPlayer(pattern).start(0, ptr);
 				if (ptr.get() != null) {
@@ -101,6 +91,26 @@ public class IOSHaptics {
 			vibrate(milliseconds, fallback);
 		}
 	}
+
+	private CHHapticPatternDict getChHapticPatternDict(int milliseconds, float intensity) {
+		NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
+		parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity));
+		return new CHHapticPatternDict()
+			.setPattern(
+				new NSArray<NSObject>(
+					new CHHapticPatternDict()
+						.setEvent(
+							new CHHapticPatternDict()
+								.setEventType(CHHapticEventType.HapticTransient)
+								.setTime(0.0)
+								.setEventDuration(milliseconds / 1000f)
+								.setEventParameters(parameters)
+						)
+					.getDictionary()
+				)
+			);
+	}
+
 
 	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
 		final int DEFAULT_LENGTH = 50;
