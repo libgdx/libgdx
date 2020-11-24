@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2020 See AUTHORS file.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,9 +58,9 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 	public Environment lights;
 
 	public Octree<GameObject> octree;
-	public ObjectSet<GameObject> tmpResult = new ObjectSet<>();
-	public Array<GameObject> gameObjects = new Array<>();
-	public Array<ModelInstance> octreeBounds = new Array<>();
+	public ObjectSet<GameObject> tmpResult = new ObjectSet<GameObject>();
+	public Array<GameObject> gameObjects = new Array<GameObject>();
+	public Array<ModelInstance> octreeBounds = new Array<ModelInstance>();
 
 	private GameObject lastSelected;
 
@@ -83,7 +83,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 
 		Vector3 min = new Vector3(-AREA_SIZE / 2, -AREA_SIZE / 2, -AREA_SIZE / 2);
 		Vector3 max = new Vector3(AREA_SIZE / 2, AREA_SIZE / 2, AREA_SIZE / 2);
-		octree = new Octree<>(min, max, MAX_DEPTH, MAX_ITEMS_PER_NODE, new Octree.Collider<GameObject>() {
+		octree = new Octree<GameObject>(min, max, MAX_DEPTH, MAX_ITEMS_PER_NODE, new Octree.Collider<GameObject>() {
 			@Override
 			public boolean intersects(BoundingBox nodeBounds, GameObject geometry) {
 				return nodeBounds.intersects(geometry.box);
@@ -100,7 +100,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 				if (Intersector.intersectRayBounds(ray, geometry.box, tmp)) {
 					return tmp.dst2(ray.origin);
 				}
-				return Float.POSITIVE_INFINITY;
+				return Float.MAX_VALUE;
 			}
 		});
 
