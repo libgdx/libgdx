@@ -31,10 +31,12 @@ versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.appleExtension = "1.4"
-versions.androidPlugin = "3.1.0"
+versions.androidPlugin = "3.5.4"
 versions.multiDex = "2.0.1"
-versions.androidSdk = 29
-versions.androidBuildTools = "28.0.3"
+versions.androidCompileSdk = 29
+versions.androidTargetSdk = 29
+versions.androidMinSdk = 14
+versions.androidBuildTools = "29.0.3"
 versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
 
