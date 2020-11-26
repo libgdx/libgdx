@@ -434,6 +434,11 @@ public class IOSApplication implements Application {
 			}
 
 			@Override
+			public boolean hasContents () {
+				return UIPasteboard.getGeneralPasteboard().hasStrings();
+			}
+
+			@Override
 			public String getContents () {
 				return UIPasteboard.getGeneralPasteboard().getString();
 			}
