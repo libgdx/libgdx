@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
+import javax.annotation.Nullable;
+
 /** ModelCache tries to combine multiple render calls into a single render call by merging them where possible. Can be used for
  * multiple type of models (e.g. varying vertex attributes or materials), the ModelCache will combine where possible. Can be used
  * dynamically (e.g. every frame) or statically (e.g. to combine part of scenery). Be aware that any combined vertices are
@@ -47,7 +49,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		 * @param vertexCount the minimum amount vertices the mesh should be able to store
 		 * @param indexCount the minimum amount of indices the mesh should be able to store
 		 * @return the obtained Mesh, or null when no mesh could be obtained. */
-		Mesh obtain (VertexAttributes vertexAttributes, int vertexCount, int indexCount);
+		@Nullable Mesh obtain (VertexAttributes vertexAttributes, int vertexCount, int indexCount);
 
 		/** Releases all previously obtained {@link Mesh}es using the the {@link #obtain(VertexAttributes, int, int)} method. */
 		void flush ();
@@ -213,7 +215,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 	 * cache is not valid until the call to {@link #end()} is made. Use one of the add methods (e.g. {@link #add(Renderable)} or
 	 * {@link #add(RenderableProvider)}) to add renderables to the cache.
 	 * @param camera The {@link Camera} that will passed to the {@link RenderableSorter} */
-	public void begin (Camera camera) {
+	public void begin (@Nullable Camera camera) {
 		if (building) throw new GdxRuntimeException("Call end() after calling begin()");
 		building = true;
 

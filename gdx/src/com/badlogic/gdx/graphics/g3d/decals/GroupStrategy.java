@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics.g3d.decals;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * This class provides hooks which are invoked by {@link DecalBatch} to evaluate the group a sprite falls into, as well as to
  * adjust settings before and after rendering a group.
@@ -43,7 +45,7 @@ public interface GroupStrategy {
 	/** Returns the shader to be used for the group. Can be null in which case the GroupStrategy doesn't support GLES 2.0
 	 * @param group the group
 	 * @return the {@link ShaderProgram} */
-	public ShaderProgram getGroupShader (int group);
+	public @Nullable ShaderProgram getGroupShader (int group);
 
 	/** Assigns a group to a decal
 	 * 

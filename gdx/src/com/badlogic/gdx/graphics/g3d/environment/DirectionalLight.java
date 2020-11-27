@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics.g3d.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
+import javax.annotation.Nullable;
+
 public class DirectionalLight extends BaseLight<DirectionalLight> {
 	public final Vector3 direction = new Vector3();
 
@@ -36,19 +38,19 @@ public class DirectionalLight extends BaseLight<DirectionalLight> {
 		return set(copyFrom.color, copyFrom.direction);
 	}
 
-	public DirectionalLight set (final Color color, final Vector3 direction) {
+	public DirectionalLight set (final @Nullable Color color, final @Nullable Vector3 direction) {
 		if (color != null) this.color.set(color);
 		if (direction != null) this.direction.set(direction).nor();
 		return this;
 	}
 
-	public DirectionalLight set (final float r, final float g, final float b, final Vector3 direction) {
+	public DirectionalLight set (final float r, final float g, final float b, final @Nullable Vector3 direction) {
 		this.color.set(r, g, b, 1f);
 		if (direction != null) this.direction.set(direction).nor();
 		return this;
 	}
 
-	public DirectionalLight set (final Color color, final float dirX, final float dirY, final float dirZ) {
+	public DirectionalLight set (final @Nullable Color color, final float dirX, final float dirY, final float dirZ) {
 		if (color != null) this.color.set(color);
 		this.direction.set(dirX, dirY, dirZ).nor();
 		return this;

@@ -38,6 +38,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
  * </p>
@@ -83,11 +85,11 @@ public class ShaderProgram implements Disposable {
 
 	/** code that is always added to the vertex shader code, typically used to inject a #version line. Note that this is added
 	 * as-is, you should include a newline (`\n`) if needed. */
-	public static String prependVertexCode = "";
+	public static @Nullable String prependVertexCode = "";
 
 	/** code that is always added to every fragment shader code, typically used to inject a #version line. Note that this is added
 	 * as-is, you should include a newline (`\n`) if needed. */
-	public static String prependFragmentCode = "";
+	public static @Nullable String prependFragmentCode = "";
 
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
@@ -152,8 +154,8 @@ public class ShaderProgram implements Disposable {
 	 * @param fragmentShader the fragment shader */
 
 	public ShaderProgram (String vertexShader, String fragmentShader) {
-		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
-		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
+		if (vertexShader == null) throw new NullPointerException("vertex shader must not be null");
+		if (fragmentShader == null) throw new NullPointerException("fragment shader must not be null");
 
 		if (prependVertexCode != null && prependVertexCode.length() > 0)
 			vertexShader = prependVertexCode + vertexShader;

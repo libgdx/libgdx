@@ -25,12 +25,14 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes a transform relative to its parents. A Node can have
  * child nodes. Optionally a node can specify a {@link MeshPart} and a {@link Material} to be applied to the mesh part.
  * @author badlogic */
 public class Node {
 	/** the id, may be null, FIXME is this unique? **/
-	public String id;
+	public @Nullable String id;
 	/** Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
 	 * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
 	 * of its parent transform. */
@@ -51,7 +53,7 @@ public class Node {
 
 	public Array<NodePart> parts = new Array<NodePart>(2);
 
-	protected Node parent;
+	protected @Nullable Node parent;
 	private final Array<Node> children = new Array<Node>(2);
 
 	/** Calculates the local transform based on the translation, scale and rotation
@@ -171,7 +173,7 @@ public class Node {
 
 	/** @param recursive false to fetch a root child only, true to search the entire node tree for the specified node.
 	 * @return The node with the specified id, or null if not found. */
-	public Node getChild (final String id, boolean recursive, boolean ignoreCase) {
+	public @Nullable Node getChild (final String id, boolean recursive, boolean ignoreCase) {
 		return getNode(children, id, recursive, ignoreCase);
 	}
 
@@ -243,7 +245,7 @@ public class Node {
 	}
 
 	/** @return The parent node that holds this node as child node, may be null. */
-	public Node getParent () {
+	public @Nullable Node getParent () {
 		return parent;
 	}
 
@@ -295,7 +297,7 @@ public class Node {
 	/** Helper method to recursive fetch a node from an array
 	 * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
 	 * @return The node with the specified id, or null if not found. */
-	public static Node getNode (final Array<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
+	public static @Nullable Node getNode (final Array<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
 		final int n = nodes.size;
 		Node node;
 		if (ignoreCase) {

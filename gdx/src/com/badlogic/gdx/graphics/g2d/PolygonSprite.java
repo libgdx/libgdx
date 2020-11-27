@@ -46,7 +46,7 @@ public class PolygonSprite {
 	}
 
 	public void set (PolygonSprite sprite) {
-		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
+		if (sprite == null) throw new NullPointerException("sprite cannot be null.");
 
 		setRegion(sprite.region);
 

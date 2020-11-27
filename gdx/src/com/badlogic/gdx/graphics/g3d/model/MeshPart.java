@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import javax.annotation.Nullable;
+
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
  * {@link #offset} represents the offset in the indices array and {@link #size} represents the number of indices. When the mesh
@@ -42,7 +44,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  * @author badlogic, Xoppa */
 public class MeshPart {
 	/** Unique id within model, may be null. Will be ignored by {@link #equals(MeshPart)} **/
-	public String id;
+	public @Nullable String id;
 	/** The primitive type, OpenGL constant e.g: {@link GL20#GL_TRIANGLES}, {@link GL20#GL_POINTS}, {@link GL20#GL_LINES},
 	 * {@link GL20#GL_LINE_STRIP}, {@link GL20#GL_TRIANGLE_STRIP} **/
 	public int primitiveType;
@@ -76,7 +78,7 @@ public class MeshPart {
 	 * @param offset The offset within the mesh to this part.
 	 * @param size The size (in total number of vertices) of the part.
 	 * @param type The primitive type of the part (e.g. GL_TRIANGLES, GL_LINE_STRIP, etc.). */
-	public MeshPart (final String id, final Mesh mesh, final int offset, final int size, final int type) {
+	public MeshPart (final @Nullable String id, final Mesh mesh, final int offset, final int size, final int type) {
 		set(id, mesh, offset, size, type);
 	}
 

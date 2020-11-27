@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
+import javax.annotation.Nullable;
+
 /** Batches {@link Renderable} instances, fetches {@link Shader}s for them, sorts them and then renders them. Fetching the shaders
  * is done using a {@link ShaderProvider}, which defaults to {@link DefaultShaderProvider}. Sorting the renderables is done using
  * a {@link RenderableSorter}, which default to {@link DefaultRenderableSorter}.
@@ -59,7 +61,7 @@ public class ModelBatch implements Disposable {
 		}
 	}
 
-	protected Camera camera;
+	protected @Nullable Camera camera;
 	protected final RenderablePool renderablesPool = new RenderablePool();
 	/** list of Renderables to be rendered in the current batch **/
 	protected final Array<Renderable> renderables = new Array<Renderable>();
@@ -75,7 +77,7 @@ public class ModelBatch implements Disposable {
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public ModelBatch (final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+	public ModelBatch (final @Nullable RenderContext context, final @Nullable ShaderProvider shaderProvider, final @Nullable RenderableSorter sorter) {
 		this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
 		this.ownContext = (context == null);
 		this.context = (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
@@ -85,39 +87,39 @@ public class ModelBatch implements Disposable {
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
-	public ModelBatch (final RenderContext context, final ShaderProvider shaderProvider) {
+	public ModelBatch (final @Nullable RenderContext context, final @Nullable ShaderProvider shaderProvider) {
 		this(context, shaderProvider, null);
 	}
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public ModelBatch (final RenderContext context, final RenderableSorter sorter) {
+	public ModelBatch (final @Nullable RenderContext context, final @Nullable RenderableSorter sorter) {
 		this(context, null, sorter);
 	}
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use. */
-	public ModelBatch (final RenderContext context) {
+	public ModelBatch (final @Nullable RenderContext context) {
 		this(context, null, null);
 	}
 
 	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public ModelBatch (final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+	public ModelBatch (final @Nullable ShaderProvider shaderProvider, final @Nullable RenderableSorter sorter) {
 		this(null, shaderProvider, sorter);
 	}
 
 	/** Construct a ModelBatch
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public ModelBatch (final RenderableSorter sorter) {
+	public ModelBatch (final @Nullable RenderableSorter sorter) {
 		this(null, null, sorter);
 	}
 
 	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
-	public ModelBatch (final ShaderProvider shaderProvider) {
+	public ModelBatch (final @Nullable ShaderProvider shaderProvider) {
 		this(null, shaderProvider, null);
 	}
 
@@ -164,7 +166,7 @@ public class ModelBatch implements Disposable {
 	/** Provides access to the current camera in between {@link #begin(Camera)} and {@link #end()}. Do not change the camera's
 	 * values. Use {@link #setCamera(Camera)}, if you need to change the camera.
 	 * @return The current camera being used or null if called outside {@link #begin(Camera)} and {@link #end()}. */
-	public Camera getCamera () {
+	public @Nullable Camera getCamera () {
 		return camera;
 	}
 

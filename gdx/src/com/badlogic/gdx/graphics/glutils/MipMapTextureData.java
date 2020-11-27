@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class MipMapTextureData implements TextureData{
 	TextureData[] mips;
 	
-	/** @param mipMapData must be != null and its length must be >= 1 */
+	/** @param mipMapData mustn't be null and its length must be >= 1 */
 	public MipMapTextureData(TextureData... mipMapData){
 		mips = new TextureData[mipMapData.length];
 		System.arraycopy(mipMapData, 0, mips, 0, mipMapData.length);

@@ -26,6 +26,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
+import javax.annotation.Nullable;
+
 /** Renders points, lines, shape outlines and filled shapes.
  * <p>
  * By default a 2D orthographic projection with the origin in the lower left corner is used and units are specified in screen
@@ -99,7 +101,7 @@ public class ShapeRenderer implements Disposable {
 	private final Matrix4 combinedMatrix = new Matrix4();
 	private final Vector2 tmp = new Vector2();
 	private final Color color = new Color(1, 1, 1, 1);
-	private ShapeType shapeType;
+	private @Nullable ShapeType shapeType;
 	private boolean autoShapeType;
 	private float defaultRectLineWidth = 0.75f;
 
@@ -111,7 +113,7 @@ public class ShapeRenderer implements Disposable {
 		this(maxVertices, null);
 	}
 
-	public ShapeRenderer (int maxVertices, ShaderProgram defaultShader) {
+	public ShapeRenderer (int maxVertices, @Nullable ShaderProgram defaultShader) {
 		if (defaultShader == null) {
 			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
 		} else {
@@ -1166,7 +1168,7 @@ public class ShapeRenderer implements Disposable {
 	}
 
 	/** @param other May be null. */
-	private void check (ShapeType preferred, ShapeType other, int newVertices) {
+	private void check (ShapeType preferred, @Nullable ShapeType other, int newVertices) {
 		if (shapeType == null) throw new IllegalStateException("begin must be called first.");
 
 		if (shapeType != preferred && shapeType != other) {

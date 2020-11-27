@@ -32,6 +32,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
+import javax.annotation.Nullable;
+
 /** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
  * 
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
@@ -130,7 +132,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, @Nullable AtlasTiledMapLoaderParameters parameter) {
 		if (parameter != null) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
@@ -143,10 +145,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 
 		// Atlas dependencies
-		final FileHandle atlasFileHandle = getAtlasFileHandle(tmxFile);
-		if (atlasFileHandle != null) {
-			descriptors.add(new AssetDescriptor(atlasFileHandle, TextureAtlas.class));
-		}
+		descriptors.add(new AssetDescriptor(getAtlasFileHandle(tmxFile), TextureAtlas.class));
 
 		return descriptors;
 	}
@@ -154,7 +153,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 	@Override
 	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
 		Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+		String source, int offsetX, int offsetY, @Nullable String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		TextureAtlas atlas = atlasResolver.getAtlas();
 		String regionsName = name;

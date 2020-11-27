@@ -20,6 +20,8 @@ import java.util.Iterator;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.IntMap;
 
+import javax.annotation.Nullable;
+
 /** @brief Set of {@link TiledMapTile} instances used to compose a TiledMapLayer */
 public class TiledMapTileSet implements Iterable<TiledMapTile> {
 
@@ -54,7 +56,7 @@ public class TiledMapTileSet implements Iterable<TiledMapTile> {
 	 * 
 	 * @param id the id of the {@link TiledMapTile} to retrieve.
 	 * @return tile matching id, null if it doesn't exist */
-	public TiledMapTile getTile (int id) {
+	public @Nullable TiledMapTile getTile (int id) {
 		return tiles.get(id);
 	}
 

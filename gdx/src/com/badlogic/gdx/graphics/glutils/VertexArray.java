@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * Convenience class for working with OpenGL vertex arrays. It interleaves all data in the order you specified in the constructor
  * via {@link VertexAttribute}.
@@ -100,7 +102,7 @@ public class VertexArray implements VertexData {
 	}
 
 	@Override
-	public void bind (final ShaderProgram shader, final int[] locations) {
+	public void bind (final ShaderProgram shader, final @Nullable int[] locations) {
 		final int numAttributes = attributes.size();
 		byteBuffer.limit(buffer.limit() * 4);
 		if (locations == null) {
@@ -150,7 +152,7 @@ public class VertexArray implements VertexData {
 	}
 
 	@Override
-	public void unbind (ShaderProgram shader, int[] locations) {
+	public void unbind (ShaderProgram shader, @Nullable int[] locations) {
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {

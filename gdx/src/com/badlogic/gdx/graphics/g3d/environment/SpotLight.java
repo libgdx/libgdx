@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+import javax.annotation.Nullable;
+
 /** Note that the default shader doesn't support spot lights, you'll have to supply your own shader to use this class.
  * @author realitix */
 public class SpotLight extends BaseLight<SpotLight> {
@@ -68,8 +70,8 @@ public class SpotLight extends BaseLight<SpotLight> {
 		return set(copyFrom.color, copyFrom.position, copyFrom.direction, copyFrom.intensity, copyFrom.cutoffAngle, copyFrom.exponent);
 	}
 
-	public SpotLight set (final Color color, final Vector3 position, final Vector3 direction, final float intensity,
-		final float cutoffAngle, final float exponent) {
+	public SpotLight set (final @Nullable Color color, final @Nullable Vector3 position, final @Nullable Vector3 direction, final float intensity,
+						  final float cutoffAngle, final float exponent) {
 		if (color != null) this.color.set(color);
 		if (position != null) this.position.set(position);
 		if (direction != null) this.direction.set(direction).nor();
@@ -79,7 +81,7 @@ public class SpotLight extends BaseLight<SpotLight> {
 		return this;
 	}
 
-	public SpotLight set (final float r, final float g, final float b, final Vector3 position, final Vector3 direction,
+	public SpotLight set (final float r, final float g, final float b, final @Nullable Vector3 position, final @Nullable Vector3 direction,
 		final float intensity, final float cutoffAngle, final float exponent) {
 		this.color.set(r, g, b, 1f);
 		if (position != null) this.position.set(position);
@@ -90,7 +92,7 @@ public class SpotLight extends BaseLight<SpotLight> {
 		return this;
 	}
 
-	public SpotLight set (final Color color, final float posX, final float posY, final float posZ, final float dirX,
+	public SpotLight set (final @Nullable Color color, final float posX, final float posY, final float posZ, final float dirX,
 		final float dirY, final float dirZ, final float intensity, final float cutoffAngle, final float exponent) {
 		if (color != null) this.color.set(color);
 		this.position.set(posX, posY, posZ);
