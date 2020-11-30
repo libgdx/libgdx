@@ -21,10 +21,12 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DepthShader;
 
+import javax.annotation.Nullable;
+
 public class DepthShaderProvider extends BaseShaderProvider {
 	public final DepthShader.Config config;
 
-	public DepthShaderProvider (final DepthShader.Config config) {
+	public DepthShaderProvider (final @Nullable DepthShader.Config config) {
 		this.config = (config == null) ? new DepthShader.Config() : config;
 	}
 

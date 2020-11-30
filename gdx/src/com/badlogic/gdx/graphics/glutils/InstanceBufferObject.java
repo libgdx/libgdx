@@ -238,7 +238,7 @@ public class InstanceBufferObject implements InstanceData {
 	}
 
 	@Override
-	public void unbind (final ShaderProgram shader, @Nullable final int[] locations) {
+	public void unbind (final ShaderProgram shader, final @Nullable int[] locations) {
 		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		if (locations == null) {

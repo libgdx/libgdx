@@ -45,6 +45,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.ShortArray;
 
+import javax.annotation.Nullable;
+
 /** Class to construct a mesh, optionally splitting it into one or more mesh parts. Before you can call any other method you must
  * call {@link #begin(VertexAttributes)} or {@link #begin(VertexAttributes, int)}. To use mesh parts you must call
  * {@link #part(String, int)} before you start building the part. The MeshPart itself is only valid after the call to
@@ -351,7 +353,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void setColor (final Color color) {
+	public void setColor (final @Nullable Color color) {
 		this.color.set(!(hasColor = (color != null)) ? Color.WHITE : color);
 	}
 
@@ -365,7 +367,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void setUVRange (TextureRegion region) {
+	public void setUVRange (@Nullable TextureRegion region) {
 		if (region == null) {
 			hasUVTransform = false;
 			uOffset = vOffset = 0f;
@@ -382,7 +384,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void setVertexTransform (Matrix4 transform) {
+	public void setVertexTransform (@Nullable Matrix4 transform) {
 		vertexTransformationEnabled = transform != null;
 		if (vertexTransformationEnabled) {
 			positionTransform.set(transform);

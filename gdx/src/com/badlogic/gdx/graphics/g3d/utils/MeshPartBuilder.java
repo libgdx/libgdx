@@ -28,6 +28,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import javax.annotation.Nullable;
+
 public interface MeshPartBuilder {
 	/** @return The {@link MeshPart} currently building. */
 	public MeshPart getMeshPart ();
@@ -95,7 +97,7 @@ public interface MeshPartBuilder {
 	public short vertex (final float... values);
 
 	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are available. */
-	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv);
+	public short vertex (@Nullable Vector3 pos, @Nullable Vector3 nor, @Nullable Color col, @Nullable Vector2 uv);
 
 	/** Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available. */
 	public short vertex (final VertexInfo info);
@@ -210,7 +212,7 @@ public interface MeshPartBuilder {
 			uv.set(0, 0);
 		}
 
-		public VertexInfo set (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
+		public VertexInfo set (@Nullable Vector3 pos, @Nullable Vector3 nor, @Nullable Color col, @Nullable Vector2 uv) {
 			reset();
 			hasPosition = pos != null;
 			if (hasPosition) position.set(pos);
@@ -223,7 +225,7 @@ public interface MeshPartBuilder {
 			return this;
 		}
 
-		public VertexInfo set (final VertexInfo other) {
+		public VertexInfo set (final @Nullable VertexInfo other) {
 			if (other == null) return set(null, null, null, null);
 			hasPosition = other.hasPosition;
 			position.set(other.position);
@@ -242,7 +244,7 @@ public interface MeshPartBuilder {
 			return this;
 		}
 
-		public VertexInfo setPos (Vector3 pos) {
+		public VertexInfo setPos (@Nullable Vector3 pos) {
 			hasPosition = pos != null;
 			if (hasPosition) position.set(pos);
 			return this;
@@ -254,7 +256,7 @@ public interface MeshPartBuilder {
 			return this;
 		}
 
-		public VertexInfo setNor (Vector3 nor) {
+		public VertexInfo setNor (@Nullable Vector3 nor) {
 			hasNormal = nor != null;
 			if (hasNormal) normal.set(nor);
 			return this;
@@ -266,7 +268,7 @@ public interface MeshPartBuilder {
 			return this;
 		}
 
-		public VertexInfo setCol (Color col) {
+		public VertexInfo setCol (@Nullable Color col) {
 			hasColor = col != null;
 			if (hasColor) color.set(col);
 			return this;
@@ -278,7 +280,7 @@ public interface MeshPartBuilder {
 			return this;
 		}
 
-		public VertexInfo setUV (Vector2 uv) {
+		public VertexInfo setUV (@Nullable Vector2 uv) {
 			hasUV = uv != null;
 			if (hasUV) this.uv.set(uv);
 			return this;

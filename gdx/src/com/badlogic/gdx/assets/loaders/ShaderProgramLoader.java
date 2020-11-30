@@ -51,8 +51,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
 	}
 
 	@Override
-	public @Nullable
-	Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, ShaderProgramParameter parameter) {
+	public @Nullable Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, ShaderProgramParameter parameter) {
 		return null;
 	}
 

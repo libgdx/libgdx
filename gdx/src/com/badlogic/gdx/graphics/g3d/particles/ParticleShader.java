@@ -37,6 +37,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** This is a custom shader to render the particles. Usually is not required, because the {@link DefaultShader} will be used
  * instead. This shader will be used when dealing with billboards using GPU mode or point sprites.
  * @author inferno */
@@ -51,9 +53,9 @@ public class ParticleShader extends BaseShader {
 
 	public static class Config {
 		/** The uber vertex shader to use, null to use the default vertex shader. */
-		public String vertexShader = null;
+		public @Nullable String vertexShader = null;
 		/** The uber fragment shader to use, null to use the default fragment shader. */
-		public String fragmentShader = null;
+		public @Nullable String fragmentShader = null;
 		public boolean ignoreUnimplemented = true;
 		/** Set to 0 to disable culling */
 		public int defaultCullFace = -1;

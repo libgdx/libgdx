@@ -676,7 +676,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
-	public boolean epsilonEquals (@Nullable final Vector3 other, float epsilon) {
+	public boolean epsilonEquals (final @Nullable Vector3 other, float epsilon) {
 		if (other == null) return false;
 		if (Math.abs(other.x - x) > epsilon) return false;
 		if (Math.abs(other.y - y) > epsilon) return false;
