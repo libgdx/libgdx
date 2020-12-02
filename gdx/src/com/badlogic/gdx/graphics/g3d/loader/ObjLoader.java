@@ -45,8 +45,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 
-import javax.annotation.Nullable;
-
 /** {@link ModelLoader} to load Wavefront OBJ files. Only intended for testing basic models/meshes and educational usage. The
  * Wavefront specification is NOT fully implemented, only a subset of the specification is supported. Especially the
  * {@link Material} ({@link Attributes}), e.g. the color or texture applied, might not or not correctly be loaded.</p>
@@ -83,6 +81,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	final FloatArray norms = new FloatArray(300);
 	final FloatArray uvs = new FloatArray(200);
 	final Array<Group> groups = new Array<Group>(10);
+
+	public ObjLoader () {
+		this(null);
+	}
 
 	public ObjLoader (FileHandleResolver resolver) {
 		super(resolver);
