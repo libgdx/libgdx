@@ -223,7 +223,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns appropriate background drawable from the style based on the current select box state. */
-	protected @Null Drawable getBackgroundDrawable () {
+	protected @Nullable Drawable getBackgroundDrawable () {
 		if (isDisabled() && style.backgroundDisabled != null) return style.backgroundDisabled;
 		if (selectBoxList.hasParent() && style.backgroundOpen != null) return style.backgroundOpen;
 		if (isOver() && style.backgroundOver != null) return style.backgroundOver;
@@ -231,7 +231,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the appropriate label font color from the style based on the current button state. */
-	protected @Null Color getFontColor () {
+	protected @Nullable Color getFontColor () {
 		if (isDisabled() && style.disabledFontColor != null) return style.disabledFontColor;
 		if (style.overFontColor != null && (isOver() || selectBoxList.hasParent())) return style.overFontColor;
 		return style.fontColor;
