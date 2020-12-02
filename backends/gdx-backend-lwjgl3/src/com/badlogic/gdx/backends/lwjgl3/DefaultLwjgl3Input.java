@@ -371,6 +371,7 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return '\t';
 		case Keys.FORWARD_DEL:
 			return 127;		
+		case Keys.NUMPAD_ENTER:
 		case Keys.ENTER:
 			return '\n';
 		}
