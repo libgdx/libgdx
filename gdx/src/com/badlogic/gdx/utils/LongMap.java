@@ -223,6 +223,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
+		valueTable[i] = null;
 		size--;
 		return oldValue;
 	}
@@ -576,6 +577,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;
+				valueTable[i] = null;
 				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;

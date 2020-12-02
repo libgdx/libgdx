@@ -453,6 +453,11 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint, type);
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
 

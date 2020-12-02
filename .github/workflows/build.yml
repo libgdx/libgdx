@@ -8,6 +8,7 @@ on:
 
 jobs:
   macos:
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -33,6 +34,7 @@ jobs:
         run: ant -f build-mac-ios.xml
 
   linux:
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     runs-on: ubuntu-latest
     env:
       ORG_GRADLE_PROJECT_GITHUB_USERNAME: ""
