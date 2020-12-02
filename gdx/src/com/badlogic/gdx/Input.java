@@ -252,6 +252,18 @@ public interface Input {
 		public static final int F10 = 253;
 		public static final int F11 = 254;
 		public static final int F12 = 255;
+		public static final int F13	= 183;
+		public static final int F14	= 184;
+		public static final int F15	= 185;
+		public static final int F16	= 186;
+		public static final int F17	= 187;
+		public static final int F18	= 188;
+		public static final int F19	= 189;
+		public static final int F20	= 190;
+		public static final int F21	= 191;
+		public static final int F22	= 192;
+		public static final int F23	= 193;
+		public static final int F24	= 194;
 
 		public static final int MAX_KEYCODE = 255;
 
@@ -542,6 +554,30 @@ public interface Input {
 				return "F11";
 			case F12:
 				return "F12";
+			case F13:
+				return "F13";
+			case F14:
+				return "F14";
+			case F15:
+				return "F15";
+			case F16:
+				return "F16";
+			case F17:
+				return "F17";
+			case F18:
+				return "F18";
+			case F19:
+				return "F19";
+			case F20:
+				return "F20";
+			case F21:
+				return "F21";
+			case F22:
+				return "F22";
+			case F23:
+				return "F23";
+			case F24:
+				return "F24";
 			case NUMPAD_DIVIDE:
 				return "Num /";
 			case NUMPAD_MULTIPLY:
