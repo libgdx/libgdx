@@ -23,6 +23,8 @@ import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
+import javax.annotation.Nullable;
+
 /** A Batch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and optimize
  * them for processing by the GPU.
  * <p>
@@ -224,7 +226,7 @@ public interface Batch extends Disposable {
 	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
 	 * {@link #end()}.
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
-	public void setShader (ShaderProgram shader);
+	public void setShader (@Nullable ShaderProgram shader);
 
 	/** @return the current {@link ShaderProgram} set by {@link #setShader(ShaderProgram)} or the defaultShader */
 	public ShaderProgram getShader ();

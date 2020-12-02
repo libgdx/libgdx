@@ -23,6 +23,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
+import javax.annotation.Nullable;
+
 /** Class to control one or more {@link Animation}s on a {@link ModelInstance}. Use the
  * {@link #setAnimation(String, int, float, AnimationListener)} method to change the current animation. Use the
  * {@link #animate(String, int, float, AnimationListener, float)} method to start an animation, optionally blending onto the
@@ -54,7 +56,7 @@ public class AnimationController extends BaseAnimationController {
 	 * @author Xoppa */
 	public static class AnimationDesc {
 		/** Listener which will be informed when the animation is looped or ended. */
-		public AnimationListener listener;
+		public @Nullable AnimationListener listener;
 		/** The animation to be applied. */
 		public Animation animation;
 		/** The speed at which to play the animation (can be negative), 1.0 for normal speed. */
@@ -111,13 +113,13 @@ public class AnimationController extends BaseAnimationController {
 	};
 
 	/** The animation currently playing. Do not alter this value. */
-	public AnimationDesc current;
+	public @Nullable AnimationDesc current;
 	/** The animation queued to be played when the {@link #current} animation is completed. Do not alter this value. */
-	public AnimationDesc queued;
+	public @Nullable AnimationDesc queued;
 	/** The transition time which should be applied to the queued animation. Do not alter this value. */
 	public float queuedTransitionTime;
 	/** The animation which previously played. Do not alter this value. */
-	public AnimationDesc previous;
+	public @Nullable AnimationDesc previous;
 	/** The current transition time. Do not alter this value. */
 	public float transitionCurrentTime;
 	/** The target transition time. Do not alter this value. */
@@ -137,8 +139,8 @@ public class AnimationController extends BaseAnimationController {
 		super(target);
 	}
 
-	private AnimationDesc obtain (final Animation anim, float offset, float duration, int loopCount, float speed,
-		final AnimationListener listener) {
+	private @Nullable AnimationDesc obtain (final @Nullable Animation anim, float offset, float duration, int loopCount, float speed,
+						  final @Nullable AnimationListener listener) {
 		if (anim == null) return null;
 		final AnimationDesc result = animationPool.obtain();
 		result.animation = anim;
@@ -151,7 +153,7 @@ public class AnimationController extends BaseAnimationController {
 		return result;
 	}
 
-	private AnimationDesc obtain (final String id, float offset, float duration, int loopCount, float speed,
+	private @Nullable AnimationDesc obtain (final @Nullable String id, float offset, float duration, int loopCount, float speed,
 		final AnimationListener listener) {
 		if (id == null) return null;
 		final Animation anim = target.getAnimation(id);
@@ -241,7 +243,7 @@ public class AnimationController extends BaseAnimationController {
 	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the animation
 	 *         is completed. */
-	public AnimationDesc setAnimation (final String id, int loopCount, float speed, final AnimationListener listener) {
+	public AnimationDesc setAnimation (final String id, int loopCount, float speed, final @Nullable AnimationListener listener) {
 		return setAnimation(id, 0f, -1f, loopCount, speed, listener);
 	}
 
@@ -258,7 +260,7 @@ public class AnimationController extends BaseAnimationController {
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the animation
 	 *         is completed. */
 	public AnimationDesc setAnimation (final String id, float offset, float duration, int loopCount, float speed,
-		final AnimationListener listener) {
+		final @Nullable AnimationListener listener) {
 		return setAnimation(obtain(id, offset, duration, loopCount, speed, listener));
 	}
 

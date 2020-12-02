@@ -41,6 +41,8 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
+import javax.annotation.Nullable;
+
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
  * the AngleCode BMFont text format that describes where each glyph is on the image.
  * <p>
@@ -89,7 +91,7 @@ public class BitmapFont implements Disposable {
 	 * @param fontFile the font definition file
 	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
 	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file. */
-	public BitmapFont (FileHandle fontFile, TextureRegion region) {
+	public BitmapFont (FileHandle fontFile, @Nullable TextureRegion region) {
 		this(fontFile, region, false);
 	}
 
@@ -99,7 +101,7 @@ public class BitmapFont implements Disposable {
 	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
 	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
-	public BitmapFont (FileHandle fontFile, TextureRegion region, boolean flip) {
+	public BitmapFont (FileHandle fontFile, @Nullable TextureRegion region, boolean flip) {
 		this(new BitmapFontData(fontFile, flip), region, true);
 	}
 
@@ -140,15 +142,15 @@ public class BitmapFont implements Disposable {
 	 * pages, either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page
 	 * manually with the TextureRegion[] constructor.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
-	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
+	public BitmapFont (BitmapFontData data, @Nullable TextureRegion region, boolean integer) {
 		this(data, region != null ? Array.with(region) : null, integer);
 	}
 
-	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
+	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the array of TextureRegions
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
-	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+	public BitmapFont (BitmapFontData data, @Nullable Array<TextureRegion> pageRegions, boolean integer) {
 		this.flipped = data.flipped;
 		this.data = data;
 		this.integer = integer;
@@ -433,7 +435,7 @@ public class BitmapFont implements Disposable {
 	/** Backing data for a {@link BitmapFont}. */
 	static public class BitmapFontData {
 		/** The name of the font, or null. */
-		public String name;
+		public @Nullable String name;
 		/** An array of the image paths, for multiple texture pages. */
 		public String[] imagePaths;
 		public FileHandle fontFile;
@@ -461,7 +463,7 @@ public class BitmapFont implements Disposable {
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		/** The glyph to display for characters not in the font. May be null. */
-		public Glyph missingGlyph;
+		public @Nullable Glyph missingGlyph;
 
 		/** The width of the space character. */
 		public float spaceXadvance;
@@ -469,7 +471,7 @@ public class BitmapFont implements Disposable {
 		public float xHeight = 1;
 
 		/** Additional characters besides whitespace where text is wrapped. Eg, a hypen (-). */
-		public char[] breakChars;
+		public @Nullable char[] breakChars;
 		public char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
 		public char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
 			'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -635,7 +637,6 @@ public class BitmapFont implements Disposable {
 
 				// Metrics override
 				if (line != null && line.startsWith("metrics ")) {
-
 					hasMetricsOverride = true;
 
 					StringTokenizer tokens = new StringTokenizer(line, " =");
@@ -816,7 +817,7 @@ public class BitmapFont implements Disposable {
 		/** Returns the glyph for the specified character, or null if no such glyph exists. Note that
 		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int, Glyph)} should be be used to shape a string of characters into a list
 		 * of glyphs. */
-		public Glyph getGlyph (char ch) {
+		public @Nullable Glyph getGlyph (char ch) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page != null) return page[ch & PAGE_SIZE - 1];
 			return null;
@@ -826,7 +827,7 @@ public class BitmapFont implements Disposable {
 		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
 		 *           square bracket.
 		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
-		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, @Nullable Glyph lastGlyph) {
 			int max = end - start;
 			if (max == 0) return;
 			boolean markupEnabled = this.markupEnabled;

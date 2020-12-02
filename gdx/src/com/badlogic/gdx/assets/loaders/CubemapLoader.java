@@ -23,12 +23,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.CubemapData;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.utils.Array;
+
+import javax.annotation.Nullable;
 
 /** {@link AssetLoader} for {@link Cubemap} instances. The pixel data is loaded asynchronously. The texture is then created on the
  * rendering thread, synchronously. Passing a {@link CubemapParameter} to
@@ -49,7 +50,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, @Nullable CubemapParameter parameter) {
 		info.filename = fileName;
 		if (parameter == null || parameter.cubemapData == null) {
 			Format format = null;
@@ -72,7 +73,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	}
 
 	@Override
-	public Cubemap loadSync (AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
+	public Cubemap loadSync (AssetManager manager, String fileName, FileHandle file, @Nullable CubemapParameter parameter) {
 		if (info == null) return null;
 		Cubemap cubemap = info.cubemap;
 		if (cubemap != null) {
@@ -88,17 +89,17 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, CubemapParameter parameter) {
+	public @Nullable Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, @Nullable CubemapParameter parameter) {
 		return null;
 	}
 
 	static public class CubemapParameter extends AssetLoaderParameters<Cubemap> {
 		/** the format of the final Texture. Uses the source images format if null **/
-		public Format format = null;
+		public @Nullable Format format = null;
 		/** The texture to put the {@link TextureData} in, optional. **/
-		public Cubemap cubemap = null;
+		public @Nullable Cubemap cubemap = null;
 		/** CubemapData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
-		public CubemapData cubemapData = null;
+		public @Nullable CubemapData cubemapData = null;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
 		public TextureWrap wrapU = TextureWrap.ClampToEdge;

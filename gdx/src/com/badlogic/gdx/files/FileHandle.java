@@ -44,6 +44,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
+import javax.annotation.Nullable;
+
 /** Represents a file or directory on the filesystem, classpath, Android app storage, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * 
@@ -200,7 +202,7 @@ public class FileHandle {
 	/** Reads the entire file into a string using the specified charset.
 	 * @param charset If null the default charset is used.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
-	public String readString (String charset) {
+	public String readString (@Nullable String charset) {
 		StringBuilder output = new StringBuilder(estimateLength());
 		InputStreamReader reader = null;
 		try {
@@ -344,7 +346,7 @@ public class FileHandle {
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file, or if it could not be written. */
-	public Writer writer (boolean append, String charset) {
+	public Writer writer (boolean append, @Nullable String charset) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
 		parent().mkdirs();
@@ -374,7 +376,7 @@ public class FileHandle {
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file, or if it could not be written. */
-	public void writeString (String string, boolean append, String charset) {
+	public void writeString (String string, boolean append, @Nullable String charset) {
 		Writer writer = null;
 		try {
 			writer = writer(append, charset);

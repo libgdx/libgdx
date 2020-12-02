@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import javax.annotation.Nullable;
+
 /** {@link AssetLoader} for {@link Skin} instances. All {@link Texture} and {@link BitmapFont} instances will be loaded as
  * dependencies. Passing a {@link SkinParameter} allows the exact name of the texture associated with the skin to be specified.
  * Otherwise the skin texture is looked up just as with a call to {@link Skin#Skin(com.badlogic.gdx.files.FileHandle)}. A
@@ -41,7 +43,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, SkinParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, @Nullable SkinParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter == null || parameter.textureAtlasPath == null)
 			deps.add(new AssetDescriptor(file.pathWithoutExtension() + ".atlas", TextureAtlas.class));
@@ -50,11 +52,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, @Nullable SkinParameter parameter) {
 	}
 
 	@Override
-	public Skin loadSync (AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
+	public Skin loadSync (AssetManager manager, String fileName, FileHandle file, @Nullable SkinParameter parameter) {
 		String textureAtlasPath = file.pathWithoutExtension() + ".atlas";
 		ObjectMap<String, Object> resources = null;
 		if (parameter != null) {
@@ -84,22 +86,22 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	}
 
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {
-		public final String textureAtlasPath;
-		public final ObjectMap<String, Object> resources;
+		public final @Nullable String textureAtlasPath;
+		public final @Nullable ObjectMap<String, Object> resources;
 
 		public SkinParameter () {
 			this(null, null);
 		}
 
-		public SkinParameter (ObjectMap<String, Object> resources) {
+		public SkinParameter (@Nullable ObjectMap<String, Object> resources) {
 			this(null, resources);
 		}
 
-		public SkinParameter (String textureAtlasPath) {
+		public SkinParameter (@Nullable String textureAtlasPath) {
 			this(textureAtlasPath, null);
 		}
 
-		public SkinParameter (String textureAtlasPath, ObjectMap<String, Object> resources) {
+		public SkinParameter (@Nullable String textureAtlasPath, @Nullable ObjectMap<String, Object> resources) {
 			this.textureAtlasPath = textureAtlasPath;
 			this.resources = resources;
 		}

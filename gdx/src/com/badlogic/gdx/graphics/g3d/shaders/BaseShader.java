@@ -37,6 +37,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
+import javax.annotation.Nullable;
+
 /** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It does
  *         not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
 public abstract class BaseShader implements Shader {
@@ -114,7 +116,7 @@ public abstract class BaseShader implements Shader {
 
 	/** Register an uniform which might be used by this shader. Only possible prior to the call to init().
 	 * @return The ID of the uniform to use in this shader. */
-	public int register (final String alias, final Validator validator, final Setter setter) {
+	public int register (final String alias, final @Nullable Validator validator, final @Nullable Setter setter) {
 		if (locations != null) throw new GdxRuntimeException("Cannot register an uniform after initialization");
 		final int existing = getUniformID(alias);
 		if (existing >= 0) {
@@ -128,11 +130,11 @@ public abstract class BaseShader implements Shader {
 		return uniforms.size - 1;
 	}
 
-	public int register (final String alias, final Validator validator) {
+	public int register (final String alias, final @Nullable Validator validator) {
 		return register(alias, validator, null);
 	}
 
-	public int register (final String alias, final Setter setter) {
+	public int register (final String alias, final @Nullable Setter setter) {
 		return register(alias, null, setter);
 	}
 
@@ -140,7 +142,7 @@ public abstract class BaseShader implements Shader {
 		return register(alias, null, null);
 	}
 
-	public int register (final Uniform uniform, final Setter setter) {
+	public int register (final Uniform uniform, final @Nullable Setter setter) {
 		return register(uniform.alias, uniform, setter);
 	}
 

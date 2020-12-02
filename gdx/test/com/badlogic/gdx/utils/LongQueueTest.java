@@ -3,8 +3,6 @@ package com.badlogic.gdx.utils;
 
 import static org.junit.Assert.*;
 
-import java.util.Iterator;
-
 import org.junit.Assert;
 import org.junit.Test;
 

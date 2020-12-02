@@ -25,6 +25,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 /** @author mzechner */
 public class Gdx2DPixmap implements Disposable {
 	public static final int GDX2D_FORMAT_ALPHA = 1;
@@ -208,7 +210,7 @@ public class Gdx2DPixmap implements Disposable {
 		setScale(basePtr, scale);
 	}
 
-	public static Gdx2DPixmap newPixmap (InputStream in, int requestedFormat) {
+	public static @Nullable Gdx2DPixmap newPixmap (InputStream in, int requestedFormat) {
 		try {
 			return new Gdx2DPixmap(in, requestedFormat);
 		} catch (IOException e) {
@@ -216,7 +218,7 @@ public class Gdx2DPixmap implements Disposable {
 		}
 	}
 
-	public static Gdx2DPixmap newPixmap (int width, int height, int format) {
+	public static @Nullable Gdx2DPixmap newPixmap (int width, int height, int format) {
 		try {
 			return new Gdx2DPixmap(width, height, format);
 		} catch (IllegalArgumentException e) {

@@ -42,6 +42,8 @@ import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 
+import javax.annotation.Nullable;
+
 public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 	public static final short VERSION_HI = 0;
 	public static final short VERSION_LO = 1;
@@ -51,7 +53,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 		this(reader, null);
 	}
 
-	public G3dModelLoader (BaseJsonReader reader, FileHandleResolver resolver) {
+	public G3dModelLoader (BaseJsonReader reader, @Nullable FileHandleResolver resolver) {
 		super(resolver);
 		this.reader = reader;
 	}

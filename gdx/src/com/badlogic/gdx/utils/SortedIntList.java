@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils;
 
+import javax.annotation.Nullable;
+
 /** A sorted double linked list which uses ints for indexing
  * 
  * @param <E> */
@@ -35,7 +37,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	 * @param index Index of the element
 	 * @param value Element to insert
 	 * @return Element replaced by newly inserted element, null if nothing was replaced */
-	public @Null E insert (int index, E value) {
+	public @Nullable E insert (int index, E value) {
 		if (first != null) {
 			Node<E> c = first;
 			// iterate to the right until we can't move any further because the next number is bigger than index

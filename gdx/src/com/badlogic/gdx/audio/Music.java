@@ -22,6 +22,8 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * A Music instance represents a streamed audio file. The interface supports pausing, resuming
  * and so on. When you are done with using the Music instance you have to dispose it via the {@link #dispose()} method.
@@ -90,7 +92,7 @@ public interface Music extends Disposable {
 	/** Register a callback to be invoked when the end of a music stream has been reached during playback.
 	 * 
 	 * @param listener the callback that will be run. */
-	public void setOnCompletionListener (OnCompletionListener listener);
+	public void setOnCompletionListener (@Nullable OnCompletionListener listener);
 
 	/** Interface definition for a callback to be invoked when playback of a music stream has completed. */
 	public interface OnCompletionListener {

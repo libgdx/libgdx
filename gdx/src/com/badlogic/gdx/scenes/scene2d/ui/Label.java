@@ -24,8 +24,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.StringBuilder;
+
+import javax.annotation.Nullable;
 
 /** A text label, with optional word wrapping.
  * <p>
@@ -48,29 +49,29 @@ public class Label extends Widget {
 	private boolean prefSizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
 	private boolean fontScaleChanged = false;
-	private @Null String ellipsis;
+	private @Nullable String ellipsis;
 
-	public Label (@Null CharSequence text, Skin skin) {
+	public Label (@Nullable CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
 	}
 
-	public Label (@Null CharSequence text, Skin skin, String styleName) {
+	public Label (@Nullable CharSequence text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, LabelStyle.class));
 	}
 
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
 	 * color. */
-	public Label (@Null CharSequence text, Skin skin, String fontName, Color color) {
+	public Label (@Nullable CharSequence text, Skin skin, String fontName, Color color) {
 		this(text, new LabelStyle(skin.getFont(fontName), color));
 	}
 
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
 	 * skin. */
-	public Label (@Null CharSequence text, Skin skin, String fontName, String colorName) {
+	public Label (@Nullable CharSequence text, Skin skin, String fontName, String colorName) {
 		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)));
 	}
 
-	public Label (@Null CharSequence text, LabelStyle style) {
+	public Label (@Nullable CharSequence text, LabelStyle style) {
 		if (text != null) this.text.append(text);
 		setStyle(style);
 		if (text != null && text.length() > 0) setSize(getPrefWidth(), getPrefHeight());
@@ -104,7 +105,7 @@ public class Label extends Widget {
 	}
 
 	/** @param newText If null, "" will be used. */
-	public void setText (@Null CharSequence newText) {
+	public void setText (@Nullable CharSequence newText) {
 		if (newText == null) {
 			if (text.length == 0) return;
 			text.clear();
@@ -341,7 +342,7 @@ public class Label extends Widget {
 
 	/** When non-null the text will be truncated "..." if it does not fit within the width of the label. Wrapping will not occur
 	 * when ellipsis is enabled. Default is false. */
-	public void setEllipsis (@Null String ellipsis) {
+	public void setEllipsis (@Nullable String ellipsis) {
 		this.ellipsis = ellipsis;
 	}
 
@@ -372,13 +373,13 @@ public class Label extends Widget {
 	 * @author Nathan Sweet */
 	static public class LabelStyle {
 		public BitmapFont font;
-		public @Null Color fontColor;
-		public @Null Drawable background;
+		public @Nullable Color fontColor;
+		public @Nullable Drawable background;
 
 		public LabelStyle () {
 		}
 
-		public LabelStyle (BitmapFont font, @Null Color fontColor) {
+		public LabelStyle (BitmapFont font, @Nullable Color fontColor) {
 			this.font = font;
 			this.fontColor = fontColor;
 		}

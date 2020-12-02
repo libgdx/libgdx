@@ -109,7 +109,7 @@ public class RepeatablePolygonSprite {
                     ShortArray arr = triangulator.computeTriangles(verts);
                     indices.add(arr.toArray());
                 } else {
-                    // adding null for key consistancy, needed to get col/row from key
+                    // adding null for key consistency, needed to get col/row from key
                     // the other alternative is to make parts - IntMap<FloatArray>
                     parts.add(null);
                 }

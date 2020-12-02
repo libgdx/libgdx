@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.annotation.Nullable;
+
 /** Adapted from LZMA SDK version 9.22.
  * 
  * This was modified to be used directly on streams, rather than via the command line as in the LZMA SDK.
@@ -49,8 +51,8 @@ public class Lzma {
 		public int Algorithm = 2;
 		public int MatchFinder = 1;
 
-		public String InFile;
-		public String OutFile;
+		public @Nullable String InFile;
+		public @Nullable String OutFile;
 	}
 
 	/** Compresses the given {@link InputStream} into the given {@link OutputStream}.

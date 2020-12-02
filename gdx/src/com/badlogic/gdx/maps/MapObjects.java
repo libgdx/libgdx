@@ -21,6 +21,8 @@ import java.util.Iterator;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
+import javax.annotation.Nullable;
+
 /** @brief Collection of MapObject instances */
 public class MapObjects implements Iterable<MapObject> {
 
@@ -39,7 +41,7 @@ public class MapObjects implements Iterable<MapObject> {
 
 	/** @param name
 	 * @return the first object having the specified name, if one exists, otherwise null */
-	public MapObject get (String name) {
+	public @Nullable MapObject get (String name) {
 		for (int i = 0, n = objects.size; i < n; i++) {
 			MapObject object = objects.get(i);
 			if (name.equals(object.getName())) {

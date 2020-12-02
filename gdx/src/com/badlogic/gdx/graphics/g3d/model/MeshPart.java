@@ -18,11 +18,12 @@ package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+
+import javax.annotation.Nullable;
 
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
@@ -43,7 +44,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  * @author badlogic, Xoppa */
 public class MeshPart {
 	/** Unique id within model, may be null. Will be ignored by {@link #equals(MeshPart)} **/
-	public String id;
+	public @Nullable String id;
 	/** The primitive type, OpenGL constant e.g: {@link GL20#GL_TRIANGLES}, {@link GL20#GL_POINTS}, {@link GL20#GL_LINES},
 	 * {@link GL20#GL_LINE_STRIP}, {@link GL20#GL_TRIANGLE_STRIP} **/
 	public int primitiveType;
@@ -77,7 +78,7 @@ public class MeshPart {
 	 * @param offset The offset within the mesh to this part.
 	 * @param size The size (in total number of vertices) of the part.
 	 * @param type The primitive type of the part (e.g. GL_TRIANGLES, GL_LINE_STRIP, etc.). */
-	public MeshPart (final String id, final Mesh mesh, final int offset, final int size, final int type) {
+	public MeshPart (final @Nullable String id, final Mesh mesh, final int offset, final int size, final int type) {
 		set(id, mesh, offset, size, type);
 	}
 
@@ -104,7 +105,7 @@ public class MeshPart {
 
 	/** Set this MeshPart to given values, does not {@link #update()} the bounding box values.
 	 * @return this MeshPart, for chaining. */
-	public MeshPart set (final String id, final Mesh mesh, final int offset, final int size, final int type) {
+	public MeshPart set (final String id, final @Nullable Mesh mesh, final int offset, final int size, final int type) {
 		this.id = id;
 		this.mesh = mesh;
 		this.offset = offset;

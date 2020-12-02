@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ArrayMap;
 
+import javax.annotation.Nullable;
+
 /** A combination of {@link MeshPart} and {@link Material}, used to represent a {@link Node}'s graphical properties. A NodePart is
  * the smallest visible part of a {@link Model}, each NodePart implies a render call.
  * @author badlogic, Xoppa */
@@ -33,10 +35,10 @@ public class NodePart {
 	public Material material;
 	/** Mapping to each bone (node) and the inverse transform of the bind pose. Will be used to fill the {@link #bones} array. May
 	 * be null. */
-	public ArrayMap<Node, Matrix4> invBoneBindTransforms;
+	public @Nullable ArrayMap<Node, Matrix4> invBoneBindTransforms;
 	/** The current transformation (relative to the bind pose) of each bone, may be null. When the part is skinned, this will be
 	 * updated by a call to {@link ModelInstance#calculateTransforms()}. Do not set or change this value manually. */
-	public Matrix4[] bones;
+	public @Nullable Matrix4[] bones;
 	/** true by default. If set to false, this part will not participate in rendering and bounding box calculation. */
 	public boolean enabled = true;
 

@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import javax.annotation.Nullable;
+
 /** <p>
  * An {@link ApplicationListener} that delegates to a {@link Screen}. This allows an application to easily have multiple screens.
  * </p>
@@ -24,7 +26,7 @@ package com.badlogic.gdx;
  * screen is set.
  * </p> */
 public abstract class Game implements ApplicationListener {
-	protected Screen screen;
+	protected @Nullable Screen screen;
 
 	@Override
 	public void dispose () {

@@ -17,14 +17,10 @@
 package com.badlogic.gdx.graphics.g3d.utils.shapebuilders;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.ShortArray;
 
 /** This class allows to reduce the static allocation needed for shape builders. It contains all the objects used internally by
  * shape builders.

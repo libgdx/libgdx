@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.NumberUtils;
 
 /** @author Stefan Bachmann
  * @author Nathan Sweet */
@@ -47,7 +46,7 @@ public class PolygonSprite {
 	}
 
 	public void set (PolygonSprite sprite) {
-		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
+		if (sprite == null) throw new NullPointerException("sprite cannot be null.");
 
 		setRegion(sprite.region);
 

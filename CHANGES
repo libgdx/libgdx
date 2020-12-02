@@ -1,6 +1,7 @@
 [1.9.13]
 - GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
+- Introduce javax.annotation.Nullable annotations for the whole core project. Replaces the old @Null annotation. 
 
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.

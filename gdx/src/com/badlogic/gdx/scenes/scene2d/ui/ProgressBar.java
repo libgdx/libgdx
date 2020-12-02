@@ -27,8 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
+
+import javax.annotation.Nullable;
 
 /** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
  * bar has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out
@@ -262,12 +263,12 @@ public class ProgressBar extends Widget implements Disableable {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
-	protected @Null Drawable getBackgroundDrawable () {
+	protected @Nullable Drawable getBackgroundDrawable () {
 		if (disabled && style.disabledBackground != null) return style.disabledBackground;
 		return style.background;
 	}
 
-	protected @Null Drawable getKnobDrawable () {
+	protected @Nullable Drawable getKnobDrawable () {
 		if (disabled && style.disabledKnob != null) return style.disabledKnob;
 		return style.knob;
 	}
@@ -420,15 +421,15 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
 		/** The progress bar background, stretched only in one direction. */
-		public @Null Drawable background, disabledBackground;
-		public @Null Drawable knob, disabledKnob;
-		public @Null Drawable knobBefore, disabledKnobBefore;
-		public @Null Drawable knobAfter, disabledKnobAfter;
+		public @Nullable Drawable background, disabledBackground;
+		public @Nullable Drawable knob, disabledKnob;
+		public @Nullable Drawable knobBefore, disabledKnobBefore;
+		public @Nullable Drawable knobAfter, disabledKnobAfter;
 
 		public ProgressBarStyle () {
 		}
 
-		public ProgressBarStyle (@Null Drawable background, @Null Drawable knob) {
+		public ProgressBarStyle (@Nullable Drawable background, @Nullable Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}

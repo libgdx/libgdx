@@ -30,7 +30,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Null;
+
+import javax.annotation.Nullable;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -272,7 +273,7 @@ public class Window extends Table {
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
-	public @Null Actor hit (float x, float y, boolean touchable) {
+	public @Nullable Actor hit (float x, float y, boolean touchable) {
 		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
@@ -339,15 +340,15 @@ public class Window extends Table {
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
-		public @Null Drawable background;
+		public @Nullable Drawable background;
 		public BitmapFont titleFont;
-		public @Null Color titleFontColor = new Color(1, 1, 1, 1);
-		public @Null Drawable stageBackground;
+		public @Nullable Color titleFontColor = new Color(1, 1, 1, 1);
+		public @Nullable Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
-		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Null Drawable background) {
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Nullable Drawable background) {
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
 			this.background = background;

@@ -21,7 +21,7 @@ public class RefCountedContainer {
 	int refCount = 1;
 
 	public RefCountedContainer (Object object) {
-		if (object == null) throw new IllegalArgumentException("Object must not be null");
+		if (object == null) throw new NullPointerException("Object must not be null");
 		this.object = object;
 	}
 

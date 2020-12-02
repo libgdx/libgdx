@@ -46,6 +46,10 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
         options.fork = true
         options.incremental = true
     }
+
+    dependencies {
+        compileOnly libraries.nullable
+    }
 }
 
 ant.importBuild("fetch.xml") { antTargetName ->

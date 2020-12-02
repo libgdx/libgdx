@@ -16,16 +16,17 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 
+import javax.annotation.Nullable;
+
 public class DefaultShaderProvider extends BaseShaderProvider {
 	public final DefaultShader.Config config;
 
-	public DefaultShaderProvider (final DefaultShader.Config config) {
+	public DefaultShaderProvider (final @Nullable DefaultShader.Config config) {
 		this.config = (config == null) ? new DefaultShader.Config() : config;
 	}
 

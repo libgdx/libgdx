@@ -68,7 +68,7 @@ public class Sprite extends TextureRegion {
 	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn. */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
+		if (texture == null) throw new NullPointerException("texture cannot be null.");
 		this.texture = texture;
 		setRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
@@ -104,7 +104,7 @@ public class Sprite extends TextureRegion {
 
 	/** Make this sprite a copy in every way of the specified sprite */
 	public void set (Sprite sprite) {
-		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
+		if (sprite == null) throw new NullPointerException("sprite cannot be null.");
 		System.arraycopy(sprite.vertices, 0, vertices, 0, SPRITE_SIZE);
 		texture = sprite.texture;
 		u = sprite.u;

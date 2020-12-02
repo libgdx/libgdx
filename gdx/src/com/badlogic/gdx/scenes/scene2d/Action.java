@@ -18,9 +18,10 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+
+import javax.annotation.Nullable;
 
 /** Actions attach to an {@link Actor} and perform some task, often over time.
  * @author Nathan Sweet */
@@ -31,7 +32,7 @@ abstract public class Action implements Poolable {
 	/** The actor this action targets, or null if a target has not been set. */
 	protected Actor target;
 
-	private @Null Pool pool;
+	private @Nullable Pool pool;
 
 	/** Updates the action based on time. Typically this is called each frame by {@link Actor#act(float)}.
 	 * @param delta Time in seconds since the last frame.
@@ -93,14 +94,14 @@ abstract public class Action implements Poolable {
 		restart();
 	}
 
-	public @Null Pool getPool () {
+	public @Nullable Pool getPool () {
 		return pool;
 	}
 
 	/** Sets the pool that the action will be returned to when removed from the actor.
 	 * @param pool May be null.
 	 * @see #setActor(Actor) */
-	public void setPool (@Null Pool pool) {
+	public void setPool (@Nullable Pool pool) {
 		this.pool = pool;
 	}
 

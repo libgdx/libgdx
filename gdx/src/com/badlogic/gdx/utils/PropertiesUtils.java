@@ -19,15 +19,13 @@ package com.badlogic.gdx.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
 
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+
+import javax.annotation.Nullable;
 
 /** {@code PropertiesUtils} is a helper class that allows you to load and store key/value pairs of an
  * {@code ObjectMap<String,String>} with the same line-oriented syntax supported by {@code java.util.Properties}. */
@@ -231,7 +229,7 @@ public final class PropertiesUtils {
 		storeImpl(properties, writer, comment, false);
 	}
 
-	private static void storeImpl (ObjectMap<String, String> properties, Writer writer, String comment, boolean escapeUnicode)
+	private static void storeImpl (ObjectMap<String, String> properties, Writer writer, @Nullable String comment, boolean escapeUnicode)
 		throws IOException {
 		if (comment != null) {
 			writeComment(writer, comment);

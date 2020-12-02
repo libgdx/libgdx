@@ -21,6 +21,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 
+import javax.annotation.Nullable;
+
 /** Executes tasks in the future on the main loop thread.
  * @author Nathan Sweet */
 public class Timer {
@@ -194,7 +196,7 @@ public class Timer {
 		final Application app;
 		long executeTimeMillis, intervalMillis;
 		int repeatCount;
-		volatile Timer timer;
+		volatile @Nullable Timer timer;
 
 		public Task () {
 			app = Gdx.app; // Store which app to postRunnable (eg for multiple LwjglAWTCanvas).

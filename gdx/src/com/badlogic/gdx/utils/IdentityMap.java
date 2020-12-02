@@ -61,7 +61,7 @@ public class IdentityMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	int locateKey (K key) {
-		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		if (key == null) throw new NullPointerException("key cannot be null.");
 		K[] keyTable = this.keyTable;
 		for (int i = place(key);; i = i + 1 & mask) {
 			K other = keyTable[i];

@@ -32,15 +32,14 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+
+import javax.annotation.Nullable;
 
 /** Loads images from texture atlases created by TexturePacker.<br>
  * <br>
@@ -241,7 +240,7 @@ public class TextureAtlas implements Disposable {
 	}
 
 	/** @param data May be null. */
-	public TextureAtlas (TextureAtlasData data) {
+	public TextureAtlas (@Nullable TextureAtlasData data) {
 		if (data != null) load(data);
 	}
 
@@ -310,7 +309,7 @@ public class TextureAtlas implements Disposable {
 	/** Returns the first region found with the specified name. This method uses string comparison to find the region, so the result
 	 * should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
-	public AtlasRegion findRegion (String name) {
+	public @Nullable AtlasRegion findRegion (String name) {
 		for (int i = 0, n = regions.size; i < n; i++)
 			if (regions.get(i).name.equals(name)) return regions.get(i);
 		return null;
@@ -319,7 +318,7 @@ public class TextureAtlas implements Disposable {
 	/** Returns the first region found with the specified name and index. This method uses string comparison to find the region, so
 	 * the result should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
-	public AtlasRegion findRegion (String name, int index) {
+	public @Nullable AtlasRegion findRegion (String name, int index) {
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -354,7 +353,7 @@ public class TextureAtlas implements Disposable {
 	 * packed, the sprite is automatically positioned as if whitespace had not been stripped. This method uses string comparison to
 	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null. */
-	public Sprite createSprite (String name) {
+	public @Nullable Sprite createSprite (String name) {
 		for (int i = 0, n = regions.size; i < n; i++)
 			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
 		return null;
@@ -364,7 +363,7 @@ public class TextureAtlas implements Disposable {
 	 * region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null.
 	 * @see #createSprite(String) */
-	public Sprite createSprite (String name, int index) {
+	public @Nullable Sprite createSprite (String name, int index) {
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -404,7 +403,7 @@ public class TextureAtlas implements Disposable {
 	 * ninepatch splits. This method uses string comparison to find the region and constructs a new ninepatch, so the result should
 	 * be cached rather than calling this method multiple times.
 	 * @return The ninepatch, or null. */
-	public NinePatch createPatch (String name) {
+	public @Nullable NinePatch createPatch (String name) {
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) {
@@ -506,10 +505,10 @@ public class TextureAtlas implements Disposable {
 		public int degrees;
 
 		/** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
-		public int[] splits;
+		public @Nullable int[] splits;
 
 		/** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
-		public int[] pads;
+		public @Nullable int[] pads;
 
 		public AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);

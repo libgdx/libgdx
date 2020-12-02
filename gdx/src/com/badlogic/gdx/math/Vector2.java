@@ -21,6 +21,8 @@ import java.io.Serializable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
+import javax.annotation.Nullable;
+
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
 public class Vector2 implements Serializable, Vector<Vector2> {
@@ -490,7 +492,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public boolean epsilonEquals (Vector2 other, float epsilon) {
+	public boolean epsilonEquals (@Nullable Vector2 other, float epsilon) {
 		if (other == null) return false;
 		if (Math.abs(other.x - x) > epsilon) return false;
 		if (Math.abs(other.y - y) > epsilon) return false;

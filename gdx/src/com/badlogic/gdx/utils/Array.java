@@ -24,6 +24,8 @@ import java.util.NoSuchElementException;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
+import javax.annotation.Nullable;
+
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
  * @author Nathan Sweet */
@@ -96,13 +98,13 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array, start, items, 0, size);
 	}
 
-	public void add (T value) {
+	public void add (@Nullable T value) {
 		T[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
 	}
 
-	public void add (T value1, T value2) {
+	public void add (@Nullable T value1, @Nullable T value2) {
 		T[] items = this.items;
 		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size] = value1;
@@ -110,7 +112,7 @@ public class Array<T> implements Iterable<T> {
 		size += 2;
 	}
 
-	public void add (T value1, T value2, T value3) {
+	public void add (@Nullable T value1, @Nullable T value2, @Nullable T value3) {
 		T[] items = this.items;
 		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size] = value1;
@@ -119,7 +121,7 @@ public class Array<T> implements Iterable<T> {
 		size += 3;
 	}
 
-	public void add (T value1, T value2, T value3, T value4) {
+	public void add (@Nullable T value1, @Nullable T value2, @Nullable T value3, @Nullable T value4) {
 		T[] items = this.items;
 		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
 		items[size] = value1;
@@ -151,17 +153,17 @@ public class Array<T> implements Iterable<T> {
 		size = sizeNeeded;
 	}
 
-	public T get (int index) {
+	public @Nullable T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
-	public void set (int index, T value) {
+	public void set (int index, @Nullable T value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
 
-	public void insert (int index, T value) {
+	public void insert (int index, @Nullable T value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		T[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
@@ -195,7 +197,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
-	public boolean contains (@Null T value, boolean identity) {
+	public boolean contains (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
@@ -232,7 +234,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of first occurrence of value in array or -1 if no such value exists */
-	public int indexOf (@Null T value, boolean identity) {
+	public int indexOf (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
@@ -249,7 +251,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of last occurrence of value in array or -1 if no such value exists */
-	public int lastIndexOf (@Null T value, boolean identity) {
+	public int lastIndexOf (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = size - 1; i >= 0; i--)
@@ -265,7 +267,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
-	public boolean removeValue (@Null T value, boolean identity) {
+	public boolean removeValue (@Nullable T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++) {
@@ -286,7 +288,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes and returns the item at the specified index. */
-	public T removeIndex (int index) {
+	public @Nullable T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		T[] items = this.items;
 		T value = items[index];
@@ -351,7 +353,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes and returns the last item. */
-	public T pop () {
+	public @Nullable T pop () {
 		if (size == 0) throw new IllegalStateException("Array is empty.");
 		--size;
 		T item = items[size];
@@ -360,13 +362,13 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns the last item. */
-	public T peek () {
+	public @Nullable T peek () {
 		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
 	/** Returns the first item. */
-	public T first () {
+	public @Nullable T first () {
 		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
@@ -440,7 +442,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
 	 *           value use 1, for max value use size of array, using 0 results in runtime exception.
 	 * @return the value of the Nth lowest ranked object. */
-	public T selectRanked (Comparator<T> comparator, int kthLowest) {
+	public @Nullable T selectRanked (Comparator<T> comparator, int kthLowest) {
 		if (kthLowest < 1) {
 			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
@@ -513,7 +515,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns a random item from the array, or null if the array is empty. */
-	public @Null T random () {
+	public @Nullable T random () {
 		if (size == 0) return null;
 		return items[MathUtils.random(0, size - 1)];
 	}
@@ -640,7 +642,7 @@ public class Array<T> implements Iterable<T> {
 			return index < array.size;
 		}
 
-		public T next () {
+		public @Nullable T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) {
 // System.out.println(iterable.lastAcquire);

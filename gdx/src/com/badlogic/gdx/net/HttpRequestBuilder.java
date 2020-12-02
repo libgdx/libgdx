@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
 
+import javax.annotation.Nullable;
+
 /** A builder for {@link HttpRequest}s.
  * 
  * Make sure to call {@link #newRequest()} first, then set the request up and obtain it via {@link #build()} when you are done.
@@ -42,7 +44,7 @@ public class HttpRequestBuilder {
 	/** Will be used for the object serialization in case {@link #jsonContent(Object)} is called. */
 	public static Json json = new Json();
 
-	private HttpRequest httpRequest;
+	private @Nullable HttpRequest httpRequest;
 
 	/** Initializes the builder and sets it up to build a new {@link HttpRequest} . */
 	public HttpRequestBuilder newRequest () {

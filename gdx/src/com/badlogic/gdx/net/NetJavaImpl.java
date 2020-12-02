@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,8 +39,8 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.AsyncTask;
+
+import javax.annotation.Nullable;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -117,7 +116,7 @@ public class NetJavaImpl {
 			return connection.getHeaderFields();
 		}
 
-		private InputStream getInputStream () {
+		private @Nullable InputStream getInputStream () {
 			try {
 				return connection.getInputStream();
 			} catch (IOException e) {
@@ -273,7 +272,7 @@ public class NetJavaImpl {
 		listeners.put(httpRequest, httpResponseListener);
 	}
 
-	synchronized HttpResponseListener getFromListeners (HttpRequest httpRequest) {
+	synchronized @Nullable HttpResponseListener getFromListeners (HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 		return httpResponseListener;
 	}

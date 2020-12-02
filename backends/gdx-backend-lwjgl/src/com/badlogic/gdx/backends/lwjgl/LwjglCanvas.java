@@ -38,7 +38,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import java.awt.Canvas;
@@ -47,6 +46,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.geom.AffineTransform;
+
+import javax.annotation.Nullable;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses
  * {@link Display#setParent(Canvas)}, which is preferred over {@link AWTGLCanvas} but is limited to a single LwjglCanvas in an
@@ -309,7 +310,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 		return true;
 	}
 
-	protected void postedException (Throwable ex, @Null Throwable caller) {
+	protected void postedException (Throwable ex, @Nullable Throwable caller) {
 		if (caller == null) throw new RuntimeException(ex);
 		StringWriter buffer = new StringWriter(1024);
 		caller.printStackTrace(new PrintWriter(buffer));

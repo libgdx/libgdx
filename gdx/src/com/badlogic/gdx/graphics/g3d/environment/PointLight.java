@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics.g3d.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
+import javax.annotation.Nullable;
+
 public class PointLight extends BaseLight<PointLight> {
 	public final Vector3 position = new Vector3();
 	public float intensity;
@@ -42,21 +44,21 @@ public class PointLight extends BaseLight<PointLight> {
 		return set(copyFrom.color, copyFrom.position, copyFrom.intensity);
 	}
 
-	public PointLight set (final Color color, final Vector3 position, final float intensity) {
+	public PointLight set (final @Nullable Color color, final @Nullable Vector3 position, final float intensity) {
 		if (color != null) this.color.set(color);
 		if (position != null) this.position.set(position);
 		this.intensity = intensity;
 		return this;
 	}
 
-	public PointLight set (final float r, final float g, final float b, final Vector3 position, final float intensity) {
+	public PointLight set (final float r, final float g, final float b, final @Nullable Vector3 position, final float intensity) {
 		this.color.set(r, g, b, 1f);
 		if (position != null) this.position.set(position);
 		this.intensity = intensity;
 		return this;
 	}
 
-	public PointLight set (final Color color, final float x, final float y, final float z, final float intensity) {
+	public PointLight set (final @Nullable Color color, final float x, final float y, final float z, final float intensity) {
 		if (color != null) this.color.set(color);
 		this.position.set(x, y, z);
 		this.intensity = intensity;

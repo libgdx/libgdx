@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import javax.annotation.Nullable;
+
 /** Base class for applying one or more {@link Animation}s to a {@link ModelInstance}. This class only applies the actual
  * {@link Node} transformations, it does not manage animations or keep track of animation states. See {@link AnimationController}
  * for an implementation of this class which does manage animations.
@@ -140,7 +142,7 @@ public class BaseAnimationController {
 	}
 
 	/** Apply two animations, blending the second onto to first using weight. */
-	protected void applyAnimations (final Animation anim1, final float time1, final Animation anim2, final float time2,
+	protected void applyAnimations (final @Nullable Animation anim1, final float time1, final @Nullable Animation anim2, final float time2,
 		final float weight) {
 		if (anim2 == null || weight == 0.f)
 			applyAnimation(anim1, time1);
@@ -272,9 +274,8 @@ public class BaseAnimationController {
 	}
 
 	/** Helper method to apply one animation to either an objectmap for blending or directly to the bones. */
-	protected static void applyAnimation (final ObjectMap<Node, Transform> out, final Pool<Transform> pool, final float alpha,
-		final Animation animation, final float time) {
-
+	protected static void applyAnimation (final @Nullable ObjectMap<Node, Transform> out, final @Nullable Pool<Transform> pool, final float alpha,
+										  final Animation animation, final float time) {
 		if (out == null) {
 			for (final NodeAnimation nodeAnim : animation.nodeAnimations)
 				applyNodeAnimationDirectly(nodeAnim, time);

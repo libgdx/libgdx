@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import javax.annotation.Nullable;
+
 public class ColorAttribute extends Attribute {
 	public final static String DiffuseAlias = "diffuseColor";
 	public final static long Diffuse = register(DiffuseAlias);
@@ -105,7 +107,7 @@ public class ColorAttribute extends Attribute {
 		if (!is(type)) throw new GdxRuntimeException("Invalid type specified");
 	}
 
-	public ColorAttribute (final long type, final Color color) {
+	public ColorAttribute (final long type, final @Nullable Color color) {
 		this(type);
 		if (color != null) this.color.set(color);
 	}

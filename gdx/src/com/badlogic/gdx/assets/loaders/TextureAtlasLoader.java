@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.utils.Array;
 
+import javax.annotation.Nullable;
+
 /** {@link AssetLoader} to load {@link TextureAtlas} instances. Passing a {@link TextureAtlasParameter} to
  * {@link AssetManager#load(String, Class, AssetLoaderParameters)} allows to specify whether the atlas regions should be flipped
  * on the y-axis or not.
@@ -39,7 +41,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 	TextureAtlasData data;
 
 	@Override
-	public TextureAtlas load (AssetManager assetManager, String fileName, FileHandle file, TextureAtlasParameter parameter) {
+	public TextureAtlas load (AssetManager assetManager, String fileName, FileHandle file, @Nullable TextureAtlasParameter parameter) {
 		for (Page page : data.getPages()) {
 			Texture texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
 			page.texture = texture;
@@ -51,7 +53,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle atlasFile, TextureAtlasParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle atlasFile, @Nullable TextureAtlasParameter parameter) {
 		FileHandle imgDir = atlasFile.parent();
 
 		if (parameter != null)

@@ -19,7 +19,8 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.utils.Null;
+
+import javax.annotation.Nullable;
 
 /** Listener for {@link FocusEvent}.
  * @author Nathan Sweet */
@@ -76,12 +77,12 @@ abstract public class FocusListener implements EventListener {
 
 		/** The actor related to the event. When focus is lost, this is the new actor being focused, or null. When focus is gained,
 		 * this is the previous actor that was focused, or null. */
-		public @Null Actor getRelatedActor () {
+		public @Nullable Actor getRelatedActor () {
 			return relatedActor;
 		}
 
 		/** @param relatedActor May be null. */
-		public void setRelatedActor (@Null Actor relatedActor) {
+		public void setRelatedActor (@Nullable Actor relatedActor) {
 			this.relatedActor = relatedActor;
 		}
 

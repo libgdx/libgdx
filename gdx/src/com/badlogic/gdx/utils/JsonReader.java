@@ -28,6 +28,8 @@ import java.io.Reader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 
+import javax.annotation.Nullable;
+
 /** Lightweight JSON parser.<br>
  * <br>
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
@@ -658,7 +660,7 @@ public class JsonReader implements BaseJsonReader {
 	private JsonValue root, current;
 
 	/** @param name May be null. */
-	private void addChild (@Null String name, JsonValue child) {
+	private void addChild (@Nullable String name, JsonValue child) {
 		child.setName(name);
 		if (current == null) {
 			current = child;
@@ -679,7 +681,7 @@ public class JsonReader implements BaseJsonReader {
 	}
 
 	/** @param name May be null. */
-	protected void startObject (@Null String name) {
+	protected void startObject (@Nullable String name) {
 		JsonValue value = new JsonValue(ValueType.object);
 		if (current != null) addChild(name, value);
 		elements.add(value);
@@ -687,7 +689,7 @@ public class JsonReader implements BaseJsonReader {
 	}
 
 	/** @param name May be null. */
-	protected void startArray (@Null String name) {
+	protected void startArray (@Nullable String name) {
 		JsonValue value = new JsonValue(ValueType.array);
 		if (current != null) addChild(name, value);
 		elements.add(value);

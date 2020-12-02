@@ -62,7 +62,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 	/** Returns true if the heap contains the specified node.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public boolean contains (T node, boolean identity) {
-		if (node == null) throw new IllegalArgumentException("node cannot be null.");
+		if (node == null) throw new NullPointerException("node cannot be null.");
 		if (identity) {
 			for (Node n : nodes)
 				if (n == node) return true;
