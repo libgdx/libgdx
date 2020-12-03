@@ -1090,7 +1090,7 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardF12:
 				return Keys.F12;
 			case KeyboardPause:
-				return Keys.MEDIA_PLAY_PAUSE;
+				return Keys.PAUSE;
 			case KeyboardInsert:
 				return Keys.INSERT;
 			case KeyboardHome:
@@ -1192,6 +1192,12 @@ public class DefaultIOSInput implements IOSInput {
 				return Keys.SHIFT_RIGHT;
 			case KeyboardRightAlt:
 				return Keys.ALT_RIGHT;
+			case KeyboardCapsLock:
+				return Keys.CAPS_LOCK;
+			case KeyboardPrintScreen:
+				return Keys.PRINT_SCREEN;
+			case KeyboardScrollLock:
+				return Keys.SCROLL_LOCK;
 			default:
 				return Keys.UNKNOWN;
 		}

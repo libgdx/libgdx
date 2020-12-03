@@ -401,6 +401,14 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Input.Keys.GRAVE;
 		case Keyboard.KEY_MULTIPLY:
 			return Keys.NUMPAD_MULTIPLY;
+		case Keyboard.KEY_PAUSE:
+			return Keys.PAUSE;
+		case Keyboard.KEY_CAPITAL:
+			return Keys.CAPS_LOCK;
+		case Keyboard.KEY_SYSRQ:
+			return Keys.PRINT_SCREEN;
+		case Keyboard.KEY_SCROLL:
+			return Keys.SCROLL_LOCK;
 		case Keyboard.KEY_NUMLOCK:
 			return Keys.NUM_LOCK;
 		case Keyboard.KEY_DECIMAL:
@@ -622,6 +630,14 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Input.Keys.NUM:
 		case Input.Keys.NUM_LOCK:
 			return Keyboard.KEY_NUMLOCK;
+		case Keys.SCROLL_LOCK:
+			return Keyboard.KEY_SCROLL;
+		case Keys.CAPS_LOCK:
+			return Keyboard.KEY_CAPITAL;
+		case Keys.PRINT_SCREEN:
+			return Keyboard.KEY_SYSRQ;
+		case Keys.PAUSE:
+			return Keyboard.KEY_PAUSE;
 		case Input.Keys.AT:
 			return Keyboard.KEY_AT;
 		case Input.Keys.EQUALS:
