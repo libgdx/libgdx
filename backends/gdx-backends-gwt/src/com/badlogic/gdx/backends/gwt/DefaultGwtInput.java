@@ -922,7 +922,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_END:
 			return Keys.END;
 		case KeyCodes.KEY_ENTER:
-			return Keys.ENTER;
+			return location == LOCATION_NUMPAD ? Keys.NUMPAD_ENTER : Keys.ENTER;
 		case KeyCodes.KEY_ESCAPE:
 			return Keys.ESCAPE;
 		case KeyCodes.KEY_HOME:
@@ -1048,15 +1048,15 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_NUMPAD9:
 			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
-			return Keys.STAR;
+			return Keys.NUMPAD_MULTIPLY;
 		case KEY_ADD:
-			return Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case KEY_SUBTRACT:
-			return Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case KEY_DECIMAL_POINT_KEY:
-			return Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case KEY_DIVIDE:
-			return Keys.SLASH;
+			return Keys.NUMPAD_DIVIDE;
 		case KEY_F1:
 			return Keys.F1;
 		case KEY_F2:
@@ -1082,7 +1082,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_F12:
 			return Keys.F12;
 		case KEY_NUM_LOCK:
-			return Keys.NUM;
+			return Keys.NUM_LOCK;
 		case KEY_SCROLL_LOCK:
 			return Keys.UNKNOWN; // FIXME
 		case KEY_SEMICOLON:

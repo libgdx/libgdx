@@ -208,6 +208,18 @@ public interface Input {
 		public static final int NUMPAD_7 = 151;
 		public static final int NUMPAD_8 = 152;
 		public static final int NUMPAD_9 = 153;
+		
+		public static final int NUMPAD_DIVIDE = 154;
+		public static final int NUMPAD_MULTIPLY = 155;
+		public static final int NUMPAD_SUBTRACT= 156;
+		public static final int NUMPAD_ADD = 157;
+		public static final int NUMPAD_DOT = 158;
+		public static final int NUMPAD_COMMA= 159;
+		public static final int NUMPAD_ENTER = 160;
+		public static final int NUMPAD_EQUALS = 161;
+		public static final int NUMPAD_LEFT_PAREN = 162;
+		public static final int NUMPAD_RIGHT_PAREN = 163;
+		public static final int NUM_LOCK = 143;
 
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
@@ -530,6 +542,28 @@ public interface Input {
 				return "F11";
 			case F12:
 				return "F12";
+			case NUMPAD_DIVIDE:
+				return "Num /";
+			case NUMPAD_MULTIPLY:
+				return "Num *";
+			case NUMPAD_SUBTRACT:
+				return "Num -";
+			case NUMPAD_ADD:
+				return "Num +";
+			case NUMPAD_DOT:
+				return "Num .";
+			case NUMPAD_COMMA:
+				return "Num ,";
+			case NUMPAD_ENTER:
+				return "Num Enter";
+			case NUMPAD_EQUALS:
+				return "Num =";
+			case NUMPAD_LEFT_PAREN:
+				return "Num (";
+			case NUMPAD_RIGHT_PAREN:
+				return "Num )";
+			case NUM_LOCK:
+				return "Num Lock";
 				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 			default:
 				// key name not found
