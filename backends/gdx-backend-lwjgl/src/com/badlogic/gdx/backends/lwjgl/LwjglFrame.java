@@ -101,6 +101,10 @@ public class LwjglFrame extends JFrame {
 				int frameRate = LwjglFrame.this.getFrameRate();
 				return frameRate == 0 ? super.getFrameRate() : frameRate;
 			}
+
+			public LwjglInput createInput (LwjglApplicationConfiguration config) {
+				return LwjglFrame.this.createInput(config);
+			}
 		};
 
 		setHaltOnShutdown(true);
@@ -174,6 +178,10 @@ public class LwjglFrame extends JFrame {
 
 	protected int getFrameRate () {
 		return 0;
+	}
+
+	public LwjglInput createInput (LwjglApplicationConfiguration config) {
+		return new DefaultLwjglInput();
 	}
 
 	protected void exception (Throwable ex) {

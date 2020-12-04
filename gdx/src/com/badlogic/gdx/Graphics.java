@@ -154,22 +154,22 @@ public interface Graphics {
 	public int getBackBufferHeight ();
 
 	/**
-	 * @return the inset from the left which avoids display cutouts in pixels
+	 * @return the inset from the left which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetLeft();
 
 	/**
-	 * @return the inset from the top which avoids display cutouts in pixels
+	 * @return the inset from the top which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetTop();
 
 	/**
-	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
+	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels
 	 */
 	int getSafeInsetBottom();
 
 	/**
-	 * @return the inset from the right which avoids display cutouts in pixels
+	 * @return the inset from the right which avoids display cutouts in logical pixels
 	 */
 	int getSafeInsetRight();
 
@@ -180,10 +180,12 @@ public interface Graphics {
 	 * @return the id of the current frame */
 	public long getFrameId ();
 
-	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
+	/** @return the time span between the current frame and the last frame in seconds. */
 	public float getDeltaTime ();
 
-	/** @return the time span between the current frame and the last frame in seconds, without smoothing **/
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing 
+	 * @deprecated use {@link #getDeltaTime()} instead. */
+	@Deprecated
 	public float getRawDeltaTime ();
 
 	/** @return the average number of frames per second */

@@ -674,18 +674,38 @@ public interface Input {
 	public boolean isKeyJustPressed (int key);
 
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
-	 * thread.
+	 * message for the user. Will use the Default keyboard type.
+	 * Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering thread.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text, String hint);
 
-	/** Sets the on-screen keyboard visible if available.
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
+	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
+	 * thread.
+	 *
+	 * @param listener The TextInputListener.
+	 * @param title The title of the text input dialog.
+	 * @param text The message presented to the user.
+	 * @param type which type of keyboard we wish to display */
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type);
+
+	/** Sets the on-screen keyboard visible if available. Will use the Default keyboard type.
 	 * 
 	 * @param visible visible or not */
 	public void setOnscreenKeyboardVisible (boolean visible);
+
+	/** Sets the on-screen keyboard visible if available.
+	 *
+	 * @param visible visible or not
+	 * @param type which type of keyboard we wish to display. Can be null when hiding */
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
+
+	public enum OnscreenKeyboardType {
+		Default, NumberPad, PhonePad, Email, Password, URI
+	}
 
 	/** Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
@@ -768,10 +788,11 @@ public interface Input {
 	public boolean isCatchMenuKey ();
 
 	/**
-	 * Sets whether the given key on Android should be caught. No effect on other platforms.
-	 * All keys that are not caught may be handled by other apps or background processes. For example, media or volume
-	 * buttons are handled by background media players if present. If you use these keys to control your game, they
-	 * must be catched to prevent unintended behaviour.
+	 * Sets whether the given key on Android or GWT should be caught. No effect on other platforms.
+	 * All keys that are not caught may be handled by other apps or background processes on Android, or may
+	 * trigger default browser behaviour on GWT. For example, media or volume buttons are handled by
+	 * background media players if present, or Space key triggers a scroll. All keys you need to control your
+	 * game should be caught to prevent unintended behaviour.
 	 *
 	 * @param keycode  keycode to catch
 	 * @param catchKey whether to catch the given keycode

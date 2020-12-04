@@ -93,7 +93,7 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public float getRawDeltaTime() {
-		return 0;
+		return deltaTime;
 	}
 
 	@Override

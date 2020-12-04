@@ -316,6 +316,11 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		// FIXME getTextInput does nothing
 		listener.canceled();
 	}
@@ -866,9 +871,13 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	public Orientation getNativeOrientation() {
 		return Orientation.Landscape;
 	}
-	
+
 	@Override
 	public void setOnscreenKeyboardVisible(boolean visible) {
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override
