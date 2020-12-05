@@ -46,6 +46,7 @@ public class GlyphLayout implements Poolable {
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
 	static private final Pool<Color> colorPool = Pools.get(Color.class);
 	static private final Array<Color> colorStack = new Array(4);
+	static private final float epsilon = 0.0001f;
 
 	public final Array<GlyphRun> runs = new Array(1);
 	public float width, height;
@@ -189,7 +190,7 @@ public class GlyphLayout implements Poolable {
 					for (int i = 2; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
 						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
-						if (x + glyphWidth <= targetWidth) {
+						if (x + glyphWidth - epsilon <= targetWidth) {
 							// Glyph fits.
 							x += xAdvances[i];
 							continue;
