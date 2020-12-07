@@ -943,9 +943,9 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.UP;
 
 		case KEY_PAUSE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.PAUSE;
 		case KEY_CAPS_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.CAPS_LOCK;
 		case KEY_SPACE:
 			return Keys.SPACE;
 		case KEY_INSERT:
@@ -1084,7 +1084,9 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_NUM_LOCK:
 			return Keys.NUM_LOCK;
 		case KEY_SCROLL_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.SCROLL_LOCK;
+		case KeyCodes.KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case KEY_SEMICOLON:
 			return Keys.SEMICOLON;
 		case KEY_EQUALS:

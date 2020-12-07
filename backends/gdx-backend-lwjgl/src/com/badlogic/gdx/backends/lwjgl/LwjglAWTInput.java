@@ -827,6 +827,14 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			return Keys.NUMPAD_DIVIDE;
 		case java.awt.event.KeyEvent.VK_NUM_LOCK:
 			return Keys.NUM_LOCK;
+		case java.awt.event.KeyEvent.VK_SCROLL_LOCK:
+			return Keys.SCROLL_LOCK;
+		case java.awt.event.KeyEvent.VK_PRINTSCREEN:
+			return Keys.PRINT_SCREEN;
+		case java.awt.event.KeyEvent.VK_PAUSE:
+			return Keys.PAUSE;
+		case java.awt.event.KeyEvent.VK_CAPS_LOCK:
+			return Keys.CAPS_LOCK;
 		}
 		return Input.Keys.UNKNOWN;
 	}

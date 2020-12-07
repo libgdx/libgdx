@@ -87,6 +87,7 @@ public interface Input {
 		public static final int C = 31;
 		public static final int CALL = 5;
 		public static final int CAMERA = 27;
+		public static final int CAPS_LOCK = 115;
 		public static final int CLEAR = 28;
 		public static final int COMMA = 55;
 		public static final int D = 32;
@@ -136,14 +137,17 @@ public interface Input {
 		public static final int NUM = 78;
 		public static final int O = 43;
 		public static final int P = 44;
+		public static final int PAUSE = 121; // aka break
 		public static final int PERIOD = 56;
 		public static final int PLUS = 81;
 		public static final int POUND = 18;
 		public static final int POWER = 26;
+		public static final int PRINT_SCREEN = 120; // aka SYSRQ
 		public static final int Q = 45;
 		public static final int R = 46;
 		public static final int RIGHT_BRACKET = 72;
 		public static final int S = 47;
+		public static final int SCROLL_LOCK = 116;
 		public static final int SEARCH = 84;
 		public static final int SEMICOLON = 74;
 		public static final int SHIFT_LEFT = 59;
@@ -564,6 +568,14 @@ public interface Input {
 				return "Num )";
 			case NUM_LOCK:
 				return "Num Lock";
+			case CAPS_LOCK:
+				return "Caps Lock";
+			case SCROLL_LOCK:
+				return "Scroll Lock";
+			case PAUSE:
+				return "Pause";
+			case PRINT_SCREEN:
+				return "Print";
 				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 			default:
 				// key name not found

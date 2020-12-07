@@ -508,10 +508,13 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 		case GLFW.GLFW_KEY_END:
 			return Input.Keys.END;
 		case GLFW.GLFW_KEY_CAPS_LOCK:
+			return Keys.CAPS_LOCK;
 		case GLFW.GLFW_KEY_SCROLL_LOCK:
+			return Keys.SCROLL_LOCK;
 		case GLFW.GLFW_KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case GLFW.GLFW_KEY_PAUSE:
-			return Input.Keys.UNKNOWN;
+			return Keys.PAUSE;
 		case GLFW.GLFW_KEY_F1:
 			return Input.Keys.F1;
 		case GLFW.GLFW_KEY_F2:
@@ -731,6 +734,14 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return GLFW.GLFW_KEY_HOME;
 		case Input.Keys.END:
 			return GLFW.GLFW_KEY_END;
+		case Keys.SCROLL_LOCK:
+			return GLFW.GLFW_KEY_SCROLL_LOCK;
+		case Keys.CAPS_LOCK:
+			return GLFW.GLFW_KEY_CAPS_LOCK;
+		case Keys.PRINT_SCREEN:
+			return GLFW.GLFW_KEY_PRINT_SCREEN;
+		case Keys.PAUSE:
+			return GLFW.GLFW_KEY_PAUSE;
 		case Input.Keys.F1:
 			return GLFW.GLFW_KEY_F1;
 		case Input.Keys.F2:
