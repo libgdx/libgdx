@@ -16,12 +16,20 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.Pool;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,22 +44,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link LwjglInput} interface hooking a LWJGL panel for input.
  * 
@@ -408,27 +400,35 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Keyboard.KEY_GRAVE:
 			return Input.Keys.GRAVE;
 		case Keyboard.KEY_MULTIPLY:
-			return Input.Keys.STAR;
+			return Keys.NUMPAD_MULTIPLY;
+		case Keyboard.KEY_PAUSE:
+			return Keys.PAUSE;
+		case Keyboard.KEY_CAPITAL:
+			return Keys.CAPS_LOCK;
+		case Keyboard.KEY_SYSRQ:
+			return Keys.PRINT_SCREEN;
+		case Keyboard.KEY_SCROLL:
+			return Keys.SCROLL_LOCK;
 		case Keyboard.KEY_NUMLOCK:
-			return Input.Keys.NUM;
+			return Keys.NUM_LOCK;
 		case Keyboard.KEY_DECIMAL:
-			return Input.Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case Keyboard.KEY_DIVIDE:
-			return Input.Keys.SLASH;
+			return Keys.NUMPAD_DIVIDE;
 		case Keyboard.KEY_LMETA:
 			return Input.Keys.SYM;
 		case Keyboard.KEY_RMETA:
 			return Input.Keys.SYM;
 		case Keyboard.KEY_NUMPADEQUALS:
-			return Input.Keys.EQUALS;
+			return Keys.NUMPAD_EQUALS;
 		case Keyboard.KEY_AT:
 			return Input.Keys.AT;
 		case Keyboard.KEY_EQUALS:
 			return Input.Keys.EQUALS;
 		case Keyboard.KEY_NUMPADCOMMA:
-			return Input.Keys.COMMA;
+			return Keys.NUMPAD_COMMA;
 		case Keyboard.KEY_NUMPADENTER:
-			return Input.Keys.ENTER;
+			return Keys.NUMPAD_ENTER;
 		case Keyboard.KEY_0:
 			return Input.Keys.NUM_0;
 		case Keyboard.KEY_1:
@@ -528,7 +528,7 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Keyboard.KEY_PERIOD:
 			return Input.Keys.PERIOD;
 		case Keyboard.KEY_ADD:
-			return Input.Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case Keyboard.KEY_SEMICOLON:
 			return Input.Keys.SEMICOLON;
 		case Keyboard.KEY_LSHIFT:
@@ -558,7 +558,7 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Keyboard.KEY_BACK:
 			return Input.Keys.DEL;
 		case Keyboard.KEY_SUBTRACT:
-			return Input.Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case Keyboard.KEY_APOSTROPHE:
 			return Input.Keys.APOSTROPHE;
 		case Keyboard.KEY_F1:
@@ -585,6 +585,18 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Input.Keys.F11;
 		case Keyboard.KEY_F12:
 			return Input.Keys.F12;
+		case Keyboard.KEY_F13:
+			return Input.Keys.F13;
+		case Keyboard.KEY_F14:
+			return Input.Keys.F14;
+		case Keyboard.KEY_F15:
+			return Input.Keys.F15;
+		case Keyboard.KEY_F16:
+			return Input.Keys.F16;
+		case Keyboard.KEY_F17:
+			return Input.Keys.F17;
+		case Keyboard.KEY_F18:
+			return Input.Keys.F18;
 		case Keyboard.KEY_COLON:
 			return Input.Keys.COLON;
 		case Keyboard.KEY_NUMPAD0:
@@ -617,15 +629,27 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Input.Keys.APOSTROPHE:
 			return Keyboard.KEY_APOSTROPHE;
 		case Input.Keys.LEFT_BRACKET:
+		case Keys.NUMPAD_LEFT_PAREN:
 			return Keyboard.KEY_LBRACKET;
+		case Keys.NUMPAD_RIGHT_PAREN:
 		case Input.Keys.RIGHT_BRACKET:
 			return Keyboard.KEY_RBRACKET;
 		case Input.Keys.GRAVE:
 			return Keyboard.KEY_GRAVE;
 		case Input.Keys.STAR:
+		case Input.Keys.NUMPAD_MULTIPLY:
 			return Keyboard.KEY_MULTIPLY;
 		case Input.Keys.NUM:
+		case Input.Keys.NUM_LOCK:
 			return Keyboard.KEY_NUMLOCK;
+		case Keys.SCROLL_LOCK:
+			return Keyboard.KEY_SCROLL;
+		case Keys.CAPS_LOCK:
+			return Keyboard.KEY_CAPITAL;
+		case Keys.PRINT_SCREEN:
+			return Keyboard.KEY_SYSRQ;
+		case Keys.PAUSE:
+			return Keyboard.KEY_PAUSE;
 		case Input.Keys.AT:
 			return Keyboard.KEY_AT;
 		case Input.Keys.EQUALS:
@@ -739,6 +763,7 @@ final public class DefaultLwjglInput implements LwjglInput {
 		case Input.Keys.PERIOD:
 			return Keyboard.KEY_PERIOD;
 		case Input.Keys.PLUS:
+		case Input.Keys.NUMPAD_ADD:
 			return Keyboard.KEY_ADD;
 		case Input.Keys.SEMICOLON:
 			return Keyboard.KEY_SEMICOLON;
@@ -784,6 +809,18 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Keyboard.KEY_F11;
 		case Input.Keys.F12:
 			return Keyboard.KEY_F12;
+		case Input.Keys.F13:
+			return Keyboard.KEY_F13;
+		case Input.Keys.F14:
+			return Keyboard.KEY_F14;
+		case Input.Keys.F15:
+			return Keyboard.KEY_F15;
+		case Input.Keys.F16:
+			return Keyboard.KEY_F16;
+		case Input.Keys.F17:
+			return Keyboard.KEY_F17;
+		case Input.Keys.F18:
+			return Keyboard.KEY_F18;
 		case Input.Keys.COLON:
 			return Keyboard.KEY_COLON;
 		case Input.Keys.NUMPAD_0:
@@ -806,6 +843,18 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Keyboard.KEY_NUMPAD8;
 		case Input.Keys.NUMPAD_9:
 			return Keyboard.KEY_NUMPAD9;
+		case Input.Keys.NUMPAD_ENTER:
+			return Keyboard.KEY_NUMPADENTER;
+		case Input.Keys.NUMPAD_DOT:
+			return Keyboard.KEY_DECIMAL;
+		case Input.Keys.NUMPAD_COMMA:
+			return Keyboard.KEY_NUMPADCOMMA;
+		case Input.Keys.NUMPAD_SUBTRACT:
+			return Keyboard.KEY_SUBTRACT;
+		case Input.Keys.NUMPAD_DIVIDE:
+			return Keyboard.KEY_DIVIDE;
+		case Input.Keys.NUMPAD_EQUALS:
+			return Keyboard.KEY_NUMPADEQUALS;
 		default:
 			return Keyboard.KEY_NONE;
 		}

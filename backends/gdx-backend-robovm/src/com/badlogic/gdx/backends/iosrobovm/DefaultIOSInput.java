@@ -1089,8 +1089,32 @@ public class DefaultIOSInput implements IOSInput {
 				return Keys.F11;
 			case KeyboardF12:
 				return Keys.F12;
+			case KeyboardF13:
+				return Keys.F13;
+			case KeyboardF14:
+				return Keys.F14;
+			case KeyboardF15:
+				return Keys.F15;
+			case KeyboardF16:
+				return Keys.F16;
+			case KeyboardF17:
+				return Keys.F17;
+			case KeyboardF18:
+				return Keys.F18;
+			case KeyboardF19:
+				return Keys.F19;
+			case KeyboardF20:
+				return Keys.F20;
+			case KeyboardF21:
+				return Keys.F21;
+			case KeyboardF22:
+				return Keys.F22;
+			case KeyboardF23:
+				return Keys.F23;
+			case KeyboardF24:
+				return Keys.F24;
 			case KeyboardPause:
-				return Keys.MEDIA_PLAY_PAUSE;
+				return Keys.PAUSE;
 			case KeyboardInsert:
 				return Keys.INSERT;
 			case KeyboardHome:
@@ -1112,17 +1136,17 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardUpArrow:
 				return Keys.UP;
 			case KeypadNumLock:
-				return Keys.NUM;
+				return Keys.NUM_LOCK;
 			case KeypadSlash:
-				return Keys.SLASH;
+				return Keys.NUMPAD_DIVIDE;
 			case KeypadAsterisk:
-				return Keys.STAR;
+				return Keys.NUMPAD_MULTIPLY;
 			case KeypadHyphen:
-				return Keys.MINUS;
+				return Keys.NUMPAD_SUBTRACT;
 			case KeypadPlus:
-				return Keys.PLUS;
+				return Keys.NUMPAD_ADD;
 			case KeypadEnter:
-				return Keys.ENTER;
+				return Keys.NUMPAD_ENTER;
 			case Keypad1:
 				return Keys.NUM_1;
 			case Keypad2:
@@ -1144,7 +1168,7 @@ public class DefaultIOSInput implements IOSInput {
 			case Keypad0:
 				return Keys.NUM_0;
 			case KeypadPeriod:
-				return Keys.PERIOD;
+				return Keys.NUMPAD_DOT;
 			case KeyboardNonUSBackslash:
 				return Keys.BACKSLASH;
 			case KeyboardApplication:
@@ -1152,7 +1176,8 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardPower:
 				return Keys.POWER;
 			case KeypadEqualSign:
-				return Keys.EQUALS;
+			case KeypadEqualSignAS400:
+				return Keys.NUMPAD_EQUALS;
 			case KeyboardHelp:
 				return Keys.F1;
 			case KeyboardMenu:
@@ -1170,9 +1195,7 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardVolumeDown:
 				return Keys.VOLUME_DOWN;
 			case KeypadComma:
-				return Keys.COMMA;
-			case KeypadEqualSignAS400:
-				return Keys.EQUALS;
+				return Keys.NUMPAD_COMMA;
 			case KeyboardAlternateErase:
 				return Keys.DEL;
 			case KeyboardCancel:
@@ -1193,6 +1216,12 @@ public class DefaultIOSInput implements IOSInput {
 				return Keys.SHIFT_RIGHT;
 			case KeyboardRightAlt:
 				return Keys.ALT_RIGHT;
+			case KeyboardCapsLock:
+				return Keys.CAPS_LOCK;
+			case KeyboardPrintScreen:
+				return Keys.PRINT_SCREEN;
+			case KeyboardScrollLock:
+				return Keys.SCROLL_LOCK;
 			default:
 				return Keys.UNKNOWN;
 		}

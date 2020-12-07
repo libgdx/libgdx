@@ -18,7 +18,7 @@ public class ColorInfluencerPanel extends InfluencerPanel<ColorInfluencer.Single
 	private void initializeComponents(ColorInfluencer.Single emitter){
 		int i=0;
 		addContent(i++, 0, tintPanel = new GradientPanel(editor, emitter.colorValue, "Tint", "", false));
-		addContent(i++, 0, alphaPanel = new PercentagePanel(editor, emitter.alphaValue, "Life", "Transparency", ""));
+		addContent(i++, 0, alphaPanel = new PercentagePanel(editor, emitter.alphaValue, "Life", "Alpha", ""));
 		tintPanel.showContent(true);
 		alphaPanel.showContent(true);
 	}

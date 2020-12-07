@@ -90,7 +90,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	private float density = 1;
 
 	protected final AndroidApplicationConfiguration config;
-	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
+	private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,

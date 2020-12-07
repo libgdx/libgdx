@@ -774,7 +774,12 @@ public class DefaultGwtInput implements GwtInput {
 			if (e.getType().equals("keypress")) {
 				// Gdx.app.log("DefaultGwtInput", "keypress");
 				char c = (char)e.getCharCode();
-				if (processor != null) processor.keyTyped(c);
+				// usually, browsers don't send a keypress event for tab, so we emulate it in
+				// keyup event. Just in case this changes in the future, we sort this out here
+				// to avoid sending the event twice.
+				if (c != '\t') {
+					if (processor != null) processor.keyTyped(c);
+				}
 			}
 
 			if (e.getType().equals("keyup")) {
@@ -782,6 +787,11 @@ public class DefaultGwtInput implements GwtInput {
 				int code = keyForCode(e.getKeyCode(), getKeyLocationJSNI(e));
 				if (isCatchKey(code)) {
 					e.preventDefault();
+				}
+				if (processor != null && code == Keys.TAB) {
+					// js does not raise keypress event for tab, so emulate this here for
+					// platform-independant behaviour
+					processor.keyTyped('\t');
 				}
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
@@ -912,7 +922,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_END:
 			return Keys.END;
 		case KeyCodes.KEY_ENTER:
-			return Keys.ENTER;
+			return location == LOCATION_NUMPAD ? Keys.NUMPAD_ENTER : Keys.ENTER;
 		case KeyCodes.KEY_ESCAPE:
 			return Keys.ESCAPE;
 		case KeyCodes.KEY_HOME:
@@ -933,9 +943,9 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.UP;
 
 		case KEY_PAUSE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.PAUSE;
 		case KEY_CAPS_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.CAPS_LOCK;
 		case KEY_SPACE:
 			return Keys.SPACE;
 		case KEY_INSERT:
@@ -1038,15 +1048,15 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_NUMPAD9:
 			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
-			return Keys.STAR;
+			return Keys.NUMPAD_MULTIPLY;
 		case KEY_ADD:
-			return Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case KEY_SUBTRACT:
-			return Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case KEY_DECIMAL_POINT_KEY:
-			return Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case KEY_DIVIDE:
-			return Keys.SLASH;
+			return Keys.NUMPAD_DIVIDE;
 		case KEY_F1:
 			return Keys.F1;
 		case KEY_F2:
@@ -1071,10 +1081,36 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.F11;
 		case KEY_F12:
 			return Keys.F12;
+		case KEY_F13:
+			return Keys.F13;
+		case KEY_F14:
+			return Keys.F14;
+		case KEY_F15:
+			return Keys.F15;
+		case KEY_F16:
+			return Keys.F16;
+		case KEY_F17:
+			return Keys.F17;
+		case KEY_F18:
+			return Keys.F18;
+		case KEY_F19:
+			return Keys.F19;
+		case KEY_F20:
+			return Keys.F20;
+		case KEY_F21:
+			return Keys.F21;
+		case KEY_F22:
+			return Keys.F22;
+		case KEY_F23:
+			return Keys.F23;
+		case KEY_F24:
+			return Keys.F24;
 		case KEY_NUM_LOCK:
-			return Keys.NUM;
+			return Keys.NUM_LOCK;
 		case KEY_SCROLL_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.SCROLL_LOCK;
+		case KeyCodes.KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case KEY_SEMICOLON:
 			return Keys.SEMICOLON;
 		case KEY_EQUALS:
@@ -1173,6 +1209,18 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_F10 = 121;
 	private static final int KEY_F11 = 122;
 	private static final int KEY_F12 = 123;
+	private static final int KEY_F13 = 124;
+	private static final int KEY_F14 = 125;
+	private static final int KEY_F15 = 126;
+	private static final int KEY_F16 = 127;
+	private static final int KEY_F17 = 128;
+	private static final int KEY_F18 = 129;
+	private static final int KEY_F19 = 130;
+	private static final int KEY_F20 = 131;
+	private static final int KEY_F21 = 132;
+	private static final int KEY_F22 = 133;
+	private static final int KEY_F23 = 134;
+	private static final int KEY_F24 = 135;
 	private static final int KEY_NUM_LOCK = 144;
 	private static final int KEY_SCROLL_LOCK = 145;
 	private static final int KEY_SEMICOLON = 186;

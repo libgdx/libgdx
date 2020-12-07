@@ -454,6 +454,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 				public boolean keyDown (InputEvent event, int keycode) {
 					switch (keycode) {
+					case Keys.NUMPAD_ENTER:
 					case Keys.ENTER:
 						selectBox.selection.choose(list.getSelected());
 						// Fall thru.
