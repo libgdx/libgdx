@@ -126,7 +126,6 @@ public class Octree<T> {
 
 	/** Method to query geometries inside nodes that the frustum intersects.
 	 * Can be used as broad phase.
-	 *
 	 * @param frustum - The frustum to query
 	 * @param result set populated with objects near from the frustum
 	 */
@@ -276,7 +275,7 @@ public class Octree<T> {
 		}
 
 		protected void query (Frustum frustum, ObjectSet<T> result) {
-			if (!frustumIntersectsBounds(frustum, bounds)) {
+			if (!Intersector.intersectFrustumBoundsFast(frustum, bounds)) {
 				return;
 			}
 			if (!isLeaf()) {
@@ -322,7 +321,7 @@ public class Octree<T> {
 			}
 		}
 
-		/** Get all geometries using Depth-First Search recursion
+		/** Get all geometries using Depth-First Search recursion.
 		 * @param resultSet
 		 */
 		protected void getAll (ObjectSet<T> resultSet) {
@@ -334,7 +333,7 @@ public class Octree<T> {
 			resultSet.addAll(geometries);
 		}
 
-		/** Get bounding boxes using Depth-First Search recursion
+		/** Get bounding boxes using Depth-First Search recursion.
 		 * @param bounds
 		 */
 		protected void getBoundingBox(ObjectSet<BoundingBox> bounds) {
@@ -347,59 +346,27 @@ public class Octree<T> {
 		}
 	}
 
-	/** Returns whether the given {@link BoundingBox} is in the frustum.
-	 *
-	 * @param frustum The frustum
-	 * @param bounds The bounding box
-	 * @return Whether the bounding box is in the frustum */
-	private boolean frustumIntersectsBounds(Frustum frustum, BoundingBox bounds) {
-
-		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp)) ||
-			   frustum.pointInFrustum(bounds.getCorner001(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner010(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner011(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner100(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner101(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner110(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner111(tmp));
-
-		if (boundsIntersectsFrustum) {
-			return true;
-		}
-
-		boolean frustumIsInsideBounds = false;
-		for (Vector3 point : frustum.planePoints) {
-			frustumIsInsideBounds |= bounds.contains(point);
-		}
-
-		return frustumIsInsideBounds;
-	}
-
 	/** Interface used by octree to handle geometries' collisions
-	 * against BoundingBox, Frustum and Ray
-	 *
+	 * against BoundingBox, Frustum and Ray.
 	 * @param <T>
 	 */
 	public interface Collider<T> {
 
-		/** Method to calculate intersection between aabb and the geometry
-		 *
+		/** Method to calculate intersection between aabb and the geometry.
 		 * @param nodeBounds
 		 * @param geometry
 		 * @return if they are intersecting
 		 */
 		boolean intersects (BoundingBox nodeBounds, T geometry);
 
-		/** Method to calculate intersection between frustum and the geometry
-		 *
+		/** Method to calculate intersection between frustum and the geometry.
 		 * @param frustum
 		 * @param geometry
 		 * @return if they are intersecting
 		 */
 		boolean intersects (Frustum frustum, T geometry);
 
-		/** Method to calculate intersection between ray and the geometry
-		 *
+		/** Method to calculate intersection between ray and the geometry.
 		 * @param ray
 		 * @param geometry
 		 * @return distance between ray and geometry
