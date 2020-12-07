@@ -1,4 +1,5 @@
 [1.9.13]
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
 - GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
 - API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
