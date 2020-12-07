@@ -585,6 +585,18 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Input.Keys.F11;
 		case Keyboard.KEY_F12:
 			return Input.Keys.F12;
+		case Keyboard.KEY_F13:
+			return Input.Keys.F13;
+		case Keyboard.KEY_F14:
+			return Input.Keys.F14;
+		case Keyboard.KEY_F15:
+			return Input.Keys.F15;
+		case Keyboard.KEY_F16:
+			return Input.Keys.F16;
+		case Keyboard.KEY_F17:
+			return Input.Keys.F17;
+		case Keyboard.KEY_F18:
+			return Input.Keys.F18;
 		case Keyboard.KEY_COLON:
 			return Input.Keys.COLON;
 		case Keyboard.KEY_NUMPAD0:
@@ -797,6 +809,18 @@ final public class DefaultLwjglInput implements LwjglInput {
 			return Keyboard.KEY_F11;
 		case Input.Keys.F12:
 			return Keyboard.KEY_F12;
+		case Input.Keys.F13:
+			return Keyboard.KEY_F13;
+		case Input.Keys.F14:
+			return Keyboard.KEY_F14;
+		case Input.Keys.F15:
+			return Keyboard.KEY_F15;
+		case Input.Keys.F16:
+			return Keyboard.KEY_F16;
+		case Input.Keys.F17:
+			return Keyboard.KEY_F17;
+		case Input.Keys.F18:
+			return Keyboard.KEY_F18;
 		case Input.Keys.COLON:
 			return Keyboard.KEY_COLON;
 		case Input.Keys.NUMPAD_0:

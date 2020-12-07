@@ -540,17 +540,29 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 		case GLFW.GLFW_KEY_F12:
 			return Input.Keys.F12;
 		case GLFW.GLFW_KEY_F13:
+			return Input.Keys.F13;
 		case GLFW.GLFW_KEY_F14:
+			return Input.Keys.F14;
 		case GLFW.GLFW_KEY_F15:
+			return Input.Keys.F15;
 		case GLFW.GLFW_KEY_F16:
+			return Input.Keys.F16;
 		case GLFW.GLFW_KEY_F17:
+			return Input.Keys.F17;
 		case GLFW.GLFW_KEY_F18:
+			return Input.Keys.F18;
 		case GLFW.GLFW_KEY_F19:
+			return Input.Keys.F19;
 		case GLFW.GLFW_KEY_F20:
+			return Input.Keys.F20;
 		case GLFW.GLFW_KEY_F21:
+			return Input.Keys.F21;
 		case GLFW.GLFW_KEY_F22:
+			return Input.Keys.F22;
 		case GLFW.GLFW_KEY_F23:
+			return Input.Keys.F23;
 		case GLFW.GLFW_KEY_F24:
+			return Input.Keys.F24;
 		case GLFW.GLFW_KEY_F25:
 			return Input.Keys.UNKNOWN;
 		case GLFW.GLFW_KEY_NUM_LOCK:
@@ -766,6 +778,30 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 			return GLFW.GLFW_KEY_F11;
 		case Input.Keys.F12:
 			return GLFW.GLFW_KEY_F12;
+		case Input.Keys.F13:
+			return GLFW.GLFW_KEY_F13;
+		case Input.Keys.F14:
+			return GLFW.GLFW_KEY_F14;
+		case Input.Keys.F15:
+			return GLFW.GLFW_KEY_F15;
+		case Input.Keys.F16:
+			return GLFW.GLFW_KEY_F16;
+		case Input.Keys.F17:
+			return GLFW.GLFW_KEY_F17;
+		case Input.Keys.F18:
+			return GLFW.GLFW_KEY_F18;
+		case Input.Keys.F19:
+			return GLFW.GLFW_KEY_F19;
+		case Input.Keys.F20:
+			return GLFW.GLFW_KEY_F20;
+		case Input.Keys.F21:
+			return GLFW.GLFW_KEY_F21;
+		case Input.Keys.F22:
+			return GLFW.GLFW_KEY_F22;
+		case Input.Keys.F23:
+			return GLFW.GLFW_KEY_F23;
+		case Input.Keys.F24:
+			return GLFW.GLFW_KEY_F24;
 		case Keys.NUM_LOCK:
 			return GLFW.GLFW_KEY_NUM_LOCK;
 		case Input.Keys.NUMPAD_0:
