@@ -603,6 +603,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void setVSync (boolean vsync) {
 	}
 
+	/** Sets the preferred framerate for the application. Use 0 to target the maximum refresh rate of the display.
+	 * Default is 60.
+	 *
+	 * @param fps the preferred fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		config.preferredFramesPerSecond = fps;
+		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
+	}
+
 	@Override
 	public BufferFormat getBufferFormat () {
 		return bufferFormat;

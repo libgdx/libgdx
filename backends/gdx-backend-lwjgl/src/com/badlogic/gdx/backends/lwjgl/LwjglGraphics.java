@@ -625,6 +625,16 @@ public class LwjglGraphics implements Graphics {
 		Display.setVSyncEnabled(vsync);
 	}
 
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive.
+	 * The cpu sleeps as needed. Use 0 to never sleep. Default is 60.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		config.foregroundFPS = fps;
+	}
+
+
 	@Override
 	public boolean supportsExtension (String extension) {
 		return extensions.contains(extension, false);

@@ -290,6 +290,12 @@ public interface Graphics {
 	 * @param vsync vsync enabled or not. */
 	public void setVSync (boolean vsync);
 
+	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms.
+	 * Must be positive.
+	 *
+	 * @param fps the targeted fps; default differs by platform */
+	public void setForegroundFPS (int fps );
+
 	/** @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance */
 	public BufferFormat getBufferFormat ();
 

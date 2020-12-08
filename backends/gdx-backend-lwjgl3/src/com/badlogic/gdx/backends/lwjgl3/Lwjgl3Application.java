@@ -156,12 +156,17 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			for (Runnable runnable : executedRunnables) {
 				runnable.run();
 			}
+			int targetFramerate = 0;
 			if (shouldRequestRendering){
 				// Must follow Runnables execution so changes done by Runnables are reflected
 				// in the following render.
 				for (Lwjgl3Window window : windows) {
-					if (!window.getGraphics().isContinuousRendering())
+					if (!window.getGraphics().isContinuousRendering()) {
 						window.requestRendering();
+
+						if (window.getConfig().foregroundFPS > targetFramerate)
+							targetFramerate = window.getConfig().foregroundFPS;
+					}
 				}
 			}
 			
@@ -190,8 +195,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				} catch (InterruptedException e) {
 					// ignore
 				}
-			} else if(config.foregroundFPS > 0) {
-				sync.sync(config.foregroundFPS); // sleep as needed to meet the target framerate
+			} else if(targetFramerate  > 0) {
+				sync.sync(targetFramerate ); // sleep as needed to meet the target framerate
 			}
 		}
 	}

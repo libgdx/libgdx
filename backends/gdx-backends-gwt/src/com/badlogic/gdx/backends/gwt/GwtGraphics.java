@@ -517,6 +517,10 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
+	public void setForegroundFPS (int fps) {
+	}
+
+	@Override
 	public float getDensity () {
 		return (getPpiX()) / 160;
 	}

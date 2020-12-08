@@ -192,6 +192,11 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public void setForegroundFPS (int fps) {
+
+	}
+
+	@Override
 	public BufferFormat getBufferFormat() {
 		return null;
 	}
