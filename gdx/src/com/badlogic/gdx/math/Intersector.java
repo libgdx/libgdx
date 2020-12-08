@@ -351,7 +351,7 @@ public final class Intersector {
 	 * @param frustum The frustum
 	 * @param bounds The bounding box
 	 * @return Whether the frustum intersects the bounding box*/
-	public static boolean intersectFrustumBoundsFast(Frustum frustum, BoundingBox bounds) {
+	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
 		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp)) ||
 				frustum.pointInFrustum(bounds.getCorner001(tmp)) ||
 				frustum.pointInFrustum(bounds.getCorner010(tmp)) ||

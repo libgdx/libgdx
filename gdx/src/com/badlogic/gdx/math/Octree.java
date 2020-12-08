@@ -275,7 +275,7 @@ public class Octree<T> {
 		}
 
 		protected void query (Frustum frustum, ObjectSet<T> result) {
-			if (!Intersector.intersectFrustumBoundsFast(frustum, bounds)) {
+			if (!Intersector.intersectFrustumBounds(frustum, bounds)) {
 				return;
 			}
 			if (!isLeaf()) {
