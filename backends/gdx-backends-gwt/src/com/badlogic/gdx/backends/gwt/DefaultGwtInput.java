@@ -1110,13 +1110,17 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_SCROLL_LOCK:
 			return Keys.SCROLL_LOCK;
 		case KEY_AUDIO_VOLUME_DOWN:
+		case KEY_AUDIO_VOLUME_DOWN_FIREFOX:
 			return Keys.VOLUME_DOWN;
 		case KEY_AUDIO_VOLUME_UP:
+		case KEY_AUDIO_VOLUME_UP_FIREFOX:
 			return Keys.VOLUME_UP;
 		case KEY_MEDIA_TRACK_NEXT:
 			return Keys.MEDIA_NEXT;
 		case KEY_MEDIA_TRACK_PREVIOUS:
 			return Keys.MEDIA_PREVIOUS;
+		case KEY_MEDIA_STOP:
+			return Keys.MEDIA_STOP;
 		case KEY_MEDIA_PLAY_PAUSE:
 			return Keys.MEDIA_PLAY_PAUSE;
 		case KeyCodes.KEY_PRINT_SCREEN:
@@ -1237,7 +1241,10 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_AUDIO_VOLUME_UP = 175;
 	private static final int KEY_MEDIA_TRACK_NEXT = 176;
 	private static final int KEY_MEDIA_TRACK_PREVIOUS = 177;
+	private static final int KEY_MEDIA_STOP = 178;
 	private static final int KEY_MEDIA_PLAY_PAUSE = 179;
+	private static final int KEY_AUDIO_VOLUME_DOWN_FIREFOX = 182;
+	private static final int KEY_AUDIO_VOLUME_UP_FIREFOX  = 183;
 	private static final int KEY_SEMICOLON = 186;
 	private static final int KEY_EQUALS = 187;
 	private static final int KEY_COMMA = 188;
