@@ -58,8 +58,8 @@ import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
 import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
-import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MaterialEmissiveTest;
+import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
@@ -88,7 +88,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author badlogicgames@gmail.com */
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
-		// @off
+	// @off
 		IssueTest.class,
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
@@ -296,12 +296,14 @@ public class GdxTests {
 		FreeTypeTest.class,
 		InternationalFontsTest.class,
 		PngTest.class,
-		JsonTest.class
+		JsonTest.class,
+		QuadFloatTreeTest.class,
+		QuadFloatTreeNearestTest.class
 		// @on
 
-		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
-		// VorbisTest.class
-		));
+	// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
+	// VorbisTest.class
+	));
 
 	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();
 	static final ObjectMap<String, String> originalToObfuscated = new ObjectMap();
