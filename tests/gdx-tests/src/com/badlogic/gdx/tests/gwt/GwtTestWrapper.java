@@ -794,11 +794,11 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
-				return new QuadFloatTreeTest();
+				return new QuadTreeFloatTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
-				return new QuadFloatTreeNearestTest();
+				return new QuadTreeFloatNearestTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

@@ -20,23 +20,44 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-/** @author Nathan Sweet */
-public class QuadFloatTree implements Poolable {
-	static private final int MAX_VALUES = 16 * 3;
-	static public final int MAX_DEPTH = 8;
+/** A quad tree that stores a float for each point.
+ * @author Nathan Sweet */
+public class QuadTreeFloat implements Poolable {
+	static public final int VALUE = 0, X = 1, Y = 2, DISTSQR = 3;
 
-	static private final Pool<QuadFloatTree> pool = new Pool(128, 4096) {
+	static private final Pool<QuadTreeFloat> pool = new Pool(128, 4096) {
 		protected Object newObject () {
-			return new QuadFloatTree();
+			return new QuadTreeFloat();
 		}
 	};
 
+	public final int maxValues, maxDepth;
 	public float x, y, width, height;
-	public int depth, count;
-	public float[] values = new float[MAX_VALUES];
-	public QuadFloatTree nw, ne, sw, se;
+	public int depth;
+	public @Null QuadTreeFloat nw, ne, sw, se;
 
-	public void set (float x, float y, float width, float height) {
+	/** For each entry, stores the value, x, and y. */
+	public float[] values;
+
+	/** The number of elements stored in {@link #values} (3 values per quad tree entry). */
+	public int count;
+
+	/** Creates a quad tree with 16 for maxValues and 8 for maxDepth. */
+	public QuadTreeFloat () {
+		this(16, 8);
+	}
+
+	/** @param maxValues The maximum number of values stored in each quad tree node. When exceeded, the node is split into 4 child
+	 *           nodes. If the maxDepth has been reached, more than maxValues may be stored.
+	 * @param maxDepth The maximum depth of the tree nodes. Nodes at the maxDepth will not be split and may store more than
+	 *           maxValues number of entries. */
+	public QuadTreeFloat (int maxValues, int maxDepth) {
+		this.maxValues = maxValues * 3;
+		this.maxDepth = maxDepth;
+		values = new float[this.maxValues];
+	}
+
+	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -49,30 +70,30 @@ public class QuadFloatTree implements Poolable {
 			addToChild(value, valueX, valueY);
 			return;
 		}
-		if (depth < MAX_DEPTH) {
-			if (count == MAX_VALUES) {
+		if (depth < maxDepth) {
+			if (count == maxValues) {
 				split(value, valueX, valueY);
 				return;
 			}
 		} else if (count == values.length) //
-			grow();
-		values[count] = valueX;
-		values[count + 1] = valueY;
-		values[count + 2] = value;
+			values = Arrays.copyOf(values, growValues());
+		values[count] = value;
+		values[count + 1] = valueX;
+		values[count + 2] = valueY;
 		this.count += 3;
 	}
 
 	private void split (float value, float valueX, float valueY) {
 		float[] values = this.values;
-		for (int i = 0; i < MAX_VALUES; i += 3)
-			addToChild(values[i + 2], values[i], values[i + 1]);
+		for (int i = 0; i < maxValues; i += 3)
+			addToChild(values[i], values[i + 1], values[i + 2]);
 		// values isn't nulled because the trees are pooled.
 		count = -1;
 		addToChild(value, valueX, valueY);
 	}
 
 	private void addToChild (float value, float valueX, float valueY) {
-		QuadFloatTree child;
+		QuadTreeFloat child;
 		float halfWidth = width / 2, halfHeight = height / 2;
 		if (valueX < x + halfWidth) {
 			if (valueY < y + halfHeight)
@@ -88,8 +109,8 @@ public class QuadFloatTree implements Poolable {
 		child.add(value, valueX, valueY);
 	}
 
-	private QuadFloatTree obtainChild (float x, float y, float width, float height, int depth) {
-		QuadFloatTree child = pool.obtain();
+	private QuadTreeFloat obtainChild (float x, float y, float width, float height, int depth) {
+		QuadTreeFloat child = pool.obtain();
 		child.x = x;
 		child.y = y;
 		child.width = width;
@@ -98,10 +119,14 @@ public class QuadFloatTree implements Poolable {
 		return child;
 	}
 
-	private void grow () {
-		values = Arrays.copyOf(values, count + 10 * 3);
+	/** Returns a new length for {@link #values} when it is not enough to hold all the entries after {@link #maxDepth} has been
+	 * reached. */
+	protected int growValues () {
+		return count + 10 * 3;
 	}
 
+	/** @param results For each entry found within the radius, if any, the value, x, y, and square of the distance to the entry are
+	 *           added to this array. See {@link #VALUE}, {@link #X}, {@link #Y}, and {@link #DISTSQR}. */
 	public void query (float centerX, float centerY, float radius, FloatArray results) {
 		query(centerX, centerY, radius * radius, centerX - radius, centerY - radius, radius * 2, results);
 	}
@@ -112,12 +137,15 @@ public class QuadFloatTree implements Poolable {
 		int count = this.count;
 		if (count != -1) {
 			float[] values = this.values;
-			for (int i = 0; i < count; i += 3) {
-				float dx = centerX - values[i], dy = centerY - values[i + 1];
+			for (int i = 1; i < count; i += 3) {
+				float px = values[i], py = values[i + 1];
+				float dx = px - centerX, dy = py - centerY;
 				float d = dx * dx + dy * dy;
 				if (d <= radiusSqr) {
-					results.add(values[i + 2]);
-					results.add(1 - (float)Math.sqrt(d / radiusSqr));
+					results.add(values[i - 1]);
+					results.add(px);
+					results.add(py);
+					results.add(d);
 				}
 			}
 		} else {
@@ -128,94 +156,69 @@ public class QuadFloatTree implements Poolable {
 		}
 	}
 
-	static int nearestTested = 0;
-
-	public void findNearest (float x, float y, FloatArray result) {
-		nearestTested = 0;
+	/** @param result For the entry nearest to the specified point, the value, x, y, and square of the distance to the value are
+	 *           added to this array after it is cleared. See {@link #VALUE}, {@link #X}, {@link #Y}, and {@link #DISTSQR}.
+	 * @return false if no entry was found because the quad tree was empty or the specified point is farther than twice the quad
+	 *         tree's width from an entry. If false is returned the result array is empty. */
+	public boolean nearest (float x, float y, FloatArray result) {
+		// Find nearest value in a cell that contains the point.
 		result.clear();
-		result.add(-1);
-		result.add(Float.POSITIVE_INFINITY);
 		result.add(0);
-
+		result.add(0);
+		result.add(0);
+		result.add(Float.POSITIVE_INFINITY);
 		findNearestInternal(x, y, result);
+		float nearValue = result.first(), nearX = result.get(1), nearY = result.get(2), nearDist = result.get(3);
+		if (nearDist == Float.POSITIVE_INFINITY) nearDist = width * width;
 
-		float nearestValue = result.get(0);
-		float nearestDist = result.get(1);
-
-		if (nearestDist == Float.POSITIVE_INFINITY) {
-			nearestDist = width * width;
-		}
-
+		// Check for a nearer value in a neighboring cell.
 		result.clear();
-		querySquared(x, y, (float)Math.sqrt(nearestDist), result);
-		for (int i = 0, n = result.size; i < n; i += 2) {
-			float dist = result.get(i + 1);
-			if (dist < nearestDist) {
-				nearestDist = dist;
-				nearestValue = result.get(i);
+		query(x, y, (float)Math.sqrt(nearDist), result);
+		for (int i = 3, n = result.size; i < n; i += 4) {
+			float dist = result.get(i);
+			if (dist < nearDist) {
+				nearDist = dist;
+				nearValue = result.get(i - 3);
+				nearX = result.get(i - 2);
+				nearY = result.get(i - 1);
 			}
 		}
-
+		if (result.isEmpty()) return false;
 		result.clear();
-		result.add(nearestValue);
-		result.add(nearestDist);
-		result.add(nearestTested);
+		result.add(nearValue);
+		result.add(nearX);
+		result.add(nearY);
+		result.add(nearDist);
+		return true;
 	}
 
 	private void findNearestInternal (float x, float y, FloatArray result) {
 		if (!(this.x < x && this.x + width > x && this.y < y && this.y + height > y)) return;
 
-		float nearestValue = result.get(0);
-		float nearestDist = result.get(1);
-
 		int count = this.count;
 		if (count != -1) {
+			float nearValue = result.first(), nearX = result.get(1), nearY = result.get(2), nearDist = result.get(3);
 			float[] values = this.values;
-			for (int i = 0; i < count; i += 3) {
-				float px = values[i];
-				float py = values[i + 1];
+			for (int i = 1; i < count; i += 3) {
+				float px = values[i], py = values[i + 1];
 				float dx = px - x, dy = py - y;
-				float dst = dx * dx + dy * dy;
-				if (dst < nearestDist) {
-					nearestDist = dst;
-					nearestValue = values[i + 2];
+				float dist = dx * dx + dy * dy;
+				if (dist < nearDist) {
+					nearDist = dist;
+					nearValue = values[i - 1];
+					nearX = px;
+					nearY = py;
 				}
-				nearestTested++;
 			}
-			result.set(0, nearestValue);
-			result.set(1, nearestDist);
+			result.set(0, nearValue);
+			result.set(1, nearX);
+			result.set(2, nearY);
+			result.set(3, nearDist);
 		} else {
 			if (nw != null) nw.findNearestInternal(x, y, result);
 			if (sw != null) sw.findNearestInternal(x, y, result);
 			if (ne != null) ne.findNearestInternal(x, y, result);
 			if (se != null) se.findNearestInternal(x, y, result);
-		}
-	}
-
-	public void querySquared (float centerX, float centerY, float radius, FloatArray results) {
-		querySquared(centerX, centerY, radius * radius, centerX - radius, centerY - radius, radius * 2, results);
-	}
-
-	private void querySquared (float centerX, float centerY, float radiusSqr, float rectX, float rectY, float rectSize,
-		FloatArray results) {
-		if (!(x < rectX + rectSize && x + width > rectX && y < rectY + rectSize && y + height > rectY)) return;
-		int count = this.count;
-		if (count != -1) {
-			float[] values = this.values;
-			for (int i = 0; i < count; i += 3) {
-				float dx = centerX - values[i], dy = centerY - values[i + 1];
-				float d = dx * dx + dy * dy;
-				if (d <= radiusSqr) {
-					results.add(values[i + 2]);
-					results.add(d);
-				}
-				nearestTested++;
-			}
-		} else {
-			if (nw != null) nw.querySquared(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
-			if (sw != null) sw.querySquared(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
-			if (ne != null) ne.querySquared(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
-			if (se != null) se.querySquared(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
 		}
 	}
 
@@ -239,6 +242,6 @@ public class QuadFloatTree implements Poolable {
 			}
 		}
 		count = 0;
-		if (values.length > MAX_VALUES) values = new float[MAX_VALUES];
+		if (values.length > maxValues) values = new float[maxValues];
 	}
 }
