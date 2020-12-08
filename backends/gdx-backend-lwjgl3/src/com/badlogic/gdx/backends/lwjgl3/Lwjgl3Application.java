@@ -134,6 +134,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 			boolean haveWindowsRendered = false;
 			closedWindows.clear();
+			int targetFramerate = 0;
 			for (Lwjgl3Window window : windows) {
 				window.makeCurrent();
 				currentWindow = window;
@@ -143,6 +144,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				if (window.shouldClose()) {
 					closedWindows.add(window);
 				}
+				if (window.getConfig().foregroundFPS > targetFramerate)
+					targetFramerate = window.getConfig().foregroundFPS;
 			}
 			GLFW.glfwPollEvents();
 
@@ -156,17 +159,12 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			for (Runnable runnable : executedRunnables) {
 				runnable.run();
 			}
-			int targetFramerate = 0;
 			if (shouldRequestRendering){
 				// Must follow Runnables execution so changes done by Runnables are reflected
 				// in the following render.
 				for (Lwjgl3Window window : windows) {
-					if (!window.getGraphics().isContinuousRendering()) {
+					if (!window.getGraphics().isContinuousRendering())
 						window.requestRendering();
-
-						if (window.getConfig().foregroundFPS > targetFramerate)
-							targetFramerate = window.getConfig().foregroundFPS;
-					}
 				}
 			}
 			
