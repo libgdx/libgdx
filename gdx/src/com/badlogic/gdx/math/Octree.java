@@ -156,7 +156,7 @@ public class Octree<T> {
 		// Represents the boundary of the node
 		private final BoundingBox bounds;
 		private final Array<OctreeNode> children = new Array<>(8);
-		private final ObjectSet<T> geometries = new ObjectSet<T>(maxItemsPerNode);
+		private final Array<T> geometries = new Array<T>(maxItemsPerNode);
 
 		public OctreeNode () {
 			bounds = new BoundingBox();
@@ -247,7 +247,7 @@ public class Octree<T> {
 
 				return removed;
 			} else {
-				return geometries.remove(object);
+				return geometries.removeValue(object, true);
 			}
 		}
 
