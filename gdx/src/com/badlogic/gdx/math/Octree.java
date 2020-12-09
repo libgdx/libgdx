@@ -187,7 +187,7 @@ public class Octree<T> {
 			this.geometries.clear();
 		}
 
-		private void merge() {
+		private void merge () {
 			for (OctreeNode node : children) {
 				geometries.addAll(node.geometries);
 				freeNode(node);
@@ -195,21 +195,17 @@ public class Octree<T> {
 			children.clear();
 		}
 
-		private OctreeNode createNode(Vector3 min, Vector3 max, int level) {
+		private OctreeNode createNode (Vector3 min, Vector3 max, int level) {
 			OctreeNode node = nodePool.obtain();
 			node.bounds.set(min, max);
 			node.level = level;
 			return node;
 		}   
 
-		private void freeNode(OctreeNode node) {
+		private void freeNode (OctreeNode node) {
 			node.geometries.clear();
 			node.children.clear();
 			nodePool.free(node);
-		}
-
-		protected boolean contains (Collider<T> boundingBoxHandler, T geometry) {
-			return boundingBoxHandler.intersects(bounds, geometry);
 		}
 
 		protected void add (T geometry) {
@@ -235,8 +231,8 @@ public class Octree<T> {
 				boolean removed = false;
 				int childrenSum = 0;
 				for (OctreeNode node : children) {
-					childrenSum += node.geometries.size;
 					removed |= node.remove(object);
+					childrenSum += node.geometries.size;
 				}
 
 				if (removed) {
