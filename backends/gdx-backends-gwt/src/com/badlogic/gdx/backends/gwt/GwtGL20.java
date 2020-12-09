@@ -32,6 +32,7 @@ import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int16Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
@@ -97,6 +98,7 @@ public class GwtGL20 implements GL20 {
 	Float32Array floatBuffer = TypedArrays.createFloat32Array(2000 * 20);
 	Int32Array intBuffer = TypedArrays.createInt32Array(2000 * 6);
 	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
+	Int8Array byteBuffer = TypedArrays.createInt8Array(2000 * 6);
 	float[] floatArray = new float[16000];
 
 	public final WebGLRenderingContext gl;
@@ -142,6 +144,18 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
+	public Int8Array copy (ByteBuffer buffer) {
+		if (GWT.isProdMode()) {
+			return ((Int8Array)((HasArrayBufferView)buffer).getTypedArray()).subarray(buffer.position(), buffer.remaining());
+		} else {
+			ensureCapacity(buffer);
+			for (int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
+				byteBuffer.set(j, buffer.get(i));
+			}
+			return byteBuffer.subarray(0, buffer.remaining());
+		}
+	}
+
 	private void ensureCapacity (FloatBuffer buffer) {
 		if (buffer.remaining() > floatBuffer.length()) {
 			floatBuffer = TypedArrays.createFloat32Array(buffer.remaining());
@@ -157,6 +171,12 @@ public class GwtGL20 implements GL20 {
 	private void ensureCapacity (IntBuffer buffer) {
 		if (buffer.remaining() > intBuffer.length()) {
 			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
+		}
+	}
+
+	private void ensureCapacity (ByteBuffer buffer) {
+		if (buffer.remaining() > byteBuffer.length()) {
+			byteBuffer = TypedArrays.createInt8Array(buffer.remaining());
 		}
 	}
 
@@ -239,6 +259,10 @@ public class GwtGL20 implements GL20 {
 			gl.bufferData(target, copy((FloatBuffer)data), usage);
 		} else if (data instanceof ShortBuffer) {
 			gl.bufferData(target, copy((ShortBuffer)data), usage);
+		} else if (data instanceof ByteBuffer) {
+			gl.bufferData(target, copy((ByteBuffer)data), usage);
+		} else if(data == null) {
+			gl.bufferData(target, size, usage);
 		} else {
 			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
 		}
@@ -250,6 +274,8 @@ public class GwtGL20 implements GL20 {
 			gl.bufferSubData(target, offset, copy((FloatBuffer)data));
 		} else if (data instanceof ShortBuffer) {
 			gl.bufferSubData(target, offset, copy((ShortBuffer)data));
+		} else if (data instanceof ByteBuffer) {
+			gl.bufferSubData(target, offset, copy((ByteBuffer)data));
 		} else {
 			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
 		}
