@@ -189,7 +189,6 @@ public class Octree<T> {
 
 		private void merge () {
 			for (OctreeNode node : children) {
-				geometries.addAll(node.geometries);
 				freeNode(node);
 			}
 			children.clear();
@@ -229,14 +228,18 @@ public class Octree<T> {
 		protected boolean remove (T object) {
 			if (!isLeaf()) {
 				boolean removed = false;
-				int childrenSum = 0;
+
+				ObjectSet<T> geometrySet = new ObjectSet<>();
 				for (OctreeNode node : children) {
 					removed |= node.remove(object);
-					childrenSum += node.geometries.size;
+					geometrySet.addAll(node.geometries);
 				}
 
 				if (removed) {
-					if (childrenSum <= maxItemsPerNode) {
+					if (geometrySet.size <= maxItemsPerNode) {
+						for (T geometry:geometrySet) {
+							geometries.add(geometry);
+						}
 						merge();
 					}
 				}
