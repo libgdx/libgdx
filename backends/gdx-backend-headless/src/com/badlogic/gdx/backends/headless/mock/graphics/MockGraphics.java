@@ -198,7 +198,7 @@ public class MockGraphics implements Graphics {
 	 * @param fps fps */
 	@Override
 	public void setForegroundFPS (int fps) {
-		this.targetRenderInterval = (long) (fps == 0 ? (fps == 0 ? 0 : -1) : (1F / fps * 1000000000F));
+		this.targetRenderInterval = (long) (fps <= 0 ? (fps == 0 ? 0 : -1) : ((1F / fps) * 1000000000F));
 	}
 
 	public long getTargetRenderInterval() {
