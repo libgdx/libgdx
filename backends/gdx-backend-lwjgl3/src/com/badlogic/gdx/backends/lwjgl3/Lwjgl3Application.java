@@ -134,18 +134,18 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 			boolean haveWindowsRendered = false;
 			closedWindows.clear();
-			int targetFramerate = 0;
+			int targetFramerate = -2;
 			for (Lwjgl3Window window : windows) {
 				window.makeCurrent();
 				currentWindow = window;
+				if (targetFramerate == -2)
+					targetFramerate = window.getConfig().foregroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
 				}
 				if (window.shouldClose()) {
 					closedWindows.add(window);
 				}
-				if (window.getConfig().foregroundFPS > targetFramerate)
-					targetFramerate = window.getConfig().foregroundFPS;
 			}
 			GLFW.glfwPollEvents();
 

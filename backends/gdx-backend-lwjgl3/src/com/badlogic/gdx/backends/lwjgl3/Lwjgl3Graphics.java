@@ -441,7 +441,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 
 	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
-	 *  Use 0 to never sleep. If there are multiple windows, the highest value set is used for all windows. Default is 0.
+	 *  Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
 	 *
 	 * @param fps fps */
 	@Override

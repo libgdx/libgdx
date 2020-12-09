@@ -17,8 +17,9 @@
 package com.badlogic.gdx.backends.headless;
 
 public class HeadlessApplicationConfiguration {
-	/** The minimum time (in seconds) between each call to the render method or negative to not call the render method at all. */
-	public float renderInterval = 1f / 60f;
+	/** The amount of updates targeted per second. Use 0 to never sleep;  negative to not call the render method at all.
+	 *  Default is 60. */
+	public int updatesPerSecond = 60;
 	/** Preferences directory for headless. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
 
