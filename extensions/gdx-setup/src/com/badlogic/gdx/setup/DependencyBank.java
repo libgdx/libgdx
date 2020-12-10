@@ -43,7 +43,7 @@ public class DependencyBank {
 	//Project plugins
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
 	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
-	static String androidPluginImport = "com.android.tools.build:gradle:4.0.2";
+	static String androidPluginImport = "com.android.tools.build:gradle:3.5.4";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
 

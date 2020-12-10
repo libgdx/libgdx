@@ -55,7 +55,6 @@ android {
 		applicationId "com.badlogic.gdx.tests.android"
 		minSdkVersion versions.androidMinSdk
 		targetSdkVersion versions.androidTargetSdk
-		ndkVersion versions.androidNdk
 		versionCode 1
 		versionName "1.0"
 	}
