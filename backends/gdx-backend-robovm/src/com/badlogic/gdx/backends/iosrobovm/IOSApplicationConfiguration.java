@@ -44,7 +44,7 @@ public class IOSApplicationConfiguration {
 	/** the multisample format, None is default **/
 	public GLKViewDrawableMultisample multisample = GLKViewDrawableMultisample.None;
 
-	/** number of frames per second, 60 is default; use 0 to target the maximum refresh rate of the display **/
+	/** number of frames per second, 60 is default **/
 	public int preferredFramesPerSecond = 60;
 
 	/** whether to use the accelerometer, default true **/

@@ -291,7 +291,6 @@ public interface Graphics {
 	public void setVSync (boolean vsync);
 
 	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms.
-	 * Use 0 to target the maximum framerate supported by each platform.
 	 *
 	 * @param fps the targeted fps; default differs by platform */
 	public void setForegroundFPS (int fps );
