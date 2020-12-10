@@ -218,10 +218,13 @@ public class Octree<T> {
 					child.add(geometry);
 				}
 			} else {
-				geometries.add(geometry);
-				if (geometries.size > maxItemsPerNode && level > 0) {
+				if (geometries.size >= maxItemsPerNode && level > 0) {
 					split();
+					for (OctreeNode child : children) {
+						child.add(geometry);
+					}
 				}
+				geometries.add(geometry);
 			}
 		}
 
