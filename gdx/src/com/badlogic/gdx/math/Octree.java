@@ -223,8 +223,9 @@ public class Octree<T> {
 					for (OctreeNode child : children) {
 						child.add(geometry);
 					}
+				} else {
+					geometries.add(geometry);
 				}
-				geometries.add(geometry);
 			}
 		}
 
@@ -232,7 +233,7 @@ public class Octree<T> {
 			if (!isLeaf()) {
 				boolean removed = false;
 
-				ObjectSet<T> geometrySet = new ObjectSet<>();
+				ObjectSet<T> geometrySet = new ObjectSet<T>();
 				for (OctreeNode node : children) {
 					removed |= node.remove(object);
 					geometrySet.addAll(node.geometries);
