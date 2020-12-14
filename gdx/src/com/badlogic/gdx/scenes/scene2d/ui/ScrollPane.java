@@ -99,6 +99,13 @@ public class ScrollPane extends WidgetGroup {
 		setActor(widget);
 		setSize(150, 150);
 
+		addCaptureListener();
+		this.flickScrollListener = getFlickScrollListener();
+		addListener(this.flickScrollListener);
+		addScrollListener();
+	}
+
+	protected void addCaptureListener() {
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
@@ -173,8 +180,10 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 		});
+	}
 
-		flickScrollListener = new ActorGestureListener() {
+	protected ActorGestureListener getFlickScrollListener() {
+		return new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				setScrollbarsVisible(true);
 				amountX -= deltaX;
@@ -205,8 +214,9 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 		};
-		addListener(flickScrollListener);
+	}
 
+	protected void addScrollListener() {
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, float scrollAmountX, float scrollAmountY) {
 				setScrollbarsVisible(true);

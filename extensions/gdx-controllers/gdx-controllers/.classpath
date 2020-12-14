@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
+	<classpathentry kind="src" path="res"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

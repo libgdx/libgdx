@@ -295,7 +295,7 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 			input.getTextInput(listener, title, text, hint, type);
 		}
 
@@ -305,7 +305,7 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+		public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 			input.setOnscreenKeyboardVisible(visible, type);
 		}
 
@@ -375,7 +375,7 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void setCatchKey(int keycode, boolean catchKey) {
+		public void setCatchKey (int keycode, boolean catchKey) {
 			input.setCatchKey(keycode, catchKey);
 		}
 
@@ -504,7 +504,7 @@ public class GwtTestWrapper extends GdxTest {
 			return new BufferUtilsTest();
 		}
 	}, new Instancer() {
-		public GdxTest instance() {
+		public GdxTest instance () {
 			return new ClipboardTest();
 		}
 	}, new Instancer() {
@@ -554,9 +554,9 @@ public class GwtTestWrapper extends GdxTest {
 				return new FrameBufferTest();
 			}
 		}, new Instancer() {
-		public GdxTest instance () {
-			return new DownloadTest();
-		}
+			public GdxTest instance () {
+				return new DownloadTest();
+			}
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new FramebufferToTextureTest();
@@ -797,8 +797,15 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new GWTLossyPremultipliedAlphaTest();
 			}
-		},
-		new Instancer() {
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new QuadTreeFloatTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new QuadTreeFloatNearestTest();
+			}
+		}, new Instancer() {
 			public GdxTest instance () {
 				return new TextAreaTest();
 			}

@@ -81,6 +81,11 @@ public class LwjglFrame extends JFrame {
 				updateSize(width, height);
 			}
 
+			protected void create () {
+				LwjglFrame.this.creating();
+				super.create();
+			}
+
 			protected void start () {
 				LwjglFrame.this.start();
 			}
@@ -100,6 +105,10 @@ public class LwjglFrame extends JFrame {
 			protected int getFrameRate () {
 				int frameRate = LwjglFrame.this.getFrameRate();
 				return frameRate == 0 ? super.getFrameRate() : frameRate;
+			}
+
+			public LwjglInput createInput (LwjglApplicationConfiguration config) {
+				return LwjglFrame.this.createInput(config);
 			}
 		};
 
@@ -143,6 +152,9 @@ public class LwjglFrame extends JFrame {
 		});
 	}
 
+	protected void creating () {
+	}
+
 	public void reshape (int x, int y, int width, int height) {
 		super.reshape(x, y, width, height);
 		revalidate();
@@ -174,6 +186,10 @@ public class LwjglFrame extends JFrame {
 
 	protected int getFrameRate () {
 		return 0;
+	}
+
+	public LwjglInput createInput (LwjglApplicationConfiguration config) {
+		return new DefaultLwjglInput();
 	}
 
 	protected void exception (Throwable ex) {

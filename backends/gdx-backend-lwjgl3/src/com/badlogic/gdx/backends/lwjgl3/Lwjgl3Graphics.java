@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
 	final Lwjgl3Window window;
@@ -97,6 +98,25 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		String vendorString = gl20.glGetString(GL11.GL_VENDOR);
 		String rendererString = gl20.glGetString(GL11.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		if (supportsCubeMapSeamless()) {
+			enableCubeMapSeamless(true);
+		}
+	}
+
+	/** @return whether cubemap seamless feature is supported. */
+	public boolean supportsCubeMapSeamless () {
+		return glVersion.isVersionEqualToOrHigher(3, 2) || supportsExtension("GL_ARB_seamless_cube_map");
+	}
+
+	/** Enable or disable cubemap seamless feature. Default is true if supported. Should only be called if this feature is
+	 * supported. (see {@link #supportsCubeMapSeamless()})
+	 * @param enable */
+	public void enableCubeMapSeamless (boolean enable) {
+		if (enable) {
+			gl20.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		} else {
+			gl20.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
 	}
 
 	public Lwjgl3Window getWindow() {
