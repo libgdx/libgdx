@@ -1116,6 +1116,16 @@ final public class DefaultLwjglInput implements LwjglInput {
 	}
 
 	@Override
+	public void setCursorHidden (boolean hidden) {
+
+	}
+
+	@Override
+	public boolean isCursorHidden () {
+	return false;
+	}
+
+	@Override
 	public int getDeltaX () {
 		return deltaX;
 	}

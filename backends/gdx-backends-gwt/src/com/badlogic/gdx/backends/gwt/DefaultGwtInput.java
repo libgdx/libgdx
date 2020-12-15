@@ -559,6 +559,16 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
+	public void setCursorHidden (boolean hidden) {
+		setCursorCatched(hidden);
+	}
+
+	@Override
+	public boolean isCursorHidden () {
+		return isCursorCatched();
+	}
+
+	@Override
 	public void setCursorPosition (int x, int y) {
 		// FIXME??
 	}

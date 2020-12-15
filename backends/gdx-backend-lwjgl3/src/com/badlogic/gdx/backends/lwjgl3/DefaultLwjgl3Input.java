@@ -352,6 +352,16 @@ public class DefaultLwjgl3Input implements Lwjgl3Input {
 	}
 
 	@Override
+	public void setCursorHidden(boolean hidden) {
+		GLFW.glfwSetInputMode(window.getWindowHandle(), GLFW.GLFW_CURSOR, hidden ? GLFW.GLFW_CURSOR_HIDDEN : GLFW.GLFW_CURSOR_NORMAL);
+	}
+
+	@Override
+	public boolean isCursorHidden() {
+		return GLFW.glfwGetInputMode(window.getWindowHandle(), GLFW.GLFW_CURSOR) == GLFW.GLFW_CURSOR_HIDDEN;
+	}
+
+	@Override
 	public void setCursorPosition(int x, int y) {
 		if(window.getConfig().hdpiMode == HdpiMode.Pixels) {
 			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getBackBufferWidth();

@@ -570,6 +570,16 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void setCursorHidden (boolean hidden) {
+
+	}
+
+	@Override
+	public boolean isCursorHidden () {
+		return false;
+	}
+
+	@Override
 	public int getDeltaX () {
 		return deltaX[0];
 	}
