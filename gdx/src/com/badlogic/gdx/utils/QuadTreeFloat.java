@@ -158,8 +158,8 @@ public class QuadTreeFloat implements Poolable {
 
 	/** @param result For the entry nearest to the specified point, the value, x, y, and square of the distance to the value are
 	 *           added to this array after it is cleared. See {@link #VALUE}, {@link #X}, {@link #Y}, and {@link #DISTSQR}.
-	 * @return false if no entry was found because the quad tree was empty or the specified point is farther than twice the quad
-	 *         tree's width from an entry. If false is returned the result array is empty. */
+	 * @return false if no entry was found because the quad tree was empty or the specified point is farther than the larger of the
+	 *         quad tree's width or height from an entry. If false is returned the result array is empty. */
 	public boolean nearest (float x, float y, FloatArray result) {
 		// Find nearest value in a cell that contains the point.
 		result.clear();
@@ -169,7 +169,11 @@ public class QuadTreeFloat implements Poolable {
 		result.add(Float.POSITIVE_INFINITY);
 		findNearestInternal(x, y, result);
 		float nearValue = result.first(), nearX = result.get(1), nearY = result.get(2), nearDist = result.get(3);
-		if (nearDist == Float.POSITIVE_INFINITY) nearDist = width * width;
+		boolean found = nearDist != Float.POSITIVE_INFINITY;
+		if (!found) {
+			nearDist = Math.max(width, height);
+			nearDist *= nearDist;
+		}
 
 		// Check for a nearer value in a neighboring cell.
 		result.clear();
@@ -183,7 +187,7 @@ public class QuadTreeFloat implements Poolable {
 				nearY = result.get(i - 1);
 			}
 		}
-		if (result.isEmpty()) return false;
+		if (!found && result.isEmpty()) return false;
 		result.clear();
 		result.add(nearValue);
 		result.add(nearX);
