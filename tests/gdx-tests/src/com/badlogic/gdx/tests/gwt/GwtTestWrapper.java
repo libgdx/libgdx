@@ -520,6 +520,10 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
+			return new DecalAlphaTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
 			return new DecalTest();
 		}
 	}, new Instancer() {
