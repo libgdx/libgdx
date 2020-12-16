@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Null;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -405,10 +406,17 @@ public class TexturePacker {
 		Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
-			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
-			writer.write("format: " + settings.format + "\n");
-			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
-			writer.write("repeat: " + getRepeatValue() + "\n");
+			writer.write("\tsize: " + page.imageWidth + "," + page.imageHeight + "\n");
+
+			if (settings.format != Format.RGBA8888) writer.write("\tformat: " + settings.format + "\n");
+
+			if (settings.filterMin != TextureFilter.Nearest || settings.filterMag != TextureFilter.Nearest)
+				writer.write("\tfilter: " + settings.filterMin + "," + settings.filterMag + "\n");
+
+			String repeatValue = getRepeatValue();
+			if (repeatValue != null) writer.write("\trepeat: " + repeatValue + "\n");
+
+			if (settings.premultiplyAlpha) writer.write("\tpma: true\n");
 
 			page.outputRects.sort();
 			for (Rect rect : page.outputRects) {
@@ -428,29 +436,34 @@ public class TexturePacker {
 
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
-		writer.write("  rotate: " + rect.rotated + "\n");
+		if (rect.rotated) writer.write("\trotate: " + rect.rotated + "\n");
 		writer
-			.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
+			.write("\txy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
+		writer.write("\tsize: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 
-		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 		if (rect.splits != null) {
-			writer.write("  split: " //
+			writer.write("\tsplit: " //
 				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
 		}
+
 		if (rect.pads != null) {
-			if (rect.splits == null) writer.write("  split: 0, 0, 0, 0\n");
-			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+			if (rect.splits == null) writer.write("\tsplit: 0, 0, 0, 0\n");
+			writer.write("\tpad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
-		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.regionHeight - rect.offsetY) + "\n");
-		writer.write("  index: " + rect.index + "\n");
+
+		writer.write("\torig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+
+		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
+		if (rect.offsetX != 0 || offsetY != 0) writer.write("\toffset: " + rect.offsetX + ", " + offsetY + "\n");
+
+		if (rect.index != -1) writer.write("\tindex: " + rect.index + "\n");
 	}
 
-	private String getRepeatValue () {
+	private @Null String getRepeatValue () {
 		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
 		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
 		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
-		return "none";
+		return null;
 	}
 
 	private int getBufferedImageType (Format format) {
