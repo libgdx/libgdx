@@ -115,6 +115,14 @@ public class TextureAtlas implements Disposable {
 					region.height = Integer.parseInt(entry[2]);
 				}
 			});
+			regionFields.put("bounds", new Field<Region>() {
+				public void parse (Region region) {
+					region.left = Integer.parseInt(entry[1]);
+					region.top = Integer.parseInt(entry[2]);
+					region.width = Integer.parseInt(entry[3]);
+					region.height = Integer.parseInt(entry[4]);
+				}
+			});
 			regionFields.put("orig", new Field<Region>() {
 				public void parse (Region region) {
 					region.originalWidth = Integer.parseInt(entry[1]);
@@ -125,6 +133,14 @@ public class TextureAtlas implements Disposable {
 				public void parse (Region region) {
 					region.offsetX = Integer.parseInt(entry[1]);
 					region.offsetY = Integer.parseInt(entry[2]);
+				}
+			});
+			regionFields.put("offsets", new Field<Region>() {
+				public void parse (Region region) {
+					region.offsetX = Integer.parseInt(entry[1]);
+					region.offsetY = Integer.parseInt(entry[2]);
+					region.originalWidth = Integer.parseInt(entry[3]);
+					region.originalHeight = Integer.parseInt(entry[4]);
 				}
 			});
 			regionFields.put("index", new Field<Region>() {

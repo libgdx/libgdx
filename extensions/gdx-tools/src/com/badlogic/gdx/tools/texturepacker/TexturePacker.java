@@ -436,28 +436,32 @@ public class TexturePacker {
 
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
+		if (rect.index != -1) writer.write("\tindex: " + rect.index + "\n");
+
+		writer.write("\tbounds: " //
+			+ (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "," //
+			+ rect.regionWidth + ", " + rect.regionHeight + "\n");
+
+		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
+		if (rect.offsetX != 0 || offsetY != 0 //
+			|| rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight) {
+			writer.write("\toffsets: " //
+				+ rect.offsetX + ", " + offsetY + ", " //
+				+ rect.originalWidth + ", " + rect.originalHeight + "\n");
+		}
+
 		if (rect.rotated) writer.write("\trotate: " + rect.rotated + "\n");
-		writer
-			.write("\txy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
-		writer.write("\tsize: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 
 		if (rect.splits != null) {
 			writer.write("\tsplit: " //
-				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+				+ rect.splits[0] + ", " + rect.splits[1] + ", " //
+				+ rect.splits[2] + ", " + rect.splits[3] + "\n");
 		}
 
 		if (rect.pads != null) {
 			if (rect.splits == null) writer.write("\tsplit: 0, 0, 0, 0\n");
 			writer.write("\tpad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
-
-		if (rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight)
-			writer.write("\torig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-
-		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
-		if (rect.offsetX != 0 || offsetY != 0) writer.write("\toffset: " + rect.offsetX + ", " + offsetY + "\n");
-
-		if (rect.index != -1) writer.write("\tindex: " + rect.index + "\n");
 	}
 
 	private @Null String getRepeatValue () {
