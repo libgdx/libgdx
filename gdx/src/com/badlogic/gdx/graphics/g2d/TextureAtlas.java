@@ -55,7 +55,7 @@ public class TextureAtlas implements Disposable {
 		final Array<Region> regions = new Array();
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-			ObjectMap<String, Field<Page>> pageFields = new ObjectMap(15, 0.99f);
+			ObjectMap<String, Field<Page>> pageFields = new ObjectMap(15, 0.99f); // Size needed to avoid collisions.
 			pageFields.put("size", new Field<Page>() {
 				public void parse (Page page) {
 					page.width = Integer.parseInt(entry[1]);
@@ -92,7 +92,7 @@ public class TextureAtlas implements Disposable {
 				}
 			});
 
-			ObjectMap<String, Field<Region>> regionFields = new ObjectMap(127, 0.99f);
+			ObjectMap<String, Field<Region>> regionFields = new ObjectMap(127, 0.99f); // Size needed to avoid collisions.
 			regionFields.put("rotate", new Field<Region>() {
 				public void parse (Region region) {
 					String value = entry[1];
@@ -149,8 +149,7 @@ public class TextureAtlas implements Disposable {
 							int count = readEntry(line = reader.readLine());
 							if (count == 0) break;
 							Field field = pageFields.get(entry[0]);
-							if (field == null) throw new GdxRuntimeException("Invalid line: " + line);
-							field.parse(page);
+							if (field != null) field.parse(page); // Silently ignore unknown page fields.
 						}
 						pages.add(page);
 					} else {
@@ -176,6 +175,10 @@ public class TextureAtlas implements Disposable {
 									entryValues[i] = Integer.parseInt(entry[i + 1]);
 								values.add(entryValues);
 							}
+						}
+						if (region.originalWidth == 0 && region.originalHeight == 0) {
+							region.originalWidth = region.width;
+							region.originalHeight = region.height;
 						}
 						if (names != null) {
 							region.names = names.toArray(String.class);
@@ -230,17 +233,17 @@ public class TextureAtlas implements Disposable {
 
 		static public class Region {
 			public Page page;
-			public int index = -1;
 			public String name;
+			public boolean flip;
+			public int index = -1;
 			public float offsetX, offsetY;
 			public int originalWidth, originalHeight;
 			public boolean rotate;
 			public int degrees;
 			public int left, top;
 			public int width, height;
-			public boolean flip;
-			public String[] names;
-			public int[][] values;
+			public @Null String[] names;
+			public @Null int[][] values;
 
 			public @Null int[] findValue (String name) {
 				if (names != null) {

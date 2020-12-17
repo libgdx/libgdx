@@ -451,7 +451,8 @@ public class TexturePacker {
 			writer.write("\tpad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 
-		writer.write("\torig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+		if (rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight)
+			writer.write("\torig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
 
 		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
 		if (rect.offsetX != 0 || offsetY != 0) writer.write("\toffset: " + rect.offsetX + ", " + offsetY + "\n");
