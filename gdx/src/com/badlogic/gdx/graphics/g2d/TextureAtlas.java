@@ -573,7 +573,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		@Override
-		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for
+		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for
 		 * packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
