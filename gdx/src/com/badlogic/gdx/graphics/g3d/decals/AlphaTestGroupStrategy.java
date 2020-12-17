@@ -1,9 +1,13 @@
 package com.badlogic.gdx.graphics.g3d.decals;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.glutils.*;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * <p>Single Group strategy (all Decals same) using Z-buffer to render using screen door transparency to avoid having

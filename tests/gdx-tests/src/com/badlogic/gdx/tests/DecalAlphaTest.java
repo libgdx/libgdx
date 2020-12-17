@@ -16,15 +16,21 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g3d.decals.*;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.tests.utils.*;
-import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.AlphaTestGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.*;
+import java.util.LinkedList;
 
 public class DecalAlphaTest extends GdxTest {
 	public static final int TARGET_FPS = 40;
