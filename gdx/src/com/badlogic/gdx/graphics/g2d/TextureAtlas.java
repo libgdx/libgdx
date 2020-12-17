@@ -76,11 +76,11 @@ public class TextureAtlas implements Disposable {
 			pageFields.put("repeat", new Field<Page>() {
 				public void parse (Page page) {
 					String direction = entry[1];
-					if (direction.equals("x"))
+					if (direction.equalsIgnoreCase("x"))
 						page.uWrap = Repeat;
-					else if (direction.equals("y"))
+					else if (direction.equalsIgnoreCase("y"))
 						page.vWrap = Repeat;
-					else if (direction.equals("xy")) {
+					else if (direction.equalsIgnoreCase("xy")) {
 						page.uWrap = Repeat;
 						page.vWrap = Repeat;
 					}
@@ -88,7 +88,7 @@ public class TextureAtlas implements Disposable {
 			});
 			pageFields.put("pma", new Field<Page>() {
 				public void parse (Page page) {
-					page.pma = entry[1].equals("true");
+					page.pma = entry[1].equalsIgnoreCase("true");
 				}
 			});
 
