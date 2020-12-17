@@ -406,12 +406,12 @@ public class TexturePacker {
 		Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
-			writer.write("\tsize: " + page.imageWidth + "," + page.imageHeight + "\n");
+			writer.write("\tsize: " + page.imageWidth + ", " + page.imageHeight + "\n");
 
 			if (settings.format != Format.RGBA8888) writer.write("\tformat: " + settings.format + "\n");
 
 			if (settings.filterMin != TextureFilter.Nearest || settings.filterMag != TextureFilter.Nearest)
-				writer.write("\tfilter: " + settings.filterMin + "," + settings.filterMag + "\n");
+				writer.write("\tfilter: " + settings.filterMin + ", " + settings.filterMag + "\n");
 
 			String repeatValue = getRepeatValue();
 			if (repeatValue != null) writer.write("\trepeat: " + repeatValue + "\n");
