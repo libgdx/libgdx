@@ -943,9 +943,9 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.UP;
 
 		case KEY_PAUSE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.PAUSE;
 		case KEY_CAPS_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.CAPS_LOCK;
 		case KEY_SPACE:
 			return Keys.SPACE;
 		case KEY_INSERT:
@@ -1081,10 +1081,50 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.F11;
 		case KEY_F12:
 			return Keys.F12;
+		case KEY_F13:
+			return Keys.F13;
+		case KEY_F14:
+			return Keys.F14;
+		case KEY_F15:
+			return Keys.F15;
+		case KEY_F16:
+			return Keys.F16;
+		case KEY_F17:
+			return Keys.F17;
+		case KEY_F18:
+			return Keys.F18;
+		case KEY_F19:
+			return Keys.F19;
+		case KEY_F20:
+			return Keys.F20;
+		case KEY_F21:
+			return Keys.F21;
+		case KEY_F22:
+			return Keys.F22;
+		case KEY_F23:
+			return Keys.F23;
+		case KEY_F24:
+			return Keys.F24;
 		case KEY_NUM_LOCK:
 			return Keys.NUM_LOCK;
 		case KEY_SCROLL_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.SCROLL_LOCK;
+		case KEY_AUDIO_VOLUME_DOWN:
+		case KEY_AUDIO_VOLUME_DOWN_FIREFOX:
+			return Keys.VOLUME_DOWN;
+		case KEY_AUDIO_VOLUME_UP:
+		case KEY_AUDIO_VOLUME_UP_FIREFOX:
+			return Keys.VOLUME_UP;
+		case KEY_MEDIA_TRACK_NEXT:
+			return Keys.MEDIA_NEXT;
+		case KEY_MEDIA_TRACK_PREVIOUS:
+			return Keys.MEDIA_PREVIOUS;
+		case KEY_MEDIA_STOP:
+			return Keys.MEDIA_STOP;
+		case KEY_MEDIA_PLAY_PAUSE:
+			return Keys.MEDIA_PLAY_PAUSE;
+		case KeyCodes.KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case KEY_SEMICOLON:
 			return Keys.SEMICOLON;
 		case KEY_EQUALS:
@@ -1183,8 +1223,28 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_F10 = 121;
 	private static final int KEY_F11 = 122;
 	private static final int KEY_F12 = 123;
+	private static final int KEY_F13 = 124;
+	private static final int KEY_F14 = 125;
+	private static final int KEY_F15 = 126;
+	private static final int KEY_F16 = 127;
+	private static final int KEY_F17 = 128;
+	private static final int KEY_F18 = 129;
+	private static final int KEY_F19 = 130;
+	private static final int KEY_F20 = 131;
+	private static final int KEY_F21 = 132;
+	private static final int KEY_F22 = 133;
+	private static final int KEY_F23 = 134;
+	private static final int KEY_F24 = 135;
 	private static final int KEY_NUM_LOCK = 144;
 	private static final int KEY_SCROLL_LOCK = 145;
+	private static final int KEY_AUDIO_VOLUME_DOWN = 174;
+	private static final int KEY_AUDIO_VOLUME_UP = 175;
+	private static final int KEY_MEDIA_TRACK_NEXT = 176;
+	private static final int KEY_MEDIA_TRACK_PREVIOUS = 177;
+	private static final int KEY_MEDIA_STOP = 178;
+	private static final int KEY_MEDIA_PLAY_PAUSE = 179;
+	private static final int KEY_AUDIO_VOLUME_DOWN_FIREFOX = 182;
+	private static final int KEY_AUDIO_VOLUME_UP_FIREFOX  = 183;
 	private static final int KEY_SEMICOLON = 186;
 	private static final int KEY_EQUALS = 187;
 	private static final int KEY_COMMA = 188;

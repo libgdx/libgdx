@@ -81,6 +81,11 @@ public class LwjglFrame extends JFrame {
 				updateSize(width, height);
 			}
 
+			protected void create () {
+				LwjglFrame.this.creating();
+				super.create();
+			}
+
 			protected void start () {
 				LwjglFrame.this.start();
 			}
@@ -145,6 +150,9 @@ public class LwjglFrame extends JFrame {
 				lwjglCanvas.getCanvas().requestFocus();
 			}
 		});
+	}
+
+	protected void creating () {
 	}
 
 	public void reshape (int x, int y, int width, int height) {

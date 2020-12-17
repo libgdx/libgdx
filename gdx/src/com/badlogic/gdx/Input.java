@@ -87,6 +87,7 @@ public interface Input {
 		public static final int C = 31;
 		public static final int CALL = 5;
 		public static final int CAMERA = 27;
+		public static final int CAPS_LOCK = 115;
 		public static final int CLEAR = 28;
 		public static final int COMMA = 55;
 		public static final int D = 32;
@@ -136,14 +137,17 @@ public interface Input {
 		public static final int NUM = 78;
 		public static final int O = 43;
 		public static final int P = 44;
+		public static final int PAUSE = 121; // aka break
 		public static final int PERIOD = 56;
 		public static final int PLUS = 81;
 		public static final int POUND = 18;
 		public static final int POWER = 26;
+		public static final int PRINT_SCREEN = 120; // aka SYSRQ
 		public static final int Q = 45;
 		public static final int R = 46;
 		public static final int RIGHT_BRACKET = 72;
 		public static final int S = 47;
+		public static final int SCROLL_LOCK = 116;
 		public static final int SEARCH = 84;
 		public static final int SEMICOLON = 74;
 		public static final int SHIFT_LEFT = 59;
@@ -252,6 +256,18 @@ public interface Input {
 		public static final int F10 = 140;
 		public static final int F11 = 141;
 		public static final int F12 = 142;
+		public static final int F13 = 183;
+		public static final int F14 = 184;
+		public static final int F15 = 185;
+		public static final int F16 = 186;
+		public static final int F17 = 187;
+		public static final int F18 = 188;
+		public static final int F19 = 189;
+		public static final int F20 = 190;
+		public static final int F21 = 191;
+		public static final int F22 = 192;
+		public static final int F23 = 193;
+		public static final int F24 = 194;
 
 		public static final int MAX_KEYCODE = 255;
 
@@ -542,6 +558,30 @@ public interface Input {
 				return "F11";
 			case F12:
 				return "F12";
+			case F13:
+				return "F13";
+			case F14:
+				return "F14";
+			case F15:
+				return "F15";
+			case F16:
+				return "F16";
+			case F17:
+				return "F17";
+			case F18:
+				return "F18";
+			case F19:
+				return "F19";
+			case F20:
+				return "F20";
+			case F21:
+				return "F21";
+			case F22:
+				return "F22";
+			case F23:
+				return "F23";
+			case F24:
+				return "F24";
 			case NUMPAD_DIVIDE:
 				return "Num /";
 			case NUMPAD_MULTIPLY:
@@ -564,6 +604,14 @@ public interface Input {
 				return "Num )";
 			case NUM_LOCK:
 				return "Num Lock";
+			case CAPS_LOCK:
+				return "Caps Lock";
+			case SCROLL_LOCK:
+				return "Scroll Lock";
+			case PAUSE:
+				return "Pause";
+			case PRINT_SCREEN:
+				return "Print";
 				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 			default:
 				// key name not found

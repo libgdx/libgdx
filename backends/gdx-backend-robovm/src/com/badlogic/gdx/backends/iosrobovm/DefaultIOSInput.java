@@ -1089,8 +1089,32 @@ public class DefaultIOSInput implements IOSInput {
 				return Keys.F11;
 			case KeyboardF12:
 				return Keys.F12;
+			case KeyboardF13:
+				return Keys.F13;
+			case KeyboardF14:
+				return Keys.F14;
+			case KeyboardF15:
+				return Keys.F15;
+			case KeyboardF16:
+				return Keys.F16;
+			case KeyboardF17:
+				return Keys.F17;
+			case KeyboardF18:
+				return Keys.F18;
+			case KeyboardF19:
+				return Keys.F19;
+			case KeyboardF20:
+				return Keys.F20;
+			case KeyboardF21:
+				return Keys.F21;
+			case KeyboardF22:
+				return Keys.F22;
+			case KeyboardF23:
+				return Keys.F23;
+			case KeyboardF24:
+				return Keys.F24;
 			case KeyboardPause:
-				return Keys.MEDIA_PLAY_PAUSE;
+				return Keys.PAUSE;
 			case KeyboardInsert:
 				return Keys.INSERT;
 			case KeyboardHome:
@@ -1192,6 +1216,12 @@ public class DefaultIOSInput implements IOSInput {
 				return Keys.SHIFT_RIGHT;
 			case KeyboardRightAlt:
 				return Keys.ALT_RIGHT;
+			case KeyboardCapsLock:
+				return Keys.CAPS_LOCK;
+			case KeyboardPrintScreen:
+				return Keys.PRINT_SCREEN;
+			case KeyboardScrollLock:
+				return Keys.SCROLL_LOCK;
 			default:
 				return Keys.UNKNOWN;
 		}

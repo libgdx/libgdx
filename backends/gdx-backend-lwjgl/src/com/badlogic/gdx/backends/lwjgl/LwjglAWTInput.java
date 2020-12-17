@@ -797,6 +797,30 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			return Input.Keys.F11;
 		case java.awt.event.KeyEvent.VK_F12:
 			return Input.Keys.F12;
+		case java.awt.event.KeyEvent.VK_F13:
+			return Input.Keys.F13;
+		case java.awt.event.KeyEvent.VK_F14:
+			return Input.Keys.F14;
+		case java.awt.event.KeyEvent.VK_F15:
+			return Input.Keys.F15;
+		case java.awt.event.KeyEvent.VK_F16:
+			return Input.Keys.F16;
+		case java.awt.event.KeyEvent.VK_F17:
+			return Input.Keys.F17;
+		case java.awt.event.KeyEvent.VK_F18:
+			return Input.Keys.F18;
+		case java.awt.event.KeyEvent.VK_F19:
+			return Input.Keys.F19;
+		case java.awt.event.KeyEvent.VK_F20:
+			return Input.Keys.F20;
+		case java.awt.event.KeyEvent.VK_F21:
+			return Input.Keys.F21;
+		case java.awt.event.KeyEvent.VK_F22:
+			return Input.Keys.F22;
+		case java.awt.event.KeyEvent.VK_F23:
+			return Input.Keys.F23;
+		case java.awt.event.KeyEvent.VK_F24:
+			return Input.Keys.F24;
 		case java.awt.event.KeyEvent.VK_COLON:
 			return Input.Keys.COLON;
 		case java.awt.event.KeyEvent.VK_NUMPAD0:
@@ -827,6 +851,14 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			return Keys.NUMPAD_DIVIDE;
 		case java.awt.event.KeyEvent.VK_NUM_LOCK:
 			return Keys.NUM_LOCK;
+		case java.awt.event.KeyEvent.VK_SCROLL_LOCK:
+			return Keys.SCROLL_LOCK;
+		case java.awt.event.KeyEvent.VK_PRINTSCREEN:
+			return Keys.PRINT_SCREEN;
+		case java.awt.event.KeyEvent.VK_PAUSE:
+			return Keys.PAUSE;
+		case java.awt.event.KeyEvent.VK_CAPS_LOCK:
+			return Keys.CAPS_LOCK;
 		}
 		return Input.Keys.UNKNOWN;
 	}

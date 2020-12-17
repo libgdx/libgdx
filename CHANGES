@@ -3,8 +3,10 @@
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
 - API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
 - TOOLS Features: Blending mode can be changed in Flame particle 3D editor.
-- Input Keycodes added: NUMPAD_DIVIDE, NUMPAD_MULTIPLY, NUMPAD_SUBTRACT, NUMPAD_ADD, NUMPAD_DOT, NUMPAD_COMMA, NUMPAD_ENTER, NUMPAD_EQUALS, NUMPAD_LEFT_PAREN, NUMPAD_RIGHT_PAREN, NUM_LOCK. 
+- Input Keycodes added: CAPS_LOCK, PAUSE (aka Break), PRINT_SCREEN, SCROLL_LOCK, F13 to F24, NUMPAD_DIVIDE, NUMPAD_MULTIPLY, NUMPAD_SUBTRACT, NUMPAD_ADD, NUMPAD_DOT, NUMPAD_COMMA, NUMPAD_ENTER, NUMPAD_EQUALS, NUMPAD_LEFT_PAREN, NUMPAD_RIGHT_PAREN, NUM_LOCK. 
   Following changes might be done depending on platform: Keys.STAR to Keys.NUMPAD_MULTIPLY, Keys.SLASH to Keys.NUMPAD_DIVIDE, Keys.NUM to Keys.NUM_LOCK, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.PERIOD to Keys.NUMPAD_DOT, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.ENTER to Keys.NUMPAD_ENTER, Keys.PLUS to Keys.NUMPAD_ADD, Keys.MINUS to Keys.NUMPAD_SUBTRACT
+- Added a QuadFloatTree class.
+- Desktop: Cubemap Seamless feature is now enabled by default when supported, can be changed via backend specific methods, see supportsCubeMapSeamless and enableCubeMapSeamless in both LwjglGraphics and Lwjgl3Graphics.
 
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.

@@ -37,7 +37,7 @@ dependencies {
 
 android {
 	buildToolsVersion versions.androidBuildTools
-	compileSdkVersion versions.androidSdk
+	compileSdkVersion versions.androidCompileSdk
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
@@ -52,11 +52,11 @@ android {
 
 	defaultConfig {
 		multiDexEnabled true
-	}
-
-	lintOptions {
-		// Since this is a test apk, it is fine to ignore the missing densities for the icon.
-		disable 'IconMissingDensityFolder'
+		applicationId "com.badlogic.gdx.tests.android"
+		minSdkVersion versions.androidMinSdk
+		targetSdkVersion versions.androidTargetSdk
+		versionCode 1
+		versionName "1.0"
 	}
 }
 
