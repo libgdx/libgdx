@@ -92,6 +92,7 @@ public class TextureAtlas implements Disposable {
 				}
 			});
 
+			final boolean[] hasIndexes = {false};
 			ObjectMap<String, Field<Region>> regionFields = new ObjectMap(127, 0.99f); // Size needed to avoid collisions.
 			regionFields.put("rotate", new Field<Region>() {
 				public void parse (Region region) {
@@ -146,6 +147,7 @@ public class TextureAtlas implements Disposable {
 			regionFields.put("index", new Field<Region>() {
 				public void parse (Region region) {
 					region.index = Integer.parseInt(entry[1]);
+					if (region.index != -1) hasIndexes[0] = true;
 				}
 			});
 
@@ -209,7 +211,7 @@ public class TextureAtlas implements Disposable {
 				StreamUtils.closeQuietly(reader);
 			}
 
-			regions.sort(indexComparator);
+			if (hasIndexes[0]) regions.sort(indexComparator);
 		}
 
 		public Array<Page> getPages () {
