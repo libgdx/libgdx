@@ -621,25 +621,29 @@ public final class Intersector {
 		final float divY = 1f / ray.direction.y;
 		final float divZ = 1f / ray.direction.z;
 
-		float minx = ((center.x - dimensions.x * 0.5f) - ray.origin.x) * divX;
-		float maxx = ((center.x + dimensions.x * 0.5f) - ray.origin.x) * divX;
+		final float halfDimX = Math.max(dimensions.x, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
+		final float halfDimY = Math.max(dimensions.y, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
+		final float halfDimZ = Math.max(dimensions.z, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
+
+		float minx = ((center.x - halfDimX) - ray.origin.x) * divX;
+		float maxx = ((center.x + halfDimX) - ray.origin.x) * divX;
 		if (minx > maxx) {
 			final float t = minx;
 			minx = maxx;
 			maxx = t;
 		}
 
-		float miny = ((center.y - dimensions.y * 0.5f) - ray.origin.y) * divY;
-		float maxy = ((center.y + dimensions.y * 0.5f) - ray.origin.y) * divY;
+		float miny = ((center.y - halfDimY) - ray.origin.y) * divY;
+		float maxy = ((center.y + halfDimY) - ray.origin.y) * divY;
 		if (miny > maxy) {
 			final float t = miny;
 			miny = maxy;
 			maxy = t;
 		}
 
-		float minz = ((center.z - dimensions.z * 0.5f) - ray.origin.z) * divZ;
-		float maxz = ((center.z + dimensions.z * 0.5f) - ray.origin.z) * divZ;
-		if (minz > maxz) {
+		float minz = ((center.z - halfDimZ) - ray.origin.z) * divZ;
+		float maxz = ((center.z + halfDimZ) - ray.origin.z) * divZ;
+		if (minz >= maxz) {
 			final float t = minz;
 			minz = maxz;
 			maxz = t;
