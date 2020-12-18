@@ -403,20 +403,30 @@ public class TexturePacker {
 			}
 		}
 
-		Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
-		for (Page page : pages) {
-			writer.write("\n" + page.imageName + "\n");
-			writer.write("\tsize: " + page.imageWidth + ", " + page.imageHeight + "\n");
+		String tab = "", colon = ":", comma = ",";
+		if (settings.prettyPrint) {
+			tab = "\t";
+			colon = ": ";
+			comma = ", ";
+		}
 
-			if (settings.format != Format.RGBA8888) writer.write("\tformat: " + settings.format + "\n");
+		boolean exists = packFile.exists();
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
+		for (int i = 0, n = pages.size; i < n; i++) {
+			Page page = pages.get(i);
+			if (i != 0 || exists) writer.write("\n");
+			writer.write(page.imageName + "\n");
+			writer.write(tab + "size" + colon + page.imageWidth + comma + page.imageHeight + "\n");
+
+			if (settings.format != Format.RGBA8888) writer.write(tab + "format" + colon + settings.format + "\n");
 
 			if (settings.filterMin != TextureFilter.Nearest || settings.filterMag != TextureFilter.Nearest)
-				writer.write("\tfilter: " + settings.filterMin + ", " + settings.filterMag + "\n");
+				writer.write(tab + "filter" + colon + settings.filterMin + comma + settings.filterMag + "\n");
 
 			String repeatValue = getRepeatValue();
-			if (repeatValue != null) writer.write("\trepeat: " + repeatValue + "\n");
+			if (repeatValue != null) writer.write(tab + "repeat" + colon + repeatValue + "\n");
 
-			if (settings.premultiplyAlpha) writer.write("\tpma: true\n");
+			if (settings.premultiplyAlpha) writer.write(tab + "pma" + colon + "true\n");
 
 			page.outputRects.sort();
 			for (Rect rect : page.outputRects) {
@@ -435,32 +445,40 @@ public class TexturePacker {
 	}
 
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
-		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
-		if (rect.index != -1) writer.write("\tindex: " + rect.index + "\n");
+		String tab = "", colon = ":", comma = ",";
+		if (settings.prettyPrint) {
+			tab = "\t";
+			colon = ": ";
+			comma = ", ";
+		}
 
-		writer.write("\tbounds: " //
-			+ (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "," //
-			+ rect.regionWidth + ", " + rect.regionHeight + "\n");
+		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
+		if (rect.index != -1) writer.write(tab + "index" + colon + rect.index + "\n");
+
+		writer.write(tab + "bounds" + colon //
+			+ (page.x + rect.x) + comma + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + comma //
+			+ rect.regionWidth + comma + rect.regionHeight + "\n");
 
 		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
 		if (rect.offsetX != 0 || offsetY != 0 //
 			|| rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight) {
-			writer.write("\toffsets: " //
-				+ rect.offsetX + ", " + offsetY + ", " //
-				+ rect.originalWidth + ", " + rect.originalHeight + "\n");
+			writer.write(tab + "offsets" + colon //
+				+ rect.offsetX + comma + offsetY + comma //
+				+ rect.originalWidth + comma + rect.originalHeight + "\n");
 		}
 
-		if (rect.rotated) writer.write("\trotate: " + rect.rotated + "\n");
+		if (rect.rotated) writer.write(tab + "rotate" + colon + rect.rotated + "\n");
 
 		if (rect.splits != null) {
-			writer.write("\tsplit: " //
-				+ rect.splits[0] + ", " + rect.splits[1] + ", " //
-				+ rect.splits[2] + ", " + rect.splits[3] + "\n");
+			writer.write(tab + "split" + colon //
+				+ rect.splits[0] + comma + rect.splits[1] + comma //
+				+ rect.splits[2] + comma + rect.splits[3] + "\n");
 		}
 
 		if (rect.pads != null) {
-			if (rect.splits == null) writer.write("\tsplit: 0, 0, 0, 0\n");
-			writer.write("\tpad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+			if (rect.splits == null) writer.write(tab + "split" + colon + "0" + comma + "0" + comma + "0" + comma + "0\n");
+			writer.write(
+				tab + "pad" + colon + rect.pads[0] + comma + rect.pads[1] + comma + rect.pads[2] + comma + rect.pads[3] + "\n");
 		}
 	}
 
@@ -861,6 +879,7 @@ public class TexturePacker {
 		public String[] scaleSuffix = {""};
 		public Resampling[] scaleResampling = {Resampling.bicubic};
 		public String atlasExtension = ".atlas";
+		public boolean prettyPrint = true;
 
 		public Settings () {
 		}
@@ -912,6 +931,7 @@ public class TexturePacker {
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
 			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
 			atlasExtension = settings.atlasExtension;
+			prettyPrint = settings.prettyPrint;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
