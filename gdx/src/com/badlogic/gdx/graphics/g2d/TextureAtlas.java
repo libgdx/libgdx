@@ -71,6 +71,7 @@ public class TextureAtlas implements Disposable {
 				public void parse (Page page) {
 					page.minFilter = TextureFilter.valueOf(entry[1]);
 					page.magFilter = TextureFilter.valueOf(entry[2]);
+					page.useMipMaps = page.minFilter.isMipMap();
 				}
 			});
 			pageFields.put("repeat", new Field<Page>() {
