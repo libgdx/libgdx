@@ -433,8 +433,8 @@ public class TextureAtlas implements Disposable {
 	public Sprite createSprite (String name, int index) {
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			if (!region.name.equals(name)) continue;
 			if (region.index != index) continue;
+			if (!region.name.equals(name)) continue;
 			return newSprite(regions.get(i));
 		}
 		return null;
