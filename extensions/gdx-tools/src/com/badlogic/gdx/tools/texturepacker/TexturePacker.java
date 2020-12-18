@@ -931,7 +931,7 @@ public class TexturePacker {
 		public Resampling[] scaleResampling = {Resampling.bicubic};
 		public String atlasExtension = ".atlas";
 		public boolean prettyPrint = true;
-		public boolean legacyOutput;
+		public boolean legacyOutput = true;
 
 		public Settings () {
 		}
