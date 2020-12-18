@@ -631,7 +631,7 @@ public class LwjglGraphics implements Graphics {
 	 * @param fps fps */
 	@Override
 	public void setForegroundFPS (int fps) {
-		config.foregroundFPS = fps;
+		this.config.foregroundFPS = fps;
 	}
 
 

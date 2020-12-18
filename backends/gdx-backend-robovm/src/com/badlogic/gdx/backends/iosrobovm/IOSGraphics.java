@@ -603,13 +603,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void setVSync (boolean vsync) {
 	}
 
-	/** Sets the preferred framerate for the application. Default is 60.
+	/** Sets the preferred framerate for the application. Default is 60. Usage is not advised on mobile platforms.
 	 *
 	 * @param fps the preferred fps */
 	@Override
 	public void setForegroundFPS (int fps) {
-		config.preferredFramesPerSecond = fps;
-		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
+		viewController.setPreferredFramesPerSecond(fps);
 	}
 
 	@Override
