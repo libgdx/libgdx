@@ -237,15 +237,16 @@ public class TextureAtlas implements Disposable {
 			int colon = line.indexOf(':');
 			if (colon == -1) return 0;
 			entry[0] = line.substring(0, colon).trim();
-			int i = 1, lastMatch = colon + 1;
-			for (; i < 4; i++) {
+			for (int i = 1, lastMatch = colon + 1;; i++) {
 				int comma = line.indexOf(',', lastMatch);
-				if (comma == -1) break;
+				if (comma == -1) {
+					entry[i] = line.substring(lastMatch).trim();
+					return i;
+				}
 				entry[i] = line.substring(lastMatch, comma).trim();
 				lastMatch = comma + 1;
+				if (i == 4) return 4;
 			}
-			entry[i] = line.substring(lastMatch).trim();
-			return i;
 		}
 
 		static public class Page {
