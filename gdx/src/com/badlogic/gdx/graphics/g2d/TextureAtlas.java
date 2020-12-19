@@ -155,6 +155,16 @@ public class TextureAtlas implements Disposable {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 512);
 			try {
 				String line = reader.readLine();
+				// Ignore empty lines before first entry.
+				while (line != null && line.trim().length() == 0)
+					line = reader.readLine();
+				// Header entries.
+				while (true) {
+					if (line == null || line.trim().length() == 0) break;
+					if (readEntry(line) == 0) break; // Silently ignore all header fields.
+					line = reader.readLine();
+				}
+				// Page and region entries.
 				Page page = null;
 				while (true) {
 					if (line == null) break;
@@ -165,8 +175,7 @@ public class TextureAtlas implements Disposable {
 						page = new Page();
 						page.textureFile = imagesDir.child(line);
 						while (true) {
-							int count = readEntry(line = reader.readLine());
-							if (count == 0) break;
+							if (readEntry(line = reader.readLine()) == 0) break;
 							Field field = pageFields.get(entry[0]);
 							if (field != null) field.parse(page); // Silently ignore unknown page fields.
 						}
