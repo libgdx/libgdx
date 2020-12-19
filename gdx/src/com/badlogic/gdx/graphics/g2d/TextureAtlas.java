@@ -253,10 +253,10 @@ public class TextureAtlas implements Disposable {
 			public Texture texture;
 			public float width, height;
 			public boolean useMipMaps;
-			public boolean pma;
-			public Format format;
+			public Format format = Format.RGBA8888;
 			public TextureFilter minFilter = TextureFilter.Nearest, magFilter = TextureFilter.Nearest;
 			public TextureWrap uWrap = ClampToEdge, vWrap = ClampToEdge;
+			public boolean pma;
 		}
 
 		static public class Region {
