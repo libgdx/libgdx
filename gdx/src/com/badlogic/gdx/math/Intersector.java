@@ -609,7 +609,7 @@ public final class Intersector {
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
+		return intersectRayBoundsFastMinMax(ray, box.min, box.max);
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
@@ -617,42 +617,103 @@ public final class Intersector {
 	 * @param dimensions The dimensions (width, height and depth) of the bounding box
 	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, Vector3 center, Vector3 dimensions) {
-		final float divX = 1f / ray.direction.x;
-		final float divY = 1f / ray.direction.y;
-		final float divZ = 1f / ray.direction.z;
+		// Half dimensions
+		tmp.set(dimensions).scl(0.5f);
 
-		final float halfDimX = Math.max(dimensions.x, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
-		final float halfDimY = Math.max(dimensions.y, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
-		final float halfDimZ = Math.max(dimensions.z, MathUtils.FLOAT_ROUNDING_ERROR) * 0.5f;
+		Vector3 min = tmp1.set(center).sub(tmp);
+		Vector3 max = tmp2.set(center).add(tmp);
+		return intersectRayBoundsFastMinMax(ray, min, max);
+	}
 
-		float minx = ((center.x - halfDimX) - ray.origin.x) * divX;
-		float maxx = ((center.x + halfDimX) - ray.origin.x) * divX;
-		if (minx > maxx) {
-			final float t = minx;
-			minx = maxx;
-			maxx = t;
+	static public boolean intersectRayBoundsFastMinMax (Ray ray, Vector3 min, Vector3 max) {
+		float tmin = 0;
+		float tmax = Float.MAX_VALUE;
+
+		Vector3 p = ray.origin;
+		Vector3 d = ray.direction;
+
+		// Calculate x
+		if (Math.abs(d.x) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.x < min.x || p.x > max.x) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.x;
+			float t1 = (min.x - p.x) * ood;
+			float t2 = (max.x - p.x) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 > tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
+			}
 		}
 
-		float miny = ((center.y - halfDimY) - ray.origin.y) * divY;
-		float maxy = ((center.y + halfDimY) - ray.origin.y) * divY;
-		if (miny > maxy) {
-			final float t = miny;
-			miny = maxy;
-			maxy = t;
+		// Calculate y
+		if (Math.abs(d.y) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.y < min.y || p.y > max.y) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.y;
+			float t1 = (min.y - p.y) * ood;
+			float t2 = (max.y - p.y) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 > tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
+			}
 		}
 
-		float minz = ((center.z - halfDimZ) - ray.origin.z) * divZ;
-		float maxz = ((center.z + halfDimZ) - ray.origin.z) * divZ;
-		if (minz >= maxz) {
-			final float t = minz;
-			minz = maxz;
-			maxz = t;
+		// Calculate z
+		if (Math.abs(d.z) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.z < min.z || p.z > max.z) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.z;
+			float t1 = (min.z - p.z) * ood;
+			float t2 = (max.z - p.z) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 > tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
+			}
 		}
 
-		float min = Math.max(Math.max(minx, miny), minz);
-		float max = Math.min(Math.min(maxx, maxy), maxz);
-
-		return max >= 0 && max >= min;
+		return true;
 	}
 
 	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
