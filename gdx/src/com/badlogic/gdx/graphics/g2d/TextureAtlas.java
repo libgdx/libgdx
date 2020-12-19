@@ -199,8 +199,12 @@ public class TextureAtlas implements Disposable {
 								}
 								names.add(entry[0]);
 								int[] entryValues = new int[count];
-								for (int i = 0; i < count; i++)
-									entryValues[i] = Integer.parseInt(entry[i + 1]);
+								for (int i = 0; i < count; i++) {
+									try {
+										entryValues[i] = Integer.parseInt(entry[i + 1]);
+									} catch (NumberFormatException ignored) {
+									}
+								}
 								values.add(entryValues);
 							}
 						}
