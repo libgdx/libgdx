@@ -34,111 +34,85 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.LinkedList;
 
 public class DecalAlphaTest extends GdxTest {
-	public static final int TARGET_FPS = 40;
-	public static final int INITIAL_RENDERED = 100;
-	Texture egg;
-	Texture wheel;
-	LinkedList<Decal> toRender = new LinkedList<Decal>();
-	DecalBatch batch;
-	float timePassed = 0;
-	int frames = 0;
-	Camera cam;
-	WindowedMean fps = new WindowedMean(5);
-	int idx = 0;
+	 public static final int INITIAL_RENDERED = 100;
+	 Texture egg;
+	 Texture wheel;
+	 LinkedList<Decal> toRender = new LinkedList<Decal>();
+	 DecalBatch batch;
+	 float timePassed = 0;
+	 int frames = 0;
+	 Camera cam;
+	 WindowedMean fps = new WindowedMean(5);
+	 int idx = 0;
 
-	private Viewport viewport;
+	 private Viewport viewport;
 
-	@Override
-	public void create () {
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.log("DecalAlphaTest","create");
+	 @Override public void create () {
+		  Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		  Gdx.app.log("DecalAlphaTest", "create");
 
-		egg = new Texture(Gdx.files.internal("data/egg.png"));
-		wheel = new Texture(Gdx.files.internal("data/wheel.png"));
+		  egg   = new Texture(Gdx.files.internal("data/egg.png"));
+		  wheel = new Texture(Gdx.files.internal("data/wheel.png"));
 
-		for (int i = 0; i < INITIAL_RENDERED; i++) {
-			toRender.add(makeDecal());
-		}
-		cam = new PerspectiveCamera(67f,16f, 9f);
-		viewport = new StretchViewport(1920,1080,cam);
-		viewport.apply();
-		cam.position.set(0, 0, 10f);
-		cam.direction.set(0, 0, -10f);
-		cam.update();
-		batch = new DecalBatch(new AlphaTestGroupStrategy(cam));
+		  for (int i = 0; i < INITIAL_RENDERED; i++) {
+				toRender.add(makeDecal());
+		  }
+		  cam      = new PerspectiveCamera(67f, 16f, 9f);
+		  viewport = new StretchViewport(1920, 1080, cam);
+		  viewport.apply();
+		  cam.position.set(0, 0, 10f);
+		  cam.direction.set(0, 0, -10f);
+		  cam.update();
+		  batch = new DecalBatch(new AlphaTestGroupStrategy(cam, AlphaTestGroupStrategy.BayerFilter.DISABLED));
 
-		Gdx.gl.glClearColor(0, 0, 1, 1);
-	}
+		  Gdx.gl.glClearColor(0, 0, 1, 1);
+	 }
 
-	@Override
-	public void dispose () {
-		egg.dispose();
-		wheel.dispose();
-		batch.dispose();
-	}
+	 @Override public void dispose () {
+		  egg.dispose();
+		  wheel.dispose();
+		  batch.dispose();
+	 }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+	 @Override public void render () {
+		  Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		float elapsed = Gdx.graphics.getDeltaTime();
-		float scale = timePassed > 0.5 ? 1 - timePassed / 2 : 0.5f + timePassed / 2;
+		  float elapsed = Gdx.graphics.getDeltaTime();
+		  timePassed += elapsed;
 
-		for (Decal decal : toRender) {
-			decal.rotateZ(elapsed * 45f);
-			decal.rotateY(elapsed * 90f);
-			decal.setScale(scale);
-			batch.add(decal);
-		}
-		batch.flush();
+		  for (Decal decal : toRender) {
+				decal.rotateY(0.4f);
+				batch.add(decal);
+		  }
+		  batch.flush();
 
-		timePassed += elapsed;
-		frames++;
-		if (timePassed > 1.0f) {
-			System.out.println("DecalPerformanceTest2 fps: " + frames + " at spritecount: " + toRender.size());
-			fps.addValue(frames);
-			if (fps.hasEnoughData()) {
-				float factor = fps.getMean() / (float)TARGET_FPS;
-				int target = (int)(toRender.size() * factor);
-				if (fps.getMean() > TARGET_FPS) {
-					int start = toRender.size();
-					for (int i = start; toRender.size() < target; i++) {
-						toRender.add(makeDecal());
-					}
-					fps.clear();
-				} else {
-					while (toRender.size() > target) {
-						toRender.removeLast();
-					}
-					fps.clear();
-				}
-			}
-			timePassed = 0;
-			frames = 0;
-		}
-	}
+		  frames++;
+		  if (timePassed > 1.0f) {
+				System.out.println("DecalPerformanceTest2 fps: " + frames + " at spritecount: " + toRender.size());
+				fps.addValue(frames);
+		  }
+	 }
 
-	@Override
-	public void resize (int width, int height) {
-		viewport.update(width, height);
-	}
+	 @Override public void resize (int width, int height) {
+		  viewport.update(width, height);
+	 }
 
-	private Decal makeDecal () {
-		Decal sprite = null;
-		switch (idx % 2) {
-		case 0:
-			sprite = Decal.newDecal(10,10,new TextureRegion(egg), true);
-			break;
-		case 1:
-			sprite = Decal.newDecal(10,10,new TextureRegion(wheel),false);
-			break;
-		}
-		final float bounds =12f;
-		sprite.setPosition(-bounds + (float)Math.random() * (bounds*2f),  -bounds + (float)Math.random() * (bounds*2f),
-						   (float)Math.random() * -10);
-		idx++;
-		sprite.setColor(1f,1f,1f, (idx % 100)/100f);
+	 private Decal makeDecal () {
+		  Decal sprite = null;
+		  switch (idx % 2) {
+		  case 0:
+				sprite = Decal.newDecal(10, 10, new TextureRegion(egg), true);
+				break;
+		  case 1:
+				sprite = Decal.newDecal(10, 10, new TextureRegion(wheel), false);
+				break;
+		  }
+		  final float bounds = 12f;
+		  sprite.setPosition(-bounds + (float)Math.random() * (bounds * 2f), -bounds + (float)Math.random() * (bounds * 2f),
+			  ((float)idx/100)-5f);
+		  idx++;
+		  sprite.setColor(1f, 1f, 1f, (idx % 100) / 100f);
 
-		return sprite;
-	}
+		  return sprite;
+	 }
 }

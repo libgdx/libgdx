@@ -34,6 +34,27 @@ import com.badlogic.gdx.utils.Pool;
  * </p>
  */
 public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
+
+	 /**
+	  * Specifies the size of the dithering filter used to discard pixels
+	  * of translucent textures.
+	  * <p>
+	  * {@link #DISABLED} Transparency only. Translucency disabled.
+	  * {@link #FAST} 1x1
+	  * {@link #QUICK} 2x2
+	  * {@link #MODERATE} 3x3
+	  * {@link #SLOW} 4x4
+	  */
+	 public enum BayerFilter {
+		  DISABLED(0), FAST(1), QUICK(2), MODERATE(3), SLOW(4);
+
+		  private final int size;
+
+		  BayerFilter (final int size) {
+				this.size = size;
+		  }
+	 }
+
 	 private static final int GROUP_ALPHA_TEST = 0;
 
 	 final Pool<Array<Decal>> arrayPool = new Pool<Array<Decal>>(16) {
@@ -47,10 +68,25 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 	 Camera camera;
 	 ShaderProgram shader;
 
+	 /**
+	  * Renders translucency with screen door effect/stippling.
+	  *
+	  * @param camera
+	  */
 	 public AlphaTestGroupStrategy (final Camera camera) {
+		  this(camera, BayerFilter.MODERATE);
+	 }
+
+	 /**
+	  * Renders translucency with screen door effect/stippling.
+	  *
+	  * @param camera
+	  * @param bayerFilter Specifies the size of the dithering filter used to discard pixels
+	  *                    of translucent textures.
+	  */
+	 public AlphaTestGroupStrategy (final Camera camera, final BayerFilter bayerFilter) {
 		  this.camera = camera;
-		  Gdx.app.log("SHADER", "AlphaTestGroupStrategy");
-		  createDefaultShader();
+		  createDefaultShader(bayerFilter);
 	 }
 
 	 public Camera getCamera () {
@@ -103,7 +139,14 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 		  Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	 }
 
-	 private void createDefaultShader () {
+	 /**
+	  * Creates default shader.
+	  *
+	  * @param bayerFilter 2^maxBAYERVALUE is the width and height of the Bayer filter.
+	  *                    As 16x16 holds all possible 255 alpha values, 4 is the functional
+	  *                    maximum size.
+	  */
+	 private void createDefaultShader (final BayerFilter bayerFilter) {
 		  String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			  + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			  + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
@@ -118,65 +161,7 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 			  + "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";" + "\n" //
 			  + "}\n";
 
-		  //Bayer
-		  String ffragmentShader = "#ifdef GL_ES\n" //
-			  + "precision mediump float;\n" //
-			  + "precision mediump int;\n" //
-			  + "#endif \n" //
-			  + "varying vec4 v_color;\n" //
-			  + "varying vec2 v_texCoords;\n" //
-			  + "uniform sampler2D u_texture;\n" //
-			  + "float[] bayerMatrix ={1.0f / 17.0f,  9.0f / 17.0f,  3.0f / 17.0f, 11.0f / 17.0f," //
-			  + "13.0f / 17.0f,  5.0f / 17.0f, 15.0f / 17.0f,  7.0f / 17.0f,"//
-			  + "4.0f / 17.0f, 12.0f / 17.0f,  2.0f / 17.0f, 10.0f / 17.0f, " //
-			  + "16.0f / 17.0f,  8.0f / 17.0f, 14.0f /17.0f,  6.0f / 17.0f };\n" //
-			  + "\n" //
-			  + "void main()\n"//
-			  + "{\n" //
-			  + "int xPos = int(gl_FragCoord.x) % 4; \n" //
-			  + "int yPos = int(gl_FragCoord.y) % 4; \n" //
-			  + "float stipple = bayerMatrix[ xPos + (yPos*4) ]; \n" //
-			  + "vec4 tex2D =  texture2D(u_texture, v_texCoords); \n" //
-			  + "vec4 tinted = v_color * tex2D; \n" //
-			  + "if( tinted.a <= stipple ) { discard; }\n" //
-			  + "else\n" //
-			  + "  { gl_FragColor = tinted; }\n" //
-			  + "}";
-
-		  //Default
-//        String fragmentShader = "#ifdef GL_ES\n" //
-//                                + "precision mediump float;\n" //
-//                                + "#endif\n" //
-//                                + "varying vec4 v_color;\n" //
-//                                + "varying vec2 v_texCoords;\n" //
-//                                + "uniform sampler2D u_texture;\n" //
-//                                + "void main()\n"//
-//                                + "{\n" //
-//                                + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
-//                                + "}";
-
-//
-		  //Tettinger interleaved
-		  String jhfragmentShader = "#ifdef GL_ES\n" //
-			  + "#define LOWP lowp\n" //
-			  + "precision mediump float;\n" //
-			  + "#else\n" //
-			  + "#define LOWP \n" //
-			  + "#endif\n" //
-			  + "varying vec2 v_texCoords;\n" //
-			  + "varying LOWP vec4 v_color;\n" //
-			  + "uniform sampler2D u_texture;\n" //
-			  + "void main()\n" //
-			  + "{\n" //
-			  + "float stipple = fract(52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y));\n \n" //
-			  + "vec4 tex2D =  texture2D(u_texture, v_texCoords); \n" //
-			  + "vec4 tinted = v_color*tex2D; \n" //
-			  + "if( dot(vec3(0.25), tinted.rgb) >= stipple ) { discard; }\n" //
-			  + "gl_FragColor = tinted;\n" //
-			  + "}";
-
-		  final int MAX_BAYER_VALUE = 4;
-		  String fragmentShader = "#ifdef GL_ES\n" //
+		  String dfragmentShader = "#ifdef GL_ES\n" //
 			  + "precision mediump float;\n" //
 			  + "#endif\n" //
 			  + "\n" //
@@ -190,7 +175,7 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 			  + "float finalDivisor = 0.0;\n" //
 			  + "float layerMult\t   = 1.0;\n" //
 			  + "\n" //
-			  + "for(int bayerLevel = 2; bayerLevel >= 1; bayerLevel--)\n" //
+			  + "for(int bayerLevel = " + bayerFilter.size + "; bayerLevel >= 1; bayerLevel--)\n" //
 			  + "{\n" //
 			  + "float bayerSize \t= exp2( float(bayerLevel)) * 0.5;\n" //
 			  + "vec2 bayercoord \t= mod( floor(gl_FragCoord.xy / bayerSize) , 2.0);\n" //
@@ -215,27 +200,25 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 			  + "}"; //
 
 		  //Tetting Bayer shader
-		  String xfragmentShader = "#ifdef GL_ES\n" //
+		  String fragmentShader = "#ifdef GL_ES\n" //
 			  + "precision mediump float;\n" //
 			  + "#endif \n" //
 			  + "varying vec4 v_color;\n" //
 			  + "varying vec2 v_texCoords;\n" //
 			  + "uniform sampler2D u_texture;\n" //
 			  + "\n" //
-			  + "#define MAX_LEVEL 2\n" //
+			  + "#define MAX_LEVEL 4\n" //
 			  + "float GetBayer() {\n" //
 			  + "  float finalBayer = 0.0;\n" //
-			  + "  for(int i = 1 - MAX_LEVEL; i<= 0; i++) {\n" //
+			  + "  for(int i = 1 - "+bayerFilter.size +"; i<= 0; i++) {\n" //
 			  + "    float bayerSize = exp2(float(i));   // negative exponent makes an inverse\n" //
 			  + "    vec2 c = mod(floor(gl_FragCoord.xy * bayerSize), 2.0);\n" //
 			  + "    float bayer = 2. * c.x - 4. * c.x * c.y + 3. * c.y;  // borrows factors of the summed geometric series soon to"
-			  //
-			  + " divide it\n"  //
+			  + "                                                            divide it\n"  //
 			  + "    finalBayer += exp2(float(2 * (i + MAX_LEVEL))) * bayer; // could use a left shift\n" //
 			  + "  }\n" //
 			  + "  float finalDivisor = exp2(float(2 * MAX_LEVEL + 2)) - 4.; // geometric series sum, can be calculated at compile "
-			  //
-			  + "time\n"  //
+			  + "                                                               time\n"  //
 			  + "  return finalBayer/ finalDivisor;\n" //
 			  + "}" //
 			  + "\n" //
