@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -49,6 +50,8 @@ public class DecalAlphaTest extends GdxTest {
 
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.log("DecalAlphaTest","create");
 
 		egg = new Texture(Gdx.files.internal("data/egg.png"));
 		wheel = new Texture(Gdx.files.internal("data/wheel.png"));
@@ -64,7 +67,7 @@ public class DecalAlphaTest extends GdxTest {
 		cam.update();
 		batch = new DecalBatch(new AlphaTestGroupStrategy(cam));
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 1, 1);
 	}
 
 	@Override
@@ -134,7 +137,7 @@ public class DecalAlphaTest extends GdxTest {
 		sprite.setPosition(-bounds + (float)Math.random() * (bounds*2f),  -bounds + (float)Math.random() * (bounds*2f),
 						   (float)Math.random() * -10);
 		idx++;
-		sprite.setColor(1f,1f,1f, idx % 100);
+		sprite.setColor(1f,1f,1f, (idx % 100)/100f);
 
 		return sprite;
 	}
