@@ -238,6 +238,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
 		String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
 		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader);
+		if (!program.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + program.getLog());
 		return program;
 	}
 }
