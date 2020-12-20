@@ -48,8 +48,18 @@ public class TextureAtlas implements Disposable {
 	private final ObjectSet<Texture> textures = new ObjectSet(4);
 	private final Array<AtlasRegion> regions = new Array();
 
-	public static class TextureAtlasData {
+	static public class TextureAtlasData {
 		static final String[] entry = new String[5];
+
+		static final Comparator<Region> indexComparator = new Comparator<Region>() {
+			public int compare (Region region1, Region region2) {
+				int i1 = region1.index;
+				if (i1 == -1) i1 = Integer.MAX_VALUE;
+				int i2 = region2.index;
+				if (i2 == -1) i2 = Integer.MAX_VALUE;
+				return i1 - i2;
+			}
+		};
 
 		final Array<Page> pages = new Array();
 		final Array<Region> regions = new Array();
@@ -202,7 +212,7 @@ public class TextureAtlas implements Disposable {
 								for (int i = 0; i < count; i++) {
 									try {
 										entryValues[i] = Integer.parseInt(entry[i + 1]);
-									} catch (NumberFormatException ignored) {
+									} catch (NumberFormatException ignored) { // Silently ignore non-integer values.
 									}
 								}
 								values.add(entryValues);
@@ -253,6 +263,10 @@ public class TextureAtlas implements Disposable {
 			}
 		}
 
+		static private interface Field<T> {
+			public void parse (T object);
+		}
+
 		static public class Page {
 			public FileHandle textureFile;
 			public Texture texture;
@@ -285,10 +299,6 @@ public class TextureAtlas implements Disposable {
 				}
 				return null;
 			}
-		}
-
-		static private interface Field<T> {
-			public void parse (T object);
 		}
 	}
 
@@ -324,11 +334,8 @@ public class TextureAtlas implements Disposable {
 
 	/** @param data May be null. */
 	public TextureAtlas (TextureAtlasData data) {
-		if (data != null) load(data);
-	}
+		if (data == null) return;
 
-	private void load (TextureAtlasData data) {
-		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
 		for (Page page : data.pages) {
 			Texture texture = null;
 			if (page.texture == null) {
@@ -340,15 +347,15 @@ public class TextureAtlas implements Disposable {
 				texture.setFilter(page.minFilter, page.magFilter);
 				texture.setWrap(page.uWrap, page.vWrap);
 			}
+			page.texture = texture;
 			textures.add(texture);
-			pageToTexture.put(page, texture);
 		}
 
 		for (Region region : data.regions) {
 			int width = region.width;
 			int height = region.height;
-			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top,
-				region.rotate ? height : width, region.rotate ? width : height);
+			AtlasRegion atlasRegion = new AtlasRegion(region.page.texture, region.left, region.top, region.rotate ? height : width,
+				region.rotate ? width : height);
 			atlasRegion.index = region.index;
 			atlasRegion.name = region.name;
 			atlasRegion.offsetX = region.offsetX;
@@ -514,16 +521,6 @@ public class TextureAtlas implements Disposable {
 			texture.dispose();
 		textures.clear(0);
 	}
-
-	static final Comparator<Region> indexComparator = new Comparator<Region>() {
-		public int compare (Region region1, Region region2) {
-			int i1 = region1.index;
-			if (i1 == -1) i1 = Integer.MAX_VALUE;
-			int i2 = region2.index;
-			if (i2 == -1) i2 = Integer.MAX_VALUE;
-			return i1 - i2;
-		}
-	};
 
 	/** Describes the region of a packed image and provides information about the original image before it was packed. */
 	static public class AtlasRegion extends TextureRegion {
