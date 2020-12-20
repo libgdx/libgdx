@@ -1,5 +1,6 @@
 [1.9.13]
 - [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
+- [BREAKING CHANGE] TextureAtlas.AtlasRegion and Region splits and pads fields have been removed and moved to name/value pairs, use #findValue("split") and #findValue("pad") instead.
 - GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
 - API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
@@ -8,6 +9,8 @@
   Following changes might be done depending on platform: Keys.STAR to Keys.NUMPAD_MULTIPLY, Keys.SLASH to Keys.NUMPAD_DIVIDE, Keys.NUM to Keys.NUM_LOCK, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.PERIOD to Keys.NUMPAD_DOT, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.ENTER to Keys.NUMPAD_ENTER, Keys.PLUS to Keys.NUMPAD_ADD, Keys.MINUS to Keys.NUMPAD_SUBTRACT
 - Added a QuadFloatTree class.
 - Desktop: Cubemap Seamless feature is now enabled by default when supported, can be changed via backend specific methods, see supportsCubeMapSeamless and enableCubeMapSeamless in both LwjglGraphics and Lwjgl3Graphics.
+- API Addition: TextureAtlas reads arbitrary name/value pairs for each region. See #6316.
+- TexturePacker writes using a new format when legacyOutput is false (default is true). TextureAtlas can read both old and new formats. See #6316.
 
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
