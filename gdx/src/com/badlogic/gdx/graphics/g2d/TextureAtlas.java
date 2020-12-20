@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -280,9 +278,8 @@ public class TextureAtlas implements Disposable {
 			});
 			pageFields.put("repeat", new Field<Page>() {
 				public void parse (Page page) {
-					String direction = entry[1];
-					if (direction.indexOf('x') != -1) page.uWrap = Repeat;
-					if (direction.indexOf('y') != -1) page.vWrap = Repeat;
+					if (entry[1].indexOf('x') != -1) page.uWrap = TextureWrap.Repeat;
+					if (entry[1].indexOf('y') != -1) page.vWrap = TextureWrap.Repeat;
 				}
 			});
 			pageFields.put("pma", new Field<Page>() {
@@ -313,16 +310,16 @@ public class TextureAtlas implements Disposable {
 					region.height = Integer.parseInt(entry[4]);
 				}
 			});
-			regionFields.put("orig", new Field<Region>() { // Deprecated, use offsets.
-				public void parse (Region region) {
-					region.originalWidth = Integer.parseInt(entry[1]);
-					region.originalHeight = Integer.parseInt(entry[2]);
-				}
-			});
 			regionFields.put("offset", new Field<Region>() { // Deprecated, use offsets.
 				public void parse (Region region) {
 					region.offsetX = Integer.parseInt(entry[1]);
 					region.offsetY = Integer.parseInt(entry[2]);
+				}
+			});
+			regionFields.put("orig", new Field<Region>() { // Deprecated, use offsets.
+				public void parse (Region region) {
+					region.originalWidth = Integer.parseInt(entry[1]);
+					region.originalHeight = Integer.parseInt(entry[2]);
 				}
 			});
 			regionFields.put("offsets", new Field<Region>() {
@@ -339,7 +336,7 @@ public class TextureAtlas implements Disposable {
 					if (value.equals("true"))
 						region.degrees = 90;
 					else if (!value.equals("false")) //
-						region.degrees = Integer.valueOf(value);
+						region.degrees = Integer.parseInt(value);
 					region.rotate = region.degrees == 90;
 				}
 			});
@@ -382,7 +379,7 @@ public class TextureAtlas implements Disposable {
 					} else {
 						Region region = new Region();
 						region.page = page;
-						region.name = line;
+						region.name = line.trim();
 						if (flip) region.flip = true;
 						while (true) {
 							int count = readEntry(entry, line = reader.readLine());
@@ -446,8 +443,10 @@ public class TextureAtlas implements Disposable {
 			return regions;
 		}
 
-		static private int readEntry (String[] entry, String line) throws IOException {
-			if (line == null || line.length() == 0) return 0;
+		static private int readEntry (String[] entry, @Null String line) throws IOException {
+			if (line == null) return 0;
+			line = line.trim();
+			if (line.length() == 0) return 0;
 			int colon = line.indexOf(':');
 			if (colon == -1) return 0;
 			entry[0] = line.substring(0, colon).trim();
@@ -476,23 +475,22 @@ public class TextureAtlas implements Disposable {
 			public boolean useMipMaps;
 			public Format format = Format.RGBA8888;
 			public TextureFilter minFilter = TextureFilter.Nearest, magFilter = TextureFilter.Nearest;
-			public TextureWrap uWrap = ClampToEdge, vWrap = ClampToEdge;
+			public TextureWrap uWrap = TextureWrap.ClampToEdge, vWrap = TextureWrap.ClampToEdge;
 			public boolean pma;
 		}
 
 		static public class Region {
 			public Page page;
 			public String name;
-			public boolean flip;
-			public int index = -1;
+			public int left, top, width, height;
 			public float offsetX, offsetY;
 			public int originalWidth, originalHeight;
-			public boolean rotate;
 			public int degrees;
-			public int left, top;
-			public int width, height;
+			public boolean rotate;
+			public int index = -1;
 			public @Null String[] names;
 			public @Null int[][] values;
+			public boolean flip;
 
 			public @Null int[] findValue (String name) {
 				if (names != null) {
