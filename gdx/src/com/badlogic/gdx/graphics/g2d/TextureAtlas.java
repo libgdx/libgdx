@@ -48,6 +48,226 @@ public class TextureAtlas implements Disposable {
 	private final ObjectSet<Texture> textures = new ObjectSet(4);
 	private final Array<AtlasRegion> regions = new Array();
 
+	/** Creates an empty atlas to which regions can be added. */
+	public TextureAtlas () {
+	}
+
+	/** Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
+	 * images. */
+	public TextureAtlas (String internalPackFile) {
+		this(Gdx.files.internal(internalPackFile));
+	}
+
+	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
+	public TextureAtlas (FileHandle packFile) {
+		this(packFile, packFile.parent());
+	}
+
+	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @see #TextureAtlas(FileHandle) */
+	public TextureAtlas (FileHandle packFile, boolean flip) {
+		this(packFile, packFile.parent(), flip);
+	}
+
+	public TextureAtlas (FileHandle packFile, FileHandle imagesDir) {
+		this(packFile, imagesDir, false);
+	}
+
+	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
+	public TextureAtlas (FileHandle packFile, FileHandle imagesDir, boolean flip) {
+		this(new TextureAtlasData(packFile, imagesDir, flip));
+	}
+
+	/** @param data May be null. */
+	public TextureAtlas (TextureAtlasData data) {
+		if (data == null) return;
+
+		for (Page page : data.pages) {
+			Texture texture = null;
+			if (page.texture == null) {
+				texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+				texture.setFilter(page.minFilter, page.magFilter);
+				texture.setWrap(page.uWrap, page.vWrap);
+			} else {
+				texture = page.texture;
+				texture.setFilter(page.minFilter, page.magFilter);
+				texture.setWrap(page.uWrap, page.vWrap);
+			}
+			page.texture = texture;
+			textures.add(texture);
+		}
+
+		for (Region region : data.regions) {
+			int width = region.width;
+			int height = region.height;
+			AtlasRegion atlasRegion = new AtlasRegion(region.page.texture, region.left, region.top, region.rotate ? height : width,
+				region.rotate ? width : height);
+			atlasRegion.index = region.index;
+			atlasRegion.name = region.name;
+			atlasRegion.offsetX = region.offsetX;
+			atlasRegion.offsetY = region.offsetY;
+			atlasRegion.originalHeight = region.originalHeight;
+			atlasRegion.originalWidth = region.originalWidth;
+			atlasRegion.rotate = region.rotate;
+			atlasRegion.degrees = region.degrees;
+			atlasRegion.names = region.names;
+			atlasRegion.values = region.values;
+			if (region.flip) atlasRegion.flip(false, true);
+			regions.add(atlasRegion);
+		}
+	}
+
+	/** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
+	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
+		textures.add(texture);
+		AtlasRegion region = new AtlasRegion(texture, x, y, width, height);
+		region.name = name;
+		region.index = -1;
+		regions.add(region);
+		return region;
+	}
+
+	/** Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed. */
+	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
+		textures.add(textureRegion.texture);
+		AtlasRegion region = new AtlasRegion(textureRegion);
+		region.name = name;
+		region.index = -1;
+		regions.add(region);
+		return region;
+	}
+
+	/** Returns all regions in the atlas. */
+	public Array<AtlasRegion> getRegions () {
+		return regions;
+	}
+
+	/** Returns the first region found with the specified name. This method uses string comparison to find the region, so the
+	 * result should be cached rather than calling this method multiple times.
+	 * @return The region, or null. */
+	public AtlasRegion findRegion (String name) {
+		for (int i = 0, n = regions.size; i < n; i++)
+			if (regions.get(i).name.equals(name)) return regions.get(i);
+		return null;
+	}
+
+	/** Returns the first region found with the specified name and index. This method uses string comparison to find the region, so
+	 * the result should be cached rather than calling this method multiple times.
+	 * @return The region, or null. */
+	public AtlasRegion findRegion (String name, int index) {
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (!region.name.equals(name)) continue;
+			if (region.index != index) continue;
+			return region;
+		}
+		return null;
+	}
+
+	/** Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
+	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple
+	 * times. */
+	public Array<AtlasRegion> findRegions (String name) {
+		Array<AtlasRegion> matched = new Array(AtlasRegion.class);
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
+		}
+		return matched;
+	}
+
+	/** Returns all regions in the atlas as sprites. This method creates a new sprite for each region, so the result should be
+	 * stored rather than calling this method multiple times.
+	 * @see #createSprite(String) */
+	public Array<Sprite> createSprites () {
+		Array sprites = new Array(true, regions.size, Sprite.class);
+		for (int i = 0, n = regions.size; i < n; i++)
+			sprites.add(newSprite(regions.get(i)));
+		return sprites;
+	}
+
+	/** Returns the first region found with the specified name as a sprite. If whitespace was stripped from the region when it was
+	 * packed, the sprite is automatically positioned as if whitespace had not been stripped. This method uses string comparison to
+	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
+	 * @return The sprite, or null. */
+	public Sprite createSprite (String name) {
+		for (int i = 0, n = regions.size; i < n; i++)
+			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
+		return null;
+	}
+
+	/** Returns the first region found with the specified name and index as a sprite. This method uses string comparison to find
+	 * the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
+	 * @return The sprite, or null.
+	 * @see #createSprite(String) */
+	public Sprite createSprite (String name, int index) {
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.index != index) continue;
+			if (!region.name.equals(name)) continue;
+			return newSprite(regions.get(i));
+		}
+		return null;
+	}
+
+	/** Returns all regions with the specified name as sprites, ordered by smallest to largest {@link AtlasRegion#index index}.
+	 * This method uses string comparison to find the regions and constructs new sprites, so the result should be cached rather
+	 * than calling this method multiple times.
+	 * @see #createSprite(String) */
+	public Array<Sprite> createSprites (String name) {
+		Array<Sprite> matched = new Array(Sprite.class);
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) matched.add(newSprite(region));
+		}
+		return matched;
+	}
+
+	private Sprite newSprite (AtlasRegion region) {
+		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) {
+			if (region.rotate) {
+				Sprite sprite = new Sprite(region);
+				sprite.setBounds(0, 0, region.getRegionHeight(), region.getRegionWidth());
+				sprite.rotate90(true);
+				return sprite;
+			}
+			return new Sprite(region);
+		}
+		return new AtlasSprite(region);
+	}
+
+	/** Returns the first region found with the specified name as a {@link NinePatch}. The region must have been packed with
+	 * ninepatch splits. This method uses string comparison to find the region and constructs a new ninepatch, so the result should
+	 * be cached rather than calling this method multiple times.
+	 * @return The ninepatch, or null. */
+	public NinePatch createPatch (String name) {
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) {
+				int[] splits = region.findValue("split");
+				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
+				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				int[] pads = region.findValue("pad");
+				if (pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
+				return patch;
+			}
+		}
+		return null;
+	}
+
+	/** @return the textures of the pages, unordered */
+	public ObjectSet<Texture> getTextures () {
+		return textures;
+	}
+
+	/** Releases all resources associated with this TextureAtlas instance. This releases all the textures backing all
+	 * TextureRegions and Sprites, which should no longer be used after calling dispose. */
+	public void dispose () {
+		for (Texture texture : textures)
+			texture.dispose();
+		textures.clear(0);
+	}
+
 	static public class TextureAtlasData {
 		static final String[] entry = new String[5];
 
@@ -300,226 +520,6 @@ public class TextureAtlas implements Disposable {
 				return null;
 			}
 		}
-	}
-
-	/** Creates an empty atlas to which regions can be added. */
-	public TextureAtlas () {
-	}
-
-	/** Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
-	 * images. */
-	public TextureAtlas (String internalPackFile) {
-		this(Gdx.files.internal(internalPackFile));
-	}
-
-	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
-	public TextureAtlas (FileHandle packFile) {
-		this(packFile, packFile.parent());
-	}
-
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
-	 * @see #TextureAtlas(FileHandle) */
-	public TextureAtlas (FileHandle packFile, boolean flip) {
-		this(packFile, packFile.parent(), flip);
-	}
-
-	public TextureAtlas (FileHandle packFile, FileHandle imagesDir) {
-		this(packFile, imagesDir, false);
-	}
-
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
-	public TextureAtlas (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-		this(new TextureAtlasData(packFile, imagesDir, flip));
-	}
-
-	/** @param data May be null. */
-	public TextureAtlas (TextureAtlasData data) {
-		if (data == null) return;
-
-		for (Page page : data.pages) {
-			Texture texture = null;
-			if (page.texture == null) {
-				texture = new Texture(page.textureFile, page.format, page.useMipMaps);
-				texture.setFilter(page.minFilter, page.magFilter);
-				texture.setWrap(page.uWrap, page.vWrap);
-			} else {
-				texture = page.texture;
-				texture.setFilter(page.minFilter, page.magFilter);
-				texture.setWrap(page.uWrap, page.vWrap);
-			}
-			page.texture = texture;
-			textures.add(texture);
-		}
-
-		for (Region region : data.regions) {
-			int width = region.width;
-			int height = region.height;
-			AtlasRegion atlasRegion = new AtlasRegion(region.page.texture, region.left, region.top, region.rotate ? height : width,
-				region.rotate ? width : height);
-			atlasRegion.index = region.index;
-			atlasRegion.name = region.name;
-			atlasRegion.offsetX = region.offsetX;
-			atlasRegion.offsetY = region.offsetY;
-			atlasRegion.originalHeight = region.originalHeight;
-			atlasRegion.originalWidth = region.originalWidth;
-			atlasRegion.rotate = region.rotate;
-			atlasRegion.degrees = region.degrees;
-			atlasRegion.names = region.names;
-			atlasRegion.values = region.values;
-			if (region.flip) atlasRegion.flip(false, true);
-			regions.add(atlasRegion);
-		}
-	}
-
-	/** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
-	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
-		textures.add(texture);
-		AtlasRegion region = new AtlasRegion(texture, x, y, width, height);
-		region.name = name;
-		region.index = -1;
-		regions.add(region);
-		return region;
-	}
-
-	/** Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed. */
-	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
-		textures.add(textureRegion.texture);
-		AtlasRegion region = new AtlasRegion(textureRegion);
-		region.name = name;
-		region.index = -1;
-		regions.add(region);
-		return region;
-	}
-
-	/** Returns all regions in the atlas. */
-	public Array<AtlasRegion> getRegions () {
-		return regions;
-	}
-
-	/** Returns the first region found with the specified name. This method uses string comparison to find the region, so the
-	 * result should be cached rather than calling this method multiple times.
-	 * @return The region, or null. */
-	public AtlasRegion findRegion (String name) {
-		for (int i = 0, n = regions.size; i < n; i++)
-			if (regions.get(i).name.equals(name)) return regions.get(i);
-		return null;
-	}
-
-	/** Returns the first region found with the specified name and index. This method uses string comparison to find the region, so
-	 * the result should be cached rather than calling this method multiple times.
-	 * @return The region, or null. */
-	public AtlasRegion findRegion (String name, int index) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (!region.name.equals(name)) continue;
-			if (region.index != index) continue;
-			return region;
-		}
-		return null;
-	}
-
-	/** Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
-	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple
-	 * times. */
-	public Array<AtlasRegion> findRegions (String name) {
-		Array<AtlasRegion> matched = new Array(AtlasRegion.class);
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
-		}
-		return matched;
-	}
-
-	/** Returns all regions in the atlas as sprites. This method creates a new sprite for each region, so the result should be
-	 * stored rather than calling this method multiple times.
-	 * @see #createSprite(String) */
-	public Array<Sprite> createSprites () {
-		Array sprites = new Array(true, regions.size, Sprite.class);
-		for (int i = 0, n = regions.size; i < n; i++)
-			sprites.add(newSprite(regions.get(i)));
-		return sprites;
-	}
-
-	/** Returns the first region found with the specified name as a sprite. If whitespace was stripped from the region when it was
-	 * packed, the sprite is automatically positioned as if whitespace had not been stripped. This method uses string comparison to
-	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
-	 * @return The sprite, or null. */
-	public Sprite createSprite (String name) {
-		for (int i = 0, n = regions.size; i < n; i++)
-			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
-		return null;
-	}
-
-	/** Returns the first region found with the specified name and index as a sprite. This method uses string comparison to find
-	 * the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
-	 * @return The sprite, or null.
-	 * @see #createSprite(String) */
-	public Sprite createSprite (String name, int index) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (region.index != index) continue;
-			if (!region.name.equals(name)) continue;
-			return newSprite(regions.get(i));
-		}
-		return null;
-	}
-
-	/** Returns all regions with the specified name as sprites, ordered by smallest to largest {@link AtlasRegion#index index}.
-	 * This method uses string comparison to find the regions and constructs new sprites, so the result should be cached rather
-	 * than calling this method multiple times.
-	 * @see #createSprite(String) */
-	public Array<Sprite> createSprites (String name) {
-		Array<Sprite> matched = new Array(Sprite.class);
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) matched.add(newSprite(region));
-		}
-		return matched;
-	}
-
-	private Sprite newSprite (AtlasRegion region) {
-		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) {
-			if (region.rotate) {
-				Sprite sprite = new Sprite(region);
-				sprite.setBounds(0, 0, region.getRegionHeight(), region.getRegionWidth());
-				sprite.rotate90(true);
-				return sprite;
-			}
-			return new Sprite(region);
-		}
-		return new AtlasSprite(region);
-	}
-
-	/** Returns the first region found with the specified name as a {@link NinePatch}. The region must have been packed with
-	 * ninepatch splits. This method uses string comparison to find the region and constructs a new ninepatch, so the result should
-	 * be cached rather than calling this method multiple times.
-	 * @return The ninepatch, or null. */
-	public NinePatch createPatch (String name) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) {
-				int[] splits = region.findValue("split");
-				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
-				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-				int[] pads = region.findValue("pad");
-				if (pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
-				return patch;
-			}
-		}
-		return null;
-	}
-
-	/** @return the textures of the pages, unordered */
-	public ObjectSet<Texture> getTextures () {
-		return textures;
-	}
-
-	/** Releases all resources associated with this TextureAtlas instance. This releases all the textures backing all
-	 * TextureRegions and Sprites, which should no longer be used after calling dispose. */
-	public void dispose () {
-		for (Texture texture : textures)
-			texture.dispose();
-		textures.clear(0);
 	}
 
 	/** Describes the region of a packed image and provides information about the original image before it was packed. */
