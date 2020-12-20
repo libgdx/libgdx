@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.tests.lwjgl3;
 
-import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -29,33 +27,14 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.tests.BulletTestCollection;
-import com.badlogic.gdx.tests.CursorTest;
-import com.badlogic.gdx.tests.DeltaTimeTest;
-import com.badlogic.gdx.tests.DpiTest;
-import com.badlogic.gdx.tests.FullscreenTest;
-import com.badlogic.gdx.tests.LifeCycleTest;
-import com.badlogic.gdx.tests.MusicTest;
-import com.badlogic.gdx.tests.StageTest;
-import com.badlogic.gdx.tests.TextInputDialogTest;
-import com.badlogic.gdx.tests.UITest;
-import com.badlogic.gdx.tests.bullet.BulletTest;
-import com.badlogic.gdx.tests.extensions.ControllersTest;
-import com.badlogic.gdx.tests.g3d.Animation3DTest;
-import com.badlogic.gdx.tests.g3d.BaseG3dHudTest;
-import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Lwjgl3DebugStarter {

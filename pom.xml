@@ -64,7 +64,6 @@
     <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
-    <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>    
   </modules>
