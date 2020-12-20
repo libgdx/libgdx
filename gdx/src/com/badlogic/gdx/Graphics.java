@@ -290,7 +290,8 @@ public interface Graphics {
 	 * @param vsync vsync enabled or not. */
 	public void setVSync (boolean vsync);
 
-	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms.
+	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms. Is not
+	 * generally advised to be used on mobile platforms.
 	 *
 	 * @param fps the targeted fps; default differs by platform */
 	public void setForegroundFPS (int fps );
