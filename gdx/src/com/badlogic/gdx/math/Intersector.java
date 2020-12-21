@@ -625,7 +625,7 @@ public final class Intersector {
 		return intersectRayBoundsFastMinMax(ray, min, max);
 	}
 
-	static public boolean intersectRayBoundsFastMinMax (Ray ray, Vector3 min, Vector3 max) {
+	static private boolean intersectRayBoundsFastMinMax (Ray ray, Vector3 min, Vector3 max) {
 		float tmin = 0;
 		float tmax = Float.MAX_VALUE;
 
@@ -651,7 +651,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
@@ -678,7 +678,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
@@ -705,7 +705,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
