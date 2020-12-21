@@ -499,7 +499,6 @@ public final class Intersector {
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection. This intersection is
 	 * defined as the point on the ray closest to the origin which is within the specified bounds.
-	 * defined as the point where the ray hits the box.
 	 *
 	 * <p>
 	 * The returned intersection (if any) is guaranteed to be within the bounds of the bounding box, but it can occasionally
@@ -543,7 +542,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
@@ -570,7 +569,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
@@ -597,7 +596,7 @@ public final class Intersector {
 			if (t1 > tmin) {
 				tmin = t1;
 			}
-			if (t2 > tmax) {
+			if (t2 < tmax) {
 				tmax = t2;
 			}
 			if (tmin > tmax) {
