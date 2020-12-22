@@ -59,7 +59,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
-
+	volatile boolean resume = false;
 	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
@@ -308,6 +308,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			for (LifecycleListener listener : listeners) {
 				listener.resume();
 			}
+			resume = true;
 		}
 		app.listener.resume();
 	}
@@ -354,8 +355,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
+		if (!resume) {
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		} else {
+			deltaTime = 0;
+		}
 		lastFrameTime = time;
+
+		if (resume) {
+			resume = false;
+		}
 
 		frames++;
 		if (time - framesStart >= 1000000000l) {
