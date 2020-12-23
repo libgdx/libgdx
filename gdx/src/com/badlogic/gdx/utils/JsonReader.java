@@ -40,9 +40,9 @@ public class JsonReader implements BaseJsonReader {
 	}
 
 	public JsonValue parse (Reader reader) {
+		char[] data = new char[1024];
+		int offset = 0;
 		try {
-			char[] data = new char[1024];
-			int offset = 0;
 			while (true) {
 				int length = reader.read(data, offset, data.length - offset);
 				if (length == -1) break;
@@ -53,27 +53,33 @@ public class JsonReader implements BaseJsonReader {
 				} else
 					offset += length;
 			}
-			return parse(data, 0, offset);
 		} catch (IOException ex) {
-			throw new SerializationException(ex);
+			throw new SerializationException("Error reading input.", ex);
 		} finally {
 			StreamUtils.closeQuietly(reader);
 		}
+		return parse(data, 0, offset);
 	}
 
 	public JsonValue parse (InputStream input) {
+		Reader reader;
 		try {
-			return parse(new InputStreamReader(input, "UTF-8"));
-		} catch (IOException ex) {
-			throw new SerializationException(ex);
-		} finally {
-			StreamUtils.closeQuietly(input);
+			reader = new InputStreamReader(input, "UTF-8");
+		} catch (Exception ex) {
+			throw new SerializationException("Error reading stream.", ex);
 		}
+		return parse(reader);
 	}
 
 	public JsonValue parse (FileHandle file) {
+		Reader reader;
 		try {
-			return parse(file.reader("UTF-8"));
+			reader = file.reader("UTF-8");
+		} catch (Exception ex) {
+			throw new SerializationException("Error reading file: " + file, ex);
+		}
+		try {
+			return parse(reader);
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}
@@ -548,16 +554,16 @@ public class JsonReader implements BaseJsonReader {
 			int start = Math.max(0, p - 32);
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
 				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
-		} else if (elements.size != 0) {
+		}
+		if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
 			if (element != null && element.isObject())
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
-		} else if (parseRuntimeEx != null) {
-			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
+		if (parseRuntimeEx != null) throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		return root;
 	}
 
