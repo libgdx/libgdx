@@ -355,7 +355,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		long time = System.nanoTime();
-		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
