@@ -184,13 +184,13 @@ public class JsonReader implements BaseJsonReader {
 							while (_nacts-- > 0) {
 								switch (_json_actions[_acts++]) {
 								case 0:
-								// line 104 "JsonReader.rl"
+								// line 110 "JsonReader.rl"
 								{
 									stringIsName = true;
 								}
 									break;
 								case 1:
-								// line 107 "JsonReader.rl"
+								// line 113 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
 									if (needsUnescape) value = unescape(value);
@@ -267,7 +267,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 2:
-								// line 181 "JsonReader.rl"
+								// line 187 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startObject: " + name);
@@ -288,7 +288,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 3:
-								// line 187 "JsonReader.rl"
+								// line 193 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endObject");
 									pop();
@@ -300,7 +300,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 4:
-								// line 192 "JsonReader.rl"
+								// line 198 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startArray: " + name);
@@ -321,7 +321,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 5:
-								// line 198 "JsonReader.rl"
+								// line 204 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endArray");
 									pop();
@@ -333,7 +333,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 6:
-								// line 203 "JsonReader.rl"
+								// line 209 "JsonReader.rl"
 								{
 									int start = p - 1;
 									if (data[p++] == '/') {
@@ -349,7 +349,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 7:
-								// line 216 "JsonReader.rl"
+								// line 222 "JsonReader.rl"
 								{
 									if (debug) System.out.println("unquotedChars");
 									s = p;
@@ -406,7 +406,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 8:
-								// line 270 "JsonReader.rl"
+								// line 276 "JsonReader.rl"
 								{
 									if (debug) System.out.println("quotedChars");
 									s = ++p;
@@ -449,7 +449,7 @@ public class JsonReader implements BaseJsonReader {
 							while (__nacts-- > 0) {
 								switch (_json_actions[__acts++]) {
 								case 1:
-								// line 107 "JsonReader.rl"
+								// line 113 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
 									if (needsUnescape) value = unescape(value);
@@ -536,7 +536,7 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			// line 306 "JsonReader.rl"
+			// line 312 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -657,7 +657,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 337 "JsonReader.rl"
+	// line 343 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);
