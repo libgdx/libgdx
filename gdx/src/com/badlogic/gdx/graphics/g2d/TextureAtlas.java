@@ -77,6 +77,11 @@ public class TextureAtlas implements Disposable {
 	}
 
 	public TextureAtlas (TextureAtlasData data) {
+		load(data);
+	}
+
+	/** Adds the textures and regions from the specified texture atlas data. */
+	public void load (TextureAtlasData data) {
 		textures.ensureCapacity(data.pages.size);
 		for (Page page : data.pages) {
 			if (page.texture == null) page.texture = new Texture(page.textureFile, page.format, page.useMipMaps);
