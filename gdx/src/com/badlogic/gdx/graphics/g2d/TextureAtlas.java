@@ -76,7 +76,7 @@ public class TextureAtlas implements Disposable {
 		this(new TextureAtlasData(packFile, imagesDir, flip));
 	}
 
-	public TextureAtlas (@Null TextureAtlasData data) {
+	public TextureAtlas (TextureAtlasData data) {
 		textures.ensureCapacity(data.pages.size);
 		for (Page page : data.pages) {
 			if (page.texture == null) page.texture = new Texture(page.textureFile, page.format, page.useMipMaps);
