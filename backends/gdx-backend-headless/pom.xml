@@ -18,6 +18,12 @@
       <artifactId>gdx</artifactId>
       <version>${project.version}</version>
     </dependency>
+      <dependency>
+          <groupId>com.google.android</groupId>
+          <artifactId>android</artifactId>
+          <version>9.0</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
 
   <build>
