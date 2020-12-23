@@ -26,26 +26,12 @@ import com.badlogic.gdx.files.FileHandle;
 public final class LwjglFiles implements Files {
 	static public final String externalPath = System.getProperty("user.home") + File.separator;
 	static public final String localPath = new File("").getAbsolutePath() + File.separator;
-	private ZipResourceFile expansionFile = null;
+	
 	@Override
-	public FileHandle getFileHandle (String path, FileType type) {
-		FileHandle handle = new LwjglFileHandle(path, type);
-		if (expansionFile != null && type == FileType.Internal) handle = getZipFileHandleIfExists(handle, path);
-		return handle;
+	public FileHandle getFileHandle (String fileName, FileType type) {
+		return new LwjglFileHandle(fileName, type);
 	}
 
-	private FileHandle getZipFileHandleIfExists (FileHandle handle, String path) {
-		try {
-			return handle;
-		} catch (Exception ex) {
-			// try APK expansion instead
-			FileHandle zipHandle = new LwjglZipFileHandle(path);
-			if (!zipHandle.isDirectory())
-				return zipHandle;
-			else if (zipHandle.exists()) return zipHandle;
-		}
-		return handle;
-	}
 	@Override
 	public FileHandle classpath (String path) {
 		return new LwjglFileHandle(path, FileType.Classpath);

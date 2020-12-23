@@ -26,26 +26,10 @@ import com.badlogic.gdx.files.FileHandle;
 public final class HeadlessFiles implements Files {
 	static public final String externalPath = System.getProperty("user.home") + File.separator;
 	static public final String localPath = new File("").getAbsolutePath() + File.separator;
-	private ZipResourceFile expansionFile = null;
 
 	@Override
-	public FileHandle getFileHandle (String path, FileType type) {
-		FileHandle handle = new HeadlessFileHandle(path, type);
-		if (expansionFile != null && type == FileType.Internal) handle = getZipFileHandleIfExists(handle, path);
-		return handle;
-	}
-
-	private FileHandle getZipFileHandleIfExists (FileHandle handle, String path) {
-		try {
-			return handle;
-		} catch (Exception ex) {
-			// try APK expansion instead
-			FileHandle zipHandle = new HeadlessZipFileHandle(path);
-			if (!zipHandle.isDirectory())
-				return zipHandle;
-			else if (zipHandle.exists()) return zipHandle;
-		}
-		return handle;
+	public FileHandle getFileHandle (String fileName, FileType type) {
+		return new HeadlessFileHandle(fileName, type);
 	}
 
 	@Override
@@ -91,9 +75,5 @@ public final class HeadlessFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
-	}
-
-	public ZipResourceFile getExpansionFile() {
-		return expansionFile;
 	}
 }
