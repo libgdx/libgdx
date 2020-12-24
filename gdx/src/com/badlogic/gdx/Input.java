@@ -178,9 +178,9 @@ public interface Input {
 		public static final int META_SYM_ON = 4;
 		public static final int CONTROL_LEFT = 129;
 		public static final int CONTROL_RIGHT = 130;
-		public static final int ESCAPE = 131;
-		public static final int END = 132;
-		public static final int INSERT = 133;
+		public static final int ESCAPE = 111;
+		public static final int END = 123;
+		public static final int INSERT = 124;
 		public static final int PAGE_UP = 92;
 		public static final int PAGE_DOWN = 93;
 		public static final int PICTSYMBOLS = 94;
@@ -244,18 +244,18 @@ public interface Input {
 // ! | VK_EXCLAMATION
 // ? | VK_QUESTION
 		public static final int COLON = 243;
-		public static final int F1 = 244;
-		public static final int F2 = 245;
-		public static final int F3 = 246;
-		public static final int F4 = 247;
-		public static final int F5 = 248;
-		public static final int F6 = 249;
-		public static final int F7 = 250;
-		public static final int F8 = 251;
-		public static final int F9 = 252;
-		public static final int F10 = 253;
-		public static final int F11 = 254;
-		public static final int F12 = 255;
+		public static final int F1 = 131;
+		public static final int F2 = 132;
+		public static final int F3 = 133;
+		public static final int F4 = 134;
+		public static final int F5 = 135;
+		public static final int F6 = 136;
+		public static final int F7 = 137;
+		public static final int F8 = 138;
+		public static final int F9 = 139;
+		public static final int F10 = 140;
+		public static final int F11 = 141;
+		public static final int F12 = 142;
 		public static final int F13 = 183;
 		public static final int F14 = 184;
 		public static final int F15 = 185;
