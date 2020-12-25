@@ -38,6 +38,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -367,8 +368,8 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		public void setVertices(float[] vertices, int offset, int count) {
 			isDirty = true;
 			BufferUtils.copy(vertices, byteBuffer, count, offset);
-			buffer.position(0);
-			buffer.limit(count);
+			((Buffer) buffer).position(0);
+			((Buffer) buffer).limit(count);
 			bufferChanged();
 		}
 
@@ -393,7 +394,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			GL30 gl = Gdx.gl30;
 			if (vaoDirty || !gl.glIsVertexArray(vaoHandle)) {
 				//initialize the VAO with our vertex attributes and buffer:
-				tmpHandle.clear();
+				((Buffer) tmpHandle).clear();
 				gl.glGenVertexArrays(1, tmpHandle);
 				vaoHandle = tmpHandle.get(0);
 				gl.glBindVertexArray(vaoHandle);
@@ -443,7 +444,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		private void bindData(GL20 gl) {
 			if (isDirty) {
 				gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-				byteBuffer.limit(buffer.limit() * 4);
+				((Buffer) byteBuffer).limit(buffer.limit() * 4);
 				gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 				isDirty = false;
 			}
@@ -478,7 +479,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 
 			if (gl.glIsVertexArray(vaoHandle)) {
-				tmpHandle.clear();
+				((Buffer) tmpHandle).clear();
 				tmpHandle.put(vaoHandle);
 				tmpHandle.flip();
 				gl.glDeleteVertexArrays(1, tmpHandle);

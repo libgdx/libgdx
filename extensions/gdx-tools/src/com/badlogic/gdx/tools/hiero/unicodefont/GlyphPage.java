@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.math.BigInteger;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -69,7 +70,7 @@ public class GlyphPage {
 	}
 
 	/** Loads glyphs to the backing texture and sets the image on each loaded glyph. Loaded glyphs are removed from the list.
-	 * 
+	 *
 	 * If this page already has glyphs and maxGlyphsToLoad is -1, then this method will return 0 if all the new glyphs don't fit.
 	 * This reduces texture binds when drawing since glyphs loaded at once are typically displayed together.
 	 * @param glyphs The glyphs to load.
@@ -165,7 +166,7 @@ public class GlyphPage {
 			}
 			fontPixels.position(0);
 			glyphPixels.position(height * glyphRowBytes);
-			glyphPixels.flip();
+			((Buffer) glyphPixels).flip();
 			format = GL11.GL_RGBA;
 		} else {
 			// Draw the glyph to the scratch image using Java2D.
