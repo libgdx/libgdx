@@ -105,7 +105,7 @@ public class ScrollPane extends WidgetGroup {
 		addScrollListener();
 	}
 
-	protected void addCaptureListener() {
+	protected void addCaptureListener () {
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
@@ -182,7 +182,7 @@ public class ScrollPane extends WidgetGroup {
 		});
 	}
 
-	protected ActorGestureListener getFlickScrollListener() {
+	protected ActorGestureListener getFlickScrollListener () {
 		return new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				setScrollbarsVisible(true);
@@ -216,11 +216,16 @@ public class ScrollPane extends WidgetGroup {
 		};
 	}
 
-	protected void addScrollListener() {
+	protected void addScrollListener () {
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, float scrollAmountX, float scrollAmountY) {
 				setScrollbarsVisible(true);
 				if (scrollY || scrollX) {
+					if (scrollY) {
+						if (!scrollX && scrollAmountY == 0) scrollAmountY = scrollAmountX;
+					} else {
+						if (scrollX && scrollAmountX == 0) scrollAmountX = scrollAmountY;
+					}
 					setScrollY(amountY + getMouseWheelY() * scrollAmountY);
 					setScrollX(amountX + getMouseWheelX() * scrollAmountX);
 				} else
