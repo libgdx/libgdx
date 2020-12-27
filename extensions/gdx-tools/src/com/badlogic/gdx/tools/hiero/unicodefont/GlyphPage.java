@@ -152,20 +152,20 @@ public class GlyphPage {
 
 			ByteBuffer fontPixels = fontPixmap.getPixels();
 			byte[] row = new byte[glyphRowBytes];
-			glyphPixels.position(0);
+			((Buffer) glyphPixels).position(0);
 			for (int i = 0; i < padTop; i++)
 				glyphPixels.put(row);
-			glyphPixels.position((height - padBottom) * glyphRowBytes);
+			((Buffer) glyphPixels).position((height - padBottom) * glyphRowBytes);
 			for (int i = 0; i < padBottom; i++)
 				glyphPixels.put(row);
-			glyphPixels.position(padTop * glyphRowBytes);
+			((Buffer) glyphPixels).position(padTop * glyphRowBytes);
 			for (int y = 0, n = g.height; y < n; y++) {
-				fontPixels.position(((g.srcY + y) * fontWidth + g.srcX) * 4);
+				((Buffer) fontPixels).position(((g.srcY + y) * fontWidth + g.srcX) * 4);
 				fontPixels.get(row, padLeftBytes, fontRowBytes);
 				glyphPixels.put(row);
 			}
-			fontPixels.position(0);
-			glyphPixels.position(height * glyphRowBytes);
+			((Buffer) fontPixels).position(0);
+			((Buffer) glyphPixels).position(height * glyphRowBytes);
 			((Buffer) glyphPixels).flip();
 			format = GL11.GL_RGBA;
 		} else {
@@ -206,8 +206,8 @@ public class GlyphPage {
 			hash = bigInt.toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 		}
-		scratchByteBuffer.clear();
-		scratchIntBuffer.clear();
+		((Buffer) scratchByteBuffer).clear();
+		((Buffer) scratchIntBuffer).clear();
 
 		try {
 			for (int i = 0, n = hashes.size(); i < n; i++) {

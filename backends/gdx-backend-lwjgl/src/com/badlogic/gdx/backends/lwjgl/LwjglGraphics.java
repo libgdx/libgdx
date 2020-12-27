@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Application;
@@ -250,7 +251,7 @@ public class LwjglGraphics implements Graphics {
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-					icons[i].put(pixmap.getPixels()).flip();
+					((Buffer) icons[i].put(pixmap.getPixels())).flip();
 					pixmap.dispose();
 				}
 				Display.setIcon(icons);
