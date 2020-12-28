@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.graphics.Cursor;
@@ -56,114 +56,9 @@ import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
 
-public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
+public class IOSGraphics extends AbstractGraphics {
 
 	private static final String tag = "IOSGraphics";
-
-	public static class IOSUIViewController extends GLKViewController {
-		final IOSApplication app;
-		final IOSGraphics graphics;
-
-		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
-			this.app = app;
-			this.graphics = graphics;
-		}
-
-		@Override
-		public void viewWillAppear (boolean arg0) {
-			super.viewWillAppear(arg0);
-			// start GLKViewController even though we may only draw a single frame
-			// (we may be in non-continuous mode)
-			setPaused(false);
-		}
-
-		@Override
-		public void viewDidAppear (boolean animated) {
-			super.viewDidAppear(animated);
-			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
-		}
-
-		@Override
-		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
-			long mask = 0;
-			if (app.config.orientationLandscape) {
-				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
-			}
-			if (app.config.orientationPortrait) {
-				mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
-			}
-			return new UIInterfaceOrientationMask(mask);
-		}
-
-		@Override
-		public boolean shouldAutorotate () {
-			return true;
-		}
-
-		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
-			// we return "true" if we support the orientation
-			switch (orientation) {
-			case LandscapeLeft:
-			case LandscapeRight:
-				return app.config.orientationLandscape;
-			default:
-				// assume portrait
-				return app.config.orientationPortrait;
-			}
-		}
-
-		@Override
-		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
-			return app.config.screenEdgesDeferringSystemGestures;
-		}
-
-		@Override
-		public void viewDidLayoutSubviews () {
-			super.viewDidLayoutSubviews();
-			// get the view size and update graphics
-			final IOSScreenBounds oldBounds = graphics.screenBounds;
-			final IOSScreenBounds newBounds = app.computeBounds();
-			graphics.screenBounds = newBounds;
-			// Layout may happen without bounds changing, don't trigger resize in that case
-			if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
-				graphics.makeCurrent();
-				graphics.updateSafeInsets();
-				app.listener.resize(newBounds.width, newBounds.height);
-			}
-
-		}
-
-		@Override
-		public boolean prefersStatusBarHidden () {
-			return !app.config.statusBarVisible;
-		}
-
-		@Override
-		public boolean prefersHomeIndicatorAutoHidden() {
-			return app.config.hideHomeIndicator;
-		}
-
-		@Callback
-		@BindSelector("shouldAutorotateToInterfaceOrientation:")
-		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
-			UIInterfaceOrientation orientation) {
-			return self.shouldAutorotateToInterfaceOrientation(orientation);
-		}
-
-        @Override
-        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
-            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
-                super.pressesBegan(presses, event);
-            }
-        }
-
-        @Override
-        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
-            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
-                super.pressesEnded(presses, event);
-            }
-        }
-	}
 
 	IOSApplication app;
 	IOSInput input;
@@ -215,6 +110,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
+		IOSViewDelegate viewDelegate = new IOSViewDelegate();
 		view = new GLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
@@ -242,7 +138,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			}
 
 		};
-		view.setDelegate(this);
+		view.setDelegate(viewDelegate);
 		view.setDrawableColorFormat(config.colorFormat);
 		view.setDrawableDepthFormat(config.depthFormat);
 		view.setDrawableStencilFormat(config.stencilFormat);
@@ -251,7 +147,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		viewController = app.createUIViewController(this);
 		viewController.setView(view);
-		viewController.setDelegate(this);
+		viewController.setDelegate(viewDelegate);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
 		this.app = app;
@@ -327,7 +223,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	boolean created = false;
 
-	@Override
 	public void draw (GLKView view, CGRect rect) {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
@@ -373,7 +268,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		EAGLContext.setCurrentContext(context);
 	}
 
-	@Override
 	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
@@ -385,7 +279,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		isFrameRequested = false;
 	}
 
-	@Override
 	public void willPause (GLKViewController controller, boolean pause) {
 	}
 
@@ -446,7 +339,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return screenBounds.backBufferHeight;
 	}
 
-	/** @return amount of pixels per point */
+	@Override
 	public float getBackBufferScale() {
 		return app.pixelsPerPoint;
 	}
@@ -659,6 +552,128 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 
+	public static class IOSUIViewController extends GLKViewController {
+		final IOSApplication app;
+		final IOSGraphics graphics;
+
+		protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+			this.app = app;
+			this.graphics = graphics;
+		}
+
+		@Override
+		public void viewWillAppear (boolean arg0) {
+			super.viewWillAppear(arg0);
+			// start GLKViewController even though we may only draw a single frame
+			// (we may be in non-continuous mode)
+			setPaused(false);
+		}
+
+		@Override
+		public void viewDidAppear (boolean animated) {
+			super.viewDidAppear(animated);
+			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
+		}
+
+		@Override
+		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
+			long mask = 0;
+			if (app.config.orientationLandscape) {
+				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
+			}
+			if (app.config.orientationPortrait) {
+				mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
+			}
+			return new UIInterfaceOrientationMask(mask);
+		}
+
+		@Override
+		public boolean shouldAutorotate () {
+			return true;
+		}
+
+		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
+			// we return "true" if we support the orientation
+			switch (orientation) {
+			case LandscapeLeft:
+			case LandscapeRight:
+				return app.config.orientationLandscape;
+			default:
+				// assume portrait
+				return app.config.orientationPortrait;
+			}
+		}
+
+		@Override
+		public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
+			return app.config.screenEdgesDeferringSystemGestures;
+		}
+
+		@Override
+		public void viewDidLayoutSubviews () {
+			super.viewDidLayoutSubviews();
+			// get the view size and update graphics
+			final IOSScreenBounds oldBounds = graphics.screenBounds;
+			final IOSScreenBounds newBounds = app.computeBounds();
+			graphics.screenBounds = newBounds;
+			// Layout may happen without bounds changing, don't trigger resize in that case
+			if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
+				graphics.makeCurrent();
+				graphics.updateSafeInsets();
+				app.listener.resize(newBounds.width, newBounds.height);
+			}
+
+		}
+
+		@Override
+		public boolean prefersStatusBarHidden () {
+			return !app.config.statusBarVisible;
+		}
+
+		@Override
+		public boolean prefersHomeIndicatorAutoHidden() {
+			return app.config.hideHomeIndicator;
+		}
+
+		@Callback
+		@BindSelector("shouldAutorotateToInterfaceOrientation:")
+		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
+			UIInterfaceOrientation orientation) {
+			return self.shouldAutorotateToInterfaceOrientation(orientation);
+		}
+
+		@Override
+		public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+			if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+				super.pressesBegan(presses, event);
+			}
+		}
+
+		@Override
+		public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+			if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+				super.pressesEnded(presses, event);
+			}
+		}
+	}
+
+	private class IOSViewDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate {
+		@Override
+		public void update (GLKViewController controller) {
+			IOSGraphics.this.update(controller);
+		}
+
+		@Override
+		public void willPause (GLKViewController controller, boolean pause) {
+			IOSGraphics.this.willPause(controller, pause);
+		}
+
+		@Override
+		public void draw (GLKView view, CGRect rect) {
+			IOSGraphics.this.draw(view, rect);
+		}
+	}
+
 	private class IOSDisplayMode extends DisplayMode {
 		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
@@ -666,7 +681,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	private class IOSMonitor extends Monitor {
-		protected IOSMonitor(int virtualX, int virtualY, String name) {
+		protected IOSMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
 		}
 	}

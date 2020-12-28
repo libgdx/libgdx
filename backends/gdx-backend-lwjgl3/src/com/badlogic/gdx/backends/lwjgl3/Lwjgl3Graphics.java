@@ -18,13 +18,13 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
-public class Lwjgl3Graphics implements Graphics, Disposable {
+public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	final Lwjgl3Window window;
 	GL20 gl20;
 	private GL30 gl30;
@@ -244,12 +244,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpiX() {
-		return getPpcX() / 0.393701f;
+		return getPpcX() * 2.54f;
 	}
 
 	@Override
 	public float getPpiY() {
-		return getPpcY() / 0.393701f;
+		return getPpcY() * 2.54f;
 	}
 
 	@Override
@@ -268,11 +268,6 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		int sizeY = tmpBuffer2.get(0);
 		DisplayMode mode = getDisplayMode();
 		return mode.height / (float) sizeY * 10;
-	}
-
-	@Override
-	public float getDensity() {
-		return getPpiX() / 160f;
 	}
 
 	@Override
