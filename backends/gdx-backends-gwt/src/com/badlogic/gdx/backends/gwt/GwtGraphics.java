@@ -542,11 +542,6 @@ public class GwtGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public float getRawDeltaTime () {
-		return getDeltaTime();
-	}
-
-	@Override
 	public boolean isFullscreen () {
 		return isFullscreenJSNI();
 	}

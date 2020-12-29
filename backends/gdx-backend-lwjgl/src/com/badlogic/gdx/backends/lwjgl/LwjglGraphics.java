@@ -119,10 +119,6 @@ public class LwjglGraphics extends AbstractGraphics {
 		return deltaTime;
 	}
 
-	public float getRawDeltaTime () {
-		return deltaTime;
-	}
-
 	/** The delta time for the next frame will be 0. This can be useful if the render thread was blocked for some time to prevent
 	 * game state or animations from advancing. */
 	public void resetDeltaTime () {

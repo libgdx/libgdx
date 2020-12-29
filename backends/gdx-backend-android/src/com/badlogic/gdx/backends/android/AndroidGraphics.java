@@ -514,11 +514,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return deltaTime;
 	}
 
-	@Override
-	public float getRawDeltaTime () {
-		return deltaTime;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public GraphicsType getType () {

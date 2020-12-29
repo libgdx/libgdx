@@ -350,11 +350,6 @@ public class IOSGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public float getRawDeltaTime () {
-		return deltaTime;
-	}
-
-	@Override
 	public int getFramesPerSecond () {
 		return fps;
 	}

@@ -223,11 +223,6 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public float getRawDeltaTime() {
-		return deltaTime;
-	}
-
-	@Override
 	public int getFramesPerSecond() {
 		return fps;
 	}

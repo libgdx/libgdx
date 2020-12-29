@@ -15,7 +15,12 @@ public abstract class AbstractGraphics implements Graphics {
 	public void clear(Color color){
 		clear(color.r, color.g, color.b, color.a);
 	}
-	
+
+	@Override
+	public float getRawDeltaTime () {
+		return getDeltaTime();
+	}
+
 	@Override
 	public float getDensity () {
 		return getPpiX() / 160f;
