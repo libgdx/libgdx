@@ -59,7 +59,6 @@ import org.robovm.rt.bro.annotation.Pointer;
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
-	volatile boolean resume = false;
 	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
@@ -185,6 +184,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float ppcY = 0;
 	private float density = 1;
 
+	volatile boolean resume = false;
 	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
@@ -308,8 +308,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			for (LifecycleListener listener : listeners) {
 				listener.resume();
 			}
-			resume = true;
 		}
+		resume = true;
 		app.listener.resume();
 	}
 
@@ -358,13 +358,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
+			resume = false;
 			deltaTime = 0;
 		}
 		lastFrameTime = time;
-
-		if (resume) {
-			resume = false;
-		}
 
 		frames++;
 		if (time - framesStart >= 1000000000l) {
