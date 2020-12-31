@@ -157,12 +157,6 @@ public interface Graphics {
 	/** @return amount of pixels per logical pixel (point) */
 	float getBackBufferScale ();
 
-	/** Clears the color buffer with the specified color. */
-	void clear(float r, float g, float b, float a);
-
-	/** Clears the color buffer with the specified color. */
-	void clear(Color color);
-	
 	/**
 	 * @return the inset from the left which avoids display cutouts in logical pixels
 	 */
