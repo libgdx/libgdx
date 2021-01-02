@@ -699,7 +699,7 @@ public class DefaultIOSInput implements IOSInput {
 			return false;
 		}
 
-		int keyCode = getGdxKeyCode(key.getKeyCode());
+		int keyCode = getGdxKeyCode(key);
 
 		if (keyCode != Keys.UNKNOWN)
 			synchronized (keyEvents) {
@@ -957,7 +957,14 @@ public class DefaultIOSInput implements IOSInput {
 		return 0;
 	}
 
-	protected int getGdxKeyCode(UIKeyboardHIDUsage keyCode) {
+	protected int getGdxKeyCode(UIKey key) {
+		UIKeyboardHIDUsage keyCode;
+		try {
+			keyCode = key.getKeyCode();
+		} catch (IllegalArgumentException e) {
+			return Keys.UNKNOWN;
+		}
+
 		switch (keyCode) {
 			case KeyboardA:
 				return Keys.A;
