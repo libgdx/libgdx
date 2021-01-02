@@ -49,5 +49,6 @@
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
+    <framework>GameKit</framework>
   </frameworks>
 </config>
