@@ -94,8 +94,4 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
 	}
 
-	/** See {@link GLFrameBuffer#unbind()} */
-	public static void unbind () {
-		GLFrameBuffer.unbind();
-	}
 }
