@@ -31,9 +31,11 @@ import com.badlogic.gdx.utils.Pool;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSExtensions;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
+import org.robovm.apple.gamecontroller.GCKeyboard;
 import org.robovm.apple.uikit.UIAlertAction;
 import org.robovm.apple.uikit.UIAlertActionStyle;
 import org.robovm.apple.uikit.UIAlertController;
@@ -643,7 +645,8 @@ public class DefaultIOSInput implements IOSInput {
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
-		if (peripheral == Peripheral.HardwareKeyboard) return hadHardwareKeyEvent;
+		if (peripheral == Peripheral.HardwareKeyboard)
+			return (Foundation.getMajorSystemVersion() >= 14) ? GCKeyboard.getCoalescedKeyboard() != null : hadHardwareKeyEvent;
 		return false;
 	}
 
