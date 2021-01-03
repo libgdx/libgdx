@@ -53,12 +53,14 @@ public final class ScreenUtils {
 	 * */
 	public static void clear (boolean colorClear, boolean depthClear, Color color, float depth) {
 		int mask = 0;
-		if (colorClear)
+		if (colorClear) {
 			mask = mask | GL20.GL_COLOR_BUFFER_BIT;
 			Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
-		if (depthClear)
+		}
+		if (depthClear) {
 			mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
 			Gdx.gl.glClearDepthf(depth);
+		}
 		if (mask != 0)
 			Gdx.gl.glClear(mask);
 	}
