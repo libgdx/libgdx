@@ -297,8 +297,8 @@ public class GdxTests {
 		InternationalFontsTest.class,
 		PngTest.class,
 		JsonTest.class,
-		QuadFloatTreeTest.class,
-		QuadFloatTreeNearestTest.class
+		QuadTreeFloatTest.class,
+		QuadTreeFloatNearestTest.class
 		// @on
 
 	// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,

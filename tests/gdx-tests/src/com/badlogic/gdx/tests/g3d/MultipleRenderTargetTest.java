@@ -384,7 +384,6 @@ public class MultipleRenderTargetTest extends GdxTest {
 		RenderContext context;
 
 		Matrix3 matrix3 = new Matrix3();
-		static Attributes tmpAttributes = new Attributes();
 
 		public MRTShader (Renderable renderable) {
 			String prefix = "";
@@ -398,8 +397,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 			if (!shaderProgram.isCompiled()) {
 				throw new GdxRuntimeException(shaderProgram.getLog());
 			}
-			renderable.material.set(tmpAttributes);
-			attributes = tmpAttributes.getMask();
+			attributes = renderable.material.getMask();
 		}
 
 		@Override

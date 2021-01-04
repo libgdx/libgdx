@@ -365,8 +365,8 @@ public class PixmapPacker implements Disposable {
 					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 
 					if (rect.splits != null) {
-						region.splits = rect.splits;
-						region.pads = rect.pads;
+						region.names = new String[] {"split", "pad"};
+						region.values = new int[][] {rect.splits, rect.pads};
 					}
 
 					int imageIndex = -1;

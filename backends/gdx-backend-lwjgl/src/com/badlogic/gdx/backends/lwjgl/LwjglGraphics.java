@@ -27,6 +27,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
@@ -309,6 +310,22 @@ public class LwjglGraphics implements Graphics {
 			|| extensions.contains("GL_ARB_framebuffer_object", false);
 	}
 
+	/** @return whether cubemap seamless feature is supported. */
+	public static boolean supportsCubeMapSeamless () {
+		return glVersion.isVersionEqualToOrHigher(3, 2) || extensions.contains("GL_ARB_seamless_cube_map", false);
+	}
+
+	/** Enable or disable cubemap seamless feature. Default is true if supported. Should only be called if this feature is
+	 * supported. (see {@link #supportsCubeMapSeamless()})
+	 * @param enable */
+	public void enableCubeMapSeamless (boolean enable) {
+		if (enable) {
+			gl20.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		} else {
+			gl20.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
+	}
+
 	private void createDisplayPixelFormat (boolean useGL30, int gles30ContextMajor, int gles30ContextMinor) {
 		try {
 			if (useGL30) {
@@ -402,6 +419,10 @@ public class LwjglGraphics implements Graphics {
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 		Gdx.gl30 = gl30;
+
+		if (supportsCubeMapSeamless()) {
+			enableCubeMapSeamless(true);
+		}
 	}
 
 	@Override

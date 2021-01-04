@@ -90,7 +90,7 @@ public class GwtGraphics implements Graphics {
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
-		context.viewport(0, 0, config.width, config.height);
+		context.viewport(0, 0, getWidth(), getHeight());
 		this.gl = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
 
 		String versionString = gl.glGetString(GL20.GL_VERSION);
