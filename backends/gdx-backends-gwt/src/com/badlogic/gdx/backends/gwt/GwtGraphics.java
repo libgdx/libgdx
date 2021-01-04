@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
-public class GwtGraphics implements Graphics {
+public class GwtGraphics extends AbstractGraphics {
 
 	/* Enum values from http://www.w3.org/TR/screen-orientation. Filtered based on what the browsers actually support. */
 	public enum OrientationLockType {
@@ -90,7 +91,7 @@ public class GwtGraphics implements Graphics {
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
-		context.viewport(0, 0, config.width, config.height);
+		context.viewport(0, 0, getWidth(), getHeight());
 		this.gl = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
 
 		String versionString = gl.glGetString(GL20.GL_VERSION);
@@ -516,11 +517,6 @@ public class GwtGraphics implements Graphics {
 	public void setVSync (boolean vsync) {
 	}
 
-	@Override
-	public float getDensity () {
-		return (getPpiX()) / 160;
-	}
-
 	/**
 	 * See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
 	 *
@@ -543,11 +539,6 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public void requestRendering () {
-	}
-
-	@Override
-	public float getRawDeltaTime () {
-		return getDeltaTime();
 	}
 
 	@Override

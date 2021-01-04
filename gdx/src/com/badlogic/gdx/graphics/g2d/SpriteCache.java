@@ -36,7 +36,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.NumberUtils;
 
 /** Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
  * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
@@ -115,8 +114,9 @@ public class SpriteCache implements Disposable {
 
 		if (useIndices && size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-		mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0,
+			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setAutoBind(false);
 
@@ -425,8 +425,8 @@ public class SpriteCache implements Disposable {
 	}
 
 	/** Adds the specified texture to the cache. */
-	public void add (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
-		int srcHeight, boolean flipX, boolean flipY) {
+	public void add (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth, int srcHeight,
+		boolean flipX, boolean flipY) {
 
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
@@ -701,8 +701,8 @@ public class SpriteCache implements Disposable {
 	}
 
 	/** Adds the specified region to the cache. */
-	public void add (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
-		float scaleX, float scaleY, float rotation) {
+	public void add (TextureRegion region, float x, float y, float originX, float originY, float width, float height, float scaleX,
+		float scaleY, float rotation) {
 
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
@@ -913,7 +913,8 @@ public class SpriteCache implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteCache.begin must be called before draw.");
 
 		Cache cache = caches.get(cacheID);
-		offset = offset * 6 + cache.offset;
+		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
+		offset = cache.offset / (verticesPerImage * VERTEX_SIZE) * 6 + offset * 6;
 		length *= 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
