@@ -1,5 +1,6 @@
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
 
 [1.9.13]
 - [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
