@@ -668,6 +668,10 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new PixmapPackerTest();
 			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new PixmapTest();
+			}
 		},
 		// new Instancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't work
 		new Instancer() {

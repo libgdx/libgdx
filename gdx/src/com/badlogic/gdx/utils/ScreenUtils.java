@@ -70,13 +70,7 @@ public final class ScreenUtils {
 	}
 
 	public static Pixmap getFrameBufferPixmap (int x, int y, int w, int h) {
-		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-
-		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
-		ByteBuffer pixels = pixmap.getPixels();
-		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
-
-		return pixmap;
+		return Pixmap.createFromFrameBuffer(x, y, w, h);
 	}
 
 	/** Returns the default framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[] will
