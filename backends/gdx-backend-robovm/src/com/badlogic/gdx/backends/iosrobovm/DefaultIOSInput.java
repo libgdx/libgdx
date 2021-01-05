@@ -646,7 +646,7 @@ public class DefaultIOSInput implements IOSInput {
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
 		if (peripheral == Peripheral.HardwareKeyboard)
-			return (Foundation.getMajorSystemVersion() >= 14) ? GCKeyboard.getCoalescedKeyboard() != null : hadHardwareKeyEvent;
+			return Foundation.getMajorSystemVersion() >= 14 ? GCKeyboard.getCoalescedKeyboard() != null : hadHardwareKeyEvent;
 		return false;
 	}
 
