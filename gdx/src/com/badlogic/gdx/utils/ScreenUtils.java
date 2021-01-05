@@ -57,7 +57,7 @@ public final class ScreenUtils {
 		final int potW = MathUtils.nextPowerOfTwo(w);
 		final int potH = MathUtils.nextPowerOfTwo(h);
 
-		final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
+		final Pixmap pixmap = Pixmap.createFromFrameBuffer(x, y, w, h);
 		final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
 		potPixmap.setBlending(Blending.None);
 		potPixmap.drawPixmap(pixmap, 0, 0);
@@ -69,6 +69,8 @@ public final class ScreenUtils {
 		return textureRegion;
 	}
 
+	/** @deprecated use {@link Pixmap#createFromFrameBuffer(int, int, int, int)} instead. */
+	@Deprecated
 	public static Pixmap getFrameBufferPixmap (int x, int y, int w, int h) {
 		return Pixmap.createFromFrameBuffer(x, y, w, h);
 	}
