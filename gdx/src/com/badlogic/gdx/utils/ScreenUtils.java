@@ -28,41 +28,31 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-/** Class with static helper methods related to OpenGL buffers, including access to the default OpenGL FrameBuffer. These methods can be used to get the
+/** Class with static helper methods related to currently bound OpenGL frame buffer, including access to the default OpenGL FrameBuffer. These methods can be used to get the
  * entire screen content or a portion thereof.
  * 
  * @author espitz */
 public final class ScreenUtils {
 
 	/** Clears the color buffer with the specified color. */
-	public static void clearColor (float r, float g, float b, float a) {
-		Gdx.gl.glClearColor(r, g, b, a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public static void clear (float r, float g, float b, float a) {
+		clear(r, g, b, a, false);
 	}
 
-	/** Clears the color buffer with the specified color. */
-	public static void clearColor (Color color) {
-		clearColor(color.r, color.g, color.b, color.a);
+	/** Clears the color buffer with the specified Color. */
+	public static void clear (Color color) {
+		clear(color.r, color.g, color.b, color.a, false);
 	}
 
 	/** Clears the current render buffer. 
-	 * @param colorClear Clears the color buffer if true.
 	 * @param depthClear Clears the depth buffer if true.
-	 * @param color The color to clear with, used only if clearColor is true.
-	 * @param depth The depth to clear the z-buffer with, used only if clearDepth is true. The valid range is from 0 to 1.
 	 * */
-	public static void clear (boolean colorClear, boolean depthClear, Color color, float depth) {
-		int mask = 0;
-		if (colorClear) {
-			mask = mask | GL20.GL_COLOR_BUFFER_BIT;
-			Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
-		}
-		if (depthClear) {
+	public static void clear (float r, float g, float b, float a, boolean depthClear) {
+		Gdx.gl.glClearColor(r, g, b, a);
+		int mask = GL20.GL_COLOR_BUFFER_BIT;
+		if (depthClear)
 			mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
-			Gdx.gl.glClearDepthf(depth);
-		}
-		if (mask != 0)
-			Gdx.gl.glClear(mask);
+		Gdx.gl.glClear(mask);
 	}
 
 	/** Returns the default framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
