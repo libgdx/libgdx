@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.HasArrayBufferView;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -29,13 +30,41 @@ import com.badlogic.gdx.math.MathUtils;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
-/** Class with static helper methods that provide access to the default OpenGL FrameBuffer. These methods can be used to get the
+/** Class with static helper methods related to currently bound OpenGL frame buffer, including access to the current OpenGL FrameBuffer. These methods can be used to get the
  * entire screen content or a portion thereof.
  * 
  * @author espitz */
 public final class ScreenUtils {
 
-	/** Returns the default framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
+	/** Clears the color buffers with the specified Color.
+	 @param color Color to clear the color buffers with. */
+	public static void clear (Color color) {
+		clear(color.r, color.g, color.b, color.a, false);
+	}
+
+	/** Clears the color buffers with the specified color. */
+	public static void clear (float r, float g, float b, float a) {
+		clear(r, g, b, a, false);
+	}
+
+	/** Clears the color buffers and optionally the depth buffer.
+	 * @param color Color to clear the color buffers with.
+	 * @param clearDepth Clears the depth buffer if true. */
+	public static void clear (Color color, boolean clearDepth) {
+		clear(color.r, color.g, color.b, color.a, clearDepth);
+	}
+
+	/** Clears the color buffers and optionally the depth buffer. 
+	 * @param clearDepth Clears the depth buffer if true. */
+	public static void clear (float r, float g, float b, float a, boolean clearDepth) {
+		Gdx.gl.glClearColor(r, g, b, a);
+		int mask = GL20.GL_COLOR_BUFFER_BIT;
+		if (clearDepth)
+			mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
+		Gdx.gl.glClear(mask);
+	}
+
+	/** Returns the current framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
 	 * size. The base {@link Texture} always has {@link MathUtils#nextPowerOfTwo} dimensions and RGBA8888 {@link Format}. It can be
 	 * accessed via {@link TextureRegion#getTexture}. The texture is not managed and has to be reloaded manually on a context loss.
 	 * The returned TextureRegion is flipped along the Y axis by default. */
@@ -45,7 +74,7 @@ public final class ScreenUtils {
 		return getFrameBufferTexture(0, 0, w, h);
 	}
 
-	/** Returns a portion of the default framebuffer contents specified by x, y, width and height as a {@link TextureRegion} with
+	/** Returns a portion of the current framebuffer contents specified by x, y, width and height as a {@link TextureRegion} with
 	 * the same dimensions. The base {@link Texture} always has {@link MathUtils#nextPowerOfTwo} dimensions and RGBA8888
 	 * {@link Format}. It can be accessed via {@link TextureRegion#getTexture}. This texture is not managed and has to be reloaded
 	 * manually on a context loss. If the width and height specified are larger than the framebuffer dimensions, the Texture will
@@ -96,7 +125,7 @@ public final class ScreenUtils {
 		ctx.putImageData(imgData, 0, 0);
 	}-*/;
 
-	/** Returns the default framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[]
+	/** Returns the current framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[]
 	 * will always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be
 	 * flipped along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this
 	 * functionality wisely.
@@ -108,7 +137,7 @@ public final class ScreenUtils {
 		return getFrameBufferPixels(0, 0, w, h, flipY);
 	}
 
-	/** Returns a portion of the default framebuffer contents specified by x, y, width and height, as a byte[] array with a length
+	/** Returns a portion of the current framebuffer contents specified by x, y, width and height, as a byte[] array with a length
 	 * equal to the specified width * height * 4. The byte[] will always contain RGBA8888 data. If the width and height specified
 	 * are larger than the framebuffer dimensions, the Texture will be padded accordingly. Pixels that fall outside of the current
 	 * screen will have RGBA values of 0. Because of differences in screen and image origins the framebuffer contents should be
