@@ -705,6 +705,7 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 
 						pressedKeyCount++;
 						keyJustPressed = true;
+						pressedKeys[keyCode] = true;
 						justPressedKeys[keyCode] = true;
 						lastKeyCharPressed = keyChar;
 						keyRepeatTimer = keyRepeatInitialTime;
@@ -725,6 +726,7 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 					keyEvents.add(event);
 
 					pressedKeyCount--;
+					pressedKeys[keyCode] = false;
 					lastKeyCharPressed = 0;
 				}
 				Gdx.graphics.requestRendering();
