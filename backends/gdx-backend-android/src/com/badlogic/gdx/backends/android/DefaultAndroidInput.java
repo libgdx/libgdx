@@ -550,7 +550,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
-			if (e.getKeyCode() < 0 || e.getKeyCode() >= Keys.MAX_KEYCODE) {
+			if (e.getKeyCode() < 0 || e.getKeyCode() > Keys.MAX_KEYCODE) {
 				return false;
 			}
 			
