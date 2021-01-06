@@ -916,7 +916,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_CTRL:
 			return location == LOCATION_RIGHT ? Keys.CONTROL_RIGHT : Keys.CONTROL_LEFT;
 		case KeyCodes.KEY_DELETE:
-			return Keys.DEL;
+			return Keys.FORWARD_DEL;
 		case KeyCodes.KEY_DOWN:
 			return Keys.DOWN;
 		case KeyCodes.KEY_END:
