@@ -1132,7 +1132,7 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardPageUp:
 				return Keys.PAGE_UP;
 			case KeyboardDeleteForward:
-				return Keys.DEL;
+				return Keys.FORWARD_DEL;
 			case KeyboardEnd:
 				return Keys.END;
 			case KeyboardPageDown:
