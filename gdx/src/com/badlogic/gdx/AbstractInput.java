@@ -4,8 +4,8 @@ import com.badlogic.gdx.utils.IntSet;
 
 public abstract class AbstractInput implements Input {
 
-    final protected boolean[] pressedKeys;
-    final protected boolean[] justPressedKeys;
+    protected final boolean[] pressedKeys;
+    protected final boolean[] justPressedKeys;
     private final IntSet keysToCatch = new IntSet();
     protected int pressedKeyCount = 0;
     protected boolean keyJustPressed = false;
