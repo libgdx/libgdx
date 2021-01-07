@@ -23,6 +23,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.android.DefaultAndroidInput.TouchEvent;
 
+import java.util.Arrays;
+
 /** Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
  * pointers.
  * 
@@ -33,9 +35,9 @@ public class AndroidTouchHandler {
 		int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 		int pointerId = event.getPointerId(pointerIndex);
 
-		int x = 0, y = 0;
-		int realPointerIndex = 0;
-		int button = Buttons.LEFT;
+		int x, y;
+		int realPointerIndex;
+		int button;
 
 		long timeStamp = System.nanoTime();
 		synchronized (input) {
@@ -161,5 +163,14 @@ public class AndroidTouchHandler {
 
 	public boolean supportsMultitouch (Context activity) {
 		return activity.getPackageManager().hasSystemFeature("android.hardware.touchscreen.multitouch");
+	}
+
+	void cancelTouchState(DefaultAndroidInput input) {
+		long timeStamp = System.nanoTime();
+		for (int i = 0; i < input.realId.length; i++) {
+			if (input.button[i] != -1 && input.touched[i])
+				postTouchEvent(input, TouchEvent.TOUCH_UP, input.touchX[i], input.touchY[i], i, input.button[i], timeStamp);
+		}
+		Arrays.fill(input.touched, false);
 	}
 }
