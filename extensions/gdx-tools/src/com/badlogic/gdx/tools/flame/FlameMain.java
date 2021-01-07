@@ -109,6 +109,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -781,8 +782,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 		private void renderWorld () {
 			float[] colors = backgroundColor.getColors();
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 0);
+			ScreenUtils.clear(colors[0], colors[1], colors[2], 0, true);
 			modelBatch.begin(worldCamera);
 			if(isDrawXYZ) modelBatch.render(xyzInstance);
 			if(isDrawXZPlane) modelBatch.render(xzPlaneInstance);

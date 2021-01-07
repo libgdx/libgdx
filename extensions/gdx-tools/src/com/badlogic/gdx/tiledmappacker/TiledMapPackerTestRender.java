@@ -24,11 +24,11 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -74,8 +74,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 1f);
 
 		viewport.apply();
 		mapRenderer.setView(cam);

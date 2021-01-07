@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Lwjgl3TestStarter {
@@ -142,8 +143,7 @@ public class Lwjgl3TestStarter {
 
 		@Override
 		public void render () {
-			Gdx.gl.glClearColor(0, 0, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			ScreenUtils.clear(0, 0, 0, 1);
 			stage.act();
 			stage.draw();
 		}

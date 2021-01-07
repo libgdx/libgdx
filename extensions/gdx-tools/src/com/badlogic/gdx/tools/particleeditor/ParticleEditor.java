@@ -20,9 +20,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -41,7 +38,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -55,6 +51,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class ParticleEditor extends JFrame {
 	public static final String DEFAULT_PARTICLE = "particle.png";
@@ -425,8 +422,7 @@ public class ParticleEditor extends JFrame {
 			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
 
 			float[] colors = backgroundColor.getColors();
-			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 1.0f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			ScreenUtils.clear(colors[0], colors[1], colors[2], 1.0f);
 
 			previewImagePanel.updateSpritePosition();
 
