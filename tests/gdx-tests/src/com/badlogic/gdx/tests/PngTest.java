@@ -50,7 +50,7 @@ public class PngTest extends GdxTest {
 
 			FileHandle file = FileHandle.tempFile("screenshot-");
 			System.out.println(file.file().getAbsolutePath());
-			Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			try {
 				PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f));
 				// writer.setCompression(Deflater.NO_COMPRESSION);
