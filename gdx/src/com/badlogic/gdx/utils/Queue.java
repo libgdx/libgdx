@@ -38,7 +38,7 @@ public class Queue<T> implements Iterable<T> {
 	/** Number of elements in the queue. */
 	public int size = 0;
 
-	private QueueIterable iterable;
+	private transient QueueIterable iterable;
 
 	/** Creates a new Queue which can hold 16 values without needing to resize backing array. */
 	public Queue () {
