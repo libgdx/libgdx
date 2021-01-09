@@ -171,7 +171,7 @@ public class ContactCacheTest extends BaseBulletTest {
 
 	@Override
 	public void update () {
-		float delta = Gdx.graphics.getRawDeltaTime();
+		float delta = Gdx.graphics.getDeltaTime();
 		time += delta;
 		super.update();
 		if (contactCache != null) contactCache.update(delta);

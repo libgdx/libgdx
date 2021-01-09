@@ -4,7 +4,7 @@
 
     <property name="robovm" value="https://oss.sonatype.org/content/repositories/releases/com/mobidevelop/robovm"/>
 
-    <property name="robovm-version" value="2.3.11"/>
+    <property name="robovm-version" value="2.3.12"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
     <property name="lwjgl-version" value="3.2.3"/>

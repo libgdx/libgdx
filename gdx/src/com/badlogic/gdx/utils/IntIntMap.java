@@ -612,7 +612,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		public int next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			int value = map.valueTable[nextIndex];
+			int value = nextIndex == INDEX_ZERO ? map.zeroValue : map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return value;

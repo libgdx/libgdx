@@ -259,7 +259,14 @@ public class TextureAtlas implements Disposable {
 		final Array<Page> pages = new Array();
 		final Array<Region> regions = new Array();
 
+		public TextureAtlasData () {
+		}
+
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
+			load(packFile, imagesDir, flip);
+		}
+
+		public void load (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			final String[] entry = new String[5];
 
 			ObjectMap<String, Field<Page>> pageFields = new ObjectMap(15, 0.99f); // Size needed to avoid collisions.
