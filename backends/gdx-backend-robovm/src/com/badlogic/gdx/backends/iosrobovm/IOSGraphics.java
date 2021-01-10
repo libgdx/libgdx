@@ -80,6 +80,7 @@ public class IOSGraphics extends AbstractGraphics {
 	private float ppcY = 0;
 	private float density = 1;
 
+	volatile boolean resume = false;
 	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
@@ -205,6 +206,7 @@ public class IOSGraphics extends AbstractGraphics {
 				listener.resume();
 			}
 		}
+		resume = true;
 		app.listener.resume();
 	}
 
@@ -249,7 +251,12 @@ public class IOSGraphics extends AbstractGraphics {
 		}
 
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (!resume) {
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		} else {
+			resume = false;
+			deltaTime = 0;
+		}
 		lastFrameTime = time;
 
 		frames++;
