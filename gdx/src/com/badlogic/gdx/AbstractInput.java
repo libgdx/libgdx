@@ -3,12 +3,11 @@ package com.badlogic.gdx;
 import com.badlogic.gdx.utils.IntSet;
 
 public abstract class AbstractInput implements Input {
-
     protected final boolean[] pressedKeys;
     protected final boolean[] justPressedKeys;
     private final IntSet keysToCatch = new IntSet();
-    protected int pressedKeyCount = 0;
-    protected boolean keyJustPressed = false;
+    protected int pressedKeyCount;
+    protected boolean keyJustPressed;
 
     public AbstractInput() {
         pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
