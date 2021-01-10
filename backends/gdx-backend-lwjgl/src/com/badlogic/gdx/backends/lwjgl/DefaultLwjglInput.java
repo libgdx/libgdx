@@ -600,6 +600,7 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 						eventQueue.keyDown(keyCode, time);
 						pressedKeyCount++;
 						keyJustPressed = true;
+						pressedKeys[keyCode] = true;
 						justPressedKeys[keyCode] = true;
 						lastKeyCharPressed = keyChar;
 						keyRepeatTimer = DefaultLwjglInput.keyRepeatInitialTime;
@@ -609,6 +610,7 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 				} else {
 					eventQueue.keyUp(keyCode, time);
 					pressedKeyCount--;
+					pressedKeys[keyCode] = false;
 					lastKeyCharPressed = 0;
 				}
 				Gdx.graphics.requestRendering();
