@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** Queues events that are later passed to the wrapped {@link InputProcessor}.
+/** Queues events that are later passed to an {@link InputProcessor}.
  * @author Nathan Sweet */
 public class InputEventQueue {
 	static private final int SKIP = -1;
