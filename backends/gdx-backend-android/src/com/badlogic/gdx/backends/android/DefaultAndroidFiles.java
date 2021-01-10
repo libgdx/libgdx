@@ -43,13 +43,16 @@ public class DefaultAndroidFiles implements AndroidFiles {
 
 		String localPath = contextWrapper.getFilesDir().getAbsolutePath();
 		this.localpath = localPath.endsWith("/") ? localPath : localPath + "/";
+		this.externalFilesPath = initExternalFilesPath(contextWrapper);
+	}
 
+	protected String initExternalFilesPath(ContextWrapper contextWrapper) {
 		File externalFilesDir = contextWrapper.getExternalFilesDir(null);
 		if (externalFilesDir != null) {
 			String externalFilesPath = externalFilesDir.getAbsolutePath();
-			this.externalFilesPath = externalFilesPath.endsWith("/") ? externalFilesPath : externalFilesPath + "/";
+			return externalFilesPath.endsWith("/") ? externalFilesPath : externalFilesPath + "/";
 		} else {
-			this.externalFilesPath = null;
+			return null;
 		}
 	}
 
