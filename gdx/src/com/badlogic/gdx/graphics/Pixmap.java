@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -87,6 +88,22 @@ public class Pixmap implements Disposable {
 	 * @author mzechner */
 	public enum Filter {
 		NearestNeighbour, BiLinear
+	}
+
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = pixmap.getPixels();
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+
+		return pixmap;
 	}
 
 	private Blending blending = Blending.SourceOver;
@@ -405,6 +422,13 @@ public class Pixmap implements Disposable {
 	public ByteBuffer getPixels () {
 		if (disposed) throw new GdxRuntimeException("Pixmap already disposed");
 		return pixmap.getPixels();
+	}
+
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		ByteBuffer dst = pixmap.getPixels();
+		BufferUtils.copy(pixels, dst, dst.limit());
 	}
 
 	/** @return the {@link Format} of this Pixmap. */

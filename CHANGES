@@ -1,6 +1,13 @@
+[1.9.14]
+- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
+- API addition: Added Pixmap#setPixels(ByteBuffer).
+- API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
+
 [1.9.13]
 - [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
 - [BREAKING CHANGE] TextureAtlas.AtlasRegion and Region splits and pads fields have been removed and moved to name/value pairs, use #findValue("split") and #findValue("pad") instead.
+- iOS: Update to MobiVM 2.3.12
 - GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
 - API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
