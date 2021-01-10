@@ -54,12 +54,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
-public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
+public class LwjglAWTInput extends AbstractInput implements MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -108,10 +109,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	int deltaY = 0;
 	boolean touchDown = false;
 	boolean justTouched = false;
-	int keyCount = 0;
-	boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
-	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
@@ -290,12 +287,12 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	@Override
 	public synchronized boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
-			return keyCount > 0;
+			return pressedKeyCount > 0;
 		}
 		if (key < 0 || key > 255) {
 			return false;
 		}
-		return keys[key];
+		return pressedKeys[key];
 	}
 
 	@Override
@@ -416,36 +413,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			keyEvents.clear();
 			touchEvents.clear();
 		}
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-
-	}
-
-	@Override
-	public boolean isCatchKey (int keycode) {
-		return false;
 	}
 
 	@Override
@@ -599,9 +566,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.type = KeyEvent.KEY_DOWN;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			if (!keys[event.keyCode]) {
-				keyCount++;
-				keys[event.keyCode] = true;
+			if (!pressedKeys[event.keyCode]) {
+				pressedKeyCount++;
+				pressedKeys[event.keyCode] = true;
 			}
 			lwjglAwtCanvas.graphics.requestRendering();
 		}
@@ -616,9 +583,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.type = KeyEvent.KEY_UP;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			if (keys[event.keyCode]) {
-				keyCount--;
-				keys[event.keyCode] = false;
+			if (pressedKeys[event.keyCode]) {
+				pressedKeyCount--;
+				pressedKeys[event.keyCode] = false;
 			}
 			lwjglAwtCanvas.graphics.requestRendering();
 		}
@@ -637,7 +604,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		}
 	}
 
-	protected static int translateKeyCode (int keyCode) {
+	protected int translateKeyCode (int keyCode) {
 		switch (keyCode) {
 		case java.awt.event.KeyEvent.VK_0:
 			return Input.Keys.NUM_0;
