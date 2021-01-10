@@ -59,6 +59,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
+
 	public static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
@@ -102,12 +103,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
 			// we return "true" if we support the orientation
 			switch (orientation) {
-				case LandscapeLeft:
-				case LandscapeRight:
-					return app.config.orientationLandscape;
-				default:
-					// assume portrait
-					return app.config.orientationPortrait;
+			case LandscapeLeft:
+			case LandscapeRight:
+				return app.config.orientationLandscape;
+			default:
+				// assume portrait
+				return app.config.orientationPortrait;
 			}
 		}
 
@@ -145,23 +146,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
 		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
-																	   UIInterfaceOrientation orientation) {
+			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
 
-		@Override
-		public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
-			if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
-				super.pressesBegan(presses, event);
-			}
-		}
+        @Override
+        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+                super.pressesBegan(presses, event);
+            }
+        }
 
-		@Override
-		public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
-			if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
-				super.pressesEnded(presses, event);
-			}
-		}
+        @Override
+        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+            if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+                super.pressesEnded(presses, event);
+            }
+        }
 	}
 
 	IOSApplication app;
@@ -520,7 +521,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public DisplayMode getDisplayMode () {
 		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
-				+ bufferFormat.b + bufferFormat.a);
+			+ bufferFormat.b + bufferFormat.a);
 	}
 
 	@Override
