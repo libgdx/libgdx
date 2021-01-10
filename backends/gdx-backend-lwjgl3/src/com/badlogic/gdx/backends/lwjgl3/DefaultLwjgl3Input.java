@@ -171,8 +171,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 		for (int i = 0; i < justPressedButtons.length; i++) {
 			justPressedButtons[i] = false;
 		}
-		eventQueue.setProcessor(null);
-		eventQueue.drain();
+		eventQueue.drain(null);
 	}
 
 	@Override
@@ -187,8 +186,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 
 	@Override
 	public void update () {
-		eventQueue.setProcessor(inputProcessor);
-		eventQueue.drain();
+		eventQueue.drain(inputProcessor);
 	}
 
 	@Override

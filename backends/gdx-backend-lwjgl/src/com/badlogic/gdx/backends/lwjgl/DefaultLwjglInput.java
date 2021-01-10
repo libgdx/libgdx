@@ -257,8 +257,7 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 
 	@Override
 	public void processEvents () {
-		eventQueue.setProcessor(processor);
-		eventQueue.drain();
+		eventQueue.drain(processor);
 	}
 
 	public int getGdxKeyCode (int lwjglKeyCode) {

@@ -33,30 +33,12 @@ public class InputEventQueue {
 	static private final int MOUSE_MOVED = 6;
 	static private final int SCROLLED = 7;
 
-	private @Null InputProcessor processor;
 	private final IntArray queue = new IntArray();
 	private final IntArray processingQueue = new IntArray();
 	private long currentEventTime;
 
-	public InputEventQueue () {
-	}
-
-	public InputEventQueue (@Null InputProcessor processor) {
-		this.processor = processor;
-	}
-
-	public synchronized void setProcessor (@Null InputProcessor processor) {
-		this.processor = processor;
-	}
-
-	public InputProcessor getProcessor () {
-		return processor;
-	}
-
-	public void drain () {
-		InputProcessor processor;
+	public void drain (@Null InputProcessor processor) {
 		synchronized (this) {
-			processor = this.processor;
 			if (processor == null) {
 				queue.clear();
 				return;
