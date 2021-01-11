@@ -151,7 +151,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 				System.out.println("took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 				elapsed = 0;
 			} else {
-				elapsed += Gdx.graphics.getRawDeltaTime();
+				elapsed += Gdx.graphics.getDeltaTime();
 				if (elapsed > 0.2f) {
 					unload();
 					load();

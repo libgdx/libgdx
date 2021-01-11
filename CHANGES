@@ -1,4 +1,8 @@
 [1.9.14]
+- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
+- API addition: Added Pixmap#setPixels(ByteBuffer).
+- API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
 - API Addition: Add a Graphics#setForegroundFPS() method.
 
 [1.9.13]

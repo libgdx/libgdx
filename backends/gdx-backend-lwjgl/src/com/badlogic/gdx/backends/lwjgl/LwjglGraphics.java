@@ -20,6 +20,7 @@ import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.LWJGLException;
@@ -32,7 +33,6 @@ import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
-public class LwjglGraphics implements Graphics {
+public class LwjglGraphics extends AbstractGraphics {
 
 	/** The suppored OpenGL extensions */
 	static Array<String> extensions;
@@ -116,10 +116,6 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	public float getDeltaTime () {
-		return deltaTime;
-	}
-
-	public float getRawDeltaTime () {
 		return deltaTime;
 	}
 
@@ -437,18 +433,18 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public float getPpcX () {
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+		return getPpiX() / 2.54f;
 	}
 
 	@Override
 	public float getPpcY () {
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+		return getPpiY () / 2.54f;
 	}
 
 	@Override
 	public float getDensity () {
 		if (config.overrideDensity != -1) return config.overrideDensity / 160f;
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
+		return super.getDensity();
 	}
 
 	@Override

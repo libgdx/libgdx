@@ -21,7 +21,6 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapAtlasAssetManagerTest extends GdxTest {
 
@@ -81,8 +81,7 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		camera.update();
 		assetManager.update();
 		if (renderer == null && assetManager.isLoaded(fileName)) {
