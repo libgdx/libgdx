@@ -11,7 +11,7 @@ import java.util.zip.GZIPOutputStream;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -106,7 +106,7 @@ public class KTXProcessor {
 				System.exit(-1);
 			}
 
-			LwjglNativesLoader.load();
+			Lwjgl3NativesLoader.load();
 
 			// Loads other options
 			for (int i = 0; i < args.length; i++) {

@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3AWTFrame;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -41,8 +42,6 @@ import org.xml.sax.SAXException;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
@@ -124,13 +123,18 @@ public class TiledMapPacker {
 	 * Runnable Jar. To run from a nightly build:
 	 * 
 	 * <code> <br><br>
-	 * Linux / OS X <br>
-	   java -cp gdx.jar:gdx-natives.jar:gdx-backend-lwjgl.jar:gdx-backend-lwjgl-natives.jar:gdx-tiled-preprocessor.jar:extensions/gdx-tools/gdx-tools.jar
+	 * Linux <br>
+	   java -cp gdx.jar:gdx-natives.jar:gdx-backend-lwjgl3.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-linux.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-linux.jar:gdx-tiled-preprocessor.jar:extensions/gdx-tools/gdx-tools.jar
 	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir]  [--strip-unused] [--combine-tilesets] [-v]
 	 * <br><br>
-	 * 
+	 *
+	 * macOS <br>
+	   java -cp gdx.jar:gdx-natives.jar:gdx-backend-lwjgl3.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-natives-macos.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos.jar:../backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-macos.jar:gdx-tiled-preprocessor.jar:extensions/gdx-tools/gdx-tools.jar
+	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir]  [--strip-unused] [--combine-tilesets] [-v]
+	 * <br><br>
+	 *
 	 * Windows <br>
-	   java -cp gdx.jar;gdx-natives.jar;gdx-backend-lwjgl.jar;gdx-backend-lwjgl-natives.jar;gdx-tiled-preprocessor.jar;extensions/gdx-tools/gdx-tools.jar
+	   java -cp gdx.jar;gdx-natives.jar;gdx-backend-lwjgl3.jar;../backends/gdx-backend-lwjgl3/libs/lwjgl-natives-windows.jar;../backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-windows.jar;../backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-windows.jar;gdx-tiled-preprocessor.jar;extensions/gdx-tools/gdx-tools.jar
 	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir]  [--strip-unused] [--combine-tilesets] [-v]
 	 * <br><br> </code>
 	 * 
@@ -480,12 +484,7 @@ public class TiledMapPacker {
 		}
 
 		TiledMapPacker packer = new TiledMapPacker(packerSettings);
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.forceExit = false;
-		config.width = 100;
-		config.height = 50;
-		config.title = "TiledMapPacker";
-		new LwjglApplication(new ApplicationListener() {
+		new Lwjgl3AWTFrame(new ApplicationListener() {
 
 			@Override
 			public void resume () {
@@ -524,7 +523,7 @@ public class TiledMapPacker {
 				System.out.println("Finished processing.");
 				Gdx.app.exit();
 			}
-		}, config);
+		}, "TiledMapPacker", 100, 50);
 	}
 
 	private static void processExtraArgs (String[] args, TiledMapPackerSettings packerSettings) {

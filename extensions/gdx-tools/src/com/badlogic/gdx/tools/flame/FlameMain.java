@@ -55,7 +55,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3AWTCanvas;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -186,8 +186,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			this.wrappers = wrappers;
 		}
 	}
-	
-	LwjglCanvas lwjglCanvas;
+
+	Lwjgl3AWTCanvas lwjglCanvas;
 	JPanel controllerPropertiesPanel;
 	JPanel editorPropertiesPanel;
 	EffectPanel effectPanel;
@@ -216,7 +216,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new InternalFileHandleResolver()));
 		controllersData = new Array<ControllerData>();
 		
-		lwjglCanvas = new LwjglCanvas(renderer = new AppRenderer());
+		lwjglCanvas = new Lwjgl3AWTCanvas(renderer = new AppRenderer());
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				//System.exit(0);
