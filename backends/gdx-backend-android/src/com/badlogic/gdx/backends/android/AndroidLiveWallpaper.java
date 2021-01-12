@@ -359,7 +359,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected AndroidFiles createFiles() {
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
-		return new DefaultAndroidFiles(this.getService().getAssets(), this.getService());
+		return new DefaultAndroidFiles(this.getService().getAssets(), this.getService(), true);
 	}
 
 	@Override

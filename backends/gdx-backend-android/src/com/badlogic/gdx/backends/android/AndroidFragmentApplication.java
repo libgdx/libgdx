@@ -458,7 +458,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	protected AndroidFiles createFiles() {
-		return new DefaultAndroidFiles(getResources().getAssets(), getActivity());
+		return new DefaultAndroidFiles(getResources().getAssets(), getActivity(), true);
 	}
 
 	@Override

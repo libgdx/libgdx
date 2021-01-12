@@ -417,7 +417,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	protected AndroidFiles createFiles() {
 		this.getFilesDir(); // workaround for Android bug #10515463
-		return new DefaultAndroidFiles(this.getAssets(), this);
+		return new DefaultAndroidFiles(this.getAssets(), this, true);
 	}
 
 	@Override
