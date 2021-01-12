@@ -45,7 +45,11 @@ public interface Files {
 		Absolute,
 
 		/** Path relative to the private files directory on Android and to the application's root directory on the desktop. */
-		Local;
+		Local,
+
+		/** Path to store files which can be regenerated. Path relative to Context#getCacheDir() on Android, <Application_Home>/Library/Caches on iOS,
+		 * Application's root directory + /cache on desktop. */
+		Cache;
 	}
 
 	/** Returns a handle representing a file or directory.
@@ -69,6 +73,9 @@ public interface Files {
 	/** Convenience method that returns a {@link FileType#Local} file handle. */
 	public FileHandle local (String path);
 
+	/** Convenience method that returns a {@link FileType#Cache} file handle. */
+	public FileHandle cache (String path);
+
 	/** Returns the external storage path directory. This is the app external storage on Android and the home directory of the
 	 * current user on the desktop. */
 	public String getExternalStoragePath ();
@@ -82,4 +89,7 @@ public interface Files {
 
 	/** Returns true if the local storage is ready for file IO. */
 	public boolean isLocalStorageAvailable ();
+
+	/** Returns the cache storage path directory. */
+	public String getCacheStoragePath ();
 }

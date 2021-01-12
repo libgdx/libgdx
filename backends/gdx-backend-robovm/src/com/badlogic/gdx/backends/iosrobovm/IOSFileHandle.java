@@ -60,6 +60,7 @@ public class IOSFileHandle extends FileHandle {
 		if (type == FileType.Internal) return new File(IOSFiles.internalPath, file.getPath());
 		if (type == FileType.External) return new File(IOSFiles.externalPath, file.getPath());
 		if (type == FileType.Local) return new File(IOSFiles.localPath, file.getPath());
+		if (type == FileType.Cache) return new File(IOSFiles.cachePath, file.getPath());
 		return file;
 	}
 

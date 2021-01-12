@@ -64,6 +64,11 @@ public class GwtFiles implements Files {
 	}
 
 	@Override
+	public FileHandle cache (String path) {
+		throw new GdxRuntimeException("cache() not supported in GWT backend");
+	}
+
+	@Override
 	public String getExternalStoragePath () {
 		return null;
 	}
@@ -81,5 +86,10 @@ public class GwtFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return false;
+	}
+
+	@Override
+	public String getCacheStoragePath () {
+		return null;
 	}
 }

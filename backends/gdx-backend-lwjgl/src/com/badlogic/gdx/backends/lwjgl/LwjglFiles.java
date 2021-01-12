@@ -26,6 +26,7 @@ import com.badlogic.gdx.files.FileHandle;
 public final class LwjglFiles implements Files {
 	static public final String externalPath = System.getProperty("user.home") + File.separator;
 	static public final String localPath = new File("").getAbsolutePath() + File.separator;
+	static public final String cachePath = new File("").getAbsolutePath() + File.separator + "cache" + File.separator;
 	
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
@@ -58,6 +59,11 @@ public final class LwjglFiles implements Files {
 	}
 
 	@Override
+	public FileHandle cache (String path) {
+		return new LwjglFileHandle(path, FileType.Cache);
+	}
+
+	@Override
 	public String getExternalStoragePath () {
 		return externalPath;
 	}
@@ -75,5 +81,10 @@ public final class LwjglFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
+	}
+
+	@Override
+	public String getCacheStoragePath () {
+		return cachePath;
 	}
 }

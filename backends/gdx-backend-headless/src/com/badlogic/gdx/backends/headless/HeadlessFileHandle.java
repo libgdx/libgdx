@@ -57,6 +57,7 @@ public final class HeadlessFileHandle extends FileHandle {
 	public File file () {
 		if (type == FileType.External) return new File(HeadlessFiles.externalPath, file.getPath());
 		if (type == FileType.Local) return new File(HeadlessFiles.localPath, file.getPath());
+		if (type == FileType.Cache) return new File(HeadlessFiles.cachePath, file.getPath());
 		return file;
 	}
 }
