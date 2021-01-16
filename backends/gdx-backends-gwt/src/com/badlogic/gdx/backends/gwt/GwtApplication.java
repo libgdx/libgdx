@@ -207,6 +207,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			graphics = new GwtGraphics(root, config);
 		} catch (Throwable e) {
 			root.clear();
+			error("GwtApplication", "exception: " + e.getMessage(), e);
 			root.add(getNoWebGLSupportWidget());
 			return;
 		}

@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.gles3;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -27,6 +26,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.nio.FloatBuffer;
 
@@ -84,8 +84,7 @@ public class InstancedRenderingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1f);
 
 		shader.bind();
 		mesh.render(shader, GL30.GL_TRIANGLES);
