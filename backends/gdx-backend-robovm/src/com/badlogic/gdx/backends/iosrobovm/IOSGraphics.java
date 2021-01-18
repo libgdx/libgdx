@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
@@ -57,6 +58,7 @@ public class IOSGraphics extends AbstractGraphics {
 	GL30 gl30;
 	IOSScreenBounds screenBounds;
 	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
+	int safeInsetRawLeft, safeInsetRawTop, safeInsetRawBottom, safeInsetRawRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -223,8 +225,15 @@ public class IOSGraphics extends AbstractGraphics {
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width = screenBounds.width;
-			final int height = screenBounds.height;
+			final int width;
+			final int height;
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				width = screenBounds.backBufferWidth;
+				height = screenBounds.backBufferHeight;
+			} else {
+				width = screenBounds.width;
+				height = screenBounds.height;
+			}
 			gl20.glViewport(0, 0, width, height);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
@@ -319,11 +328,17 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public int getWidth () {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferWidth();
+		}
 		return screenBounds.width;
 	}
 
 	@Override
 	public int getHeight () {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferHeight();
+		}
 		return screenBounds.height;
 	}
 
@@ -433,6 +448,10 @@ public class IOSGraphics extends AbstractGraphics {
 		safeInsetLeft = 0;
 		safeInsetRight = 0;
 		safeInsetBottom = 0;
+		safeInsetRawTop = 0;
+		safeInsetRawLeft = 0;
+		safeInsetRawRight = 0;
+		safeInsetRawBottom = 0;
 
 		if (Foundation.getMajorSystemVersion() >= 11) {
 			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
@@ -440,26 +459,42 @@ public class IOSGraphics extends AbstractGraphics {
 			safeInsetLeft = (int) edgeInsets.getLeft();
 			safeInsetRight = (int) edgeInsets.getRight();
 			safeInsetBottom = (int) edgeInsets.getBottom();
+			safeInsetRawTop = (int) (edgeInsets.getTop() * app.pixelsPerPoint);
+			safeInsetRawLeft = (int) (edgeInsets.getLeft() * app.pixelsPerPoint);
+			safeInsetRawRight = (int) (edgeInsets.getRight() * app.pixelsPerPoint);
+			safeInsetRawBottom = (int) (edgeInsets.getBottom() * app.pixelsPerPoint);
 		}
 	}
 
 	@Override
 	public int getSafeInsetLeft() {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return safeInsetRawLeft;
+		}
 		return safeInsetLeft;
 	}
 
 	@Override
 	public int getSafeInsetTop() {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+		    return safeInsetRawTop;
+		}
 		return safeInsetTop;
 	}
 
 	@Override
 	public int getSafeInsetBottom() {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return safeInsetRawBottom;
+		}
 		return safeInsetBottom;
 	}
 
 	@Override
 	public int getSafeInsetRight() {
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return safeInsetRawRight;
+		}
 		return safeInsetRight;
 	}
 

@@ -23,6 +23,7 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
@@ -799,8 +800,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			// Get and map the location to our drawing space
 			{
 				CGPoint loc = touch.getLocationInView(app.graphics.view);
-				locX = (int)(loc.getX() - screenBounds.x);
-				locY = (int)(loc.getY() - screenBounds.y);
+				if (config.hdpiMode == HdpiMode.Pixels) {
+					locX = (int) ((loc.getX() * app.pixelsPerPoint) - (screenBounds.x * app.pixelsPerPoint));
+					locY = (int) ((loc.getY() * app.pixelsPerPoint) - (screenBounds.y * app.pixelsPerPoint));
+				} else {
+					locX = (int) (loc.getX() - screenBounds.x);
+					locY = (int) (loc.getY() - screenBounds.y);
+				}
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
