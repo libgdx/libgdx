@@ -28,6 +28,7 @@
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		<exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
+		<exclude name="**/PixelBufferObjectTest.java"/> <!-- threading -->
 		<exclude name="**/PixmapPackerIOTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
