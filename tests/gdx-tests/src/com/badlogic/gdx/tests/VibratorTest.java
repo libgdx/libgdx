@@ -20,9 +20,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -34,7 +36,7 @@ public class VibratorTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	Skin skin;
-
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -47,6 +49,7 @@ public class VibratorTest extends GdxTest {
 		table.setFillParent(true);
 		stage.addActor(table);
 
+		final CheckBox fallbackCheckbox = new CheckBox("Fallback", skin);
 		final Button button = getButton("Vibrate");
 		button.addListener(new ChangeListener() {
 			@Override
@@ -54,24 +57,32 @@ public class VibratorTest extends GdxTest {
 				Gdx.input.vibrate(50);
 			}
 		});
-		final Button buttonVibrateAmplitude = getButton("Vibrate \n Amplitude");
+		final Button buttonVibrateAmplitude = getButton("Vibrate \n Amplitude \n Random");
 		buttonVibrateAmplitude.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.input.vibrate(200, 100, false);
+				int randomLength = MathUtils.random(10, 200);
+				int randomAmplitude = MathUtils.random(0, 255);
+				Gdx.input.vibrate(randomLength, randomAmplitude, fallbackCheckbox.isChecked());
+				Gdx.app.log("VibratorTest", "Length: " + randomLength + "ms, Amplitude: " + randomAmplitude);
 			}
 		});
-		final Button buttonVibrateType = getButton("Vibrate \n Type");
+		final Button buttonVibrateType = getButton("Vibrate \n Type \n Random");
 		buttonVibrateType.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.input.vibrate(Input.VibrationType.LIGHT, false);
+				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0, Input.VibrationType.values().length - 1)];
+				Gdx.input.vibrate(vibrationType, fallbackCheckbox.isChecked());
+				Gdx.app.log("VibratorTest", "VibrationType: " + vibrationType.name());
 			}
 		});
+		
 		table.defaults().pad(20f);
 		table.add(button).size(120f);
 		table.add(buttonVibrateAmplitude).size(120f);
 		table.add(buttonVibrateType).size(120f);
+		table.row();
+		table.add(fallbackCheckbox).colspan(3).height(120f);
 
 	}
 

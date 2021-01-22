@@ -22,7 +22,7 @@ public class AndroidHaptics {
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				if (vibrator.hasVibrator() && vibrator.hasAmplitudeControl()) {
+				if (vibrator.hasAmplitudeControl()) {
 					amplitudeSupport = true;
 				}
 				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_GAME).build();
@@ -31,10 +31,12 @@ public class AndroidHaptics {
 	}
 
 	public void vibrate (int milliseconds) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
-		else
-			vibrator.vibrate(milliseconds);
+		if (vibratorSupport) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+				vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
+			else
+				vibrator.vibrate(milliseconds);
+		}
 	}
 
 	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
