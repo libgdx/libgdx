@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
  */
-public class MockGraphics implements Graphics {
+public class MockGraphics extends AbstractGraphics {
 	long frameId = -1;
 	float deltaTime = 0;
 	long frameStart = 0;
@@ -92,11 +92,6 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public float getRawDeltaTime() {
-		return deltaTime;
-	}
-
-	@Override
 	public int getFramesPerSecond() {
 		return fps;
 	}
@@ -128,11 +123,6 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public float getPpcY() {
-		return 0;
-	}
-
-	@Override
-	public float getDensity() {
 		return 0;
 	}
 

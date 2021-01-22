@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /**
  * Render a basic scene in a FrameBufferCubemap and displays it
@@ -79,8 +80,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 			fb.getSide().getDirection(camFb.direction);
 			camFb.update();
 			
-			Gdx.gl.glClearColor(1, 1, 1, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+			ScreenUtils.clear(1, 1, 1, 1, true);
 
 			modelBatch.begin(camFb);
 			for (ModelInstance instance : instances)

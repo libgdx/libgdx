@@ -256,6 +256,7 @@ public class HorizontalGroup extends WidgetGroup {
 			}
 
 			if (x + width > groupWidth || r == 0) {
+				r = Math.min(r, rowSizes.size - 2); // In case an actor changed size without invalidating this layout.
 				x = xStart;
 				if ((align & Align.right) != 0)
 					x += maxWidth - rowSizes.get(r);
