@@ -789,22 +789,22 @@ public interface Input {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
-	/** Vibrates for the given amount of time. Note that you'll need the permission
+	/** Vibrates for the given amount of time. Note that on Android backend you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
 	 * 
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
-	/** Vibrate with a given pattern. Pass in an array of ints that are the times at which to turn on or off the vibrator. The first
-	 * one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index into
-	 * the pattern at which to start the repeat.
-	 * @param pattern an array of longs of times to turn the vibrator on or off.
-	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat. */
-	public void vibrate (long[] pattern, int repeat);
+	public void vibrate (int milliseconds, boolean fallback);
+	
+	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
-	/** Stops the vibrator */
-	public void cancelVibrate ();
-
+	public void vibrate (VibrationType vibrationType, boolean fallback);
+	
+	public enum VibrationType {
+		LIGHT, MEDIUM, HEAVY; 
+	}
+	
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
 	 * 

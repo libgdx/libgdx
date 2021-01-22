@@ -847,6 +847,18 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
+	public void vibrate (int milliseconds, boolean fallback) {
+	}
+
+	@Override
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	}
+
+	@Override
 	public boolean justTouched () {
 		return justTouched;
 	}
@@ -860,14 +872,6 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	public boolean isButtonJustPressed(int button) {
 		if(button < 0 || button >= justPressedButtons.length) return false;
 		return justPressedButtons[button];
-	}
-
-	@Override
-	public void vibrate (long[] pattern, int repeat) {
-	}
-
-	@Override
-	public void cancelVibrate () {
 	}
 
 	@Override
