@@ -107,7 +107,6 @@
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
-        <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
         <parallel>
             <!-- core -->
@@ -161,9 +160,6 @@
             <get src="${domain}/extensions/gdx-bullet/x86_64/libgdx-bullet.so" dest="extensions/gdx-bullet/libs/x86_64"/>
             <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a" dest="extensions/gdx-bullet/libs/ios32"/>
             <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a.tvos" dest="extensions/gdx-bullet/libs/ios32"/>
-
-            <!-- controllers natives, desktop only -->
-            <get src="${domain}/extensions/gdx-controllers/gdx-controllers-desktop-natives.jar" dest="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
             <!-- freetype natives -->
             <get src="${domain}/extensions/gdx-freetype/gdx-freetype-natives.jar" dest="extensions/gdx-freetype/libs"/>

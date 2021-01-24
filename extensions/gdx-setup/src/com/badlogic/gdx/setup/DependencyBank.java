@@ -51,6 +51,7 @@ public class DependencyBank {
 	static String box2DLightsVersion = "1.5";
 	static String ashleyVersion = "1.7.3";
 	static String aiVersion = "1.8.2";	
+	static String controllersVersion = "2.0.1";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 
@@ -123,14 +124,14 @@ public class DependencyBank {
 			"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"
 		),
 		CONTROLLERS(
-			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
-			new String[]{}, // works on iOS but never reports any controllers :)
-			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"},
-			new String[]{"com.badlogic.gdx.controllers.controllers-gwt"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion:sources", "com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion", "com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion:sources"},
+			new String[]{"com.badlogic.gdx.controllers", "com.badlogic.gdx.controllers.controllers-gwt"},
 
-			"Controller/Gamepad API"
+			"Game Controller/Gamepad API"
 		),
 		BOX2D(
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"},
