@@ -25,7 +25,6 @@ targetCompatibility = 1.8
 dependencies {
     compile project(":tests:gdx-tests")
     compile project(":backends:gdx-backend-lwjgl3")
-    compile project(":extensions:gdx-controllers:gdx-controllers-lwjgl3")
     compile testnatives.desktop
 }
 
