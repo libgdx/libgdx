@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 include ":gdx"
 
 include ":backends"
@@ -28,7 +27,6 @@ include ":extensions:gdx-box2d:gdx-box2d"
 include ":extensions:gdx-box2d:gdx-box2d-gwt"
 include ":extensions:gdx-bullet"
 include ":extensions:gdx-freetype"
-include ":extensions:gdx-jnigen"
 include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
 

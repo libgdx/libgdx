@@ -22,16 +22,6 @@
 	</target>
 
 	<!-- build the core of the library plus all backends -->
-	<!-- gdx jnigen -->
-	<target name="gdx-jnigen">
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
-			<property name="distDir" value="${distDir}/extensions/gdx-jnigen"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-jnigen"/>
-			<!-- we shouldn't build any natives -->
-			<property name="build-natives" value="false"/>
-		</ant>
-	</target>
 
 	<!-- new gdx setup, custom target -->
 	<target name="gdx-setup">
@@ -40,10 +30,7 @@
 	</target>
 
 	<!-- gdx core -->
-	<target name="gdx-core" depends="gdx-jnigen">
-		<path id="classpath">
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
+	<target name="gdx-core">
 		<fileset id="resourcefiles" dir="gdx/res">
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl"/>
@@ -165,7 +152,6 @@
 	<target name="gdx-box2d" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
@@ -196,7 +182,6 @@
 	<target name="gdx-freetype" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-freetype">
 			<property name="distDir" value="${distDir}/extensions/gdx-freetype"/>
@@ -210,7 +195,6 @@
 	<target name="gdx-bullet" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<path id="src">
 				<pathelement location="extensions/gdx-bullet/src"/>
