@@ -17,7 +17,6 @@
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
