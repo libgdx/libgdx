@@ -15,8 +15,10 @@
  */
 package com.badlogic.gdx.backends.iosrobovm.custom;
 
+/*<imports>*/
 import org.robovm.objc.annotation.*;
 import org.robovm.apple.foundation.*;
+/*</imports>*/
 
 /*<javadoc>*/
 
