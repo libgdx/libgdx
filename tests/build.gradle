@@ -22,8 +22,6 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
 	sourceSets.main.java.srcDirs = ["src"]
 	sourceSets.main.resources.srcDirs = ["res"]
 
-	compileJava.options.encoding = 'UTF-8'
-
 	configurations { natives }
 }
 
