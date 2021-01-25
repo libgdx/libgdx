@@ -87,7 +87,6 @@ import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
-import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
@@ -182,10 +181,6 @@ public class GwtTestWrapper extends AbstractTestWrapper {
         }, new GwtInstancer() {
             public GdxTest instance () {
                 return new ComplexActionTest();
-            }
-        }, new GwtInstancer() {
-            public GdxTest instance () {
-                return new ControllersTest();
             }
         }, new GwtInstancer() {
             public GdxTest instance () {

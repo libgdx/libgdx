@@ -87,7 +87,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 			table.add(button).expandX().fillX();
 		}
 		container.row();
-		container.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE))).pad(5, 5,
+		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.", new LabelStyle(font, Color.WHITE))).pad(5, 5,
 			5, 5);
 
 		Gdx.input = new InputWrapper(Gdx.input) {
