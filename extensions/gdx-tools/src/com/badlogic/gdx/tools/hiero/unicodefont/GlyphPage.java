@@ -31,8 +31,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
