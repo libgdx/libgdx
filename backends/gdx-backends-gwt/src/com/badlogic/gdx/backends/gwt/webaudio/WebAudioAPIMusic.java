@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 
 import com.badlogic.gdx.audio.Music;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.dom.client.EndedEvent;
 import com.google.gwt.media.client.Audio;
 
 public class WebAudioAPIMusic implements Music {

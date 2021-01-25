@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 import org.robovm.apple.audiotoolbox.AudioServices;

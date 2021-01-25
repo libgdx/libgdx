@@ -5,16 +5,12 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.Configuration;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class AwtTestLWJGL {

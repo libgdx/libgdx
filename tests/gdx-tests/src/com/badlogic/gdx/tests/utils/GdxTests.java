@@ -40,7 +40,6 @@ import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
@@ -149,7 +148,6 @@ public class GdxTests {
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
-		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
 		GLES30Test.class,
