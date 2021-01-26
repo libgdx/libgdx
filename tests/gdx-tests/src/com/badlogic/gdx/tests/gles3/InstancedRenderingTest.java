@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 @GdxTestConfig(requireGL30=true)
@@ -77,7 +78,7 @@ public class InstancedRenderingTest extends GdxTest {
 					x/(float)INSTANCE_COUNT_SQRT, y/(float)INSTANCE_COUNT_SQRT, 1f, 1f});
 			}
 		}
-		offsets.position(0);
+		((Buffer) offsets).position(0);
 		mesh.setInstanceData(offsets);
 //		mesh.disableInstancedRendering();
 	}
