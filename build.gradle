@@ -16,7 +16,6 @@
 
 apply from: "gradle/dependencies.gradle"
 
-
 allprojects {
     group = 'com.badlogicgames.gdx'
     version = '1.9.13-SNAPSHOT'
@@ -25,14 +24,19 @@ allprojects {
         repositories {
             google()
             jcenter()
+            mavenLocal()
             mavenCentral()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        }
+        dependencies {
+            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.1"
         }
     }
 
     repositories {
         google()
         jcenter()
+        mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }

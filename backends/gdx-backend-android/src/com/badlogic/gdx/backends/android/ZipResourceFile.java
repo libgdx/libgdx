@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
@@ -139,7 +140,7 @@ public class ZipResourceFile {
 		/**
 		 * Calculates the offset of the start of the Zip file entry within the
 		 * Zip file.
-		 * 
+		 *
 		 * @return the offset, in bytes from the start of the file of the entry
 		 */
 		public long getOffset() {
@@ -148,7 +149,7 @@ public class ZipResourceFile {
 
 		/**
 		 * isUncompressed
-		 * 
+		 *
 		 * @return true if the file is stored in uncompressed form
 		 */
 		public boolean isUncompressed() {
@@ -218,7 +219,7 @@ public class ZipResourceFile {
 	 * MediaPlayer. It also allows for the class to be used in a content
 	 * provider that can feed video players. The file must be stored
 	 * (non-compressed) in the Zip file for this to work.
-	 * 
+	 *
 	 * @param assetPath
 	 * @return the asset file descriptor for the file, or null if the file isn't
 	 *         present or is stored compressed
@@ -235,7 +236,7 @@ public class ZipResourceFile {
 	 * getInputStream returns an AssetFileDescriptor.AutoCloseInputStream
 	 * associated with the asset that is contained in the Zip file, or a
 	 * standard ZipInputStream if necessary to uncompress the file
-	 * 
+	 *
 	 * @param assetPath
 	 * @return an input stream for the named asset path, or null if not found
 	 * @throws IOException
@@ -399,9 +400,9 @@ public class ZipResourceFile {
 
 			/* get the CDE filename */
 
-			directoryMap.position(currentOffset + kCDELen);
+			((Buffer) directoryMap).position(currentOffset + kCDELen);
 			directoryMap.get(tempBuf, 0, fileNameLen);
-			directoryMap.position(0);
+			((Buffer) directoryMap).position(0);
 
 			/* UTF-8 on Android */
 			String str = new String(tempBuf, 0, fileNameLen);
@@ -421,7 +422,7 @@ public class ZipResourceFile {
 					+ kCDELocalOffset) & 0xffffffffL;
 
 			// set the offsets
-			buf.clear();
+			((Buffer) buf).clear();
 			ze.setOffsetFromFile(f, buf);
 
 			// put file into hash

@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.AMDDebugOutput;
 import org.lwjgl.opengl.ARBDebugOutput;
 import org.lwjgl.opengl.GL;
@@ -105,7 +104,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			this.audio = new MockAudio();
 		}
 		Gdx.audio = audio;
-		this.files = Gdx.files = new Lwjgl3Files();
+		this.files = Gdx.files = createFiles();
 		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
 
@@ -376,6 +375,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	@Override
 	public Lwjgl3Input createInput (Lwjgl3Window window) {
 		return new DefaultLwjgl3Input(window);
+	}
+
+	protected Files createFiles() {
+		return new Lwjgl3Files();
 	}
 
 	/**

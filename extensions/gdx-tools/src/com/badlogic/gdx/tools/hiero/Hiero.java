@@ -73,7 +73,6 @@ import javax.swing.JTextPane;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -84,6 +83,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -436,7 +436,14 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				if (evt.getValueIsAdjusting()) return;
 				prefs.put("system.font", (String)fontList.getSelectedValue());
-				updateFont();
+				try {
+					updateFont();
+				} catch (GdxRuntimeException ex) {
+					prefs.remove("system.font");
+					fontList.setSelectedValue("Arial", true);
+					updateFont();
+					sampleTextPane.setText("Selected font does not have the necessary 'x' character; falling back to Arial. \n" + sampleTextPane.getText());
+				}
 			}
 		});
 
