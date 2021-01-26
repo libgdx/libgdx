@@ -516,6 +516,10 @@ public class GwtGraphics extends AbstractGraphics {
 	public void setVSync (boolean vsync) {
 	}
 
+	@Override
+	public void setForegroundFPS (int fps) {
+	}
+
 	/**
 	 * See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
 	 *

@@ -133,9 +133,12 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 			boolean haveWindowsRendered = false;
 			closedWindows.clear();
+			int targetFramerate = -2;
 			for (Lwjgl3Window window : windows) {
 				window.makeCurrent();
 				currentWindow = window;
+				if (targetFramerate == -2)
+					targetFramerate = window.getConfig().foregroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
 				}
@@ -189,8 +192,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				} catch (InterruptedException e) {
 					// ignore
 				}
-			} else if(config.foregroundFPS > 0) {
-				sync.sync(config.foregroundFPS); // sleep as needed to meet the target framerate
+			} else if(targetFramerate  > 0) {
+				sync.sync(targetFramerate ); // sleep as needed to meet the target framerate
 			}
 		}
 	}

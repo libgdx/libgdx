@@ -489,6 +489,14 @@ public class IOSGraphics extends AbstractGraphics {
 	public void setVSync (boolean vsync) {
 	}
 
+	/** Sets the preferred framerate for the application. Default is 60. Is not generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the preferred fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		viewController.setPreferredFramesPerSecond(fps);
+	}
+
 	@Override
 	public BufferFormat getBufferFormat () {
 		return bufferFormat;

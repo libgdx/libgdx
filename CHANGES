@@ -5,6 +5,8 @@
 - API addition: Added Pixmap#setPixels(ByteBuffer).
 - API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
 - API Addition: Added overridable createFiles() methods to backend application classes to allow initializing custom module implementations.
+- API Addition: Add a Graphics#setForegroundFPS() method.
+- API Change: HeadlessApplicationConfiguration#renderInterval was changed to #updatesPerSecond
 
 [1.9.13]
 - [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
