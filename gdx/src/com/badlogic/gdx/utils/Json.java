@@ -672,6 +672,12 @@ public class Json {
 				return;
 			}
 
+			// ExtendableEnum special case.
+			if (ClassReflection.isAssignableFrom(ExtendableEnum.class, actualType)) {
+				writer.value(((ExtendableEnum)value).getName());
+				return;
+			}
+
 			writeObjectStart(actualType, knownType);
 			writeFields(value);
 			writeObjectEnd();
@@ -1002,7 +1008,8 @@ public class Json {
 
 				if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
 					|| type == Long.class || type == Double.class || type == Short.class || type == Byte.class
-					|| type == Character.class || ClassReflection.isAssignableFrom(Enum.class, type)) {
+					|| type == Character.class || ClassReflection.isAssignableFrom(Enum.class, type)
+					|| ClassReflection.isAssignableFrom(ExtendableEnum.class, type)) {
 					return readValue("value", type, jsonData);
 				}
 
@@ -1163,6 +1170,10 @@ public class Json {
 					Enum e = constants[i];
 					if (string.equals(convertToString(e))) return (T)e;
 				}
+			}
+			if (ClassReflection.isAssignableFrom(ExtendableEnum.class, type)) {
+				ExtendableEnum e = ExtendableEnum.getValue((Class<? extends ExtendableEnum>)type, string);
+				if(e != null) return (T)e;
 			}
 			if (type == CharSequence.class) return (T)string;
 			throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
