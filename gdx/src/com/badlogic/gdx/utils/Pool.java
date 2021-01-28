@@ -25,7 +25,7 @@ abstract public class Pool<T> {
 	/** The highest number of free objects. Can be reset any time. */
 	public int peak;
 
-	private final Array<T> freeObjects;
+	protected final Array<T> freeObjects;
 
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool () {
