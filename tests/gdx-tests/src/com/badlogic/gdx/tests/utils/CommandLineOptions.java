@@ -3,8 +3,6 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ListModel;
-
 import com.badlogic.gdx.utils.Array;
 
 /**

@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -31,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.io.IOException;
 
@@ -146,25 +146,32 @@ public class PixmapPackerIOTest extends GdxTest {
 		if (originalRegion.originalWidth != loaded.originalWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		if (originalRegion.originalHeight != loaded.originalHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		if (originalRegion.rotate != loaded.rotate) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.splits != null && loaded.splits != null) {
-			for (int i = 0; i < originalRegion.splits.length; i++) {
-				if (originalRegion.splits[i] != loaded.splits[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+
+		int[] originalSplits = originalRegion.findValue("split");
+		int[] loadedSplits = loaded.findValue("split");
+		if (originalSplits != null && loadedSplits != null) {
+			for (int i = 0; i < originalSplits.length; i++) {
+				if (originalSplits[i] != loadedSplits[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 			}
 		} else {
-			if (originalRegion.splits != loaded.splits) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+			if (originalSplits != loadedSplits) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		}
-		if (originalRegion.pads != null && loaded.pads != null) {
-			for (int i = 0; i < originalRegion.pads.length; i++) {
-				if (originalRegion.pads[i] != loaded.pads[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+
+		int[] originalPads = originalRegion.findValue("pad");
+		int[] loadedPads = loaded.findValue("pad");
+		if (originalPads != null && loadedPads != null) {
+			for (int i = 0; i < originalPads.length; i++) {
+				if (originalPads[i] != loadedPads[i])
+					throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 			}
 		} else {
-			if (originalRegion.pads != loaded.pads) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		}	}
+			if (originalPads != loadedPads) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		}
+	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		int quarterSize = (int) (size/4f);
 		batch.begin();

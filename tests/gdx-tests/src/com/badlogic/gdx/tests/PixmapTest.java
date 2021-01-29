@@ -16,23 +16,43 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class PixmapTest extends GdxTest {
 	Pixmap pixmap;
 	Texture texture;
 	SpriteBatch batch;
 	TextureRegion region;
+	Pixmap pixmapCustom;
+	Texture textureCustom;
+	TextureRegion regionCustom;
 
 	public void create () {
 		// Create an empty dynamic pixmap
-		pixmap = new Pixmap(800, 480, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
+		pixmap = new Pixmap(800, 480, Pixmap.Format.RGBA8888);
+		pixmapCustom = new Pixmap(256, 256, Pixmap.Format.RGBA8888);
+		
+		ByteBuffer buffer = BufferUtils.newByteBuffer(pixmapCustom.getWidth() * pixmapCustom.getHeight() * 4);
+		for(int y=0 ; y<pixmapCustom.getHeight() ; y++){
+			for(int x=0 ; x<pixmapCustom.getWidth() ; x++){
+				buffer.put((byte)x);
+				buffer.put((byte)y);
+				buffer.put((byte)0);
+				buffer.put((byte)255);
+			}
+		}
+		buffer.flip();
+		pixmapCustom.setPixels(buffer);
+		textureCustom = new Texture(pixmapCustom);
+		regionCustom = new TextureRegion(textureCustom);
 
 		// Create a texture to contain the pixmap
 		texture = new Texture(1024, 1024, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
@@ -66,10 +86,10 @@ public class PixmapTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClearColor(0.6f, 0.6f, 0.6f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.6f, 0.6f, 0.6f, 1);
 		batch.begin();
 		batch.draw(region, 0, 0);
+		batch.draw(regionCustom, 0, 0);
 		batch.end();
 	}
 }

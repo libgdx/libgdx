@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
@@ -32,7 +33,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 
-public class DefaultGwtInput implements GwtInput {
+public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
 	private IntMap<Integer> touchMap = new IntMap<Integer>(20);
@@ -42,11 +43,7 @@ public class DefaultGwtInput implements GwtInput {
 	private int[] deltaX = new int[MAX_TOUCHES];
 	private int[] deltaY = new int[MAX_TOUCHES];
 	IntSet pressedButtons = new IntSet();
-	int pressedKeyCount = 0;
 	IntSet pressedKeySet = new IntSet();
-	boolean[] pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
-	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
 	long currentEventTimeStamp;
@@ -55,7 +52,6 @@ public class DefaultGwtInput implements GwtInput {
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
 	GwtGyroscope gyroscope;
-	private IntSet keysToCatch = new IntSet();
 
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
@@ -105,7 +101,7 @@ public class DefaultGwtInput implements GwtInput {
 		hookEvents();
 
 		// backwards compatibility: backspace was caught in older versions
-		keysToCatch.add(Keys.BACKSPACE);
+		setCatchKey(Keys.BACKSPACE, true);
 	}
 
 	@Override
@@ -263,28 +259,6 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
-		if (key == Keys.ANY_KEY) {
-			return pressedKeyCount > 0;
-		}
-		if (key < 0 || key > 255) {
-			return false;
-		}
-		return pressedKeys[key];
-	}
-
-	@Override
-	public boolean isKeyJustPressed (int key) {
-		if (key == Keys.ANY_KEY) {
-			return keyJustPressed;
-		}
-		if (key < 0 || key > 255) {
-			return false;
-		}
-		return justPressedKeys[key];
-	}
-
-	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
@@ -352,40 +326,6 @@ public class DefaultGwtInput implements GwtInput {
 	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-		setCatchKey(Keys.BACK, catchBack);
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return keysToCatch.contains(Keys.BACK);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		setCatchKey(Keys.MENU, catchMenu);
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return keysToCatch.contains(Keys.MENU);
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-		if (!catchKey) {
-			keysToCatch.remove(keycode);
-		} else if (catchKey) {
-			keysToCatch.add(keycode);
-		}
-	}
-
-	@Override
-	public boolean isCatchKey (int keycode) {
-		return keysToCatch.contains(keycode);
 	}
 
 	@Override
@@ -916,7 +856,7 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_CTRL:
 			return location == LOCATION_RIGHT ? Keys.CONTROL_RIGHT : Keys.CONTROL_LEFT;
 		case KeyCodes.KEY_DELETE:
-			return Keys.DEL;
+			return Keys.FORWARD_DEL;
 		case KeyCodes.KEY_DOWN:
 			return Keys.DOWN;
 		case KeyCodes.KEY_END:

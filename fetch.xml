@@ -4,7 +4,7 @@
 
     <property name="robovm" value="https://oss.sonatype.org/content/repositories/releases/com/mobidevelop/robovm"/>
 
-    <property name="robovm-version" value="2.3.11"/>
+    <property name="robovm-version" value="2.3.12"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
     <property name="lwjgl-version" value="3.2.3"/>
@@ -107,7 +107,6 @@
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
-        <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
         <parallel>
             <!-- core -->
@@ -161,9 +160,6 @@
             <get src="${domain}/extensions/gdx-bullet/x86_64/libgdx-bullet.so" dest="extensions/gdx-bullet/libs/x86_64"/>
             <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a" dest="extensions/gdx-bullet/libs/ios32"/>
             <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a.tvos" dest="extensions/gdx-bullet/libs/ios32"/>
-
-            <!-- controllers natives, desktop only -->
-            <get src="${domain}/extensions/gdx-controllers/gdx-controllers-desktop-natives.jar" dest="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
             <!-- freetype natives -->
             <get src="${domain}/extensions/gdx-freetype/gdx-freetype-natives.jar" dest="extensions/gdx-freetype/libs"/>
