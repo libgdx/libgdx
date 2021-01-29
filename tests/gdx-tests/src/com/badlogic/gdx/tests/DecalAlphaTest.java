@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -79,6 +80,9 @@ public class DecalAlphaTest extends GdxTest {
 
 		  float elapsed = Gdx.graphics.getDeltaTime();
 		  timePassed += elapsed;
+		  if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+				toRender.add(makeDecal());
+		  }
 
 		  for (Decal decal : toRender) {
 				decal.rotateY(0.4f);
