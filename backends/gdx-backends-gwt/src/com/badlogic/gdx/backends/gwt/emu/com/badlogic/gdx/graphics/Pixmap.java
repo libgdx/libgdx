@@ -17,10 +17,13 @@
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,6 +37,7 @@ import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.VideoElement;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -80,6 +84,32 @@ public class Pixmap implements Disposable {
 	public enum Filter {
 		NearestNeighbour, BiLinear
 	}
+
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = BufferUtils.newByteBuffer(h * w * 4);
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+		pixmap.setPixels(pixels);
+		return pixmap;
+	}
+
+	private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
+		var imgData = ctx.createImageData(width, height);
+		var data = imgData.data;
+
+		for (var i = 0, len = width * height * 4; i < len; i++) {
+			data[i] = pixels[i] & 0xff;
+		}
+		ctx.putImageData(imgData, 0, 0);
+	}-*/;
 
 	int width;
 	int height;
@@ -230,6 +260,13 @@ public class Pixmap implements Disposable {
 
 	public Buffer getPixels () {
 		return buffer;
+	}
+
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		if (width == 0 || height == 0) return;
+		setImageData(((HasArrayBufferView)pixels).getTypedArray(), width, height, getContext());
 	}
 
 	@Override

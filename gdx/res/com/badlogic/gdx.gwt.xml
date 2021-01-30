@@ -4,6 +4,7 @@
 	    
 	<!--  -->
 		<include name="AbstractGraphics.java"/>
+		<include name="AbstractInput.java"/>
 		<include name="Application.java"/>
 		<include name="ApplicationAdapter.java"/>
 		<include name="ApplicationListener.java"/>

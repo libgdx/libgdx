@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.tests.g3d;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.graphics.Color;
@@ -339,7 +340,7 @@ public class HeightField implements Disposable {
 		System.arraycopy(data, offset, this.data, 0, this.data.length);
 		update();
 	}
-	
+
 	@Override
 	public void dispose () {
 		mesh.dispose();
@@ -360,7 +361,7 @@ public class HeightField implements Disposable {
 		} else {
 			source = new byte[width * height * bytesPerColor];
 			data.get(source);
-			data.position(startPos);
+			((Buffer) data).position(startPos);
 		}
 
 		float[] dest = new float[width * height];

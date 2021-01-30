@@ -32,7 +32,6 @@ import com.badlogic.gdx.utils.Array;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -45,15 +44,7 @@ import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
 import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
-import org.robovm.apple.uikit.UIInterfaceOrientationMask;
-import org.robovm.apple.uikit.UIPress;
-import org.robovm.apple.uikit.UIPressesEvent;
-import org.robovm.apple.uikit.UIRectEdge;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
-import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
 
 public class IOSGraphics extends AbstractGraphics {
@@ -80,6 +71,7 @@ public class IOSGraphics extends AbstractGraphics {
 	private float ppcY = 0;
 	private float density = 1;
 
+	volatile boolean resume = false;
 	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
@@ -205,6 +197,7 @@ public class IOSGraphics extends AbstractGraphics {
 				listener.resume();
 			}
 		}
+		resume = true;
 		app.listener.resume();
 	}
 
@@ -249,7 +242,12 @@ public class IOSGraphics extends AbstractGraphics {
 		}
 
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (!resume) {
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		} else {
+			resume = false;
+			deltaTime = 0;
+		}
 		lastFrameTime = time;
 
 		frames++;
@@ -489,6 +487,14 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public void setVSync (boolean vsync) {
+	}
+
+	/** Sets the preferred framerate for the application. Default is 60. Is not generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the preferred fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		viewController.setPreferredFramesPerSecond(fps);
 	}
 
 	@Override

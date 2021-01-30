@@ -419,6 +419,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @deprecated Use {@link #getRootNodes()}. */
+	@Deprecated
 	public Array<N> getNodes () {
 		return rootNodes;
 	}

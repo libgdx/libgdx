@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Gdx2DTest extends GdxTest {
 	SpriteBatch batch;
@@ -141,8 +142,7 @@ public class Gdx2DTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		batch.begin();
 		for (int i = 0; i < sprites.size(); i++) {
 			sprites.get(i).draw(batch);

@@ -434,23 +434,29 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	@Override
 	public void setUndecorated(boolean undecorated) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setDecorated(!undecorated);
+		getWindow().getConfig().setDecorated(!undecorated);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
 	@Override
 	public void setResizable(boolean resizable) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setResizable(resizable);
+		getWindow().getConfig().setResizable(resizable);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override
 	public void setVSync(boolean vsync) {
-		window.getConfig().vSyncEnabled = vsync;
-
+		getWindow().getConfig().vSyncEnabled = vsync;
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
+	}
+
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
+	 *  Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		getWindow().getConfig().foregroundFPS = fps;
 	}
 
 	@Override

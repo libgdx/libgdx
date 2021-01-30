@@ -16,20 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
-
 /** @author Xoppa */
 public class ShootTest extends BaseBulletTest {
 	final int BOXCOUNT_X = 5;

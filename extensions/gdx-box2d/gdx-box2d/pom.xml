@@ -18,12 +18,6 @@
 			<artifactId>gdx</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gdx-jnigen</artifactId>
-			<version>${project.version}</version>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
 
 	<build>

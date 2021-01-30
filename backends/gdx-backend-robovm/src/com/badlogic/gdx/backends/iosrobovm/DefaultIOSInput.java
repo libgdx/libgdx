@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
@@ -25,7 +25,6 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 import org.robovm.apple.audiotoolbox.AudioServices;
@@ -62,7 +61,7 @@ import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.MachineSizedUInt;
 import org.robovm.rt.bro.annotation.Pointer;
 
-public class DefaultIOSInput implements IOSInput {
+public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	static final int MAX_TOUCHES = 20;
 	private static final int POINTER_NOT_FOUND = -1;
 
@@ -129,12 +128,7 @@ public class DefaultIOSInput implements IOSInput {
 	boolean keyboardCloseOnReturn;
 	boolean softkeyboardActive = false;
 
-	private IntSet keysToCatch = new IntSet();
-	private boolean keyJustPressed = false;
-	private int keyCount = 0;
 	private boolean hadHardwareKeyEvent = false;
-	private final boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
-	private final boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 
 	public DefaultIOSInput (IOSApplication app) {
 		this.app = app;
@@ -385,28 +379,6 @@ public class DefaultIOSInput implements IOSInput {
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
-		if (key == Input.Keys.ANY_KEY) {
-			return keyCount > 0;
-		}
-		if (key < 0 || key > Keys.MAX_KEYCODE) {
-			return false;
-		}
-		return keys[key];
-	}
-
-	@Override
-	public boolean isKeyJustPressed (int key) {
-		if (key == Input.Keys.ANY_KEY) {
-			return keyJustPressed;
-		}
-		if (key < 0 || key > Keys.MAX_KEYCODE) {
-			return false;
-		}
-		return justPressedKeys[key];
-	}
-
-	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
@@ -594,40 +566,6 @@ public class DefaultIOSInput implements IOSInput {
 	}
 
 	@Override
-	public void setCatchBackKey (boolean catchBack) {
-		setCatchKey(Keys.BACK, catchBack);
-	}
-
-	@Override
-	public boolean isCatchBackKey() {
-		return keysToCatch.contains(Keys.BACK);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		setCatchKey(Keys.MENU, catchMenu);
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return keysToCatch.contains(Keys.MENU);
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-		if (!catchKey) {
-			keysToCatch.remove(keycode);
-		} else if (catchKey) {
-			keysToCatch.add(keycode);
-		}
-	}
-
-	@Override
-	public boolean isCatchKey (int keycode) {
-		return keysToCatch.contains(keycode);
-	}
-
-	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.inputProcessor = processor;
 	}
@@ -744,14 +682,14 @@ public class DefaultIOSInput implements IOSInput {
 						keyEvents.add(event);
 					}
 
-					if (keys[keyCode]) {
-						keyCount--;
-						keys[keyCode] = false;
+					if (pressedKeys[keyCode]) {
+						pressedKeyCount--;
+						pressedKeys[keyCode] = false;
 					}
 				} else {
-					if (!keys[event.keyCode]) {
-						keyCount++;
-						keys[event.keyCode] = true;
+					if (!pressedKeys[event.keyCode]) {
+						pressedKeyCount++;
+						pressedKeys[event.keyCode] = true;
 					}
 				}
 
@@ -1132,7 +1070,7 @@ public class DefaultIOSInput implements IOSInput {
 			case KeyboardPageUp:
 				return Keys.PAGE_UP;
 			case KeyboardDeleteForward:
-				return Keys.DEL;
+				return Keys.FORWARD_DEL;
 			case KeyboardEnd:
 				return Keys.END;
 			case KeyboardPageDown:
