@@ -309,6 +309,7 @@
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
 		<include name="maps/objects/TextureMapObject.java"/>
+        <include name="maps/objects/PointMapObject.java"/>
 	
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
