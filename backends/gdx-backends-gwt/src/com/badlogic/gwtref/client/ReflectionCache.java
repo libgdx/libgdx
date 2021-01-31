@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,21 +19,39 @@ package com.badlogic.gwtref.client;
 import com.google.gwt.core.client.GWT;
 
 public class ReflectionCache {
-	private static IReflectionCache instance = GWT.create(IReflectionCache.class);
+	private static IReflectionCache instance1 = GWT.create(IReflectionCache.class);
+	private static IReflectionCache instance2 = GWT.create(IReflectionCache2.class);
 
 	public static Type forName (String name) throws ClassNotFoundException {
-		Type type = instance.forName(convert(name));
+		Type type = instance1.forName(convert(name));
+		if (type == null) {
+			type = instance2.forName(convert(name));
+		} else {
+			type.source = instance1;
+		}
 		if (type == null) {
 			throw new RuntimeException("Couldn't find Type for class '" + name + "'");
+		}
+		if (type.source == null) {
+			type.source = instance2;
 		}
 		return type;
 	}
 
 	public static Type getType (Class clazz) {
-		if (clazz == null) return null;
-		Type type = instance.forName(convert(clazz.getName()));
+		if (clazz == null)
+			return null;
+		Type type = instance1.forName(convert(clazz.getName()));
+		if (type == null) {
+			type = instance2.forName(convert(clazz.getName()));
+		} else {
+			type.source = instance1;
+		}
 		if (type == null) {
 			throw new RuntimeException("Couldn't find Type for class '" + clazz.getName() + "'");
+		}
+		if (type.source == null) {
+			type.source = instance2;
 		}
 		return type;
 	}
@@ -77,30 +95,31 @@ public class ReflectionCache {
 	}
 
 	public static Object newArray (Class componentType, int size) {
-		return instance.newArray(getType(componentType), size);
+		Type type = getType(componentType);
+		return type.source.newArray(type, size);
 	}
 
 	public static Object getFieldValue (Field field, Object obj) throws IllegalAccessException {
-		return instance.get(field, obj);
+		return field.getEnclosingType().source.get(field, obj);
 	}
 
 	public static void setFieldValue (Field field, Object obj, Object value) throws IllegalAccessException {
-		instance.set(field, obj, value);
+		field.getEnclosingType().source.set(field, obj, value);
 	}
 
 	public static Object invoke (Method method, Object obj, Object[] params) {
-		return instance.invoke(method, obj, params);
+		return method.enclosingType.getType().source.invoke(method, obj, params);
 	}
 
 	public static int getArrayLength (Type type, Object obj) {
-		return instance.getArrayLength(type, obj);
+		return type.source.getArrayLength(type, obj);
 	}
 
 	public static Object getArrayElement (Type type, Object obj, int i) {
-		return instance.getArrayElement(type, obj, i);
+		return type.source.getArrayElement(type, obj, i);
 	}
 
 	public static void setArrayElement (Type type, Object obj, int i, Object value) {
-		instance.setArrayElement(type, obj, i, value);
+		type.source.setArrayElement(type, obj, i, value);
 	}
 }
