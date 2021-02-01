@@ -11,10 +11,13 @@ import org.robovm.apple.corehaptic.CHHapticEventType;
 import org.robovm.apple.corehaptic.CHHapticPattern;
 import org.robovm.apple.corehaptic.CHHapticPatternDict;
 import org.robovm.apple.foundation.NSArray;
+import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSErrorException;
+import org.robovm.apple.foundation.NSNumber;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
+import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIImpactFeedbackGenerator;
 import org.robovm.apple.uikit.UIImpactFeedbackStyle;
 import org.robovm.objc.block.VoidBlock1;
@@ -63,10 +66,10 @@ public class IOSHaptics {
 				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
 				hapticEngine.createPlayer(pattern).start(0, ptr);
 				if (ptr.get() != null) {
-					Gdx.app.error("IOSHaptics", "Error starting haptics pattern.");
+					Gdx.app.error("IOSHaptics", "Error starting haptics player. Error code: " + ptr.get().getErrorCode());
 				}
 			} catch (NSErrorException e) {
-				Gdx.app.error("IOSHaptics", "Error creating haptics player. " + e.getMessage());
+				Gdx.app.error("IOSHaptics", "Error creating haptics pattern or player. " + e.getMessage());
 			}
 		} else if (fallback) {
 			AudioServices.playSystemSound(4095);
@@ -93,8 +96,15 @@ public class IOSHaptics {
 	}
 
 	private CHHapticPatternDict getChHapticPatternDict(int milliseconds, float intensity) {
-		NSArray<CHHapticEventParameter> parameters = new NSArray<CHHapticEventParameter>();
-		parameters.add(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity));
+//		NSArray<NSObject> parameters = new NSArray<NSObject>(
+//				new CHHapticPatternDict().setEventParameters(
+//						new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"), new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity)))
+//				)
+//			.getDictionary()
+//		);
+//		NSArray<NSObject> parameters = new NSArray<NSObject>(
+//				new NSArray<NSObject>(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity))
+//		);
 		return new CHHapticPatternDict()
 			.setPattern(
 				new NSArray<NSObject>(
@@ -104,7 +114,7 @@ public class IOSHaptics {
 								.setEventType(CHHapticEventType.HapticTransient)
 								.setTime(0.0)
 								.setEventDuration(milliseconds / 1000f)
-								.setEventParameters(parameters)
+								.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"), new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity))))
 						)
 					.getDictionary()
 				)
