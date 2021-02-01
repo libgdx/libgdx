@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class ParticleEffectActor extends Actor {
     private final ParticleEffect particleEffect;
     float lastDelta;
-    boolean isComplete;
+    private boolean isComplete = true;
     private boolean resetOnStart;
 
     public ParticleEffectActor(ParticleEffect particleEffect, boolean resetOnStart) {
@@ -65,6 +65,10 @@ public class ParticleEffectActor extends Actor {
 
     public boolean isResetOnStart() {
         return resetOnStart;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
     }
 
     public void setResetOnStart(boolean resetOnStart) {
