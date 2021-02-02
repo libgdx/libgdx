@@ -91,23 +91,7 @@ allprojects {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
     }
-}
 
-configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
-    apply plugin: "java-library"
-
-    compileJava {
-        options.fork = true
-        options.incremental = true
-    }
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
-    }
-}
-
-allprojects {
     apply plugin: "com.diffplug.spotless"
 
     spotless {
@@ -122,6 +106,20 @@ allprojects {
             target '*.gradle'
             greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
         }
+    }
+}
+
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
+    apply plugin: "java-library"
+
+    compileJava {
+        options.fork = true
+        options.incremental = true
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 }
 
