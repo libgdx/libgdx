@@ -9,13 +9,14 @@ import com.badlogic.gdx.utils.Disposable;
 
 /**
  * ParticleEffectActor holds an {@link ParticleEffect} to use in Scene2d applications.
- * The particle effect is positioned in the centered in the ParticleEffectActor. Its bounding box
+ * The particle effect is positioned at 0, 0 in the ParticleEffectActor. Its bounding box
  * is not limited to the size of this actor.
  */
 public class ParticleEffectActor extends Actor implements Disposable {
     private final ParticleEffect particleEffect;
     protected float lastDelta;
     protected boolean isRunning;
+    protected boolean ownsEffect;
     private boolean resetOnStart;
 
     public ParticleEffectActor(ParticleEffect particleEffect, boolean resetOnStart) {
@@ -28,17 +29,19 @@ public class ParticleEffectActor extends Actor implements Disposable {
         super();
         particleEffect = new ParticleEffect();
         particleEffect.load(particleFile, atlas);
+        ownsEffect = true;
     }
 
     public ParticleEffectActor(FileHandle particleFile, FileHandle imagesDir) {
         super();
         particleEffect = new ParticleEffect();
         particleEffect.load(particleFile, imagesDir);
+        ownsEffect = true;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        particleEffect.setPosition(getX() + getWidth() / 2, getY() + getHeight() / 2);
+        particleEffect.setPosition(getX(), getY());
         if (lastDelta > 0) {
             particleEffect.update(lastDelta);
             lastDelta = 0;
@@ -68,12 +71,12 @@ public class ParticleEffectActor extends Actor implements Disposable {
         return resetOnStart;
     }
 
-    public boolean isRunning() {
-        return isRunning;
-    }
-
     public void setResetOnStart(boolean resetOnStart) {
         this.resetOnStart = resetOnStart;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 
     public ParticleEffect getEffect() {
@@ -96,7 +99,9 @@ public class ParticleEffectActor extends Actor implements Disposable {
 
     @Override
     public void dispose() {
-        particleEffect.dispose();
+        if (ownsEffect) {
+            particleEffect.dispose();
+        }
     }
 
 }
