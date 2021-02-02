@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.Rotation2dInitia
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.ScaleInitializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.TextureRegionInitializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 

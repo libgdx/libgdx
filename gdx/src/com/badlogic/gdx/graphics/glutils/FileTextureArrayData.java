@@ -86,6 +86,9 @@ public class FileTextureArrayData implements TextureArrayData {
 					disposePixmap = true;
 				}
 				Gdx.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.getWidth(), pixmap.getHeight(), 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
+				if (useMipMaps) {
+					Gdx.gl20.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+				}
 				if (disposePixmap) pixmap.dispose();
 			}
 		}

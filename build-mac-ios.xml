@@ -41,13 +41,6 @@
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
 	</target>
 	
-	<target name="controllers" depends="core">
-        <ant antfile="build-macosx64.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
-	</target>
-	
-	<target name="all" depends="core,backend-robovm,freetype,box2d,bullet,controllers">	
+	<target name="all" depends="core,backend-robovm,freetype,box2d,bullet">
 	</target>
 </project>

@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Null;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -402,31 +403,117 @@ public class TexturePacker {
 			}
 		}
 
-		Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
-		for (Page page : pages) {
-			writer.write("\n" + page.imageName + "\n");
-			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
-			writer.write("format: " + settings.format + "\n");
-			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
-			writer.write("repeat: " + getRepeatValue() + "\n");
+		String tab = "", colon = ":", comma = ",";
+		if (settings.prettyPrint) {
+			tab = "\t";
+			colon = ": ";
+			comma = ", ";
+		}
+
+		boolean appending = packFile.exists();
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
+		for (int i = 0, n = pages.size; i < n; i++) {
+			Page page = pages.get(i);
+
+			if (settings.legacyOutput)
+				writePageLegacy(writer, page);
+			else {
+				if (i != 0 || appending) writer.write("\n");
+				writePage(writer, appending, page);
+			}
 
 			page.outputRects.sort();
 			for (Rect rect : page.outputRects) {
-				writeRect(writer, page, rect, rect.name);
+				if (settings.legacyOutput)
+					writeRectLegacy(writer, page, rect, rect.name);
+				else
+					writeRect(writer, page, rect, rect.name);
 				Array<Alias> aliases = new Array(rect.aliases.toArray());
 				aliases.sort();
 				for (Alias alias : aliases) {
 					Rect aliasRect = new Rect();
 					aliasRect.set(rect);
 					alias.apply(aliasRect);
-					writeRect(writer, page, aliasRect, alias.name);
+					if (settings.legacyOutput)
+						writeRectLegacy(writer, page, aliasRect, alias.name);
+					else
+						writeRect(writer, page, aliasRect, alias.name);
 				}
 			}
 		}
 		writer.close();
 	}
 
+	private void writePage (OutputStreamWriter writer, boolean appending, Page page) throws IOException {
+		String tab = "", colon = ":", comma = ",";
+		if (settings.prettyPrint) {
+			tab = "\t";
+			colon = ": ";
+			comma = ", ";
+		}
+
+		writer.write(page.imageName + "\n");
+		writer.write(tab + "size" + colon + page.imageWidth + comma + page.imageHeight + "\n");
+
+		if (settings.format != Format.RGBA8888) writer.write(tab + "format" + colon + settings.format + "\n");
+
+		if (settings.filterMin != TextureFilter.Nearest || settings.filterMag != TextureFilter.Nearest)
+			writer.write(tab + "filter" + colon + settings.filterMin + comma + settings.filterMag + "\n");
+
+		String repeatValue = getRepeatValue();
+		if (repeatValue != null) writer.write(tab + "repeat" + colon + repeatValue + "\n");
+
+		if (settings.premultiplyAlpha) writer.write(tab + "pma" + colon + "true\n");
+	}
+
 	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
+		String tab = "", colon = ":", comma = ",";
+		if (settings.prettyPrint) {
+			tab = "\t";
+			colon = ": ";
+			comma = ", ";
+		}
+
+		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
+		if (rect.index != -1) writer.write(tab + "index" + colon + rect.index + "\n");
+
+		writer.write(tab + "bounds" + colon //
+			+ (page.x + rect.x) + comma + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + comma //
+			+ rect.regionWidth + comma + rect.regionHeight + "\n");
+
+		int offsetY = rect.originalHeight - rect.regionHeight - rect.offsetY;
+		if (rect.offsetX != 0 || offsetY != 0 //
+			|| rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight) {
+			writer.write(tab + "offsets" + colon //
+				+ rect.offsetX + comma + offsetY + comma //
+				+ rect.originalWidth + comma + rect.originalHeight + "\n");
+		}
+
+		if (rect.rotated) writer.write(tab + "rotate" + colon + rect.rotated + "\n");
+
+		if (rect.splits != null) {
+			writer.write(tab + "split" + colon //
+				+ rect.splits[0] + comma + rect.splits[1] + comma //
+				+ rect.splits[2] + comma + rect.splits[3] + "\n");
+		}
+
+		if (rect.pads != null) {
+			if (rect.splits == null) writer.write(tab + "split" + colon + "0" + comma + "0" + comma + "0" + comma + "0\n");
+			writer.write(
+				tab + "pad" + colon + rect.pads[0] + comma + rect.pads[1] + comma + rect.pads[2] + comma + rect.pads[3] + "\n");
+		}
+	}
+
+	private void writePageLegacy (OutputStreamWriter writer, Page page) throws IOException {
+		writer.write("\n" + page.imageName + "\n");
+		writer.write("size: " + page.imageWidth + ", " + page.imageHeight + "\n");
+		writer.write("format: " + settings.format + "\n");
+		writer.write("filter: " + settings.filterMin + ", " + settings.filterMag + "\n");
+		String repeatValue = getRepeatValue();
+		writer.write("repeat: " + (repeatValue == null ? "none" : repeatValue) + "\n");
+	}
+
+	private void writeRectLegacy (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer
@@ -446,11 +533,11 @@ public class TexturePacker {
 		writer.write("  index: " + rect.index + "\n");
 	}
 
-	private String getRepeatValue () {
+	private @Null String getRepeatValue () {
 		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
 		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
 		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
-		return "none";
+		return null;
 	}
 
 	private int getBufferedImageType (Format format) {
@@ -843,6 +930,8 @@ public class TexturePacker {
 		public String[] scaleSuffix = {""};
 		public Resampling[] scaleResampling = {Resampling.bicubic};
 		public String atlasExtension = ".atlas";
+		public boolean prettyPrint = true;
+		public boolean legacyOutput = true;
 
 		public Settings () {
 		}
@@ -894,6 +983,8 @@ public class TexturePacker {
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
 			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
 			atlasExtension = settings.atlasExtension;
+			prettyPrint = settings.prettyPrint;
+			legacyOutput = settings.legacyOutput;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {

@@ -20,7 +20,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FogTest extends GdxTest implements ApplicationListener {
 	public PerspectiveCamera cam;
@@ -73,9 +73,8 @@ public class FogTest extends GdxTest implements ApplicationListener {
 		inputController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-		Gdx.gl.glClearColor(0.13f, 0.13f, 0.13f, 1);
+		
+		ScreenUtils.clear(0.13f, 0.13f, 0.13f, 1, true);
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);

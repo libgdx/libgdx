@@ -21,6 +21,7 @@ import java.io.File;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
@@ -30,7 +31,6 @@ import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIViewController;
@@ -94,7 +94,7 @@ public class IOSApplication implements Application {
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
 	IOSAudio audio;
-	IOSFiles files;
+	Files files;
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
@@ -138,7 +138,7 @@ public class IOSApplication implements Application {
 		this.graphics = createGraphics();
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
-		this.files = new IOSFiles();
+		this.files = createFiles();
 		this.audio = createAudio(config);
 		this.net = new IOSNet(this, config);
 
@@ -155,6 +155,10 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
+	protected Files createFiles() {
+		return new IOSFiles();
+	}
+
 	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
 		return new OALIOSAudio(config);
 	}
@@ -163,8 +167,8 @@ public class IOSApplication implements Application {
 		 return new IOSGraphics(this, config, input, config.useGL30);
 	}
 
-	protected IOSGraphics.IOSUIViewController createUIViewController (IOSGraphics graphics) {
-		return new IOSGraphics.IOSUIViewController(this, graphics);
+	protected IOSUIViewController createUIViewController (IOSGraphics graphics) {
+		return new IOSUIViewController(this, graphics);
 	}
 
 	protected IOSInput createInput() {
@@ -431,6 +435,16 @@ public class IOSApplication implements Application {
 			@Override
 			public void setContents (String content) {
 				UIPasteboard.getGeneralPasteboard().setString(content);
+			}
+
+			@Override
+			public boolean hasContents () {
+				if (Foundation.getMajorSystemVersion() >= 10) {
+					return UIPasteboard.getGeneralPasteboard().hasStrings();
+				}
+
+				String contents = getContents();
+				return contents != null && !contents.isEmpty();
 			}
 
 			@Override

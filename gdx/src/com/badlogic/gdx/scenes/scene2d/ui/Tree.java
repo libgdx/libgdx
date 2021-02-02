@@ -195,10 +195,6 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		selection.clear();
 	}
 
-	public Array<N> getNodes () {
-		return rootNodes;
-	}
-
 	public void invalidate () {
 		super.invalidate();
 		sizeInvalid = true;
@@ -419,6 +415,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	/** If the order of the root nodes is changed, {@link #updateRootNodes()} must be called to ensure the nodes' actors are in the
 	 * correct order. */
 	public Array<N> getRootNodes () {
+		return rootNodes;
+	}
+
+	/** @deprecated Use {@link #getRootNodes()}. */
+	@Deprecated
+	public Array<N> getNodes () {
 		return rootNodes;
 	}
 

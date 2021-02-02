@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Keys;
-import com.badlogic.gdx.utils.Pool;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /** Implementation of the {@link Sound} interface for GWT, using the Web Audio API (

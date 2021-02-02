@@ -17,9 +17,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /** Demonstrates how to use non-continuous (aka dirty-only) rendering. The application will clear the screen with a random color
  * every frame it renders. Rendering requests are issued automatically if new input events arrive.
@@ -55,7 +55,6 @@ public class DirtyRenderingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random());
 	}
 }

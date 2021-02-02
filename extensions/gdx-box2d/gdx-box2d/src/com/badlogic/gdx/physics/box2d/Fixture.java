@@ -37,6 +37,12 @@ public class Fixture {
 	/** user specified data **/
 	protected Object userData;
 
+	/** the fixture filter data **/
+	private final Filter filter = new Filter();
+	
+	/** flag to indicate if filter data needs to be updated with a JNI call **/
+	private boolean dirtyFilter = true;
+
 	/** Constructs a new fixture
 	 * @param addr the address of the fixture */
 	protected Fixture (Body body, long addr) {
@@ -49,6 +55,7 @@ public class Fixture {
 		this.addr = addr;
 		this.shape = null;
 		this.userData = null;
+		this.dirtyFilter = true;
 	}
 
 	/** Get the type of the child shape. You can use this to down cast to the concrete shape.
@@ -141,6 +148,8 @@ public class Fixture {
 	 * awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
 		jniSetFilterData(addr, filter.categoryBits, filter.maskBits, filter.groupIndex);
+		this.filter.set(filter);
+		dirtyFilter = false;
 	}
 
 	private native void jniSetFilterData (long addr, short categoryBits, short maskBits, short groupIndex); /*
@@ -154,13 +163,17 @@ public class Fixture {
 
 	/** Get the contact filtering data. */
 	private final short[] tmp = new short[3];
-	private final Filter filter = new Filter();
 
+	/** Get the contact filtering data. Modifying the returned {@code Filter} without calling {@link #setFilterData} can result in
+	 * unpredictable behaviour. */
 	public Filter getFilterData () {
-		jniGetFilterData(addr, tmp);
-		filter.maskBits = tmp[0];
-		filter.categoryBits = tmp[1];
-		filter.groupIndex = tmp[2];
+		if (dirtyFilter) {
+			jniGetFilterData(addr, tmp);
+			filter.maskBits = tmp[0];
+			filter.categoryBits = tmp[1];
+			filter.groupIndex = tmp[2];
+			dirtyFilter = false;
+		}
 		return filter;
 	}
 

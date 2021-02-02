@@ -28,7 +28,6 @@ dependencies {
 	implementation project(":gdx")
 	implementation project(":extensions:gdx-box2d:gdx-box2d-core")
 	implementation project(":extensions:gdx-bullet")
-	implementation project(":extensions:gdx-controllers:gdx-controllers-android")
 	implementation project(":extensions:gdx-freetype")
 	implementation project(":backends:gdx-backend-android")
 	implementation libraries.android
@@ -38,13 +37,6 @@ dependencies {
 android {
 	buildToolsVersion versions.androidBuildTools
 	compileSdkVersion versions.androidSdk
-
-	defaultConfig {
-		minSdkVersion versions.minAndroidSdk
-		targetSdkVersion versions.androidSdk
-		multiDexEnabled true
-	}
-
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
@@ -54,12 +46,16 @@ android {
 			res.srcDirs = ['res']
 			assets.srcDirs = ['assets']
 			jniLibs.srcDirs = ['libs']
-		}		
+		}
 	}
 
-	lintOptions {
-		// Since this is a test apk, it is fine to ignore the missing densities for the icon.
-		disable 'IconMissingDensityFolder'
+	defaultConfig {
+		multiDexEnabled true
+		applicationId "com.badlogic.gdx.tests.android"
+		minSdkVersion versions.androidMinSdk
+		targetSdkVersion versions.androidTargetSdk
+		versionCode 1
+		versionName "1.0"
 	}
 }
 

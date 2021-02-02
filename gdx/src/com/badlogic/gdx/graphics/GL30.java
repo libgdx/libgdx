@@ -611,14 +611,9 @@ public interface GL30 extends GL20 {
 
 	public void glFramebufferTextureLayer (int target, int attachment, int texture, int level, int layer);
 
-// // C function GLvoid * glMapBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access )
-//
-// public java.nio.Buffer glMapBufferRange(
-// int target,
-// int offset,
-// int length,
-// int access
-// );
+	// C function GLvoid * glMapBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access )
+
+	public java.nio.Buffer glMapBufferRange (int target, int offset, int length, int access);
 
 	// C function void glFlushMappedBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length )
 

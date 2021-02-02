@@ -41,7 +41,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
 		float oldColor = batch.getPackedColor();
-		batch.getColor().mul(color);
+		batch.setColor(batch.getColor().mul(color));
 
 		TextureRegion region = getRegion();
 		float regionWidth = region.getRegionWidth() * scale, regionHeight = region.getRegionHeight() * scale;

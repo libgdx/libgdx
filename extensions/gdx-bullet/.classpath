@@ -13,7 +13,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>
 	<classpathentry kind="lib" path="libs/gdx-bullet-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -26,6 +26,7 @@ import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -36,7 +37,6 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -49,7 +49,7 @@ import javax.microedition.khronos.opengles.GL10;
 /** An implementation of {@link Graphics} for Android.
  *
  * @author mzechner */
-public class AndroidGraphics implements Graphics, Renderer {
+public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	private static final String LOG_TAG = "AndroidGraphics";
 
@@ -91,7 +91,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	private float density = 1;
 
 	protected final AndroidApplicationConfiguration config;
-	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
+	private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
@@ -515,11 +515,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return deltaTime;
 	}
 
-	@Override
-	public float getRawDeltaTime () {
-		return deltaTime;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public GraphicsType getType () {
@@ -704,6 +699,10 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setVSync (boolean vsync) {
+	}
+
+	@Override
+	public void setForegroundFPS (int fps) {
 	}
 
 	@Override

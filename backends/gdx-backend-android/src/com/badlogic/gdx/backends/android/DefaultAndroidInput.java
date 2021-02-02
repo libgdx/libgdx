@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,13 +40,13 @@ import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
@@ -54,10 +54,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
- * 
+ *
  * @author mzechner */
 /** @author jshapcot */
-public class DefaultAndroidInput implements AndroidInput {
+public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -100,8 +100,7 @@ public class DefaultAndroidInput implements AndroidInput {
 	};
 
 	public static final int NUM_TOUCHES = 20;
-	public static final int SUPPORTED_KEYS = 260;
-	
+
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
@@ -114,10 +113,6 @@ public class DefaultAndroidInput implements AndroidInput {
 	int[] realId = new int[NUM_TOUCHES];
 	float[] pressure = new float[NUM_TOUCHES];
 	final boolean hasMultitouch;
-	private int keyCount = 0;
-	private boolean[] keys = new boolean[SUPPORTED_KEYS];
-	private boolean keyJustPressed = false;
-	private boolean[] justPressedKeys = new boolean[SUPPORTED_KEYS];
 	private boolean[] justPressedButtons = new boolean[NUM_TOUCHES];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
@@ -129,7 +124,6 @@ public class DefaultAndroidInput implements AndroidInput {
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
-	private IntSet keysToCatch = new IntSet();
 	protected final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
@@ -190,7 +184,7 @@ public class DefaultAndroidInput implements AndroidInput {
 
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
-		keysToCatch.add(Keys.BUTTON_CIRCLE);
+		setCatchKey(Keys.BUTTON_CIRCLE, true);
 	}
 
 	@Override
@@ -207,7 +201,7 @@ public class DefaultAndroidInput implements AndroidInput {
 	public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		return gyroscopeValues[0];
@@ -239,7 +233,7 @@ public class DefaultAndroidInput implements AndroidInput {
 					input.setInputType(getAndroidInputType(keyboardType));
 				}
 				input.setHint(hint);
-				input.setText(text);				
+				input.setText(text);
 				input.setSingleLine();
 				if (keyboardType == OnscreenKeyboardType.Password) {
 					input.setTransformationMethod(new PasswordTransformationMethod());
@@ -358,28 +352,6 @@ public class DefaultAndroidInput implements AndroidInput {
 	@Override
 	public void setKeyboardAvailable (boolean available) {
 		this.keyboardAvailable = available;
-	}
-
-	@Override
-	public synchronized boolean isKeyPressed (int key) {
-		if (key == Input.Keys.ANY_KEY) {
-			return keyCount > 0;
-		}
-		if (key < 0 || key >= SUPPORTED_KEYS) {
-			return false;
-		}
-		return keys[key];
-	}
-
-	@Override
-	public synchronized boolean isKeyJustPressed (int key) {
-		if (key == Input.Keys.ANY_KEY) {
-			return keyJustPressed;
-		}
-		if (key < 0 || key >= SUPPORTED_KEYS) {
-			return false;
-		}
-		return justPressedKeys[key];
 	}
 
 	@Override
@@ -557,7 +529,7 @@ public class DefaultAndroidInput implements AndroidInput {
 		// additional key events with ACTION_DOWN and a non-zero value for getRepeatCount().
 		// We are only interested in the first key down event here and must ignore all others
 		if (e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0)
-			return keysToCatch.contains(keyCode);
+			return isCatchKey(keyCode);
 
 		synchronized (this) {
 			KeyEvent event = null;
@@ -578,10 +550,10 @@ public class DefaultAndroidInput implements AndroidInput {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
-			if (e.getKeyCode() < 0 || e.getKeyCode() >= SUPPORTED_KEYS) {
+			if (e.getKeyCode() < 0 || e.getKeyCode() > Keys.MAX_KEYCODE) {
 				return false;
 			}
-			
+
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
@@ -597,9 +569,9 @@ public class DefaultAndroidInput implements AndroidInput {
 				}
 
 				keyEvents.add(event);
-				if (!keys[event.keyCode]) {
-					keyCount++;
-					keys[event.keyCode] = true;
+				if (!pressedKeys[event.keyCode]) {
+					pressedKeyCount++;
+					pressedKeys[event.keyCode] = true;
 				}
 				break;
 			case android.view.KeyEvent.ACTION_UP:
@@ -624,21 +596,21 @@ public class DefaultAndroidInput implements AndroidInput {
 				keyEvents.add(event);
 
 				if (keyCode == Keys.BUTTON_CIRCLE) {
-					if (keys[Keys.BUTTON_CIRCLE]) {
-						keyCount--;
-						keys[Keys.BUTTON_CIRCLE] = false;
+					if (pressedKeys[Keys.BUTTON_CIRCLE]) {
+						pressedKeyCount--;
+						pressedKeys[Keys.BUTTON_CIRCLE] = false;
 					}
 				} else {
-					if (keys[e.getKeyCode()]) {
-						keyCount--;
-						keys[e.getKeyCode()] = false;
+					if (pressedKeys[e.getKeyCode()]) {
+						pressedKeyCount--;
+						pressedKeys[e.getKeyCode()] = false;
 					}
 				}
 			}
 			app.getGraphics().requestRendering();
 		}
 
-		return keysToCatch.contains(keyCode);
+		return isCatchKey(keyCode);
 	}
 
 	@Override
@@ -667,40 +639,6 @@ public class DefaultAndroidInput implements AndroidInput {
 				}
 			}
 		});
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-		setCatchKey(Keys.BACK, catchBack);
-	}
-
-	@Override
-	public boolean isCatchBackKey() {
-		return keysToCatch.contains(Keys.BACK);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		setCatchKey(Keys.MENU, catchMenu);
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return keysToCatch.contains(Keys.MENU);
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-		if (!catchKey) {
-			keysToCatch.remove(keycode);
-		} else if (catchKey) {
-			keysToCatch.add(keycode);
-		}
-	}
-
-	@Override
-	public boolean isCatchKey (int keycode) {
-		return keysToCatch.contains(keycode);
 	}
 
 	@Override
@@ -816,7 +754,7 @@ public class DefaultAndroidInput implements AndroidInput {
 			}
 		} else
 			accelerometerAvailable = false;
-		
+
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty()) {
@@ -848,7 +786,7 @@ public class DefaultAndroidInput implements AndroidInput {
 						config.sensorDelay);
 			}
 		}
-		
+
 		if (config.useCompass && !rotationVectorAvailable) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -1077,9 +1015,9 @@ public class DefaultAndroidInput implements AndroidInput {
 	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
 	private class SensorListener implements SensorEventListener {
-		
+
 		public SensorListener (){
-			
+
 		}
 
 		@Override

@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;

@@ -18,9 +18,6 @@ package com.badlogic.gdx.tests.g3d;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;

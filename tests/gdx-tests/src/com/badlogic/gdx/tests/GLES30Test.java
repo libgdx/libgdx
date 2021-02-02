@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GLES30Test extends GdxTest {
 
@@ -29,8 +29,7 @@ public class GLES30Test extends GdxTest {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(0, 0, 0, 1);
 
         batch.begin();
         batch.draw(texture, 0, 0, Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);

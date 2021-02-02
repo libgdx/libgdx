@@ -1209,10 +1209,9 @@ public class Table extends WidgetGroup {
 	}
 
 	private void addDebugRect (float x, float y, float w, float h, Color color) {
-
 		DebugRect rect = DebugRect.pool.obtain();
 		rect.color = color;
-		rect.set(x, getHeight() - y - h, w, h);
+		rect.set(x, y, w, h);
 		debugRects.add(rect);
 	}
 

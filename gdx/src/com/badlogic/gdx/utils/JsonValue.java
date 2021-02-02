@@ -162,6 +162,19 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Removes this value from its parent. */
+	public void remove () {
+		if (parent == null) throw new IllegalStateException();
+		if (prev == null) {
+			parent.child = next;
+			if (parent.child != null) parent.child.prev = null;
+		} else {
+			prev.next = next;
+			if (next != null) next.prev = prev;
+		}
+		parent.size--;
+	}
+
 	/** Returns true if there are one or more children in the array or object. */
 	public boolean notEmpty () {
 		return size > 0;

@@ -32,8 +32,8 @@ public class IOSApplicationConfiguration {
 	/** whether or not landscape orientation is supported. */
 	public boolean orientationLandscape = true;
 
-	/** the color format, RGB565 is the default **/
-	public GLKViewDrawableColorFormat colorFormat = GLKViewDrawableColorFormat.RGB565;
+	/** the color format, RGBA8888 is the default **/
+	public GLKViewDrawableColorFormat colorFormat = GLKViewDrawableColorFormat.RGBA8888;
 
 	/** the depth buffer format, Format16 is default **/
 	public GLKViewDrawableDepthFormat depthFormat = GLKViewDrawableDepthFormat._16;

@@ -28,4 +28,10 @@ public class Filter {
 	/** Collision groups allow a certain group of objects to never collide (negative) or always collide (positive). Zero means no
 	 * collision group. Non-zero group filtering always wins against the mask bits. */
 	public short groupIndex = 0;
+
+	public void set(Filter filter) {
+		categoryBits = filter.categoryBits;
+		maskBits = filter.maskBits;
+		groupIndex = filter.groupIndex;
+	}
 }

@@ -58,7 +58,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 
 	LwjglGraphics graphics;
 	LwjglAudio audio;
-	LwjglFiles files;
+	Files files;
 	LwjglInput input;
 	LwjglNet net;
 	ApplicationListener listener;
@@ -146,7 +146,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 		};
 		graphics.setVSync(config.vSyncEnabled);
 		if (!LwjglApplicationConfiguration.disableAudio) audio = createAudio(config);
-		files = new LwjglFiles();
+		files = createFiles();
 		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
@@ -490,6 +490,10 @@ public class LwjglCanvas implements LwjglApplicationBase {
 	 * runnable later throws an exception. Default is false. */
 	public void setPostedRunnableStacktraces (boolean postedRunnableStacktraces) {
 		this.postedRunnableStacktraces = postedRunnableStacktraces;
+	}
+
+	protected Files createFiles() {
+		return new LwjglFiles();
 	}
 
 	@Override

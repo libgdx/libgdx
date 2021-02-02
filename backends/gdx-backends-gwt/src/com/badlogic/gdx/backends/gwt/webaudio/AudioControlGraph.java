@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.gwt.webaudio;
 
-import com.badlogic.gdx.utils.Pool.Poolable;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class AudioControlGraph {

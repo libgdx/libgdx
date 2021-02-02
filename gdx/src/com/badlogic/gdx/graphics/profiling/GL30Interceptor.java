@@ -1430,6 +1430,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
+	public Buffer glMapBufferRange (int target, int offset, int length, int access) {
+		calls++;
+		Buffer result = gl30.glMapBufferRange(target, offset, length, access);
+		check();
+		return result;
+	}
+
+	@Override
 	public void glFlushMappedBufferRange (int target, int offset, int length) {
 		calls++;
 		gl30.glFlushMappedBufferRange(target, offset, length);

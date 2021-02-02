@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;

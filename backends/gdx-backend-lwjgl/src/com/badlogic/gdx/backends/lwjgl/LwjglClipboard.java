@@ -30,6 +30,12 @@ import com.badlogic.gdx.utils.Clipboard;
  * @author mzechner */
 public class LwjglClipboard implements Clipboard, ClipboardOwner {
 	@Override
+	public boolean hasContents () {
+		String contents = getContents();
+		return contents != null && !contents.isEmpty();
+	}
+
+	@Override
 	public String getContents () {
 		try {
 			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

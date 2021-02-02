@@ -26,7 +26,7 @@ public class GwtFiles implements Files {
 	
 	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or blocked by the browser with "block third-party cookies"
 	
-	final Preloader preloader;
+	protected final Preloader preloader;
 	
 	public GwtFiles (Preloader preloader) {
 		this.preloader = preloader;

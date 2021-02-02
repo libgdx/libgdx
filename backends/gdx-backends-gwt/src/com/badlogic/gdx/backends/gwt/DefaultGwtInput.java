@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
@@ -32,7 +33,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 
-public class DefaultGwtInput implements GwtInput {
+public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
 	private IntMap<Integer> touchMap = new IntMap<Integer>(20);
@@ -42,11 +43,7 @@ public class DefaultGwtInput implements GwtInput {
 	private int[] deltaX = new int[MAX_TOUCHES];
 	private int[] deltaY = new int[MAX_TOUCHES];
 	IntSet pressedButtons = new IntSet();
-	int pressedKeyCount = 0;
 	IntSet pressedKeySet = new IntSet();
-	boolean[] pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
-	boolean keyJustPressed = false;
-	boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	boolean[] justPressedButtons = new boolean[5];
 	InputProcessor processor;
 	long currentEventTimeStamp;
@@ -102,6 +99,9 @@ public class DefaultGwtInput implements GwtInput {
 			}
 		}
 		hookEvents();
+
+		// backwards compatibility: backspace was caught in older versions
+		setCatchKey(Keys.BACKSPACE, true);
 	}
 
 	@Override
@@ -259,28 +259,6 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
-		if (key == Keys.ANY_KEY) {
-			return pressedKeyCount > 0;
-		}
-		if (key < 0 || key > 255) {
-			return false;
-		}
-		return pressedKeys[key];
-	}
-
-	@Override
-	public boolean isKeyJustPressed (int key) {
-		if (key == Keys.ANY_KEY) {
-			return keyJustPressed;
-		}
-		if (key < 0 || key > 255) {
-			return false;
-		}
-		return justPressedKeys[key];
-	}
-
-	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
@@ -348,34 +326,6 @@ public class DefaultGwtInput implements GwtInput {
 	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-
-	}
-
-	@Override
-	public boolean isCatchKey (int keycode) {
-		return false;
 	}
 
 	@Override
@@ -523,6 +473,10 @@ public class DefaultGwtInput implements GwtInput {
 	 * @return movement in y direction */
 	private native float getMovementYJSNI (NativeEvent event) /*-{
 		return event.movementY || event.webkitMovementY || 0;
+	}-*/;
+
+	private native int getKeyLocationJSNI (NativeEvent event) /*-{
+		return event.location || 0;
 	}-*/;
 
 	private static native boolean isTouchScreen () /*-{
@@ -734,9 +688,11 @@ public class DefaultGwtInput implements GwtInput {
 		if (hasFocus && !e.getType().equals("blur")) {
 			if (e.getType().equals("keydown")) {
 				// Gdx.app.log("DefaultGwtInput", "keydown");
-				int code = keyForCode(e.getKeyCode());
-				if (code == 67) {
+				int code = keyForCode(e.getKeyCode(), getKeyLocationJSNI(e));
+				if (isCatchKey(code)) {
 					e.preventDefault();
+				}
+				if (code == Keys.BACKSPACE) {
 					if (processor != null) {
 						processor.keyDown(code);
 						processor.keyTyped('\b');
@@ -758,12 +714,25 @@ public class DefaultGwtInput implements GwtInput {
 			if (e.getType().equals("keypress")) {
 				// Gdx.app.log("DefaultGwtInput", "keypress");
 				char c = (char)e.getCharCode();
-				if (processor != null) processor.keyTyped(c);
+				// usually, browsers don't send a keypress event for tab, so we emulate it in
+				// keyup event. Just in case this changes in the future, we sort this out here
+				// to avoid sending the event twice.
+				if (c != '\t') {
+					if (processor != null) processor.keyTyped(c);
+				}
 			}
 
 			if (e.getType().equals("keyup")) {
 				// Gdx.app.log("DefaultGwtInput", "keyup");
-				int code = keyForCode(e.getKeyCode());
+				int code = keyForCode(e.getKeyCode(), getKeyLocationJSNI(e));
+				if (isCatchKey(code)) {
+					e.preventDefault();
+				}
+				if (processor != null && code == Keys.TAB) {
+					// js does not raise keypress event for tab, so emulate this here for
+					// platform-independant behaviour
+					processor.keyTyped('\t');
+				}
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
@@ -878,22 +847,22 @@ public class DefaultGwtInput implements GwtInput {
 	}
 
 	/** borrowed from PlayN, thanks guys **/
-	private static int keyForCode (int keyCode) {
+	protected int keyForCode (int keyCode, int location) {
 		switch (keyCode) {
 		case KeyCodes.KEY_ALT:
-			return Keys.ALT_LEFT;
+			return location == LOCATION_RIGHT ? Keys.ALT_RIGHT : Keys.ALT_LEFT;
 		case KeyCodes.KEY_BACKSPACE:
 			return Keys.BACKSPACE;
 		case KeyCodes.KEY_CTRL:
-			return Keys.CONTROL_LEFT;
+			return location == LOCATION_RIGHT ? Keys.CONTROL_RIGHT : Keys.CONTROL_LEFT;
 		case KeyCodes.KEY_DELETE:
-			return Keys.DEL;
+			return Keys.FORWARD_DEL;
 		case KeyCodes.KEY_DOWN:
 			return Keys.DOWN;
 		case KeyCodes.KEY_END:
 			return Keys.END;
 		case KeyCodes.KEY_ENTER:
-			return Keys.ENTER;
+			return location == LOCATION_NUMPAD ? Keys.NUMPAD_ENTER : Keys.ENTER;
 		case KeyCodes.KEY_ESCAPE:
 			return Keys.ESCAPE;
 		case KeyCodes.KEY_HOME:
@@ -907,16 +876,16 @@ public class DefaultGwtInput implements GwtInput {
 		case KeyCodes.KEY_RIGHT:
 			return Keys.RIGHT;
 		case KeyCodes.KEY_SHIFT:
-			return Keys.SHIFT_LEFT;
+			return location == LOCATION_RIGHT ? Keys.SHIFT_RIGHT : Keys.SHIFT_LEFT;
 		case KeyCodes.KEY_TAB:
 			return Keys.TAB;
 		case KeyCodes.KEY_UP:
 			return Keys.UP;
 
 		case KEY_PAUSE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.PAUSE;
 		case KEY_CAPS_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.CAPS_LOCK;
 		case KEY_SPACE:
 			return Keys.SPACE;
 		case KEY_INSERT:
@@ -1019,15 +988,15 @@ public class DefaultGwtInput implements GwtInput {
 		case KEY_NUMPAD9:
 			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.NUMPAD_MULTIPLY;
 		case KEY_ADD:
-			return Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case KEY_SUBTRACT:
-			return Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case KEY_DECIMAL_POINT_KEY:
-			return Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case KEY_DIVIDE:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.NUMPAD_DIVIDE;
 		case KEY_F1:
 			return Keys.F1;
 		case KEY_F2:
@@ -1052,10 +1021,50 @@ public class DefaultGwtInput implements GwtInput {
 			return Keys.F11;
 		case KEY_F12:
 			return Keys.F12;
+		case KEY_F13:
+			return Keys.F13;
+		case KEY_F14:
+			return Keys.F14;
+		case KEY_F15:
+			return Keys.F15;
+		case KEY_F16:
+			return Keys.F16;
+		case KEY_F17:
+			return Keys.F17;
+		case KEY_F18:
+			return Keys.F18;
+		case KEY_F19:
+			return Keys.F19;
+		case KEY_F20:
+			return Keys.F20;
+		case KEY_F21:
+			return Keys.F21;
+		case KEY_F22:
+			return Keys.F22;
+		case KEY_F23:
+			return Keys.F23;
+		case KEY_F24:
+			return Keys.F24;
 		case KEY_NUM_LOCK:
-			return Keys.NUM;
+			return Keys.NUM_LOCK;
 		case KEY_SCROLL_LOCK:
-			return Keys.UNKNOWN; // FIXME
+			return Keys.SCROLL_LOCK;
+		case KEY_AUDIO_VOLUME_DOWN:
+		case KEY_AUDIO_VOLUME_DOWN_FIREFOX:
+			return Keys.VOLUME_DOWN;
+		case KEY_AUDIO_VOLUME_UP:
+		case KEY_AUDIO_VOLUME_UP_FIREFOX:
+			return Keys.VOLUME_UP;
+		case KEY_MEDIA_TRACK_NEXT:
+			return Keys.MEDIA_NEXT;
+		case KEY_MEDIA_TRACK_PREVIOUS:
+			return Keys.MEDIA_PREVIOUS;
+		case KEY_MEDIA_STOP:
+			return Keys.MEDIA_STOP;
+		case KEY_MEDIA_PLAY_PAUSE:
+			return Keys.MEDIA_PLAY_PAUSE;
+		case KeyCodes.KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case KEY_SEMICOLON:
 			return Keys.SEMICOLON;
 		case KEY_EQUALS:
@@ -1154,8 +1163,28 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_F10 = 121;
 	private static final int KEY_F11 = 122;
 	private static final int KEY_F12 = 123;
+	private static final int KEY_F13 = 124;
+	private static final int KEY_F14 = 125;
+	private static final int KEY_F15 = 126;
+	private static final int KEY_F16 = 127;
+	private static final int KEY_F17 = 128;
+	private static final int KEY_F18 = 129;
+	private static final int KEY_F19 = 130;
+	private static final int KEY_F20 = 131;
+	private static final int KEY_F21 = 132;
+	private static final int KEY_F22 = 133;
+	private static final int KEY_F23 = 134;
+	private static final int KEY_F24 = 135;
 	private static final int KEY_NUM_LOCK = 144;
 	private static final int KEY_SCROLL_LOCK = 145;
+	private static final int KEY_AUDIO_VOLUME_DOWN = 174;
+	private static final int KEY_AUDIO_VOLUME_UP = 175;
+	private static final int KEY_MEDIA_TRACK_NEXT = 176;
+	private static final int KEY_MEDIA_TRACK_PREVIOUS = 177;
+	private static final int KEY_MEDIA_STOP = 178;
+	private static final int KEY_MEDIA_PLAY_PAUSE = 179;
+	private static final int KEY_AUDIO_VOLUME_DOWN_FIREFOX = 182;
+	private static final int KEY_AUDIO_VOLUME_UP_FIREFOX  = 183;
 	private static final int KEY_SEMICOLON = 186;
 	private static final int KEY_EQUALS = 187;
 	private static final int KEY_COMMA = 188;
@@ -1168,4 +1197,8 @@ public class DefaultGwtInput implements GwtInput {
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
 
+	private static final int LOCATION_STANDARD = 0;
+	private static final int LOCATION_LEFT = 1;
+	private static final int LOCATION_RIGHT = 2;
+	private static final int LOCATION_NUMPAD = 3;
 }

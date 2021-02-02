@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /**
  * This tests is used to illustrate how backing the Pixmap in GWT with a Canvas can cause problems.
@@ -47,9 +48,8 @@ public class GWTLossyPremultipliedAlphaTest extends GdxTest {
 		badTexture = new Texture(data1);
 	}
 
-	public void render () {
-		 Gdx.gl.glClearColor(0, 0, 0, 1);
-       Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void render () { 
+		ScreenUtils.clear(0, 0, 0, 1);
 
        batch.begin();
        batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);

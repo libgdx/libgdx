@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 /** Performs the occlusion culling or k-DOP culling using the dynamic bounding volume tree from the Bullet broadphase.
@@ -158,8 +159,8 @@ public abstract class OcclusionCuller implements Disposable {
 	/** @param frustum Set the frustum plane buffers to this frustum */
 	private void setFrustumPlanes (Frustum frustum) {
 		// All frustum planes except 'near' (index 0) should be sent to Bullet.
-		frustumNormals.clear();
-		frustumOffsets.clear();
+		((Buffer) frustumNormals).clear();
+		((Buffer) frustumOffsets).clear();
 		for (int i = 1; i < 6; i++) {
 			Plane plane = frustum.planes[i];
 			// Since the plane normals map to an array of btVector3, all four vector components (x, y, z, w)

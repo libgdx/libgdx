@@ -1,0 +1,45 @@
+<config>
+    <libs>
+        <lib>libs/libgdx-bullet.a</lib>
+    </libs>
+    <forceLinkClasses>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.CollisionJNI</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.dynamics.DynamicsJNI</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.extras.ExtrasJNI</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.linearmath.LinearMathJNI</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.softbody.SoftbodyJNI</pattern>
+
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btBroadphaseAabbCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btBroadphaseRayCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btConvexTriangleCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btInternalTriangleIndexCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btNodeOverlapCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btOverlapCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btOverlapFilterCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btOverlappingPairCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btTriangleCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btTriangleConvexcastCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.ContactCache</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.ContactListener</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.CustomCollisionDispatcher</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.LocalRayResult</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.LocalShapeInfo</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.RayResultCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.AllHitsRayResultCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.ConvexResultCallback</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.LocalConvexResult</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.collision.ContactResultCallback</pattern>
+
+        <pattern>com.badlogic.gdx.physics.bullet.dynamics.InternalTickCallback</pattern>
+
+        <pattern>com.badlogic.gdx.physics.bullet.extras.btBulletWorldImporter</pattern>
+
+        <pattern>com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw</pattern>
+        <pattern>com.badlogic.gdx.physics.bullet.linearmath.btMotionState</pattern>
+
+        <pattern>com.badlogic.gdx.physics.bullet.DebugDrawer</pattern>
+    </forceLinkClasses>
+</config>

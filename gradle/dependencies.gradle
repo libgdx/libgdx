@@ -20,7 +20,7 @@ ext {
     testnatives = [:]
 }
 
-versions.robovm = "2.3.11"
+versions.robovm = "2.3.12"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.0.9"
 versions.gretty = "3.0.2"
@@ -33,8 +33,9 @@ versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "3.5.4"
 versions.multiDex = "2.0.1"
-versions.minAndroidSdk = 14
-versions.androidSdk = 29
+versions.androidCompileSdk = 30
+versions.androidTargetSdk = 29
+versions.androidMinSdk = 14
 versions.androidBuildTools = "29.0.3"
 versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
@@ -126,7 +127,6 @@ testnatives.desktop = [
         files("gdx/libs/gdx-natives.jar"),
         files("extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar"),
         files("extensions/gdx-bullet/libs/gdx-bullet-natives.jar"),
-        files("extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"),
         files("extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
 ]
 
