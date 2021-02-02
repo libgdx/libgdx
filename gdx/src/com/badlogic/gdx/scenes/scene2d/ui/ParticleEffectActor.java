@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * ParticleEffectActor holds an {@link ParticleEffect} to use in Scene2d applications.
  * The particle effect is positioned in the centered in the ParticleEffectActor. Its bounding box
  * is not limited to the size of this actor.
  */
-public class ParticleEffectActor extends Actor {
+public class ParticleEffectActor extends Actor implements Disposable {
     private final ParticleEffect particleEffect;
-    float lastDelta;
-    private boolean isComplete = true;
+    protected float lastDelta;
+    protected boolean isRunning;
     private boolean resetOnStart;
 
     public ParticleEffectActor(ParticleEffect particleEffect, boolean resetOnStart) {
@@ -42,9 +43,9 @@ public class ParticleEffectActor extends Actor {
             particleEffect.update(lastDelta);
             lastDelta = 0;
         }
-        if (!isComplete) {
+        if (isRunning) {
             particleEffect.draw(batch);
-            isComplete = particleEffect.isComplete();
+            isRunning = !particleEffect.isComplete();
         }
     }
 
@@ -53,11 +54,11 @@ public class ParticleEffectActor extends Actor {
         super.act(delta);
         // don't do particleEffect.update() here - the correct position is set  just while we
         // are in draw() method. We save the delta here to update in draw()
-        lastDelta = delta;
+        lastDelta += delta;
     }
 
     public void start() {
-        isComplete = false;
+        isRunning = true;
         if (resetOnStart)
             particleEffect.reset();
         particleEffect.start();
@@ -67,8 +68,8 @@ public class ParticleEffectActor extends Actor {
         return resetOnStart;
     }
 
-    public boolean isComplete() {
-        return isComplete;
+    public boolean isRunning() {
+        return isRunning;
     }
 
     public void setResetOnStart(boolean resetOnStart) {
@@ -86,13 +87,14 @@ public class ParticleEffectActor extends Actor {
     }
 
     public void cancel() {
-        isComplete = true;
+        isRunning = true;
     }
 
     public void allowCompletion() {
         particleEffect.allowCompletion();
     }
 
+    @Override
     public void dispose() {
         particleEffect.dispose();
     }
