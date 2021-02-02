@@ -18,6 +18,7 @@ public class ParticleEffectActor extends Actor implements Disposable {
     protected boolean isRunning;
     protected boolean ownsEffect;
     private boolean resetOnStart;
+    private boolean autoRemove;
 
     public ParticleEffectActor(ParticleEffect particleEffect, boolean resetOnStart) {
         super();
@@ -58,6 +59,10 @@ public class ParticleEffectActor extends Actor implements Disposable {
         // don't do particleEffect.update() here - the correct position is set  just while we
         // are in draw() method. We save the delta here to update in draw()
         lastDelta += delta;
+
+        if (autoRemove && particleEffect.isComplete()) {
+            remove();
+        }
     }
 
     public void start() {
@@ -72,8 +77,18 @@ public class ParticleEffectActor extends Actor implements Disposable {
         return resetOnStart;
     }
 
-    public void setResetOnStart(boolean resetOnStart) {
+    public ParticleEffectActor setResetOnStart(boolean resetOnStart) {
         this.resetOnStart = resetOnStart;
+        return this;
+    }
+
+    public boolean isAutoRemove() {
+        return autoRemove;
+    }
+
+    public ParticleEffectActor setAutoRemove(boolean autoRemove) {
+        this.autoRemove = autoRemove;
+        return this;
     }
 
     public boolean isRunning() {
