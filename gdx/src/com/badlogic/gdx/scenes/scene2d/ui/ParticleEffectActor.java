@@ -62,8 +62,9 @@ public class ParticleEffectActor extends Actor implements Disposable {
 
     public void start() {
         isRunning = true;
-        if (resetOnStart)
-            particleEffect.reset();
+        if (resetOnStart) {
+            particleEffect.reset(false);
+        }
         particleEffect.start();
     }
 
