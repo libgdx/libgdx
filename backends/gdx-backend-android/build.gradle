@@ -23,11 +23,11 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion versions.androidSdk
+    compileSdkVersion versions.androidCompileSdk
     buildToolsVersion versions.androidBuildTools
 
     defaultConfig {
-        minSdkVersion versions.minAndroidSdk
+        minSdkVersion versions.androidMinSdk
     }
 
     sourceSets {
