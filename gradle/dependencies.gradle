@@ -95,11 +95,6 @@ libraries.lwjgl3 = [
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
-libraries.jglfw = [
-        "com.badlogicgames.jglfw:jglfw:${versions.jglwf}",
-        "com.badlogicgames.jglfw:jglfw-platform:${versions.jglwf}:natives-desktop"
-]
-
 libraries.robovm = [
         "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
         "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
@@ -117,10 +112,6 @@ libraries.gwt = [
 
 libraries.junit = [
         "junit:junit:${versions.junit}"
-]
-
-libraries.jnigen = [
-        "com.github.javaparser:javaparser-core:${versions.javaparser}"
 ]
 
 testnatives.desktop = [
