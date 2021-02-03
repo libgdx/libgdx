@@ -455,9 +455,9 @@ public class Mesh implements Disposable {
 		if ((indices.length - destOffset) < count)
 			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " shorts, needs " + count);
 		int pos = getIndicesBuffer().position();
-		((Buffer) getVerticesBuffer()).position(srcOffset);
+		((Buffer) getIndicesBuffer()).position(srcOffset);
 		getIndicesBuffer().get(indices, destOffset, count);
-		((Buffer) getVerticesBuffer()).position(pos);
+		((Buffer) getIndicesBuffer()).position(pos);
 	}
 
 	/** @return the number of defined indices */
