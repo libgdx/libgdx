@@ -20,10 +20,10 @@ import com.badlogic.gdx.math.Vector2;
 
 /** Various scaling types for fitting one rectangle into another.
  * @author Nathan Sweet */
-public abstract class Scaling extends ExtendableEnum {
+public abstract class Scaling implements SerializableConstants {
 	/** Scales the source to fit the target while keeping the same aspect ratio. This may cause the source to be smaller than the
 	 * target in one direction. */
-	public static final Scaling fit = new Scaling("fit") {
+	public static final Scaling fit = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float targetRatio = targetHeight / targetWidth;
@@ -36,7 +36,7 @@ public abstract class Scaling extends ExtendableEnum {
 	};
 	/** Scales the source to fill the target while keeping the same aspect ratio. This may cause the source to be larger than the
 	 * target in one direction. */
-	public static final Scaling fill = new Scaling("fill") {
+	public static final Scaling fill = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float targetRatio = targetHeight / targetWidth;
@@ -49,7 +49,7 @@ public abstract class Scaling extends ExtendableEnum {
 	};
 	/** Scales the source to fill the target in the x direction while keeping the same aspect ratio. This may cause the source to
 	 * be smaller or larger than the target in the y direction. */
-	public static final Scaling fillX = new Scaling("fillX") {
+	public static final Scaling fillX = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float scale = targetWidth / sourceWidth;
@@ -60,7 +60,7 @@ public abstract class Scaling extends ExtendableEnum {
 	};
 	/** Scales the source to fill the target in the y direction while keeping the same aspect ratio. This may cause the source to
 	 * be smaller or larger than the target in the x direction. */
-	public static final Scaling fillY = new Scaling("fillY") {
+	public static final Scaling fillY = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float scale = targetHeight / sourceHeight;
@@ -70,7 +70,7 @@ public abstract class Scaling extends ExtendableEnum {
 		}
 	};
 	/** Scales the source to fill the target. This may cause the source to not keep the same aspect ratio. */
-	public static final Scaling stretch = new Scaling("stretch") {
+	public static final Scaling stretch = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = targetWidth;
@@ -80,7 +80,7 @@ public abstract class Scaling extends ExtendableEnum {
 	};
 	/** Scales the source to fill the target in the x direction, without changing the y direction. This may cause the source to not
 	 * keep the same aspect ratio. */
-	public static final Scaling stretchX = new Scaling("stretchX") {
+	public static final Scaling stretchX = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = targetWidth;
@@ -90,7 +90,7 @@ public abstract class Scaling extends ExtendableEnum {
 	};
 	/** Scales the source to fill the target in the y direction, without changing the x direction. This may cause the source to not
 	 * keep the same aspect ratio. */
-	public static final Scaling stretchY = new Scaling("stretchY") {
+	public static final Scaling stretchY = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = sourceWidth;
@@ -99,7 +99,7 @@ public abstract class Scaling extends ExtendableEnum {
 		}
 	};
 	/** The source is not scaled. */
-	public static final Scaling none = new Scaling("none") {
+	public static final Scaling none = new Scaling() {
 		@Override
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = sourceWidth;
@@ -107,10 +107,6 @@ public abstract class Scaling extends ExtendableEnum {
 			return temp;
 		}
 	};
-
-	public Scaling (String name) {
-		super(Scaling.class, name);
-	}
 
 	protected static final Vector2 temp = new Vector2();
 

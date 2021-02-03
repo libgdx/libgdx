@@ -671,11 +671,19 @@ public class Json {
 				}
 				return;
 			}
-
-			// ExtendableEnum special case.
-			if (ClassReflection.isAssignableFrom(ExtendableEnum.class, actualType)) {
-				writer.value(((ExtendableEnum)value).getName());
-				return;
+			
+			// SerializableConstants special case.
+			if (ClassReflection.isAssignableFrom(SerializableConstants.class, knownType)) {
+				try {
+					Field[] fields = ClassReflection.getDeclaredFields(knownType);
+					for (Field field : fields) {
+						if (field.isPublic() && field.isStatic() && field.isFinal() && field.get(null) == value) {
+							writer.value(field.getName());
+							return;
+						}
+					}
+				} catch (ReflectionException ignored) {
+				}
 			}
 
 			writeObjectStart(actualType, knownType);
@@ -1008,8 +1016,7 @@ public class Json {
 
 				if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
 					|| type == Long.class || type == Double.class || type == Short.class || type == Byte.class
-					|| type == Character.class || ClassReflection.isAssignableFrom(Enum.class, type)
-					|| ClassReflection.isAssignableFrom(ExtendableEnum.class, type)) {
+					|| type == Character.class || ClassReflection.isAssignableFrom(Enum.class, type)) {
 					return readValue("value", type, jsonData);
 				}
 
@@ -1171,9 +1178,13 @@ public class Json {
 					if (string.equals(convertToString(e))) return (T)e;
 				}
 			}
-			if (ClassReflection.isAssignableFrom(ExtendableEnum.class, type)) {
-				ExtendableEnum e = ExtendableEnum.getValue((Class<? extends ExtendableEnum>)type, string);
-				if(e != null) return (T)e;
+			if (ClassReflection.isAssignableFrom(SerializableConstants.class, type)) {
+				try {
+					Field field = ClassReflection.getDeclaredField(type, string);
+					if (field != null && field.isPublic() && field.isStatic() && field.isFinal())
+						return (T)field.get(null);
+				} catch (ReflectionException ignored) {
+				}
 			}
 			if (type == CharSequence.class) return (T)string;
 			throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
