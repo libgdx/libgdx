@@ -796,16 +796,15 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
-			final int locX, locY;
+			int locX, locY;
 			// Get and map the location to our drawing space
 			{
 				CGPoint loc = touch.getLocationInView(app.graphics.view);
+				locX = (int) (loc.getX() - screenBounds.x);
+				locY = (int) (loc.getY() - screenBounds.y);
 				if (config.hdpiMode == HdpiMode.Pixels) {
-					locX = (int) ((loc.getX() * app.pixelsPerPoint) - (screenBounds.x * app.pixelsPerPoint));
-					locY = (int) ((loc.getY() * app.pixelsPerPoint) - (screenBounds.y * app.pixelsPerPoint));
-				} else {
-					locX = (int) (loc.getX() - screenBounds.x);
-					locY = (int) (loc.getY() - screenBounds.y);
+					locX = (int) (locX * app.pixelsPerPoint);
+					locY = (int) (locY * app.pixelsPerPoint);
 				}
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
