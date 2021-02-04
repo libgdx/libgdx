@@ -23,9 +23,9 @@ allprojects {
     buildscript {
         repositories {
             google()
-            jcenter()
             mavenLocal()
             mavenCentral()
+            maven { url 'https://plugins.gradle.org/m2/' }
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         }
         dependencies {
@@ -35,7 +35,6 @@ allprojects {
 
     repositories {
         google()
-        jcenter()
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
