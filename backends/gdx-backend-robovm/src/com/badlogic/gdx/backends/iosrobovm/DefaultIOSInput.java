@@ -803,8 +803,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				locX = (int) (loc.getX() - screenBounds.x);
 				locY = (int) (loc.getY() - screenBounds.y);
 				if (config.hdpiMode == HdpiMode.Pixels) {
-					locX = (int) (locX * app.pixelsPerPoint);
-					locY = (int) (locY * app.pixelsPerPoint);
+					locX *= app.pixelsPerPoint;
+					locY *= app.pixelsPerPoint;
 				}
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}

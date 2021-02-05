@@ -81,9 +81,9 @@ public class IOSUIViewController extends GLKViewController {
 			graphics.makeCurrent();
 			graphics.updateSafeInsets();
 			if (graphics.config.hdpiMode == HdpiMode.Pixels) {
-				app.listener.resize(newBounds.width, newBounds.height);
-			} else {
 				app.listener.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
+			} else {
+				app.listener.resize(newBounds.width, newBounds.height);
 			}
 		}
 

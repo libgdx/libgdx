@@ -58,7 +58,6 @@ public class IOSGraphics extends AbstractGraphics {
 	GL30 gl30;
 	IOSScreenBounds screenBounds;
 	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
-	int safeInsetRawLeft, safeInsetRawTop, safeInsetRawBottom, safeInsetRawRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -330,16 +329,18 @@ public class IOSGraphics extends AbstractGraphics {
 	public int getWidth () {
 		if (config.hdpiMode == HdpiMode.Pixels) {
 			return getBackBufferWidth();
+		} else {
+			return screenBounds.width;
 		}
-		return screenBounds.width;
 	}
 
 	@Override
 	public int getHeight () {
 		if (config.hdpiMode == HdpiMode.Pixels) {
 			return getBackBufferHeight();
+		} else {
+			return screenBounds.height;
 		}
-		return screenBounds.height;
 	}
 
 	@Override
@@ -448,10 +449,6 @@ public class IOSGraphics extends AbstractGraphics {
 		safeInsetLeft = 0;
 		safeInsetRight = 0;
 		safeInsetBottom = 0;
-		safeInsetRawTop = 0;
-		safeInsetRawLeft = 0;
-		safeInsetRawRight = 0;
-		safeInsetRawBottom = 0;
 
 		if (Foundation.getMajorSystemVersion() >= 11) {
 			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
@@ -459,42 +456,32 @@ public class IOSGraphics extends AbstractGraphics {
 			safeInsetLeft = (int) edgeInsets.getLeft();
 			safeInsetRight = (int) edgeInsets.getRight();
 			safeInsetBottom = (int) edgeInsets.getBottom();
-			safeInsetRawTop = (int) (edgeInsets.getTop() * app.pixelsPerPoint);
-			safeInsetRawLeft = (int) (edgeInsets.getLeft() * app.pixelsPerPoint);
-			safeInsetRawRight = (int) (edgeInsets.getRight() * app.pixelsPerPoint);
-			safeInsetRawBottom = (int) (edgeInsets.getBottom() * app.pixelsPerPoint);
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				safeInsetTop *= app.pixelsPerPoint;
+				safeInsetLeft *= app.pixelsPerPoint;
+				safeInsetRight *= app.pixelsPerPoint;
+				safeInsetBottom *= app.pixelsPerPoint;
+			}
 		}
 	}
 
 	@Override
 	public int getSafeInsetLeft() {
-		if (config.hdpiMode == HdpiMode.Pixels) {
-			return safeInsetRawLeft;
-		}
 		return safeInsetLeft;
 	}
 
 	@Override
 	public int getSafeInsetTop() {
-		if (config.hdpiMode == HdpiMode.Pixels) {
-		    return safeInsetRawTop;
-		}
 		return safeInsetTop;
 	}
 
 	@Override
 	public int getSafeInsetBottom() {
-		if (config.hdpiMode == HdpiMode.Pixels) {
-			return safeInsetRawBottom;
-		}
 		return safeInsetBottom;
 	}
 
 	@Override
 	public int getSafeInsetRight() {
-		if (config.hdpiMode == HdpiMode.Pixels) {
-			return safeInsetRawRight;
-		}
 		return safeInsetRight;
 	}
 
