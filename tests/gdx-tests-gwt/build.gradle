@@ -21,6 +21,11 @@ buildscript {
     }
 }
 
+configurations.all {
+    // gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
+    exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
+}
+
 apply plugin: 'war'
 apply plugin: 'gwt'
 apply plugin: 'org.gretty'
