@@ -90,7 +90,6 @@ public class FloatCounter implements Poolable {
 				", average=" + average +
 				", latest=" + latest +
 				", value=" + value +
-				", mean=" + mean +
 				'}';
 	}
 }
