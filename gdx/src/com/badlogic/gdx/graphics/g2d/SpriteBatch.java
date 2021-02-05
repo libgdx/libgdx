@@ -42,12 +42,12 @@ public class SpriteBatch implements Batch {
 
 	private Mesh mesh;
 
-	final float[] vertices;
-	int idx = 0;
-	Texture lastTexture = null;
-	float invTexWidth = 0, invTexHeight = 0;
+	protected final float[] vertices;
+	protected int idx = 0;
+	protected Texture lastTexture = null;
+	protected float invTexWidth = 0, invTexHeight = 0;
 
-	boolean drawing = false;
+	protected boolean drawing = false;
 
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
@@ -64,7 +64,7 @@ public class SpriteBatch implements Batch {
 	private boolean ownsShader;
 
 	private final Color color = new Color(1, 1, 1, 1);
-	float colorPacked = Color.WHITE_FLOAT_BITS;
+	protected float colorPacked = Color.WHITE_FLOAT_BITS;
 
 	/** Number of render calls since the last {@link #begin()}. **/
 	public int renderCalls = 0;

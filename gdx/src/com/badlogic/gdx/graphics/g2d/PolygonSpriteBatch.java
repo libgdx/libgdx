@@ -58,12 +58,12 @@ import com.badlogic.gdx.math.Matrix4;
 public class PolygonSpriteBatch implements PolygonBatch {
 	private Mesh mesh;
 
-	private final float[] vertices;
-	private final short[] triangles;
-	private int vertexIndex, triangleIndex;
-	private Texture lastTexture;
-	private float invTexWidth = 0, invTexHeight = 0;
-	private boolean drawing;
+	protected final float[] vertices;
+	protected final short[] triangles;
+	protected int vertexIndex, triangleIndex;
+	protected Texture lastTexture;
+	protected float invTexWidth = 0, invTexHeight = 0;
+	protected boolean drawing;
 
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
@@ -80,7 +80,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	private boolean ownsShader;
 
 	private final Color color = new Color(1, 1, 1, 1);
-	float colorPacked = Color.WHITE_FLOAT_BITS;
+	protected float colorPacked = Color.WHITE_FLOAT_BITS;
 
 	/** Number of render calls since the last {@link #begin()}. **/
 	public int renderCalls = 0;
