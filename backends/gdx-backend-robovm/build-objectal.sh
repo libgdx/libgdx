@@ -19,9 +19,7 @@ xcodebuild -project $XCODEPROJ -arch x86_64 -sdk iphonesimulator  CONFIGURATION_
 xcodebuild -project $XCODEPROJ -arch arm64  -sdk appletvos        CONFIGURATION_BUILD_DIR=$BUILD_DIR/tvos-arm64 OTHER_CFLAGS="-fembed-bitcode -mtvos-version-min=9.0"
 xcodebuild -project $XCODEPROJ -arch x86_64 -sdk appletvsimulator CONFIGURATION_BUILD_DIR=$BUILD_DIR/tvos-x86_64 OTHER_CFLAGS="-mtvos-version-min=9.0"
 
-lipo $BUILD_DIR/armv7/libObjectAL.a \
-     $BUILD_DIR/arm64/libObjectAL.a \
-     $BUILD_DIR/i386/libObjectAL.a \
+lipo $BUILD_DIR/arm64/libObjectAL.a \
      $BUILD_DIR/x86_64/libObjectAL.a \
      -create \
      -output $BUILD_DIR/libObjectAL.a
