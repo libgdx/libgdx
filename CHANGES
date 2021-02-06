@@ -1,5 +1,6 @@
 [1.9.15]
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
+- API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
