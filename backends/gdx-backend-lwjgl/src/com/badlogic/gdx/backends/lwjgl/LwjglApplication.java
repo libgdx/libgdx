@@ -44,7 +44,7 @@ import java.awt.Canvas;
 public class LwjglApplication implements LwjglApplicationBase {
 	protected final LwjglGraphics graphics;
 	protected LwjglAudio audio;
-	protected final LwjglFiles files;
+	protected final Files files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
 	protected final ApplicationListener listener;
@@ -93,7 +93,7 @@ public class LwjglApplication implements LwjglApplicationBase {
 				LwjglApplicationConfiguration.disableAudio = true;
 			}
 		}
-		files = new LwjglFiles();
+		files = createFiles();
 		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
@@ -271,6 +271,10 @@ public class LwjglApplication implements LwjglApplicationBase {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+	protected Files createFiles() {
+		return new LwjglFiles();
 	}
 
 	@Override

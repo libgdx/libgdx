@@ -25,7 +25,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowResizeListener;
 
 /** A collection of {@link ResizableWidget} that periodically checks the outer dimensions of a widget and redraws it as necessary.
  * Every {@link ResizableWidgetCollection} uses a timer, so consider the cost when adding one.

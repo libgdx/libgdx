@@ -95,11 +95,6 @@ libraries.lwjgl3 = [
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
-libraries.jglfw = [
-        "com.badlogicgames.jglfw:jglfw:${versions.jglwf}",
-        "com.badlogicgames.jglfw:jglfw-platform:${versions.jglwf}:natives-desktop"
-]
-
 libraries.robovm = [
         "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
         "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
@@ -119,15 +114,10 @@ libraries.junit = [
         "junit:junit:${versions.junit}"
 ]
 
-libraries.jnigen = [
-        "com.github.javaparser:javaparser-core:${versions.javaparser}"
-]
-
 testnatives.desktop = [
         files("gdx/libs/gdx-natives.jar"),
         files("extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar"),
         files("extensions/gdx-bullet/libs/gdx-bullet-natives.jar"),
-        files("extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"),
         files("extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
 ]
 

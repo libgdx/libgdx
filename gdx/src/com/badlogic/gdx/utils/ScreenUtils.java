@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -30,7 +31,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 /** Class with static helper methods related to currently bound OpenGL frame buffer, including access to the current OpenGL FrameBuffer. These methods can be used to get the
  * entire screen content or a portion thereof.
- * 
+ *
  * @author espitz */
 public final class ScreenUtils {
 
@@ -77,7 +78,7 @@ public final class ScreenUtils {
 	 * {@link Format}. It can be accessed via {@link TextureRegion#getTexture}. This texture is not managed and has to be reloaded
 	 * manually on a context loss. If the width and height specified are larger than the framebuffer dimensions, the Texture will
 	 * be padded accordingly. Pixels that fall outside of the current screen will have RGBA values of 0.
-	 * 
+	 *
 	 * @param x the x position of the framebuffer contents to capture
 	 * @param y the y position of the framebuffer contents to capture
 	 * @param w the width of the framebuffer contents to capture
@@ -108,7 +109,7 @@ public final class ScreenUtils {
 	 * always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be flipped
 	 * along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this functionality
 	 * wisely.
-	 * 
+	 *
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (boolean flipY) {
 		final int w = Gdx.graphics.getBackBufferWidth();
@@ -122,7 +123,7 @@ public final class ScreenUtils {
 	 * screen will have RGBA values of 0. Because of differences in screen and image origins the framebuffer contents should be
 	 * flipped along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this
 	 * functionality wisely.
-	 * 
+	 *
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (int x, int y, int w, int h, boolean flipY) {
 		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
@@ -133,11 +134,11 @@ public final class ScreenUtils {
 		if (flipY) {
 			final int numBytesPerLine = w * 4;
 			for (int i = 0; i < h; i++) {
-				pixels.position((h - i - 1) * numBytesPerLine);
+				((Buffer) pixels).position((h - i - 1) * numBytesPerLine);
 				pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
 			}
 		} else {
-			pixels.clear();
+			((Buffer) pixels).clear();
 			pixels.get(lines);
 		}
 		return lines;

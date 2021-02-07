@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.math.BigInteger;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -31,8 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -69,7 +68,7 @@ public class GlyphPage {
 	}
 
 	/** Loads glyphs to the backing texture and sets the image on each loaded glyph. Loaded glyphs are removed from the list.
-	 * 
+	 *
 	 * If this page already has glyphs and maxGlyphsToLoad is -1, then this method will return 0 if all the new glyphs don't fit.
 	 * This reduces texture binds when drawing since glyphs loaded at once are typically displayed together.
 	 * @param glyphs The glyphs to load.
@@ -151,21 +150,21 @@ public class GlyphPage {
 
 			ByteBuffer fontPixels = fontPixmap.getPixels();
 			byte[] row = new byte[glyphRowBytes];
-			glyphPixels.position(0);
+			((Buffer) glyphPixels).position(0);
 			for (int i = 0; i < padTop; i++)
 				glyphPixels.put(row);
-			glyphPixels.position((height - padBottom) * glyphRowBytes);
+			((Buffer) glyphPixels).position((height - padBottom) * glyphRowBytes);
 			for (int i = 0; i < padBottom; i++)
 				glyphPixels.put(row);
-			glyphPixels.position(padTop * glyphRowBytes);
+			((Buffer) glyphPixels).position(padTop * glyphRowBytes);
 			for (int y = 0, n = g.height; y < n; y++) {
-				fontPixels.position(((g.srcY + y) * fontWidth + g.srcX) * 4);
+				((Buffer) fontPixels).position(((g.srcY + y) * fontWidth + g.srcX) * 4);
 				fontPixels.get(row, padLeftBytes, fontRowBytes);
 				glyphPixels.put(row);
 			}
-			fontPixels.position(0);
-			glyphPixels.position(height * glyphRowBytes);
-			glyphPixels.flip();
+			((Buffer) fontPixels).position(0);
+			((Buffer) glyphPixels).position(height * glyphRowBytes);
+			((Buffer) glyphPixels).flip();
 			format = GL11.GL_RGBA;
 		} else {
 			// Draw the glyph to the scratch image using Java2D.
@@ -205,8 +204,8 @@ public class GlyphPage {
 			hash = bigInt.toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 		}
-		scratchByteBuffer.clear();
-		scratchIntBuffer.clear();
+		((Buffer) scratchByteBuffer).clear();
+		((Buffer) scratchIntBuffer).clear();
 
 		try {
 			for (int i = 0, n = hashes.size(); i < n; i++) {

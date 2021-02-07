@@ -36,7 +36,6 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.gradlePlugins + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		write(wr, DependencyBank.jCenter);
 		write(wr, DependencyBank.google);
 		write(wr, "}");
 		//dependencies
@@ -69,12 +68,12 @@ public class BuildScriptHelper {
 		write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");
 		write(wr, "ashleyVersion = '" + DependencyBank.ashleyVersion + "'");
 		write(wr, "aiVersion = '" + DependencyBank.aiVersion + "'");
+		write(wr, "gdxControllersVersion = '" + DependencyBank.controllersVersion + "'");
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
-		write(wr, DependencyBank.jCenter);
 		write(wr, DependencyBank.google);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");

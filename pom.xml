@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.14-SNAPSHOT</version>
+  <version>1.9.15-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
@@ -51,7 +51,6 @@
   </properties>
 
   <modules>
-    <module>extensions/gdx-jnigen</module>
     <module>gdx</module>
     <module>gdx/jni/maven</module>
     <module>backends/gdx-backend-android</module>
@@ -64,7 +63,6 @@
     <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
-    <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>    
   </modules>
