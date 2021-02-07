@@ -311,9 +311,14 @@ public class Hiero extends JFrame {
 		unicodeFont.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		if (nativeRadio.isSelected())
 			unicodeFont.setRenderType(RenderType.Native);
-		else if (freeTypeRadio.isSelected())
-			unicodeFont.setRenderType(RenderType.FreeType);
-		else
+		else if (freeTypeRadio.isSelected()) {
+			try{
+				unicodeFont.setRenderType(RenderType.FreeType);
+			} catch (GdxRuntimeException ex) {
+				javaRadio.setSelected(true);
+				unicodeFont.setRenderType(RenderType.Java);
+			}
+		} else
 			unicodeFont.setRenderType(RenderType.Java);
 
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
