@@ -315,8 +315,8 @@ public class Hiero extends JFrame {
 			try{
 				unicodeFont.setRenderType(RenderType.FreeType);
 			} catch (GdxRuntimeException ex) {
-				javaRadio.setSelected(true);
 				unicodeFont.setRenderType(RenderType.Java);
+				javaRadio.doClick();
 			}
 		} else
 			unicodeFont.setRenderType(RenderType.Java);
@@ -441,14 +441,7 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				if (evt.getValueIsAdjusting()) return;
 				prefs.put("system.font", (String)fontList.getSelectedValue());
-				try {
 					updateFont();
-				} catch (GdxRuntimeException ex) {
-					prefs.remove("system.font");
-					fontList.setSelectedValue("Arial", true);
-					updateFont();
-					sampleTextPane.setText("Selected font does not have the necessary 'x' character; falling back to Arial. \n" + sampleTextPane.getText());
-				}
 			}
 		});
 
@@ -838,7 +831,7 @@ public class Hiero extends JFrame {
 			buttonGroup.add(freeTypeRadio);
 			buttonGroup.add(javaRadio);
 			buttonGroup.add(nativeRadio);
-			freeTypeRadio.setSelected(true);
+			javaRadio.setSelected(true);
 		}
 		{
 			JPanel samplePanel = new JPanel();
