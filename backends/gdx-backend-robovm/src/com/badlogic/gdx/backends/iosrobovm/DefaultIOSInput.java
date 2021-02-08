@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,6 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
@@ -90,8 +89,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<UITouch>(UITouch.class);
 	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(UIAcceleration.class);
-	
-	IOSApplication app;
+
+	BaseIOSApplication app;
 	IOSApplicationConfiguration config;
 	int[] deltaX = new int[MAX_TOUCHES];
 	int[] deltaY = new int[MAX_TOUCHES];
@@ -131,7 +130,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	private boolean hadHardwareKeyEvent = false;
 
-	public DefaultIOSInput (IOSApplication app) {
+	public DefaultIOSInput (BaseIOSApplication app) {
 		this.app = app;
 		this.config = app.config;
 		this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
@@ -156,7 +155,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			//setupMagnetometer();
 		}
 	}
-	
+
 	protected void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
@@ -180,20 +179,20 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
-//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;	
+//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;
 //	private void setupAccelerometer () {
 //		if (config.useAccelerometer) {
-//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);			
+//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
 //			accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
 //				@Override
 //				public void invoke(CMAccelerometerData accelData, NSError error) {
-//					updateAccelerometer(accelData);					
+//					updateAccelerometer(accelData);
 //				}
 //			};
 //			motionManager.startAccelerometerUpdates(new NSOperationQueue(), accelVoid);
 //		}
 //	}
-	
+
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
 //	VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
@@ -209,7 +208,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 //		};
 //		motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
 //	}
-	
+
 //	private void updateAccelerometer (CMAccelerometerData data) {
 //		float x = (float) data.getAcceleration().x() * 10f;
 //		float y = (float) data.getAcceleration().y() * 10f;
@@ -218,20 +217,20 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 //		acceleration[1] = -y;
 //		acceleration[2] = -z;
 //	}
-//	
+//
 //	private void updateRotation (CMMagnetometerData data) {
 //		final float eX = (float) data.getMagneticField().x();
 //		final float eY = (float) data.getMagneticField().y();
 //		final float eZ = (float) data.getMagneticField().z();
-//				
+//
 //		float gX = acceleration[0];
 //		float gY = acceleration[1];
 //		float gZ = acceleration[2];
-//		
+//
 //		float cX = eY * gZ - eZ * gY;
 //		float cY = eZ * gX - eX * gZ;
 //		float cZ = eX * gY - eY * gX;
-//		
+//
 //		final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
 //		final float invertC = 1.0f / normal;
 //		cX *= invertC;
@@ -244,11 +243,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 //		final float mX = gY * cZ - gZ * cY;
 //		final float mY = gZ * cX - gX * cZ;
 //		final float mZ = gX * cY - gY * cX;
-//		
+//
 //		R[0] = cX;	R[1] = cY;	R[2] = cZ;
 //		R[3] = mX;	R[4] = mY;	R[5] = mZ;
 //		R[6] = gX;	R[7] = gY;	R[8] = gZ;
-//		
+//
 //		rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
 //		rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
 //		rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
@@ -268,7 +267,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
-	
+
 
 	@Override
 	public float getAzimuth () {
@@ -388,7 +387,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint, type);
 		app.getUIViewController().presentViewController(uiAlertController, true, null);
-	}	
+	}
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
@@ -487,12 +486,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
 		keyboardCloseOnReturn = shouldClose;
 	}
-	
+
 	public UITextField getKeyboardTextField () {
 		if (textfield == null) createDefaultTextField();
 		return textfield;
 	}
-	
+
 	private void createDefaultTextField () {
 		textfield = new UITextField(new CGRect(10, 10, 100, 50));
 		//Parameters
@@ -507,7 +506,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		textfield.setText("x");
 		app.getUIViewController().getView().addSubview(textfield);
 	}
-	
+
 	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
@@ -592,7 +591,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	@Override
 	public int getRotation () {
 		// we measure orientation counter clockwise, just like on Android
-		switch (app.uiApp.getStatusBarOrientation()) {
+		switch (app.getUIApp().getStatusBarOrientation()) {
 		case LandscapeLeft:
 			return 270;
 		case PortraitUpsideDown:
@@ -607,7 +606,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public Orientation getNativeOrientation () {
-		switch (app.uiApp.getStatusBarOrientation()) {
+		switch (app.getUIApp().getStatusBarOrientation()) {
 		case LandscapeLeft:
 		case LandscapeRight:
 			return Orientation.Landscape;
@@ -799,12 +798,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			int locX, locY;
 			// Get and map the location to our drawing space
 			{
-				CGPoint loc = touch.getLocationInView(app.graphics.view);
+				CGPoint loc = touch.getLocationInView(app.getGraphics().view);
 				locX = (int) (loc.getX() - screenBounds.x);
 				locY = (int) (loc.getY() - screenBounds.y);
 				if (config.hdpiMode == HdpiMode.Pixels) {
-					locX *= app.pixelsPerPoint;
-					locY *= app.pixelsPerPoint;
+					locX *= app.getPixelsPerPoint();
+					locY *= app.getPixelsPerPoint();
 				}
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}

@@ -12,11 +12,11 @@ import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.rt.bro.annotation.Callback;
 
-public class IOSUIViewController extends GLKViewController {
-	final IOSApplication app;
+class IOSUIViewController extends GLKViewController {
+	final BaseIOSApplication app;
 	final IOSGraphics graphics;
 
-	protected IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
+	protected IOSUIViewController (BaseIOSApplication app, IOSGraphics graphics) {
 		this.app = app;
 		this.graphics = graphics;
 	}
@@ -108,14 +108,14 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Override
 	public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
-		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
+		if (presses == null || presses.isEmpty() || !app.getInput().onKey(presses.getValues().first().getKey(), true)) {
 			super.pressesBegan(presses, event);
 		}
 	}
 
 	@Override
 	public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
-		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
+		if (presses == null || presses.isEmpty() || !app.getInput().onKey(presses.getValues().first().getKey(), false)) {
 			super.pressesEnded(presses, event);
 		}
 	}
