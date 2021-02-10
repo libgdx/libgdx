@@ -160,12 +160,26 @@ public final class MathUtils {
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public long random (long range) {
-		return (long)(random.nextDouble() * range);
+		// check is one less than a power of two (and not 0); for these bounds, random longs are easy
+		if((range & range + 1L) == 0L && range != 0)
+			return random.nextLong() >>> Long.numberOfLeadingZeros(range);
+		// this makes bound larger than range (for inclusivity), and makes range either -1 or 1 based on sign.
+		// it also ensures bound is positive, which is critical for the manual 128-bit multiplication.
+		long bound = range + ((range >>= 63)|1L) + range ^ range;
+		long rand = random.nextLong();
+		// next section gets splits up rand and bound into 32-bit chunks to multiply separately.
+		final long randLow = rand & 0xFFFFFFFFL;
+		final long boundLow = bound & 0xFFFFFFFFL;
+		final long mix = (rand >>> 32) * (bound >>> 32);
+		return (mix >>> 32) + (randLow * boundLow >>> 32) + mix + range ^ range;
+		// The above line is complicated because it needs to handle carrying between the smaller parts.
+		// Also, the work using range lets us get back to a negative result when range is negative.
+		// Credit to https://oroboro.com/large-random-in-range/ for the technique (without negative bounds).
 	}
 
 	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public long random (long start, long end) {
-		return start + (long)(random.nextDouble() * (end - start));
+		return start + random(end - start);
 	}
 
 	/** Returns a random boolean value. */
