@@ -1,4 +1,5 @@
 [1.9.15]
+- [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 
 [1.9.14]
