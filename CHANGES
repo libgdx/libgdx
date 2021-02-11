@@ -1,4 +1,5 @@
 [1.9.15]
+- [BREAKING CHANGE] Requires Java 7 or above
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
