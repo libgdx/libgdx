@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Vector2dTest extends GdxTest {
 	private static final float DURATION = 2.0f;
@@ -61,8 +61,7 @@ public class Vector2dTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 0);
 
 		renderer.setProjectionMatrix(camera.combined);
 
@@ -87,7 +86,7 @@ public class Vector2dTest extends GdxTest {
 		renderer.setColor(Color.WHITE);
 
 		renderVectorAt(2, 2, rotating);
-		rotating.rotate(93 * changeRate);
+		rotating.rotateDeg(93 * changeRate);
 
 		renderVectorAt(2, -2, scalingX);
 		scalingX.set(0, MathUtils.sin((System.currentTimeMillis() - start) / 520.0f));

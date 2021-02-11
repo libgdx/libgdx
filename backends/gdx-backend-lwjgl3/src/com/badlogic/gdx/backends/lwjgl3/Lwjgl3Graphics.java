@@ -18,13 +18,13 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,10 +34,11 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 
-public class Lwjgl3Graphics implements Graphics, Disposable {
-	private final Lwjgl3Window window;
-	private GL20 gl20;
+public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
+	final Lwjgl3Window window;
+	GL20 gl20;
 	private GL30 gl30;
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
@@ -54,10 +55,14 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private int fps;
 	private int windowPosXBeforeFullscreen;
 	private int windowPosYBeforeFullscreen;
+	private int windowWidthBeforeFullscreen;
+	private int windowHeightBeforeFullscreen;
 	private DisplayMode displayModeBeforeFullscreen = null;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer3 = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer4 = BufferUtils.createIntBuffer(1);
 
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
@@ -93,13 +98,32 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		String vendorString = gl20.glGetString(GL11.GL_VENDOR);
 		String rendererString = gl20.glGetString(GL11.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		if (supportsCubeMapSeamless()) {
+			enableCubeMapSeamless(true);
+		}
+	}
+
+	/** @return whether cubemap seamless feature is supported. */
+	public boolean supportsCubeMapSeamless () {
+		return glVersion.isVersionEqualToOrHigher(3, 2) || supportsExtension("GL_ARB_seamless_cube_map");
+	}
+
+	/** Enable or disable cubemap seamless feature. Default is true if supported. Should only be called if this feature is
+	 * supported. (see {@link #supportsCubeMapSeamless()})
+	 * @param enable */
+	public void enableCubeMapSeamless (boolean enable) {
+		if (enable) {
+			gl20.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		} else {
+			gl20.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
 	}
 
 	public Lwjgl3Window getWindow() {
 		return window;
 	}
 
-	private void updateFramebufferInfo() {
+	void updateFramebufferInfo() {
 		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		this.backBufferWidth = tmpBuffer.get(0);
 		this.backBufferHeight = tmpBuffer2.get(0);
@@ -199,11 +223,6 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 
 	@Override
-	public float getRawDeltaTime() {
-		return deltaTime;
-	}
-
-	@Override
 	public int getFramesPerSecond() {
 		return fps;
 	}
@@ -220,12 +239,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpiX() {
-		return getPpcX() / 0.393701f;
+		return getPpcX() * 2.54f;
 	}
 
 	@Override
 	public float getPpiY() {
-		return getPpcY() / 0.393701f;
+		return getPpcY() * 2.54f;
 	}
 
 	@Override
@@ -244,11 +263,6 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		int sizeY = tmpBuffer2.get(0);
 		DisplayMode mode = getDisplayMode();
 		return mode.height / (float) sizeY * 10;
-	}
-
-	@Override
-	public float getDensity() {
-		return getPpiX() / 160f;
 	}
 
 	@Override
@@ -365,12 +379,17 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
+
+		setVSync(window.getConfig().vSyncEnabled);
+
 		return true;
 	}
 	
 	private void storeCurrentWindowPositionAndDisplayMode() {
 		windowPosXBeforeFullscreen = window.getPositionX();
 		windowPosYBeforeFullscreen = window.getPositionY();
+		windowWidthBeforeFullscreen = logicalWidth;
+		windowHeightBeforeFullscreen = logicalHeight;
 		displayModeBeforeFullscreen = getDisplayMode();
 	}
 
@@ -378,15 +397,28 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public boolean setWindowedMode(int width, int height) {
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
+			if (width != logicalWidth || height != logicalHeight) {
+				//Center window
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
+				window.setPosition(tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
+			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 		} else {
 			if (displayModeBeforeFullscreen == null) {
 				storeCurrentWindowPositionAndDisplayMode();
 			}
-				
-			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
-					displayModeBeforeFullscreen.refreshRate);
+			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) {
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+						tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2, width, height,
+						displayModeBeforeFullscreen.refreshRate);
+			} else {
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+						windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
+						displayModeBeforeFullscreen.refreshRate);
+			}
 		}
 		updateFramebufferInfo();
 		return true;
@@ -402,21 +434,29 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setUndecorated(boolean undecorated) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setDecorated(!undecorated);
+		getWindow().getConfig().setDecorated(!undecorated);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
 	@Override
 	public void setResizable(boolean resizable) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setResizable(resizable);
+		getWindow().getConfig().setResizable(resizable);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override
 	public void setVSync(boolean vsync) {
+		getWindow().getConfig().vSyncEnabled = vsync;
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
+	}
+
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
+	 *  Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		getWindow().getConfig().foregroundFPS = fps;
 	}
 
 	@Override

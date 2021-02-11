@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
@@ -76,8 +77,8 @@ public class Stage extends InputAdapter implements Disposable {
 	private final int[] pointerScreenX = new int[20];
 	private final int[] pointerScreenY = new int[20];
 	private int mouseScreenX, mouseScreenY;
-	private Actor mouseOverActor;
-	private Actor keyboardFocus, scrollFocus;
+	private @Null Actor mouseOverActor;
+	private @Null Actor keyboardFocus, scrollFocus;
 	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 	private boolean actionsRequestRendering = true;
 
@@ -101,8 +102,8 @@ public class Stage extends InputAdapter implements Disposable {
 		ownsBatch = true;
 	}
 
-	/** Creates a stage with the specified viewport and batch. This can be used to avoid creating a new batch (which can be
-	 * somewhat slow) if multiple stages are used during an application's life time.
+	/** Creates a stage with the specified viewport and batch. This can be used to specify an existing batch or to customize which
+	 * batch implementation is used.
 	 * @param batch Will not be disposed if {@link #dispose()} is called, handle disposal yourself. */
 	public Stage (Viewport viewport, Batch batch) {
 		if (viewport == null) throw new IllegalArgumentException("viewport cannot be null.");
@@ -216,13 +217,16 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		// Update over actor for the mouse on the desktop.
 		ApplicationType type = Gdx.app.getType();
-		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
+		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL) {
+			// if (mouseOverActor != null) mouseOverActor.setDebug(false);
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
+			// if (mouseOverActor != null) mouseOverActor.setDebug(true);
+		}
 
 		root.act(delta);
 	}
 
-	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
+	private @Null Actor fireEnterAndExit (@Null Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 		Actor over = hit(tempCoords.x, tempCoords.y, true);
@@ -385,7 +389,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		Actor target = scrollFocus == null ? root : scrollFocus;
 
 		screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
@@ -393,7 +397,8 @@ public class Stage extends InputAdapter implements Disposable {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.scrolled);
-		event.setScrollAmount(amount);
+		event.setScrollAmountX(amountX);
+		event.setScrollAmountY(amountY);
 		event.setStageX(tempCoords.x);
 		event.setStageY(tempCoords.y);
 		target.fire(event);
@@ -475,20 +480,24 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Cancels touch focus for all listeners with the specified listener actor.
 	 * @see #cancelTouchFocus() */
 	public void cancelTouchFocus (Actor listenerActor) {
-		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
-		event.setType(InputEvent.Type.touchUp);
-		event.setStageX(Integer.MIN_VALUE);
-		event.setStageY(Integer.MIN_VALUE);
-
 		// Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
 		// same focus twice.
+		InputEvent event = null;
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = items[i];
 			if (focus.listenerActor != listenerActor) continue;
 			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+
+			if (event == null) {
+				event = Pools.obtain(InputEvent.class);
+				event.setStage(this);
+				event.setType(InputEvent.Type.touchUp);
+				event.setStageX(Integer.MIN_VALUE);
+				event.setStageY(Integer.MIN_VALUE);
+			}
+
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
 			event.setPointer(focus.pointer);
@@ -498,7 +507,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		touchFocuses.end();
 
-		Pools.free(event);
+		if (event != null) Pools.free(event);
 	}
 
 	/** Removes all touch focus listeners, sending a touchUp event to each listener. Listeners typically expect to receive a
@@ -510,7 +519,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Cancels touch focus for all listeners except the specified listener.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocusExcept (EventListener exceptListener, Actor exceptActor) {
+	public void cancelTouchFocusExcept (@Null EventListener exceptListener, @Null Actor exceptActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -602,7 +611,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Sets the actor that will receive key events.
 	 * @param actor May be null.
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
-	public boolean setKeyboardFocus (Actor actor) {
+	public boolean setKeyboardFocus (@Null Actor actor) {
 		if (keyboardFocus == actor) return true;
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
@@ -630,14 +639,14 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive key events.
 	 * @return May be null. */
-	public Actor getKeyboardFocus () {
+	public @Null Actor getKeyboardFocus () {
 		return keyboardFocus;
 	}
 
 	/** Sets the actor that will receive scroll events.
 	 * @param actor May be null.
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
-	public boolean setScrollFocus (Actor actor) {
+	public boolean setScrollFocus (@Null Actor actor) {
 		if (scrollFocus == actor) return true;
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
@@ -665,7 +674,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Gets the actor that will receive scroll events.
 	 * @return May be null. */
-	public Actor getScrollFocus () {
+	public @Null Actor getScrollFocus () {
 		return scrollFocus;
 	}
 
@@ -715,7 +724,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #screenToStageCoordinates(Vector2)}.
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
-	public Actor hit (float stageX, float stageY, boolean touchable) {
+	public @Null Actor hit (float stageX, float stageY, boolean touchable) {
 		root.parentToLocalCoordinates(tempCoords.set(stageX, stageY));
 		return root.hit(tempCoords.x, tempCoords.y, touchable);
 	}
@@ -731,7 +740,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
-		stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
+		stageCoords.y = Gdx.graphics.getHeight() - stageCoords.y;
 		return stageCoords;
 	}
 
@@ -754,9 +763,9 @@ public class Stage extends InputAdapter implements Disposable {
 		viewport.calculateScissors(transformMatrix, localRect, scissorRect);
 	}
 
-	/** If true, any actions executed during a call to {@link #act()}) will result in a call to {@link Graphics#requestRendering()}
-	 * . Widgets that animate or otherwise require additional rendering may check this setting before calling
-	 * {@link Graphics#requestRendering()}. Default is true. */
+	/** If true, any actions executed during a call to {@link #act()}) will result in a call to
+	 * {@link Graphics#requestRendering()}. Widgets that animate or otherwise require additional rendering may check this setting
+	 * before calling {@link Graphics#requestRendering()}. Default is true. */
 	public void setActionsRequestRendering (boolean actionsRequestRendering) {
 		this.actionsRequestRendering = actionsRequestRendering;
 	}
@@ -813,7 +822,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** If not {@link Debug#none}, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can
 	 * be combined with {@link #setDebugAll(boolean)}.
 	 * @param debugTableUnderMouse May be null for {@link Debug#none}. */
-	public void setDebugTableUnderMouse (Debug debugTableUnderMouse) {
+	public void setDebugTableUnderMouse (@Null Debug debugTableUnderMouse) {
 		if (debugTableUnderMouse == null) debugTableUnderMouse = Debug.none;
 		if (this.debugTableUnderMouse == debugTableUnderMouse) return;
 		this.debugTableUnderMouse = debugTableUnderMouse;

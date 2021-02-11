@@ -162,6 +162,19 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Removes this value from its parent. */
+	public void remove () {
+		if (parent == null) throw new IllegalStateException();
+		if (prev == null) {
+			parent.child = next;
+			if (parent.child != null) parent.child.prev = null;
+		} else {
+			prev.next = next;
+			if (next != null) next.prev = prev;
+		}
+		parent.size--;
+	}
+
 	/** Returns true if there are one or more children in the array or object. */
 	public boolean notEmpty () {
 		return size > 0;
@@ -206,7 +219,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		case doubleValue:
 			return (float)doubleValue;
 		case longValue:
-			return (float)longValue;
+			return longValue;
 		case booleanValue:
 			return longValue != 0 ? 1 : 0;
 		}
@@ -222,7 +235,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		case doubleValue:
 			return doubleValue;
 		case longValue:
-			return (double)longValue;
+			return longValue;
 		case booleanValue:
 			return longValue != 0 ? 1 : 0;
 		}
@@ -373,7 +386,7 @@ public class JsonValue implements Iterable<JsonValue> {
 				v = (float)value.doubleValue;
 				break;
 			case longValue:
-				v = (float)value.longValue;
+				v = value.longValue;
 				break;
 			case booleanValue:
 				v = value.longValue != 0 ? 1 : 0;
@@ -402,7 +415,7 @@ public class JsonValue implements Iterable<JsonValue> {
 				v = value.doubleValue;
 				break;
 			case longValue:
-				v = (double)value.longValue;
+				v = value.longValue;
 				break;
 			case booleanValue:
 				v = value.longValue != 0 ? 1 : 0;
@@ -896,6 +909,7 @@ public class JsonValue implements Iterable<JsonValue> {
 			while (true) {
 				if (current.next == null) {
 					current.next = value;
+					value.prev = current;
 					return;
 				}
 				current = current.next;
@@ -944,7 +958,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** @param stringValue May be null if the string representation is the string value of the long (eg, no leading zeros). */
 	public void set (long value, String stringValue) {
 		longValue = value;
-		doubleValue = (double)value;
+		doubleValue = value;
 		this.stringValue = stringValue;
 		type = ValueType.longValue;
 	}

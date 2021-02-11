@@ -178,13 +178,13 @@ public class Matrix3 implements Serializable {
 		float[] val = this.val;
 		float oc = 1.0f - cos;
 		val[M00] = oc * axis.x * axis.x + cos;
-		val[M10] = oc * axis.x * axis.y - axis.z * sin;
-		val[M20] = oc * axis.z * axis.x + axis.y * sin;
-		val[M01] = oc * axis.x * axis.y + axis.z * sin;
+		val[M01] = oc * axis.x * axis.y - axis.z * sin;
+		val[M02] = oc * axis.z * axis.x + axis.y * sin;
+		val[M10] = oc * axis.x * axis.y + axis.z * sin;
 		val[M11] = oc * axis.y * axis.y + cos;
-		val[M21] = oc * axis.y * axis.z - axis.x * sin;
-		val[M02] = oc * axis.z * axis.x - axis.y * sin;
-		val[M12] = oc * axis.y * axis.z + axis.x * sin;
+		val[M12] = oc * axis.y * axis.z - axis.x * sin;
+		val[M20] = oc * axis.z * axis.x - axis.y * sin;
+		val[M21] = oc * axis.y * axis.z + axis.x * sin;
 		val[M22] = oc * axis.z * axis.z + cos;
 		return this;
 	}
@@ -524,7 +524,8 @@ public class Matrix3 implements Serializable {
 		position.y = val[M12];
 		return position;
 	}
-
+	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
+	 * @return The provided vector for chaining. */
 	public Vector2 getScale (Vector2 scale) {
 		float[] val = this.val;
 		scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);

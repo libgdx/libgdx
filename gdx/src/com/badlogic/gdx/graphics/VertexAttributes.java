@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 

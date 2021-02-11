@@ -16,36 +16,19 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.ApplicationLogger;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.*;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
@@ -71,6 +54,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
+	protected volatile Color[] wallpaperColors = null;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
 		this.service = service;
@@ -86,14 +70,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
 		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		input = createInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
-		audio = new AndroidAudio(this.getService(), config);
-
-		// added initialization of android local storage: /data/data/<app package>/files/
-		this.getService().getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		audio = createAudio(this.getService(), config);
+		files = createFiles();
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		clipboard = new AndroidClipboard(this.getService());
@@ -366,6 +347,22 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	}
 
 	@Override
+	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidAudio(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidInput(this, this.getService(), graphics.view, config);
+	}
+
+	protected AndroidFiles createFiles() {
+		// added initialization of android local storage: /data/data/<app package>/files/
+		this.getService().getFilesDir(); // workaround for Android bug #10515463
+		return new DefaultAndroidFiles(this.getService().getAssets(), this.getService(), true);
+	}
+
+	@Override
 	public void runOnUiThread (Runnable runnable) {
 		if (Looper.myLooper() != Looper.getMainLooper()) {
 			// The current thread is not the UI thread.
@@ -383,4 +380,23 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Notify the wallpaper engine that the significant colors of the wallpaper have changed. This
+	 * method may be called before initializing the live wallpaper.
+	 * @param primaryColor The most visually significant color.
+	 * @param secondaryColor The second most visually significant color.
+	 * @param tertiaryColor The third most visually significant color.
+	 */
+	public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color tertiaryColor) {
+		if (Build.VERSION.SDK_INT < 27)
+			return;
+		final Color[] colors = new Color[3];
+		colors[0] = new Color(primaryColor);
+		colors[1] = new Color(secondaryColor);
+		colors[2] = new Color(tertiaryColor);
+		wallpaperColors = colors;
+		AndroidLiveWallpaperService.AndroidWallpaperEngine engine = service.linkedEngine;
+		if (engine != null)
+			engine.notifyColorsChanged();
+	}
 }

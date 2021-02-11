@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 
 /** A button with a child {@link Label} to display text.
  * @author Nathan Sweet */
@@ -29,20 +30,19 @@ public class TextButton extends Button {
 	private Label label;
 	private TextButtonStyle style;
 
-	public TextButton (String text, Skin skin) {
+	public TextButton (@Null String text, Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (String text, Skin skin, String styleName) {
+	public TextButton (@Null String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, TextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public TextButton (String text, TextButtonStyle style) {
+	public TextButton (@Null String text, TextButtonStyle style) {
 		super();
 		setStyle(style);
-		this.style = style;
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
 		add(label).expand().fill();
@@ -52,8 +52,9 @@ public class TextButton extends Button {
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
 		if (!(style instanceof TextButtonStyle)) throw new IllegalArgumentException("style must be a TextButtonStyle.");
-		super.setStyle(style);
 		this.style = (TextButtonStyle)style;
+		super.setStyle(style);
+
 		if (label != null) {
 			TextButtonStyle textButtonStyle = (TextButtonStyle)style;
 			LabelStyle labelStyle = label.getStyle();
@@ -67,23 +68,37 @@ public class TextButton extends Button {
 		return style;
 	}
 
+	/** Returns the appropriate label font color from the style based on the current button state. */
+	protected @Null Color getFontColor () {
+		if (isDisabled() && style.disabledFontColor != null) return style.disabledFontColor;
+		if (isPressed()) {
+			if (isChecked() && style.checkedDownFontColor != null) return style.checkedDownFontColor;
+			if (style.downFontColor != null) return style.downFontColor;
+		}
+		if (isOver()) {
+			if (isChecked()) {
+				if (style.checkedOverFontColor != null) return style.checkedOverFontColor;
+			} else {
+				if (style.overFontColor != null) return style.overFontColor;
+			}
+		}
+		boolean focused = hasKeyboardFocus();
+		if (isChecked()) {
+			if (focused && style.checkedFocusedFontColor != null) return style.checkedFocusedFontColor;
+			if (style.checkedFontColor != null) return style.checkedFontColor;
+			if (isOver() && style.overFontColor != null) return style.overFontColor;
+		}
+		if (focused && style.focusedFontColor != null) return style.focusedFontColor;
+		return style.fontColor;
+	}
+
 	public void draw (Batch batch, float parentAlpha) {
-		Color fontColor;
-		if (isDisabled() && style.disabledFontColor != null)
-			fontColor = style.disabledFontColor;
-		else if (isPressed() && style.downFontColor != null)
-			fontColor = style.downFontColor;
-		else if (isChecked && style.checkedFontColor != null)
-			fontColor = (isOver() && style.checkedOverFontColor != null) ? style.checkedOverFontColor : style.checkedFontColor;
-		else if (isOver() && style.overFontColor != null)
-			fontColor = style.overFontColor;
-		else
-			fontColor = style.fontColor;
-		if (fontColor != null) label.getStyle().fontColor = fontColor;
+		label.getStyle().fontColor = getFontColor();
 		super.draw(batch, parentAlpha);
 	}
 
 	public void setLabel (Label label) {
+		if (label == null) throw new IllegalArgumentException("label cannot be null.");
 		getLabelCell().setActor(label);
 		this.label = label;
 	}
@@ -96,7 +111,7 @@ public class TextButton extends Button {
 		return getCell(label);
 	}
 
-	public void setText (String text) {
+	public void setText (@Null String text) {
 		label.setText(text);
 	}
 
@@ -117,26 +132,31 @@ public class TextButton extends Button {
 	 * @author Nathan Sweet */
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
-		/** Optional. */
-		public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		public @Null Color fontColor, downFontColor, overFontColor, focusedFontColor, disabledFontColor;
+		public @Null Color checkedFontColor, checkedDownFontColor, checkedOverFontColor, checkedFocusedFontColor;
 
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+		public TextButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, @Null BitmapFont font) {
 			super(up, down, checked);
 			this.font = font;
 		}
 
 		public TextButtonStyle (TextButtonStyle style) {
 			super(style);
-			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
-			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
-			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
-			if (style.checkedOverFontColor != null) this.checkedOverFontColor = new Color(style.checkedOverFontColor);
-			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
+			font = style.font;
+
+			if (style.fontColor != null) fontColor = new Color(style.fontColor);
+			if (style.downFontColor != null) downFontColor = new Color(style.downFontColor);
+			if (style.overFontColor != null) overFontColor = new Color(style.overFontColor);
+			if (style.focusedFontColor != null) focusedFontColor = new Color(style.focusedFontColor);
+			if (style.disabledFontColor != null) disabledFontColor = new Color(style.disabledFontColor);
+
+			if (style.checkedFontColor != null) checkedFontColor = new Color(style.checkedFontColor);
+			if (style.checkedDownFontColor != null) checkedDownFontColor = new Color(style.checkedDownFontColor);
+			if (style.checkedOverFontColor != null) checkedOverFontColor = new Color(style.checkedOverFontColor);
+			if (style.checkedFocusedFontColor != null) checkedFocusedFontColor = new Color(style.checkedFocusedFontColor);
 		}
 	}
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,6 +44,8 @@ import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyHelpers;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyWorldInfo;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftRigidDynamicsWorld;
+
+import java.nio.Buffer;
 
 /** @author xoppa */
 public class SoftBodyTest extends BaseBulletTest {
@@ -96,10 +98,10 @@ public class SoftBodyTest extends BaseBulletTest {
 			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
 				ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final int vertSize = mesh.getVertexSize() / 4;
-		mesh.getVerticesBuffer().position(0);
-		mesh.getVerticesBuffer().limit(vertCount * vertSize);
-		mesh.getIndicesBuffer().position(0);
-		mesh.getIndicesBuffer().limit(faceCount * 3);
+		((Buffer) mesh.getVerticesBuffer()).position(0);
+		((Buffer) mesh.getVerticesBuffer()).limit(vertCount * vertSize);
+		((Buffer) mesh.getIndicesBuffer()).position(0);
+		((Buffer) mesh.getIndicesBuffer()).limit(faceCount * 3);
 		softBody.getVertices(mesh.getVerticesBuffer(), vertCount, mesh.getVertexSize(), 0);
 		softBody.getIndices(mesh.getIndicesBuffer(), faceCount);
 

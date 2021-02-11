@@ -29,6 +29,7 @@ public final class ParticleSystem implements RenderableProvider {
 	private static ParticleSystem instance;
 
 	/** @deprecated Please directly use the constructor */
+	@Deprecated
 	public static ParticleSystem get () {
 		if (instance == null) instance = new ParticleSystem();
 		return instance;

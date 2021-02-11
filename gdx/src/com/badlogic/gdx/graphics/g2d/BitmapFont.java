@@ -333,7 +333,7 @@ public class BitmapFont implements Disposable {
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
 			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g == null) continue;
-			g.xoffset += Math.round((maxAdvance - g.xadvance) / 2);
+			g.xoffset += (maxAdvance - g.xadvance) / 2;
 			g.xadvance = maxAdvance;
 			g.kerning = null;
 			g.fixedWidth = true;
@@ -659,7 +659,7 @@ public class BitmapFont implements Disposable {
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
-					spaceGlyph.id = (int)' ';
+					spaceGlyph.id = ' ';
 					Glyph xadvanceGlyph = getGlyph('l');
 					if (xadvanceGlyph == null) xadvanceGlyph = getFirstGlyph();
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
@@ -827,17 +827,18 @@ public class BitmapFont implements Disposable {
 		 *           square bracket.
 		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+			int max = end - start;
+			if (max == 0) return;
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
-			Glyph missingGlyph = this.missingGlyph;
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 
 			// Guess at number of glyphs needed.
-			glyphs.ensureCapacity(end - start);
-			xAdvances.ensureCapacity(end - start + 1);
+			glyphs.ensureCapacity(max);
+			run.xAdvances.ensureCapacity(max + 1);
 
-			while (start < end) {
+			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
@@ -845,18 +846,15 @@ public class BitmapFont implements Disposable {
 					if (missingGlyph == null) continue;
 					glyph = missingGlyph;
 				}
-
 				glyphs.add(glyph);
-
-				if (lastGlyph == null) // First glyph on line, adjust the position so it isn't drawn left of 0.
-					xAdvances.add(glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft);
-				else
-					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				xAdvances.add(lastGlyph == null // First glyph on line, adjust the position so it isn't drawn left of 0.
+					? (glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft)
+					: (lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
-			}
+			} while (start < end);
 			if (lastGlyph != null) {
 				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
@@ -868,13 +866,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			char ch = (char)glyphs.get(i).id;
+			Object[] glyphsItems = glyphs.items;
+			char ch = (char)((Glyph)glyphsItems[i]).id;
 			if (isWhitespace(ch)) return i;
 			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				ch = (char)glyphs.get(i).id;
-				if (isBreakChar(ch)) return i + 1;
-				if (isWhitespace(ch)) return i + 1;
+				ch = (char)((Glyph)glyphsItems[i]).id;
+				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
 			return 0;
 		}

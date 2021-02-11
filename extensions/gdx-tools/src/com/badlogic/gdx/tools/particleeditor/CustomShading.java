@@ -145,7 +145,7 @@ public class CustomShading {
 		hasMissingSamplers = false;
 		missingSamplerMessage = "";
 
-		shader.begin();
+		shader.bind();
 		for (int i = 0; i < extraTextures.size; i++) {
 			int unit = i + 1;
 			int location = shader.fetchUniformLocation("u_texture" + unit, false);
@@ -156,6 +156,5 @@ public class CustomShading {
 				missingSamplerMessage += "uniform sampler2D u_texture" + unit + " missing in shader program.\n";
 			}
 		}
-		shader.end();
 	}
 }

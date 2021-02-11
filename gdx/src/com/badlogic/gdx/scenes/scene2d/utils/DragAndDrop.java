@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
@@ -34,6 +35,7 @@ public class DragAndDrop {
 	Source dragSource;
 	Payload payload;
 	Actor dragActor;
+	boolean removeDragActor;
 	Target target;
 	boolean isValidTarget;
 	final Array<Target> targets = new Array();
@@ -77,17 +79,24 @@ public class DragAndDrop {
 
 				Stage stage = event.getStage();
 
-				if (dragActor != null) {
-					dragActor.remove(); // Remove so it cannot be hit (Touchable.disabled isn't enough).
-					dragActor = null;
+				// Move the drag actor away, so it cannot be hit.
+				Actor oldDragActor = dragActor;
+				float oldDragActorX = 0, oldDragActorY = 0;
+				if (oldDragActor != null) {
+					oldDragActorX = oldDragActor.getX();
+					oldDragActorY = oldDragActor.getY();
+					oldDragActor.setPosition(Integer.MAX_VALUE, Integer.MAX_VALUE);
 				}
+
+				float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
+				Actor hit = event.getStage().hit(stageX, stageY, true); // Prefer touchable actors.
+				if (hit == null) hit = event.getStage().hit(stageX, stageY, false);
+
+				if (oldDragActor != null) oldDragActor.setPosition(oldDragActorX, oldDragActorY);
 
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
-				float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
-				Actor hit = event.getStage().hit(stageX, stageY, true); // Prefer touchable actors.
-				if (hit == null) hit = event.getStage().hit(stageX, stageY, false);
 				if (hit != null) {
 					for (int i = 0, n = targets.size; i < n; i++) {
 						Target target = targets.get(i);
@@ -97,21 +106,29 @@ public class DragAndDrop {
 						break;
 					}
 				}
+
 				// If over a new target, notify the former target that it's being left behind.
 				if (newTarget != target) {
 					if (target != null) target.reset(source, payload);
 					target = newTarget;
 				}
+
 				// Notify new target of drag.
 				if (newTarget != null) isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 
-				// Add and position the drag actor.
+				// Determine the drag actor, remove the old one if it was added by DragAndDrop, and add the new one.
 				Actor actor = null;
 				if (target != null) actor = isValidTarget ? payload.validDragActor : payload.invalidDragActor;
 				if (actor == null) actor = payload.dragActor;
-				dragActor = actor;
+				if (actor != oldDragActor) {
+					if (oldDragActor != null && removeDragActor) oldDragActor.remove();
+					dragActor = actor;
+					removeDragActor = actor.getStage() == null; // Only remove later if not already in the stage now.
+					if (removeDragActor) stage.addActor(actor);
+				}
 				if (actor == null) return;
-				stage.addActor(actor);
+
+				// Position the drag actor.
 				float actorX = event.getStageX() - actor.getWidth() + dragActorX;
 				float actorY = event.getStageY() + dragActorY;
 				if (keepWithinStage) {
@@ -129,7 +146,7 @@ public class DragAndDrop {
 				if (payload == null) return;
 
 				if (System.currentTimeMillis() < dragValidTime) isValidTarget = false;
-				if (dragActor != null) dragActor.remove();
+				if (dragActor != null && removeDragActor) dragActor.remove();
 				if (isValidTarget) {
 					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
 					target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
@@ -206,17 +223,17 @@ public class DragAndDrop {
 	}
 
 	/** Returns the current drag actor, or null. */
-	public Actor getDragActor () {
+	public @Null Actor getDragActor () {
 		return dragActor;
 	}
 
 	/** Returns the current drag payload, or null. */
-	public Payload getDragPayload () {
+	public @Null Payload getDragPayload () {
 		return payload;
 	}
 
 	/** Returns the current drag source, or null. */
-	public Source getDragSource () {
+	public @Null Source getDragSource () {
 		return dragSource;
 	}
 
@@ -258,7 +275,7 @@ public class DragAndDrop {
 
 		/** Called when a drag is started on the source. The coordinates are in the source's local coordinate system.
 		 * @return If null the drag will not affect any targets. */
-		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
+		abstract public @Null Payload dragStart (InputEvent event, float x, float y, int pointer);
 
 		/** Called repeatedly during a drag which started on this source. */
 		public void drag (InputEvent event, float x, float y, int pointer) {
@@ -267,7 +284,7 @@ public class DragAndDrop {
 		/** Called when a drag for the source is stopped. The coordinates are in the source's local coordinate system.
 		 * @param payload null if dragStart returned null.
 		 * @param target null if not dropped on a valid target. */
-		public void dragStop (InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+		public void dragStop (InputEvent event, float x, float y, int pointer, @Null Payload payload, @Null Target target) {
 		}
 
 		public Actor getActor () {
@@ -307,41 +324,41 @@ public class DragAndDrop {
 	}
 
 	/** The payload of a drag and drop operation. Actors can be optionally provided to follow the cursor and change when over a
-	 * target. Such Actors will be added and removed from the stage automatically during the drag operation. Care should be taken
-	 * when using the source Actor as a payload drag actor. */
+	 * target. Such actors will be added the stage automatically during the drag operation as necessary and they will only be
+	 * removed from the stage if they were added automatically. A source actor can be used a payload drag actor. */
 	static public class Payload {
-		Actor dragActor, validDragActor, invalidDragActor;
-		Object object;
+		@Null Actor dragActor, validDragActor, invalidDragActor;
+		@Null Object object;
 
-		public void setDragActor (Actor dragActor) {
+		public void setDragActor (@Null Actor dragActor) {
 			this.dragActor = dragActor;
 		}
 
-		public Actor getDragActor () {
+		public @Null Actor getDragActor () {
 			return dragActor;
 		}
 
-		public void setValidDragActor (Actor validDragActor) {
+		public void setValidDragActor (@Null Actor validDragActor) {
 			this.validDragActor = validDragActor;
 		}
 
-		public Actor getValidDragActor () {
+		public @Null Actor getValidDragActor () {
 			return validDragActor;
 		}
 
-		public void setInvalidDragActor (Actor invalidDragActor) {
+		public void setInvalidDragActor (@Null Actor invalidDragActor) {
 			this.invalidDragActor = invalidDragActor;
 		}
 
-		public Actor getInvalidDragActor () {
+		public @Null Actor getInvalidDragActor () {
 			return invalidDragActor;
 		}
 
-		public Object getObject () {
+		public @Null Object getObject () {
 			return object;
 		}
 
-		public void setObject (Object object) {
+		public void setObject (@Null Object object) {
 			this.object = object;
 		}
 	}

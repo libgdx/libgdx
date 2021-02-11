@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
 
 /** A button with a child {@link Image} and {@link Label}.
@@ -35,17 +36,17 @@ public class ImageTextButton extends Button {
 	private Label label;
 	private ImageTextButtonStyle style;
 
-	public ImageTextButton (String text, Skin skin) {
+	public ImageTextButton (@Null String text, Skin skin) {
 		this(text, skin.get(ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, Skin skin, String styleName) {
+	public ImageTextButton (@Null String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, ImageTextButtonStyle style) {
+	public ImageTextButton (@Null String text, ImageTextButtonStyle style) {
 		super(style);
 		this.style = style;
 
@@ -67,14 +68,16 @@ public class ImageTextButton extends Button {
 
 	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof ImageTextButtonStyle)) throw new IllegalArgumentException("style must be a ImageTextButtonStyle.");
-		super.setStyle(style);
 		this.style = (ImageTextButtonStyle)style;
+		super.setStyle(style);
+
 		if (image != null) updateImage();
+
 		if (label != null) {
 			ImageTextButtonStyle textButtonStyle = (ImageTextButtonStyle)style;
 			LabelStyle labelStyle = label.getStyle();
 			labelStyle.font = textButtonStyle.font;
-			labelStyle.fontColor = textButtonStyle.fontColor;
+			labelStyle.fontColor = getFontColor();
 			label.setStyle(labelStyle);
 		}
 	}
@@ -83,36 +86,60 @@ public class ImageTextButton extends Button {
 		return style;
 	}
 
-	/** Updates the Image with the appropriate Drawable from the style before it is drawn. */
+	/** Returns the appropriate image drawable from the style based on the current button state. */
+	protected @Null Drawable getImageDrawable () {
+		if (isDisabled() && style.imageDisabled != null) return style.imageDisabled;
+		if (isPressed()) {
+			if (isChecked() && style.imageCheckedDown != null) return style.imageCheckedDown;
+			if (style.imageDown != null) return style.imageDown;
+		}
+		if (isOver()) {
+			if (isChecked()) {
+				if (style.imageCheckedOver != null) return style.imageCheckedOver;
+			} else {
+				if (style.imageOver != null) return style.imageOver;
+			}
+		}
+		if (isChecked()) {
+			if (style.imageChecked != null) return style.imageChecked;
+			if (isOver() && style.imageOver != null) return style.imageOver;
+		}
+		return style.imageUp;
+	}
+
+	/** Sets the image drawable based on the current button state. The default implementation sets the image drawable using
+	 * {@link #getImageDrawable()}. */
 	protected void updateImage () {
-		Drawable drawable = null;
-		if (isDisabled() && style.imageDisabled != null)
-			drawable = style.imageDisabled;
-		else if (isPressed() && style.imageDown != null)
-			drawable = style.imageDown;
-		else if (isChecked && style.imageChecked != null)
-			drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
-		else if (isOver() && style.imageOver != null)
-			drawable = style.imageOver;
-		else if (style.imageUp != null) //
-			drawable = style.imageUp;
-		image.setDrawable(drawable);
+		image.setDrawable(getImageDrawable());
+	}
+
+	/** Returns the appropriate label font color from the style based on the current button state. */
+	protected @Null Color getFontColor () {
+		if (isDisabled() && style.disabledFontColor != null) return style.disabledFontColor;
+		if (isPressed()) {
+			if (isChecked() && style.checkedDownFontColor != null) return style.checkedDownFontColor;
+			if (style.downFontColor != null) return style.downFontColor;
+		}
+		if (isOver()) {
+			if (isChecked()) {
+				if (style.checkedOverFontColor != null) return style.checkedOverFontColor;
+			} else {
+				if (style.overFontColor != null) return style.overFontColor;
+			}
+		}
+		boolean focused = hasKeyboardFocus();
+		if (isChecked()) {
+			if (focused && style.checkedFocusedFontColor != null) return style.checkedFocusedFontColor;
+			if (style.checkedFontColor != null) return style.checkedFontColor;
+			if (isOver() && style.overFontColor != null) return style.overFontColor;
+		}
+		if (focused && style.focusedFontColor != null) return style.focusedFontColor;
+		return style.fontColor;
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
-		Color fontColor;
-		if (isDisabled() && style.disabledFontColor != null)
-			fontColor = style.disabledFontColor;
-		else if (isPressed() && style.downFontColor != null)
-			fontColor = style.downFontColor;
-		else if (isChecked && style.checkedFontColor != null)
-			fontColor = (isOver() && style.checkedOverFontColor != null) ? style.checkedOverFontColor : style.checkedFontColor;
-		else if (isOver() && style.overFontColor != null)
-			fontColor = style.overFontColor;
-		else
-			fontColor = style.fontColor;
-		if (fontColor != null) label.getStyle().fontColor = fontColor;
+		label.getStyle().fontColor = getFontColor();
 		super.draw(batch, parentAlpha);
 	}
 
@@ -158,24 +185,26 @@ public class ImageTextButton extends Button {
 	/** The style for an image text button, see {@link ImageTextButton}.
 	 * @author Nathan Sweet */
 	static public class ImageTextButtonStyle extends TextButtonStyle {
-		/** Optional. */
-		public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+		public @Null Drawable imageUp, imageDown, imageOver, imageDisabled;
+		public @Null Drawable imageChecked, imageCheckedDown, imageCheckedOver;
 
 		public ImageTextButtonStyle () {
 		}
 
-		public ImageTextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+		public ImageTextButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked, BitmapFont font) {
 			super(up, down, checked, font);
 		}
 
 		public ImageTextButtonStyle (ImageTextButtonStyle style) {
 			super(style);
-			if (style.imageUp != null) this.imageUp = style.imageUp;
-			if (style.imageDown != null) this.imageDown = style.imageDown;
-			if (style.imageOver != null) this.imageOver = style.imageOver;
-			if (style.imageChecked != null) this.imageChecked = style.imageChecked;
-			if (style.imageCheckedOver != null) this.imageCheckedOver = style.imageCheckedOver;
-			if (style.imageDisabled != null) this.imageDisabled = style.imageDisabled;
+			imageUp = style.imageUp;
+			imageDown = style.imageDown;
+			imageOver = style.imageOver;
+			imageDisabled = style.imageDisabled;
+
+			imageChecked = style.imageChecked;
+			imageCheckedDown = style.imageCheckedDown;
+			imageCheckedOver = style.imageCheckedOver;
 		}
 
 		public ImageTextButtonStyle (TextButtonStyle style) {

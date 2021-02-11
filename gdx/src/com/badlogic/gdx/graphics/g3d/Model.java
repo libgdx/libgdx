@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,17 +55,19 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import java.nio.Buffer;
+
 /** A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical part in form
  * of a {@link MeshPart} and {@link Material}. Mesh parts reference subsets of vertices in one of the meshes of the model.
  * Animations can be applied to nodes, to modify their transform (translation, rotation, scale) over time.</p>
- * 
+ *
  * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional transform to position the
  * model in the world, and allows modification of materials and nodes without destroying the original model. The original model is
  * the owner of any meshes and textures, all instances created from the model share these resources. Disposing the model will
  * automatically make all instances invalid!</p>
- * 
+ *
  * A model is created from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
- * 
+ *
  * @author badlogic, xoppa */
 public class Model implements Disposable {
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows
@@ -207,13 +209,11 @@ public class Model implements Disposable {
 
 				if (meshPart == null || meshMaterial == null) throw new GdxRuntimeException("Invalid node: " + node.id);
 
-				if (meshPart != null && meshMaterial != null) {
-					NodePart nodePart = new NodePart();
-					nodePart.meshPart = meshPart;
-					nodePart.material = meshMaterial;
-					node.parts.add(nodePart);
-					if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
-				}
+				NodePart nodePart = new NodePart();
+				nodePart.meshPart = meshPart;
+				nodePart.material = meshMaterial;
+				node.parts.add(nodePart);
+				if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
 			}
 		}
 
@@ -247,7 +247,7 @@ public class Model implements Disposable {
 
 		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
 		int offset = 0;
-		mesh.getIndicesBuffer().clear();
+		((Buffer) mesh.getIndicesBuffer()).clear();
 		for (ModelMeshPart part : modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
@@ -261,7 +261,7 @@ public class Model implements Disposable {
 			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
-		mesh.getIndicesBuffer().position(0);
+		((Buffer) mesh.getIndicesBuffer()).position(0);
 		for (MeshPart part : meshParts)
 			part.update();
 	}
@@ -360,7 +360,7 @@ public class Model implements Disposable {
 	 * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node. Then each
 	 * {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the local transform of each
 	 * Node. Finally, the animation bone matrices are updated accordingly.</p>
-	 * 
+	 *
 	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
 	 * was modified. */
 	public void calculateTransforms () {

@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class BitmapFontMetricsTest extends GdxTest {
 	private SpriteBatch spriteBatch;
@@ -36,7 +36,7 @@ public class BitmapFontMetricsTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		atlas = new TextureAtlas("data/pack");
+		atlas = new TextureAtlas("data/pack.atlas");
 		smallFont = new BitmapFont();
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), atlas.findRegion("verdana39"), false);
 		font = new BitmapFont(Gdx.files.internal("data/arial-32-pad.fnt"), false);
@@ -50,8 +50,7 @@ public class BitmapFontMetricsTest extends GdxTest {
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(1, 1, 1, 1);
 		spriteBatch.begin();
 
 		// String text = "Sphinx of black quartz, judge my vow.";

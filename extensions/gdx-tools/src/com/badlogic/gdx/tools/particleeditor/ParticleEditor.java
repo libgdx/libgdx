@@ -20,9 +20,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -41,7 +38,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -350,11 +346,11 @@ public class ParticleEditor extends JFrame {
 			}
 
 			@Override
-			public boolean scrolled (int amount) {
-				worldCamera.zoom += amount * 0.01f;
+			public boolean scrolled (float amountX, float amountY) {
+				worldCamera.zoom += amountY * 0.01f;
 				worldCamera.zoom = MathUtils.clamp(worldCamera.zoom, 0.01f, 5000);
 				worldCamera.update();
-				return super.scrolled(amount);
+				return super.scrolled(amountX, amountY);
 			}
 
 			@Override
@@ -599,7 +595,7 @@ public class ParticleEditor extends JFrame {
 		}
 
 		@Override
-		public boolean scrolled (int amount) {
+		public boolean scrolled (float amountX, float amountY) {
 			return false;
 		}
 

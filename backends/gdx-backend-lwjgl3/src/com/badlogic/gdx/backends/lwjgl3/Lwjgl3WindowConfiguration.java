@@ -39,7 +39,7 @@ public class Lwjgl3WindowConfiguration {
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
 	boolean vSyncEnabled = true;
@@ -126,8 +126,8 @@ public class Lwjgl3WindowConfiguration {
 	}
 
 	/**
-	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for both coordinates for centered.
+	 * Sets the position of the window in windowed mode.
+	 * Default -1 for both coordinates for centered on primary monitor.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;

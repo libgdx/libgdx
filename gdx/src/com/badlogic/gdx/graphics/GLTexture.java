@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 /** Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.
@@ -231,8 +232,8 @@ public abstract class GLTexture implements Disposable {
 			return maxAnisotropicFilterLevel;
 		if (Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")) {
 			FloatBuffer buffer = BufferUtils.newFloatBuffer(16);
-			buffer.position(0);
-			buffer.limit(buffer.capacity());
+			((Buffer) buffer).position(0);
+			((Buffer) buffer).limit(buffer.capacity());
 			Gdx.gl20.glGetFloatv(GL20.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, buffer);
 			return maxAnisotropicFilterLevel = buffer.get(0);
 		}
@@ -255,7 +256,7 @@ public abstract class GLTexture implements Disposable {
 	protected static void uploadImageData (int target, TextureData data) {
 		uploadImageData(target, data, 0);
 	}
-	
+
 	public static void uploadImageData (int target, TextureData data, int miplevel) {
 		if (data == null) {
 			// FIXME: remove texture on target?

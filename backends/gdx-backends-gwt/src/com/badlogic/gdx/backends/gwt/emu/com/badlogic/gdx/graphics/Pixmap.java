@@ -17,25 +17,27 @@
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.backends.gwt.GwtApplication;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.aria.client.ImgRole;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
-import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.VideoElement;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -83,6 +85,32 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = BufferUtils.newByteBuffer(h * w * 4);
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+		pixmap.setPixels(pixels);
+		return pixmap;
+	}
+
+	private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
+		var imgData = ctx.createImageData(width, height);
+		var data = imgData.data;
+
+		for (var i = 0, len = width * height * 4; i < len; i++) {
+			data[i] = pixels[i] & 0xff;
+		}
+		ctx.putImageData(imgData, 0, 0);
+	}-*/;
+
 	int width;
 	int height;
 	Format format;
@@ -98,12 +126,32 @@ public class Pixmap implements Disposable {
 	Filter filter = Filter.BiLinear;
 	CanvasPixelArray pixels;
 	private ImageElement imageElement;
+	private VideoElement videoElement;
 
 	public Pixmap (FileHandle file) {
 		this(((GwtFileHandle)file).preloader.images.get(file.path()));
 		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 	}
-	
+
+	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+		new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
+			@Override
+			public void onProgress(double amount) {
+				// nothing to do
+			}
+
+			@Override
+			public void onFailure() {
+				responseListener.downloadFailed(new Exception("Failed to download image"));
+			}
+
+			@Override
+			public void onSuccess(ImageElement result) {
+				responseListener.downloadComplete(new Pixmap(result));
+			}
+		});
+	}
+
 	public Context2d getContext() {
 		ensureCanvasExists();
 		return context;
@@ -117,6 +165,10 @@ public class Pixmap implements Disposable {
 		this(-1, -1, img);
 	}
 
+	public Pixmap (VideoElement vid) {
+		this(-1, -1, vid);
+	}
+
 	public Pixmap (int width, int height, Format format) {
 		this(width, height, (ImageElement)null);
 	}
@@ -125,6 +177,18 @@ public class Pixmap implements Disposable {
 		this.imageElement = imageElement;
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
+		this.format = Format.RGBA8888;
+
+		buffer = BufferUtils.newIntBuffer(1);
+		id = nextId++;
+		buffer.put(0, id);
+		pixmaps.put(id, this);
+	}
+
+	private Pixmap(int width, int height, VideoElement videoElement) {
+		this.videoElement = videoElement;
+		this.width = videoElement != null ? videoElement.getWidth() : width;
+		this.height = videoElement != null ? videoElement.getHeight() : height;
 		this.format = Format.RGBA8888;
 
 		buffer = BufferUtils.newIntBuffer(1);
@@ -198,6 +262,13 @@ public class Pixmap implements Disposable {
 		return buffer;
 	}
 
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		if (width == 0 || height == 0) return;
+		setImageData(((HasArrayBufferView)pixels).getTypedArray(), width, height, getContext());
+	}
+
 	@Override
 	public void dispose () {
 		pixmaps.remove(id);
@@ -216,6 +287,11 @@ public class Pixmap implements Disposable {
 				context.drawImage(imageElement, 0, 0);
 				context.setGlobalCompositeOperation(getComposite());
 			}
+			if (videoElement != null) {
+				context.setGlobalCompositeOperation(Composite.COPY);
+				context.drawImage(videoElement, 0, 0);
+				context.setGlobalCompositeOperation(getComposite());
+			}
 		}
 	}
 
@@ -225,6 +301,14 @@ public class Pixmap implements Disposable {
 
 	public ImageElement getImageElement () {
 		return imageElement;
+	}
+
+	public boolean canUseVideoElement () {
+		return canvas == null && videoElement != null;
+	}
+
+	public VideoElement getVideoElement () {
+		return videoElement;
 	}
 
 	/** Sets the color for the following drawing operations
@@ -542,5 +626,9 @@ public class Pixmap implements Disposable {
 	private enum DrawType {
 		FILL, STROKE
 	}
-	
+
+	public interface DownloadPixmapResponseListener {
+		void downloadComplete(Pixmap pixmap);
+		void downloadFailed(Throwable t);
+	}
 }

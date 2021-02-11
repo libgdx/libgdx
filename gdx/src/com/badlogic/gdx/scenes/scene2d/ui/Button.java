@@ -26,8 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -44,7 +44,6 @@ import com.badlogic.gdx.utils.Pools;
 public class Button extends Table implements Disableable {
 	private ButtonStyle style;
 	boolean isChecked, isDisabled;
-	boolean focused;
 	ButtonGroup buttonGroup;
 	private ClickListener clickListener;
 	private boolean programmaticChangeEvents = true;
@@ -94,22 +93,17 @@ public class Button extends Table implements Disableable {
 				setChecked(!isChecked, true);
 			}
 		});
-		addListener(new FocusListener() {
-			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
-				Button.this.focused = focused;
-			}
-		});
 	}
 
-	public Button (Drawable up) {
+	public Button (@Null Drawable up) {
 		this(new ButtonStyle(up, null, null));
 	}
 
-	public Button (Drawable up, Drawable down) {
+	public Button (@Null Drawable up, @Null Drawable down) {
 		this(new ButtonStyle(up, down, null));
 	}
 
-	public Button (Drawable up, Drawable down, Drawable checked) {
+	public Button (@Null Drawable up, @Null Drawable down, @Null Drawable checked) {
 		this(new ButtonStyle(up, down, checked));
 	}
 
@@ -164,8 +158,8 @@ public class Button extends Table implements Disableable {
 		this.isDisabled = isDisabled;
 	}
 
-	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}, event will be fired only
-	 * when user clicked the button */
+	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}. The event will only be
+	 * fired only when the user clicks the button */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
@@ -174,27 +168,7 @@ public class Button extends Table implements Disableable {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
-		Drawable background = null;
-		if (isPressed() && !isDisabled())
-			background = style.down == null ? style.up : style.down;
-		else {
-			if (isDisabled() && style.disabled != null)
-				background = style.disabled;
-			else if (isChecked && style.checked != null) {
-				if (isOver() && style.checkedOver != null)
-					background = style.checkedOver;
-				else if (focused && style.checkedFocused != null)
-					background = style.checkedFocused;
-				else
-					background = style.checked;
-			} else if (isOver() && style.over != null)
-				background = style.over;
-			else if (focused && style.focused != null)
-				background = style.focused;
-			else
-				background = style.up;
-		}
-		setBackground(background);
+		setBackground(getBackgroundDrawable());
 	}
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
@@ -204,61 +178,65 @@ public class Button extends Table implements Disableable {
 	}
 
 	/** @return May be null. */
-	public ButtonGroup getButtonGroup () {
+	public @Null ButtonGroup getButtonGroup () {
 		return buttonGroup;
+	}
+
+	/** Returns appropriate background drawable from the style based on the current button state. */
+	protected @Null Drawable getBackgroundDrawable () {
+		if (isDisabled() && style.disabled != null) return style.disabled;
+		if (isPressed()) {
+			if (isChecked() && style.checkedDown != null) return style.checkedDown;
+			if (style.down != null) return style.down;
+		}
+		if (isOver()) {
+			if (isChecked()) {
+				if (style.checkedOver != null) return style.checkedOver;
+			} else {
+				if (style.over != null) return style.over;
+			}
+		}
+		boolean focused = hasKeyboardFocus();
+		if (isChecked()) {
+			if (focused && style.checkedFocused != null) return style.checkedFocused;
+			if (style.checked != null) return style.checked;
+			if (isOver() && style.over != null) return style.over;
+		}
+		if (focused && style.focused != null) return style.focused;
+		return style.up;
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
-		boolean isDisabled = isDisabled();
-		boolean isPressed = isPressed();
-		boolean isChecked = isChecked();
-		boolean isOver = isOver();
-
-		Drawable background = null;
-		if (isDisabled && style.disabled != null) {
-			background = style.disabled;
-		} else if (isPressed && style.down != null) {
-			background = style.down;
-		} else if (isChecked && style.checked != null) {
-			if (style.checkedOver != null && isOver) {
-				background = style.checkedOver;
-			} else if (style.checkedFocused != null && focused) {
-				background = style.checkedFocused;
-			} else {
-				background = style.checked;
-			}
-		} else if (isOver && style.over != null) {
-			background = style.over;
-		} else if (focused && style.focused != null) {
-			background = style.focused;
-		} else if (style.up != null) {
-			background = style.up;
-		}
-		setBackground(background);
+		setBackground(getBackgroundDrawable());
 
 		float offsetX = 0, offsetY = 0;
-		if (isPressed && !isDisabled) {
+		if (isPressed() && !isDisabled()) {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
-		} else if (isChecked && !isDisabled) {
+		} else if (isChecked() && !isDisabled()) {
 			offsetX = style.checkedOffsetX;
 			offsetY = style.checkedOffsetY;
 		} else {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
+		boolean offset = offsetX != 0 || offsetY != 0;
 
 		Array<Actor> children = getChildren();
-		for (int i = 0; i < children.size; i++)
-			children.get(i).moveBy(offsetX, offsetY);
+		if (offset) {
+			for (int i = 0; i < children.size; i++)
+				children.get(i).moveBy(offsetX, offsetY);
+		}
 		super.draw(batch, parentAlpha);
-		for (int i = 0; i < children.size; i++)
-			children.get(i).moveBy(-offsetX, -offsetY);
+		if (offset) {
+			for (int i = 0; i < children.size; i++)
+				children.get(i).moveBy(-offsetX, -offsetY);
+		}
 
 		Stage stage = getStage();
-		if (stage != null && stage.getActionsRequestRendering() && isPressed != clickListener.isPressed())
+		if (stage != null && stage.getActionsRequestRendering() && isPressed() != clickListener.isPressed())
 			Gdx.graphics.requestRendering();
 	}
 
@@ -289,35 +267,37 @@ public class Button extends Table implements Disableable {
 	/** The style for a button, see {@link Button}.
 	 * @author mzechner */
 	static public class ButtonStyle {
-		/** Optional. */
-		public Drawable up, down, over, focused, checked, checkedOver, checkedFocused, disabled;
-		/** Optional. */
+		public @Null Drawable up, down, over, focused, disabled;
+		public @Null Drawable checked, checkedOver, checkedDown, checkedFocused;
 		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (Drawable up, Drawable down, Drawable checked) {
+		public ButtonStyle (@Null Drawable up, @Null Drawable down, @Null Drawable checked) {
 			this.up = up;
 			this.down = down;
 			this.checked = checked;
 		}
 
 		public ButtonStyle (ButtonStyle style) {
-			this.up = style.up;
-			this.down = style.down;
-			this.over = style.over;
-			this.focused = style.focused;
-			this.checked = style.checked;
-			this.checkedOver = style.checkedOver;
-			this.checkedFocused = style.checkedFocused;
-			this.disabled = style.disabled;
-			this.pressedOffsetX = style.pressedOffsetX;
-			this.pressedOffsetY = style.pressedOffsetY;
-			this.unpressedOffsetX = style.unpressedOffsetX;
-			this.unpressedOffsetY = style.unpressedOffsetY;
-			this.checkedOffsetX = style.checkedOffsetX;
-			this.checkedOffsetY = style.checkedOffsetY;
+			up = style.up;
+			down = style.down;
+			over = style.over;
+			focused = style.focused;
+			disabled = style.disabled;
+
+			checked = style.checked;
+			checkedOver = style.checkedOver;
+			checkedDown = style.checkedDown;
+			checkedFocused = style.checkedFocused;
+
+			pressedOffsetX = style.pressedOffsetX;
+			pressedOffsetY = style.pressedOffsetY;
+			unpressedOffsetX = style.unpressedOffsetX;
+			unpressedOffsetY = style.unpressedOffsetY;
+			checkedOffsetX = style.checkedOffsetX;
+			checkedOffsetY = style.checkedOffsetY;
 		}
 	}
 }

@@ -55,7 +55,6 @@ PixmapIO.java
 ETC1.java
 ETC1TextureData.java
 KTXTextureData.java
-ScreenUtils.java
 RemoteInput.java
 RemoteSender.java
 AtomicQueue.java

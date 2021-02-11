@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /** Provides utility methods to copy streams. */
@@ -73,9 +74,9 @@ public final class StreamUtils {
 		while ((bytesRead = input.read(buffer)) != -1) {
 			BufferUtils.copy(buffer, 0, output, bytesRead);
 			total += bytesRead;
-			output.position(startPosition + total);
+			((Buffer) output).position(startPosition + total);
 		}
-		output.position(startPosition);
+		((Buffer) output).position(startPosition);
 		return total;
 	}
 
@@ -106,7 +107,7 @@ public final class StreamUtils {
 	/** Copy the data from an {@link InputStream} to a string using the specified charset.
 	 * @param estimatedSize Used to allocate the output buffer to possibly avoid an array copy.
 	 * @param charset May be null to use the platform's default charset. */
-	public static String copyStreamToString (InputStream input, int estimatedSize, String charset) throws IOException {
+	public static String copyStreamToString (InputStream input, int estimatedSize, @Null String charset) throws IOException {
 		InputStreamReader reader = charset == null ? new InputStreamReader(input) : new InputStreamReader(input, charset);
 		StringWriter writer = new StringWriter(Math.max(0, estimatedSize));
 		char[] buffer = new char[DEFAULT_BUFFER_SIZE];

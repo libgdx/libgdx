@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -271,13 +272,13 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Returns the first selected item, or null. */
-	public T getSelected () {
+	public @Null T getSelected () {
 		return selection.first();
 	}
 
 	/** Sets the selection to only the passed item, if it is a possible choice.
 	 * @param item May be null. */
-	public void setSelected (T item) {
+	public void setSelected (@Null T item) {
 		if (items.contains(item, false))
 			selection.set(item);
 		else if (selection.getRequired() && items.size > 0)
@@ -315,7 +316,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** @return null if not over an item. */
-	public T getItemAt (float y) {
+	public @Null T getItemAt (float y) {
 		int index = getItemIndexAt(y);
 		if (index == -1) return null;
 		return items.get(index);
@@ -399,7 +400,7 @@ public class List<T> extends Widget implements Cullable {
 		return object.toString();
 	}
 
-	public void setCullingArea (Rectangle cullingArea) {
+	public void setCullingArea (@Null Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
@@ -431,8 +432,7 @@ public class List<T> extends Widget implements Cullable {
 		public Color fontColorSelected = new Color(1, 1, 1, 1);
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
-		/** Optional. */
-		public Drawable down, over, background;
+		public @Null Drawable down, over, background;
 
 		public ListStyle () {
 		}
@@ -445,13 +445,14 @@ public class List<T> extends Widget implements Cullable {
 		}
 
 		public ListStyle (ListStyle style) {
-			this.font = style.font;
-			this.fontColorSelected.set(style.fontColorSelected);
-			this.fontColorUnselected.set(style.fontColorUnselected);
-			this.selection = style.selection;
-			this.down = style.down;
-			this.over = style.over;
-			this.background = style.background;
+			font = style.font;
+			fontColorSelected.set(style.fontColorSelected);
+			fontColorUnselected.set(style.fontColorUnselected);
+			selection = style.selection;
+
+			down = style.down;
+			over = style.over;
+			background = style.background;
 		}
 	}
 }

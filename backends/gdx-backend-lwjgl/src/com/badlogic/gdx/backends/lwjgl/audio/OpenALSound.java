@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl.audio;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -26,10 +27,10 @@ import static org.lwjgl.openal.AL10.*;
 /** @author Nathan Sweet */
 public class OpenALSound implements Sound {
 	private int bufferID = -1;
-	private final OpenALAudio audio;
+	private final OpenALLwjglAudio audio;
 	private float duration;
 
-	public OpenALSound (OpenALAudio audio) {
+	public OpenALSound (OpenALLwjglAudio audio) {
 		this.audio = audio;
 	}
 
@@ -41,7 +42,7 @@ public class OpenALSound implements Sound {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
 		buffer.order(ByteOrder.nativeOrder());
 		buffer.put(pcm, 0, bytes);
-		buffer.flip();
+		((Buffer) buffer).flip();
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();

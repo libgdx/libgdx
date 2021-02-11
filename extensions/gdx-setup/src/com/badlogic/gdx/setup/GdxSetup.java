@@ -34,7 +34,7 @@ import com.badlogic.gdx.setup.Executor.CharCallback;
  * @author Tomski */
 public class GdxSetup {
 	public static boolean isSdkLocationValid (String sdkLocation) {
-		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
+		return new File(sdkLocation, "platforms").exists();
 	}
 
 	public static boolean isEmptyDirectory (String destination) {
@@ -80,7 +80,7 @@ public class GdxSetup {
 		}
 
 		int newestLocalApi = getLatestApi(apis);
-		if (newestLocalApi > Integer.valueOf(DependencyBank.androidAPILevel)) {
+		if (newestLocalApi > Integer.parseInt(DependencyBank.androidAPILevel)) {
 			int value = JOptionPane.showConfirmDialog(null,
 				"You have a more recent Android API than the recommended.\nDo you want to use your more recent version?", "Warning!",
 				JOptionPane.YES_NO_OPTION);
@@ -90,7 +90,7 @@ public class GdxSetup {
 				DependencyBank.androidAPILevel = String.valueOf(newestLocalApi);
 			}
 		} else {
-			if (newestLocalApi != Integer.valueOf(DependencyBank.androidAPILevel)) {
+			if (newestLocalApi != Integer.parseInt(DependencyBank.androidAPILevel)) {
 				JOptionPane.showMessageDialog(null, "Please update your Android SDK, you need the Android API: "
 					+ DependencyBank.androidAPILevel);
 				return false;
@@ -191,14 +191,14 @@ public class GdxSetup {
 			}
 		}
 	}
-	
+
 	private static boolean versionsEqual(int[] testVersion, int[] targetVersion) {
 		for (int i = 0; i < 3; i++) {
 			if (testVersion[i] != targetVersion[i]) return false;
 		}
 		return true;
 	}
-	
+
 	private static boolean compareVersions(int[] version, int[] testVersion) {
 		if (testVersion[0] > version[0]) {
 			return true;
@@ -297,22 +297,12 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
 			project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
 			project.files.add(new ProjectFile("html/war/refresh.png", "html/webapp/refresh.png", false));
-			project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
-			project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
 			project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
 		}
 
 		// ios robovm
 		if (builder.modules.contains(ProjectType.IOS)) {
 			project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-			project.files.add(new ProjectFile("ios/data/Default.png", false));
-			project.files.add(new ProjectFile("ios/data/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/Contents.json", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/Contents.json", false));
@@ -333,54 +323,16 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
-
-
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Base.lproj/LaunchScreen.storyboard", false));
 
 			project.files.add(new ProjectFile("ios/build.gradle", true));
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
-		}
-
-		if(builder.modules.contains(ProjectType.IOSMOE)) {			
-			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
-
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
-
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info.plist", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
-			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -394,6 +346,7 @@ public class GdxSetup {
 		values.put("%ASSET_PATH%", assetPath);
 		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
+		values.put("%MIN_API_LEVEL%", DependencyBank.androidMinAPILevel);
 		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder));
@@ -510,7 +463,7 @@ public class GdxSetup {
 			throw new RuntimeException("Couldn't create dir '" + outFile.getAbsolutePath() + "'");
 		}
 
-		boolean isTemp = file instanceof TemporaryProjectFile ? true : false;
+		boolean isTemp = file instanceof TemporaryProjectFile;
 
 		if (file.isTemplate) {
 			String txt;
@@ -605,7 +558,7 @@ public class GdxSetup {
 
 	private String parseGwtInherits (ProjectBuilder builder) {
 		String parsed = "";
-		
+
 		for (Dependency dep : builder.dependencies) {
 			if (dep.getGwtInherits() != null) {
 				for (String inherit : dep.getGwtInherits()) {
@@ -613,7 +566,7 @@ public class GdxSetup {
 				}
 			}
 		}
-		
+
 		return parsed;
 	}
 
@@ -621,7 +574,6 @@ public class GdxSetup {
 		String argString = "";
 		if (args == null) return argString;
 		for (String argument : args) {
-			if (argument.equals("afterEclipseImport") && !modules.contains(ProjectType.DESKTOP)) continue;
 			argString += " " + argument;
 		}
 		return argString;
@@ -669,7 +621,6 @@ public class GdxSetup {
 				  projects.add(ProjectType.DESKTOP);
 				  projects.add(ProjectType.ANDROID);
 				  projects.add(ProjectType.IOS);
-				  projects.add(ProjectType.IOSMOE);
 				  projects.add(ProjectType.HTML);
 			 } else {
 				  if (!excludedModules.contains("desktop"))
@@ -678,8 +629,6 @@ public class GdxSetup {
 						projects.add(ProjectType.ANDROID);
 				  if (!excludedModules.contains("ios"))
 						projects.add(ProjectType.IOS);
-				  if (!excludedModules.contains("iosmoe"))
-					  	projects.add(ProjectType.IOSMOE);
 				  if (!excludedModules.contains("html"))
 						projects.add(ProjectType.HTML);
 			 }

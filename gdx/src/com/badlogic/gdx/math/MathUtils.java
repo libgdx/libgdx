@@ -23,20 +23,25 @@ import java.util.Random;
  * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
  * @author Nathan Sweet */
 public final class MathUtils {
+
+	private MathUtils () {
+	}
+
 	static public final float nanoToSec = 1 / 1000000000f;
 
 	// ---
 	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-	static public final float PI = 3.1415927f;
+	static public final float PI = (float) Math.PI;
 	static public final float PI2 = PI * 2;
+	static public final float HALF_PI = PI / 2;
 
-	static public final float E = 2.7182818f;
+	static public final float E = (float) Math.E;
 
 	static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
 	static private final int SIN_COUNT = SIN_MASK + 1;
 
-	static private final float radFull = PI * 2;
+	static private final float radFull = PI2;
 	static private final float degFull = 360;
 	static private final float radToIndex = SIN_COUNT / radFull;
 	static private final float degToIndex = SIN_COUNT / degFull;
@@ -68,7 +73,7 @@ public final class MathUtils {
 	/** Returns the cosine in radians from a lookup table. For optimal precision, use radians between -PI2 and PI2 (both
 	 * inclusive). */
 	static public float cos (float radians) {
-		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
+		return Sin.table[(int)((radians + HALF_PI) * radToIndex) & SIN_MASK];
 	}
 
 	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
@@ -89,9 +94,9 @@ public final class MathUtils {
 	 * degrees), largest error of 0.00488 radians (0.2796 degrees). */
 	static public float atan2 (float y, float x) {
 		if (x == 0f) {
-			if (y > 0f) return PI / 2;
+			if (y > 0f) return HALF_PI;
 			if (y == 0f) return 0f;
-			return -PI / 2;
+			return -HALF_PI;
 		}
 		final float atan, z = y / x;
 		if (Math.abs(z) < 1f) {
@@ -99,20 +104,44 @@ public final class MathUtils {
 			if (x < 0f) return atan + (y < 0f ? -PI : PI);
 			return atan;
 		}
-		atan = PI / 2 - z / (z * z + 0.28f);
+		atan = HALF_PI - z / (z * z + 0.28f);
 		return y < 0f ? atan - PI : atan;
 	}
 
-	/** Returns acos in radians, less accurate than Math.acos but may be faster. */
-	static public float acos (float a) {
-		return 1.5707963267948966f - (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
-			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians
+	 * (0.0016300649 degrees), largest error of 0.000067548 radians (0.0038702153 degrees). This implementation does not
+	 * return NaN if given an out-of-range input (Math.acos does return NaN), unless the input is NaN.
+	 * @param a acos is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code 0} and {@code PI} when a is in the defined range */
+	static public float acos(float a) {
+		float a2 = a * a;  // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return (float) Math.sqrt(1f - a) *
+					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		}
+		else {
+			return 3.14159265358979323846f - (float) Math.sqrt(1f + a) *
+					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+		}
 	}
 
-	/** Returns asin in radians, less accurate than Math.asin but may be faster. */
-	static public float asin (float a) {
-		return (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
-			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians
+	 * (0.0016298931 degrees), largest error of 0.000067592 radians (0.0038727364 degrees). This implementation does not
+	 * return NaN if given an out-of-range input (Math.asin does return NaN), unless the input is NaN.
+	 * @param a asin is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code -HALF_PI} and {@code HALF_PI} when a is in the defined range */
+	static public float asin(float a) {
+		float a2 = a * a;  // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return 1.5707963267948966f - (float) Math.sqrt(1f - a) *
+					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		}
+		else {
+			return -1.5707963267948966f + (float) Math.sqrt(1f + a) *
+					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+		}
 	}
 
 	// ---
@@ -189,7 +218,7 @@ public final class MathUtils {
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where the
 	 * {@code mode} argument defaults to the midpoint between the bounds, giving a symmetric distribution.
 	 * <p>
-	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (min + max) * .5f)}
+	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (min + max) * 0.5f)}
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {

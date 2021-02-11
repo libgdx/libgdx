@@ -29,11 +29,11 @@ import java.util.Comparator;
  * It is suggested iteration be done in this specific way:
  * 
  * <pre>
- * SnapshotArray array = new SnapshotArray();
+ * SnapshotArray<Item> array = new SnapshotArray();
  * // ...
  * Object[] items = array.begin();
  * for (int i = 0, n = array.size; i &lt; n; i++) {
- * 	Object item = items[i];
+ * 	Item item = (Item)items[i];
  * 	// ...
  * }
  * array.end();
@@ -116,6 +116,11 @@ public class SnapshotArray<T> extends Array<T> {
 	public void insert (int index, T value) {
 		modified();
 		super.insert(index, value);
+	}
+
+	public void insertRange (int index, int count) {
+		modified();
+		super.insertRange(index, count);
 	}
 
 	public void swap (int first, int second) {

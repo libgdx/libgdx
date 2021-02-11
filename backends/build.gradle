@@ -20,7 +20,7 @@ subprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
     sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["src"]
+    sourceSets.main.resources.srcDirs = ["res"]
 
 
     dependencies {

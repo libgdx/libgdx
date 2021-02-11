@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.input.GestureDetector;
@@ -203,8 +202,8 @@ public class CameraInputController extends GestureDetector {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		return zoom(amount * scrollFactor * translateUnits);
+	public boolean scrolled (float amountX, float amountY) {
+		return zoom(amountY * scrollFactor * translateUnits);
 	}
 
 	public boolean zoom (float amount) {

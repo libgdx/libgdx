@@ -19,10 +19,6 @@ package com.badlogic.gdx.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
@@ -51,8 +47,8 @@ public final class PropertiesUtils {
 	 * @throws IllegalArgumentException if a malformed Unicode escape appears in the input. */
 	@SuppressWarnings("deprecation")
 	public static void load (ObjectMap<String, String> properties, Reader reader) throws IOException {
-		if (properties == null) throw new NullPointerException("ObjectMap cannot be null");
-		if (reader == null) throw new NullPointerException("Reader cannot be null");
+		if (properties == null) throw new NullPointerException("properties cannot be null");
+		if (reader == null) throw new NullPointerException("reader cannot be null");
 		int mode = NONE, unicode = 0, count = 0;
 		char nextChar, buf[] = new char[40];
 		int offset = 0, keyLength = -1, intVal;

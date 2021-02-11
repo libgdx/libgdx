@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.Gdx;
-
 public class GdxNativesLoader {
 	static public boolean disableNativesLoading = false;
 

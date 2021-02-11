@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 
 /** A container that contains two widgets and is divided either horizontally or vertically. The user may resize the widgets. The
  * child widgets are always sized to fill their side of the SplitPane.
@@ -44,34 +45,34 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Nathan Sweet */
 public class SplitPane extends WidgetGroup {
 	SplitPaneStyle style;
-	private Actor firstWidget, secondWidget;
+	private @Null Actor firstWidget, secondWidget;
 	boolean vertical;
 	float splitAmount = 0.5f, minAmount, maxAmount = 1;
 
-	private Rectangle firstWidgetBounds = new Rectangle();
-	private Rectangle secondWidgetBounds = new Rectangle();
-	Rectangle handleBounds = new Rectangle();
+	private final Rectangle firstWidgetBounds = new Rectangle();
+	private final Rectangle secondWidgetBounds = new Rectangle();
+	final Rectangle handleBounds = new Rectangle();
 	boolean cursorOverHandle;
-	private Rectangle tempScissors = new Rectangle();
+	private final Rectangle tempScissors = new Rectangle();
 
 	Vector2 lastPoint = new Vector2();
 	Vector2 handlePosition = new Vector2();
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
+	public SplitPane (@Null Actor firstWidget, @Null Actor secondWidget, boolean vertical, Skin skin) {
 		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "vertical" : "horizontal"));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin, String styleName) {
+	public SplitPane (@Null Actor firstWidget, @Null Actor secondWidget, boolean vertical, Skin skin, String styleName) {
 		this(firstWidget, secondWidget, vertical, skin.get(styleName, SplitPaneStyle.class));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style) {
+	public SplitPane (@Null Actor firstWidget, @Null Actor secondWidget, boolean vertical, SplitPaneStyle style) {
 		this.vertical = vertical;
 		setStyle(style);
 		setFirstWidget(firstWidget);
@@ -327,7 +328,7 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	/** @param widget May be null. */
-	public void setFirstWidget (Actor widget) {
+	public void setFirstWidget (@Null Actor widget) {
 		if (firstWidget != null) super.removeActor(firstWidget);
 		firstWidget = widget;
 		if (widget != null) super.addActor(widget);
@@ -335,7 +336,7 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	/** @param widget May be null. */
-	public void setSecondWidget (Actor widget) {
+	public void setSecondWidget (@Null Actor widget) {
 		if (secondWidget != null) super.removeActor(secondWidget);
 		secondWidget = widget;
 		if (widget != null) super.addActor(widget);
@@ -416,7 +417,7 @@ public class SplitPane extends WidgetGroup {
 		}
 
 		public SplitPaneStyle (SplitPaneStyle style) {
-			this.handle = style.handle;
+			handle = style.handle;
 		}
 	}
 }

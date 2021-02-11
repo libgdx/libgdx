@@ -417,6 +417,23 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glFram
     glFramebufferTextureLayer(target, attachment, texture, level, layer);
 }
 
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glMapBufferRange
+ * Signature: (IIII)Ljava/nio/Buffer;
+ */
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glMapBufferRange
+  (JNIEnv *env, jobject, jint target, jint offset, jint length, jint access) {
+	GLvoid* buf = glMapBufferRange(target, offset, length, access);
+	jobject returnBuffer = (jobject)0;
+	if (buf) {
+		returnBuffer = env->NewDirectByteBuffer(buf, length);
+	}
+	return returnBuffer;
+}
+
+
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
  * Method:    glFlushMappedBufferRange

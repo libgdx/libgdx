@@ -1,81 +1,62 @@
-![logo](http://libgdx.badlogicgames.com/img/logo.png)
+![logo](https://libgdx.com/assets/images/logo.png)
 
-[![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) (Jenkins)
+[![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?subject=Jenkins&job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) 
+[![GitHub Actions build status](https://img.shields.io/github/workflow/status/libgdx/libgdx/Java%20CI%20with%20Gradle/master?label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Java+CI+with+Gradle%22)
 
-[![Travis build status](https://travis-ci.org/libgdx/libgdx.svg?branch=master)](https://travis-ci.org/libgdx/libgdx) (Travis)
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org&label=version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org&label=snapshot)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)
 
-libGDX is a cross-platform Java game development framework based on 
-OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
-WebGL enabled browser and iOS.
+[![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://libgdx.com/community/discord/)
 
-### Getting Started
-  * [Setup your development environment (Eclipse, Intellij IDEA, NetBeans)](https://github.com/libgdx/libgdx/wiki/Setting-up-your-Development-Environment-%28Eclipse%2C-Intellij-IDEA%2C-NetBeans%29)
-  * [Create a libGDX project](https://github.com/libgdx/libgdx/wiki/Project-Setup-Gradle)
-    * Import, Run, Debug and Package your project
-      * [Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse)
-      * [Intellij IDEA](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA)
-      * [NetBeans](https://github.com/libgdx/libgdx/wiki/Gradle-and-NetBeans)
-      * [Commandline](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline)
-  * [Read the Wiki](https://github.com/libgdx/libgdx/wiki)
+## Cross-platform Game Development Framework
+**[libGDX](https://libgdx.com) is a cross-platform Java game development framework based on OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, iOS and your WebGL enabled browser.** It provides a well-tried and robust environment for rapid prototyping and fast iterations. LibGDX does not force a specific design or coding style on you, it rather gives you the freedom to create a game the way you like it.
 
-### Downloads
-As we switched to Gradle, there's no need to download libGDX itself anymore. For those of you who still prefer the old way of doing things, you can get libGDX from the [official download site](http://libgdx.badlogicgames.com/download.html).
+## Open Source, Feature Packed and Offering a Big Third-Party Ecosystem
+libGDX is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) meaning you can use it free of charge, without strings attached in commercial and non-commercial projects. We, however, love to get (non-mandatory) credit in case you release a game or app using libGDX! See our [showcase](https://libgdx.com/showcase/) for a selection of some popular libGDX games. libGDX comes with [batteries included](https://libgdx.com/features/) and provides everything required to develop multi-platform 2D and 3D games with Java.
 
-### Documentation
-The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a 
-libGDX game. You can contribute to the Wiki directly here on GitHub!
+libGDX also offers a very extensive third-party ecosystem. There are numerous [tools](https://libgdx.com/dev/tools/) and libraries that take a lot of work off the hands of developers. Take a look at [awesome-libgdx](https://github.com/rafaskb/awesome-libgdx#readme) for a curated list of libGDX-centered libraries and a good starting point for anyone new in the libGDX world.
 
-We also provide [Javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The Javadocs are
-also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
+![](https://libgdx.com/assets/images/index_showcase/game0.png)
+###### An example for a game created with libGDX: [Pathway](https://store.steampowered.com/app/546430/Pathway/) by Robotality. Find more games in our [Showcase](https://libgdx.com/showcase/).
 
-### News & Community
-You can follow the latest news about libGDX on the [blog](http://www.badlogicgames.com). Follow
-[@badlogicgames](https://twitter.com/badlogicgames) for real-time updates.
+## Getting libGDX / Documentation
+As we switched to Gradle, there's no need to download libGDX itself anymore: this can all be done by your favorite build tool. We also offer a [setup tool](https://libgdx.com/dev/#how-to-get-started-with-libgdx), which automatically creates a project for you and downloads everything necessary. See our **[website](https://libgdx.com/dev/setup/)** for instructions on how to get started with this or read our **[wiki](https://github.com/libgdx/libgdx/wiki)**.
 
-You can get help on our [forum](http://badlogicgames.com/forum/) and talk to other libGDX 
-users on our IRC channel #libgdx at irc.freenode.net.
+- [Creating a libGDX Project](https://libgdx.com/dev/setup/)
+- [A Simple Game](https://libgdx.com/dev/simple_game/)
+- [Tutorials & Demos](https://libgdx.com/dev/tutorials/)
 
-Another way of getting help or talking to other libGDX users is the [libgdx discord](https://discord.gg/6pgDK9F).
+We also provide [javadocs](https://libgdx.badlogicgames.com/nightlies/docs/api/) online. The javadocs are also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
+
+## Community & Contributing
+You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). Another good way to get in touch with our community is to join the official [libGDX Discord](https://libgdx.com/community/discord/).
 
 ### Reporting Issues
-Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on GitHub to report issues. Make sure you read the 
-[Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
-the process or properly reporting an issue.
+Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on GitHub to report issues. Please make sure you read the [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through the process of properly reporting an issue.
 
-### Contributing & Working from Source
-libGDX has a strong developer community constantly improving the code base. We love to
-get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing) 
-article describes the process of helping libGDX to become even better.
+### Working on the Code
+libGDX has a strong developer community constantly improving the code base. We love to get any and all help we can. Our [Contributing Guidelines](https://libgdx.com/dev/contributing/) describe the process of helping libGDX to become even better. To contribute, you need to work with libGDX' sources directly, something normal users do not have to go through. The [Working with the Source](https://libgdx.com/dev/from_source/) article will give you some directions.
 
-To contribute, you need to work with libGDX' sources directly, something normal users do not
-have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
-article will give you directions.
-
-You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!
-
-### License
-libGDX is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you
-can use it free of charge, without strings attached in commercial and non-commercial projects. We love to
-get (non-mandatory) credit in case you release a game or app using libgdx!
+You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](https://patreon.com/libgdx)!
 
 ### Supported By
 libGDX is supported by helpful 3rd parties via code contributions, free licenses, test devices and so forth. Make our supporters happy and visit their sites!
 
 <table>
 <tr>
-<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a></td>
+<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/robovm.png" alt="RoboVM" /></a></td>
+<td style="text-align: center;"><a href="https://bit.ly/spinegdx"><img src="https://libgdx.com/assets/images/sponsors/spine.png"></a></td>
 </tr>
 
 <tr>
-<td style="text-align: center;"><a href="http://bit.ly/saikoagdx"><img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" /></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/intelgdx"><img src="http://libgdx.badlogicgames.com/img/intel.png" alt="intel Software Partner" /></a></td>
+<td style="text-align: center;"><a href="https://bit.ly/saikoagdx"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/saikoa.png" alt="Saikoa" /></a></td>
+<td style="text-align: center;"><a href="https://bit.ly/intelgdx"><img src="https://libgdx.com/assets/images/sponsors/intel.png" alt="intel Software Partner" /></a></td>
 </tr>
 
 <tr>
-<td style="text-align: center;"><a href="http://bit.ly/jetblog"><img src="http://libgdx.badlogicgames.com/img/excelsior.png" alt="Excelsior JET"></a></td>
-<td style="text-align: center;"><a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a></td>
+<td style="text-align: center;"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/excelsior.png" alt="Excelsior JET"></td>
+<td style="text-align: center;"><img src="https://libgdx.com/assets/images/sponsors/nextpeer.png"></td>
 </tr>
 </table>
 
-Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
+###### Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.

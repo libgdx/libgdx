@@ -28,7 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Environment extends Attributes {
-	/** @deprecated Experimental, likely to change, do not use! */
+
+	/** Shadow map used to render shadows */
 	public ShadowMap shadowMap;
 
 	public Environment () {

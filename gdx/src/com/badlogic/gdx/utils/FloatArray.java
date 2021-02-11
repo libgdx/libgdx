@@ -122,7 +122,7 @@ public class FloatArray {
 	public void addAll (float[] array, int offset, int length) {
 		float[] items = this.items;
 		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
@@ -171,6 +171,16 @@ public class FloatArray {
 		items[index] = value;
 	}
 
+	/** Inserts the specified number of items at the specified index. The new items will have values equal to the values at those
+	 * indices before the insertion. */
+	public void insertRange (int index, int count) {
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		int sizeNeeded = size + count;
+		if (sizeNeeded > items.length) items = resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
+		System.arraycopy(items, index, items, index + count, size - index);
+		size = sizeNeeded;
+	}
+
 	public void swap (int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
 		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
@@ -195,7 +205,7 @@ public class FloatArray {
 		return -1;
 	}
 
-	public int lastIndexOf (char value) {
+	public int lastIndexOf (float value) {
 		float[] items = this.items;
 		for (int i = size - 1; i >= 0; i--)
 			if (items[i] == value) return i;
@@ -304,7 +314,7 @@ public class FloatArray {
 	public float[] ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(Math.max(8, sizeNeeded), (int)(size * 1.75f)));
 		return items;
 	}
 
@@ -372,7 +382,7 @@ public class FloatArray {
 		float[] items = this.items;
 		int h = 1;
 		for (int i = 0, n = size; i < n; i++)
-			h = h * 31 + Float.floatToIntBits(items[i]);
+			h = h * 31 + NumberUtils.floatToRawIntBits(items[i]);
 		return h;
 	}
 

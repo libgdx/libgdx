@@ -17,22 +17,26 @@
 buildscript {
     dependencies {
         classpath "org.wisepersist:gwt-gradle-plugin:${versions.gwtPlugin}"
+        classpath "org.gretty:gretty:${versions.gretty}"
     }
 }
 
 apply plugin: 'war'
 apply plugin: 'gwt'
+apply plugin: 'org.gretty'
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+import org.akhikhl.gretty.AppBeforeIntegrationTestTask
 
-def HttpFileServer server = null
-def httpFilePort = 8080
+gretty.httpPort = 8080
+gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
+gretty.contextPath = "/"
+gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
 dependencies {
     compile project(":tests:gdx-tests")
     compile project(":backends:gdx-backends-gwt")
-    compile project(":extensions:gdx-box2d:gdx-box2d-gwt")
-    compile project(":extensions:gdx-controllers:gdx-controllers-gwt")
+    compile project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
 }
 
 gwt {
@@ -51,23 +55,29 @@ gwt {
 task startHttpServer () {
     dependsOn draftCompileGwt
 
-    String output = project.buildDir.path + "/gwt/draftOut"
-
-    doLast {
+    doFirst {
         copy {
             from "webapp"
-            into output
+            into gretty.resourceBase
         }
 
         copy {
             from "war"
-            into output
+            into gretty.resourceBase
         }
-
-        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
-
-        println "Server started in directory " + server.getContentRoot() + ", http://localhost:" + server.getPort()
     }
+}
+
+task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+    // The next line allows ports to be reused instead of
+    // needing a process to be manually terminated.
+    file("build/TEMP_PORTS.properties").delete()
+    // Somewhat of a hack; uses Gretty's support for wrapping a task in
+    // a start and then stop of a Jetty server that serves files while
+    // also running the SuperDev code server.
+    integrationTestTask 'superDev'
+
+    interactive false
 }
 
 task superDev (type: GwtSuperDev) {
@@ -100,10 +110,9 @@ task addSource {
     doLast {
         sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
         sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers-gwt').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
         sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
     }
 }
 
