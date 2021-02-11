@@ -14,7 +14,7 @@
 	<!-- should we build natives in release mode -->
 	<property name="release" value="true"/>
 
-	<property name="javacTarget" value="1.6"/>
+	<property name="javacTarget" value="1.7"/>
 
 	<!-- clean distribution/output directory -->
 	<target name="clean">
