@@ -160,26 +160,28 @@ public final class MathUtils {
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public long random (long range) {
-		// check is one less than a power of two (and not 0); for these bounds, random longs are easy
-		if((range & range + 1L) == 0L && range != 0)
-			return random.nextLong() >>> Long.numberOfLeadingZeros(range);
-		// this makes bound larger than range (for inclusivity), and makes range either -1 or 1 based on sign.
-		// it also ensures bound is positive, which is critical for the manual 128-bit multiplication.
-		long bound = range + ((range >>= 63)|1L) + range ^ range;
-		long rand = random.nextLong();
-		// next section gets splits up rand and bound into 32-bit chunks to multiply separately.
-		final long randLow = rand & 0xFFFFFFFFL;
-		final long boundLow = bound & 0xFFFFFFFFL;
-		final long mix = (rand >>> 32) * (bound >>> 32);
-		return (mix >>> 32) + (randLow * boundLow >>> 32) + mix + range ^ range;
-		// The above line is complicated because it needs to handle carrying between the smaller parts.
-		// Also, the work using range lets us get back to a negative result when range is negative.
-		// Credit to https://oroboro.com/large-random-in-range/ for the technique (without negative bounds).
+		// Uses the lower-bounded overload defined below, which is simpler and doesn't lose much optimization.
+		return random(0L, range);
 	}
 
 	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public long random (long start, long end) {
-		return start + random(end - start);
+		final long rand = random.nextLong();
+		// In order to get the range to go from start to end, instead of overflowing after end and going
+		// back around to start, start must be less than end.
+		if(end < start) {
+			long t = end;
+			end = start;
+			start = t;
+		}
+		long bound = end - start + 1L; // inclusive on end
+		// Credit to https://oroboro.com/large-random-in-range/ for the following technique
+		// It's a 128-bit-product where only the upper 64 of 128 bits are used.
+		final long randLow = rand & 0xFFFFFFFFL;
+		final long boundLow = bound & 0xFFFFFFFFL;
+		final long randHigh = (rand >>> 32);
+		final long boundHigh = (bound >>> 32);
+		return start + (randHigh * boundLow >>> 32) + (randLow * boundHigh >>> 32) + randHigh * boundHigh;
 	}
 
 	/** Returns a random boolean value. */
