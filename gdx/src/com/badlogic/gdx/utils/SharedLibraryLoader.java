@@ -71,7 +71,7 @@ public class SharedLibraryLoader {
 	}
 	
 	static String randomUUID() {
-		UUID uuid = new UUID(MathUtils.random(Long.MAX_VALUE), MathUtils.random(Long.MAX_VALUE));		
+		UUID uuid = new UUID(MathUtils.random.nextLong(), MathUtils.random.nextLong());
 		return uuid.toString();
 	}
 
