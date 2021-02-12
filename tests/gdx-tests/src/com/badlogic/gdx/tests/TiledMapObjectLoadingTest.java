@@ -1,13 +1,13 @@
 /**
  * *****************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -49,8 +49,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private SpriteBatch batch;
 	private String loadingStatus;
 
-	@Override
-	public void create () {
+	@Override public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -83,12 +82,11 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
 		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
-        loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
+		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 	}
 
-	@Override
-	public void render () {
+	@Override public void render () {
 		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -98,7 +96,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
-			if (!mapObject.isVisible()) continue;
+			if (!mapObject.isVisible())
+				continue;
 			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
@@ -110,8 +109,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				float xPos = tmtObject.getX();
 				float yPos = tmtObject.getY();
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
-				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY,
-					textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
+				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY, textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
 				// We flip back to the original state.
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.end();
@@ -141,20 +139,19 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
 			} else if (mapObject instanceof PointMapObject) {
-			    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			    Vector2 point = ((PointMapObject)mapObject).getPoint();
-			    // drawing circle, because shapeRenderer.point is barely visible, if visible at all
-			    shapeRenderer.circle(point.x, point.y, 1f);
-			    shapeRenderer.end();
-            }
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Vector2 point = ((PointMapObject)mapObject).getPoint();
+				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				shapeRenderer.circle(point.x, point.y, 1f);
+				shapeRenderer.end();
+			}
 		}
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 500);
 		batch.end();
 	}
 
-	@Override
-	public void dispose () {
+	@Override public void dispose () {
 		map.dispose();
 		shapeRenderer.dispose();
 	}
