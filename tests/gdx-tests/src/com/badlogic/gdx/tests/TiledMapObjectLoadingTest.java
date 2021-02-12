@@ -1,13 +1,13 @@
 /**
  * *****************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,21 +29,12 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.maps.objects.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -58,8 +49,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private SpriteBatch batch;
 	private String loadingStatus;
 
-	@Override
-	public void create () {
+	@Override public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -76,13 +66,13 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
 		shapeRenderer = new ShapeRenderer();
-		
+
 		// Test get objects by type (adding circle manually because it doesn't exists in Tiledmap editor)
-		
+
 		loadingStatus = "loading status:\n";
 		MapLayer layer = map.getLayers().get("Objects");
 		MapObjects mapObjects = layer.getObjects();
-		
+
 		mapObjects.add(new CircleMapObject(280, 400, 50));
 
 		loadingStatus += "- MapObject : " + mapObjects.getByType(MapObject.class).size + "\n";
@@ -92,11 +82,11 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
 		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
+		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 	}
 
-	@Override
-	public void render () {
+	@Override public void render () {
 		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -106,7 +96,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
-			if (!mapObject.isVisible()) continue;
+			if (!mapObject.isVisible())
+				continue;
 			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
@@ -118,8 +109,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				float xPos = tmtObject.getX();
 				float yPos = tmtObject.getY();
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
-				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY,
-					textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
+				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY, textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
 				// We flip back to the original state.
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.end();
@@ -148,6 +138,12 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
+			} else if (mapObject instanceof PointMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Vector2 point = ((PointMapObject)mapObject).getPoint();
+				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				shapeRenderer.circle(point.x, point.y, 1f);
+				shapeRenderer.end();
 			}
 		}
 		batch.begin();
@@ -155,8 +151,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		batch.end();
 	}
 
-	@Override
-	public void dispose () {
+	@Override public void dispose () {
 		map.dispose();
 		shapeRenderer.dispose();
 	}
