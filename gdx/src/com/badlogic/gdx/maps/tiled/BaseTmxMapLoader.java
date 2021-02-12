@@ -352,8 +352,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
 				} else if ((child = element.getChildByName("point")) != null) {
-				    object = new PointMapObject(x, flipY ? y - height : y);
-                }
+					object = new PointMapObject(x, flipY ? y - height : y);
+				}
 			}
 			if (object == null) {
 				String gid = null;
@@ -392,7 +392,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				object.getProperties().put("id", id);
 			}
 			object.getProperties().put("x", x);
-			
+
 			if (object instanceof TiledMapTileMapObject) {
 				object.getProperties().put("y", y);
 			} else {
