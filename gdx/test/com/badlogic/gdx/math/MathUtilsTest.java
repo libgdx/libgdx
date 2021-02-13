@@ -48,4 +48,15 @@ public class MathUtilsTest {
 		assertEquals(200f, MathUtils.map(10f, 20f, 100f, 200f, 20f), 0.01f);
 		assertEquals(300f, MathUtils.map(10f, 20f, 100f, 200f, 30f), 0.01f);
 	}
+
+	@Test
+	public void testRandomLong() {
+		long r;
+		for (int i = 0; i < 512; i++) {
+			assertTrue((r = MathUtils.random(1L, 5L)) >= 1L && r <= 5L);
+			assertTrue((r = MathUtils.random(6L, 1L)) >= 1L && r <= 6L);
+			assertTrue((r = MathUtils.random(-1L, -7L)) <= -1L && r >= -7L);
+			assertTrue((r = MathUtils.random(-8L, -1L)) <= -1L && r >= -8L);
+		}
+	}
 }
