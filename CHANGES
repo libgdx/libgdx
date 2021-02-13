@@ -1,4 +1,5 @@
 [1.9.15]
+- [BREAKING CHANGE] Requires Java 7 or above
 - [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
