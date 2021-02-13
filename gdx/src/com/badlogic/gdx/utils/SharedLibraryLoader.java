@@ -69,10 +69,9 @@ public class SharedLibraryLoader {
 
 	public SharedLibraryLoader () {
 	}
-	
-	static String randomUUID() {
-		UUID uuid = new UUID(MathUtils.random(Long.MAX_VALUE), MathUtils.random(Long.MAX_VALUE));		
-		return uuid.toString();
+
+	static String randomUUID () {
+		return new UUID(MathUtils.random.nextLong(), MathUtils.random.nextLong()).toString();
 	}
 
 	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly.

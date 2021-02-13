@@ -160,12 +160,28 @@ public final class MathUtils {
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public long random (long range) {
-		return (long)(random.nextDouble() * range);
+		// Uses the lower-bounded overload defined below, which is simpler and doesn't lose much optimization.
+		return random(0L, range);
 	}
 
 	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public long random (long start, long end) {
-		return start + (long)(random.nextDouble() * (end - start));
+		final long rand = random.nextLong();
+		// In order to get the range to go from start to end, instead of overflowing after end and going
+		// back around to start, start must be less than end.
+		if(end < start) {
+			long t = end;
+			end = start;
+			start = t;
+		}
+		long bound = end - start + 1L; // inclusive on end
+		// Credit to https://oroboro.com/large-random-in-range/ for the following technique
+		// It's a 128-bit-product where only the upper 64 of 128 bits are used.
+		final long randLow = rand & 0xFFFFFFFFL;
+		final long boundLow = bound & 0xFFFFFFFFL;
+		final long randHigh = (rand >>> 32);
+		final long boundHigh = (bound >>> 32);
+		return start + (randHigh * boundLow >>> 32) + (randLow * boundHigh >>> 32) + randHigh * boundHigh;
 	}
 
 	/** Returns a random boolean value. */
