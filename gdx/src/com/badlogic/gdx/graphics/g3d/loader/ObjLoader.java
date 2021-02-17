@@ -461,13 +461,6 @@ class MtlLoader {
 			mat.textures.add(tex);
 		}
 
-		private void addTexture (ModelMaterial mat, ModelTexture tex) {
-			if (mat.textures == null) {
-				mat.textures = new Array<ModelTexture>(1);
-			}
-			mat.textures.add(tex);
-		}
-
 		public void reset () {
 			ambcolor = Color.WHITE;
 			difcolor = Color.WHITE;
