@@ -307,7 +307,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			return idx - 1;
 	}
 
-	private class Group {
+	private static class Group {
 		final String name;
 		String materialName;
 		Array<Integer> faces;
@@ -357,19 +357,19 @@ class MtlLoader {
 						materials.add(mat);
 
 						if (tokens.length > 1) {
-							currentMaterial.curMatName = tokens[1];
-							currentMaterial.curMatName = currentMaterial.curMatName.replace('.', '_');
+							currentMaterial.materialName = tokens[1];
+							currentMaterial.materialName = currentMaterial.materialName.replace('.', '_');
 						} else {
-							currentMaterial.curMatName = "default";
+							currentMaterial.materialName = "default";
 						}
 
 						currentMaterial.reset();
 					} else if (key.equals("ka")) {
-						currentMaterial.ambcolor = parseColor(tokens);
+						currentMaterial.ambientColor = parseColor(tokens);
 					} else if (key.equals("kd")) {
-						currentMaterial.difcolor = parseColor(tokens);
+						currentMaterial.diffuseColor = parseColor(tokens);
 					} else if (key.equals("ks")) {
-						currentMaterial.speccolor = parseColor(tokens);
+						currentMaterial.specularColor = parseColor(tokens);
 					} else if (key.equals("tr") || key.equals("d")) {
 						currentMaterial.opacity = Float.parseFloat(tokens[1]);
 					} else if (key.equals("ns")) {
@@ -421,11 +421,11 @@ class MtlLoader {
 		return mat;
 	}
 
-	static class CurrentMaterial {
-		String curMatName = "default";
-		Color ambcolor = Color.WHITE;
-		Color difcolor = Color.WHITE;
-		Color speccolor = Color.WHITE;
+	private static class CurrentMaterial {
+		String materialName = "default";
+		Color ambientColor = Color.WHITE;
+		Color diffuseColor = Color.WHITE;
+		Color specularColor = Color.WHITE;
 		float opacity = 1.f;
 		float shininess = 0.f;
 		String alphaTexFilename = null;
@@ -436,10 +436,10 @@ class MtlLoader {
 
 		public ModelMaterial build () {
 			ModelMaterial mat = new ModelMaterial();
-			mat.id = curMatName;
-			mat.ambient = new Color(ambcolor);
-			mat.diffuse = new Color(difcolor);
-			mat.specular = new Color(speccolor);
+			mat.id = materialName;
+			mat.ambient = new Color(ambientColor);
+			mat.diffuse = new Color(diffuseColor);
+			mat.specular = new Color(specularColor);
 			mat.opacity = opacity;
 			mat.shininess = shininess;
 			addTexture(mat, alphaTexFilename, ModelTexture.USAGE_TRANSPARENCY);
@@ -462,9 +462,9 @@ class MtlLoader {
 		}
 
 		public void reset () {
-			ambcolor = Color.WHITE;
-			difcolor = Color.WHITE;
-			speccolor = Color.WHITE;
+			ambientColor = Color.WHITE;
+			diffuseColor = Color.WHITE;
+			specularColor = Color.WHITE;
 			opacity = 1.f;
 			shininess = 0.f;
 			alphaTexFilename = null;
