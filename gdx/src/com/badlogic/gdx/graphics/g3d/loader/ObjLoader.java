@@ -421,7 +421,7 @@ class MtlLoader {
 		return mat;
 	}
 
-	class CurrentMaterial {
+	static class CurrentMaterial {
 		String curMatName = "default";
 		Color ambcolor = Color.WHITE;
 		Color difcolor = Color.WHITE;
