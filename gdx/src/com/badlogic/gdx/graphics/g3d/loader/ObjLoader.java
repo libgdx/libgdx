@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,14 +48,14 @@ import com.badlogic.gdx.utils.FloatArray;
 /** {@link ModelLoader} to load Wavefront OBJ files. Only intended for testing basic models/meshes and educational usage. The
  * Wavefront specification is NOT fully implemented, only a subset of the specification is supported. Especially the
  * {@link Material} ({@link Attributes}), e.g. the color or texture applied, might not or not correctly be loaded.</p>
- * 
+ *
  * This {@link ModelLoader} can be used to load very basic models without having to convert them to a more suitable format.
  * Therefore it can be used for educational purposes and to quickly test a basic model, but should not be used in production.
  * Instead use {@link G3dModelLoader}.</p>
- * 
+ *
  * Because of above reasons, when an OBJ file is loaded using this loader, it will log and error. To prevent this error from being
  * logged, set the {@link #logWarning} flag to false. However, it is advised not to do so.</p>
- * 
+ *
  * An OBJ file only contains the mesh (shape). It may link to a separate MTL file, which is used to describe one or more
  * materials. In that case the MTL filename (might be case-sensitive) is expected to be located relative to the OBJ file. The MTL
  * file might reference one or more texture files, in which case those filename(s) are expected to be located relative to the MTL
@@ -333,12 +333,8 @@ class MtlLoader {
 	public void load (FileHandle file) {
 		String line;
 		String[] tokens;
-		String curMatName = "default";
-		Color difcolor = Color.WHITE;
-		Color speccolor = Color.WHITE;
-		float opacity = 1.f;
-		float shininess = 0.f;
-		String texFilename = null;
+
+		CurrentMaterial currentMaterial = new CurrentMaterial();
 
 		if (file == null || !file.exists()) return;
 
@@ -357,52 +353,37 @@ class MtlLoader {
 				else {
 					final String key = tokens[0].toLowerCase();
 					if (key.equals("newmtl")) {
-						ModelMaterial mat = new ModelMaterial();
-						mat.id = curMatName;
-						mat.diffuse = new Color(difcolor);
-						mat.specular = new Color(speccolor);
-						mat.opacity = opacity;
-						mat.shininess = shininess;
-						if (texFilename != null) {
-							ModelTexture tex = new ModelTexture();
-							tex.usage = ModelTexture.USAGE_DIFFUSE;
-							tex.fileName = new String(texFilename);
-							if (mat.textures == null) mat.textures = new Array<ModelTexture>(1);
-							mat.textures.add(tex);
-						}
+						ModelMaterial mat = currentMaterial.build();
 						materials.add(mat);
 
 						if (tokens.length > 1) {
-							curMatName = tokens[1];
-							curMatName = curMatName.replace('.', '_');
-						} else
-							curMatName = "default";
-
-						difcolor = Color.WHITE;
-						speccolor = Color.WHITE;
-						opacity = 1.f;
-						shininess = 0.f;
-					} else if (key.equals("kd") || key.equals("ks")) // diffuse or specular
-					{
-						float r = Float.parseFloat(tokens[1]);
-						float g = Float.parseFloat(tokens[2]);
-						float b = Float.parseFloat(tokens[3]);
-						float a = 1;
-						if (tokens.length > 4) a = Float.parseFloat(tokens[4]);
-
-						if (tokens[0].toLowerCase().equals("kd")) {
-							difcolor = new Color();
-							difcolor.set(r, g, b, a);
+							currentMaterial.curMatName = tokens[1];
+							currentMaterial.curMatName = currentMaterial.curMatName.replace('.', '_');
 						} else {
-							speccolor = new Color();
-							speccolor.set(r, g, b, a);
+							currentMaterial.curMatName = "default";
 						}
+
+						currentMaterial.reset();
+					} else if (key.equals("ka")) {
+						currentMaterial.ambcolor = parseColor(tokens);
+					} else if (key.equals("kd")) {
+						currentMaterial.difcolor = parseColor(tokens);
+					} else if (key.equals("ks")) {
+						currentMaterial.speccolor = parseColor(tokens);
 					} else if (key.equals("tr") || key.equals("d")) {
-						opacity = Float.parseFloat(tokens[1]);
+						currentMaterial.opacity = Float.parseFloat(tokens[1]);
 					} else if (key.equals("ns")) {
-						shininess = Float.parseFloat(tokens[1]);
+						currentMaterial.shininess = Float.parseFloat(tokens[1]);
+					} else if (key.equals("map_d")) {
+						currentMaterial.alphaTexFilename = file.parent().child(tokens[1]).path();
+					} else if (key.equals("map_ka")) {
+						currentMaterial.ambientTexFilename = file.parent().child(tokens[1]).path();
 					} else if (key.equals("map_kd")) {
-						texFilename = file.parent().child(tokens[1]).path();
+						currentMaterial.diffuseTexFilename = file.parent().child(tokens[1]).path();
+					} else if (key.equals("map_ks")) {
+						currentMaterial.specularTexFilename = file.parent().child(tokens[1]).path();
+					} else if (key.equals("map_ns")) {
+						currentMaterial.shininessTexFilename = file.parent().child(tokens[1]).path();
 					}
 				}
 			}
@@ -412,22 +393,22 @@ class MtlLoader {
 		}
 
 		// last material
-		ModelMaterial mat = new ModelMaterial();
-		mat.id = curMatName;
-		mat.diffuse = new Color(difcolor);
-		mat.specular = new Color(speccolor);
-		mat.opacity = opacity;
-		mat.shininess = shininess;
-		if (texFilename != null) {
-			ModelTexture tex = new ModelTexture();
-			tex.usage = ModelTexture.USAGE_DIFFUSE;
-			tex.fileName = new String(texFilename);
-			if (mat.textures == null) mat.textures = new Array<ModelTexture>(1);
-			mat.textures.add(tex);
-		}
+		ModelMaterial mat = currentMaterial.build();
 		materials.add(mat);
 
 		return;
+	}
+
+	private Color parseColor (String[] tokens) {
+		float r = Float.parseFloat(tokens[1]);
+		float g = Float.parseFloat(tokens[2]);
+		float b = Float.parseFloat(tokens[3]);
+		float a = 1;
+		if (tokens.length > 4) {
+			a = Float.parseFloat(tokens[4]);
+		}
+
+		return new Color(r,g,b,a);
 	}
 
 	public ModelMaterial getMaterial (final String name) {
@@ -438,5 +419,66 @@ class MtlLoader {
 		mat.diffuse = new Color(Color.WHITE);
 		materials.add(mat);
 		return mat;
+	}
+
+	class CurrentMaterial {
+		String curMatName = "default";
+		Color ambcolor = Color.WHITE;
+		Color difcolor = Color.WHITE;
+		Color speccolor = Color.WHITE;
+		float opacity = 1.f;
+		float shininess = 0.f;
+		String alphaTexFilename = null;
+		String ambientTexFilename = null;
+		String diffuseTexFilename = null;
+		String shininessTexFilename = null;
+		String specularTexFilename = null;
+
+		public ModelMaterial build () {
+			ModelMaterial mat = new ModelMaterial();
+			mat.id = curMatName;
+			mat.ambient = new Color(ambcolor);
+			mat.diffuse = new Color(difcolor);
+			mat.specular = new Color(speccolor);
+			mat.opacity = opacity;
+			mat.shininess = shininess;
+			addTexture(mat, alphaTexFilename, ModelTexture.USAGE_TRANSPARENCY);
+			addTexture(mat, ambientTexFilename, ModelTexture.USAGE_AMBIENT);
+			addTexture(mat, diffuseTexFilename, ModelTexture.USAGE_DIFFUSE);
+			addTexture(mat, specularTexFilename, ModelTexture.USAGE_SPECULAR);
+			addTexture(mat, shininessTexFilename, ModelTexture.USAGE_SHININESS);
+
+			return mat;
+		}
+
+		private void addTexture (ModelMaterial mat, String texFilename, int usage) {
+			if (texFilename == null) {
+				return;
+			}
+			ModelTexture tex = new ModelTexture();
+			tex.usage = usage;
+			tex.fileName = texFilename;
+			mat.textures.add(tex);
+		}
+
+		private void addTexture (ModelMaterial mat, ModelTexture tex) {
+			if (mat.textures == null) {
+				mat.textures = new Array<ModelTexture>(1);
+			}
+			mat.textures.add(tex);
+		}
+
+		public void reset () {
+			ambcolor = Color.WHITE;
+			difcolor = Color.WHITE;
+			speccolor = Color.WHITE;
+			opacity = 1.f;
+			shininess = 0.f;
+			alphaTexFilename = null;
+			ambientTexFilename = null;
+			diffuseTexFilename = null;
+			shininessTexFilename = null;
+			specularTexFilename = null;
+		}
 	}
 }
