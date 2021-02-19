@@ -16,6 +16,7 @@
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
 - ObjLoader: Added material textures other than diffuse
 - ObjLoader: Added ambient color and better texture handling
+- ObjLoader: Added support for ambientColor, ambientTexture, transparencyTexture, specularTexture, shininessTexture
 
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 

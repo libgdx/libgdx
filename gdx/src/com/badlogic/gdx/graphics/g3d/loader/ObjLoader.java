@@ -334,7 +334,7 @@ class MtlLoader {
 		String line;
 		String[] tokens;
 
-		CurrentMaterial currentMaterial = new CurrentMaterial();
+		ObjMaterial currentMaterial = new ObjMaterial();
 
 		if (file == null || !file.exists()) return;
 
@@ -421,18 +421,22 @@ class MtlLoader {
 		return mat;
 	}
 
-	private static class CurrentMaterial {
+	private static class ObjMaterial {
 		String materialName = "default";
-		Color ambientColor = null;
-		Color diffuseColor = Color.WHITE;
-		Color specularColor = Color.WHITE;
-		float opacity = 1.f;
-		float shininess = 0.f;
-		String alphaTexFilename = null;
-		String ambientTexFilename = null;
-		String diffuseTexFilename = null;
-		String shininessTexFilename = null;
-		String specularTexFilename = null;
+		Color ambientColor;
+		Color diffuseColor;
+		Color specularColor;
+		float opacity;
+		float shininess;
+		String alphaTexFilename;
+		String ambientTexFilename;
+		String diffuseTexFilename;
+		String shininessTexFilename;
+		String specularTexFilename;
+
+		public ObjMaterial() {
+			reset();
+		}
 
 		public ModelMaterial build () {
 			ModelMaterial mat = new ModelMaterial();
@@ -452,13 +456,12 @@ class MtlLoader {
 		}
 
 		private void addTexture (ModelMaterial mat, String texFilename, int usage) {
-			if (texFilename == null) {
-				return;
+			if (texFilename != null) {
+				ModelTexture tex = new ModelTexture();
+				tex.usage = usage;
+				tex.fileName = texFilename;
+				mat.textures.add(tex);
 			}
-			ModelTexture tex = new ModelTexture();
-			tex.usage = usage;
-			tex.fileName = texFilename;
-			mat.textures.add(tex);
 		}
 
 		public void reset () {
