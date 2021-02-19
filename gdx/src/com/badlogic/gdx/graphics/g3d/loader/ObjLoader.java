@@ -423,7 +423,7 @@ class MtlLoader {
 
 	private static class CurrentMaterial {
 		String materialName = "default";
-		Color ambientColor = Color.WHITE;
+		Color ambientColor = null;
 		Color diffuseColor = Color.WHITE;
 		Color specularColor = Color.WHITE;
 		float opacity = 1.f;
@@ -437,7 +437,7 @@ class MtlLoader {
 		public ModelMaterial build () {
 			ModelMaterial mat = new ModelMaterial();
 			mat.id = materialName;
-			mat.ambient = new Color(ambientColor);
+			mat.ambient = ambientColor == null ? null : new Color(ambientColor);
 			mat.diffuse = new Color(diffuseColor);
 			mat.specular = new Color(specularColor);
 			mat.opacity = opacity;
@@ -462,7 +462,7 @@ class MtlLoader {
 		}
 
 		public void reset () {
-			ambientColor = Color.WHITE;
+			ambientColor = null;
 			diffuseColor = Color.WHITE;
 			specularColor = Color.WHITE;
 			opacity = 1.f;
