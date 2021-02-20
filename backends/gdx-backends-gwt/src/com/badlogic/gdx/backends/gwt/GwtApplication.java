@@ -39,6 +39,7 @@ import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.UnsafeNativeLong;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -436,13 +437,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
-	public long getJavaHeap () {
+	@UnsafeNativeLong
+	public native long getJavaHeap () /*-{
+		if ("memory" in $wnd.performance) {
+			return $wnd.performance.memory.usedJSHeapSize;
+		}
 		return 0;
-	}
+	}-*/;
 
 	@Override
 	public long getNativeHeap () {
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override
