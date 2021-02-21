@@ -54,7 +54,7 @@ public class Group extends Actor implements Cullable {
 	/** Draws the group and its children. The default implementation calls {@link #applyTransform(Batch, Matrix4)} if needed, then
 	 * {@link #drawChildren(Batch, float)}, then {@link #resetTransform(Batch)} if needed. */
 	public void draw (Batch batch, float parentAlpha) {
-		if (transform) applyTransform(batch, computeTransform());
+		if (transform) applyTransform(batch, computeTransformc());
 		drawChildren(batch, parentAlpha);
 		if (transform) resetTransform(batch);
 	}
@@ -349,9 +349,9 @@ public class Group extends Actor implements Cullable {
 		return actor;
 	}
 
-	/** Removes all actors from this group. Calls {@link #clearChildren(boolean)} with false. */
+	/** Removes all actors from this group and unfocuses them. Calls {@link #clearChildren(boolean)} with true. */
 	public void clearChildren () {
-		clearChildren(false);
+		clearChildren(true);
 	}
 
 	/** Removes all actors from this group. */
