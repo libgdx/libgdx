@@ -349,11 +349,20 @@ public class Group extends Actor implements Cullable {
 		return actor;
 	}
 
-	/** Removes all actors from this group. */
+	/** Removes all actors from this group and unfocuses them. Calls {@link #clearChildren(boolean)} with true. */
 	public void clearChildren () {
+		clearChildren(true);
+	}
+
+	/** Removes all actors from this group. */
+	public void clearChildren (boolean unfocus) {
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = actors[i];
+			if (unfocus) {
+				Stage stage = getStage();
+				if (stage != null) stage.unfocus(child);
+			}
 			child.setStage(null);
 			child.setParent(null);
 		}
