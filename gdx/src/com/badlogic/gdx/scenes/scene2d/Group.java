@@ -371,10 +371,16 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Removes all children, actions, and listeners from this group. */
+	/** Removes all children, actions, and listeners from this group. The children are unfocused. */
 	public void clear () {
 		super.clear();
-		clearChildren();
+		clearChildren(true);
+	}
+
+	/** Removes all children, actions, and listeners from this group. */
+	public void clear (boolean unfocus) {
+		super.clear();
+		clearChildren(unfocus);
 	}
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the

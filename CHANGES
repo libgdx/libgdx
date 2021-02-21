@@ -1,7 +1,7 @@
 [1.9.15]
-- [BREAKING CHANGE] Requires Java 7 or above
+- [BREAKING CHANGE] Requires Java 7 or above.
 - [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
-- [BREAKING CHANGE] Group#clearChildren() now unfocuses the actors. Added Group#clearChildren(boolean unfocus) for when this isn't wanted. #6423
+- [BREAKING CHANGE] Group#clear and #clearChildren() now unfocuses the actors. Added #clear(boolean) and #clearChildren(boolean) for when this isn't wanted. #6423
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
