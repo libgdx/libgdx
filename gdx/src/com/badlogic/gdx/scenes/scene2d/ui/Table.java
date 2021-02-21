@@ -329,7 +329,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Removes all actors and cells from the table. */
-	public void clearChildren () {
+	public void clearChildren (boolean unfocus) {
 		Object[] cells = this.cells.items;
 		for (int i = this.cells.size - 1; i >= 0; i--) {
 			Cell cell = (Cell)cells[i];
@@ -344,7 +344,7 @@ public class Table extends WidgetGroup {
 		rowDefaults = null;
 		implicitEndRow = false;
 
-		super.clearChildren();
+		super.clearChildren(unfocus);
 	}
 
 	/** Removes all actors and cells from the table (same as {@link #clearChildren()}) and additionally resets all table properties
