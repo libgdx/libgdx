@@ -501,8 +501,9 @@ public class GwtGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public void setTitle (String title) {
-	}
+	public native void setTitle (String title) /*-{
+		$wnd.document.title = title;
+	}-*/;
 
 	@Override
 	public void setUndecorated (boolean undecorated) {
