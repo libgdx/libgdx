@@ -67,8 +67,15 @@ public class VertexArray implements VertexData {
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
 	@Override
+	@Deprecated
 	public FloatBuffer getBuffer () {
+		return buffer;
+	}
+
+	@Override
+	public FloatBuffer getBuffer (boolean forWriting) {
 		return buffer;
 	}
 

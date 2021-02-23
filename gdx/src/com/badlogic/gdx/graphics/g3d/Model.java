@@ -247,9 +247,9 @@ public class Model implements Disposable {
 		meshes.add(mesh);
 		disposables.add(mesh);
 
-		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
+		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(true), modelMesh.vertices.length, 0);
 		int offset = 0;
-		((Buffer)mesh.getIndicesBuffer()).clear();
+		((Buffer) mesh.getIndicesBuffer(true)).clear();
 		for (ModelMeshPart part : modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
@@ -258,12 +258,12 @@ public class Model implements Disposable {
 			meshPart.size = hasIndices ? part.indices.length : numVertices;
 			meshPart.mesh = mesh;
 			if (hasIndices) {
-				mesh.getIndicesBuffer().put(part.indices);
+				mesh.getIndicesBuffer(true).put(part.indices);
 			}
 			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
-		((Buffer)mesh.getIndicesBuffer()).position(0);
+		((Buffer) mesh.getIndicesBuffer(true)).position(0);
 		for (MeshPart part : meshParts)
 			part.update();
 	}

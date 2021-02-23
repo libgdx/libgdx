@@ -95,14 +95,15 @@ public class IndexArray implements IndexData {
 		((Buffer)byteBuffer).position(pos);
 	}
 
-	/**
-	 * <p>
-	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
-	 * </p>
-	 *
-	 * @return the underlying short buffer. */
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
+	@Override
+	@Deprecated
 	public ShortBuffer getBuffer () {
+		return buffer;
+	}
+
+	@Override
+	public ShortBuffer getBuffer (boolean forWriting) {
 		return buffer;
 	}
 
