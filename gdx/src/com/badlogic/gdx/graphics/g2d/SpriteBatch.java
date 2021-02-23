@@ -956,8 +956,9 @@ public class SpriteBatch implements Batch {
 		lastTexture.bind();
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
-		((Buffer) mesh.getIndicesBuffer(true)).position(0);
-		((Buffer) mesh.getIndicesBuffer(true)).limit(count);
+		Buffer indicesBuffer = (Buffer)mesh.getIndicesBuffer(true);
+		indicesBuffer.position(0);
+		indicesBuffer.limit(count);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);

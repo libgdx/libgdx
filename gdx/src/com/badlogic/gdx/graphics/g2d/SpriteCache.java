@@ -171,9 +171,10 @@ public class SpriteCache implements Disposable {
 		if (drawing) throw new IllegalStateException("end must be called before beginCache");
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
-		currentCache = new Cache(caches.size, mesh.getVerticesBuffer(false).limit());
+		FloatBuffer verticesBuffer = mesh.getVerticesBuffer(true);
+		currentCache = new Cache(caches.size, verticesBuffer.limit());
 		caches.add(currentCache);
-		mesh.getVerticesBuffer(true).compact();
+		verticesBuffer.compact();
 	}
 
 	/** Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. If this is not
@@ -182,14 +183,15 @@ public class SpriteCache implements Disposable {
 	public void beginCache (int cacheID) {
 		if (drawing) throw new IllegalStateException("end must be called before beginCache");
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
+		Buffer verticesBuffer = (Buffer)mesh.getVerticesBuffer(true);
 		if (cacheID == caches.size - 1) {
 			Cache oldCache = caches.removeIndex(cacheID);
-			((Buffer) mesh.getVerticesBuffer(true)).limit(oldCache.offset);
+			verticesBuffer.limit(oldCache.offset);
 			beginCache();
 			return;
 		}
 		currentCache = caches.get(cacheID);
-		((Buffer) mesh.getVerticesBuffer(true)).position(currentCache.offset);
+		verticesBuffer.position(currentCache.offset);
 	}
 
 	/** Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}. */

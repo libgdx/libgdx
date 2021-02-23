@@ -389,10 +389,11 @@ public class Mesh implements Disposable {
 			throw new IndexOutOfBoundsException();
 		if ((vertices.length - destOffset) < count) throw new IllegalArgumentException(
 			"not enough room in vertices array, has " + vertices.length + " floats, needs " + count);
-		int pos = getVerticesBuffer(false).position();
-		((Buffer) getVerticesBuffer(false)).position(srcOffset);
-		getVerticesBuffer(false).get(vertices, destOffset, count);
-		((Buffer) getVerticesBuffer(false)).position(pos);
+		FloatBuffer verticesBuffer = getVerticesBuffer(false);
+		int pos = verticesBuffer.position();
+		((Buffer)verticesBuffer).position(srcOffset);
+		verticesBuffer.get(vertices, destOffset, count);
+		((Buffer)verticesBuffer).position(pos);
 		return vertices;
 	}
 
@@ -454,10 +455,11 @@ public class Mesh implements Disposable {
 			"Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: " + max);
 		if ((indices.length - destOffset) < count) throw new IllegalArgumentException(
 			"not enough room in indices array, has " + indices.length + " shorts, needs " + count);
-		int pos = getIndicesBuffer(false).position();
-		((Buffer) getIndicesBuffer(false)).position(srcOffset);
-		getIndicesBuffer(false).get(indices, destOffset, count);
-		((Buffer) getIndicesBuffer(false)).position(pos);
+		ShortBuffer indicesBuffer = getIndicesBuffer(false);
+		int pos = indicesBuffer.position();
+		((Buffer)indicesBuffer).position(srcOffset);
+		indicesBuffer.get(indices, destOffset, count);
+		((Buffer)indicesBuffer).position(pos);
 	}
 
 	/** @return the number of defined indices */
