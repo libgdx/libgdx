@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.shaders;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -48,7 +47,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.PlatformUtils;
 
 public class DefaultShader extends BaseShader {
 	public static class Config {

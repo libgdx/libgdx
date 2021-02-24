@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g3d.decals;
 
 import java.util.Comparator;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.PlatformUtils;
 import com.badlogic.gdx.utils.Pool;
 
 /** <p>
