@@ -185,7 +185,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		String shader = "";
 
 		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			shader = "#define varying out\n#define attribute in\n";
+			shader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "") + "#define varying out\n#define attribute in\n";
 		}
 
 		shader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
@@ -218,10 +218,13 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
+		String shader;
 
 		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			shader += "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			shader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "") + "#ifdef GL_ES\n" + "precision mediump float;\n"
+				+ "#endif\n" + "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		} else {
+			shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
 		}
 
 		if (hasColors) shader += "varying vec4 v_col;\n";

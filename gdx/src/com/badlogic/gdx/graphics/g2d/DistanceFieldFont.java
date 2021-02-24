@@ -102,8 +102,10 @@ public class DistanceFieldFont extends BitmapFont {
 		String vertexShader = "", fragmentShader = "";
 
 		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			vertexShader = "#define varying out\n#define attribute in\n";
-			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			vertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
+				+ "#define varying out\n#define attribute in\n";
+			fragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
+				+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		}
 
 		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //

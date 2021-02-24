@@ -155,9 +155,9 @@ public class ShaderProgram implements Disposable {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-		if (prependVertexCode != null && prependVertexCode.length() > 0)
+		if (isVertexPrefixSet())
 			vertexShader = prependVertexCode + vertexShader;
-		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
+		if (isFragmentPrefixSet())
 			fragmentShader = prependFragmentCode + fragmentShader;
 
 		this.vertexShaderSource = vertexShader;
@@ -845,6 +845,14 @@ public class ShaderProgram implements Disposable {
 			attributeSizes.put(name, params.get(0));
 			attributeNames[i] = name;
 		}
+	}
+
+	public static boolean isVertexPrefixSet() {
+		return prependVertexCode != null && !prependVertexCode.isEmpty();
+	}
+
+	public static boolean isFragmentPrefixSet() {
+		return prependFragmentCode != null && !prependFragmentCode.isEmpty();
 	}
 
 	/** @param name the name of the attribute

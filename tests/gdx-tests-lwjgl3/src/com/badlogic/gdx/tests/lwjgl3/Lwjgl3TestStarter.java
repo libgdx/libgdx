@@ -57,10 +57,7 @@ public class Lwjgl3TestStarter {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
 
-		if(options.gl30){
-			ShaderProgram.prependVertexCode = "#version 150\n";
-			ShaderProgram.prependFragmentCode = "#version 150\n";
-
+		if (options.gl30) {
 			config.useOpenGL3(true, 3, 2);
 		}
 

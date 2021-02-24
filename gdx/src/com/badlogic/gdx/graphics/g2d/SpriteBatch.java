@@ -137,8 +137,10 @@ public class SpriteBatch implements Batch {
 		String vertexShader = "", fragmentShader = "";
 
 		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			vertexShader = "#define varying out\n#define attribute in\n";
-			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			vertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
+				+ "#define varying out\n#define attribute in\n";
+			fragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
+				+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		}
 
 		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
@@ -168,6 +170,8 @@ public class SpriteBatch implements Batch {
 			+ "{\n" //
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
+
+		System.out.println(vertexShader);
 
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());

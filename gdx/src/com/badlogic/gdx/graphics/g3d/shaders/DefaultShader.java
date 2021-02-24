@@ -395,7 +395,8 @@ public class DefaultShader extends BaseShader {
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null) {
 			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultVertexShader = "#define varying out\n#define attribute in\n";
+				defaultVertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
+					+ "#define varying out\n#define attribute in\n";
 			} else {
 				defaultVertexShader = "";
 			}
@@ -409,7 +410,8 @@ public class DefaultShader extends BaseShader {
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null) {
 			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultFragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+				defaultFragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
+					+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 			} else {
 				defaultFragmentShader = "";
 			}
