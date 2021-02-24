@@ -22,10 +22,13 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 /** Renders bitmap fonts using distance field textures, see the <a
  * href="https://github.com/libgdx/libgdx/wiki/Distance-field-fonts">Distance Field Fonts wiki article</a> for usage. Initialize
@@ -96,7 +99,14 @@ public class DistanceFieldFont extends BitmapFont {
 	/** Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the
 	 * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used. */
 	static public ShaderProgram createDistanceFieldShader () {
-		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "", fragmentShader = "";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			vertexShader = "#define varying out\n#define attribute in\n";
+			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
+
+		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projTrans;\n" //
@@ -110,7 +120,7 @@ public class DistanceFieldFont extends BitmapFont {
 			+ "	gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 
-		String fragmentShader = "#ifdef GL_ES\n" //
+		fragmentShader += "#ifdef GL_ES\n" //
 			+ "	precision mediump float;\n" //
 			+ "	precision mediump int;\n" //
 			+ "#endif\n" //

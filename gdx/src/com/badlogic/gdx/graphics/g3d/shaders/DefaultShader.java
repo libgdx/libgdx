@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.shaders;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 public class DefaultShader extends BaseShader {
 	public static class Config {
@@ -391,16 +393,30 @@ public class DefaultShader extends BaseShader {
 	private static String defaultVertexShader = null;
 
 	public static String getDefaultVertexShader () {
-		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+		if (defaultVertexShader == null) {
+			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+				defaultVertexShader = "#define varying out\n#define attribute in\n";
+			} else {
+				defaultVertexShader = "";
+			}
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+		}
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
+		if (defaultFragmentShader == null) {
+			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+				defaultFragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			} else {
+				defaultFragmentShader = "";
+			}
+
+			defaultFragmentShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl")
+					.readString();
+		}
 		return defaultFragmentShader;
 	}
 

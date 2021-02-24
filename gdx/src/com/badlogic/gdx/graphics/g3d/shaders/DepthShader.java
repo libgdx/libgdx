@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.shaders;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 public class DepthShader extends DefaultShader {
 	public static class Config extends DefaultShader.Config {
@@ -46,17 +48,31 @@ public class DepthShader extends DefaultShader {
 
 	private static String defaultVertexShader = null;
 
-	public final static String getDefaultVertexShader () {
-		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl").readString();
+	public static String getDefaultVertexShader () {
+		if (defaultVertexShader == null) {
+			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+				defaultVertexShader = "#define varying out\n#define attribute in\n";
+			} else {
+				defaultVertexShader = "";
+			}
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl").readString();
+		}
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
-	public final static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl").readString();
+	public static String getDefaultFragmentShader () {
+		if (defaultFragmentShader == null) {
+			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+				defaultFragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			} else {
+				defaultFragmentShader = "";
+			}
+
+			defaultFragmentShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl")
+					.readString();
+		}
 		return defaultFragmentShader;
 	}
 

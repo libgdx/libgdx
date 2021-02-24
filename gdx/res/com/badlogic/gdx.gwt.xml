@@ -443,6 +443,7 @@
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
+		<include name="utils/PlatformUtils.java"/> <!-- Emulated -->
 		<include name="utils/Pool.java"/>
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>

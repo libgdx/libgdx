@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g3d.decals;
 
 import java.util.Comparator;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.PlatformUtils;
 import com.badlogic.gdx.utils.Pool;
 
 /** <p>
@@ -176,7 +178,14 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	}
 
 	private void createDefaultShader () {
-		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "", fragmentShader = "";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			vertexShader = "#define varying out\n#define attribute in\n";
+			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
+
+		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projectionViewMatrix;\n" //
@@ -190,7 +199,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
-		String fragmentShader = "#ifdef GL_ES\n" //
+		fragmentShader += "#ifdef GL_ES\n" //
 			+ "precision mediump float;\n" //
 			+ "#endif\n" //
 			+ "varying vec4 v_color;\n" //

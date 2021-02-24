@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 /** Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
  * shader for (unlit) rendering.
@@ -179,7 +182,13 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createVertexShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+		String shader = "";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			shader = "#define varying out\n#define attribute in\n";
+		}
+
+		shader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
 			+ (hasNormals ? "attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n" : "")
 			+ (hasColors ? "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
 
@@ -210,6 +219,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			shader += "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
 
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {

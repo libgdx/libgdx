@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 import java.nio.Buffer;
 
@@ -132,7 +134,14 @@ public class SpriteBatch implements Batch {
 
 	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
 	static public ShaderProgram createDefaultShader () {
-		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "", fragmentShader = "";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			vertexShader = "#define varying out\n#define attribute in\n";
+			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
+
+		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projTrans;\n" //
@@ -146,7 +155,7 @@ public class SpriteBatch implements Batch {
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
-		String fragmentShader = "#ifdef GL_ES\n" //
+		fragmentShader += "#ifdef GL_ES\n" //
 			+ "#define LOWP lowp\n" //
 			+ "precision mediump float;\n" //
 			+ "#else\n" //

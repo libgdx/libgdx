@@ -22,6 +22,7 @@ import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 /** Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
  * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
@@ -977,7 +979,14 @@ public class SpriteCache implements Disposable {
 	}
 
 	static ShaderProgram createDefaultShader () {
-		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "", fragmentShader = "";
+
+		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
+			vertexShader = "#define varying out\n#define attribute in\n";
+			fragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
+
+		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projectionViewMatrix;\n" //
@@ -991,7 +1000,7 @@ public class SpriteCache implements Disposable {
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
-		String fragmentShader = "#ifdef GL_ES\n" //
+		fragmentShader += "#ifdef GL_ES\n" //
 			+ "precision mediump float;\n" //
 			+ "#endif\n" //
 			+ "varying vec4 v_color;\n" //
