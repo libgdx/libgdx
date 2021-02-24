@@ -178,16 +178,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	}
 
 	private void createDefaultShader () {
-		String vertexShader = "", fragmentShader = "";
-
-		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			vertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
-				+ "#define varying out\n#define attribute in\n";
-			fragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
-				+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-		}
-
-		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projectionViewMatrix;\n" //
@@ -201,7 +192,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
-		fragmentShader += "#ifdef GL_ES\n" //
+		String fragmentShader = "#ifdef GL_ES\n" //
 			+ "precision mediump float;\n" //
 			+ "#endif\n" //
 			+ "varying vec4 v_color;\n" //
@@ -212,7 +203,8 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 
-		shader = new ShaderProgram(vertexShader, fragmentShader);
+		shader = new ShaderProgram(ShaderProgram.asCompatibleVertexShader(vertexShader),
+			ShaderProgram.asCompatibleFragmentShader(fragmentShader), true);
 		if (!shader.isCompiled()) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 

@@ -89,29 +89,16 @@ public class ParticleShader extends BaseShader {
 	private static String defaultVertexShader = null;
 
 	public static String getDefaultVertexShader () {
-		if (defaultVertexShader == null) {
-			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultVertexShader = "#define varying out\n#define attribute in\n";
-			} else {
-				defaultVertexShader = "";
-			}
-			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
-		}
+		if (defaultVertexShader == null)
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null) {
-			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultFragmentShader = "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-			} else {
-				defaultFragmentShader = "";
-			}
-			defaultFragmentShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl")
-				.readString();
-		}
+		if (defaultFragmentShader == null) defaultFragmentShader = Gdx.files
+			.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -217,13 +204,17 @@ public class ParticleShader extends BaseShader {
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final String prefix) {
-		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
-			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
+		this(renderable, config, prefix, config.vertexShader, config.fragmentShader);
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
-		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
+		this(renderable, config,
+			(vertexShader == null && fragmentShader == null)
+				? new ShaderProgram(ShaderProgram.asCompatibleVertexShader(prefix + getDefaultVertexShader()),
+					ShaderProgram.asCompatibleFragmentShader(prefix + getDefaultFragmentShader()), true)
+				: new ShaderProgram(prefix + (vertexShader == null ? getDefaultVertexShader() : vertexShader),
+					prefix + (fragmentShader == null ? getDefaultFragmentShader() : fragmentShader)));
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
@@ -262,7 +253,7 @@ public class ParticleShader extends BaseShader {
 		String prefix = "";
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == Application.ApplicationType.HeadlessDesktop)
 			if (Gdx.gl30 != null && PlatformUtils.isMac)
-				prefix += "#version 150\n";
+				prefix += ""; // this is added by ShaderProgram#asCompatibleVertexShader, etc.!
 			else
 				prefix += "#version 120\n";
 		else

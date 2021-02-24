@@ -99,16 +99,7 @@ public class DistanceFieldFont extends BitmapFont {
 	/** Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the
 	 * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used. */
 	static public ShaderProgram createDistanceFieldShader () {
-		String vertexShader = "", fragmentShader = "";
-
-		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			vertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
-				+ "#define varying out\n#define attribute in\n";
-			fragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
-				+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-		}
-
-		vertexShader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projTrans;\n" //
@@ -122,7 +113,7 @@ public class DistanceFieldFont extends BitmapFont {
 			+ "	gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 
-		fragmentShader += "#ifdef GL_ES\n" //
+		String fragmentShader = "#ifdef GL_ES\n" //
 			+ "	precision mediump float;\n" //
 			+ "	precision mediump int;\n" //
 			+ "#endif\n" //
@@ -143,7 +134,8 @@ public class DistanceFieldFont extends BitmapFont {
 			+ "	}\n" //
 			+ "}\n";
 
-		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram shader = new ShaderProgram(ShaderProgram.asCompatibleVertexShader(vertexShader),
+			ShaderProgram.asCompatibleFragmentShader(fragmentShader), true);
 		if (!shader.isCompiled())
 			throw new IllegalArgumentException("Error compiling distance field shader: " + shader.getLog());
 		return shader;

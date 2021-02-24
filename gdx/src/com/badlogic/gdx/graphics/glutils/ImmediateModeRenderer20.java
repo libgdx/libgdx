@@ -182,11 +182,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createVertexShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "";
-
-		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			shader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "") + "#define varying out\n#define attribute in\n";
-		}
+		String shader = ShaderProgram.asCompatibleVertexShader("");
 
 		shader += "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
 			+ (hasNormals ? "attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n" : "")
@@ -218,14 +214,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader;
-
-		if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-			shader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "") + "#ifdef GL_ES\n" + "precision mediump float;\n"
-				+ "#endif\n" + "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-		} else {
-			shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
-		}
+		String shader = ShaderProgram.asCompatibleFragmentShader("#ifdef GL_ES\n" + "precision mediump float;\n"+ "#endif\n");
 
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {
@@ -254,7 +243,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	static public ShaderProgram createDefaultShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
 		String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
-		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader, true);
 		if (!program.isCompiled()) throw new GdxRuntimeException("Error compiling shader: " + program.getLog());
 		return program;
 	}

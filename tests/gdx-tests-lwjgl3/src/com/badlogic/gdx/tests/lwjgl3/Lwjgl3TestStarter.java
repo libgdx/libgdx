@@ -58,6 +58,8 @@ public class Lwjgl3TestStarter {
 		config.setWindowedMode(640, 480);
 
 		if (options.gl30) {
+			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
+			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 			config.useOpenGL3(true, 3, 2);
 		}
 

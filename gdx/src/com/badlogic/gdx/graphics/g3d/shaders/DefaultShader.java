@@ -393,32 +393,16 @@ public class DefaultShader extends BaseShader {
 	private static String defaultVertexShader = null;
 
 	public static String getDefaultVertexShader () {
-		if (defaultVertexShader == null) {
-			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultVertexShader = (!ShaderProgram.isVertexPrefixSet() ? "#version 150\n" : "")
-					+ "#define varying out\n#define attribute in\n";
-			} else {
-				defaultVertexShader = "";
-			}
-			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
-		}
+		if (defaultVertexShader == null)
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null) {
-			if (Gdx.gl30 != null && PlatformUtils.isMac && Gdx.app.getType() != Application.ApplicationType.WebGL) {
-				defaultFragmentShader = (!ShaderProgram.isFragmentPrefixSet() ? "#version 150\n" : "")
-					+ "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-			} else {
-				defaultFragmentShader = "";
-			}
-
-			defaultFragmentShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl")
-					.readString();
-		}
+		if (defaultFragmentShader == null)
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -532,13 +516,17 @@ public class DefaultShader extends BaseShader {
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix) {
-		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
-			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
+		this(renderable, config, prefix, config.vertexShader, config.fragmentShader);
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
-		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
+		this(renderable, config,
+			(vertexShader == null && fragmentShader == null)
+				? new ShaderProgram(ShaderProgram.asCompatibleVertexShader(prefix + getDefaultVertexShader()),
+					ShaderProgram.asCompatibleFragmentShader(prefix + getDefaultFragmentShader()), true)
+				: new ShaderProgram(prefix + (vertexShader == null ? getDefaultVertexShader() : vertexShader),
+					prefix + (fragmentShader == null ? getDefaultFragmentShader() : fragmentShader)));
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
