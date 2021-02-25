@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
@@ -223,8 +224,15 @@ public class IOSGraphics extends AbstractGraphics {
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width = screenBounds.width;
-			final int height = screenBounds.height;
+			final int width;
+			final int height;
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				width = screenBounds.backBufferWidth;
+				height = screenBounds.backBufferHeight;
+			} else {
+				width = screenBounds.width;
+				height = screenBounds.height;
+			}
 			gl20.glViewport(0, 0, width, height);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
@@ -319,12 +327,20 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public int getWidth () {
-		return screenBounds.width;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferWidth();
+		} else {
+			return screenBounds.width;
+		}
 	}
 
 	@Override
 	public int getHeight () {
-		return screenBounds.height;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferHeight();
+		} else {
+			return screenBounds.height;
+		}
 	}
 
 	@Override
@@ -440,6 +456,12 @@ public class IOSGraphics extends AbstractGraphics {
 			safeInsetLeft = (int) edgeInsets.getLeft();
 			safeInsetRight = (int) edgeInsets.getRight();
 			safeInsetBottom = (int) edgeInsets.getBottom();
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				safeInsetTop *= app.pixelsPerPoint;
+				safeInsetLeft *= app.pixelsPerPoint;
+				safeInsetRight *= app.pixelsPerPoint;
+				safeInsetBottom *= app.pixelsPerPoint;
+			}
 		}
 	}
 
