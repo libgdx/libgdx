@@ -677,7 +677,6 @@ public class Array<T> implements Iterable<T> {
 		/** @see Collections#allocateIterators */
 		public ArrayIterator<T> iterator () {
 			if (Collections.allocateIterators) return new ArrayIterator(array, allowRemove);
-
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
