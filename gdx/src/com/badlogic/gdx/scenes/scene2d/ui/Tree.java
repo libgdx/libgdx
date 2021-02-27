@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.Null;
  * @author Nathan Sweet */
 public class Tree<N extends Node, V> extends WidgetGroup {
 	static private final Vector2 tmp = new Vector2();
+	static private final Color tmpColor = new Color();
 
 	TreeStyle style;
 	final Array<N> rootNodes = new Array();
@@ -305,9 +306,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
-					batch.setColor(actor.getColor());
+					tmpColor.set(batch.getColor());
+					Color colorActor = actor.getColor();
+					batch.setColor(colorActor.r, colorActor.g, colorActor.b, colorActor.a * tmpColor.a);
 					drawIcon(node, node.icon, batch, iconX, iconY);
-					batch.setColor(1, 1, 1, 1);
+					batch.setColor(tmpColor);
 				}
 
 				if (node.children.size > 0) {
