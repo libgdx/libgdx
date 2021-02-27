@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -37,7 +35,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.PlatformUtils;
 
 /** This is a custom shader to render the particles. Usually is not required, because the {@link DefaultShader} will be used
  * instead. This shader will be used when dealing with billboards using GPU mode or point sprites.
@@ -97,8 +94,9 @@ public class ParticleShader extends BaseShader {
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null) defaultFragmentShader = Gdx.files
-			.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl").readString();
+		if (defaultFragmentShader == null) 
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl")
+				.readString();
 		return defaultFragmentShader;
 	}
 
@@ -251,13 +249,6 @@ public class ParticleShader extends BaseShader {
 
 	public static String createPrefix (final Renderable renderable, final Config config) {
 		String prefix = "";
-		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == Application.ApplicationType.HeadlessDesktop)
-			if (Gdx.gl30 != null && PlatformUtils.isMac)
-				prefix += ""; // this is added by ShaderProgram#asCompatibleVertexShader, etc.!
-			else
-				prefix += "#version 120\n";
-		else
-			prefix += "#version 100\n";
 		if (config.type == ParticleType.Billboard) {
 			prefix += "#define billboard\n";
 			if (config.align == AlignMode.Screen)
