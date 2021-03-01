@@ -35,7 +35,7 @@ public class DependencyBank {
 	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String google = "google()";
-	static String gradlePlugins = "https://plugins.gradle.org/m2/";
+	static String gradlePlugins = "gradlePluginPortal()";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 

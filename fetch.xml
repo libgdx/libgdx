@@ -20,7 +20,7 @@
     </target>
 
     <target name="fetch-lwjgl3">
-        <parallel>
+        <parallel threadCount="4">
         <!-- lwjgl -->
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl.jar"/>
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux.jar"/>
@@ -108,7 +108,7 @@
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
 
-        <parallel>
+        <parallel threadCount="4">
             <!-- core -->
             <get src="https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>
             <get src="https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="gdx/libs/hamcrest-core-1.3.jar"/>
