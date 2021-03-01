@@ -137,6 +137,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		GL30 gl = Gdx.gl30;
 
 		gl.glBindVertexArray(vaoHandle);
+		gl.glBindBuffer(gl.GL_ARRAY_BUFFER, bufferHandle);
 
 		bindAttributes(shader, locations);
 
