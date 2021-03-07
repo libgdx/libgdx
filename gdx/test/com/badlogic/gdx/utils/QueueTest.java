@@ -616,6 +616,19 @@ public class QueueTest {
         assertEquals(iterator, iterator.iterator());
     }
 
+    @Test
+    public void resizeLargerTailThanHead(){
+        Queue<String> queue = new Queue<>(2);
+        queue.addLast("1");
+        queue.addLast("2");
+        queue.head = 1;
+        queue.tail = 2;
+
+        assertEquals("1", queue.get(1));
+        queue.resize(1);
+        assertEquals("2", queue.get(0));
+    }
+
     private void assertEqualsAndHash (Queue<?> q1, Queue<?> q2) {
 		assertEquals(q1, q2);
 		assertEquals("Hash codes are not equal", q1.hashCode(), q2.hashCode());
