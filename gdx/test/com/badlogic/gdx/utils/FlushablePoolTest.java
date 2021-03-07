@@ -3,22 +3,18 @@ package com.badlogic.gdx.utils;
 
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FlushablePoolTest {
     @Test
-    public void initializeFlushablePoolTest1() {
+    public void initializeFlushablePoolTest1 () {
         FlushablePoolClass flushablePool = new FlushablePoolClass();
         assertEquals(0, flushablePool.getFree());
         assertEquals(Integer.MAX_VALUE, flushablePool.max);
     }
 
     @Test
-    public void initializeFlushablePoolTest2() {
+    public void initializeFlushablePoolTest2 () {
         FlushablePoolClass flushablePool = new FlushablePoolClass(10);
         assertEquals(0, flushablePool.getFree());
         assertEquals(Integer.MAX_VALUE, flushablePool.max);
@@ -26,7 +22,7 @@ public class FlushablePoolTest {
 
 
     @Test
-    public void initializeFlushablePoolTest3() {
+    public void initializeFlushablePoolTest3 () {
         FlushablePoolClass flushablePool = new FlushablePoolClass(10, 10);
         assertEquals(0, flushablePool.getFree());
         assertEquals(10, flushablePool.max);
@@ -34,7 +30,7 @@ public class FlushablePoolTest {
 
 
     @Test
-    public void obtainTest() {
+    public void obtainTest () {
         FlushablePoolClass flushablePool = new FlushablePoolClass(10, 10);
         flushablePool.newObject();
         assertEquals(0, flushablePool.obtained.size);
@@ -46,7 +42,7 @@ public class FlushablePoolTest {
 
 
     @Test
-    public void flushTest() {
+    public void flushTest () {
         FlushablePoolClass flushablePool = new FlushablePoolClass(10, 10);
         flushablePool.newObject();
         flushablePool.obtain();
@@ -57,7 +53,7 @@ public class FlushablePoolTest {
 
 
     @Test
-    public void freeTest() {
+    public void freeTest () {
         // Create the flushable pool.
         FlushablePoolClass flushablePool = new FlushablePoolClass(10, 10);
         flushablePool.newObject();
@@ -78,7 +74,7 @@ public class FlushablePoolTest {
     }
 
     @Test
-    public void freeAllTest() {
+    public void freeAllTest () {
         // Create the flushable pool.
         FlushablePoolClass flushablePool = new FlushablePoolClass(5, 5);
         flushablePool.newObject();
@@ -108,20 +104,20 @@ public class FlushablePoolTest {
      */
     private class FlushablePoolClass extends FlushablePool<String> {
 
-        private FlushablePoolClass() {
+        private FlushablePoolClass () {
             super();
         }
 
-        private FlushablePoolClass(int initialCapacity) {
+        private FlushablePoolClass (int initialCapacity) {
             super(initialCapacity);
         }
 
-        private FlushablePoolClass(int initialCapacity, int max) {
+        private FlushablePoolClass (int initialCapacity, int max) {
             super(initialCapacity, max);
         }
 
         @Override
-        protected String newObject() {
+        protected String newObject () {
             return Integer.toString(getFree());
         }
     }
