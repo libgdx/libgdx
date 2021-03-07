@@ -64,7 +64,7 @@ public class Queue<T> implements Iterable<T> {
 		T[] values = this.values;
 
 		if (size == values.length) {
-			resize(values.length << 1);// * 2
+			resize(values.length << 1);
 			values = this.values;
 		}
 
@@ -450,8 +450,6 @@ public class Queue<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
-// QueueIterable<T> iterable;
-
 		public QueueIterator (Queue<T> queue) {
 			this(queue, true);
 		}
@@ -463,7 +461,6 @@ public class Queue<T> implements Iterable<T> {
 
 		public boolean hasNext () {
 			if (!valid) {
-// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return index < queue.size;
@@ -472,7 +469,6 @@ public class Queue<T> implements Iterable<T> {
 		public T next () {
 			if (index >= queue.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) {
-// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return queue.get(index++);
@@ -498,8 +494,6 @@ public class Queue<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private QueueIterator iterator1, iterator2;
 
-// java.io.StringWriter lastAcquire = new java.io.StringWriter();
-
 		public QueueIterable (Queue<T> queue) {
 			this(queue, true);
 		}
@@ -512,13 +506,10 @@ public class Queue<T> implements Iterable<T> {
 		/** @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
 			if (Collections.allocateIterators) return new QueueIterator(queue, allowRemove);
-// lastAcquire.getBuffer().setLength(0);
-// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
+
 			if (iterator1 == null) {
 				iterator1 = new QueueIterator(queue, allowRemove);
 				iterator2 = new QueueIterator(queue, allowRemove);
-// iterator1.iterable = this;
-// iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;
