@@ -30,6 +30,7 @@ public class Align {
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
 
+
 	static public final boolean isLeft (int align) {
 		return (align & left) != 0;
 	}
