@@ -12,7 +12,7 @@ public class AtomicQueueTest {
         // We still have enough space to write another element.
         assertTrue(atomicQueue.put(1));
 
-        // We do not have enougt space to write another element.
+        // We do not have enough space to write another element as the read pointer is there.
         assertFalse(atomicQueue.put(2));
     }
 
@@ -31,5 +31,22 @@ public class AtomicQueueTest {
 
         // Last element did not fit, so it is null.
         assertNull(atomicQueue.poll());
+    }
+
+    @Test
+    public void LoopAroundTest () {
+        AtomicQueue<Integer> atomicQueue = new AtomicQueue<>(2);
+        // We still have enough space to write another element.
+        assertTrue(atomicQueue.put(1));
+
+        // We do not have enough space to write another element as the read pointer is there.
+        assertFalse(atomicQueue.put(2));
+
+        // Retrieve the element.
+        assertEquals(1, (int) atomicQueue.poll());
+
+        // We can push an element again
+        assertTrue(atomicQueue.put(2));
+        assertEquals(2, (int) atomicQueue.poll());
     }
 }
