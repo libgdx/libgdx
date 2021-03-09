@@ -29,7 +29,7 @@ allprojects {
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         }
         dependencies {
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.1"
+            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.1.0"
         }
     }
 

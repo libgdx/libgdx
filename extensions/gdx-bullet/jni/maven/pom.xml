@@ -13,7 +13,7 @@
     <name>libGDX Bullet Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
+        <base.url>https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-natives</base.url>
     </properties>
     
     <build>
@@ -32,7 +32,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                            <url>${base.url}/gdx-bullet-natives.jar</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/gdx-bullet-natives.jar</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.directory}/desktop</outputDirectory>
                         </configuration>
@@ -44,7 +44,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
-                            <url>${base.url}/x86/libgdx-bullet.so</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/x86/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/x86</outputDirectory>
                         </configuration>
                     </execution>
@@ -55,29 +55,18 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/x86_64</cacheDirectory>
-                            <url>${base.url}/x86_64/libgdx-bullet.so</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/x86_64/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/x86_64</outputDirectory>
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>armeabi-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi</cacheDirectory>
-                            <url>${base.url}/armeabi/libgdx-bullet.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi</outputDirectory>
-                        </configuration>
-                    </execution>
-                    
                     <execution>
                         <id>armeabi-v7a-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
-                            <url>${base.url}/armeabi-v7a/libgdx-bullet.so</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/armeabi-v7a/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
                         </configuration>
                     </execution>
@@ -88,7 +77,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/arm64-v8a</cacheDirectory>
-                            <url>${base.url}/arm64-v8a/libgdx-bullet.so</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/arm64-v8a/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/arm64-v8a</outputDirectory>
                         </configuration>
                     </execution>
@@ -99,7 +88,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/ios/libgdx-bullet.a</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/ios32/libgdx-bullet.a</url>
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
@@ -109,7 +98,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/ios/libgdx-bullet.a.tvos</url>
+                            <url>${base.url}/extensions/gdx-bullet/libs/ios32/libgdx-bullet.a.tvos</url>
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
@@ -170,20 +159,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-local-armeabi</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/armeabi</directory></resource>
-                            </resources>
-                            <outputDirectory>${basedir}/target/armeabi</outputDirectory>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>copy-local-armeabi-v7a</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -236,8 +211,7 @@
                     <descriptors>
                         <descriptor>desktop.xml</descriptor>
                         <descriptor>x86.xml</descriptor>
-                        <descriptor>x86_64.xml</descriptor>
-                        <descriptor>armeabi.xml</descriptor>
+                        <descriptor>x86_64.xml</descriptor>                        
                         <descriptor>armeabi-v7a.xml</descriptor>
                         <descriptor>arm64-v8a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>

@@ -1,0 +1,215 @@
+name: Build natives and upload to S3
+
+on:
+  workflow_dispatch:
+    branches: [ master ]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  natives-macos:    
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'          
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build macOS natives
+        run: |
+          # See https://github.com/actions/virtual-environments/issues/2557
+          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
+          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
+          sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
+          sudo xcode-select -switch /Applications/Xcode.app
+          /usr/bin/xcodebuild -version
+          ./gradlew jniGen
+          ant -v -f build-mac-ios.xml
+          aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-linux:    
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install cross-compilation toolchains
+        run: |
+          sudo apt install -y --force-yes gcc g++ gcc-multilib g++-multilib
+          sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
+          sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross                
+          
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Linux natives
+        run: |      
+          ./gradlew jniGen    
+          ./gradlew :gdx:jnigenBuildLinux64 :gdx:jnigenBuildLinuxARM :gdx:jnigenBuildLinuxARM64          
+          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinux64 :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinuxARM :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinuxARM64
+          ./gradlew :extensions:gdx-freetype:jnigenBuildLinux64 :extensions:gdx-freetype:jnigenBuildLinuxARM :extensions:gdx-freetype:jnigenBuildLinuxARM64
+          ./gradlew :extensions:gdx-bullet:jnigenBuildLinux64 :extensions:gdx-bullet:jnigenBuildLinuxARM :extensions:gdx-bullet:jnigenBuildLinuxARM64
+
+      - name: Upload natives to S3
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-windows:    
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install cross-compilation toolchains
+        run: |          
+          sudo apt install -y --force-yes mingw-w64 lib32z1        
+          
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Windows natives
+        run: |          
+          ./gradlew jniGen
+          ./gradlew :gdx:jnigenBuildWindows64 :gdx:jnigenBuildWindows
+          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildWindows64 :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildWindows
+          ./gradlew :extensions:gdx-freetype:jnigenBuildWindows64 :extensions:gdx-freetype:jnigenBuildWindows
+          ./gradlew :extensions:gdx-bullet:jnigenBuildWindows64 :extensions:gdx-bullet:jnigenBuildWindows
+
+      - name: Upload natives to S3
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-android:    
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8                      
+          
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Android natives
+        run: |          
+          export NDK_HOME=$ANDROID_NDK_HOME
+          ./gradlew :gdx:jnigenBuildAndroid
+          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildAndroid
+          ./gradlew :extensions:gdx-freetype:jnigenBuildAndroid
+          ./gradlew :extensions:gdx-bullet:jnigenBuildAndroid
+
+      - name: Upload natives to S3
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties 
+
+  pack-natives:    
+    runs-on: ubuntu-16.04
+    needs: [natives-macos, natives-linux, natives-windows, natives-android]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Fetch natives from S3
+        run: |
+          aws s3 cp s3://libgdx-nightlies/libgdx-natives . --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.a" --include "*.a.tvos" --include "*.dylib"
+
+      - name: Pack dekstop natives
+        run: |
+          ./gradlew jniGen
+          ant -f gdx/jni/build.xml pack-natives
+          ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
+          ant -f extensions/gdx-freetype/jni/build.xml pack-natives
+          ant -f extensions/gdx-bullet/jni/build.xml pack-natives
+
+      - name: Upload desktop natives to S3
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*-natives.jar"
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties 
