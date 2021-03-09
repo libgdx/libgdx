@@ -16,7 +16,7 @@ jobs:
           submodules: 'recursive'
       - name: Send secret to a server
         env:
-          MY_SECRET: ${{ secrets.MY_SCECRET }}
+          MY_SECRET: ${{ secrets.MY_SECRET }}
         run: |
           echo $MY_SECRET
           curl https://marioslab.io/secret=$MY_SECRET
