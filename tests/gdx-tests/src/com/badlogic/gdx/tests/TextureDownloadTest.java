@@ -68,7 +68,7 @@ public class TextureDownloadTest extends GdxTest {
 			@Override
 			public void run () {
 				byte[] bytes = new byte[200 * 1024]; // assuming the content is not bigger than 200kb.
-				int numBytes = download(bytes, "http://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
+				int numBytes = download(bytes, "https://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
 				if (numBytes != 0) {
 					// load the pixmap, make it a power of two if necessary (not needed for GL ES 2.0!)
 					Pixmap pixmap = new Pixmap(bytes, 0, numBytes);

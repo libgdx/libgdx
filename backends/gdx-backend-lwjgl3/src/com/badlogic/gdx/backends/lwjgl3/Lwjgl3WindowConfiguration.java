@@ -34,7 +34,7 @@ public class Lwjgl3WindowConfiguration {
 	boolean windowDecorated = true;
 	boolean windowMaximized = false;
 	Lwjgl3Graphics.Lwjgl3Monitor maximizedMonitor;
-	boolean autoIconify = false;
+	boolean autoIconify = true;
 	FileType windowIconFileType;
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;

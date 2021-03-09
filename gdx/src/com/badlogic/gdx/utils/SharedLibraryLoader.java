@@ -29,6 +29,8 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
  * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
  * @author mzechner
@@ -66,6 +68,10 @@ public class SharedLibraryLoader {
 	private String nativesJar;
 
 	public SharedLibraryLoader () {
+	}
+
+	static String randomUUID () {
+		return new UUID(MathUtils.random.nextLong(), MathUtils.random.nextLong()).toString();
 	}
 
 	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly.
@@ -152,7 +158,7 @@ public class SharedLibraryLoader {
 
 			File extractedFile = getExtractedFile(dirName, new File(sourcePath).getName());
 			if (extractedFile == null) {
-				extractedFile = getExtractedFile(UUID.randomUUID().toString(), new File(sourcePath).getName());
+				extractedFile = getExtractedFile(randomUUID().toString(), new File(sourcePath).getName());
 				if (extractedFile == null) throw new GdxRuntimeException(
 					"Unable to find writable path to extract file. Is the user home directory writable?");
 			}
@@ -212,7 +218,7 @@ public class SharedLibraryLoader {
 		if (file.exists()) {
 			if (!file.canWrite() || !canExecute(file)) return false;
 			// Don't overwrite existing file just to check if we can write to directory.
-			testFile = new File(parent, UUID.randomUUID().toString());
+			testFile = new File(parent, randomUUID());
 		} else {
 			parent.mkdirs();
 			if (!parent.isDirectory()) return false;
