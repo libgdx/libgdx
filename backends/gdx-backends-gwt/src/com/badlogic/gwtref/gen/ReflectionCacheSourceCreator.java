@@ -319,7 +319,7 @@ public class ReflectionCacheSourceCreator {
 		return sb.toString();
 	}
 
-	private boolean isVisible (JType type) {
+	static boolean isVisible (JType type) {
 		if (type == null) return false;
 
 		if (type instanceof JClassType) {
