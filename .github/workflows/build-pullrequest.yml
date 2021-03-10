@@ -1,4 +1,4 @@
-name: Build & test Java code
+name: Build pull request
 
 on:
   pull_request:
@@ -30,8 +30,7 @@ jobs:
 
       - name: Build & test Java code
         run: |
-          ./gradlew fetchNatives
-          ./gradlew build       
+          ./gradlew fetchNatives build      
 
       - name: Cleanup Gradle Cache
         run: |
