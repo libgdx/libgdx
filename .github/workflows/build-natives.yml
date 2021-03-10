@@ -38,9 +38,9 @@ jobs:
           sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen
-          ant -v -f build-mac-ios.xml
-          aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+          ./gradlew jniGen jnigenBuildIOS jnigenBuildMacOsX64
+          ./backends/gdx-backend-robovm/build-objectal.sh
+          aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -77,14 +77,10 @@ jobs:
 
       - name: Build Linux natives
         run: |      
-          ./gradlew jniGen    
-          ./gradlew :gdx:jnigenBuildLinux64 :gdx:jnigenBuildLinuxARM :gdx:jnigenBuildLinuxARM64          
-          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinux64 :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinuxARM :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildLinuxARM64
-          ./gradlew :extensions:gdx-freetype:jnigenBuildLinux64 :extensions:gdx-freetype:jnigenBuildLinuxARM :extensions:gdx-freetype:jnigenBuildLinuxARM64
-          ./gradlew :extensions:gdx-bullet:jnigenBuildLinux64 :extensions:gdx-bullet:jnigenBuildLinuxARM :extensions:gdx-bullet:jnigenBuildLinuxARM64
+          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
 
       - name: Upload natives to S3
-        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -119,14 +115,10 @@ jobs:
 
       - name: Build Windows natives
         run: |          
-          ./gradlew jniGen
-          ./gradlew :gdx:jnigenBuildWindows64 :gdx:jnigenBuildWindows
-          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildWindows64 :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildWindows
-          ./gradlew :extensions:gdx-freetype:jnigenBuildWindows64 :extensions:gdx-freetype:jnigenBuildWindows
-          ./gradlew :extensions:gdx-bullet:jnigenBuildWindows64 :extensions:gdx-bullet:jnigenBuildWindows
+          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
 
       - name: Upload natives to S3
-        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -158,13 +150,10 @@ jobs:
       - name: Build Android natives
         run: |          
           export NDK_HOME=$ANDROID_NDK_HOME
-          ./gradlew :gdx:jnigenBuildAndroid
-          ./gradlew :extensions:gdx-box2d-parent:gdx-box2d:jnigenBuildAndroid
-          ./gradlew :extensions:gdx-freetype:jnigenBuildAndroid
-          ./gradlew :extensions:gdx-bullet:jnigenBuildAndroid
+          ./gradlew jniGen jnigenBuildAndroid
 
       - name: Upload natives to S3
-        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" 
+        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -196,9 +185,9 @@ jobs:
 
       - name: Fetch natives from S3
         run: |
-          aws s3 cp s3://libgdx-nightlies/libgdx-natives . --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.a" --include "*.a.tvos" --include "*.dylib"
+          aws s3 cp s3://libgdx-nightlies/libgdx-natives . --recursive --exclude "*" --include "*.dll"  --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
-      - name: Pack dekstop natives
+      - name: Pack desktop natives
         run: |
           ./gradlew jniGen
           ant -f gdx/jni/build.xml pack-natives
