@@ -80,7 +80,7 @@ jobs:
           ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
 
       - name: Upload natives to S3
-        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -118,7 +118,7 @@ jobs:
           ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
 
       - name: Upload natives to S3
-        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -153,7 +153,7 @@ jobs:
           ./gradlew jniGen jnigenBuildAndroid
 
       - name: Upload natives to S3
-        aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+        run: aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Cleanup Gradle Cache
         run: |
@@ -184,8 +184,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Fetch natives from S3
-        run: |
-          aws s3 cp s3://libgdx-nightlies/libgdx-natives . --recursive --exclude "*" --include "*.dll"  --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
+        run: aws s3 cp s3://libgdx-nightlies/libgdx-natives . --recursive --exclude "*" --include "*.dll"  --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
       - name: Pack desktop natives
         run: |
