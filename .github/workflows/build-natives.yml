@@ -77,7 +77,7 @@ jobs:
           sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildIOS jnigenBuildMacOsX64
+          ./gradlew jniGen jnigenBuildMacOsX64
           ./backends/gdx-backend-robovm/build-objectal.sh
           aws s3 cp . s3://libgdx-nightlies/libgdx-natives --recursive --exclude "*" --include "*.dll" --include "*.so" --include "*.dylib" --include "*.a" --include "*.a.tvos"
 
