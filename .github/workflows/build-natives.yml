@@ -201,7 +201,7 @@ jobs:
 
   pack-natives:    
     runs-on: ubuntu-16.04
-    needs: [natives-macos, natives-linux, natives-windows, natives-android]
+    needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
     steps:
       - uses: actions/checkout@v2
         with:
