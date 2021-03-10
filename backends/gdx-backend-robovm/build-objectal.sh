@@ -29,4 +29,5 @@ lipo $BUILD_DIR/tvos-arm64/libObjectAL.a \
      -create \
      -output $BUILD_DIR/libObjectAL.a.tvos
 
+mkdir $BASE/../../gdx/libs/ios32/
 cp $BUILD_DIR/libObjectAL.a.tvos $BASE/../../gdx/libs/ios32/
