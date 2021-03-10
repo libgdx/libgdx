@@ -25,52 +25,25 @@ import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
-import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
-import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIViewController;
-import org.robovm.apple.uikit.UIWindow;
 import org.robovm.rt.bro.Bro;
 
-public class IOSApplication extends BaseIOSApplication {
-
-	public static abstract class Delegate extends UIApplicationDelegateAdapter {
-		private IOSApplication app;
-
-		protected abstract IOSApplication createApplication ();
-
-		@Override
-		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
-			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
-			this.app = createApplication();
-			return app.didFinishLaunching(application, launchOptions);
-		}
-
-		@Override
-		public void didBecomeActive (UIApplication application) {
-			app.didBecomeActive(application);
-		}
-
-		@Override
-		public void willEnterForeground (UIApplication application) {
-			app.willEnterForeground(application);
-		}
-
-		@Override
-		public void willResignActive (UIApplication application) {
-			app.willResignActive(application);
-		}
-
-		@Override
-		public void willTerminate (UIApplication application) {
-			app.willTerminate(application);
-		}
-	}
+/**
+ * IOS application that can be embedded to a view as child UI view controller.
+ * The controller returned by {@link #getUIViewController()} should be added as
+ * child controller. The application must be initialized before shown. Other
+ * lifecycle methods must be called accordingly.
+ *
+ * @author Ondrej Fibich <ondrej.fibich@gmail.com>
+ */
+public class IOSViewApplication extends BaseIOSApplication {
 
 	UIApplication uiApp;
-	UIWindow uiWindow;
+	UIViewController parentUiViewController;
 	IOSGraphics graphics;
 	IOSAudio audio;
 	Files files;
@@ -78,32 +51,35 @@ public class IOSApplication extends BaseIOSApplication {
 	IOSNet net;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
-	float pixelsPerPoint;
+	float pixelsPerPoint = 1;
 
 	private IOSScreenBounds lastScreenBounds = null;
 
-	public IOSApplication (ApplicationListener listener, IOSApplicationConfiguration config) {
+	public IOSViewApplication (ApplicationListener listener, IOSApplicationConfiguration config) {
 		super(listener, config);
 	}
 
-	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+	/**
+	 * Initializes the application to specified parent view within the the specified application.
+	 *
+	 * @param uiApp iOS UI application
+	 * @param uiParent parent UI view controller for drawing bounds
+	 */
+	public void init (UIApplication uiApp, UIViewController uiParent) {
 		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
+		this.parentUiViewController = uiParent;
 
 		// enable or disable screen dimming
 		uiApp.setIdleTimerDisabled(config.preventScreenDimming);
 
-		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
-		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
+		Gdx.app.debug("IOSViewApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
+		Gdx.app.debug("IOSViewApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
 		// iOS counts in "points" instead of pixels. Points are logical pixels
 		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
-		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
-
-		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
-		this.uiWindow.makeKeyAndVisible();
-		uiApp.getDelegate().setWindow(uiWindow);
+		Gdx.app.debug("IOSViewApplication", "Pixels per point: " + pixelsPerPoint);
 
 		// setup libgdx
 		this.input = createInput();
@@ -122,9 +98,7 @@ public class IOSApplication extends BaseIOSApplication {
 
 		this.input.setupPeripherals();
 
-		this.uiWindow.setRootViewController(this.graphics.viewController);
-		Gdx.app.debug("IOSApplication", "created");
-		return true;
+		Gdx.app.debug("IOSViewApplication", "created");
 	}
 
 	protected Files createFiles() {
@@ -153,37 +127,23 @@ public class IOSApplication extends BaseIOSApplication {
 		return graphics.viewController;
 	}
 
-	/** Return the UI Window of IOSApplication
-	 * @return the window */
-	public UIWindow getUIWindow () {
-		return uiWindow;
-	}
-
 	@Override
 	protected IOSScreenBounds computeBounds () {
-		CGRect screenBounds = uiWindow.getBounds();
-		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-		double statusBarHeight = statusBarFrame.getHeight();
+		CGRect parentBounds = parentUiViewController.getView().getBounds();
 
-		double screenWidth = screenBounds.getWidth();
-		double screenHeight = screenBounds.getHeight();
+		double parentWidth = parentBounds.getWidth();
+		double parentHeight = parentBounds.getHeight();
 
-		if (statusBarHeight != 0.0) {
-			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
-			screenHeight -= statusBarHeight;
-		} else {
-			debug("IOSApplication", "Status bar is not visible");
-		}
-		final int offsetX = 0;
-		final int offsetY = (int)Math.round(statusBarHeight);
+		final int offsetX = (int)Math.round(parentBounds.getMinX());
+		final int offsetY = (int)Math.round(parentBounds.getMinY());
 
-		final int width = (int)Math.round(screenWidth);
-		final int height = (int)Math.round(screenHeight);
+		final int width = (int)Math.round(parentWidth);
+		final int height = (int)Math.round(parentHeight);
 
-		final int backBufferWidth = (int)Math.round(screenWidth * pixelsPerPoint);
-		final int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
+		final int backBufferWidth = (int)Math.round(parentWidth * pixelsPerPoint);
+		final int backBufferHeight = (int)Math.round(parentHeight * pixelsPerPoint);
 
-		debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
+		debug("IOSViewApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
 					+ backBufferWidth + " bbH= " + backBufferHeight);
 
 		return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
@@ -202,8 +162,8 @@ public class IOSApplication extends BaseIOSApplication {
 		return pixelsPerPoint;
 	}
 
-	final void didBecomeActive (UIApplication uiApp) {
-		Gdx.app.debug("IOSApplication", "resumed");
+	public void resume () {
+		Gdx.app.debug("IOSViewApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		OALAudioSession audioSession = OALAudioSession.sharedInstance();
@@ -220,24 +180,15 @@ public class IOSApplication extends BaseIOSApplication {
 		graphics.resume();
 	}
 
-	final void willEnterForeground (UIApplication uiApp) {
-		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession audioSession = OALAudioSession.sharedInstance();
-		if (audioSession != null) {
-			audioSession.forceEndInterruption();
-		}
-	}
-
-	final void willResignActive (UIApplication uiApp) {
-		Gdx.app.debug("IOSApplication", "paused");
+	public void pause () {
+		Gdx.app.debug("IOSViewApplication", "paused");
 		graphics.makeCurrent();
 		graphics.pause();
 		Gdx.gl.glFinish();
 	}
 
-	final void willTerminate (UIApplication uiApp) {
-		Gdx.app.debug("IOSApplication", "disposed");
+	public void dispose () {
+		Gdx.app.debug("IOSViewApplication", "disposed");
 		graphics.makeCurrent();
 		pauseLifecycleListeners();
 		listener.dispose();
@@ -271,6 +222,6 @@ public class IOSApplication extends BaseIOSApplication {
 
 	@Override
 	public void exit () {
-		System.exit(0);
+		NSThread.exit();
 	}
 }

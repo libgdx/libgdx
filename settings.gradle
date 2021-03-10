@@ -37,6 +37,7 @@ include ":tests:gdx-tests"
 include ":tests:gdx-tests-android"
 include ":tests:gdx-tests-gwt"
 include ":tests:gdx-tests-iosrobovm"
+include ":tests:gdx-tests-iosrobovm-view"
 include ":tests:gdx-tests-lwjgl"
 include ":tests:gdx-tests-lwjgl3"
 

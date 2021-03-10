@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.iosrobovm;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
@@ -28,8 +27,6 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import com.badlogic.gdx.utils.Array;
-
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
@@ -52,7 +49,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 	private static final String tag = "IOSGraphics";
 
-	IOSApplication app;
+	BaseIOSApplication app;
 	IOSInput input;
 	GL20 gl20;
 	GL30 gl30;
@@ -84,7 +81,7 @@ public class IOSGraphics extends AbstractGraphics {
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+	public IOSGraphics (BaseIOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
 		this.config = config;
 
 		// setup view and OpenGL
@@ -191,13 +188,7 @@ public class IOSGraphics extends AbstractGraphics {
 	public void resume () {
 		if (!appPaused) return;
 		appPaused = false;
-
-		Array<LifecycleListener> listeners = app.lifecycleListeners;
-		synchronized (listeners) {
-			for (LifecycleListener listener : listeners) {
-				listener.resume();
-			}
-		}
+		app.resumeLifecycleListeners();
 		resume = true;
 		app.listener.resume();
 	}
@@ -205,13 +196,7 @@ public class IOSGraphics extends AbstractGraphics {
 	public void pause () {
 		if (appPaused) return;
 		appPaused = true;
-
-		Array<LifecycleListener> listeners = app.lifecycleListeners;
-		synchronized (listeners) {
-			for (LifecycleListener listener : listeners) {
-				listener.pause();
-			}
-		}
+		app.pauseLifecycleListeners();
 		app.listener.pause();
 	}
 
@@ -355,7 +340,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public float getBackBufferScale() {
-		return app.pixelsPerPoint;
+		return app.getPixelsPerPoint();
 	}
 
 	@Override
@@ -457,10 +442,11 @@ public class IOSGraphics extends AbstractGraphics {
 			safeInsetRight = (int) edgeInsets.getRight();
 			safeInsetBottom = (int) edgeInsets.getBottom();
 			if (config.hdpiMode == HdpiMode.Pixels) {
-				safeInsetTop *= app.pixelsPerPoint;
-				safeInsetLeft *= app.pixelsPerPoint;
-				safeInsetRight *= app.pixelsPerPoint;
-				safeInsetBottom *= app.pixelsPerPoint;
+				final float pixelsPerPoint = app.getPixelsPerPoint();
+				safeInsetTop *= pixelsPerPoint;
+				safeInsetLeft *= pixelsPerPoint;
+				safeInsetRight *= pixelsPerPoint;
+				safeInsetBottom *= pixelsPerPoint;
 			}
 		}
 	}
@@ -574,7 +560,7 @@ public class IOSGraphics extends AbstractGraphics {
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	private class IOSViewDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate {
 		@Override
 		public void update (GLKViewController controller) {
