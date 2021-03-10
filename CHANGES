@@ -7,6 +7,9 @@
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
 - Api Addition: Added a Pool#discard(T) method.
+- The default shaders now support the OpenGL 3.2 core profile on macOS. They are automatically ported via ShaderProgram#asCompatibleVertexShader(String) & #asCompatibleFragmentShader(String) and ignore any prefixes.
+- API Addition: New constructor for ShaderProgram(String, String, boolean) that allows ignoring ShaderProgram#prependVertexCode & #prependFragmentCode.
+- API Addition: Add new PlatformUtils class.
 
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 

@@ -209,7 +209,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
+		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n"+ "#endif\n";
 
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {
@@ -238,7 +238,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	static public ShaderProgram createDefaultShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
 		String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
-		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram program = new ShaderProgram(ShaderProgram.asCompatibleVertexShader(vertexShader),
+			ShaderProgram.asCompatibleFragmentShader(fragmentShader), true);
 		if (!program.isCompiled()) throw new GdxRuntimeException("Error compiling shader: " + program.getLog());
 		return program;
 	}

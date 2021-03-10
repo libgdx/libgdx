@@ -514,13 +514,17 @@ public class DefaultShader extends BaseShader {
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix) {
-		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
-			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
+		this(renderable, config, prefix, config.vertexShader, config.fragmentShader);
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
-		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
+		this(renderable, config,
+			(vertexShader == null && fragmentShader == null)
+				? new ShaderProgram(ShaderProgram.asCompatibleVertexShader(prefix + getDefaultVertexShader()),
+					ShaderProgram.asCompatibleFragmentShader(prefix + getDefaultFragmentShader()), true)
+				: new ShaderProgram(prefix + (vertexShader == null ? getDefaultVertexShader() : vertexShader),
+					prefix + (fragmentShader == null ? getDefaultFragmentShader() : fragmentShader)));
 	}
 
 	public DefaultShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {

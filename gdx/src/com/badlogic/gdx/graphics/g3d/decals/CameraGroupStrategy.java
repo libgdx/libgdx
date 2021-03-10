@@ -201,7 +201,8 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 
-		shader = new ShaderProgram(vertexShader, fragmentShader);
+		shader = new ShaderProgram(ShaderProgram.asCompatibleVertexShader(vertexShader),
+			ShaderProgram.asCompatibleFragmentShader(fragmentShader), true);
 		if (!shader.isCompiled()) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 

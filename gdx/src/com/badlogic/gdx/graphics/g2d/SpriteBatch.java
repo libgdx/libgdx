@@ -160,7 +160,8 @@ public class SpriteBatch implements Batch {
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
 
-		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram shader = new ShaderProgram(ShaderProgram.asCompatibleVertexShader(vertexShader),
+			ShaderProgram.asCompatibleFragmentShader(fragmentShader), true);
 		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}

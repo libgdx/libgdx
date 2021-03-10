@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -95,7 +94,7 @@ public class ParticleShader extends BaseShader {
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
+		if (defaultFragmentShader == null) 
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl")
 				.readString();
 		return defaultFragmentShader;
@@ -203,13 +202,17 @@ public class ParticleShader extends BaseShader {
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final String prefix) {
-		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
-			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
+		this(renderable, config, prefix, config.vertexShader, config.fragmentShader);
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
-		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
+		this(renderable, config,
+			(vertexShader == null && fragmentShader == null)
+				? new ShaderProgram(ShaderProgram.asCompatibleVertexShader(prefix + getDefaultVertexShader()),
+					ShaderProgram.asCompatibleFragmentShader(prefix + getDefaultFragmentShader()), true)
+				: new ShaderProgram(prefix + (vertexShader == null ? getDefaultVertexShader() : vertexShader),
+					prefix + (fragmentShader == null ? getDefaultFragmentShader() : fragmentShader)));
 	}
 
 	public ParticleShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
@@ -246,10 +249,6 @@ public class ParticleShader extends BaseShader {
 
 	public static String createPrefix (final Renderable renderable, final Config config) {
 		String prefix = "";
-		if (Gdx.app.getType() == ApplicationType.Desktop)
-			prefix += "#version 120\n";
-		else
-			prefix += "#version 100\n";
 		if (config.type == ParticleType.Billboard) {
 			prefix += "#define billboard\n";
 			if (config.align == AlignMode.Screen)

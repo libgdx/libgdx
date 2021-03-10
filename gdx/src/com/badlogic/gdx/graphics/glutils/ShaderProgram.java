@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.PlatformUtils;
 
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
@@ -150,14 +151,22 @@ public class ShaderProgram implements Disposable {
 	 *
 	 * @param vertexShader the vertex shader
 	 * @param fragmentShader the fragment shader */
-
 	public ShaderProgram (String vertexShader, String fragmentShader) {
+		this(vertexShader, fragmentShader, false);
+	}
+
+	/** Constructs a new ShaderProgram and immediately compiles it.
+	 *
+	 * @param vertexShader the vertex shader
+	 * @param fragmentShader the fragment shader
+	 * @param ignorePrefix whether to ignore #prependVertexCode and #prependFragmentCode */
+	public ShaderProgram (String vertexShader, String fragmentShader, boolean ignorePrefix) {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-		if (prependVertexCode != null && prependVertexCode.length() > 0)
+		if (!ignorePrefix && prependVertexCode != null && prependVertexCode.length() > 0)
 			vertexShader = prependVertexCode + vertexShader;
-		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
+		if (!ignorePrefix && prependFragmentCode != null && prependFragmentCode.length() > 0)
 			fragmentShader = prependFragmentCode + fragmentShader;
 
 		this.vertexShaderSource = vertexShader;
@@ -845,6 +854,33 @@ public class ShaderProgram implements Disposable {
 			attributeSizes.put(name, params.get(0));
 			attributeNames[i] = name;
 		}
+	}
+
+	/** Converts unversioned GLSL vertex shader code to be compatible with the current platform by using preprocessor directives.
+	 * In particular, this is useful for macOS, which only offers a non-backward compatible core profile when using GL30.
+	 *
+	 * @param vertexShader
+	 * @return */
+	public static String asCompatibleVertexShader (String vertexShader) {
+		if (Gdx.gl30 == null || !PlatformUtils.isMac || Gdx.app.getType() == Application.ApplicationType.WebGL) {
+			return vertexShader; // usually there is no need to change anything; also no version is provided so the compiler is more
+										// forgiving
+		}
+		return "#version 150\n#define varying out\n#define attribute in\n" + vertexShader;
+	}
+
+	/** Converts unversioned GLSL fragment shader code to be compatible with the current platform by using preprocessor directives.
+	 * In particular, this is useful for macOS, which only offers a non-backward compatible core profile when using GL30.
+	 *
+	 * @param fragmentShader
+	 * @return */
+	public static String asCompatibleFragmentShader (String fragmentShader) {
+		if (Gdx.gl30 == null || !PlatformUtils.isMac || Gdx.app.getType() == Application.ApplicationType.WebGL) {
+			return fragmentShader; // usually there is no need to change anything; also no version is provided so the compiler is
+											// more forgiving
+		}
+		return "#version 150\n#define varying in\n#define texture2D texture\n#define textureCube texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n"
+			+ fragmentShader;
 	}
 
 	/** @param name the name of the attribute
