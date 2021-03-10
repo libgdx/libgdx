@@ -242,7 +242,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties 
 
-release-snapshot:    
+  release-snapshot:    
     runs-on: ubuntu-16.04
     needs: pack-natives
     steps:
