@@ -21,6 +21,13 @@
 		<delete dir="${distDir}"/>
 	</target>
 
+	<!-- fetch the natives -->
+	<target name="fetch">
+		<ant antfile="fetch.xml">
+			<target name="fetch-lwjgl3"/>
+		</ant>
+	</target>
+
 	<!-- build the core of the library plus all backends -->
 
 	<!-- new gdx setup, custom target -->
@@ -80,9 +87,6 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-		<ant antfile="fetch.xml">
-			<target name="fetch-lwjgl3"/>
-		</ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
 			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-backend-lwjgl3"/>
@@ -119,9 +123,6 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-        <ant antfile="fetch.xml">
-            <target name="fetch-robovm"/>
-        </ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
 			<property name="javacTarget" value="${javacTarget}"/>
 			<property name="jar" value="gdx-backend-robovm"/>
@@ -257,7 +258,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,fetch,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
