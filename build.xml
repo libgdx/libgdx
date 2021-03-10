@@ -23,8 +23,7 @@
 
 	<!-- fetch the natives -->
 	<target name="fetch">
-		<ant antfile="fetch.xml">
-			<target name="fetch-lwjgl3"/>
+		<ant antfile="fetch.xml">			
 		</ant>
 	</target>
 
