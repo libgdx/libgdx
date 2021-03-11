@@ -48,6 +48,7 @@
     <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.3.0-SNAPSHOT</lwjgl3.version>
     <robovm.version>2.3.12</robovm.version>
+    <natives.url>https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-natives/natives.zip</base.url>
   </properties>
 
   <modules>
@@ -69,6 +70,24 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>maven-download-plugin</artifactId>
+        <version>1.1.0</version>
+        <executions>
+            <execution>
+                <id>download-natives</id>
+                <phase>prepare-package</phase>
+                <goals><goal>wget</goal></goals>
+                <configuration>
+                    <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+                    <url>${natives.url}</url>
+                    <unpack>true</unpack>
+                    <outputDirectory>${project.basedir}</outputDirectory>
+                </configuration>
+            </execution>
+          </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

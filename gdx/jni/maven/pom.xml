@@ -23,116 +23,6 @@
         <sourceDirectory>src</sourceDirectory>
         
         <plugins>
-            <!-- first download an unpack the native libraries -->
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>maven-download-plugin</artifactId>
-                <version>1.1.0</version>
-                <executions>
-                    <execution>
-                        <id>desktop</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                            <url>${base.url}/gdx/libs/gdx-natives.jar</url>
-                            <unpack>true</unpack>
-                            <outputDirectory>${project.build.directory}/desktop</outputDirectory>
-                        </configuration>
-                    </execution>
-                    
-
-                    <execution>
-                        <id>x86-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
-                            <url>${base.url}/gdx/libs/x86/libgdx.so</url>
-                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>x86_64-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/x86_64</cacheDirectory>
-                            <url>${base.url}/gdx/libs/x86_64/libgdx.so</url>
-                            <outputDirectory>${project.build.directory}/x86_64</outputDirectory>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>armeabi-v7a-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
-                            <url>${base.url}/gdx/libs/armeabi-v7a/libgdx.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>arm64-v8a-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/arm64-v8a</cacheDirectory>
-                            <url>${base.url}/gdx/libs/arm64-v8a/libgdx.so</url>
-                            <outputDirectory>${project.build.directory}/arm64-v8a</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>ios-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/gdx/libs/ios32/libgdx.a</url>
-                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>tvos-gdx</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/gdx/libs/ios32/libgdx.a.tvos</url>
-                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>ios-objectal</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/gdx/libs/ios32/libObjectAL.a</url>
-                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>tvos-objectal</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/gdx/libs/ios32/libObjectAL.a.tvos</url>
-                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- if we have pre-built versions, replace the downloaded versions with those -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
@@ -144,8 +34,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/linux32</directory></resource>
+                            <resources>                                
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm64</directory></resource>
