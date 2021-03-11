@@ -334,7 +334,7 @@ jobs:
   release-snapshot:    
     runs-on: ubuntu-16.04
     needs: pack-natives
-    if: env.MAVEN_USERNAME != null
+    if: MAVEN_USERNAME != null
     steps:
       - uses: actions/checkout@v2
         with:
