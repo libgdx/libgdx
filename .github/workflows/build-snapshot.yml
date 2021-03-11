@@ -321,7 +321,7 @@ jobs:
       - name: Upload artifacts to S3                  
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
-          aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-natives
+          aws s3 cp natives.zip s3://libgdx-nightlies/natives.zip
 
       - name: Cleanup Gradle Cache
         run: |
