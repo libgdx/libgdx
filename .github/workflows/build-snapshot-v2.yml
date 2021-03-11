@@ -44,16 +44,16 @@ jobs:
           ./gradlew jniGen jnigenBuildIOS
           ./backends/gdx-backend-robovm/build-objectal.sh
 
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-ios -@ < native-files-list
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: natives-ios
-          path: |
-            **/libs/**/*.a
-            **/libs/**/*.a.tvos
-            **/libs/**/*.dll
-            **/libs/**/*.dylib
-            **/libs/**/*.so
+          path: natives-ios.zip           
 
       - name: Cleanup Gradle Cache
         run: |
@@ -89,7 +89,18 @@ jobs:
           sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildMacOsX64                    
+          ./gradlew jniGen jnigenBuildMacOsX64     
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-macos -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-macos
+          path: natives-macos.zip                 
 
       - name: Cleanup Gradle Cache
         run: |
@@ -128,6 +139,17 @@ jobs:
         run: |      
           ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64      
 
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-linux -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-linux
+          path: natives-linux.zip  
+
       - name: Cleanup Gradle Cache
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
@@ -163,6 +185,17 @@ jobs:
         run: |          
           ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows      
 
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-windows -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-windows
+          path: natives-windows.zip  
+
       - name: Cleanup Gradle Cache
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
@@ -194,6 +227,17 @@ jobs:
         run: |          
           export NDK_HOME=$ANDROID_NDK_HOME
           ./gradlew jniGen jnigenBuildAndroid      
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-android -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-android
+          path: natives-android.zip  
 
       - name: Cleanup Gradle Cache
         run: |
