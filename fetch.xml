@@ -1,7 +1,7 @@
 
 <!-- Call this to fetch all the natives from the build server -->
 <project name="fetch-natives" default="all">
-	<property name="gdx-natives" value="https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-natives/natives.zip"/>
+	<property name="gdx-natives" value="https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"/>
 
     <property name="robovm" value="https://oss.sonatype.org/content/repositories/releases/com/mobidevelop/robovm"/>
 
