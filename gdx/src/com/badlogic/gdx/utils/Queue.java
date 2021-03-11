@@ -79,8 +79,8 @@ public class Queue<T> implements Iterable<T> {
 	}
 
 	/** Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
-	 * @param object the object you want to add first, can be null
-	 * @see #addLast(Object) */
+	 * @see #addLast(Object)
+	 * @param object the object you want to add first, can be null*/
 	public void addFirst (@Null T object) {
 		T[] values = this.values;
 
@@ -155,9 +155,9 @@ public class Queue<T> implements Iterable<T> {
 	}
 
 	/** Remove the last item from the queue. (dequeue from tail) Always O(1).
+	 * @see #removeFirst()
 	 * @return the removed object
-	 * @throws NoSuchElementException when queue is empty
-	 * @see #removeFirst() */
+	 * @throws NoSuchElementException when queue is empty*/
 	public T removeLast () {
 		if (size == 0) {
 			throw new NoSuchElementException("Queue is empty.");
@@ -268,10 +268,10 @@ public class Queue<T> implements Iterable<T> {
 	}
 
 	/** Returns the first (head) item in the queue (without removing it).
-	 * @return the first (head) item in the queue
-	 * @throws NoSuchElementException when queue is empty
 	 * @see #addFirst(Object)
-	 * @see #removeFirst() */
+	 * @see #removeFirst()
+	 * @return the first (head) item in the queue
+	 * @throws NoSuchElementException when queue is empty*/
 	public T first () {
 		if (size == 0) {
 			// Underflow
@@ -281,10 +281,10 @@ public class Queue<T> implements Iterable<T> {
 	}
 
 	/** Returns the last (tail) item in the queue (without removing it).
-	 * @return the last (tail) item in the queue
-	 * @throws NoSuchElementException when queue is empty
 	 * @see #addLast(Object)
-	 * @see #removeLast() */
+	 * @see #removeLast()
+	 * @return the last (tail) item in the queue
+	 * @throws NoSuchElementException when queue is empty*/
 	public T last () {
 		if (size == 0) {
 			// Underflow
@@ -566,8 +566,8 @@ public class Queue<T> implements Iterable<T> {
 		}
 
 		/** Method to create valid queueIterator when not present, else it retrieves the valid iterator.
-		 * @return valid iterator of the correct type
-		 * @see Collections#allocateIterators */
+		 * @see Collections#allocateIterators
+		 * @return valid iterator of the correct type*/
 		public Iterator<T> iterator () {
 			if (Collections.allocateIterators) return new QueueIterator<>(queue, allowRemove);
 
