@@ -4,13 +4,7 @@ on:
   #push:
   #  branches: [ master ]
   workflow_dispatch:
-    branches: [ master ]
-
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-  MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+    branches: [ master ]  
 
 jobs:
 
@@ -249,6 +243,9 @@ jobs:
   pack-natives:    
     runs-on: ubuntu-16.04
     needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -334,7 +331,10 @@ jobs:
   release-snapshot:    
     runs-on: ubuntu-16.04
     needs: pack-natives
-    if: MAVEN_USERNAME != null
+    env:
+      MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+    if: env.MAVEN_USERNAME != null
     steps:
       - uses: actions/checkout@v2
         with:
