@@ -333,8 +333,7 @@ jobs:
     needs: pack-natives
     env:
       MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-    if: env.MAVEN_USERNAME != null
+      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}    
     steps:
       - uses: actions/checkout@v2
         with:
@@ -355,15 +354,16 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Download natives artifact
+      - name: Download natives artifact        
         uses: actions/download-artifact@v2
         with:
           name: natives.zip
 
-      - name: Unpack natives
+      - name: Unpack natives        
         run: |
           unzip -o natives.zip
 
       - name: Publish snapshot
+        if: env.MAVEN_USERNAME != null
         run: |
           mvn --batch-mode deploy        
