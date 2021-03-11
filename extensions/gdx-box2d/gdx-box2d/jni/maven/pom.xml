@@ -34,8 +34,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/linux32</directory></resource>
+                            <resources>                                
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm64</directory></resource>
@@ -73,21 +72,7 @@
                             <outputDirectory>${basedir}/target/x86_64</outputDirectory>
                             <overwrite>true</overwrite>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-local-armeabi</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/armeabi</directory></resource>
-                            </resources>
-                            <outputDirectory>${basedir}/target/armeabi</outputDirectory>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
+                    </execution>                    
                     <execution>
                         <id>copy-local-armeabi-v7a</id>
                         <phase>prepare-package</phase>
