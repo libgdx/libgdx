@@ -71,23 +71,24 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>maven-download-plugin</artifactId>
-        <version>1.1.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
         <executions>
-            <execution>
-                <id>download-natives</id>
-                <phase>prepare-package</phase>
-                <goals><goal>wget</goal></goals>
-                <configuration>
-                    <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                    <url>${natives.url}</url>
-                    <unpack>true</unpack>
-                    <outputDirectory>${project.basedir}</outputDirectory>
-                </configuration>
-            </execution>
-          </executions>
-        </plugin>
+          <execution>
+              <id>download-natives</id>
+              <phase>prepare-package</phase>
+              <goals><goal>run</goal></goals>
+              <configuration>
+              <target>
+                <ant antfile="${basedir}/fetch.xml">
+                  <target name="fetch-gdx"/>
+                </ant>
+              </target>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
