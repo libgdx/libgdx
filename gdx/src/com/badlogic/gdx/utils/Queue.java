@@ -215,8 +215,7 @@ public class Queue<T> implements Iterable<T> {
 	 * @return true if value was found and removed, false otherwise */
 	public boolean removeValue (T value, boolean identity) {
 		int index = indexOf(value, identity);
-		if (index == -1)
-			return false;
+		if (index == -1) return false;
 		removeIndex(index);
 		return true;
 	}
@@ -404,12 +403,10 @@ public class Queue<T> implements Iterable<T> {
 			final T value = values[index];
 
 			hash *= 31;
-			if (value != null)
-				hash += value.hashCode();
+			if (value != null) hash += value.hashCode();
 
 			index++;
-			if (index == backingLength)
-				index = 0;
+			if (index == backingLength) index = 0;
 		}
 
 		return hash;
@@ -441,10 +438,8 @@ public class Queue<T> implements Iterable<T> {
 			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue))) return false;
 			myIndex++;
 			itsIndex++;
-			if (myIndex == myBackingLength)
-				myIndex = 0;
-			if (itsIndex == itsBackingLength)
-				itsIndex = 0;
+			if (myIndex == myBackingLength) myIndex = 0;
+			if (itsIndex == itsBackingLength) itsIndex = 0;
 		}
 		return true;
 	}
