@@ -308,7 +308,7 @@ jobs:
           ant -f extensions/gdx-freetype/jni/build.xml pack-natives
           ant -f extensions/gdx-bullet/jni/build.xml pack-natives
 
-      -name: Pack natives
+      - name: Pack natives
         run: |
           find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
           zip natives -@ < native-files-list
