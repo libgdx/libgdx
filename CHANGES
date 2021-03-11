@@ -3,10 +3,12 @@
 - [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
 - [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
 - [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- [BREAKING CHANGE] Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, IndexData#getBuffer, and InstanceData#getBuffer are deprecated in favor to new methods with boolean parameter. If you subclassed some of these classes, you need to implement the new methods.
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
 - Api Addition: Added a Pool#discard(T) method.
+- API Change: Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, IndexData#getBuffer, and InstanceData#getBuffer are deprecated in favor to new methods with boolean parameter, you can now retrieve vertices and indices from a Mesh in readonly mode and then avoid unnecessary uploads to GPU.
 
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 

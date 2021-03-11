@@ -388,10 +388,11 @@ public class Mesh implements Disposable {
 		if ((vertices.length - destOffset) < count)
 			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs "
 				+ count);
-		int pos = getVerticesBuffer().position();
-		((Buffer) getVerticesBuffer()).position(srcOffset);
-		getVerticesBuffer().get(vertices, destOffset, count);
-		((Buffer) getVerticesBuffer()).position(pos);
+		FloatBuffer verticesBuffer = getVerticesBuffer(false);
+		int pos = verticesBuffer.position();
+		((Buffer)verticesBuffer).position(srcOffset);
+		verticesBuffer.get(vertices, destOffset, count);
+		((Buffer)verticesBuffer).position(pos);
 		return vertices;
 	}
 
@@ -454,10 +455,11 @@ public class Mesh implements Disposable {
 				+ max);
 		if ((indices.length - destOffset) < count)
 			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " shorts, needs " + count);
-		int pos = getIndicesBuffer().position();
-		((Buffer) getIndicesBuffer()).position(srcOffset);
-		getIndicesBuffer().get(indices, destOffset, count);
-		((Buffer) getIndicesBuffer()).position(pos);
+		ShortBuffer indicesBuffer = getIndicesBuffer(false);
+		int pos = indicesBuffer.position();
+		((Buffer)indicesBuffer).position(srcOffset);
+		indicesBuffer.get(indices, destOffset, count);
+		((Buffer)indicesBuffer).position(pos);
 	}
 
 	/** @return the number of defined indices */
@@ -614,7 +616,7 @@ public class Mesh implements Disposable {
 
 		if (isVertexArray) {
 			if (indices.getNumIndices() > 0) {
-				ShortBuffer buffer = indices.getBuffer();
+				ShortBuffer buffer = indices.getBuffer(false);
 				int oldPosition = buffer.position();
 				int oldLimit = buffer.limit();
 				((Buffer) buffer).position(offset);
@@ -678,9 +680,15 @@ public class Mesh implements Disposable {
 		return vertices.getAttributes();
 	}
 
-	/** @return the backing FloatBuffer holding the vertices. Does not have to be a direct buffer on Android! */
+	/** @return the backing FloatBuffer holding the vertices. Does not have to be a direct buffer on Android!
+	 * @deprecated use {@link #getVerticesBuffer(boolean)} instead */
+	@Deprecated
 	public FloatBuffer getVerticesBuffer () {
-		return vertices.getBuffer();
+		return vertices.getBuffer(true);
+	}
+
+	public FloatBuffer getVerticesBuffer (boolean forWriting) {
+		return vertices.getBuffer(forWriting);
 	}
 
 	/** Calculates the {@link BoundingBox} of the vertices contained in this mesh. In case no vertices are defined yet a
@@ -701,7 +709,7 @@ public class Mesh implements Disposable {
 		final int numVertices = getNumVertices();
 		if (numVertices == 0) throw new GdxRuntimeException("No vertices defined");
 
-		final FloatBuffer verts = vertices.getBuffer();
+		final FloatBuffer verts = vertices.getBuffer(false);
 		bbox.inf();
 		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
 		final int offset = posAttrib.offset / 4;
@@ -771,8 +779,8 @@ public class Mesh implements Disposable {
 		if (offset < 0 || count < 1 || offset + count > max)
 			throw new GdxRuntimeException("Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
-		final FloatBuffer verts = vertices.getBuffer();
-		final ShortBuffer index = indices.getBuffer();
+		final FloatBuffer verts = vertices.getBuffer(false);
+		final ShortBuffer index = indices.getBuffer(false);
 		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
 		final int posoff = posAttrib.offset / 4;
 		final int vertexSize = vertices.getAttributes().vertexSize / 4;
@@ -846,8 +854,8 @@ public class Mesh implements Disposable {
 		int numIndices = getNumIndices();
 		if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
 
-		final FloatBuffer verts = vertices.getBuffer();
-		final ShortBuffer index = indices.getBuffer();
+		final FloatBuffer verts = vertices.getBuffer(false);
+		final ShortBuffer index = indices.getBuffer(false);
 		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
 		final int posoff = posAttrib.offset / 4;
 		final int vertexSize = vertices.getAttributes().vertexSize / 4;
@@ -944,9 +952,14 @@ public class Mesh implements Disposable {
 		return calculateRadius(center.x, center.y, center.z, 0, getNumIndices(), null);
 	}
 
-	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
+	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
+	 * @deprecated use {@link #getIndicesBuffer(boolean)} instead */
 	public ShortBuffer getIndicesBuffer () {
-		return indices.getBuffer();
+		return indices.getBuffer(true);
+	}
+
+	public ShortBuffer getIndicesBuffer (boolean forWriting) {
+		return indices.getBuffer(forWriting);
 	}
 
 	private static void addManagedMesh (Application app, Mesh mesh) {

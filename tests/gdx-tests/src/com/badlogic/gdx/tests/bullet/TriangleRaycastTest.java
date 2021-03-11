@@ -172,8 +172,8 @@ public class TriangleRaycastTest extends BaseBulletTest {
 
 		// Get the position coordinates of the vertices belonging to intersected triangle.
 		Mesh mesh = model.meshParts.get(currentPartId).mesh;
-		FloatBuffer verticesBuffer = mesh.getVerticesBuffer();
-		ShortBuffer indicesBuffer = mesh.getIndicesBuffer();
+		FloatBuffer verticesBuffer = mesh.getVerticesBuffer(false);
+		ShortBuffer indicesBuffer = mesh.getIndicesBuffer(false);
 
 		int posOffset = mesh.getVertexAttributes().findByUsage(VertexAttributes.Usage.Position).offset / 4;
 		int vertexSize = mesh.getVertexSize() / 4;
@@ -181,7 +181,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 
 		// Store the three vertices belonging to the selected triangle.
 		for (int i = 0; i < 3; i++) {
-			int currentVertexIndex = indicesBuffer.get(currentTriangleFirstVertexIndex + i);
+			int currentVertexIndex = indicesBuffer.get(currentTriangleFirstVertexIndex + i) & 0xFFFF;
 			int j = currentVertexIndex * vertexSize + posOffset;
 			float x = verticesBuffer.get(j++);
 			float y = verticesBuffer.get(j++);
