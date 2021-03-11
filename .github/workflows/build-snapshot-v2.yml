@@ -52,7 +52,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: natives-ios
+          name: natives-ios.zip
           path: natives-ios.zip           
 
       - name: Cleanup Gradle Cache
@@ -99,7 +99,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: natives-macos
+          name: natives-macos.zip
           path: natives-macos.zip                 
 
       - name: Cleanup Gradle Cache
@@ -147,7 +147,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: natives-linux
+          name: natives-linux.zip
           path: natives-linux.zip  
 
       - name: Cleanup Gradle Cache
@@ -193,7 +193,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: natives-windows
+          name: natives-windows.zip
           path: natives-windows.zip  
 
       - name: Cleanup Gradle Cache
@@ -236,7 +236,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: natives-android
+          name: natives-android.zip
           path: natives-android.zip  
 
       - name: Cleanup Gradle Cache
@@ -267,13 +267,57 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-      
 
+      - name: Download natives-ios artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-ios.zip
+
+      - name: Download natives-macos artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-macos.zip
+
+      - name: Download natives-linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-linux.zip
+
+      - name: Download natives-windows artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-windows.zip
+
+      - name: Download natives-android artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-android.zip
+
+      - name: Unpack natives
+        run: |
+          unzip -o natives-ios.zip
+          unzip -o natives-macos.zip
+          unzip -o natives-linux.zip
+          unzip -o natives-windows.zip
+          unzip -o natives-android.zip
+
       - name: Pack desktop natives
         run: |
           ./gradlew jniGen
           ant -f gdx/jni/build.xml pack-natives
           ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
           ant -f extensions/gdx-freetype/jni/build.xml pack-natives
-          ant -f extensions/gdx-bullet/jni/build.xml pack-natives      
+          ant -f extensions/gdx-bullet/jni/build.xml pack-natives
+
+      -name: Pack natives
+        run: |
+          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
+          zip natives -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives.zip
+          path: natives.zip 
 
       - name: Cleanup Gradle Cache
         run: |
@@ -302,6 +346,15 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Download natives artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives.zip
+
+      - name: Unpack natives
+        run: |
+          unzip -o natives.zip
 
       - name: Publish snapshot
         run: |
