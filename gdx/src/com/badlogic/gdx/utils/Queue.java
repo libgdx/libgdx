@@ -16,74 +16,53 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
-/**
- * A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
+/** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
- * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}.
- */
+ * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
 public class Queue<T> implements Iterable<T> {
-	/**
-	 * Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end.
-	 */
+	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
 	protected T[] values;
 
-	/**
-	 * Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue.
-	 */
+	/** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
 	protected int head = 0;
 
-	/**
-	 * Index of last element. Logically bigger than head. Usually points to an empty position, but points to the head when full
-	 * (size == values.length).
-	 */
+	/** Index of last element. Logically bigger than head. Usually points to an empty position, but points to the head when full
+	 * (size == values.length). */
 	protected int tail = 0;
 
-	/**
-	 * Number of elements in the queue.
-	 */
+	/** Number of elements in the queue. */
 	public int size = 0;
 
 	private transient QueueIterable iterable;
 
-	/**
-	 * Creates a new Queue which can hold 16 values without needing to resize backing array.
-	 */
+	/** Creates a new Queue which can hold 16 values without needing to resize backing array. */
 	public Queue () {
 		this(16);
 	}
 
-	/**
-	 * Creates a new Queue which can hold the specified number of values without needing to resize backing array.
-	 *
-	 * @param initialSize the initial size of the backing array
-	 */
+	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array.
+	 * @param initialSize the initial size of the backing array */
 	public Queue (int initialSize) {
 		// noinspection unchecked
 		this.values = (T[])new Object[initialSize];
 	}
 
-	/**
-	 * Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
+	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
 	 * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
-	 *
 	 * @param initialSize the initial size of the backing array
-	 * @param type        the class type of the backing array
-	 */
+	 * @param type the class type of the backing array */
 	public Queue (int initialSize, Class<T> type) {
 		// noinspection unchecked
 		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
 	}
 
-	/**
-	 * Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
-	 *
-	 * @param object the object you want to add last, can be null
-	 */
+	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
+	 * @param object the object you want to add last, can be null */
 	public void addLast (@Null T object) {
 		T[] values = this.values;
 
@@ -99,12 +78,9 @@ public class Queue<T> implements Iterable<T> {
 		size++;
 	}
 
-	/**
-	 * Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
-	 *
+	/** Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
 	 * @param object the object you want to add first, can be null
-	 * @see #addLast(Object)
-	 */
+	 * @see #addLast(Object) */
 	public void addFirst (@Null T object) {
 		T[] values = this.values;
 
@@ -124,12 +100,9 @@ public class Queue<T> implements Iterable<T> {
 		this.size++;
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items.
+	/** Increases the size of the backing array to accommodate the specified number of additional items.
 	 * Useful before adding many items to avoid multiple backing array resizes.
-	 *
-	 * @param additional the additional space you want to ensure on the backing array
-	 */
+	 * @param additional the additional space you want to ensure on the backing array */
 	public void ensureCapacity (int additional) {
 		final int needed = size + additional;
 		if (values.length < needed) {
@@ -137,11 +110,8 @@ public class Queue<T> implements Iterable<T> {
 		}
 	}
 
-	/**
-	 * Resize backing array. newSize must be bigger than current size.
-	 *
-	 * @param newSize the new size of the backing array
-	 */
+	/** Resize backing array. newSize must be bigger than current size.
+	 * @param newSize the new size of the backing array */
 	protected void resize (int newSize) {
 		final T[] values = this.values;
 		final int head = this.head;
@@ -162,12 +132,9 @@ public class Queue<T> implements Iterable<T> {
 		this.tail = size;
 	}
 
-	/**
-	 * Remove the first item from the queue. (dequeue from head) Always O(1).
-	 *
+	/** Remove the first item from the queue. (dequeue from head) Always O(1).
 	 * @return the removed object
-	 * @throws NoSuchElementException when queue is empty
-	 */
+	 * @throws NoSuchElementException when queue is empty */
 	public T removeFirst () {
 		if (size == 0) {
 			// Underflow
@@ -187,13 +154,10 @@ public class Queue<T> implements Iterable<T> {
 		return result;
 	}
 
-	/**
-	 * Remove the last item from the queue. (dequeue from tail) Always O(1).
-	 *
+	/** Remove the last item from the queue. (dequeue from tail) Always O(1).
 	 * @return the removed object
 	 * @throws NoSuchElementException when queue is empty
-	 * @see #removeFirst()
-	 */
+	 * @see #removeFirst() */
 	public T removeLast () {
 		if (size == 0) {
 			throw new NoSuchElementException("Queue is empty.");
@@ -213,13 +177,10 @@ public class Queue<T> implements Iterable<T> {
 		return result;
 	}
 
-	/**
-	 * Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
-	 *
-	 * @param value    the value you want to get the index of in the queue
+	/** Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
+	 * @param value the value you want to get the index of in the queue
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used
-	 * @return An index of first occurrence of value in queue or -1 if no such value exists
-	 */
+	 * @return An index of first occurrence of value in queue or -1 if no such value exists */
 	public int indexOf (T value, boolean identity) {
 		if (size == 0)
 			return -1;
@@ -255,13 +216,10 @@ public class Queue<T> implements Iterable<T> {
 		return -1;
 	}
 
-	/**
-	 * Removes the first instance of the specified value in the queue.
-	 *
-	 * @param value    the value you want to remove of the queue
+	/** Removes the first instance of the specified value in the queue.
+	 * @param value the value you want to remove of the queue
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used
-	 * @return true if value was found and removed, false otherwise
-	 */
+	 * @return true if value was found and removed, false otherwise */
 	public boolean removeValue (T value, boolean identity) {
 		int index = indexOf(value, identity);
 		if (index == -1)
@@ -270,13 +228,10 @@ public class Queue<T> implements Iterable<T> {
 		return true;
 	}
 
-	/**
-	 * Removes and returns the item at the specified index.
-	 *
+	/** Removes and returns the item at the specified index.
 	 * @param index the index you want to remove
 	 * @return the object at the given index that was removed
-	 * @throws IndexOutOfBoundsException when index is outside the queue
-	 */
+	 * @throws IndexOutOfBoundsException when index is outside the queue */
 	public T removeIndex (int index) {
 		if (index < 0)
 			throw new IndexOutOfBoundsException("index can't be < 0: " + index);
@@ -310,32 +265,23 @@ public class Queue<T> implements Iterable<T> {
 		return value;
 	}
 
-	/**
-	 * Returns true if the queue has one or more items.
-	 *
-	 * @return true if not empty, else false
-	 */
+	/** Returns true if the queue has one or more items.
+	 * @return true if not empty, else false */
 	public boolean notEmpty () {
 		return size > 0;
 	}
 
-	/**
-	 * Returns true if the queue is empty.
-	 *
-	 * @return true if empty, else false
-	 */
+	/** Returns true if the queue is empty.
+	 * @return true if empty, else false */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
-	/**
-	 * Returns the first (head) item in the queue (without removing it).
-	 *
+	/** Returns the first (head) item in the queue (without removing it).
 	 * @return the first (head) item in the queue
 	 * @throws NoSuchElementException when queue is empty
 	 * @see #addFirst(Object)
-	 * @see #removeFirst()
-	 */
+	 * @see #removeFirst() */
 	public T first () {
 		if (size == 0) {
 			// Underflow
@@ -344,14 +290,11 @@ public class Queue<T> implements Iterable<T> {
 		return values[head];
 	}
 
-	/**
-	 * Returns the last (tail) item in the queue (without removing it).
-	 *
+	/** Returns the last (tail) item in the queue (without removing it).
 	 * @return the last (tail) item in the queue
 	 * @throws NoSuchElementException when queue is empty
 	 * @see #addLast(Object)
-	 * @see #removeLast()
-	 */
+	 * @see #removeLast() */
 	public T last () {
 		if (size == 0) {
 			// Underflow
@@ -366,14 +309,11 @@ public class Queue<T> implements Iterable<T> {
 		return values[tail];
 	}
 
-	/**
-	 * Retrieves the value in queue without removing it. Indexing is from the front to back, zero based.
+	/** Retrieves the value in queue without removing it. Indexing is from the front to back, zero based.
 	 * Therefore get(0) is the same as {@link #first()}.
-	 *
 	 * @param index the index you want to get the object of in the queue
 	 * @return the index you want to get the item of in the queue
-	 * @throws IndexOutOfBoundsException when the index is negative or >= size
-	 */
+	 * @throws IndexOutOfBoundsException when the index is negative or >= size */
 	public T get (int index) {
 		if (index < 0)
 			throw new IndexOutOfBoundsException("index can't be < 0: " + index);
@@ -388,10 +328,8 @@ public class Queue<T> implements Iterable<T> {
 		return values[i];
 	}
 
-	/**
-	 * Removes all values from this queue. Values in backing array are set to null to prevent memory leak,
-	 * so this operates in O(n).
-	 */
+	/** Removes all values from this queue. Values in backing array are set to null to prevent memory leak,
+	 * so this operates in O(n). */
 	public void clear () {
 		if (size == 0)
 			return;
@@ -418,14 +356,11 @@ public class Queue<T> implements Iterable<T> {
 		this.size = 0;
 	}
 
-	/**
-	 * Returns an iterator for the items in the queue. Remove is supported.
+	/** Returns an iterator for the items in the queue. Remove is supported.
 	 * <p>
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
 	 * Use the {@link QueueIterator} constructor for nested or multithreaded iteration.
-	 *
-	 * @return the iterator of this queue, depending on the {@link Collections#allocateIterators}
-	 */
+	 * @return the iterator of this queue, depending on the {@link Collections#allocateIterators} */
 	public Iterator<T> iterator () {
 		if (Collections.allocateIterators)
 			return new QueueIterator<>(this, true);
@@ -434,11 +369,8 @@ public class Queue<T> implements Iterable<T> {
 		return iterable.iterator();
 	}
 
-	/**
-	 * Method to transform the queue into a string representation.
-	 *
-	 * @return the queue in a string representation
-	 */
+	/** Method to transform the queue into a string representation.
+	 * @return the queue in a string representation */
 	public String toString () {
 		if (size == 0) {
 			return "[]";
@@ -457,12 +389,9 @@ public class Queue<T> implements Iterable<T> {
 		return sb.toString();
 	}
 
-	/**
-	 * Method to transform the queue into a string representation,
+	/** Method to transform the queue into a string representation,
 	 * with a custom separator string.
-	 *
-	 * @return the queue in a string representation with custom separator
-	 */
+	 * @return the queue in a string representation with custom separator */
 	public String toString (String separator) {
 		if (size == 0)
 			return "";
@@ -477,11 +406,8 @@ public class Queue<T> implements Iterable<T> {
 		return sb.toString();
 	}
 
-	/**
-	 * Method to transform the queue into a hashCode.
-	 *
-	 * @return the hashCode of the queue
-	 */
+	/** Method to transform the queue into a hashCode.
+	 * @return the hashCode of the queue */
 	public int hashCode () {
 		final int size = this.size;
 		final T[] values = this.values;
@@ -504,12 +430,9 @@ public class Queue<T> implements Iterable<T> {
 		return hash;
 	}
 
-	/**
-	 * Method to check if another object is equal to the queue.
-	 *
+	/** Method to check if another object is equal to the queue.
 	 * @param o the other object you want to compare
-	 * @return true if the queue is equal, else false
-	 */
+	 * @return true if the queue is equal, else false */
 	public boolean equals (Object o) {
 		if (this == o)
 			return true;
@@ -545,13 +468,10 @@ public class Queue<T> implements Iterable<T> {
 		return true;
 	}
 
-	/**
-	 * Method to check if another object is equal to the queue.
+	/** Method to check if another object is equal to the queue.
 	 * Uses == for comparison of each item.
-	 *
 	 * @param o the other object you want to compare
-	 * @return true if the queue is equal, else false
-	 */
+	 * @return true if the queue is equal, else false */
 	public boolean equalsIdentity (Object o) {
 		if (this == o)
 			return true;
@@ -584,43 +504,31 @@ public class Queue<T> implements Iterable<T> {
 		return true;
 	}
 
-	/**
-	 * The QueueIterator class is used to iterate through the queue.
-	 *
-	 * @param <T> the class of the queueIterator, should be equal to that of the queue
-	 */
+	/** The QueueIterator class is used to iterate through the queue.
+	 * @param <T> the class of the queueIterator, should be equal to that of the queue */
 	static public class QueueIterator<T> implements Iterator<T>, Iterable<T> {
 		private final Queue<T> queue;
 		private final boolean allowRemove;
 		int index;
 		boolean valid = true;
 
-		/**
-		 * Constructor of queue iterator, automatically sets {@link #allowRemove} to true
-		 *
-		 * @param queue the queue you want to create an iterator of
-		 */
+		/** Constructor of queue iterator, automatically sets {@link #allowRemove} to true
+		 * @param queue the queue you want to create an iterator of */
 		public QueueIterator (Queue<T> queue) {
 			this(queue, true);
 		}
 
-		/**
-		 * Constructor of queue iterator, with custom allowRemove option.
-		 *
-		 * @param queue       the queue you want to create an iterator of
-		 * @param allowRemove sets {@link #allowRemove}, allows elements to be removed using the iterator
-		 */
+		/** Constructor of queue iterator, with custom allowRemove option.
+		 * @param queue the queue you want to create an iterator of
+		 * @param allowRemove sets {@link #allowRemove}, allows elements to be removed using the iterator */
 		public QueueIterator (Queue<T> queue, boolean allowRemove) {
 			this.queue = queue;
 			this.allowRemove = allowRemove;
 		}
 
-		/**
-		 * Method to check if there is another element inside the queue
-		 *
+		/** Method to check if there is another element inside the queue
 		 * @return true if there is another element in the queue, else false
-		 * @throws GdxRuntimeException if the iterator is not valid
-		 */
+		 * @throws GdxRuntimeException if the iterator is not valid */
 		public boolean hasNext () {
 			if (!valid) {
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
@@ -628,13 +536,10 @@ public class Queue<T> implements Iterable<T> {
 			return index < queue.size;
 		}
 
-		/**
-		 * Method to get the next element inside the queue.
-		 *
+		/** Method to get the next element inside the queue.
 		 * @return the next element of the queue
 		 * @throws NoSuchElementException if there is not a next element
-		 * @throws GdxRuntimeException    if the iterator is not valid
-		 */
+		 * @throws GdxRuntimeException if the iterator is not valid */
 		public T next () {
 			if (index >= queue.size)
 				throw new NoSuchElementException(String.valueOf(index));
@@ -644,11 +549,8 @@ public class Queue<T> implements Iterable<T> {
 			return queue.get(index++);
 		}
 
-		/**
-		 * Method to remove the current element inside the queue.
-		 *
-		 * @throws GdxRuntimeException if {@link #allowRemove} is set to false
-		 */
+		/** Method to remove the current element inside the queue.
+		 * @throws GdxRuntimeException if {@link #allowRemove} is set to false */
 		public void remove () {
 			if (!allowRemove)
 				throw new GdxRuntimeException("Remove not allowed.");
@@ -656,59 +558,42 @@ public class Queue<T> implements Iterable<T> {
 			queue.removeIndex(index);
 		}
 
-		/**
-		 * Method to reset the queueIterator, sets the {@link #index} to zero.
-		 */
+		/** Method to reset the queueIterator, sets the {@link #index} to zero. */
 		public void reset () {
 			index = 0;
 		}
 
-		/**
-		 * Method to get the iterator.
-		 *
-		 * @return this object.
-		 */
+		/** Method to get the iterator.
+		 * @return this object. */
 		public Iterator<T> iterator () {
 			return this;
 		}
 	}
 
-	/**
-	 * The QueueIterable class used for creating a valid iterator.
-	 *
-	 * @param <T> the type of the QueueIterable, is be the same as the Queues.
-	 */
+	/** The QueueIterable class used for creating a valid iterator.
+	 * @param <T> the type of the QueueIterable, is be the same as the Queues. */
 	static public class QueueIterable<T> implements Iterable<T> {
 		private final Queue<T> queue;
 		private final boolean allowRemove;
 		private QueueIterator<T> iterator1, iterator2;
 
-		/**
-		 * Constructor of queue iterable, automatically sets {@link #allowRemove} to true
-		 *
-		 * @param queue the queue you want to create an iterable of
-		 */
+		/** Constructor of queue iterable, automatically sets {@link #allowRemove} to true
+		 * @param queue the queue you want to create an iterable of */
 		public QueueIterable (Queue<T> queue) {
 			this(queue, true);
 		}
 
-		/**
-		 * Constructor of queue iterable, with custom {@link #allowRemove}
-		 *
-		 * @param queue       the queue you want to create an iterable of
-		 * @param allowRemove if the queueIterators have the ability to remove elements of the queue
-		 */
+		/** Constructor of queue iterable, with custom {@link #allowRemove}
+		 * @param queue the queue you want to create an iterable of
+		 * @param allowRemove if the queueIterators have the ability to remove elements of the queue */
 		public QueueIterable (Queue<T> queue, boolean allowRemove) {
 			this.queue = queue;
 			this.allowRemove = allowRemove;
 		}
 
-		/**
-		 * Method to create valid queueIterator when not present, else it retrieves the valid iterator.
-		 *
+		/** Method to create valid queueIterator when not present, else it retrieves the valid iterator.
 		 * @return valid iterator of the correct type
-		 * @see Collections#allocateIterators
-		 */
+		 * @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
 			if (Collections.allocateIterators)
 				return new QueueIterator<>(queue, allowRemove);
