@@ -182,35 +182,28 @@ public class Queue<T> implements Iterable<T> {
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used
 	 * @return An index of first occurrence of value in queue or -1 if no such value exists */
 	public int indexOf (T value, boolean identity) {
-		if (size == 0)
-			return -1;
+		if (size == 0) return -1;
 		T[] values = this.values;
 		final int head = this.head, tail = this.tail;
 		if (identity || value == null) {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (values[i] == value)
-						return i - head;
+					if (values[i] == value) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
-					if (values[i] == value)
-						return i - head;
+					if (values[i] == value) return i - head;
 				for (int i = 0; i < tail; i++)
-					if (values[i] == value)
-						return i + values.length - head;
+					if (values[i] == value) return i + values.length - head;
 			}
 		} else {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (value.equals(values[i]))
-						return i - head;
+					if (value.equals(values[i])) return i - head;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
-					if (value.equals(values[i]))
-						return i - head;
+					if (value.equals(values[i])) return i - head;
 				for (int i = 0; i < tail; i++)
-					if (value.equals(values[i]))
-						return i + values.length - head;
+					if (value.equals(values[i])) return i + values.length - head;
 			}
 		}
 		return -1;
@@ -233,10 +226,8 @@ public class Queue<T> implements Iterable<T> {
 	 * @return the object at the given index that was removed
 	 * @throws IndexOutOfBoundsException when index is outside the queue */
 	public T removeIndex (int index) {
-		if (index < 0)
-			throw new IndexOutOfBoundsException("index can't be < 0: " + index);
-		if (index >= size)
-			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 
 		T[] values = this.values;
 		int head = this.head, tail = this.tail;
@@ -315,10 +306,8 @@ public class Queue<T> implements Iterable<T> {
 	 * @return the index you want to get the item of in the queue
 	 * @throws IndexOutOfBoundsException when the index is negative or >= size */
 	public T get (int index) {
-		if (index < 0)
-			throw new IndexOutOfBoundsException("index can't be < 0: " + index);
-		if (index >= size)
-			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		final T[] values = this.values;
 
 		int i = head + index;
@@ -331,8 +320,7 @@ public class Queue<T> implements Iterable<T> {
 	/** Removes all values from this queue. Values in backing array are set to null to prevent memory leak,
 	 * so this operates in O(n). */
 	public void clear () {
-		if (size == 0)
-			return;
+		if (size == 0) return;
 		final T[] values = this.values;
 		final int head = this.head;
 		final int tail = this.tail;
@@ -362,10 +350,8 @@ public class Queue<T> implements Iterable<T> {
 	 * Use the {@link QueueIterator} constructor for nested or multithreaded iteration.
 	 * @return the iterator of this queue, depending on the {@link Collections#allocateIterators} */
 	public Iterator<T> iterator () {
-		if (Collections.allocateIterators)
-			return new QueueIterator<>(this, true);
-		if (iterable == null)
-			iterable = new QueueIterable<>(this);
+		if (Collections.allocateIterators) return new QueueIterator<>(this, true);
+		if (iterable == null) iterable = new QueueIterable<>(this);
 		return iterable.iterator();
 	}
 
@@ -393,8 +379,7 @@ public class Queue<T> implements Iterable<T> {
 	 * with a custom separator string.
 	 * @return the queue in a string representation with custom separator */
 	public String toString (String separator) {
-		if (size == 0)
-			return "";
+		if (size == 0) return "";
 		final T[] values = this.values;
 		final int head = this.head;
 		final int tail = this.tail;
@@ -434,16 +419,13 @@ public class Queue<T> implements Iterable<T> {
 	 * @param o the other object you want to compare
 	 * @return true if the queue is equal, else false */
 	public boolean equals (Object o) {
-		if (this == o)
-			return true;
-		if (o == null || !(o instanceof Queue))
-			return false;
+		if (this == o) return true;
+		if (o == null || !(o instanceof Queue)) return false;
 
 		Queue<?> q = (Queue<?>)o;
 		final int size = this.size;
 
-		if (q.size != size)
-			return false;
+		if (q.size != size) return false;
 
 		final T[] myValues = this.values;
 		final int myBackingLength = myValues.length;
@@ -456,8 +438,7 @@ public class Queue<T> implements Iterable<T> {
 			T myValue = myValues[myIndex];
 			Object itsValue = itsValues[itsIndex];
 
-			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue)))
-				return false;
+			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue))) return false;
 			myIndex++;
 			itsIndex++;
 			if (myIndex == myBackingLength)
@@ -541,8 +522,7 @@ public class Queue<T> implements Iterable<T> {
 		 * @throws NoSuchElementException if there is not a next element
 		 * @throws GdxRuntimeException if the iterator is not valid */
 		public T next () {
-			if (index >= queue.size)
-				throw new NoSuchElementException(String.valueOf(index));
+			if (index >= queue.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) {
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
@@ -552,8 +532,7 @@ public class Queue<T> implements Iterable<T> {
 		/** Method to remove the current element inside the queue.
 		 * @throws GdxRuntimeException if {@link #allowRemove} is set to false */
 		public void remove () {
-			if (!allowRemove)
-				throw new GdxRuntimeException("Remove not allowed.");
+			if (!allowRemove) throw new GdxRuntimeException("Remove not allowed.");
 			index--;
 			queue.removeIndex(index);
 		}
@@ -595,8 +574,7 @@ public class Queue<T> implements Iterable<T> {
 		 * @return valid iterator of the correct type
 		 * @see Collections#allocateIterators */
 		public Iterator<T> iterator () {
-			if (Collections.allocateIterators)
-				return new QueueIterator<>(queue, allowRemove);
+			if (Collections.allocateIterators) return new QueueIterator<>(queue, allowRemove);
 
 			if (iterator1 == null) {
 				iterator1 = new QueueIterator<>(queue, allowRemove);
