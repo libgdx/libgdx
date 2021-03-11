@@ -31,8 +31,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <resources>
-                                <resource><directory>${basedir}/../../libs/linux32</directory></resource>
+                            <resources>                                
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm64</directory></resource>
