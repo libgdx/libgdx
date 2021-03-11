@@ -9,6 +9,8 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+  MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 jobs:
 
@@ -317,7 +319,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: natives.zip
-          path: natives.zip 
+          path: natives.zip
+
+      - name: Upload artifacts to S3                  
+        if: env.AWS_ACCESS_KEY_ID != null
+        run: |
+          aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-natives
 
       - name: Cleanup Gradle Cache
         run: |
@@ -327,6 +334,7 @@ jobs:
   release-snapshot:    
     runs-on: ubuntu-16.04
     needs: pack-natives
+    if: env.MAVEN_USERNAME != null
     steps:
       - uses: actions/checkout@v2
         with:
@@ -358,7 +366,4 @@ jobs:
 
       - name: Publish snapshot
         run: |
-          mvn --batch-mode deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          mvn --batch-mode deploy        
