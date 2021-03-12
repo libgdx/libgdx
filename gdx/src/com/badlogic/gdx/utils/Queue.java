@@ -255,14 +255,12 @@ public class Queue<T> implements Iterable<T> {
 		return value;
 	}
 
-	/** Checks if the queue is not empty.
-	 * @return true if not empty, else false */
+	/** @return true if not empty, else false */
 	public boolean notEmpty () {
 		return size > 0;
 	}
 
-	/** Checks if the queue is empty.
-	 * @return true if empty, else false */
+	/** @return true if empty, else false */
 	public boolean isEmpty () {
 		return size == 0;
 	}
