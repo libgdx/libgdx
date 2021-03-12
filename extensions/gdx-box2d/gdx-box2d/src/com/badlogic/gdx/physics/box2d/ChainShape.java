@@ -45,7 +45,16 @@ public class ChainShape extends Shape {
 	/** Create a loop. This automatically adjusts connectivity.
 	 * @param vertices an array of floats of alternating x, y coordinates. */
 	public void createLoop (float[] vertices) {
-		jniCreateLoop(addr, vertices, vertices.length / 2);
+		jniCreateLoop(addr, vertices, 0, vertices.length / 2);
+		isLooped = true;
+	}
+
+	/** Create a loop. This automatically adjusts connectivity.
+	 * @param vertices an array of floats of alternating x, y coordinates.
+	 * @param offset into the vertices array
+	 * @param length after offset (in floats, not float-pairs, so even number) */
+	public void createLoop (float[] vertices, int offset, int length) {
+		jniCreateLoop(addr, vertices, offset, length / 2);
 		isLooped = true;
 	}
 
@@ -57,15 +66,15 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateLoop(addr, verts, verts.length / 2);
+		jniCreateLoop(addr, verts, 0, verts.length / 2);
 		isLooped = true;
 	}
 
-	private native void jniCreateLoop (long addr, float[] verts, int numVertices); /*
+	private native void jniCreateLoop (long addr, float[] verts, int offset, int numVertices); /*
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
 		for( int i = 0; i < numVertices; i++ )
-			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+			verticesOut[i] = b2Vec2(verts[offset+(i<<1)], verts[offset+(i<<1)+1]);
 		chain->CreateLoop( verticesOut, numVertices );
 		delete[] verticesOut;
 	*/
@@ -73,7 +82,16 @@ public class ChainShape extends Shape {
 	/** Create a chain with isolated end vertices.
 	 * @param vertices an array of floats of alternating x, y coordinates. */
 	public void createChain (float[] vertices) {
-		jniCreateChain(addr, vertices, vertices.length / 2);
+		jniCreateChain(addr, vertices, 0, vertices.length / 2);
+		isLooped = false;
+	}
+
+	/** Create a chain with isolated end vertices.
+	 * @param vertices an array of floats of alternating x, y coordinates.
+	 * @param offset into the vertices array
+	 * @param length after offset (in floats, not float-pairs, so even number) */
+	public void createChain (float[] vertices, int offset, int length) {
+		jniCreateChain(addr, vertices, offset, length / 2);
 		isLooped = false;
 	}
 	
@@ -85,14 +103,15 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		createChain(verts);
+		jniCreateChain(addr, verts, 0, vertices.length);
+		isLooped = false;
 	}
 
-	private native void jniCreateChain (long addr, float[] verts, int numVertices); /*
+	private native void jniCreateChain (long addr, float[] verts, int offset, int numVertices); /*
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
 		for( int i = 0; i < numVertices; i++ )
-			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+			verticesOut[i] = b2Vec2(verts[offset+(i<<1)], verts[offset+(i<<1)+1]);
 		chain->CreateChain( verticesOut, numVertices );
 		delete[] verticesOut;
 	*/

@@ -2,7 +2,11 @@
 *~
 .*.swp
 .DS_STORE
-
+desktop.ini
+robovm-build/
+project.xcworkspace/
+xcuserdata/
+xcode/native/
 .gradle/
 build/
 bin/
@@ -34,6 +38,7 @@ ipch/
 /dist
 
 *.a
+*.a.tvos
 *.dll
 *.dll.mdb
 *.userprefs
@@ -55,14 +60,24 @@ libgdx-*.zip.MD5
 /extensions/gdx-audio/libs/
 /extensions/gdx-box2d/gdx-box2d/libs/
 /extensions/gdx-bullet/libs/
-/extensions/gdx-controllers/gdx-controllers-desktop/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
 /extensions/gdx-setup/gdx-setup.jar
+/extensions/gdx-setup/test/
+
+#the LWJGL3 libs are pulled via fetch.xml
+/backends/gdx-backend-lwjgl3/libs/lwjgl*.jar
 
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war
 
+#assets generated in tests
+tests/gdx-tests-android/assets/bitmapWrittenFont.fnt
+tests/gdx-tests-android/assets/bitmapWrittenFont.png
+
 #directories created by fetch.xml
 /tests/gdx-tests-android/libs
 /tmp/
+
+#gradle wrapper
+/local.properties

@@ -22,15 +22,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.CubemapData;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.utils.Array;
 
@@ -56,7 +51,6 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	public void loadAsync (AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
 		info.filename = fileName;
 		if (parameter == null || parameter.cubemapData == null) {
-			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
 			info.cubemap = null;

@@ -31,12 +31,28 @@ public class MoveToAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		target.setPosition(startX + (endX - startX) * percent, startY + (endY - startY) * percent, alignment);
+		float x, y;
+		if (percent == 0) {
+			x = startX;
+			y = startY;
+		} else if (percent == 1) {
+			x = endX;
+			y = endY;
+		} else {
+			x = startX + (endX - startX) * percent;
+			y = startY + (endY - startY) * percent;
+		}
+		target.setPosition(x, y, alignment);
 	}
 
 	public void reset () {
 		super.reset();
 		alignment = Align.bottomLeft;
+	}
+
+	public void setStartPosition (float x, float y) {
+		startX = x;
+		startY = y;
 	}
 
 	public void setPosition (float x, float y) {
@@ -64,6 +80,16 @@ public class MoveToAction extends TemporalAction {
 
 	public void setY (float y) {
 		endY = y;
+	}
+
+	/** Gets the starting X value, set in {@link #begin()}. */
+	public float getStartX () {
+		return startX;
+	}
+
+	/** Gets the starting Y value, set in {@link #begin()}. */
+	public float getStartY () {
+		return startY;
 	}
 
 	public int getAlignment () {

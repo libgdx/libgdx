@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectArray;
 import com.badlogic.gdx.physics.bullet.dynamics.InternalTickCallback;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
@@ -36,7 +35,7 @@ public class InternalTickTest extends BaseBulletTest {
 			dynamicsWorld.clearForces();
 			int idx = 0;
 			for (int i = 0; i < objs.size(); i++) {
-				btRigidBody body = (btRigidBody)(objs.at(i));
+				btRigidBody body = (btRigidBody)(objs.atConst(i));
 				if (body == null || body.isStaticOrKinematicObject()) continue;
 				body.applyGravity();
 				body.applyCentralForce(tmpV1.set(0f, 8.0f + (float)(6.0 * Math.random()), 0f));

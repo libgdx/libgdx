@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.net;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 

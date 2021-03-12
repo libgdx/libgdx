@@ -20,6 +20,13 @@
             <property name="module.name" value="dynamics" />
         </ant>
     </target>
+
+    <target name="inversedynamics" depends="dynamics">
+        <echo message="Generating extras wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="inversedynamics" />
+        </ant>
+    </target>
     
     <target name="softbody" depends="dynamics">
         <echo message="Generating softbody wrapper" level="info" />
@@ -35,7 +42,7 @@
         </ant>
     </target>
 
-	<target name="all" depends="linearmath,collision,dynamics,softbody,extras">
+	<target name="all" depends="linearmath,collision,dynamics,inversedynamics,softbody,extras">
 		<echo message="All wrapper files generated, now rebuild the gdx-bullet project." level="info" />
 	</target>
 </project>

@@ -1,21 +1,21 @@
-INCLUDE_DIRECTORIES( 
+INCLUDE_DIRECTORIES(
 	${BULLET_PHYSICS_SOURCE_DIR}/src
 	${BULLET_PHYSICS_SOURCE_DIR}/Extras/Serialize/BulletFileLoader
 )
 
 ADD_LIBRARY(
-BulletWorldImporter 
-btBulletWorldImporter.cpp 
-btBulletWorldImporter.h 
-btWorldImporter.cpp 
-btWorldImporter.h 
+BulletWorldImporter
+btBulletWorldImporter.cpp
+btBulletWorldImporter.h
+btWorldImporter.cpp
+btWorldImporter.h
 )
 
 SET_TARGET_PROPERTIES(BulletWorldImporter PROPERTIES VERSION ${BULLET_VERSION})
 SET_TARGET_PROPERTIES(BulletWorldImporter PROPERTIES SOVERSION ${BULLET_VERSION})
 
 IF (BUILD_SHARED_LIBS)
-        TARGET_LINK_LIBRARIES(BulletWorldImporter BulletDynamics BulletCollision BulletFileLoader LinearMath)
+	TARGET_LINK_LIBRARIES(BulletWorldImporter BulletDynamics BulletCollision BulletFileLoader LinearMath)
 ENDIF (BUILD_SHARED_LIBS)
 
 IF (INSTALL_EXTRA_LIBS)
@@ -25,7 +25,10 @@ IF (INSTALL_EXTRA_LIBS)
 			IF (APPLE AND BUILD_SHARED_LIBS AND FRAMEWORK)
 				INSTALL(TARGETS BulletWorldImporter DESTINATION .)
 			ELSE (APPLE AND BUILD_SHARED_LIBS AND FRAMEWORK)
-				INSTALL(TARGETS BulletWorldImporter DESTINATION lib${LIB_SUFFIX})
+				INSTALL(TARGETS BulletWorldImporter
+                                        RUNTIME DESTINATION bin
+                                        LIBRARY DESTINATION lib${LIB_SUFFIX}
+                                        ARCHIVE DESTINATION lib${LIB_SUFFIX})
 				INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 DESTINATION ${INCLUDE_INSTALL_DIR} FILES_MATCHING PATTERN "*.h"  PATTERN
 ".svn" EXCLUDE PATTERN "CMakeFiles" EXCLUDE)

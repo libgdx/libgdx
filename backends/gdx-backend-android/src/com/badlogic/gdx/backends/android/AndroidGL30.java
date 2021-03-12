@@ -16,10 +16,12 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.opengl.GLES30;
 
 import com.badlogic.gdx.graphics.GL30;
 
+@TargetApi(18)
 public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	@Override
 	public void glReadBuffer (int mode) {
@@ -243,10 +245,10 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 		GLES30.glFramebufferTextureLayer(target, attachment, texture, level, layer);
 	}
 
-// @Override
-// public java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access) {
-// return GLES30.glMapBufferRange(target, offset, length, access);
-// }
+	@Override
+	public java.nio.Buffer glMapBufferRange (int target, int offset, int length, int access) {
+		return GLES30.glMapBufferRange(target, offset, length, access);
+	}
 
 	@Override
 	public void glFlushMappedBufferRange (int target, int offset, int length) {

@@ -28,9 +28,7 @@ int gFindSimplePairs =0;
 
 
 
-btHashedSimplePairCache::btHashedSimplePairCache():
-	m_blockedForChanges(false)
-{
+btHashedSimplePairCache::btHashedSimplePairCache() {
 	int initialAllocatedSize= 2;
 	m_overlappingPairArray.reserve(initialAllocatedSize);
 	growTables();

@@ -73,7 +73,6 @@ import javax.swing.JTextPane;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -84,6 +83,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -311,9 +311,14 @@ public class Hiero extends JFrame {
 		unicodeFont.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		if (nativeRadio.isSelected())
 			unicodeFont.setRenderType(RenderType.Native);
-		else if (freeTypeRadio.isSelected())
-			unicodeFont.setRenderType(RenderType.FreeType);
-		else
+		else if (freeTypeRadio.isSelected()) {
+			try{
+				unicodeFont.setRenderType(RenderType.FreeType);
+			} catch (GdxRuntimeException ex) {
+				unicodeFont.setRenderType(RenderType.Java);
+				javaRadio.doClick();
+			}
+		} else
 			unicodeFont.setRenderType(RenderType.Java);
 
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
@@ -354,6 +359,12 @@ public class Hiero extends JFrame {
 		settings.setGlyphPageWidth(((Number)glyphPageWidthCombo.getSelectedItem()).intValue());
 		settings.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		settings.setGlyphText(sampleTextPane.getText());
+		if (nativeRadio.isSelected())
+			settings.setRenderType(RenderType.Native.ordinal());
+		else if (freeTypeRadio.isSelected())
+			settings.setRenderType(RenderType.FreeType.ordinal());
+		else
+			settings.setRenderType(RenderType.Java.ordinal());
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
 			EffectPanel panel = (EffectPanel)iter.next();
 			settings.getEffects().add(panel.getEffect());
@@ -381,6 +392,12 @@ public class Hiero extends JFrame {
 		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
 		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
 		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		if (settings.getRenderType() == RenderType.Native.ordinal())
+			nativeRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.FreeType.ordinal())
+			freeTypeRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.Java.ordinal()) 
+			javaRadio.setSelected(true);
 		String gt = settings.getGlyphText();
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
@@ -424,7 +441,7 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				if (evt.getValueIsAdjusting()) return;
 				prefs.put("system.font", (String)fontList.getSelectedValue());
-				updateFont();
+					updateFont();
 			}
 		});
 
@@ -814,7 +831,7 @@ public class Hiero extends JFrame {
 			buttonGroup.add(freeTypeRadio);
 			buttonGroup.add(javaRadio);
 			buttonGroup.add(nativeRadio);
-			freeTypeRadio.setSelected(true);
+			javaRadio.setSelected(true);
 		}
 		{
 			JPanel samplePanel = new JPanel();

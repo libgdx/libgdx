@@ -18,7 +18,6 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** A convenient 2D ellipse class, based on the circle class
@@ -49,8 +48,8 @@ public class Ellipse implements Serializable, Shape2D {
 	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public Ellipse (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -61,8 +60,8 @@ public class Ellipse implements Serializable, Shape2D {
 	/** Costructs a new ellipse
 	 * 
 	 * @param position Position vector
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public Ellipse (Vector2 position, float width, float height) {
 		this.x = position.x;
 		this.y = position.y;
@@ -83,8 +82,8 @@ public class Ellipse implements Serializable, Shape2D {
 	public Ellipse (Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
-		this.width = circle.radius;
-		this.height = circle.radius;
+		this.width = circle.radius * 2f;
+		this.height = circle.radius * 2f;
 	}
 
 	/** Checks whether or not this ellipse contains the given point.
@@ -113,8 +112,8 @@ public class Ellipse implements Serializable, Shape2D {
 	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public void set (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -135,8 +134,8 @@ public class Ellipse implements Serializable, Shape2D {
 	public void set (Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
-		this.width = circle.radius;
-		this.height = circle.radius;
+		this.width = circle.radius * 2f;
+		this.height = circle.radius * 2f;
 	}
 
 	public void set (Vector2 position, Vector2 size) {

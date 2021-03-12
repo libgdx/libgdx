@@ -7,6 +7,9 @@
 %include "../common/gdxDisableBuffers.i"
 %include "../common/gdxEnableArrays.i"
 
+%rename(getBasisConst) btTransform::getBasis() const;
+%rename(getOriginConst) btTransform::getOrigin() const;
+
 %{
 #include <LinearMath/btTransform.h>
 %}

@@ -128,6 +128,9 @@ void btBulletFile::parseData()
 	mDataStart = 12;
 	remain-=12;
 	
+	//invalid/empty file?
+	if (remain < sizeof(bChunkInd))
+		return;
 
 	char *dataPtr = mFileBuffer+mDataStart;
 
@@ -224,7 +227,7 @@ void btBulletFile::parseData()
 		//		}
 			} else
 			{
-				printf("unknown chunk\n");
+				//printf("unknown chunk\n");
 
 				mLibPointers.insert(dataChunk.oldPtr, (bStructHandle*)dataPtrHead);
 			}

@@ -20,81 +20,96 @@ import com.badlogic.gdx.math.Vector2;
 
 /** Various scaling types for fitting one rectangle into another.
  * @author Nathan Sweet */
-public enum Scaling {
-	/** Scales the source to fit the target while keeping the same aspect ratio. This may cause the source to be smaller than the
-	 * target in one direction. */
-	fit,
-	/** Scales the source to fill the target while keeping the same aspect ratio. This may cause the source to be larger than the
-	 * target in one direction. */
-	fill,
-	/** Scales the source to fill the target in the x direction while keeping the same aspect ratio. This may cause the source to be
-	 * smaller or larger than the target in the y direction. */
-	fillX,
-	/** Scales the source to fill the target in the y direction while keeping the same aspect ratio. This may cause the source to be
-	 * smaller or larger than the target in the x direction. */
-	fillY,
-	/** Scales the source to fill the target. This may cause the source to not keep the same aspect ratio. */
-	stretch,
-	/** Scales the source to fill the target in the x direction, without changing the y direction. This may cause the source to not
-	 * keep the same aspect ratio. */
-	stretchX,
-	/** Scales the source to fill the target in the y direction, without changing the x direction. This may cause the source to not
-	 * keep the same aspect ratio. */
-	stretchY,
-	/** The source is not scaled. */
-	none;
-
-	static private final Vector2 temp = new Vector2();
+public abstract class Scaling {
+	protected static final Vector2 temp = new Vector2();
 
 	/** Returns the size of the source scaled to the target. Note the same Vector2 instance is always returned and should never be
 	 * cached. */
-	public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
-		switch (this) {
-		case fit: {
+	public abstract Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight);
+
+	/** Scales the source to fit the target while keeping the same aspect ratio. This may cause the source to be smaller than the
+	 * target in one direction. */
+	public static final Scaling fit = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float targetRatio = targetHeight / targetWidth;
 			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetRatio > sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
-			break;
+			return temp;
 		}
-		case fill: {
+	};
+
+	/** Scales the source to fill the target while keeping the same aspect ratio. This may cause the source to be larger than the
+	 * target in one direction. */
+	public static final Scaling fill = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float targetRatio = targetHeight / targetWidth;
 			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetRatio < sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
-			break;
+			return temp;
 		}
-		case fillX: {
+	};
+
+	/** Scales the source to fill the target in the x direction while keeping the same aspect ratio. This may cause the source to
+	 * be smaller or larger than the target in the y direction. */
+	public static final Scaling fillX = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float scale = targetWidth / sourceWidth;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
-			break;
+			return temp;
 		}
-		case fillY: {
+	};
+
+	/** Scales the source to fill the target in the y direction while keeping the same aspect ratio. This may cause the source to
+	 * be smaller or larger than the target in the x direction. */
+	public static final Scaling fillY = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float scale = targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
-			break;
+			return temp;
 		}
-		case stretch:
+	};
+
+	/** Scales the source to fill the target. This may cause the source to not keep the same aspect ratio. */
+	public static final Scaling stretch = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = targetWidth;
 			temp.y = targetHeight;
-			break;
-		case stretchX:
+			return temp;
+		}
+	};
+
+	/** Scales the source to fill the target in the x direction, without changing the y direction. This may cause the source to not
+	 * keep the same aspect ratio. */
+	public static final Scaling stretchX = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = targetWidth;
 			temp.y = sourceHeight;
-			break;
-		case stretchY:
+			return temp;
+		}
+	};
+
+	/** Scales the source to fill the target in the y direction, without changing the x direction. This may cause the source to not
+	 * keep the same aspect ratio. */
+	public static final Scaling stretchY = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = sourceWidth;
 			temp.y = targetHeight;
-			break;
-		case none:
+			return temp;
+		}
+	};
+
+	/** The source is not scaled. */
+	public static final Scaling none = new Scaling() {
+		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			temp.x = sourceWidth;
 			temp.y = sourceHeight;
-			break;
+			return temp;
 		}
-		return temp;
-	}
+	};
 }

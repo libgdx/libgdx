@@ -35,21 +35,65 @@ public abstract class Interpolation {
 		}
 	};
 
-	static public final Interpolation fade = new Interpolation() {
+	//
+
+	/** Aka "smoothstep". */
+	static public final Interpolation smooth = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
+			return a * a * (3 - 2 * a);
 		}
 	};
+	static public final Interpolation smooth2 = new Interpolation() {
+		public float apply (float a) {
+			a = a * a * (3 - 2 * a);
+			return a * a * (3 - 2 * a);
+		}
+	};
+
+	/** By Ken Perlin. */
+	static public final Interpolation smoother = new Interpolation() {
+		public float apply (float a) {
+			return a * a * a * (a * (a * 6 - 15) + 10);
+		}
+	};
+	static public final Interpolation fade = smoother;
+
+	//
 
 	static public final Pow pow2 = new Pow(2);
 	/** Slow, then fast. */
 	static public final PowIn pow2In = new PowIn(2);
+	static public final PowIn slowFast = pow2In;
 	/** Fast, then slow. */
 	static public final PowOut pow2Out = new PowOut(2);
+	static public final PowOut fastSlow = pow2Out;
+	static public final Interpolation pow2InInverse = new Interpolation() {
+		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
+			return (float)Math.sqrt(a);
+		}
+	};
+	static public final Interpolation pow2OutInverse = new Interpolation() {
+		public float apply (float a) {
+			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
+			if (a > 1) return 1;
+			return 1 - (float)Math.sqrt(-(a - 1));
+		}
+	};
 
 	static public final Pow pow3 = new Pow(3);
 	static public final PowIn pow3In = new PowIn(3);
 	static public final PowOut pow3Out = new PowOut(3);
+	static public final Interpolation pow3InInverse = new Interpolation() {
+		public float apply (float a) {
+			return (float)Math.cbrt(a);
+		}
+	};
+	static public final Interpolation pow3OutInverse = new Interpolation() {
+		public float apply (float a) {
+			return 1 - (float)Math.cbrt(-(a - 1));
+		}
+	};
 
 	static public final Pow pow4 = new Pow(4);
 	static public final PowIn pow4In = new PowIn(4);
@@ -67,13 +111,13 @@ public abstract class Interpolation {
 
 	static public final Interpolation sineIn = new Interpolation() {
 		public float apply (float a) {
-			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
+			return 1 - MathUtils.cos(a * MathUtils.HALF_PI);
 		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.sin(a * MathUtils.PI / 2);
+			return MathUtils.sin(a * MathUtils.HALF_PI);
 		}
 	};
 
@@ -235,6 +279,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 0) return 0;
 			a = 1 - a;
 			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale);
 		}
@@ -316,6 +361,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 1) return 1;
 			a += widths[0] / 2;
 			float width = 0, height = 0;
 			for (int i = 0, n = widths.length; i < n; i++) {

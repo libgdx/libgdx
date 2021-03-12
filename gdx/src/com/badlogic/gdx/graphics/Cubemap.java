@@ -27,8 +27,6 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.CubemapLoader.CubemapParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.FacedCubemapData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.Vector3;
@@ -90,11 +88,12 @@ public class Cubemap extends GLTexture {
 
 	protected CubemapData data;
 
-	/** Construct an Cubemap based on the given CubemapData. */
+	/** Construct a Cubemap based on the given CubemapData. */
 	public Cubemap (CubemapData data) {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
 		load(data);
+		if (data.isManaged()) addManagedCubemap(Gdx.app, this);
 	}
 
 	/** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
@@ -137,13 +136,7 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
 	public Cubemap (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
 		TextureData positiveZ, TextureData negativeZ) {
-		super(GL20.GL_TEXTURE_CUBE_MAP);
-		minFilter = TextureFilter.Nearest;
-		magFilter = TextureFilter.Nearest;
-		uWrap = TextureWrap.ClampToEdge;
-		vWrap = TextureWrap.ClampToEdge;
-		data = new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
-		load(data);
+		this(new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
 	}
 
 	/** Sets the sides of this cubemap to the specified {@link CubemapData}. */
@@ -152,6 +145,7 @@ public class Cubemap extends GLTexture {
 		bind();
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
+		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
 		data.consumeCubemapData();
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}

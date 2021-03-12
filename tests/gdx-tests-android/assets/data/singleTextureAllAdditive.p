@@ -27,8 +27,10 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
+independent: false
 - Life Offset - 
 active: false
+independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -55,7 +57,7 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Scale - 
+- X Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 64.0
@@ -75,6 +77,8 @@ timeline2: 0.28767124
 timeline3: 0.4041096
 timeline4: 0.5753425
 timeline5: 0.70547944
+- Y Scale - 
+active: false
 - Velocity - 
 active: true
 lowMin: 0.0
@@ -146,7 +150,8 @@ aligned: false
 additive: true
 behind: false
 premultipliedAlpha: false
-- Image Path -
+spriteMode: single
+- Image Paths -
 particle-star.png
 
 
@@ -179,8 +184,10 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
+independent: false
 - Life Offset - 
 active: false
+independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -207,7 +214,7 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Scale - 
+- X Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 128.0
@@ -227,6 +234,8 @@ timeline2: 0.29452056
 timeline3: 0.4041096
 timeline4: 0.58219177
 timeline5: 0.70547944
+- Y Scale - 
+active: false
 - Velocity - 
 active: true
 lowMin: 0.0
@@ -298,7 +307,8 @@ aligned: false
 additive: true
 behind: false
 premultipliedAlpha: false
-- Image Path -
+spriteMode: single
+- Image Paths -
 particle-star.png
 
 
@@ -331,8 +341,10 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
+independent: false
 - Life Offset - 
 active: false
+independent: false
 - X Offset - 
 active: false
 - Y Offset - 
@@ -359,7 +371,7 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Scale - 
+- X Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 32.0
@@ -379,6 +391,8 @@ timeline2: 0.28767124
 timeline3: 0.4041096
 timeline4: 0.5753425
 timeline5: 0.70547944
+- Y Scale - 
+active: false
 - Velocity - 
 active: true
 lowMin: 0.0
@@ -454,5 +468,7 @@ aligned: false
 additive: true
 behind: false
 premultipliedAlpha: false
-- Image Path -
+spriteMode: single
+- Image Paths -
 particle-star.png
+

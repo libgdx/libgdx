@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,11 +25,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.Buffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,8 +69,8 @@ public class BMFontUtil {
 		int pageHeight = unicodeFont.getGlyphPageHeight();
 		out.println("info face=\"" + font.getFontName() + "\" size=" + font.getSize() + " bold=" + (font.isBold() ? 1 : 0)
 			+ " italic=" + (font.isItalic() ? 1 : 0) + " charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding="
-			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingLeft() + "," + unicodeFont.getPaddingBottom() + ","
-			+ unicodeFont.getPaddingRight() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
+			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingRight() + "," + unicodeFont.getPaddingBottom() + ","
+			+ unicodeFont.getPaddingLeft() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
 			+ unicodeFont.getPaddingAdvanceY());
 		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW=" + pageWidth
 			+ " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
@@ -123,7 +123,7 @@ public class BMFontUtil {
 			IntIntMap glyphCodeToCodePoint = new IntIntMap();
 			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
 				Glyph glyph = (Glyph)iter.next();
-				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
+				glyphCodeToCodePoint.put(getGlyphCode(font, glyph.getCodePoint()), glyph.getCodePoint());
 			}
 
 			List kernings = new ArrayList(256);
@@ -172,7 +172,7 @@ public class BMFontUtil {
 				fileName = outputName + (pageIndex + 1) + ".png";
 
 			page.getTexture().bind();
-			buffer.clear();
+			((Buffer) buffer).clear();
 			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
 			WritableRaster raster = pageImage.getRaster();
 			for (int y = 0; y < height; y++) {
@@ -196,7 +196,7 @@ public class BMFontUtil {
 	}
 
 	void writeGlyph (PrintStream out, int pageWidth, int pageHeight, int pageIndex, Glyph glyph) {
-		out.println("char id=" + String.format("%-6s", glyph.getCodePoint()) //
+		out.println("char id=" + String.format("%-7s ", glyph.getCodePoint()) //
 			+ "x=" + String.format("%-5s", (int)(glyph.getU() * pageWidth)) //
 			+ "y=" + String.format("%-5s", (int)(glyph.getV() * pageHeight)) //
 			+ "width=" + String.format("%-5s", glyph.getWidth()) //

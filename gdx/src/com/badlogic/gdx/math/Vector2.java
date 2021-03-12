@@ -316,18 +316,38 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this.x * y - this.y * x;
 	}
 
-	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
-	 *         counter-clockwise) and between 0 and 360. */
+	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise) and between 0 and 360.
+	 * @deprecated  use {@link #angleDeg()} instead. */
+	@Deprecated
 	public float angle () {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
 	}
 
-	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the positive y-axis
-	 *         (typically counter-clockwise.) between -180 and +180 */
+	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the negative y-axis
+	 *         (typically clockwise) between -180 and +180 
+	 * @deprecated  use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the range. */
+	@Deprecated
 	public float angle (Vector2 reference) {
 		return (float)Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
+	}
+	
+	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise) and in the [0, 360) range. */
+	public float angleDeg () {
+		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
+		if (angle < 0) angle += 360;
+		return angle;
+	}
+
+	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise.) in the [0, 360) range */
+	public float angleDeg (Vector2 reference) {
+		float angle = (float)Math.atan2(reference.crs(this), reference.dot(this)) * MathUtils.radiansToDegrees;
+		if (angle < 0) angle += 360;
+		return angle;
 	}
 
 	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
@@ -339,12 +359,20 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** @return the angle in radians of this vector (point) relative to the given vector. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise.) */
 	public float angleRad (Vector2 reference) {
-		return (float)Math.atan2(crs(reference), dot(reference));
+		return (float)Math.atan2(reference.crs(this), reference.dot(this));
 	}
 
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
-	 * @param degrees The angle in degrees to set. */
+	 * @param degrees The angle in degrees to set.
+	 * @deprecated use {@link #setAngleDeg(float)} instead. */
+	@Deprecated
 	public Vector2 setAngle (float degrees) {
+		return setAngleRad(degrees * MathUtils.degreesToRadians);
+	}
+	
+	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
+	 * @param degrees The angle in degrees to set. */
+	public Vector2 setAngleDeg (float degrees) {
 		return setAngleRad(degrees * MathUtils.degreesToRadians);
 	}
 
@@ -358,8 +386,25 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
-	 * @param degrees the angle in degrees */
+	 * @param degrees the angle in degrees 
+	 * @deprecated  use {@link #rotateDeg(float)} instead. */
+	@Deprecated
 	public Vector2 rotate (float degrees) {
+		return rotateRad(degrees * MathUtils.degreesToRadians);
+	}
+
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param degrees the angle in degrees
+	 * @param reference center Vector2
+	 * @deprecated  use {@link #rotateAroundDeg(Vector2, float)} instead. */
+	@Deprecated
+	public Vector2 rotateAround (Vector2 reference, float degrees) {
+		return this.sub(reference).rotateDeg(degrees).add(reference);
+	}
+
+	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
+	 * @param degrees the angle in degrees  */
+	public Vector2 rotateDeg (float degrees) {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
 
@@ -376,6 +421,20 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = newY;
 
 		return this;
+	}
+
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param degrees the angle in degrees
+	 * @param reference center Vector2 */
+	public Vector2 rotateAroundDeg (Vector2 reference, float degrees) {
+		return this.sub(reference).rotateDeg(degrees).add(reference);
+	}
+	
+	/** Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians
+	 * @param reference center Vector2 */
+	public Vector2 rotateAroundRad (Vector2 reference, float radians) {
+		return this.sub(reference).rotateRad(radians).add(reference);
 	}
 
 	/** Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is counter-clockwise and < 0 is clockwise. */
@@ -444,6 +503,21 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (Math.abs(x - this.x) > epsilon) return false;
 		if (Math.abs(y - this.y) > epsilon) return false;
 		return true;
+	}
+
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 * @param other other vector to compare
+	 * @return true if vector are equal, otherwise false */
+	public boolean epsilonEquals (final Vector2 other) {
+		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 * @param x x component of the other vector to compare
+	 * @param y y component of the other vector to compare
+	 * @return true if vector are equal, otherwise false */
+	public boolean epsilonEquals (float x, float y) {
+		return epsilonEquals(x, y, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Override

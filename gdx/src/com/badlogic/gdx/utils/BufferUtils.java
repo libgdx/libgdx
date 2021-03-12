@@ -33,6 +33,10 @@ import com.badlogic.gdx.math.Matrix4;
  * 
  * @author mzechner, xoppa */
 public final class BufferUtils {
+
+	private BufferUtils () {
+	}
+
 	static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
 	static int allocatedUnsafe = 0;
 
@@ -55,10 +59,10 @@ public final class BufferUtils {
 		dst.position(0);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -69,10 +73,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -83,9 +87,9 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
-	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
+	 * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -95,9 +99,9 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
-	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
+	 * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -107,9 +111,9 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
-	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
+	 * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -119,9 +123,9 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
-	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
+	 * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -131,9 +135,9 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
-	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
+	 * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -143,10 +147,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -157,10 +161,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -171,10 +175,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -185,10 +189,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -199,10 +203,10 @@ public final class BufferUtils {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
-	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
-	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same, the limit
-	 * will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error checking is
-	 * performed</b>.
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
+	 * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
+	 * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
+	 * checking is performed</b>.
 	 * 
 	 * @param src the source array.
 	 * @param srcOffset the offset into the source array.
@@ -493,69 +497,67 @@ public final class BufferUtils {
 		return buffer.asLongBuffer();
 	}
 
-	// @off
-	/*JNI 
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	*/
-	
-	public static void disposeUnsafeByteBuffer(ByteBuffer buffer) {
-		int size = buffer.capacity(); 
-		synchronized(unsafeBuffers) {
-			if(!unsafeBuffers.removeValue(buffer, true))
+	public static void disposeUnsafeByteBuffer (ByteBuffer buffer) {
+		int size = buffer.capacity();
+		synchronized (unsafeBuffers) {
+			if (!unsafeBuffers.removeValue(buffer, true))
 				throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
 		}
 		allocatedUnsafe -= size;
 		freeMemory(buffer);
 	}
 
+	public static boolean isUnsafeByteBuffer (ByteBuffer buffer) {
+		synchronized (unsafeBuffers) {
+			return unsafeBuffers.contains(buffer, true);
+		}
+	}
+
 	/** Allocates a new direct ByteBuffer from native heap memory using the native byte order. Needs to be disposed with
-	 * {@link #freeMemory(ByteBuffer)}.
-	 * @param numBytes */
+	 * {@link #disposeUnsafeByteBuffer(ByteBuffer)}. */
 	public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
 		ByteBuffer buffer = newDisposableByteBuffer(numBytes);
 		buffer.order(ByteOrder.nativeOrder());
 		allocatedUnsafe += numBytes;
-		synchronized(unsafeBuffers) {
-			unsafeBuffers.add(buffer);
-		}
-		return buffer;
-	}
-	
-	/**
-	 * Returns the address of the Buffer, it assumes it is an unsafe buffer.
-	 * @param buffer The Buffer to ask the address for.
-	 * @return the address of the Buffer.
-	 */
-	public static long getUnsafeBufferAddress(Buffer buffer) {
-		return getBufferAddress(buffer) + buffer.position();
-	}
-	
-	/**
-	 * Registers the given ByteBuffer as an unsafe ByteBuffer. The ByteBuffer must have been 
-	 * allocated in native code, pointing to a memory region allocated via malloc. Needs to 
-	 * be disposed with {@link #freeMemory(ByteBuffer)}.
-	 * @param buffer the {@link ByteBuffer} to register
-	 * @return the ByteBuffer passed to the method
-	 */
-	public static ByteBuffer newUnsafeByteBuffer(ByteBuffer buffer) {
-		allocatedUnsafe += buffer.capacity();
-		synchronized(unsafeBuffers) {
+		synchronized (unsafeBuffers) {
 			unsafeBuffers.add(buffer);
 		}
 		return buffer;
 	}
 
-	/**
-	 * @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)}
-	 */
-	public static int getAllocatedBytesUnsafe() {
+	/** Returns the address of the Buffer, it assumes it is an unsafe buffer.
+	 * @param buffer The Buffer to ask the address for.
+	 * @return the address of the Buffer. */
+	public static long getUnsafeBufferAddress (Buffer buffer) {
+		return getBufferAddress(buffer) + buffer.position();
+	}
+
+	/** Registers the given ByteBuffer as an unsafe ByteBuffer. The ByteBuffer must have been allocated in native code, pointing to
+	 * a memory region allocated via malloc. Needs to be disposed with {@link #disposeUnsafeByteBuffer(ByteBuffer)}.
+	 * @param buffer the {@link ByteBuffer} to register
+	 * @return the ByteBuffer passed to the method */
+	public static ByteBuffer newUnsafeByteBuffer (ByteBuffer buffer) {
+		allocatedUnsafe += buffer.capacity();
+		synchronized (unsafeBuffers) {
+			unsafeBuffers.add(buffer);
+		}
+		return buffer;
+	}
+
+	/** @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)} */
+	public static int getAllocatedBytesUnsafe () {
 		return allocatedUnsafe;
 	}
-	
-	/** Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd VIA METHODS IN THIS CLASS OR
-	 * ByteBuffer.allocateDirect()! IT WILL EXPLODE! */
+
+	// @off
+	/*JNI 
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	*/
+
+	/** Frees the memory allocated for the ByteBuffer, which MUST have been allocated via {@link #newUnsafeByteBuffer(ByteBuffer)}
+	 * or in native code. */
 	private static native void freeMemory (ByteBuffer buffer); /*
 		free(buffer);
 	 */

@@ -82,6 +82,9 @@ public class ParticleEmitterTest extends GdxTest {
 				ParticleEmitter emitter = emitters.get(emitterIndex);
 				if (keycode == Input.Keys.DPAD_UP)
 					particleCount += 5;
+				else if (keycode == Input.Keys.PLUS) {
+					emitter = new ParticleEmitter(emitter);
+				}
 				else if (keycode == Input.Keys.DPAD_DOWN)
 					particleCount -= 5;
 				else if (keycode == Input.Keys.SPACE) {
@@ -113,7 +116,7 @@ public class ParticleEmitterTest extends GdxTest {
 			}
 
 			@Override
-			public boolean scrolled (int amount) {
+			public boolean scrolled (float amountX, float amountY) {
 				return false;
 			}
 		};

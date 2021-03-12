@@ -17,11 +17,15 @@
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -32,6 +36,8 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.VideoElement;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -79,6 +85,32 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = BufferUtils.newByteBuffer(h * w * 4);
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+		pixmap.setPixels(pixels);
+		return pixmap;
+	}
+
+	private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
+		var imgData = ctx.createImageData(width, height);
+		var data = imgData.data;
+
+		for (var i = 0, len = width * height * 4; i < len; i++) {
+			data[i] = pixels[i] & 0xff;
+		}
+		ctx.putImageData(imgData, 0, 0);
+	}-*/;
+
 	int width;
 	int height;
 	Format format;
@@ -90,17 +122,39 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	static String clearColor = make(255, 255, 255, 1.0f);
-	static Blending blending;
+	Blending blending = Blending.SourceOver;
+	Filter filter = Filter.BiLinear;
 	CanvasPixelArray pixels;
+	private ImageElement imageElement;
+	private VideoElement videoElement;
 
 	public Pixmap (FileHandle file) {
-		GwtFileHandle gwtFile = (GwtFileHandle)file;
-		ImageElement img = gwtFile.preloader.images.get(file.path());
-		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
-		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
-		context.setGlobalCompositeOperation(Composite.COPY);
-		context.drawImage(img, 0, 0);
-		context.setGlobalCompositeOperation(getComposite());
+		this(((GwtFileHandle)file).preloader.images.get(file.path()));
+		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+	}
+
+	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+		new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
+			@Override
+			public void onProgress(double amount) {
+				// nothing to do
+			}
+
+			@Override
+			public void onFailure() {
+				responseListener.downloadFailed(new Exception("Failed to download image"));
+			}
+
+			@Override
+			public void onSuccess(ImageElement result) {
+				responseListener.downloadComplete(new Pixmap(result));
+			}
+		});
+	}
+
+	public Context2d getContext() {
+		ensureCanvasExists();
+		return context;
 	}
 
 	private static Composite getComposite () {
@@ -108,27 +162,47 @@ public class Pixmap implements Disposable {
 	}
 
 	public Pixmap (ImageElement img) {
-		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
-		context.drawImage(img, 0, 0);
+		this(-1, -1, img);
+	}
+
+	public Pixmap (VideoElement vid) {
+		this(-1, -1, vid);
 	}
 
 	public Pixmap (int width, int height, Format format) {
-		create(width, height, format);
+		this(width, height, (ImageElement)null);
+	}
+	
+	private Pixmap(int width, int height, ImageElement imageElement) {
+		this.imageElement = imageElement;
+		this.width = imageElement != null ? imageElement.getWidth() : width;
+		this.height = imageElement != null ? imageElement.getHeight() : height;
+		this.format = Format.RGBA8888;
+
+		buffer = BufferUtils.newIntBuffer(1);
+		id = nextId++;
+		buffer.put(0, id);
+		pixmaps.put(id, this);
 	}
 
-	private void create (int width, int height, Format format2) {
-		this.width = width;
-		this.height = height;
+	private Pixmap(int width, int height, VideoElement videoElement) {
+		this.videoElement = videoElement;
+		this.width = videoElement != null ? videoElement.getWidth() : width;
+		this.height = videoElement != null ? videoElement.getHeight() : height;
 		this.format = Format.RGBA8888;
+
+		buffer = BufferUtils.newIntBuffer(1);
+		id = nextId++;
+		buffer.put(0, id);
+		pixmaps.put(id, this);
+	}
+
+	private void create () {
 		canvas = Canvas.createIfSupported();
 		canvas.getCanvasElement().setWidth(width);
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
 		context.setGlobalCompositeOperation(getComposite());
-		buffer = BufferUtils.newIntBuffer(1);
-		id = nextId++;
-		buffer.put(0, id);
-		pixmaps.put(id, this);
 	}
 
 	public static String make (int r2, int g2, int b2, float a2) {
@@ -137,23 +211,27 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
-		Composite composite = getComposite();
-		for (Pixmap pixmap : pixmaps.values()) {
-			pixmap.context.setGlobalCompositeOperation(composite);
-		}
+	public void setBlending (Blending blending) {
+		this.blending = blending;
+		this.ensureCanvasExists();
+		this.context.setGlobalCompositeOperation(getComposite());
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
+	public void setFilter (Filter filter) {
+		this.filter = filter;
+	}
+
+	/** @return the currently set {@link Filter} */
+	public Filter getFilter () {
+		return filter;
 	}
 
 	public Format getFormat () {
@@ -184,18 +262,59 @@ public class Pixmap implements Disposable {
 		return buffer;
 	}
 
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		if (width == 0 || height == 0) return;
+		setImageData(((HasArrayBufferView)pixels).getTypedArray(), width, height, getContext());
+	}
+
 	@Override
 	public void dispose () {
 		pixmaps.remove(id);
 	}
 
 	public CanvasElement getCanvasElement () {
+		ensureCanvasExists();
 		return canvas.getCanvasElement();
+	}
+
+	private void ensureCanvasExists () {
+		if (canvas == null) {
+			create();
+			if (imageElement != null) {
+				context.setGlobalCompositeOperation(Composite.COPY);
+				context.drawImage(imageElement, 0, 0);
+				context.setGlobalCompositeOperation(getComposite());
+			}
+			if (videoElement != null) {
+				context.setGlobalCompositeOperation(Composite.COPY);
+				context.drawImage(videoElement, 0, 0);
+				context.setGlobalCompositeOperation(getComposite());
+			}
+		}
+	}
+
+	public boolean canUseImageElement () {
+		return canvas == null && imageElement != null;
+	}
+
+	public ImageElement getImageElement () {
+		return imageElement;
+	}
+
+	public boolean canUseVideoElement () {
+		return canvas == null && videoElement != null;
+	}
+
+	public VideoElement getVideoElement () {
+		return videoElement;
 	}
 
 	/** Sets the color for the following drawing operations
 	 * @param color the color, encoded as RGBA8888 */
 	public void setColor (int color) {
+		ensureCanvasExists();
 		r = (color >>> 24) & 0xff;
 		g = (color >>> 16) & 0xff;
 		b = (color >>> 8) & 0xff;
@@ -212,6 +331,7 @@ public class Pixmap implements Disposable {
 	 * @param b The blue component.
 	 * @param a The alpha component. */
 	public void setColor (float r, float g, float b, float a) {
+		ensureCanvasExists();
 		this.r = (int)(r * 255);
 		this.g = (int)(g * 255);
 		this.b = (int)(b * 255);
@@ -229,6 +349,7 @@ public class Pixmap implements Disposable {
 
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill () {
+		ensureCanvasExists();
 		context.clearRect(0, 0, getWidth(), getHeight());
 		rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
 	}
@@ -350,6 +471,7 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
 	public int getPixel (int x, int y) {
+		ensureCanvasExists();
 		if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
 		int i = x * 4 + y * width * 4;
 		int r = pixels.get(i + 0) & 0xff;
@@ -378,6 +500,7 @@ public class Pixmap implements Disposable {
 	}
 
 	private void circle (int x, int y, int radius, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -398,6 +521,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void line(int x, int y, int x2, int y2, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -420,6 +544,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -440,6 +565,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -466,6 +592,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -478,11 +605,14 @@ public class Pixmap implements Disposable {
 			context.setStrokeStyle(color);
 			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
 		}
-		context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+		if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
+			context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+		}		
 		pixels = null;
 	}
 	
 	private void fillOrStrokePath(DrawType drawType) {
+		ensureCanvasExists();
 		switch (drawType) {
 			case FILL:
 				context.fill();
@@ -496,5 +626,9 @@ public class Pixmap implements Disposable {
 	private enum DrawType {
 		FILL, STROKE
 	}
-	
+
+	public interface DownloadPixmapResponseListener {
+		void downloadComplete(Pixmap pixmap);
+		void downloadFailed(Throwable t);
+	}
 }

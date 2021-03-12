@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.utils.shapebuilders;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
@@ -32,8 +31,9 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 	/** Build a box with the shape of the specified {@link BoundingBox}.
 	 * @param box */
 	public static void build (MeshPartBuilder builder, BoundingBox box) {
-		builder.box(box.getCorner000(tmpV0), box.getCorner010(tmpV1), box.getCorner100(tmpV2), box.getCorner110(tmpV3),
-			box.getCorner001(tmpV4), box.getCorner011(tmpV5), box.getCorner101(tmpV6), box.getCorner111(tmpV7));
+		builder.box(box.getCorner000(obtainV3()), box.getCorner010(obtainV3()), box.getCorner100(obtainV3()), box.getCorner110(obtainV3()),
+			box.getCorner001(obtainV3()), box.getCorner011(obtainV3()), box.getCorner101(obtainV3()), box.getCorner111(obtainV3()));
+		freeAll();
 	}
 
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */

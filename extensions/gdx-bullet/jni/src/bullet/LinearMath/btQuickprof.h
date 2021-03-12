@@ -15,18 +15,7 @@
 #ifndef BT_QUICK_PROF_H
 #define BT_QUICK_PROF_H
 
-//To disable built-in profiling, please comment out next line
-//#define BT_NO_PROFILE 1
-#ifndef BT_NO_PROFILE
-#include <stdio.h>//@todo remove this, backwards compatibility
 #include "btScalar.h"
-#include "btAlignedAllocator.h"
-#include <new>
-
-
-
-
-
 #define USE_BT_CLOCK 1
 
 #ifdef USE_BT_CLOCK
@@ -47,12 +36,14 @@ public:
 
 	/// Returns the time in ms since the last call to reset or since 
 	/// the btClock was created.
-	unsigned long int getTimeMilliseconds();
+	unsigned long long int getTimeMilliseconds();
 
 	/// Returns the time in us since the last call to reset or since 
 	/// the Clock was created.
-	unsigned long int getTimeMicroseconds();
+	unsigned long long int getTimeMicroseconds();
 	
+	unsigned long long int getTimeNanoseconds();
+
 	/// Returns the time in s since the last call to reset or since 
 	/// the Clock was created.
 	btScalar getTimeSeconds();
@@ -62,6 +53,38 @@ private:
 };
 
 #endif //USE_BT_CLOCK
+
+typedef void (btEnterProfileZoneFunc)(const char* msg);
+typedef void (btLeaveProfileZoneFunc)();
+
+btEnterProfileZoneFunc* btGetCurrentEnterProfileZoneFunc();
+btLeaveProfileZoneFunc* btGetCurrentLeaveProfileZoneFunc();
+
+
+
+void btSetCustomEnterProfileZoneFunc(btEnterProfileZoneFunc* enterFunc);
+void btSetCustomLeaveProfileZoneFunc(btLeaveProfileZoneFunc* leaveFunc);
+
+#ifndef BT_NO_PROFILE // FIX redefinition
+//To disable built-in profiling, please comment out next line
+//#define BT_NO_PROFILE 1
+#endif //BT_NO_PROFILE
+
+#ifndef BT_NO_PROFILE
+//btQuickprofGetCurrentThreadIndex will return -1 if thread index cannot be determined, 
+//otherwise returns thread index in range [0..maxThreads]
+unsigned int btQuickprofGetCurrentThreadIndex2();
+const unsigned int BT_QUICKPROF_MAX_THREAD_COUNT = 64;
+
+#include <stdio.h>//@todo remove this, backwards compatibility
+
+#include "btAlignedAllocator.h"
+#include <new>
+
+
+
+
+
 
 
 
@@ -148,21 +171,21 @@ public:
 	static	void						Start_Profile( const char * name );
 	static	void						Stop_Profile( void );
 
-	static	void						CleanupMemory(void)
-	{
-		Root.CleanupMemory();
-	}
+	static	void						CleanupMemory(void);
+//	{
+//		Root.CleanupMemory();
+//	}
 
 	static	void						Reset( void );
 	static	void						Increment_Frame_Counter( void );
 	static	int						Get_Frame_Count_Since_Reset( void )		{ return FrameCounter; }
 	static	float						Get_Time_Since_Reset( void );
 
-	static	CProfileIterator *	Get_Iterator( void )	
-	{ 
-		
-		return new CProfileIterator( &Root ); 
-	}
+	static	CProfileIterator *	Get_Iterator( void );	
+//	{ 
+//		
+//		return new CProfileIterator( &Root ); 
+//	}
 	static	void						Release_Iterator( CProfileIterator * iterator ) { delete ( iterator); }
 
 	static void	dumpRecursive(CProfileIterator* profileIterator, int spacing);
@@ -170,36 +193,26 @@ public:
 	static void	dumpAll();
 
 private:
-	static	CProfileNode			Root;
-	static	CProfileNode *			CurrentNode;
+
 	static	int						FrameCounter;
 	static	unsigned long int					ResetTime;
 };
 
 
+
+
+#endif //#ifndef BT_NO_PROFILE
+
 ///ProfileSampleClass is a simple way to profile a function's scope
 ///Use the BT_PROFILE macro at the start of scope to time
 class	CProfileSample {
 public:
-	CProfileSample( const char * name )
-	{ 
-		CProfileManager::Start_Profile( name ); 
-	}
+	CProfileSample( const char * name );
 
-	~CProfileSample( void )					
-	{ 
-		CProfileManager::Stop_Profile(); 
-	}
+	~CProfileSample( void );
 };
 
-
 #define	BT_PROFILE( name )			CProfileSample __profile( name )
-
-#else
-
-#define	BT_PROFILE( name )
-
-#endif //#ifndef BT_NO_PROFILE
 
 
 

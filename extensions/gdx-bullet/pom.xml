@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>1.9.15-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -13,12 +13,6 @@
   <name>libGDX Bullet</name>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>gdx-jnigen</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>gdx</artifactId>
@@ -48,6 +42,7 @@
                 <source>jni/swig-src/dynamics</source>
                 <source>jni/swig-src/softbody</source>
                 <source>jni/swig-src/extras</source>
+                <source>jni/swig-src/inversedynamics</source>
               </sources>
             </configuration>
           </execution>

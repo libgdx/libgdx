@@ -5,16 +5,12 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.Configuration;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class AwtTestLWJGL {
@@ -41,7 +37,7 @@ public class AwtTestLWJGL {
 				Toolkit.getDefaultToolkit();
 				new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
-				if (glfwInit() != GLFW_TRUE) {
+				if (!glfwInit()) {
 					System.out.println("Couldn't initialize GLFW");
 					System.exit(-1);
 				}
@@ -55,7 +51,7 @@ public class AwtTestLWJGL {
 
 				new Runnable() {
 					public void run () {
-						if (glfwWindowShouldClose(window) == GLFW_TRUE) {
+						if (glfwWindowShouldClose(window)) {
 							glfwDestroyWindow(window);
 							glfwTerminate();
 							return;

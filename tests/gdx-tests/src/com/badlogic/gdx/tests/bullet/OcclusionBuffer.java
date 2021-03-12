@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 /** Software rasterizer used for depth rendering and testing of bounding box triangles. Stores depth values inside a
@@ -190,7 +191,7 @@ public class OcclusionBuffer implements Disposable {
 
 	/** Clears the depth buffer by setting the depth to -1. */
 	public void clear () {
-		buffer.clear();
+		((Buffer) buffer).clear();
 		while (buffer.position() < buffer.capacity())
 			buffer.put(-1);
 	}
@@ -319,14 +320,14 @@ public class OcclusionBuffer implements Disposable {
 		// Find min/max depth values in buffer
 		float minDepth = Float.POSITIVE_INFINITY;
 		float maxDepth = Float.NEGATIVE_INFINITY;
-		buffer.clear();
+		((Buffer) buffer).clear();
 		while (buffer.position() < buffer.capacity()) {
 			float depth = MathUtils.clamp(buffer.get(), 0, Float.POSITIVE_INFINITY);
 			minDepth = Math.min(depth, minDepth);
 			maxDepth = Math.max(depth, maxDepth);
 		}
 		float extent = 1 / (maxDepth - minDepth);
-		buffer.clear();
+		((Buffer) buffer).clear();
 		// Draw to pixmap
 		for (int x = 0; x < bufferWidth; x++) {
 			for (int y = 0; y < bufferHeight; y++) {

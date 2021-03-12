@@ -21,11 +21,13 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 
 /** Provides utility methods to work with the {@link HttpRequest} content and parameters. */
-public class HttpParametersUtils {
+public final class HttpParametersUtils {
+
+	private HttpParametersUtils () {
+	}
 
 	public static String defaultEncoding = "UTF-8";
 	public static String nameValueSeparator = "=";
@@ -36,7 +38,7 @@ public class HttpParametersUtils {
 	 * @return The String with the parameters encoded. */
 	public static String convertHttpParameters (Map<String, String> parameters) {
 		Set<String> keySet = parameters.keySet();
-		StringBuffer convertedParameters = new StringBuffer();
+		StringBuilder convertedParameters = new StringBuilder();
 		for (String name : keySet) {
 			convertedParameters.append(encode(name, defaultEncoding));
 			convertedParameters.append(nameValueSeparator);

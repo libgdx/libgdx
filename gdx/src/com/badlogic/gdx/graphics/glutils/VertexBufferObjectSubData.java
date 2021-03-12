@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
@@ -28,26 +29,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
- * </p>
- * 
  * <p>
- * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object. This class
- * can be used seamlessly with OpenGL ES 1.x and 2.0.
- * </p>
- * 
+ * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object.
  * <p>
- * In case OpenGL ES 2.0 is used in the application the data is bound via glVertexAttribPointer() according to the attribute
- * aliases specified via {@link VertexAttributes} in the constructor.
- * </p>
- * 
- * <p>
- * Uses indirect Buffers on Android 1.5/1.6 to fix GC invocation due to leaking PlatformAddress instances.
- * </p>
- * 
+ * The data is bound via glVertexAttribPointer() according to the attribute aliases specified via {@link VertexAttributes}
+ * in the constructor.
  * <p>
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
- * </p>
- * 
+ *
  * @author mzechner */
 public class VertexBufferObjectSubData implements VertexData {
 	final VertexAttributes attributes;
@@ -61,21 +50,30 @@ public class VertexBufferObjectSubData implements VertexData {
 	boolean isBound = false;
 
 	/** Constructs a new interleaved VertexBufferObject.
-	 * 
+	 *
+	 * @param isStatic whether the vertex data is static.
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttributes}. */
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(isStatic, numVertices, new VertexAttributes(attributes));
+	}
+
+	/** Constructs a new interleaved VertexBufferObject.
+	 *
 	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttribute}s. */
-	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttributes attributes) {
 		this.isStatic = isStatic;
-		this.attributes = new VertexAttributes(attributes);
+		this.attributes = attributes;
 		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		isDirect = true;
 
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asFloatBuffer();
 		bufferHandle = createBufferObject();
-		buffer.flip();
-		byteBuffer.flip();
+		((Buffer) buffer).flip();
+		((Buffer) byteBuffer).flip();
 	}
 
 	private int createBufferObject () {
@@ -119,14 +117,14 @@ public class VertexBufferObjectSubData implements VertexData {
 		isDirty = true;
 		if (isDirect) {
 			BufferUtils.copy(vertices, byteBuffer, count, offset);
-			buffer.position(0);
-			buffer.limit(count);
+			((Buffer) buffer).position(0);
+			((Buffer) buffer).limit(count);
 		} else {
-			buffer.clear();
+			((Buffer) buffer).clear();
 			buffer.put(vertices, offset, count);
-			buffer.flip();
-			byteBuffer.position(0);
-			byteBuffer.limit(buffer.limit() << 2);
+			((Buffer) buffer).flip();
+			((Buffer) byteBuffer).position(0);
+			((Buffer) byteBuffer).limit(buffer.limit() << 2);
 		}
 
 		bufferChanged();
@@ -137,9 +135,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		isDirty = true;
 		if (isDirect) {
 			final int pos = byteBuffer.position();
-			byteBuffer.position(targetOffset * 4);
+			((Buffer) byteBuffer).position(targetOffset * 4);
 			BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
-			byteBuffer.position(pos);
+			((Buffer) byteBuffer).position(pos);
 		} else
 			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
 
@@ -147,7 +145,7 @@ public class VertexBufferObjectSubData implements VertexData {
 	}
 
 	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-	 * 
+	 *
 	 * @param shader the shader */
 	@Override
 	public void bind (final ShaderProgram shader) {
@@ -160,7 +158,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
-			byteBuffer.limit(buffer.limit() * 4);
+			((Buffer) byteBuffer).limit(buffer.limit() * 4);
 			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
@@ -191,7 +189,7 @@ public class VertexBufferObjectSubData implements VertexData {
 	}
 
 	/** Unbinds this VertexBufferObject.
-	 * 
+	 *
 	 * @param shader the shader */
 	@Override
 	public void unbind (final ShaderProgram shader) {

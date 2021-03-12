@@ -47,9 +47,9 @@ public class DisplayModeTest extends GdxTest {
 		if (a.length != b.length) {
 			throw new AssertionError("Display modes " + Arrays.toString(a) + " aren't equal to display modes " + Arrays.toString(b));
 		}
-		boolean equal = false;
+		boolean equal = true;
 		for (int i = 0; i < a.length; i++) {
-			equal = isDisplayModeEqual(a[i], b[i]);
+			equal = equal && isDisplayModeEqual(a[i], b[i]);
 		}
 		if (!equal) {
 			throw new AssertionError("Display modes " + Arrays.toString(a) + " aren't equal to display modes " + Arrays.toString(b));

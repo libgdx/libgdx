@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** The base class for all events.
@@ -29,7 +30,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * <p>
  * A cancelled event will be stopped and handled. Additionally, many actors will undo the side-effects of a canceled event. (See
  * {@link #cancel()}.)
- * 
+ *
  * @see InputEvent
  * @see Actor#fire(Event) */
 public class Event implements Poolable {
@@ -42,8 +43,9 @@ public class Event implements Poolable {
 	private boolean stopped; // true means event propagation was stopped
 	private boolean cancelled; // true means propagation was stopped and any action that this event would cause should not happen
 
-	/** Marks this event as handled. This does not affect event propagation inside scene2d, but causes the {@link Stage} event
-	 * methods to return true, which will eat the event so it is not passed on to the application under the stage. */
+	/** Marks this event as handled. This does not affect event propagation inside scene2d, but causes the {@link Stage}
+	 * {@link InputProcessor} methods to return true, which will eat the event so it is not passed on to the application under the
+	 * stage. */
 	public void handle () {
 		handled = true;
 	}

@@ -59,6 +59,15 @@ public class WeldJoint extends Joint {
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
 	*/
+	
+	public float getReferenceAngle () {
+		return jniGetReferenceAngle(addr);
+	}
+
+	private native float jniGetReferenceAngle (long addr); /*
+		b2WeldJoint* joint = (b2WeldJoint*)addr;
+		return joint->GetReferenceAngle();
+	*/
 
 	public float getFrequency () {
 		return jniGetFrequency(addr);

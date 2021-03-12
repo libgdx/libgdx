@@ -691,6 +691,28 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return true;
 	}
 
+	/**
+	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 *
+	 * @param other other vector to compare
+	 * @return true if vector are equal, otherwise false
+	 */
+	public boolean epsilonEquals (final Vector3 other) {
+		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/**
+	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 *
+	 * @param x x component of the other vector to compare
+	 * @param y y component of the other vector to compare
+	 * @param z z component of the other vector to compare
+	 * @return true if vector are equal, otherwise false
+	 */
+	public boolean epsilonEquals (float x, float y, float z) {
+		return epsilonEquals(x, y, z, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
 	@Override
 	public Vector3 setZero () {
 		this.x = 0;

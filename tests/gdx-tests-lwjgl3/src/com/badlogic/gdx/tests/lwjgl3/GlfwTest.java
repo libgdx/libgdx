@@ -7,9 +7,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
 import org.lwjgl.opengl.GL;
@@ -21,7 +19,7 @@ public class GlfwTest {
 
 	public static void main (String[] argv) {
 		GLFW.glfwSetErrorCallback(errorCallback);
-		if (glfwInit() != GLFW_TRUE) {
+		if (!glfwInit()) {
 			System.out.println("Couldn't initialize GLFW");
 			System.exit(-1);
 		}
@@ -51,7 +49,7 @@ public class GlfwTest {
 		int fbWidth = 0;
 		int fbHeight = 0;
 		
-		while (glfwWindowShouldClose(windowHandle) != GLFW_TRUE) {			
+		while (!glfwWindowShouldClose(windowHandle)) {			
 			glfwGetFramebufferSize(windowHandle, tmp, tmp2);			
 			if(fbWidth != tmp.get(0) || fbHeight != tmp2.get(0)) {
 				fbWidth = tmp.get(0);

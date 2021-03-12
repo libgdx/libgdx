@@ -18,11 +18,12 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FullscreenTest extends GdxTest {
 	SpriteBatch batch;
@@ -49,10 +50,12 @@ public class FullscreenTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 1);
 		
 		batch.begin();
+		batch.setColor(Gdx.input.getX() < Gdx.graphics.getSafeInsetLeft() ||
+				Gdx.input.getX() + tex.getWidth() > Gdx.graphics.getWidth() - Gdx.graphics.getSafeInsetRight()
+				? Color.RED : Color.WHITE);
 		batch.draw(tex, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		font.draw(batch, "" + Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight(), 0, 20);
 		batch.end();
@@ -86,6 +89,8 @@ public class FullscreenTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		Gdx.app.log("FullscreenTest", "resized: " + width + ", " + height);
+		Gdx.app.log("FullscreenTest", "safe insets: " + Gdx.graphics.getSafeInsetLeft() +
+				"/" + Gdx.graphics.getSafeInsetRight());
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 

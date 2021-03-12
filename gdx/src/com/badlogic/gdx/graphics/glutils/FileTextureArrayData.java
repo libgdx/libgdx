@@ -77,10 +77,8 @@ public class FileTextureArrayData implements TextureArrayData {
 				boolean disposePixmap = texData.disposePixmap();
 				if (texData.getFormat() != pixmap.getFormat()) {
 					Pixmap temp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), texData.getFormat());
-					Pixmap.Blending blendmode = Pixmap.getBlending();
-					Pixmap.setBlending(Pixmap.Blending.None);
+					temp.setBlending(Pixmap.Blending.None);
 					temp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-					Pixmap.setBlending(blendmode);
 					if (texData.disposePixmap()) {
 						pixmap.dispose();
 					}
@@ -88,6 +86,9 @@ public class FileTextureArrayData implements TextureArrayData {
 					disposePixmap = true;
 				}
 				Gdx.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.getWidth(), pixmap.getHeight(), 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
+				if (useMipMaps) {
+					Gdx.gl20.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+				}
 				if (disposePixmap) pixmap.dispose();
 			}
 		}

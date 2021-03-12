@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>1.9.15-SNAPSHOT</version>
   </parent>
 
   <artifactId>gdx</artifactId>
@@ -12,12 +12,6 @@
   <name>libGDX Core</name>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>gdx-jnigen</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -48,7 +42,7 @@
     
     <resources>
       <resource>
-        <directory>src</directory>
+        <directory>res</directory>
         <includes>
           <include>**/*</include>
         </includes>

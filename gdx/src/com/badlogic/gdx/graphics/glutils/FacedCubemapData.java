@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
 import com.badlogic.gdx.graphics.CubemapData;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -164,10 +162,8 @@ public class FacedCubemapData implements CubemapData {
 				boolean disposePixmap = data[i].disposePixmap();
 				if (data[i].getFormat() != pixmap.getFormat()) {
 					Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data[i].getFormat());
-					Blending blend = Pixmap.getBlending();
-					Pixmap.setBlending(Blending.None);
+					tmp.setBlending(Blending.None);
 					tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-					Pixmap.setBlending(blend);
 					if (data[i].disposePixmap()) pixmap.dispose();
 					pixmap = tmp;
 					disposePixmap = true;
@@ -175,6 +171,7 @@ public class FacedCubemapData implements CubemapData {
 				Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 				Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(),
 					pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+				if (disposePixmap) pixmap.dispose();
 			}
 		}
 	}

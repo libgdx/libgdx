@@ -119,7 +119,7 @@ public class SpotLight extends BaseLight<SpotLight> {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof SpotLight) ? equals((SpotLight)obj) : false;
+		return (obj instanceof SpotLight) && equals((SpotLight) obj);
 	}
 
 	public boolean equals (SpotLight other) {

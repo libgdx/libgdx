@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.utils.viewport;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -50,7 +49,6 @@ public class ScalingViewport extends Viewport {
 		setCamera(camera);
 	}
 
-	@Override
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
 		Vector2 scaled = scaling.apply(getWorldWidth(), getWorldHeight(), screenWidth, screenHeight);
 		int viewportWidth = Math.round(scaled.x);

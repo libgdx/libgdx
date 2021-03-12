@@ -40,9 +40,6 @@ class btConvex2dConvex2dAlgorithm : public btActivatingCollisionAlgorithm
 	btPersistentManifold*	m_manifoldPtr;
 	bool			m_lowLevelOfDetail;
 	
-	int m_numPerturbationIterations;
-	int m_minimumPointsPerturbationThreshold;
-
 public:
 
 	btConvex2dConvex2dAlgorithm(btPersistentManifold* mf,const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap, btSimplexSolverInterface* simplexSolver, btConvexPenetrationDepthSolver* pdSolver, int numPerturbationIterations, int minimumPointsPerturbationThreshold);

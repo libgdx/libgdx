@@ -21,8 +21,14 @@ subject to the following restrictions:
 ///that is better portable and more predictable
 
 #include "btScalar.h"
-//#define BT_DEBUG_MEMORY_ALLOCATIONS 1
+
+
+///BT_DEBUG_MEMORY_ALLOCATIONS preprocessor can be set in build system
+///for regression tests to detect memory leaks
+///#define BT_DEBUG_MEMORY_ALLOCATIONS 1
 #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
+
+int btDumpMemoryLeaks();
 
 #define btAlignedAlloc(a,b) \
 		btAlignedAllocInternal(a,b,__LINE__,__FILE__)

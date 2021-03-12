@@ -26,7 +26,7 @@ public class MapObjects implements Iterable<MapObject> {
 
 	private Array<MapObject> objects;
 
-	/** Creates and empty set of MapObject instances */
+	/** Creates an empty set of MapObject instances */
 	public MapObjects () {
 		objects = new Array<MapObject>();
 	}

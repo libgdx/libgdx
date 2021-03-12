@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Gdx2DTest extends GdxTest {
 	SpriteBatch batch;
@@ -117,14 +118,14 @@ public class Gdx2DTest extends GdxTest {
 
 		Gdx2DPixmap composite = new Gdx2DPixmap(512, 256, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
 		composite.clear(0);
-		Gdx2DPixmap.setBlend(Gdx2DPixmap.GDX2D_BLEND_NONE);
+		composite.setBlend(Gdx2DPixmap.GDX2D_BLEND_NONE);
 		for (int i = 0; i < pixmaps.length; i++) {
-			Gdx2DPixmap.setScale(Gdx2DPixmap.GDX2D_SCALE_NEAREST);
+			composite.setScale(Gdx2DPixmap.GDX2D_SCALE_NEAREST);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 0, 64, 64);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 64, 16, 16);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 0, 64, 64);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 64, 16, 16);
-			Gdx2DPixmap.setScale(Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+			composite.setScale(Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 100, 64, 64);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 164, 16, 16);
 			composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 100, 64, 64);
@@ -141,8 +142,7 @@ public class Gdx2DTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		batch.begin();
 		for (int i = 0; i < sprites.size(); i++) {
 			sprites.get(i).draw(batch);

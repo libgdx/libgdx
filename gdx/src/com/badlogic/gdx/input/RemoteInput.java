@@ -24,10 +24,8 @@ import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
 
 /** <p>
  * An {@link Input} implementation that receives touch, key, accelerometer and compass events from a remote Android device. Just
@@ -97,22 +95,28 @@ public class RemoteInput implements Runnable, Input {
 
 			if (processor != null) {
 				if (touchEvent != null) {
-					touchX[touchEvent.pointer] = touchEvent.x;
-					touchY[touchEvent.pointer] = touchEvent.y;
 					switch (touchEvent.type) {
 					case TouchEvent.TOUCH_DOWN:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						processor.touchDown(touchEvent.x, touchEvent.y, touchEvent.pointer, Input.Buttons.LEFT);
 						isTouched[touchEvent.pointer] = true;
 						justTouched = true;
 						break;
 					case TouchEvent.TOUCH_UP:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						processor.touchUp(touchEvent.x, touchEvent.y, touchEvent.pointer, Input.Buttons.LEFT);
 						isTouched[touchEvent.pointer] = false;
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
+						deltaX[touchEvent.pointer] = touchEvent.x - touchX[touchEvent.pointer];
+						deltaY[touchEvent.pointer] = touchEvent.y - touchY[touchEvent.pointer];
 						processor.touchDragged(touchEvent.x, touchEvent.y, touchEvent.pointer);
 						break;
 					}
+					touchX[touchEvent.pointer] = touchEvent.x;
+					touchY[touchEvent.pointer] = touchEvent.y;
 				}
 				if (keyEvent != null) {
 					switch (keyEvent.type) {
@@ -139,15 +143,25 @@ public class RemoteInput implements Runnable, Input {
 				}
 			} else {
 				if (touchEvent != null) {
-					touchX[touchEvent.pointer] = touchEvent.x;
-					touchY[touchEvent.pointer] = touchEvent.y;
-					if (touchEvent.type == TouchEvent.TOUCH_DOWN) {
+					switch(touchEvent.type) {
+					case TouchEvent.TOUCH_DOWN:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						isTouched[touchEvent.pointer] = true;
 						justTouched = true;
-					}
-					if (touchEvent.type == TouchEvent.TOUCH_UP) {
+						break;
+					case TouchEvent.TOUCH_UP:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						isTouched[touchEvent.pointer] = false;
+						break;
+					case TouchEvent.TOUCH_DRAGGED:
+						deltaX[touchEvent.pointer] = touchEvent.x - touchX[touchEvent.pointer];
+						deltaY[touchEvent.pointer] = touchEvent.y - touchY[touchEvent.pointer];
+						break;
 					}
+					touchX[touchEvent.pointer] = touchEvent.x;
+					touchY[touchEvent.pointer] = touchEvent.y;
 				}
 				if (keyEvent != null) {
 					if (keyEvent.type == KeyEvent.KEY_DOWN) {
@@ -169,6 +183,8 @@ public class RemoteInput implements Runnable, Input {
 		}
 	}
 
+	private static final int MAX_TOUCHES = 20;
+
 	public static int DEFAULT_PORT = 8190;
 	private ServerSocket serverSocket;
 	private float[] accel = new float[3];
@@ -183,9 +199,11 @@ public class RemoteInput implements Runnable, Input {
 	boolean[] keys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
-	int[] touchX = new int[20];
-	int[] touchY = new int[20];
-	boolean isTouched[] = new boolean[20];
+	int[] deltaX = new int[MAX_TOUCHES];
+	int[] deltaY = new int[MAX_TOUCHES];
+	int[] touchX = new int[MAX_TOUCHES];
+	int[] touchY = new int[MAX_TOUCHES];
+	boolean isTouched[] = new boolean[MAX_TOUCHES];
 	boolean justTouched = false;
 	InputProcessor processor = null;
 	private final int port;
@@ -344,6 +362,11 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
+	}
+
+	@Override
 	public int getX () {
 		return touchX[0];
 	}
@@ -379,11 +402,26 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public float getPressure () {
+		return getPressure(0);
+	}
+
+	@Override
+	public float getPressure (int pointer) {
+		return isTouched(pointer) ? 1 : 0;
+	}
+
+	@Override
 	public boolean isButtonPressed (int button) {
 		if (button != Buttons.LEFT) return false;
 		for (int i = 0; i < isTouched.length; i++)
 			if (isTouched[i]) return true;
 		return false;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
@@ -414,7 +452,16 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint, type);
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override
@@ -467,6 +514,15 @@ public class RemoteInput implements Runnable, Input {
 		return false;
 	}
 
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
+		return false;
+	}
 
 	@Override
 	public void setInputProcessor (InputProcessor processor) {
@@ -513,23 +569,22 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public int getDeltaX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX (int pointer) {
-		return 0;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getDeltaY () {
-		return 0;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
-		return 0;
+		return deltaY[pointer];
 	}
 
 	@Override

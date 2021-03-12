@@ -16,31 +16,29 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/** <p>
+/**
+ * <p>
  * A Pixmap represents an image in memory. It has a width and height expressed in pixels as well as a {@link Format} specifying
  * the number and order of color components per pixel. Coordinates of pixels are specified with respect to the top left corner of
  * the image, with the x-axis pointing to the right and the y-axis pointing downwards.
- * </p>
- * 
  * <p>
- * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
- * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
- * target image. There either nearest neighbour or bilinear filtering can be used.
- * </p>
- * 
+ * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}, which may reduce
+ * blitting time by ~30%. The {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and
+ * stretch the source image to a target image. There either nearest neighbour or bilinear filtering can be used.
  * <p>
  * A Pixmap stores its data in native heap memory. It is mandatory to call {@link Pixmap#dispose()} when the pixmap is no longer
  * needed, otherwise memory leaks will result
- * </p>
- * 
  * @author badlogicgames@gmail.com */
 public class Pixmap implements Disposable {
 	/** Different pixel formats.
@@ -92,8 +90,24 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
-	/** global blending state **/
-	private static Blending blending = Blending.SourceOver;
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = pixmap.getPixels();
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+
+		return pixmap;
+	}
+
+	private Blending blending = Blending.SourceOver;
+	private Filter filter = Filter.BiLinear;
 
 	final Gdx2DPixmap pixmap;
 	int color = 0;
@@ -102,16 +116,17 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
-		Gdx2DPixmap.setBlend(blending == Blending.None ? 0 : 1);
+	public void setBlending (Blending blending) {
+		this.blending = blending;
+		pixmap.setBlend(blending == Blending.None ? 0 : 1);
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
-		Gdx2DPixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+	public void setFilter (Filter filter) {
+		this.filter = filter;
+		pixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 	}
 
 	/** Creates a new Pixmap instance with the given width, height and format.
@@ -125,6 +140,8 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
+	 * Not available on GWT backend.
+	 *
 	 * @param encodedData the encoded image data
 	 * @param offset the offset
 	 * @param len the length */
@@ -153,6 +170,44 @@ public class Pixmap implements Disposable {
 	 * @param pixmap */
 	public Pixmap (Gdx2DPixmap pixmap) {
 		this.pixmap = pixmap;
+	}
+
+	/**
+	 * Downloads an image from http(s) url and passes it as a {@link Pixmap} to the specified {@link DownloadPixmapResponseListener}
+	 *
+	 * @param url http url to download the image from
+	 * @param responseListener the listener to call once the image is available as a {@link Pixmap}
+	 */
+	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+		Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+		request.setUrl(url);
+		Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				final byte[] result = httpResponse.getResult();
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Pixmap pixmap = new Pixmap(result, 0, result.length);
+							responseListener.downloadComplete(pixmap);
+						} catch (Throwable t) {
+							failed(t);
+						}
+					}
+				});
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				responseListener.downloadFailed(t);
+			}
+
+			@Override
+			public void cancelled() {
+				// no way to cancel, will never get called
+			}
+		});
 	}
 
 	/** Sets the color for the following drawing operations
@@ -210,7 +265,7 @@ public class Pixmap implements Disposable {
 		pixmap.drawRect(x, y, width, height, color);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
@@ -219,28 +274,28 @@ public class Pixmap implements Disposable {
 		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner)
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
-	 * @param srcWidth The width of the area form the other Pixmap in pixels
-	 * @param srcHeight The height of the area form the other Pixmap in pixles */
+	 * @param srcWidth The width of the area from the other Pixmap in pixels
+	 * @param srcHeight The height of the area from the other Pixmap in pixels */
 	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+	/** Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
 	 * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
 	 * neighbour or bilinear).
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
-	 * @param srcWidth The width of the area form the other Pixmap in pixels
-	 * @param srcHeight The height of the area form the other Pixmap in pixles
+	 * @param srcWidth The width of the area from the other Pixmap in pixels
+	 * @param srcHeight The height of the area from the other Pixmap in pixels
 	 * @param dstx The target x-coordinate (top left corner)
 	 * @param dsty The target y-coordinate (top left corner)
 	 * @param dstWidth The target width
@@ -317,6 +372,10 @@ public class Pixmap implements Disposable {
 		disposed = true;
 	}
 
+	public boolean isDisposed () {
+		return disposed;
+	}
+
 	/** Draws a pixel at the given location with the current color.
 	 * 
 	 * @param x the x-coordinate
@@ -365,13 +424,42 @@ public class Pixmap implements Disposable {
 		return pixmap.getPixels();
 	}
 
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		ByteBuffer dst = pixmap.getPixels();
+		BufferUtils.copy(pixels, dst, dst.limit());
+	}
+
 	/** @return the {@link Format} of this Pixmap. */
 	public Format getFormat () {
 		return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
+	}
+	
+	/** @return the currently set {@link Filter} */
+	public Filter getFilter (){
+		return filter;
+	}
+
+	/**
+	 * Response listener for {@link #downloadFromUrl(String, DownloadPixmapResponseListener)}
+	 */
+	public interface DownloadPixmapResponseListener {
+
+		/**
+		 * Called on the render thread when image was downloaded successfully.
+		 * @param pixmap
+		 */
+		void downloadComplete(Pixmap pixmap);
+
+		/**
+		 * Called when image download failed. This might get called on a background thread.
+		 */
+		void downloadFailed(Throwable t);
 	}
 }

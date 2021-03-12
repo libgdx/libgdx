@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -51,7 +49,10 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.ArrayList;
 
 public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
@@ -161,6 +162,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		chainShape.dispose();
 
 		createBoxes();
+
+		Array<Fixture> fixtures = new Array<Fixture>();
+		world.getFixtures(fixtures);
 
 		// You can savely ignore the rest of this method :)
 		world.setContactListener(new ContactListener() {

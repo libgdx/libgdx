@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -28,13 +28,14 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
  */
-public class MockGraphics implements Graphics {
+public class MockGraphics extends AbstractGraphics {
 	long frameId = -1;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
 	int fps;
 	long lastTime = System.nanoTime();
+	long targetRenderInterval;
 	GLVersion glVersion = new GLVersion(Application.ApplicationType.HeadlessDesktop, "", "", "");
 	@Override
 	public boolean isGL30Available() {
@@ -47,8 +48,18 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public void setGL20 (GL20 gl20) {
+
+	}
+
+	@Override
 	public GL30 getGL30() {
 		return null;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+
 	}
 
 	@Override
@@ -82,13 +93,8 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public float getRawDeltaTime() {
-		return 0;
-	}
-
-	@Override
 	public int getFramesPerSecond() {
-		return 0;
+		return fps;
 	}
 
 	@Override
@@ -122,11 +128,6 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public float getDensity() {
-		return 0;
-	}
-
-	@Override
 	public boolean supportsDisplayModeChange() {
 		return false;
 	}
@@ -139,6 +140,26 @@ public class MockGraphics implements Graphics {
 	@Override
 	public DisplayMode getDisplayMode() {
 		return null;
+	}
+
+	@Override
+	public int getSafeInsetLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight() {
+		return 0;
 	}
 
 	@Override
@@ -159,6 +180,19 @@ public class MockGraphics implements Graphics {
 	@Override
 	public void setVSync(boolean vsync) {
 
+	}
+
+	/** Sets the target framerate for the application. Use 0 to never sleep;  negative to not call the render method at all.
+	 *  Default is 60.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		this.targetRenderInterval = (long) (fps <= 0 ? (fps == 0 ? 0 : -1) : ((1F / fps) * 1000000000F));
+	}
+
+	public long getTargetRenderInterval() {
+		return targetRenderInterval;
 	}
 
 	@Override

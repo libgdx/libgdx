@@ -28,7 +28,7 @@ public class Wav {
 	static public class Music extends OpenALMusic {
 		private WavInputStream input;
 
-		public Music (OpenALAudio audio, FileHandle file) {
+		public Music (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio, file);
 			input = new WavInputStream(file);
 			if (audio.noDevice) return;
@@ -54,7 +54,7 @@ public class Wav {
 	}
 
 	static public class Sound extends OpenALSound {
-		public Sound (OpenALAudio audio, FileHandle file) {
+		public Sound (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
 
@@ -133,10 +133,17 @@ public class Wav {
 
 		public int read (byte[] buffer) throws IOException {
 			if (dataRemaining == 0) return -1;
-			int length = Math.min(super.read(buffer), dataRemaining);
-			if (length == -1) return -1;
-			dataRemaining -= length;
-			return length;
+			int offset = 0;
+			do {
+				int length = Math.min(super.read(buffer, offset, buffer.length - offset), dataRemaining);
+				if (length == -1) {
+					if (offset > 0) return offset;
+					return -1;
+				}
+				offset += length;
+				dataRemaining -= length;
+			} while (offset < buffer.length);
+			return offset;
 		}
 	}
 }

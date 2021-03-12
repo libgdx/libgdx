@@ -16,17 +16,14 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FileTextureData implements TextureData {
-	static public boolean copyToPOT;
 
 	final FileHandle file;
 	int width = 0;
@@ -42,7 +39,6 @@ public class FileTextureData implements TextureData {
 		this.format = format;
 		this.useMipMaps = useMipMaps;
 		if (pixmap != null) {
-			pixmap = ensurePot(pixmap);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
 			if (format == null) this.format = pixmap.getFormat();
@@ -61,28 +57,12 @@ public class FileTextureData implements TextureData {
 			if (file.extension().equals("cim"))
 				pixmap = PixmapIO.readCIM(file);
 			else
-				pixmap = ensurePot(new Pixmap(file));
+				pixmap = new Pixmap(file);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
 			if (format == null) format = pixmap.getFormat();
 		}
 		isPrepared = true;
-	}
-
-	private Pixmap ensurePot (Pixmap pixmap) {
-		if (Gdx.gl20 == null && copyToPOT) {
-			int pixmapWidth = pixmap.getWidth();
-			int pixmapHeight = pixmap.getHeight();
-			int potWidth = MathUtils.nextPowerOfTwo(pixmapWidth);
-			int potHeight = MathUtils.nextPowerOfTwo(pixmapHeight);
-			if (pixmapWidth != potWidth || pixmapHeight != potHeight) {
-				Pixmap tmp = new Pixmap(potWidth, potHeight, pixmap.getFormat());
-				tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmapWidth, pixmapHeight);
-				pixmap.dispose();
-				return tmp;
-			}
-		}
-		return pixmap;
 	}
 
 	@Override
@@ -136,5 +116,9 @@ public class FileTextureData implements TextureData {
 	@Override
 	public void consumeCustomData (int target) {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
+	}
+	
+	public String toString () {
+		return file.toString();
 	}
 }

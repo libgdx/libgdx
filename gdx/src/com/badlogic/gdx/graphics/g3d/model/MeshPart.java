@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
@@ -144,16 +143,14 @@ public class MeshPart {
 		return equals((MeshPart)arg0);
 	}
 
-	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
-	 * {@link ShaderProgram#end()}.
+	/** Renders the mesh part using the specified shader, must be called after {@link ShaderProgram#bind()}.
 	 * @param shader the shader to be used
 	 * @param autoBind overrides the autoBind member of the Mesh */
 	public void render (ShaderProgram shader, boolean autoBind) {
 		mesh.render(shader, primitiveType, offset, size, autoBind);
 	}
 
-	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
-	 * {@link ShaderProgram#end()}.
+	/** Renders the mesh part using the specified shader, must be called after {@link ShaderProgram#bind()}.
 	 * @param shader the shader to be used */
 	public void render (ShaderProgram shader) {
 		mesh.render(shader, primitiveType, offset, size);

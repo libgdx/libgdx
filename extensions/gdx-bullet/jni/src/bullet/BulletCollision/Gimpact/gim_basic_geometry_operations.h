@@ -41,10 +41,13 @@ email: projectileman@yahoo.com
 
 
 
-
+#ifndef PLANEDIREPSILON
 #define PLANEDIREPSILON 0.0000001f
-#define PARALELENORMALS 0.000001f
+#endif
 
+#ifndef PARALELENORMALS
+#define PARALELENORMALS 0.000001f
+#endif
 
 #define TRIANGLE_NORMAL(v1,v2,v3,n)\
 {\
