@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
@@ -255,13 +255,13 @@ public class Queue<T> implements Iterable<T> {
 		return value;
 	}
 
-	/** Returns true if the queue has one or more items.
+	/** Checks if the queue is not empty.
 	 * @return true if not empty, else false */
 	public boolean notEmpty () {
 		return size > 0;
 	}
 
-	/** Returns true if the queue is empty.
+	/** Checks if the queue is empty.
 	 * @return true if empty, else false */
 	public boolean isEmpty () {
 		return size == 0;
@@ -316,8 +316,8 @@ public class Queue<T> implements Iterable<T> {
 		return values[i];
 	}
 
-	/** Removes all values from this queue. Values in backing array are set to null to prevent memory leak,
-	 * so this operates in O(n). */
+	/** Removes all values from this queue. Values in backing array are set to null to prevent memory leak, so this operates in
+	 * O(n). */
 	public void clear () {
 		if (size == 0) return;
 		final T[] values = this.values;
@@ -354,8 +354,7 @@ public class Queue<T> implements Iterable<T> {
 		return iterable.iterator();
 	}
 
-	/** Method to transform the queue into a string representation.
-	 * @return the queue in a string representation */
+	@Override
 	public String toString () {
 		if (size == 0) {
 			return "[]";
@@ -374,7 +373,7 @@ public class Queue<T> implements Iterable<T> {
 		return sb.toString();
 	}
 
-	/** Method to transform the queue into a string representation,
+	/** Transform the queue into a string representation,
 	 * with a custom separator string.
 	 * @return the queue in a string representation with custom separator */
 	public String toString (String separator) {
@@ -390,8 +389,7 @@ public class Queue<T> implements Iterable<T> {
 		return sb.toString();
 	}
 
-	/** Method to transform the queue into a hashCode.
-	 * @return the hashCode of the queue */
+	@Override
 	public int hashCode () {
 		final int size = this.size;
 		final T[] values = this.values;
@@ -412,7 +410,7 @@ public class Queue<T> implements Iterable<T> {
 		return hash;
 	}
 
-	/** Method to check if another object is equal to the queue.
+	/** Check if another object is equal to the queue.
 	 * @param o the other object you want to compare
 	 * @return true if the queue is equal, else false */
 	public boolean equals (Object o) {
@@ -444,7 +442,7 @@ public class Queue<T> implements Iterable<T> {
 		return true;
 	}
 
-	/** Method to check if another object is equal to the queue.
+	/** Check if another object is equal to the queue.
 	 * Uses == for comparison of each item.
 	 * @param o the other object you want to compare
 	 * @return true if the queue is equal, else false */
@@ -476,7 +474,8 @@ public class Queue<T> implements Iterable<T> {
 		return true;
 	}
 
-	/** The QueueIterator class is used to iterate through the queue.
+	/** Iterating through the queue with a {@link #index} pointer. Items can be removed from
+	 * the queue by setting the {@link #allowRemove}.
 	 * @param <T> the class of the queueIterator, should be equal to that of the queue */
 	static public class QueueIterator<T> implements Iterator<T>, Iterable<T> {
 		private final Queue<T> queue;
@@ -498,7 +497,7 @@ public class Queue<T> implements Iterable<T> {
 			this.allowRemove = allowRemove;
 		}
 
-		/** Method to check if there is another element inside the queue
+		/** Check if there is another element inside the queue
 		 * @return true if there is another element in the queue, else false
 		 * @throws GdxRuntimeException if the iterator is not valid */
 		public boolean hasNext () {
@@ -508,7 +507,7 @@ public class Queue<T> implements Iterable<T> {
 			return index < queue.size;
 		}
 
-		/** Method to get the next element inside the queue.
+		/** Get the next element inside the queue.
 		 * @return the next element of the queue
 		 * @throws NoSuchElementException if there is not a next element
 		 * @throws GdxRuntimeException if the iterator is not valid */
@@ -520,7 +519,7 @@ public class Queue<T> implements Iterable<T> {
 			return queue.get(index++);
 		}
 
-		/** Method to remove the current element inside the queue.
+		/** Remove the current element inside the queue.
 		 * @throws GdxRuntimeException if {@link #allowRemove} is set to false */
 		public void remove () {
 			if (!allowRemove) throw new GdxRuntimeException("Remove not allowed.");
@@ -528,19 +527,19 @@ public class Queue<T> implements Iterable<T> {
 			queue.removeIndex(index);
 		}
 
-		/** Method to reset the queueIterator, sets the {@link #index} to zero. */
+		/** Reset the queueIterator, sets the {@link #index} to zero. */
 		public void reset () {
 			index = 0;
 		}
 
-		/** Method to get the iterator.
+		/** Getter of this iterator.
 		 * @return this object. */
 		public Iterator<T> iterator () {
 			return this;
 		}
 	}
 
-	/** The QueueIterable class used for creating a valid iterator.
+	/** Creates valid {@link QueueIterator}.
 	 * @param <T> the type of the QueueIterable, is be the same as the Queues. */
 	static public class QueueIterable<T> implements Iterable<T> {
 		private final Queue<T> queue;
@@ -561,9 +560,10 @@ public class Queue<T> implements Iterable<T> {
 			this.allowRemove = allowRemove;
 		}
 
-		/** Method to create valid queueIterator when not present, else it retrieves the valid iterator.
+		/** Create valid queueIterator when not present, else it retrieves the valid iterator.
 		 * @see Collections#allocateIterators
 		 * @return valid iterator of the correct type */
+		@Override
 		public Iterator<T> iterator () {
 			if (Collections.allocateIterators) return new QueueIterator<>(queue, allowRemove);
 
