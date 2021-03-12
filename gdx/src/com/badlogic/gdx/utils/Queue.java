@@ -466,10 +466,8 @@ public class Queue<T> implements Iterable<T> {
 			if (myValues[myIndex] != itsValues[itsIndex]) return false;
 			myIndex++;
 			itsIndex++;
-			if (myIndex == myBackingLength)
-				myIndex = 0;
-			if (itsIndex == itsBackingLength)
-				itsIndex = 0;
+			if (myIndex == myBackingLength) myIndex = 0;
+			if (itsIndex == itsBackingLength) itsIndex = 0;
 		}
 		return true;
 	}
