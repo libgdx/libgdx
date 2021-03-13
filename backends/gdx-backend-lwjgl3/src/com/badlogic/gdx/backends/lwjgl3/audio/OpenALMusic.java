@@ -67,7 +67,7 @@ public abstract class OpenALMusic implements Music {
 		maxSecondsPerBuffer = (float)bufferSize / (bytesPerSample * channels * sampleRate);
 	}
 
-	public void play () {
+	public synchronized void play () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) {
 			sourceID = audio.obtainSource(true);
@@ -107,7 +107,7 @@ public abstract class OpenALMusic implements Music {
 		}
 	}
 
-	public void stop () {
+	public synchronized void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 		audio.music.removeValue(this, true);
@@ -119,7 +119,7 @@ public abstract class OpenALMusic implements Music {
 		isPlaying = false;
 	}
 
-	public void pause () {
+	public synchronized void pause () {
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcePause(sourceID);
 		isPlaying = false;
@@ -139,7 +139,7 @@ public abstract class OpenALMusic implements Music {
 		return isLooping;
 	}
 
-	public void setVolume (float volume) {
+	public synchronized void setVolume (float volume) {
 		this.volume = volume;
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
@@ -149,7 +149,7 @@ public abstract class OpenALMusic implements Music {
 		return this.volume;
 	}
 
-	public void setPan (float pan, float volume) {
+	public synchronized void setPan (float pan, float volume) {
 		this.volume = volume;
 		this.pan = pan;
 		if (audio.noDevice) return;
@@ -159,7 +159,7 @@ public abstract class OpenALMusic implements Music {
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
-	public void setPosition (float position) {
+	public synchronized void setPosition (float position) {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 		boolean wasPlaying = isPlaying;
@@ -197,7 +197,7 @@ public abstract class OpenALMusic implements Music {
 		}
 	}
 
-	public float getPosition () {
+	public synchronized float getPosition () {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
@@ -223,7 +223,7 @@ public abstract class OpenALMusic implements Music {
 		return sampleRate;
 	}
 
-	public void update () {
+	public synchronized void update () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 
@@ -271,7 +271,7 @@ public abstract class OpenALMusic implements Music {
 		return true;
 	}
 
-	public void dispose () {
+	public synchronized void dispose () {
 		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;

@@ -60,6 +60,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	private Lwjgl3Audio audio;
+	private Thread audioThread;
 	private final Files files;
 	private final Net net;
 	private final ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
@@ -126,11 +127,32 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	}
 
 	protected void loop() {
+		// audio thread: separate from rendering-loop to reduce crackles when render loop is
+		// slow, e.g. when assets are loaded). Also possibly improves performance of
+		// render-loop below.
+		audioThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// audio thread will become 'null' once the app is closed
+				while (audioThread != null) {
+					audio.update();
+					try {
+						Thread.sleep(10);
+					}
+					catch (InterruptedException e) {
+						log("Lwjgl3Application", "Unexpected error while interrupting audio thread.", e);
+					}
+				}
+
+				// disposes audio as soon as our thread is 'null' to indicate we are done
+				audio.dispose();
+			}
+		});
+		audioThread.start();
+
+		// render-loop
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
-			// FIXME put it on a separate thread
-			audio.update();
-
 			boolean haveWindowsRendered = false;
 			closedWindows.clear();
 			int targetFramerate = -2;
@@ -196,6 +218,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				sync.sync(targetFramerate ); // sleep as needed to meet the target framerate
 			}
 		}
+
+		// will stop the audio thread & dispose audio thereafter
+		audioThread = null;
 	}
 
 	protected void cleanupWindows() {
@@ -213,7 +238,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	
 	protected void cleanup() {
 		Lwjgl3Cursor.disposeSystemCursors();
-		audio.dispose();
 		errorCallback.free();
 		errorCallback = null;
 		if (glDebugCallback != null) {
