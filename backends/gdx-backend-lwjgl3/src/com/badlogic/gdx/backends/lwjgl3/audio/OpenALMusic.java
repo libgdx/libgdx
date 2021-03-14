@@ -272,7 +272,7 @@ public abstract class OpenALMusic implements Music {
 		return true;
 	}
 
-	public synchronized void dispose () {
+	public synchronized void dispose () { 
 		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;
@@ -291,7 +291,10 @@ public abstract class OpenALMusic implements Music {
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
 				public void run() {
-					onCompletionListener.onCompletion(OpenALMusic.this);
+					OnCompletionListener listener = onCompletionListener;
+					if (listener != null) {
+						listener.onCompletion(OpenALMusic.this);
+					}
 				}
 			});
 		}
