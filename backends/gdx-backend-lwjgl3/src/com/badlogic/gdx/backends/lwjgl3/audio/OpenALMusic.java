@@ -20,6 +20,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.Gdx;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
 
@@ -94,7 +95,7 @@ public abstract class OpenALMusic implements Music {
 				filled = true;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
-			if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
+			if (!filled) onCompletion();
 
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
@@ -188,7 +189,7 @@ public abstract class OpenALMusic implements Music {
 		renderedSecondsQueue.pop();
 		if (!filled) {
 			stop();
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+			onCompletion();
 		}
 		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
 		if (wasPlaying) {
@@ -241,7 +242,7 @@ public abstract class OpenALMusic implements Music {
 		}
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
 			stop();
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+			onCompletion();
 		}
 
 		// A buffer underflow will cause the source to stop.
@@ -282,6 +283,18 @@ public abstract class OpenALMusic implements Music {
 
 	public void setOnCompletionListener (OnCompletionListener listener) {
 		onCompletionListener = listener;
+	}
+
+	/** Notify of completion via render thread to prevent any potential concurrency issues. */
+	private void onCompletion() {
+		if (onCompletionListener != null) {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					onCompletionListener.onCompletion(OpenALMusic.this);
+				}
+			});
+		}
 	}
 
 	public int getSourceId () {
