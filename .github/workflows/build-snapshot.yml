@@ -42,7 +42,7 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-ios -@ < native-files-list
 
       - name: Upload artifacts
@@ -89,7 +89,7 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-macos -@ < native-files-list
 
       - name: Upload artifacts
@@ -137,7 +137,7 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-linux -@ < native-files-list
 
       - name: Upload artifacts
@@ -183,7 +183,7 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-windows -@ < native-files-list
 
       - name: Upload artifacts
@@ -226,7 +226,7 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-android -@ < native-files-list
 
       - name: Upload artifacts
@@ -309,7 +309,7 @@ jobs:
 
       - name: Pack natives
         run: |
-          find .  -name "*.a" -o -name "*.a.tvos" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
           zip natives -@ < native-files-list
 
       - name: Upload artifacts
