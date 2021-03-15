@@ -72,15 +72,17 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	private int mostRecetSound = -1;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	private final Object musicThreadSync = new Object();
+	Thread musicThread;
 	long device;
 	long context;
 	boolean noDevice = false;
 
 	public OpenALLwjgl3Audio () {
-		this(16, 9, 512);
+		this(16, 9, 512, true);
 	}
 
-	public OpenALLwjgl3Audio (int simultaneousSources, int deviceBufferCount, int deviceBufferSize) {
+	public OpenALLwjgl3Audio (int simultaneousSources, int deviceBufferCount, int deviceBufferSize, boolean musicThreaded) {
 		this.deviceBufferSize = deviceBufferSize;
 		this.deviceBufferCount = deviceBufferCount;
 
@@ -131,6 +133,32 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		alListenerfv(AL_POSITION, position);
 
 		recentSounds = new OpenALSound[simultaneousSources];
+
+		if (musicThreaded) {
+			// audio thread: separate from rendering-loop to reduce crackles when render loop is
+			// slow, e.g. when assets are loaded. Also possibly improves performance of render-loop.
+			musicThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// audio thread will become 'null' once the app is closed
+					while (musicThread != null) {
+						synchronized (musicThreadSync) {
+							updateInternal();
+						}
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// ignore exception
+						}
+					}
+				}
+			});
+			musicThread.start();
+		}
+		else {
+			// music is played via render-loop
+			musicThread = null;
+		}
 	}
 
 	public void registerSound (String extension, Class<? extends OpenALSound> soundClass) {
@@ -164,6 +192,18 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			return musicClass.getConstructor(new Class[] {OpenALLwjgl3Audio.class, FileHandle.class}).newInstance(this, file);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file, ex);
+		}
+	}
+
+	void addMusic (OpenALMusic music) {
+		synchronized (musicThreadSync) {
+			this.music.add(music);
+		}
+	}
+
+	void removeMusic (OpenALMusic music) {
+		synchronized (musicThreadSync) {
+			this.music.removeValue(music, true);
 		}
 	}
 
@@ -248,9 +288,17 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 	@Override
 	public void update () {
+		if (musicThread == null) {
+			updateInternal();
+		}
+	}
+
+	/** Updates the music (either via designated audio-thread or render-loop depending on settings. */
+	private void updateInternal () {
 		if (noDevice) return;
-		for (int i = 0; i < music.size; i++)
+		for (int i = 0; i < music.size; i++) {
 			music.items[i].update();
+		}
 	}
 
 	public long getSoundId (int sourceId) {
@@ -313,6 +361,9 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 		sourceToSoundId.clear();
 		soundIdToSource.clear();
+
+		// will stop the music thread (if any)
+		musicThread = null;
 
 		alcDestroyContext(context);
 		alcCloseDevice(device);

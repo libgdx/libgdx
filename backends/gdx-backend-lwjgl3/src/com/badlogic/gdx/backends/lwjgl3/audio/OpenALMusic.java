@@ -74,7 +74,7 @@ public abstract class OpenALMusic implements Music {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
 
-			audio.music.add(this);
+			audio.addMusic(this);
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
@@ -95,7 +95,7 @@ public abstract class OpenALMusic implements Music {
 				filled = true;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
-			if (!filled) onCompletion();
+			if ((!filled) && (onCompletionListener != null)) onCompletionListener.onCompletion(this);
 
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
@@ -111,7 +111,7 @@ public abstract class OpenALMusic implements Music {
 	public synchronized void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		audio.music.removeValue(this, true);
+		audio.removeMusic(this);
 		reset();
 		audio.freeSource(sourceID);
 		sourceID = -1;
@@ -189,7 +189,7 @@ public abstract class OpenALMusic implements Music {
 		renderedSecondsQueue.pop();
 		if (!filled) {
 			stop();
-			onCompletion();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 		}
 		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
 		if (wasPlaying) {
@@ -242,7 +242,19 @@ public abstract class OpenALMusic implements Music {
 		}
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
 			stop();
-			onCompletion();
+			if (onCompletionListener != null) {
+				if (audio.musicThread == null) {
+					onCompletionListener.onCompletion(this);
+				}
+				else {
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							if (onCompletionListener != null) onCompletionListener.onCompletion(OpenALMusic.this);
+						}
+					});
+				}
+			}
 		}
 
 		// A buffer underflow will cause the source to stop.
@@ -283,21 +295,6 @@ public abstract class OpenALMusic implements Music {
 
 	public void setOnCompletionListener (OnCompletionListener listener) {
 		onCompletionListener = listener;
-	}
-
-	/** Notify of completion via render thread to prevent any potential concurrency issues. */
-	private void onCompletion() {
-		if (onCompletionListener != null) {
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run() {
-					OnCompletionListener listener = onCompletionListener;
-					if (listener != null) {
-						listener.onCompletion(OpenALMusic.this);
-					}
-				}
-			});
-		}
 	}
 
 	public int getSourceId () {
