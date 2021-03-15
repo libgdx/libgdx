@@ -69,6 +69,13 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-glfw</artifactId>
       <version>${lwjgl3.version}</version>
     </dependency>
@@ -117,6 +124,13 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-jemalloc</artifactId>
       <version>${lwjgl3.version}</version>
     </dependency>
@@ -165,6 +179,13 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-opengl</artifactId>
       <version>${lwjgl3.version}</version>
     </dependency>
@@ -213,6 +234,13 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-opengl</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-openal</artifactId>
       <version>${lwjgl3.version}</version>
     </dependency>
@@ -257,6 +285,13 @@
       <artifactId>lwjgl-openal</artifactId>
       <version>${lwjgl3.version}</version>
       <classifier>natives-macos</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
     </dependency>
 
     <dependency>
