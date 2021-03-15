@@ -1,8 +1,8 @@
 name: Build Snapshot
 
 on:
-  #push:
-  #  branches: [ master ]
+  push:
+    branches: [ master ]
   workflow_dispatch:
     branches: [ master ]  
 
