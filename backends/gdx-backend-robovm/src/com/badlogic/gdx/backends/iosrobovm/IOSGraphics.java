@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
@@ -221,19 +222,13 @@ public class IOSGraphics extends AbstractGraphics {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
+		// We don't use HdpiUtils here as values are already back buffer sizes
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width;
-			final int height;
-			if (config.hdpiMode == HdpiMode.Pixels) {
-				width = screenBounds.backBufferWidth;
-				height = screenBounds.backBufferHeight;
-			} else {
-				width = screenBounds.width;
-				height = screenBounds.height;
-			}
-			gl20.glViewport(0, 0, width, height);
+			final int width = screenBounds.width;
+			final int height = screenBounds.height;
+			HdpiUtils.glViewport(0, 0, width, height);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
