@@ -71,10 +71,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	private OpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
 
-	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 	long device;
 	long context;
 	boolean noDevice = false;
+	
+	final OpenALMusicProcessor musicProcessor;
 
 	public OpenALLwjgl3Audio () {
 		this(16, 9, 512);
@@ -83,6 +84,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	public OpenALLwjgl3Audio (int simultaneousSources, int deviceBufferCount, int deviceBufferSize) {
 		this.deviceBufferSize = deviceBufferSize;
 		this.deviceBufferCount = deviceBufferCount;
+		
+		musicProcessor = new OpenALMusicProcessor(this);
 
 		registerSound("ogg", Ogg.Sound.class);
 		registerMusic("ogg", Ogg.Music.class);
@@ -246,11 +249,32 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		}
 	}
 
+	public void startPlayback (OpenALMusic openALMusic) {
+		musicProcessor.startPlayback(openALMusic);
+	}
+
+	public void stop (OpenALMusic openALMusic) {
+		musicProcessor.stopPlayback(openALMusic);
+	}
+
+	public void seek (OpenALMusic openALMusic) {
+		musicProcessor.seek(openALMusic);
+	}	
+	
 	@Override
 	public void update () {
 		if (noDevice) return;
-		for (int i = 0; i < music.size; i++)
-			music.items[i].update();
+		
+		// process events from audio thread in the render thread
+		// will change some non thread safe states
+		
+		OpenALMusic music;
+		while((music = musicProcessor.musicsFinished.poll()) != null){
+			music.onFinished();
+		}
+		while((music = musicProcessor.musicsStopped.poll()) != null){
+			music.stopInternal();
+		}
 	}
 
 	public long getSoundId (int sourceId) {
@@ -313,6 +337,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 		sourceToSoundId.clear();
 		soundIdToSource.clear();
+		
+		musicProcessor.dispose();
 
 		alcDestroyContext(context);
 		alcCloseDevice(device);

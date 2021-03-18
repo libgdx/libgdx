@@ -128,7 +128,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	protected void loop() {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
-			// FIXME put it on a separate thread
 			audio.update();
 
 			boolean haveWindowsRendered = false;
@@ -158,6 +157,14 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			for (Runnable runnable : executedRunnables) {
 				runnable.run();
 			}
+			
+			// XXX emulate heavy load
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e1) {
+//				//
+//			}
+			
 			if (shouldRequestRendering){
 				// Must follow Runnables execution so changes done by Runnables are reflected
 				// in the following render.
