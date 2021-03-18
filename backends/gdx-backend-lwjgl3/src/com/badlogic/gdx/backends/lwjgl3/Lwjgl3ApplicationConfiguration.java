@@ -46,8 +46,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceSimultaneousSources = 16;
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;
-	/** True if music is played on a separate thread (not via render-loop). */
-	boolean musicThreaded = true;
 
 	boolean useGL30 = false;
 	int gles30ContextMajorVersion = 3;

@@ -49,8 +49,5 @@ public class MockAudio implements Lwjgl3Audio {
 	}
 
 	@Override
-	public void update () {}
-
-	@Override
 	public void dispose () {}
 }

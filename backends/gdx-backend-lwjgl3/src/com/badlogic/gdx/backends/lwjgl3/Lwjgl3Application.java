@@ -128,8 +128,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	protected void loop() {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
-			audio.update();
-
 			boolean haveWindowsRendered = false;
 			closedWindows.clear();
 			int targetFramerate = -2;
@@ -368,8 +366,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	@Override
 	public Lwjgl3Audio createAudio (Lwjgl3ApplicationConfiguration config) {
 		return new OpenALLwjgl3Audio(config.audioDeviceSimultaneousSources,
-			config.audioDeviceBufferCount, config.audioDeviceBufferSize,
-			config.musicThreaded);
+			config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 	}
 
 	@Override

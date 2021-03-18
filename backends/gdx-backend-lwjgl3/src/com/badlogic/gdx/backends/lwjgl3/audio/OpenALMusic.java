@@ -95,7 +95,7 @@ public abstract class OpenALMusic implements Music {
 				filled = true;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
-			if ((!filled) && (onCompletionListener != null)) onCompletionListener.onCompletion(this);
+			if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
 
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
@@ -224,7 +224,7 @@ public abstract class OpenALMusic implements Music {
 		return sampleRate;
 	}
 
-	public synchronized void update () {
+	synchronized void update () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 
@@ -243,17 +243,12 @@ public abstract class OpenALMusic implements Music {
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
 			stop();
 			if (onCompletionListener != null) {
-				if (audio.musicThread == null) {
-					onCompletionListener.onCompletion(this);
-				}
-				else {
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run() {
-							if (onCompletionListener != null) onCompletionListener.onCompletion(OpenALMusic.this);
-						}
-					});
-				}
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						if (onCompletionListener != null) onCompletionListener.onCompletion(OpenALMusic.this);
+					}
+				});
 			}
 		}
 
