@@ -54,6 +54,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -129,30 +130,61 @@ public class AssetManager implements Disposable {
 	}
 
 	/** @param fileName the asset file name
-	 * @return the asset */
+	 * @return the asset
+	 * @throws GdxRuntimeException if the asset is not loaded */
 	public synchronized <T> T get (String fileName) {
-		Class<T> type = assetTypes.get(fileName);
-		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
-		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		RefCountedContainer assetContainer = assetsByType.get(fileName);
-		if (assetContainer == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		T asset = assetContainer.getObject(type);
-		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		return asset;
+		return get(fileName, true);
 	}
 
 	/** @param fileName the asset file name
 	 * @param type the asset type
-	 * @return the asset */
+	 * @return the asset
+	 * @throws GdxRuntimeException if the asset is not loaded */
 	public synchronized <T> T get (String fileName, Class<T> type) {
+		return get(fileName, type, true);
+	}
+
+	/** @param fileName the asset file name
+	 * @param required true to throw GdxRuntimeException if the asset is not loaded, else null is returned
+	 * @return the asset or null if it is not loaded and required is false */
+	public synchronized @Null <T> T get (String fileName, boolean required) {
+		Class<T> type = assetTypes.get(fileName);
+		if (type != null) {
+			ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+			if (assetsByType != null) {
+				RefCountedContainer assetContainer = assetsByType.get(fileName);
+				if (assetContainer != null) {
+					T asset = assetContainer.getObject(type);
+					if (asset != null) return asset;
+				}
+			}
+		}
+		if (required) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		return null;
+	}
+
+	/** @param fileName the asset file name
+	 * @param type the asset type
+	 * @param required true to throw GdxRuntimeException if the asset is not loaded, else null is returned
+	 * @return the asset or null if it is not loaded and required is false */
+	public synchronized @Null <T> T get (String fileName, Class<T> type, boolean required) {
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
-		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		RefCountedContainer assetContainer = assetsByType.get(fileName);
-		if (assetContainer == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		T asset = assetContainer.getObject(type);
-		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		return asset;
+		if (assetsByType != null) {
+			RefCountedContainer assetContainer = assetsByType.get(fileName);
+			if (assetContainer != null) {
+				T asset = assetContainer.getObject(type);
+				if (asset != null) return asset;
+			}
+		}
+		if (required) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		return null;
+	}
+
+	/** @param assetDescriptor the asset descriptor
+	 * @return the asset
+	 * @throws GdxRuntimeException if the asset is not loaded */
+	public synchronized <T> T get (AssetDescriptor<T> assetDescriptor) {
+		return get(assetDescriptor.fileName, assetDescriptor.type, true);
 	}
 
 	/** @param type the asset type
@@ -164,12 +196,6 @@ public class AssetManager implements Disposable {
 				out.add(asset.value.getObject(type));
 		}
 		return out;
-	}
-
-	/** @param assetDescriptor the asset descriptor
-	 * @return the asset */
-	public synchronized <T> T get (AssetDescriptor<T> assetDescriptor) {
-		return get(assetDescriptor.fileName, assetDescriptor.type);
 	}
 
 	/** Returns true if an asset with the specified name is loading, queued to be loaded, or has been loaded. */
