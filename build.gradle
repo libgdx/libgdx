@@ -27,9 +27,10 @@ allprojects {
             mavenCentral()
             gradlePluginPortal()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+            maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         }
         dependencies {
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.1"
+            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.1.3"
         }
     }
 
@@ -39,6 +40,7 @@ allprojects {
         mavenCentral()
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 }
 

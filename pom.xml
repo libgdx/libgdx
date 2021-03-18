@@ -47,7 +47,7 @@
     <gwt.version>2.8.2</gwt.version>
     <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.2.3</lwjgl3.version>
-    <robovm.version>2.3.12</robovm.version>
+    <robovm.version>2.3.12</robovm.version>    
   </properties>
 
   <modules>
@@ -69,6 +69,26 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+              <id>download-natives</id>
+              <phase>prepare-package</phase>
+              <goals><goal>run</goal></goals>
+              <configuration>
+              <target>
+                <ant antfile="${basedir}/fetch.xml">
+                  <target name="fetch-gdx"/>
+                </ant>
+              </target>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
