@@ -117,7 +117,11 @@ public class Button extends Table implements Disableable {
 
 	void setChecked (boolean isChecked, boolean fireEvent) {
 		if (this.isChecked == isChecked) return;
-		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
+		if (buttonGroup != null) {
+			if (!buttonGroup.canCheck(this, isChecked)) return;
+			// canCheck may uncheck another button, firing an event that could change this button.
+			if (this.isChecked == isChecked) return;
+		}
 		this.isChecked = isChecked;
 
 		if (fireEvent) {
