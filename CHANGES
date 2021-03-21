@@ -11,6 +11,7 @@
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
 - Api Addition: Added a Pool#discard(T) method.
 - Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
+- Fix for #6464: BaseTmxMapLoader now imports default property "Type" properly.
 
 
 [1.9.14]
