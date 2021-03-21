@@ -120,8 +120,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 
 		topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		warningNotice = new JLabel("List of third party extensions for LibGDX");
-		warningNotice2 = new JLabel("These are not maintained by the LibGDX team, please see the support links for info and help");
+		warningNotice = new JLabel("List of third party extensions for libGDX");
+		warningNotice2 = new JLabel("These are not maintained by the libGDX team, please see the support links for info and help");
 		warningNotice.setHorizontalAlignment(JLabel.CENTER);
 		warningNotice2.setHorizontalAlignment(JLabel.CENTER);
 
