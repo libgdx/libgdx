@@ -12,6 +12,7 @@
 - Api Addition: Added a Pool#discard(T) method.
 - Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
 - Fix for #6464: BaseTmxMapLoader now imports default property "Type" properly.
+- TiledMap: Default properties in tmx files get loaded with \tname now when a custom property exists with the same name.
 
 
 [1.9.14]

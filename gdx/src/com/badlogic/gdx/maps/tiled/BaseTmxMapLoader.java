@@ -417,6 +417,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				String name = property.getAttribute("name", null);
 				String value = property.getAttribute("value", null);
 				String type = property.getAttribute("type", null);
+
+				if (properties.containsKey(name)) {
+				    properties.put("\t" + name, properties.get(name));
+				}
+
 				if (value == null) {
 					value = property.getText();
 				}
