@@ -92,33 +92,6 @@
 		</projects>
 	</extension>
 	<extension>
-	   <name>gdx-facebook</name>
-	   <description>Provides cross-platform support for Facebook Graph API</description>
-	   <package>de.tomgrill.gdxfacebook</package>
-	   <version>1.5.0</version>
-	   <compatibility>1.9.8</compatibility>
-	   <website>https://github.com/TomGrill/gdx-facebook</website>
-	   <gwtInherits></gwtInherits>
-	   <projects>
-			<core>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core</dependency>
-			</core>
-			<desktop>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-desktop</dependency>
-			</desktop>
-			<android>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-android</dependency>	
-			</android>
-			<ios>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
-			</ios>
-			<html>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core:sources</dependency>
-				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-html:sources</dependency>
-			</html>
-		</projects>
-	</extension>
-	<extension>
 	   <name>gdx-dialogs</name>
 	   <description>Provides cross-platform support for native dialogs</description>
 	   <package>de.tomgrill.gdxdialogs</package>
