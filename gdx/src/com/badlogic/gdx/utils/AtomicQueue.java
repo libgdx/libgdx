@@ -25,78 +25,36 @@ package com.badlogic.gdx.utils;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-/**
- * A queue that allows one thread to call {@link #put(Object)} and another thread to call {@link #poll()}. Multiple threads must
+/** A queue that allows one thread to call {@link #put(Object)} and another thread to call {@link #poll()}. Multiple threads must
  * not call these methods.
- *
- * @author Matthias Mann
- */
+ * @author Matthias Mann */
 public class AtomicQueue<T> {
     private final AtomicInteger writeIndex = new AtomicInteger();
     private final AtomicInteger readIndex = new AtomicInteger();
     private final AtomicReferenceArray<T> queue;
 
-    /**
-     * Constructor of AtomicQueue, set the size of the queue to a specific capacity.
-     *
-     * @param capacity The maximum capacity of the queue.
-     */
     public AtomicQueue (int capacity) {
-        queue = new AtomicReferenceArray<>(capacity);
+        queue = new AtomicReferenceArray(capacity);
     }
 
-    /**
-     * Method to retrieve the next id of the queue, will wrap around.
-     *
-     * @param idx The previous id you want to get the next of.
-     * @return the next id given idx. The value will wraparound if larger than queue capacity.
-     */
     private int next (int idx) {
         return (idx + 1) % queue.length();
     }
 
-    /**
-     * Method to put an element inside the atomicQueue.
-     * If the next put element will be placed at the current {@link #readIndex},
-     * then it is skipped and false is returned.
-     *
-     * @param value The value you want to put to the AtomicQueue.
-     * @return true if it was put on the AtomicQueue, else false.
-     */
     public boolean put (@Null T value) {
         int write = writeIndex.get();
         int read = readIndex.get();
         int next = next(write);
-
-        // It is not possible to overwrite the element that needs to be polled first.
-        if (next == read) {
-            return false;
-        }
-
-        // There was space to put the element.
+        if (next == read) return false;
         queue.set(write, value);
         writeIndex.set(next);
         return true;
     }
 
-    /**
-     * Method to poll an element inside the atomicQueue.
-     * If the {@link #readIndex} is at the {@link #writeIndex}, then no element
-     * could be polled, as there are no elements in the queue left.
-     *
-     * @return The first element in the queue that has not been polled yet,
-     * if there are no elements left in the queue, then null is returned.
-     */
     public @Null T poll () {
         int read = readIndex.get();
         int write = writeIndex.get();
-
-        // There are no elements to poll yet, as the read pointer equals the write pointer.
-        if (read == write) {
-            return null;
-        }
-
-        // There was an element that could be read from the queue.
+        if (read == write) return null;
         T value = queue.get(read);
         readIndex.set(next(read));
         return value;
