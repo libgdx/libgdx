@@ -16,84 +16,46 @@
 
 package com.badlogic.gdx.utils;
 
-/**
- * A {@link Pool} which keeps track of the obtained items (see {@link #obtain()}), which can be free'd all at once using the
+/** A {@link Pool} which keeps track of the obtained items (see {@link #obtain()}), which can be free'd all at once using the
  * {@link #flush()} method.
- *
- * @author Xoppa
- */
+ * @author Xoppa */
 public abstract class FlushablePool<T> extends Pool<T> {
-    protected Array<T> obtained = new Array<T>();
+	protected Array<T> obtained = new Array<T>();
 
-    /**
-     * Constructor of FlushablePool to create a new FlushablePool with
-     * an initial capacity of 16 and a max of INTEGER.MAX_VALUE.
-     */
-    public FlushablePool () {
-        super();
-    }
+	public FlushablePool () {
+		super();
+	}
 
-    /**
-     * Constructor of FlushablePool to create a new FlushablePool with
-     * a custom capacity and a max of INTEGER.MAX_VALUE.
-     *
-     * @param initialCapacity The initialCapacity you want to give the FlushablePool
-     */
-    public FlushablePool (int initialCapacity) {
-        super(initialCapacity);
-    }
+	public FlushablePool (int initialCapacity) {
+		super(initialCapacity);
+	}
 
-    /**
-     * Constructor of FlushablePool to create a new FlushablePool with
-     * a custom capacity and max of INTEGER.MAX_VALUE.
-     *
-     * @param initialCapacity The initialCapacity you want to give the FlushablePool
-     * @param max             The max size of the FlushablePool
-     */
-    public FlushablePool (int initialCapacity, int max) {
-        super(initialCapacity, max);
-    }
+	public FlushablePool (int initialCapacity, int max) {
+		super(initialCapacity, max);
+	}
 
-    /**
-     * Method that overrides the default obtain, after obtaining
-     * it keeps track of the obtained elements inside the obtained array.
-     *
-     * @return The obtained value.
-     */
-    @Override
-    public T obtain () {
-        T result = super.obtain();
-        obtained.add(result);
-        return result;
-    }
+	@Override
+	public T obtain () {
+		T result = super.obtain();
+		obtained.add(result);
+		return result;
+	}
 
-    /**
-     * Frees all obtained instances.
-     */
-    public void flush () {
-        super.freeAll(obtained);
-        obtained.clear();
-    }
+	/** Frees all obtained instances. */
+	public void flush () {
+		super.freeAll(obtained);
+		obtained.clear();
+	}
 
-    /**
-     * Method to free a single object from the obtained array.
-     *
-     * @param object The object you want to free from the obtained array.
-     */
-    @Override
-    public void free (T object) {
-        obtained.removeValue(object, true);
-        super.free(object);
-    }
+	@Override
+	public void free (T object) {
+		obtained.removeValue(object, true);
+		super.free(object);
+	}
 
-    /**
-     * Method to free an array objects from the obtained array.
-     *
-     * @param objects The objects you want to free from the obtained array.
-     */
-    @Override
-    public void freeAll (Array<T> objects) {
-        obtained.removeAll(objects, true);
-        super.freeAll(objects);
-    }
+	@Override
+	public void freeAll (Array<T> objects) {
+		obtained.removeAll(objects, true);
+		super.freeAll(objects);
+	}
 }
