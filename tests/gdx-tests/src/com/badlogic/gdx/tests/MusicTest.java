@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class MusicTest extends GdxTest {
 
@@ -45,9 +47,9 @@ public class MusicTest extends GdxTest {
 	float currentPosition;
 
 	SpriteBatch batch;
-	BitmapFont font;
 
 	Stage stage;
+	Label label;
 	Slider slider;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
@@ -63,12 +65,15 @@ public class MusicTest extends GdxTest {
 	public void create () {
 
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 
-		stage = new Stage();
+		stage = new Stage(new ExtendViewport(600, 480));
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		
+		Table sliderTable = new Table();
+		label = new Label("", skin);
 		slider = new Slider(0, 100, 0.1f, false, skin);
-		slider.setPosition(200, 20);
+		sliderTable.add(slider).expand();
+		sliderTable.add(label).left().width(60f);
 		slider.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -95,16 +100,15 @@ public class MusicTest extends GdxTest {
 		});
 
 		// Build buttons
-		Table buttonsTable = new Table();
-		buttonsTable.setSize(200f, 80f);
+		Table controlsTable = new Table();
+		controlsTable.setSize(200f, 80f);
 		Button playButton = new ImageButton(getDrawable("data/player_play.png"));
 		Button pauseButton = new ImageButton(getDrawable("data/player_pause.png"));
 		Button stopButton = new ImageButton(getDrawable("data/player_stop.png"));
 		float buttonSize = 64f;
-		buttonsTable.add(playButton).size(buttonSize);
-		buttonsTable.add(pauseButton).size(buttonSize);
-		buttonsTable.add(stopButton).size(buttonSize);
-//		buttonsTable.setPosition(0, 0f);
+		controlsTable.add(playButton).size(buttonSize);
+		controlsTable.add(pauseButton).size(buttonSize);
+		controlsTable.add(stopButton).size(buttonSize);
 		playButton.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -125,6 +129,11 @@ public class MusicTest extends GdxTest {
 			}
 		});
 		
+		Table footerTable = new Table();
+		footerTable.setSize(500f, 120f);
+		footerTable.add(controlsTable);
+		footerTable.add(sliderTable).width(250f);
+		
 		setSong(musicBox.getSelected());
 		
 		Table table = new Table(skin);
@@ -132,10 +141,8 @@ public class MusicTest extends GdxTest {
 		table.add(btLoop);
 		table.setFillParent(true);
 		stage.addActor(table);
+		stage.addActor(footerTable);
 		
-		stage.addActor(slider);
-		stage.addActor(buttonsTable);
-
 		Gdx.input.setInputProcessor(stage);
 	}
 				
@@ -170,7 +177,7 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -182,9 +189,7 @@ public class MusicTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(Color.BLACK);
 		currentPosition = music.getPosition();
-		batch.begin();
-		font.draw(batch, (int)currentPosition / 60 + ":" + (int)currentPosition % 60, 365, 35);
-		batch.end();
+		label.setText((int)currentPosition / 60 + ":" + (int)currentPosition % 60);
 
 		sliderUpdating = true;
 		slider.setValue((currentPosition / songDuration) * 100f);
@@ -193,10 +198,10 @@ public class MusicTest extends GdxTest {
 		stage.draw();
 
 		
-		if(music.isPlaying()){
-			time += Gdx.graphics.getDeltaTime();
-			System.out.println("realtime: " + time + " music time: " + currentPosition);
-		}
+//		if(music.isPlaying()){
+//			time += Gdx.graphics.getDeltaTime();
+//			System.out.println("realtime: " + time + " music time: " + currentPosition);
+//		}
 	}
 
 	@Override
