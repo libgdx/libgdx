@@ -11,6 +11,7 @@
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
 - Api Addition: Added a Pool#discard(T) method.
 - Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
+- API Addition: Desktop Sound now returns number of channels and sample rate.
 - LWJGL 3 is now the default desktop backend. If you want to port your existing applications, take a look here: https://gist.github.com/crykn/eb37cb4f7a03d006b3a0ecad27292a2d
 - Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
 
