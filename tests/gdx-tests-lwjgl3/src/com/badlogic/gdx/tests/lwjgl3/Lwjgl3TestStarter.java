@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
+import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -107,7 +108,7 @@ public class Lwjgl3TestStarter {
 						winConfig.setWindowedMode(640, 480);
 						winConfig.setWindowPosition(((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionX() + 40,
 							((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionY() + 40);
-						((Lwjgl3Application)Gdx.app).newWindow(test, winConfig);
+						((Lwjgl3Application)Gdx.app).newWindow(new GdxTestWrapper(test, options.logGLErrors), winConfig);
 						System.out.println("Started test: " + testName);
 						prefs.putString("LastTest", testName);
 						prefs.flush();
