@@ -19,7 +19,6 @@ jnigen {
     sharedLibName = "gdx-box2d"
     add(Windows, x32)
     add(Windows, x64)
-    add(Linux, x32)
     add(Linux, x64)
     add(Linux, x32, ARM)
     add(Linux, x64, ARM)
