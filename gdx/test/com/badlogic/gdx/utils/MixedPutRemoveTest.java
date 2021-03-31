@@ -51,7 +51,7 @@ public class MixedPutRemoveTest {
 		long stateA = 0L, stateB = 1L, temp;
 		int actualSize = 0;
 		long item;
-		for (int i = 0; i < 0x100000; i++) { // 1 million should do
+		for (int i = 0; i < 0x10000; i++) { // 64K should do
 			// simple-ish RNG that repeats more than RandomXS128; we want repeats to test behavior
 			stateA += 0xC6BC279692B5C323L;
 			item = (stateA ^ stateA >>> 31) * (stateB += 0x9E3779B97F4A7C16L);
@@ -123,7 +123,7 @@ public class MixedPutRemoveTest {
 		long stateA = 0L, stateB = 1L, temp;
 		int gdxRemovals = 0, actualSize = 0;
 		int item;
-		for (int i = 0; i < 0x100000; i++) { // 1 million should do
+		for (int i = 0; i < 0x10000; i++) { // 64K should do
 			// simple-ish RNG that repeats more than RandomXS128; we want repeats to test behavior
 			stateA += 0xC6BC279692B5C323L;
 			temp = (stateA ^ stateA >>> 31) * (stateB += 0x9E3779B97F4A7C16L);
