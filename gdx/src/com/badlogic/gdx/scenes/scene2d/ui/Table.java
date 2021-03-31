@@ -1190,8 +1190,9 @@ public class Table extends WidgetGroup {
 			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
-				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth,
-					rowHeight[c.row] - c.computedPadTop - c.computedPadBottom, debugCellColor);
+				float h = rowHeight[c.row] - c.computedPadTop - c.computedPadBottom;
+				float y = currentY + c.computedPadTop;
+				addDebugRect(currentX, getHeight() - y - h, spannedCellWidth, h, debugCellColor);
 			}
 
 			if (c.endRow) {

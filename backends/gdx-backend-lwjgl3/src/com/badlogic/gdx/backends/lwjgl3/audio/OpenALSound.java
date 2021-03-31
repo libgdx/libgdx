@@ -29,12 +29,15 @@ public class OpenALSound implements Sound {
 	private int bufferID = -1;
 	private final OpenALLwjgl3Audio audio;
 	private float duration;
+	private int sampleRate, channels;
 
 	public OpenALSound (OpenALLwjgl3Audio audio) {
 		this.audio = audio;
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
+		this.channels = channels;
+		this.sampleRate = sampleRate;
 		int bytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
 		int samples = bytes / (2 * channels);
 		duration = samples / (float)sampleRate;
@@ -176,5 +179,15 @@ public class OpenALSound implements Sound {
 	/** Returns the length of the sound in seconds. */
 	public float duration () {
 		return duration;
+	}
+
+	/** returns the original sample rate of the sound in Hz. */
+	public int getRate () {
+		return sampleRate;
+	}
+
+	/** returns the number of channels of the sound (1 for mono, 2 for stereo). */
+	public int getChannels () {
+		return channels;
 	}
 }
