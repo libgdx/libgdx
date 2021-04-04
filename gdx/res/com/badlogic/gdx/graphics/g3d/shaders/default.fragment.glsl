@@ -154,7 +154,12 @@ void main() {
 	#elif (!defined(specularFlag))
 		#if defined(ambientFlag) && defined(separateAmbientFlag)
 			#ifdef shadowMapFlag
-				gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + getShadow() * v_lightDiffuse)) + emissive.rgb;
+				float shadow = getShadow();
+    				if(shadow<0.2)
+        				shadow = (v_lightDiffuse.r+v_lightDiffuse.g+v_lightDiffuse.b)/3.0;
+    				else
+        				shadow = 1.0;
+    				gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + (shadow) * v_lightDiffuse)) + emissive.rgb;
 				//gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + v_lightDiffuse)) + emissive.rgb;
