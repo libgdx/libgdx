@@ -460,6 +460,7 @@ class MtlLoader {
 				ModelTexture tex = new ModelTexture();
 				tex.usage = usage;
 				tex.fileName = texFilename;
+				if (mat.textures == null) mat.textures = new Array<ModelTexture>(1);
 				mat.textures.add(tex);
 			}
 		}
