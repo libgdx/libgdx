@@ -222,13 +222,11 @@ public class IOSGraphics extends AbstractGraphics {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
-		// We don't use HdpiUtils here as values are already back buffer sizes
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width = screenBounds.width;
-			final int height = screenBounds.height;
-			HdpiUtils.glViewport(0, 0, width, height);
+			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
@@ -237,7 +235,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 			updateSafeInsets();
 			app.listener.create();
-			app.listener.resize(width, height);
+			app.listener.resize(getWidth(), getHeight());
 			created = true;
 		}
 		if (appPaused) {
