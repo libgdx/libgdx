@@ -226,7 +226,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 		if (!created) {
 			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
-			Gdx.gl.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
+			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
