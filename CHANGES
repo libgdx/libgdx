@@ -12,6 +12,8 @@
 - Api Addition: Added a Pool#discard(T) method.
 - Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
 - API Addition: Desktop Sound now returns number of channels and sample rate.
+- API Addition: PointSpriteParticleBatch blending is now configurable.
+- TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
 
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
