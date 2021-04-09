@@ -324,7 +324,7 @@ public final class MathUtils {
 	 * @param rangeEnd Range end normalized to 1
 	 * @param value Value to normalize
 	 * @return Normalized value. Values outside of the range are not clamped to 0 and 1 */
-	static public float norm (double rangeStart, double rangeEnd, double value) {
+	static public double norm (double rangeStart, double rangeEnd, double value) {
 		return (value - rangeStart) / (rangeEnd - rangeStart);
 	}
 
