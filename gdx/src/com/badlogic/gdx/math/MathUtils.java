@@ -318,6 +318,15 @@ public final class MathUtils {
 	static public float norm (float rangeStart, float rangeEnd, float value) {
 		return (value - rangeStart) / (rangeEnd - rangeStart);
 	}
+	
+	/** Linearly normalizes value from a range. Range must not be empty. This is the inverse of {@link #lerp(float, float, float)}.
+	 * @param rangeStart Range start normalized to 0
+	 * @param rangeEnd Range end normalized to 1
+	 * @param value Value to normalize
+	 * @return Normalized value. Values outside of the range are not clamped to 0 and 1 */
+	static public float norm (double rangeStart, double rangeEnd, double value) {
+		return (value - rangeStart) / (rangeEnd - rangeStart);
+	}
 
 	/** Linearly map a value from one range to another. Input range must not be empty. This is the same as chaining
 	 * {@link #norm(float, float, float)} from input range and {@link #lerp(float, float, float)} to output range.
