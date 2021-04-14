@@ -548,6 +548,10 @@ public class DefaultShader extends BaseShader {
 		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
+		if (renderable.bones != null && renderable.bones.length > config.numBones) {
+			throw new GdxRuntimeException("too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
+		}
+
 		// Global uniforms
 		u_projTrans = register(Inputs.projTrans, Setters.projTrans);
 		u_viewTrans = register(Inputs.viewTrans, Setters.viewTrans);
