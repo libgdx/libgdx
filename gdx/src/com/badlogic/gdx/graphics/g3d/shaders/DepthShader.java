@@ -123,6 +123,7 @@ public class DepthShader extends DefaultShader {
 
 	@Override
 	public boolean canRender (Renderable renderable) {
+		if (renderable.bones != null && renderable.bones.length > numBones) return false;
 		final Attributes attributes = combineAttributes(renderable);
 		if (attributes.has(BlendingAttribute.Type)) {
 			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type)
