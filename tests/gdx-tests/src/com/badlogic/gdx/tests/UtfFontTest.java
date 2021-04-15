@@ -23,7 +23,9 @@ public class UtfFontTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, "test ⌘", 29, 20);
+		font.draw(batch, "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØŒŠþÙÚÛÜÝŸ\n" +
+				"àáâãäåæçèéêëìíîïðñòóôõöøœšÞùúûüýÿ\n", 20, 200);
+		font.draw(batch, "⌘  ¢ß¥£™©®ª×÷±²³¼½¾µ¿¶·¸º°¯§…¤¦≠¬ˆ¨‰", 20, 100);
 		batch.end();
 	}
 }
