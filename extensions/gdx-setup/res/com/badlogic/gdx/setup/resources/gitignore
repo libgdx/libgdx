@@ -33,8 +33,6 @@ com_crashlytics_export_strings.xml
 
 ## Eclipse
 
-.classpath
-.project
 .metadata/
 /android/bin/
 /core/bin/
@@ -45,7 +43,6 @@ com_crashlytics_export_strings.xml
 *.bak
 *.swp
 *~.nib
-.settings/
 .loadpath
 .externalToolBuilders/
 *.launch
