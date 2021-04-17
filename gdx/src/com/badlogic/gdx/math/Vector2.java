@@ -115,7 +115,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		 final float len2 = len2();
 		 if (MathUtils.isEqual(len2, 1f) || MathUtils.isZero(len2))
 			  return this;
-		 return this.scl(1 / len());
+		 return this.scl(1f / (float)Math.sqrt(len2));
 	}
 
 	@Override

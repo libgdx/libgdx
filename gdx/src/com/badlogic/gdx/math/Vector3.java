@@ -301,7 +301,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float len2 = this.len2();
 		if(MathUtils.isEqual(len2, 1f) || MathUtils.isZero(len2))
 			 return this;
-		return this.scl(1f / len());
+		 return this.scl(1f / (float)Math.sqrt(len2));
 	}
 
 	/** @return The dot product between the two vectors */
