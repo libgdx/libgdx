@@ -113,7 +113,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	@Override
 	public Vector2 nor () {
 		 final float len2 = len2();
-		 if (MathUtils.isZero(len2) || MathUtils.isEqual(len2, 1f))
+		 if (MathUtils.isEqual(len2, 1f) || MathUtils.isZero(len2))
 			  return this;
 		 return this.scl(1 / len());
 	}
