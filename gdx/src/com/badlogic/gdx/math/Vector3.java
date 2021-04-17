@@ -299,8 +299,9 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	@Override
 	public Vector3 nor () {
 		final float len2 = this.len2();
-		if (len2 == 0f || len2 == 1f) return this;
-		return this.scl(1f / (float)Math.sqrt(len2));
+		if(MathUtils.isZero(len2) || MathUtils.isEqual(len2,1f))
+			 return this;
+		return this.scl(1f / len());
 	}
 
 	/** @return The dot product between the two vectors */
