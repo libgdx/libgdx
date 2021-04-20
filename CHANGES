@@ -1,4 +1,4 @@
-[1.9.15]
+[1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
 - [BREAKING CHANGE] tvOS libraries have been removed. No migration steps required.
 - [BREAKING CHANGE] Linux x86 (32-bit) support has been removed. No migration steps required.
