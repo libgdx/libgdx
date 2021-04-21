@@ -109,6 +109,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		}
 		AL.createCapabilities(deviceCapabilities);
 
+		alGetError();
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
 			int sourceID = alGenSources();

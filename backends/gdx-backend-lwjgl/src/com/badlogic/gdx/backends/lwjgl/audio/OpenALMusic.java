@@ -76,6 +76,7 @@ public abstract class OpenALMusic implements Music {
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				int errorCode = alGetError();
 				if (errorCode != AL_NO_ERROR)
@@ -83,6 +84,8 @@ public abstract class OpenALMusic implements Music {
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+
+			alGetError();
 
 			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {
@@ -136,7 +139,9 @@ public abstract class OpenALMusic implements Music {
 		return isLooping;
 	}
 
+	/** @param volume Must be > 0. */
 	public void setVolume (float volume) {
+		if (volume < 0) throw new IllegalArgumentException("volume cannot be < 0: " + volume);
 		this.volume = volume;
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
