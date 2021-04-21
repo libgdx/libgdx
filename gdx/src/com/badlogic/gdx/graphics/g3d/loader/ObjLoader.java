@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,14 +48,14 @@ import com.badlogic.gdx.utils.FloatArray;
 /** {@link ModelLoader} to load Wavefront OBJ files. Only intended for testing basic models/meshes and educational usage. The
  * Wavefront specification is NOT fully implemented, only a subset of the specification is supported. Especially the
  * {@link Material} ({@link Attributes}), e.g. the color or texture applied, might not or not correctly be loaded.</p>
- *
+ * 
  * This {@link ModelLoader} can be used to load very basic models without having to convert them to a more suitable format.
  * Therefore it can be used for educational purposes and to quickly test a basic model, but should not be used in production.
  * Instead use {@link G3dModelLoader}.</p>
- *
+ * 
  * Because of above reasons, when an OBJ file is loaded using this loader, it will log and error. To prevent this error from being
  * logged, set the {@link #logWarning} flag to false. However, it is advised not to do so.</p>
- *
+ * 
  * An OBJ file only contains the mesh (shape). It may link to a separate MTL file, which is used to describe one or more
  * materials. In that case the MTL filename (might be case-sensitive) is expected to be located relative to the OBJ file. The MTL
  * file might reference one or more texture files, in which case those filename(s) are expected to be located relative to the MTL
