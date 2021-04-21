@@ -115,7 +115,7 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		}
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
-		MediaPlayer mediaPlayer = new MediaPlayer();
+		MediaPlayer mediaPlayer = createMediaPlayer();
 
 		if (aHandle.type() == FileType.Internal) {
 			try {
@@ -159,8 +159,8 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		if (soundPool == null) {
 			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
 		}
-		
-		MediaPlayer mediaPlayer = new MediaPlayer();
+
+		MediaPlayer mediaPlayer = createMediaPlayer();
 
 		try {
 			mediaPlayer.setDataSource(fd);
@@ -233,5 +233,18 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		synchronized (musics) {
 			musics.remove(this);
 		}
+	}
+	
+	protected MediaPlayer createMediaPlayer() {
+		MediaPlayer mediaPlayer = new MediaPlayer();
+		if (Build.VERSION.SDK_INT <= 21) {
+			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		} else {
+			mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+				.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+				.setUsage(AudioAttributes.USAGE_GAME)
+				.build());
+		}
+		return mediaPlayer;
 	}
 }
