@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,16 +14,32 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
-jnigen {
-    sharedLibName = "gdx-box2d"
-    add(Windows, x32)
-    add(Windows, x64)
-    add(Linux, x64)
-    add(Linux, x32, ARM)
-    add(Linux, x64, ARM)
-    add(MacOsX, x64)
-    add(MacOsX, x64, ARM)
-    add(Android)
-    add(IOS)
+package com.badlogic.gdx.tools.flame;
+
+import com.badlogic.gdx.graphics.GL20;
+
+enum BlendFunction {
+	ZERO(GL20.GL_ZERO),
+	ONE(GL20.GL_ONE),
+	SRC_ALPHA(GL20.GL_SRC_ALPHA),
+	SRC_COLOR(GL20.GL_SRC_COLOR),
+	DST_ALPHA(GL20.GL_DST_ALPHA),
+	DST_COLOR(GL20.GL_DST_COLOR),
+	ONE_MINUS_SRC_COLOR(GL20.GL_ONE_MINUS_SRC_COLOR),
+	ONE_MINUS_SRC_ALPHA(GL20.GL_ONE_MINUS_SRC_ALPHA),
+	ONE_MINUS_DST_COLOR(GL20.GL_ONE_MINUS_DST_COLOR),
+	ONE_MINUS_DST_ALPHA(GL20.GL_ONE_MINUS_DST_ALPHA);
+
+	public int blend;
+
+	private BlendFunction (int blend) {
+		this.blend = blend;
+	}
+
+	public static BlendFunction find (int function) {
+		for (BlendFunction func : values()) {
+			if (func.blend == function) return func;
+		}
+		return null;
+	}
 }

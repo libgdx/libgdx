@@ -279,6 +279,7 @@ public class GdxTests {
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
+		UtfFontTest.class,
 		VBOWithVAOPerformanceTest.class,
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,

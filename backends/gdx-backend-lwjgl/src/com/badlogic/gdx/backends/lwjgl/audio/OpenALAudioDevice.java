@@ -89,6 +89,7 @@ public class OpenALAudioDevice implements AudioDevice {
 			if (sourceID == -1) return;
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
 			}

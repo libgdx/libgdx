@@ -18,7 +18,7 @@ apply from: "gradle/dependencies.gradle"
 
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.9.15-SNAPSHOT'
+    version = '1.10.0-SNAPSHOT'
 
     buildscript {
         repositories {
@@ -30,7 +30,7 @@ allprojects {
             maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         }
         dependencies {
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.1.4"
+            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
         }
     }
 

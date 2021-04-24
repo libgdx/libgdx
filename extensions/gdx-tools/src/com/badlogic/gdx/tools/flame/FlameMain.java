@@ -265,6 +265,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 				addRow(editorPropertiesPanel, new DrawPanel(FlameMain.this, "Draw", ""));
 				addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
 				addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
+				addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
 				editorPropertiesPanel.repaint();
 				
 				//Controller props
@@ -351,7 +352,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 	protected JPanel getPanel (ParticleBatch renderer) {
 		if(renderer instanceof PointSpriteParticleBatch){
-			return new EmptyPanel(this, "Point Sprite Batch", "It renders particles as point sprites.");
+			return new PointSpriteBatchPanel(this, (PointSpriteParticleBatch) renderer);
 		}
 		if(renderer instanceof BillboardParticleBatch){
 			return new BillboardBatchPanel(this, (BillboardParticleBatch) renderer);

@@ -65,6 +65,14 @@ public class Lwjgl3TestStarter {
 			config.useOpenGL3(true, 3, 2);
 		}
 
+		if (options.startupTestName != null) {
+			ApplicationListener test = GdxTests.newTest(options.startupTestName);
+			if (test != null) {
+				new Lwjgl3Application(test, config);
+				return;
+			}
+			// Otherwise, fall back to showing the list
+		}
 		new Lwjgl3Application(new TestChooser(), config);
 	}
 

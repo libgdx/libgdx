@@ -61,6 +61,9 @@ jnigen {
     add(MacOsX, x64) {
         linkerFlags += " -framework CoreServices -framework Carbon"
     }
+    add(MacOsX, x64, ARM) {
+        linkerFlags += " -framework CoreServices -framework Carbon"
+    }
     add(Android)
     add(IOS)
 }

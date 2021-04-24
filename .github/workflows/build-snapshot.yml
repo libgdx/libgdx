@@ -85,7 +85,7 @@ jobs:
           sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildMacOsX64     
+          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
 
       - name: Pack artifacts
         run: |
