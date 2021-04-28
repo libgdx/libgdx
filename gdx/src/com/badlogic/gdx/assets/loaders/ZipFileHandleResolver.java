@@ -16,16 +16,23 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.files.ZipFileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import java.io.IOException;
 import java.util.zip.ZipFile;
 
 public class ZipFileHandleResolver implements FileHandleResolver {
 	private final ZipFile archive;
 
-	public ZipFileHandleResolver (ZipFile archive) {
-		this.archive = archive;
+	public ZipFileHandleResolver (String path) {
+		try {
+			this.archive = new ZipFile(path);
+		} catch (IOException exc) {
+			throw new GdxRuntimeException("Error while creating a ZipFile: " + path, exc);
+		}
 	}
 
 	@Override

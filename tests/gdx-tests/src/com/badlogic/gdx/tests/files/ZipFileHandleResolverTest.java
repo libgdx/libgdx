@@ -60,18 +60,14 @@ public class ZipFileHandleResolverTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		try {
-			ZipFile archive = new ZipFile(Gdx.files.internal(ZIP_FILE_PATH).file());
-			ZipFileHandleResolver resolver = new ZipFileHandleResolver(archive);
-			assetManager = new AssetManager(resolver);
-			assetManager.setLoader(TiledMap.class, new TmxMapLoader(resolver));
-			assetManager.load(MAP_FILE_NAME, TiledMap.class);
-			assetManager.finishLoading();
-			map = assetManager.get(MAP_FILE_NAME);
-			renderer = new OrthogonalTiledMapRenderer(map, 1f / 64f);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String path = Gdx.files.internal(ZIP_FILE_PATH).path();
+		ZipFileHandleResolver resolver = new ZipFileHandleResolver(path);
+		assetManager = new AssetManager(resolver);
+		assetManager.setLoader(TiledMap.class, new TmxMapLoader(resolver));
+		assetManager.load(MAP_FILE_NAME, TiledMap.class);
+		assetManager.finishLoading();
+		map = assetManager.get(MAP_FILE_NAME);
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 64f);
 	}
 
 	@Override
