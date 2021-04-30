@@ -68,6 +68,8 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 	private float[] vertices;
 	Renderable renderable;
+	protected BlendingAttribute blendingAttribute;
+	protected DepthTestAttribute depthTestAttribute;
 
 	public PointSpriteParticleBatch () {
 		this(1000);
@@ -78,9 +80,21 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	}
 	
 	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig) {
+		this(capacity, shaderConfig, null, null);
+	}
+
+	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig, BlendingAttribute blendingAttribute,
+		DepthTestAttribute depthTestAttribute) {
 		super(PointSpriteControllerRenderData.class);
 
 		if (!pointSpritesEnabled) enablePointSprites();
+
+		this.blendingAttribute = blendingAttribute;
+		this.depthTestAttribute = depthTestAttribute;
+
+		if (this.blendingAttribute == null)
+			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
+		if (this.depthTestAttribute == null) this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
 
 		allocRenderable();
 		ensureCapacity(capacity);
@@ -99,8 +113,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_POINTS;
 		renderable.meshPart.offset = 0;
-		renderable.material = new Material(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
-			new DepthTestAttribute(GL20.GL_LEQUAL, false), TextureAttribute.createDiffuse((Texture)null));
+		renderable.material = new Material(blendingAttribute, depthTestAttribute, TextureAttribute.createDiffuse((Texture)null));
 	}
 
 	public void setTexture (Texture texture) {
@@ -111,6 +124,10 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	public Texture getTexture () {
 		TextureAttribute attribute = (TextureAttribute)renderable.material.get(TextureAttribute.Diffuse);
 		return attribute.textureDescription.texture;
+	}
+
+	public BlendingAttribute getBlendingAttribute () {
+		return blendingAttribute;
 	}
 
 	@Override

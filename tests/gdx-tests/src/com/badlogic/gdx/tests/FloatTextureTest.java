@@ -29,7 +29,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTestConfig;
 
+@GdxTestConfig(requireGL30=true)
 public class FloatTextureTest extends GdxTest {
 	FrameBuffer fb;
 	FloatFrameBuffer ffb;

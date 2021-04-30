@@ -118,7 +118,7 @@ public class Lwjgl3WindowConfiguration {
 	}
 
 	/**
-	 * @param autoIconify whether the window should automatically iconify and restore previous video mode on input focus loss. (default false)
+	 * @param autoIconify whether the window should automatically iconify and restore previous video mode on input focus loss. (default true)
 	 *                    Does nothing in windowed mode.
 	 */
 	public void setAutoIconify (boolean autoIconify) {

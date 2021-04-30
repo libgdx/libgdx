@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
@@ -224,16 +225,8 @@ public class IOSGraphics extends AbstractGraphics {
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width;
-			final int height;
-			if (config.hdpiMode == HdpiMode.Pixels) {
-				width = screenBounds.backBufferWidth;
-				height = screenBounds.backBufferHeight;
-			} else {
-				width = screenBounds.width;
-				height = screenBounds.height;
-			}
-			gl20.glViewport(0, 0, width, height);
+			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
@@ -242,7 +235,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 			updateSafeInsets();
 			app.listener.create();
-			app.listener.resize(width, height);
+			app.listener.resize(getWidth(), getHeight());
 			created = true;
 		}
 		if (appPaused) {

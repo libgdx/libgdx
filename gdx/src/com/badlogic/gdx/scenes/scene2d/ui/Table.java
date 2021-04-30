@@ -1172,14 +1172,16 @@ public class Table extends WidgetGroup {
 	private void addDebugRects (float currentX, float currentY, float width, float height) {
 		clearDebugRects();
 		if (debug == Debug.table || debug == Debug.all) {
+			// Table actor bounds.
 			addDebugRect(0, 0, getWidth(), getHeight(), debugTableColor);
-			addDebugRect(currentX, currentY, width, height, debugTableColor);
+			// Table bounds.
+			addDebugRect(currentX, getHeight() - currentY, width, -height, debugTableColor);
 		}
 		float x = currentX;
 		for (int i = 0, n = cells.size; i < n; i++) {
 			Cell c = cells.get(i);
 
-			// Actor bounds.
+			// Cell actor bounds.
 			if (debug == Debug.actor || debug == Debug.all)
 				addDebugRect(c.actorX, c.actorY, c.actorWidth, c.actorHeight, debugActorColor);
 
@@ -1190,8 +1192,9 @@ public class Table extends WidgetGroup {
 			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
-				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth,
-					rowHeight[c.row] - c.computedPadTop - c.computedPadBottom, debugCellColor);
+				float h = rowHeight[c.row] - c.computedPadTop - c.computedPadBottom;
+				float y = currentY + c.computedPadTop;
+				addDebugRect(currentX, getHeight() - y, spannedCellWidth, -h, debugCellColor);
 			}
 
 			if (c.endRow) {

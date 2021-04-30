@@ -76,13 +76,13 @@ public final class MathUtils {
 		return Sin.table[(int)((radians + HALF_PI) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
