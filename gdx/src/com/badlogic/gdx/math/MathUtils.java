@@ -59,11 +59,8 @@ public final class MathUtils {
 		static {
 			for (int i = 0; i < SIN_COUNT; i++)
 				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
-			// Calculating the radians from degrees is just a little imprecise; this
-			// was slightly off for 180 degrees (giving -8.742278E-8 instead of 0).
-			// It's easier to understand to assign the exact values like this.
-			// Only these right angles are given the most precise measurement, so
-			// other angles should be compared with a tolerance.
+			// The four right angles get extra-precise values, because they are
+			// the most likely to need to be correct.
 			table[0] = 0f;
 			table[(int)(90 * degToIndex) & SIN_MASK] = 1f;
 			table[(int)(180 * degToIndex) & SIN_MASK] = 0f;
