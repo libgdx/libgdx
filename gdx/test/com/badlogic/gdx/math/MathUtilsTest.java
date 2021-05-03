@@ -59,4 +59,20 @@ public class MathUtilsTest {
 			assertTrue((r = MathUtils.random(-8L, -1L)) <= -1L && r >= -8L);
 		}
 	}
+
+	@Test
+	public void testSinDeg() {
+		assertEquals(0f, MathUtils.sinDeg(0f), Float.MIN_NORMAL);
+		assertEquals(1f, MathUtils.sinDeg(90f), Float.MIN_NORMAL);
+		assertEquals(0f, MathUtils.sinDeg(180f), Float.MIN_NORMAL);
+		assertEquals(-1f, MathUtils.sinDeg(270f), Float.MIN_NORMAL);
+	}
+
+	@Test
+	public void testCosDeg() {
+		assertEquals(1f, MathUtils.cosDeg(0f), Float.MIN_NORMAL);
+		assertEquals(0f, MathUtils.cosDeg(90f), Float.MIN_NORMAL);
+		assertEquals(-1f, MathUtils.cosDeg(180f), Float.MIN_NORMAL);
+		assertEquals(0f, MathUtils.cosDeg(270f), Float.MIN_NORMAL);
+	}
 }
