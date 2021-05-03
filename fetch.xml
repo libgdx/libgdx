@@ -7,6 +7,9 @@
 
     <property name="robovm-version" value="2.3.12"/>
 
+    <property name="jnigen" value="https://oss.sonatype.org/content/repositories/releases/com/badlogicgames/gdx"/>
+    <property name="jnigen-version" value="2.2.0"/>
+
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
     <property name="lwjgl-version" value="3.2.3"/>
     
@@ -82,6 +85,8 @@
     <target name="fetch-gdx">
         <get src="${gdx-natives}" dest="./"/>   
         <unzip src="natives.zip" dest="./"/>  
+
+        <get src="${jnigen}/gdx-jnigen-loader/${jnigen-version}/gdx-jnigen-loader-${jnigen-version}.jar" dest="gdx/libs/gdx-jnigen-loader.jar"/>
 
         <!-- copy all natives to android tests -->
 		<copy todir="tests/gdx-tests-android/libs/armeabi-v7a">

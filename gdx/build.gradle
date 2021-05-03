@@ -30,6 +30,7 @@ compileJava {
 
 dependencies {
     testCompile libraries.junit
+    compile "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
 }
 
 test {
@@ -61,6 +62,7 @@ jnigen {
         linkerFlags += " -llog"
     }
     add(MacOsX, x64)
+    add(MacOsX, x64, ARM)
     add(IOS) {
         headerDirs = ["iosgl"]
         cppExcludes = []
