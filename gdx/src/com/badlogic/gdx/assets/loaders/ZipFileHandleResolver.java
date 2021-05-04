@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.files.ZipFileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
