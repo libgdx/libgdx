@@ -3,8 +3,6 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ListModel;
-
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -12,17 +10,20 @@ import com.badlogic.gdx.utils.Array;
  * 
  * options:
  * --gl30 enable GLES 3.2 (default is GLES 2.0)
+ * --glErrors enable GLProfiler and log any GL errors. (default is disabled)
  */
 public class CommandLineOptions {
 	
 	public String startupTestName = null;
 	public boolean gl30 = false;
+	public boolean logGLErrors = false;
 	
 	public CommandLineOptions (String [] argv) {
 		Array<String> args = new Array<String>(argv);
 		for(String arg : args){
 			if(arg.startsWith("-")){
 				if(arg.equals("--gl30")) gl30 = true;
+				else if(arg.equals("--glErrors")) logGLErrors = true;
 				else System.err.println("skip unrecognized option " + arg);
 			}else{
 				startupTestName = arg;

@@ -76,13 +76,13 @@ public final class MathUtils {
 		return Sin.table[(int)((radians + HALF_PI) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
@@ -108,16 +108,40 @@ public final class MathUtils {
 		return y < 0f ? atan - PI : atan;
 	}
 
-	/** Returns acos in radians, less accurate than Math.acos but may be faster. */
-	static public float acos (float a) {
-		return 1.5707963267948966f - (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
-			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians
+	 * (0.0016300649 degrees), largest error of 0.000067548 radians (0.0038702153 degrees). This implementation does not
+	 * return NaN if given an out-of-range input (Math.acos does return NaN), unless the input is NaN.
+	 * @param a acos is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code 0} and {@code PI} when a is in the defined range */
+	static public float acos(float a) {
+		float a2 = a * a;  // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return (float) Math.sqrt(1f - a) *
+					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		}
+		else {
+			return 3.14159265358979323846f - (float) Math.sqrt(1f + a) *
+					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+		}
 	}
 
-	/** Returns asin in radians, less accurate than Math.asin but may be faster. */
-	static public float asin (float a) {
-		return (a * (1f + (a *= a) * (-0.141514171442891431f + a * -0.719110791477959357f)))
-			/ (1f + a * (-0.439110389941411144f + a * -0.471306172023844527f));
+	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians
+	 * (0.0016298931 degrees), largest error of 0.000067592 radians (0.0038727364 degrees). This implementation does not
+	 * return NaN if given an out-of-range input (Math.asin does return NaN), unless the input is NaN.
+	 * @param a asin is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code -HALF_PI} and {@code HALF_PI} when a is in the defined range */
+	static public float asin(float a) {
+		float a2 = a * a;  // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return 1.5707963267948966f - (float) Math.sqrt(1f - a) *
+					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		}
+		else {
+			return -1.5707963267948966f + (float) Math.sqrt(1f + a) *
+					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+		}
 	}
 
 	// ---
@@ -136,12 +160,28 @@ public final class MathUtils {
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public long random (long range) {
-		return (long)(random.nextDouble() * range);
+		// Uses the lower-bounded overload defined below, which is simpler and doesn't lose much optimization.
+		return random(0L, range);
 	}
 
 	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public long random (long start, long end) {
-		return start + (long)(random.nextDouble() * (end - start));
+		final long rand = random.nextLong();
+		// In order to get the range to go from start to end, instead of overflowing after end and going
+		// back around to start, start must be less than end.
+		if(end < start) {
+			long t = end;
+			end = start;
+			start = t;
+		}
+		long bound = end - start + 1L; // inclusive on end
+		// Credit to https://oroboro.com/large-random-in-range/ for the following technique
+		// It's a 128-bit-product where only the upper 64 of 128 bits are used.
+		final long randLow = rand & 0xFFFFFFFFL;
+		final long boundLow = bound & 0xFFFFFFFFL;
+		final long randHigh = (rand >>> 32);
+		final long boundHigh = (bound >>> 32);
+		return start + (randHigh * boundLow >>> 32) + (randLow * boundHigh >>> 32) + randHigh * boundHigh;
 	}
 
 	/** Returns a random boolean value. */

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl.audio;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -88,6 +89,7 @@ public class OpenALAudioDevice implements AudioDevice {
 			if (sourceID == -1) return;
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
 			}
@@ -98,8 +100,8 @@ public class OpenALAudioDevice implements AudioDevice {
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				int written = Math.min(bufferSize, length);
-				tempBuffer.clear();
-				tempBuffer.put(data, offset, written).flip();
+				((Buffer) tempBuffer).clear();
+				((Buffer) tempBuffer.put(data, offset, written)).flip();
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
 				alSourceQueueBuffers(sourceID, bufferID);
 				length -= written;
@@ -107,7 +109,7 @@ public class OpenALAudioDevice implements AudioDevice {
 				queuedBuffers++;
 			}
 			// Queue rest of buffers, empty.
-			tempBuffer.clear().flip();
+			((Buffer) tempBuffer).clear().flip();
 			for (int i = queuedBuffers; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
@@ -136,8 +138,8 @@ public class OpenALAudioDevice implements AudioDevice {
 				if (bufferID == AL_INVALID_VALUE) break;
 				renderedSeconds += secondsPerBuffer;
 
-				tempBuffer.clear();
-				tempBuffer.put(data, offset, written).flip();
+				((Buffer) tempBuffer).clear();
+				((Buffer) tempBuffer.put(data, offset, written)).flip();
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
 
 				alSourceQueueBuffers(sourceID, bufferID);

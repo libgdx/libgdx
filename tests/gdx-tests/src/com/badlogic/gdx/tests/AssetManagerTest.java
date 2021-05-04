@@ -39,7 +39,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
@@ -151,7 +150,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 				System.out.println("took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 				elapsed = 0;
 			} else {
-				elapsed += Gdx.graphics.getRawDeltaTime();
+				elapsed += Gdx.graphics.getDeltaTime();
 				if (elapsed > 0.2f) {
 					unload();
 					load();

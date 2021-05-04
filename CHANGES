@@ -1,11 +1,48 @@
-[1.9.13]
+[1.10.1]
+- API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
+- API Addition: PointSpriteParticleBatch blending is now configurable.
+- TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
 - API Addition: Octree structure
+
+[1.10.0]
+- [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
+- [BREAKING CHANGE] tvOS libraries have been removed. No migration steps required.
+- [BREAKING CHANGE] Linux x86 (32-bit) support has been removed. No migration steps required.
+- [BREAKING CHANGE] Requires Java 7 or above.
+- [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
+- [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
+- [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
+- API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
+- Fix for #6377 Gdx.net.openURI not working with targetSdk 30
+- Api Addition: Added a Pool#discard(T) method.
+- Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
+- API Addition: Desktop Sound now returns number of channels and sample rate.
+
+[1.9.14]
+- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
+- [BREAKING CHANGE] InputEventQueue no longer implements InputProcessor, pass InputProcessor to #drain.
+- [BREAKING CHANGE] HeadlessApplicationConfiguration#renderInterval was changed to #updatesPerSecond
+- API addition: Added Pixmap#setPixels(ByteBuffer).
+- API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
+- API Addition: Added overridable createFiles() methods to backend application classes to allow initializing custom module implementations.
+- API Addition: Add a Graphics#setForegroundFPS() method.
+
+[1.9.13]
+- [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
+- [BREAKING CHANGE] TextureAtlas.AtlasRegion and Region splits and pads fields have been removed and moved to name/value pairs, use #findValue("split") and #findValue("pad") instead.
+- iOS: Update to MobiVM 2.3.12
 - GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
 - Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
 - API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
 - TOOLS Features: Blending mode can be changed in Flame particle 3D editor.
-- Input Keycodes added: CAPS_LOCK, PAUSE (aka Break), PRINT_SCREEN, SCROLL_LOCK, F13 to F24, NUMPAD_DIVIDE, NUMPAD_MULTIPLY, NUMPAD_SUBTRACT, NUMPAD_ADD, NUMPAD_DOT, NUMPAD_COMMA, NUMPAD_ENTER, NUMPAD_EQUALS, NUMPAD_LEFT_PAREN, NUMPAD_RIGHT_PAREN, NUM_LOCK. 
+- Input Keycodes added: CAPS_LOCK, PAUSE (aka Break), PRINT_SCREEN, SCROLL_LOCK, F13 to F24, NUMPAD_DIVIDE, NUMPAD_MULTIPLY, NUMPAD_SUBTRACT, NUMPAD_ADD, NUMPAD_DOT, NUMPAD_COMMA, NUMPAD_ENTER, NUMPAD_EQUALS, NUMPAD_LEFT_PAREN, NUMPAD_RIGHT_PAREN, NUM_LOCK.
   Following changes might be done depending on platform: Keys.STAR to Keys.NUMPAD_MULTIPLY, Keys.SLASH to Keys.NUMPAD_DIVIDE, Keys.NUM to Keys.NUM_LOCK, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.PERIOD to Keys.NUMPAD_DOT, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.ENTER to Keys.NUMPAD_ENTER, Keys.PLUS to Keys.NUMPAD_ADD, Keys.MINUS to Keys.NUMPAD_SUBTRACT
+- Added a QuadFloatTree class.
+- Desktop: Cubemap Seamless feature is now enabled by default when supported, can be changed via backend specific methods, see supportsCubeMapSeamless and enableCubeMapSeamless in both LwjglGraphics and Lwjgl3Graphics.
+- API Addition: TextureAtlas reads arbitrary name/value pairs for each region. See #6316.
+- TexturePacker writes using a new format when legacyOutput is false (default is true). TextureAtlas can read both old and new formats. See #6316.
 
 [1.9.12]
 - [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.

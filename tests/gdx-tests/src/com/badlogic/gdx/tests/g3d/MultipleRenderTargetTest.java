@@ -26,11 +26,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelCache;
@@ -49,7 +47,6 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
-import com.badlogic.gdx.graphics.glutils.GLOnlyTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
@@ -57,13 +54,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.utils.StringBuilder;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 /** MRT test compliant with GLES 3.0, with per pixel lighting and normal and specular mapping.
  * Thanks to http://www.blendswap.com/blends/view/73922 for the cannon model, licensed under CC-BY-SA
@@ -211,8 +201,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 	public void render () {
 		track += Gdx.graphics.getDeltaTime();
 
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		ScreenUtils.clear(0f, 0f, 0f, 1f, true);
 
 		cameraController.update(Gdx.graphics.getDeltaTime());
 
@@ -384,7 +373,6 @@ public class MultipleRenderTargetTest extends GdxTest {
 		RenderContext context;
 
 		Matrix3 matrix3 = new Matrix3();
-		static Attributes tmpAttributes = new Attributes();
 
 		public MRTShader (Renderable renderable) {
 			String prefix = "";
@@ -398,8 +386,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 			if (!shaderProgram.isCompiled()) {
 				throw new GdxRuntimeException(shaderProgram.getLog());
 			}
-			renderable.material.set(tmpAttributes);
-			attributes = tmpAttributes.getMask();
+			attributes = renderable.material.getMask();
 		}
 
 		@Override

@@ -2,7 +2,9 @@
 <module rename-to="com.badlogic.gdx">
 	<source path="gdx">
 	    
-	<!--  --> 
+	<!--  -->
+		<include name="AbstractGraphics.java"/>
+		<include name="AbstractInput.java"/>
 		<include name="Application.java"/>
 		<include name="ApplicationAdapter.java"/>
 		<include name="ApplicationListener.java"/>
@@ -448,6 +450,7 @@
 		<include name="utils/Predicate.java"/>
 		<include name="utils/PropertiesUtils.java"/>
 		<include name="utils/Queue.java"/>
+		<include name="utils/QuadTreeFloat.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>

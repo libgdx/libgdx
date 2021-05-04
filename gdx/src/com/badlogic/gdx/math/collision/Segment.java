@@ -19,9 +19,8 @@ package com.badlogic.gdx.math.collision;
 import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.NumberUtils;
 
-/** A Segment is a line in 3-space having a staring and an ending position.
+/** A Segment is a line in 3-space having a starting and an ending position.
  * 
  * @author mzechner */
 public class Segment implements Serializable {

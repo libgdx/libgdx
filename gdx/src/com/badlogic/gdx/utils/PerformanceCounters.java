@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 
 /** @author xoppa */
 public class PerformanceCounters {
-	private final static float nano2seconds = 1f / 1000000000.0f;
+	private final static float nano2seconds = MathUtils.nanoToSec;
 
 	private long lastTick = 0L;
 	public final Array<PerformanceCounter> counters = new Array<PerformanceCounter>();

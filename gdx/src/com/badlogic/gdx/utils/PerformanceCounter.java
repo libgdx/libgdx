@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.FloatCounter;
-import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.math.MathUtils;
 
 /** Class to keep track of the time and load (percentage of total time) a specific task takes. Call {@link #start()} just before
  * starting the task and {@link #stop()} right after. You can do this multiple times if required. Every render or update call
@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.WindowedMean;
  * total and current time (in seconds) the task takes. Likewise for the {@link #load} value, which is the percentage of the total time.
  * @author xoppa */
 public class PerformanceCounter {
-	private final static float nano2seconds = 1f / 1000000000.0f;
+	private final static float nano2seconds = MathUtils.nanoToSec;
 	private long startTime = 0L;
 	private long lastTick = 0L;
 

@@ -188,15 +188,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Removes all tree nodes. */
-	public void clearChildren () {
-		super.clearChildren();
+	public void clearChildren (boolean unfocus) {
+		super.clearChildren(unfocus);
 		setOverNode(null);
 		rootNodes.clear();
 		selection.clear();
-	}
-
-	public Array<N> getNodes () {
-		return rootNodes;
 	}
 
 	public void invalidate () {
@@ -272,8 +268,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	public void draw (Batch batch, float parentAlpha) {
 		drawBackground(batch, parentAlpha);
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		draw(batch, rootNodes, paddingLeft, plusMinusWidth());
+		float a = color.a * parentAlpha;
+		batch.setColor(color.r, color.g, color.b, a);
+		draw(batch, color.r, color.g, color.b, a, rootNodes, paddingLeft, plusMinusWidth());
 		super.draw(batch, parentAlpha); // Draw node actors.
 	}
 
@@ -287,7 +284,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Draws selection, icons, and expand icons. */
-	private void draw (Batch batch, Array<N> nodes, float indent, float plusMinusWidth) {
+	private void draw (Batch batch, float r, float g, float b, float a, Array<N> nodes, float indent, float plusMinusWidth) {
 		Rectangle cullingArea = getCullingArea();
 		float cullBottom = 0, cullTop = 0;
 		if (cullingArea != null) {
@@ -309,9 +306,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
-					batch.setColor(actor.getColor());
+					Color actorColor = actor.getColor();
+					batch.setColor(actorColor.r, actorColor.g, actorColor.b, actorColor.a * a);
 					drawIcon(node, node.icon, batch, iconX, iconY);
-					batch.setColor(1, 1, 1, 1);
+					batch.setColor(r, g, b, a);
 				}
 
 				if (node.children.size > 0) {
@@ -322,7 +320,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			} else if (actorY < cullBottom) {
 				return;
 			}
-			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
+			if (node.expanded && node.children.size > 0)
+				draw(batch, r, g, b, a, node.children, indent + indentSpacing, plusMinusWidth);
 		}
 	}
 
@@ -419,6 +418,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	/** If the order of the root nodes is changed, {@link #updateRootNodes()} must be called to ensure the nodes' actors are in the
 	 * correct order. */
 	public Array<N> getRootNodes () {
+		return rootNodes;
+	}
+
+	/** @deprecated Use {@link #getRootNodes()}. */
+	@Deprecated
+	public Array<N> getNodes () {
 		return rootNodes;
 	}
 
