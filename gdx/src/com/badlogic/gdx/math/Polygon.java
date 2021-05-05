@@ -119,6 +119,17 @@ public class Polygon implements Shape2D {
 		dirty = true;
 	}
 
+	 /** Set vertex position
+	  *
+	  * @param vertexNum min=0, max=(vertices/2)-1
+	  * @throws IllegalArgumentException if vertex doesnt exist */
+	 public void setVertex (int vertexNum, float x, float y) {
+		  if (vertexNum > localVertices.length / 2 -1) throw new IllegalArgumentException("the vertex " + vertexNum + "doesn't exist");
+		  localVertices[2 * vertexNum] = x;
+		  localVertices[2 * vertexNum + 1] = y;
+		  dirty = true;
+	 }
+
 	/** Translates the polygon's position by the specified horizontal and vertical amounts. */
 	public void translate (float x, float y) {
 		this.x += x;
