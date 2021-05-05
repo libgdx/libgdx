@@ -121,12 +121,13 @@ public class Polygon implements Shape2D {
 
 	 /** Set vertex position
 	  *
-	  * @param vertexNum min=0, max=(vertices/2)-1
+	  * @param index min=0, max=vertices.length/2-1
 	  * @throws IllegalArgumentException if vertex doesnt exist */
-	 public void setVertex (int vertexNum, float x, float y) {
-		  if (vertexNum > localVertices.length / 2 -1) throw new IllegalArgumentException("the vertex " + vertexNum + "doesn't exist");
-		  localVertices[2 * vertexNum] = x;
-		  localVertices[2 * vertexNum + 1] = y;
+	 public void setVertex (int index, float x, float y) {
+		  if (index < 0 || index > localVertices.length / 2 - 1)
+				throw new IllegalArgumentException("the vertex " + index + " doesn't exist");
+		  localVertices[2 * index] = x;
+		  localVertices[2 * index + 1] = y;
 		  dirty = true;
 	 }
 
