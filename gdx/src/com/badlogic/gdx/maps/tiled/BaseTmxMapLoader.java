@@ -682,14 +682,4 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		tile.setOffsetY(flipY ? -offsetY : offsetY);
 		tileSet.putTile(tileId, tile);
 	}
-
-	protected FileHandle getSourceTextureRegionFileHandle (FileHandle tmxFile, String source, Element imageElement) {
-		String imageSource = imageElement.getAttribute("source");
-		
-		if (source != null) {
-			return getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
-		} else {
-			return getRelativeFileHandle(tmxFile, imageSource);
-		}
-	}	
 }

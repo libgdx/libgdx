@@ -191,7 +191,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			for (Element tileElement : tileElements) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
-					image = getSourceTextureRegionFileHandle(tmxFile, source, imageElement);
+					imageSource = imageElement.getAttribute("source");
+
+					if (source != null) {
+						image = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
+					} else {
+						image = getRelativeFileHandle(tmxFile, imageSource);
+					}
 				}
 				TextureRegion texture = imageResolver.getImage(image.path());
 				int tileId = firstgid + tileElement.getIntAttribute("id");

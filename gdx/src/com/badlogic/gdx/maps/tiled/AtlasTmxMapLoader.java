@@ -195,15 +195,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 				if (imageElement != null) {
 					// Try to get the region from the atlas first
 					TextureRegion region = atlas.findRegion(regionsName, tileId);
-
-					if (region == null) {
-						// Texture region not found on atlas, try "source" location next
-						FileHandle imageFileHandle = getSourceTextureRegionFileHandle(tmxFile, source, imageElement);
-						if (imageFileHandle != null) {
-							region = imageResolver.getImage(imageFileHandle.path());
-						}
-					}
-
+					if (region == null)
+						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionsName);
 					addStaticTiledMapTile(tileSet, region, tileGid, offsetX, offsetY);
 				}
 			}
