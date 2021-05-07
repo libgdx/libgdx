@@ -193,7 +193,6 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			if (tile == null) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
-					// Try to get the region from the atlas first
 					TextureRegion region = atlas.findRegion(regionsName, tileId);
 					if (region == null)
 						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionsName);
