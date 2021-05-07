@@ -27,11 +27,10 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.tiled.DefaultTileAnimator;
-import com.badlogic.gdx.maps.tiled.TileAnimator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -43,7 +42,6 @@ public class TiledMapAnimationLoadingTest extends GdxTest {
 	private OrthoCamController cameraController;
 	private BitmapFont font;
 	private SpriteBatch batch;
-	private TileAnimator tileAnimator;
 
 	@Override
 	public void create () {
@@ -60,7 +58,6 @@ public class TiledMapAnimationLoadingTest extends GdxTest {
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		tileAnimator = new DefaultTileAnimator();
 		map = new TmxMapLoader().load("data/maps/tiled-animations/test-load-animations.tmx");
 		
 		MapLayer layer = map.getLayers().get("Objects");
@@ -76,7 +73,7 @@ public class TiledMapAnimationLoadingTest extends GdxTest {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		MapLayer layer = map.getLayers().get("Objects");
-		tileAnimator.updateAnimationBaseTime();
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
 			if (!mapObject.isVisible()) continue;
 			if (mapObject instanceof TiledMapTileMapObject) {

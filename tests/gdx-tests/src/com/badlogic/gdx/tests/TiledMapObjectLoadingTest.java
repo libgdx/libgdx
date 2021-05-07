@@ -35,11 +35,10 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.DefaultTileAnimator;
-import com.badlogic.gdx.maps.tiled.TileAnimator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Polygon;
@@ -57,7 +56,6 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private OrthoCamController cameraController;
 	private BitmapFont font;
 	private SpriteBatch batch;
-	private TileAnimator tileAnimator;
 	private String loadingStatus;
 
 	@Override
@@ -75,7 +73,6 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		tileAnimator = new DefaultTileAnimator();
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
 		shapeRenderer = new ShapeRenderer();
@@ -107,7 +104,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		shapeRenderer.setColor(Color.BLUE);
 		Gdx.gl20.glLineWidth(2);
 		MapLayer layer = map.getLayers().get("Objects");
-		tileAnimator.updateAnimationBaseTime();
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
 			if (!mapObject.isVisible()) continue;
 			if (mapObject instanceof TiledMapTileMapObject) {

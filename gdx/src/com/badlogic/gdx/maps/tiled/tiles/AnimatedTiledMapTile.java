@@ -19,6 +19,8 @@ package com.badlogic.gdx.maps.tiled.tiles;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.DefaultTileAnimator;
+import com.badlogic.gdx.maps.tiled.TileAnimator;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -27,6 +29,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 /** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile {
+
+	private static TileAnimator tileAnimator = new DefaultTileAnimator();
 
 	private static long lastTiledMapRenderTime = 0;
 
@@ -43,7 +47,6 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	private int[] animationIntervals;
 	private int frameCount = 0;
 	private int loopDuration;
-	private static final long initialTimeOffset = TimeUtils.millis();
 
 	@Override
 	public int getId () {
@@ -147,10 +150,18 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		return objects;
 	}
 
+	/** Set a new TileAnimator. This allows you to manipulate the animation speed of the {@link AnimatedTiledMapTile}s
+	 * 
+	 * @param newTileAnimator
+	 */
+	public static void setTileAnimator (TileAnimator newTileAnimator) {
+		tileAnimator = newTileAnimator;
+	}
+	
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
 	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
-	public static void setAnimationTime (long animationBaseMilliseconds) {
-		lastTiledMapRenderTime = animationBaseMilliseconds;
+	public static void updateAnimationBaseTime () {
+		lastTiledMapRenderTime = tileAnimator.getAnimationBaseTime();
 	}
 
 	/** Creates an animated tile with the given animation interval and frame tiles.
