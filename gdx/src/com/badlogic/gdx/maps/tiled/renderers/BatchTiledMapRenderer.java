@@ -46,11 +46,7 @@ import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
@@ -63,6 +59,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	protected float unitScale;
 
 	protected Batch batch;
+
+	protected TileAnimator tileAnimator;
 
 	protected Rectangle viewBounds;
 	protected Rectangle imageBounds = new Rectangle();
@@ -96,6 +94,10 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	}
 
 	public BatchTiledMapRenderer (TiledMap map, float unitScale) {
+		this(map, unitScale, new DefaultTileAnimator());
+	}
+	
+	public BatchTiledMapRenderer (TiledMap map, float unitScale, TileAnimator tileAnimator) {
 		this.map = map;
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
@@ -108,11 +110,16 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	}
 
 	public BatchTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
+		this(map, unitScale, batch, new DefaultTileAnimator());
+	}
+
+	public BatchTiledMapRenderer (TiledMap map, float unitScale, Batch batch, TileAnimator tileAnimator) {
 		this.map = map;
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
 		this.batch = batch;
 		this.ownsBatch = false;
+		this.tileAnimator = tileAnimator;
 	}
 
 	@Override
@@ -243,7 +250,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	/** Called before the rendering of all layers starts. */
 	protected void beginRender () {
-		AnimatedTiledMapTile.updateAnimationBaseTime();
+		tileAnimator.updateAnimationBaseTime();
 		batch.begin();
 	}
 
