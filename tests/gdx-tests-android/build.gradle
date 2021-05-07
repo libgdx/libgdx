@@ -24,20 +24,19 @@ apply plugin: "com.android.application"
 apply from: "obb.gradle"
 
 dependencies {
-	compile project(":tests:gdx-tests")
-	compile project(":gdx")
-	compile project(":extensions:gdx-box2d:gdx-box2d")
-	compile project(":extensions:gdx-bullet")
-	compile project(":extensions:gdx-controllers:gdx-controllers-android")
-	compile project(":extensions:gdx-freetype")
-	compile project(":backends:gdx-backend-android")
-	compile libraries.android
-	compile "com.android.support:multidex:${versions.multiDex}"
+	implementation project(":tests:gdx-tests")
+	implementation project(":gdx")
+	implementation project(":extensions:gdx-box2d-parent:gdx-box2d")
+	implementation project(":extensions:gdx-bullet")
+	implementation project(":extensions:gdx-freetype")
+	implementation project(":backends:gdx-backend-android")
+	implementation libraries.android
+	implementation "androidx.multidex:multidex:${versions.multiDex}"
 }
 
 android {
 	buildToolsVersion versions.androidBuildTools
-	compileSdkVersion versions.androidSdk
+	compileSdkVersion versions.androidCompileSdk
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
@@ -47,16 +46,16 @@ android {
 			res.srcDirs = ['res']
 			assets.srcDirs = ['assets']
 			jniLibs.srcDirs = ['libs']
-		}		
+		}
 	}
 
 	defaultConfig {
 		multiDexEnabled true
-	}
-
-	lintOptions {
-		// Since this is a test apk, it is fine to ignore the missing densities for the icon.
-		disable 'IconMissingDensityFolder'
+		applicationId "com.badlogic.gdx.tests.android"
+		minSdkVersion versions.androidMinSdk
+		targetSdkVersion versions.androidTargetSdk
+		versionCode 1
+		versionName "1.0"
 	}
 }
 

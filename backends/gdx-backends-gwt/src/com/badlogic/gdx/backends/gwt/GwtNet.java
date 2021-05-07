@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,23 +24,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.HttpStatus;
-import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 
@@ -126,10 +122,16 @@ public class GwtNet implements Net {
 		RequestBuilder builder;
 		
 		String url = httpRequest.getUrl();
-		if (method.equalsIgnoreCase(HttpMethods.GET)) {
+		if (method.equalsIgnoreCase(HttpMethods.HEAD)) {
 			if (value != null) {
 				url += "?" + value;
-			}			
+			}
+			builder = new RequestBuilder(RequestBuilder.HEAD, url);
+		}
+		else if (method.equalsIgnoreCase(HttpMethods.GET)) {
+			if (value != null) {
+				url += "?" + value;
+			}
 			builder = new RequestBuilder(RequestBuilder.GET, url);
 		} else if (method.equalsIgnoreCase(HttpMethods.POST)) {
 			builder = new RequestBuilder(RequestBuilder.POST, url);
@@ -158,10 +160,14 @@ public class GwtNet implements Net {
 			Request request = builder.sendRequest(valueInBody ? value : null, new RequestCallback() {
 
 				@Override
-				public void onResponseReceived (Request request, Response response) {					
+				public void onResponseReceived (Request request, Response response) {
+					if (response.getStatusCode() > 0) {
 						httpResultListener.handleHttpResponse(new HttpClientResponse(response));
 						requests.remove(httpRequest);
 						listeners.remove(httpRequest);
+					} else {
+						onError(request, new IOException("HTTP request failed"));
+					}
 				}
 
 				@Override

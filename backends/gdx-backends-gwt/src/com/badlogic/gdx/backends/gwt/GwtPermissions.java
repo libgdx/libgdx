@@ -44,6 +44,8 @@ public class GwtPermissions {
 					}
 				};
 			});
+		} else {
+			result.@com.badlogic.gdx.backends.gwt.GwtPermissions.GwtPermissionResult::granted()();
 		}
 	}-*/;
 

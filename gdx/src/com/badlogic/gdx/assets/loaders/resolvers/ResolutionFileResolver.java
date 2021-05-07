@@ -21,7 +21,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 
 /** This {@link FileHandleResolver} uses a given list of {@link Resolution}s to determine the best match based on the current
- * Screen size. An example of how this resolver works:
+ * back buffer size. An example of how this resolver works:
  * 
  * <p>
  * Let's assume that we have only a single {@link Resolution} added to this resolver. This resolution has the following
@@ -100,7 +100,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	}
 
 	static public Resolution choose (Resolution... descriptors) {
-		int w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
+		int w = Gdx.graphics.getBackBufferWidth(), h = Gdx.graphics.getBackBufferHeight();
 
 		// Prefer the shortest side.
 		Resolution best = descriptors[0];

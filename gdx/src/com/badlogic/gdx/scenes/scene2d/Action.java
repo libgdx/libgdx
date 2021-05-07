@@ -31,7 +31,7 @@ abstract public class Action implements Poolable {
 	/** The actor this action targets, or null if a target has not been set. */
 	protected Actor target;
 
-	@Null private Pool pool;
+	private @Null Pool pool;
 
 	/** Updates the action based on time. Typically this is called each frame by {@link Actor#act(float)}.
 	 * @param delta Time in seconds since the last frame.
@@ -93,8 +93,7 @@ abstract public class Action implements Poolable {
 		restart();
 	}
 
-	@Null
-	public Pool getPool () {
+	public @Null Pool getPool () {
 		return pool;
 	}
 

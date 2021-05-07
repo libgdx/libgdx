@@ -71,20 +71,23 @@ public class AnimationController extends BaseAnimationController {
 		protected AnimationDesc () {
 		}
 
-		/** @return the remaining time or 0 if still animating. */
+		/** @param delta delta time, must be positive.
+		 * @return the remaining time or -1 if still animating. */
 		protected float update (float delta) {
 			if (loopCount != 0 && animation != null) {
 				int loops;
 				final float diff = speed * delta;
 				if (!MathUtils.isZero(duration)) {
 					time += diff;
-					loops = (int)Math.abs(time / duration);
-					if (time < 0f) {
-						loops++;
-						while (time < 0f)
-							time += duration;
+					if (speed < 0) {
+						float invTime = duration - time;
+						loops = (int)Math.abs(invTime / duration);
+						invTime = Math.abs(invTime % duration);
+						time = duration - invTime;
+					} else {
+						loops = (int)Math.abs(time / duration);
+						time = Math.abs(time % duration);
 					}
-					time = Math.abs(time % duration);
 				} else
 					loops = 1;
 				for (int i = 0; i < loops; i++) {
@@ -97,7 +100,7 @@ public class AnimationController extends BaseAnimationController {
 						return result;
 					}
 				}
-				return 0f;
+				return -1;
 			} else
 				return delta;
 		}
@@ -179,11 +182,11 @@ public class AnimationController extends BaseAnimationController {
 		}
 		if (current == null || current.loopCount == 0 || current.animation == null) return;
 		final float remain = current.update(delta);
-		if (remain != 0f && queued != null) {
+		if (remain >= 0f && queued != null) {
 			inAction = false;
 			animate(queued, queuedTransitionTime);
-			queued = null;			
-			update(remain);
+			queued = null;
+			if (remain > 0f) update(remain);
 			return;
 		}
 		if (previous != null)
@@ -357,7 +360,7 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Changes the current animation by blending the new on top of the old during the transition time. */
 	protected AnimationDesc animate (final AnimationDesc anim, float transitionTime) {
-		if (current == null)
+		if (current == null || current.loopCount == 0)
 			current = anim;
 		else if (inAction)
 			queue(anim, transitionTime);

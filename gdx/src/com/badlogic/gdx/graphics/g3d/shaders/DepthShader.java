@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DepthShader extends DefaultShader {
 	public static class Config extends DefaultShader.Config {
@@ -91,6 +92,11 @@ public class DepthShader extends DefaultShader {
 	public DepthShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		super(renderable, config, shaderProgram);
 		final Attributes attributes = combineAttributes(renderable);
+
+		if (renderable.bones != null && renderable.bones.length > config.numBones) {
+			throw new GdxRuntimeException("too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
+		}
+
 		this.numBones = renderable.bones == null ? 0 : config.numBones;
 		int w = 0;
 		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
@@ -117,6 +123,7 @@ public class DepthShader extends DefaultShader {
 
 	@Override
 	public boolean canRender (Renderable renderable) {
+		if (renderable.bones != null && renderable.bones.length > numBones) return false;
 		final Attributes attributes = combineAttributes(renderable);
 		if (attributes.has(BlendingAttribute.Type)) {
 			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type)
@@ -125,15 +132,7 @@ public class DepthShader extends DefaultShader {
 				return false;
 		}
 		final boolean skinned = ((renderable.meshPart.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
-		if (skinned != (numBones > 0)) return false;
-		if (!skinned) return true;
-		int w = 0;
-		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
-		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
-			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
-		}
-		return w == weights;
+		return skinned == (weights > 0);
 	}
 	
 	@Override

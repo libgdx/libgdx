@@ -51,8 +51,8 @@ public class CheckBox extends TextButton {
 
 	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof CheckBoxStyle)) throw new IllegalArgumentException("style must be a CheckBoxStyle.");
-		super.setStyle(style);
 		this.style = (CheckBoxStyle)style;
+		super.setStyle(style);
 	}
 
 	/** Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
@@ -94,8 +94,7 @@ public class CheckBox extends TextButton {
 	 * @author Nathan Sweet */
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
-		/** Optional. */
-		@Null public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
+		public @Null Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
 
 		public CheckBoxStyle () {
 		}
@@ -109,11 +108,13 @@ public class CheckBox extends TextButton {
 
 		public CheckBoxStyle (CheckBoxStyle style) {
 			super(style);
-			this.checkboxOff = style.checkboxOff;
-			this.checkboxOn = style.checkboxOn;
-			this.checkboxOver = style.checkboxOver;
-			this.checkboxOffDisabled = style.checkboxOffDisabled;
-			this.checkboxOnDisabled = style.checkboxOnDisabled;
+			checkboxOff = style.checkboxOff;
+			checkboxOn = style.checkboxOn;
+
+			checkboxOnOver = style.checkboxOnOver;
+			checkboxOver = style.checkboxOver;
+			checkboxOnDisabled = style.checkboxOnDisabled;
+			checkboxOffDisabled = style.checkboxOffDisabled;
 		}
 	}
 }

@@ -21,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StreamUtils;
 
 public class TextureDownloadTest extends GdxTest {
@@ -68,7 +68,7 @@ public class TextureDownloadTest extends GdxTest {
 			@Override
 			public void run () {
 				byte[] bytes = new byte[200 * 1024]; // assuming the content is not bigger than 200kb.
-				int numBytes = download(bytes, "http://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
+				int numBytes = download(bytes, "https://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
 				if (numBytes != 0) {
 					// load the pixmap, make it a power of two if necessary (not needed for GL ES 2.0!)
 					Pixmap pixmap = new Pixmap(bytes, 0, numBytes);
@@ -96,8 +96,7 @@ public class TextureDownloadTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
 		if (image != null) {
 			batch.begin();

@@ -46,6 +46,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -209,12 +210,12 @@ public class FreeTypeFontGenerator implements Disposable {
 
 	public class GlyphAndBitmap {
 		public Glyph glyph;
-		public Bitmap bitmap;
+		public @Null Bitmap bitmap;
 	}
 
-	/** Returns null if glyph was not found. If there is nothing to render, for example with various space characters, then bitmap
-	 * is null. */
-	public GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
+	/** Returns null if glyph was not found in the font. If there is nothing to render, for example with various space characters,
+	 * then {@link GlyphAndBitmap#bitmap} will be null. */
+	public @Null GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
 		setPixelSizes(0, size);
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
@@ -477,8 +478,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** @return null if glyph was not found. */
-	Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
-		PixmapPacker packer) {
+	protected @Null Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker,
+		float baseLine, PixmapPacker packer) {
 
 		boolean missing = face.getCharIndex(c) == 0 && c != 0;
 		if (missing) return null;

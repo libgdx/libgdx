@@ -71,9 +71,8 @@ public class TextTooltip extends Tooltip<Label> {
 	 * @author Nathan Sweet */
 	static public class TextTooltipStyle {
 		public LabelStyle label;
-		/** Optional. */
-		@Null public Drawable background;
-		/** Optional, 0 means don't wrap. */
+		public @Null Drawable background;
+		/** 0 means don't wrap. */
 		public float wrapWidth;
 
 		public TextTooltipStyle () {
@@ -85,7 +84,7 @@ public class TextTooltip extends Tooltip<Label> {
 		}
 
 		public TextTooltipStyle (TextTooltipStyle style) {
-			this.label = new LabelStyle(style.label);
+			label = new LabelStyle(style.label);
 			background = style.background;
 			wrapWidth = style.wrapWidth;
 		}

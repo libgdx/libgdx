@@ -210,7 +210,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 	}
 
-	private FileHandle getAtlasFileHandle (FileHandle tmxFile) {
+	protected FileHandle getAtlasFileHandle (FileHandle tmxFile) {
 		Element properties = root.getChildByName("properties");
 
 		String atlasFilePath = null;
@@ -234,7 +234,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 	}
 
-	private void setTextureFilters (Texture.TextureFilter min, Texture.TextureFilter mag) {
+	protected void setTextureFilters (Texture.TextureFilter min, Texture.TextureFilter mag) {
 		for (Texture texture : trackedTextures) {
 			texture.setFilter(min, mag);
 		}

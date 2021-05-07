@@ -17,19 +17,17 @@
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FreeTypeMetricsTest extends GdxTest {
 	private SpriteBatch spriteBatch;
@@ -40,7 +38,7 @@ public class FreeTypeMetricsTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		atlas = new TextureAtlas("data/pack");
+		atlas = new TextureAtlas("data/pack.atlas");
 		smallFont = new BitmapFont();
 
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
@@ -60,8 +58,7 @@ public class FreeTypeMetricsTest extends GdxTest {
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(1, 1, 1, 1);
 		spriteBatch.begin();
 
 		// String text = "Sphinx of black quartz, judge my vow.";

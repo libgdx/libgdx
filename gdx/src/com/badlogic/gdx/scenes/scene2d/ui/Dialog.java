@@ -23,7 +23,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Displays a dialog, which is a window with a title, a content table, and a button table. Methods are provided to add a label to
  * the content table and buttons to the button table, but any widgets can be added. When a button is clicked,
@@ -42,7 +40,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * @author Nathan Sweet */
 public class Dialog extends Window {
 	Table contentTable, buttonTable;
-	@Null private Skin skin;
+	private @Null Skin skin;
 	ObjectMap<Actor, Object> values = new ObjectMap();
 	boolean cancelHide;
 	Actor previousKeyboardFocus, previousScrollFocus;
@@ -254,7 +252,7 @@ public class Dialog extends Window {
 
 	/** If this key is pressed, {@link #result(Object)} is called with the specified object.
 	 * @see Keys */
-	public Dialog key (final int keycode, @Null final Object object) {
+	public Dialog key (final int keycode, final @Null Object object) {
 		addListener(new InputListener() {
 			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {

@@ -33,6 +33,10 @@ import com.badlogic.gdx.math.Matrix4;
  * 
  * @author mzechner, xoppa */
 public final class BufferUtils {
+
+	private BufferUtils () {
+	}
+
 	static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
 	static int allocatedUnsafe = 0;
 

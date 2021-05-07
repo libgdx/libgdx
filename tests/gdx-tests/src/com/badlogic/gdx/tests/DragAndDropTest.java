@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -65,7 +64,7 @@ public class DragAndDropTest extends GdxTest {
 				Payload payload = new Payload();
 				payload.setObject("Some payload!");
 
-				payload.setDragActor(new Label("Some payload!", skin));
+				payload.setDragActor(getActor());
 
 				Label validLabel = new Label("Some payload!", skin);
 				validLabel.setColor(0, 1, 0, 1);

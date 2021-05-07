@@ -205,10 +205,12 @@ public class DefaultShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				for (int i = 0; i < bones.length; i++) {
+				for (int i = 0; i < bones.length; i += 16) {
 					final int idx = i / 16;
-					bones[i] = (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null) ? idtMatrix.val[i % 16]
-						: renderable.bones[idx].val[i % 16];
+					if (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null)
+						System.arraycopy(idtMatrix.val, 0, bones, i, 16);
+					else
+						System.arraycopy(renderable.bones[idx].val, 0, bones, i, 16);
 				}
 				shader.program.setUniformMatrix4fv(shader.loc(inputID), bones, 0, bones.length);
 			}
@@ -546,6 +548,10 @@ public class DefaultShader extends BaseShader {
 		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
+		if (renderable.bones != null && renderable.bones.length > config.numBones) {
+			throw new GdxRuntimeException("too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
+		}
+
 		// Global uniforms
 		u_projTrans = register(Inputs.projTrans, Setters.projTrans);
 		u_viewTrans = register(Inputs.viewTrans, Setters.viewTrans);
@@ -719,6 +725,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean canRender (final Renderable renderable) {
+		if (renderable.bones != null && renderable.bones.length > config.numBones) return false;
 		final long renderableMask = combineAttributeMasks(renderable);
 		return (attributesMask == (renderableMask | optionalAttributes))
 			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked()) && (renderable.environment != null) == lighting;

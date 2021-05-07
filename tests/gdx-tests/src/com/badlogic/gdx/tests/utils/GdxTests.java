@@ -38,9 +38,9 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.conformance.AudioSoundAndMusicIsolationTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
@@ -58,8 +58,8 @@ import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
 import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
-import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MaterialEmissiveTest;
+import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
@@ -77,6 +77,8 @@ import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -87,7 +89,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author badlogicgames@gmail.com */
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
-		// @off
+	// @off
 		IssueTest.class,
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
@@ -102,9 +104,11 @@ public class GdxTests {
 		AtlasIssueTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
+		AudioSoundAndMusicIsolationTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
 		Benchmark3DTest.class,
+		BigMeshTest.class,
 		BitmapFontAlignmentTest.class,
 		BitmapFontDistanceFieldTest.class,
 		BitmapFontFlipTest.class,
@@ -131,6 +135,7 @@ public class GdxTests {
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
 		DisplayModeTest.class,
+		DownloadTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
 //		EarClippingTriangulatorTest.class,
@@ -145,7 +150,6 @@ public class GdxTests {
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
-		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
 		GLES30Test.class,
@@ -163,8 +167,10 @@ public class GdxTests {
 		ImmediateModeRendererTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
+		InstancedRenderingTest.class,
 		IntegerBitmapFontTest.class,
 		InterpolationTest.class,
+		IntersectorOverlapConvexPolygonsTest.class,
 		InverseKinematicsTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,
@@ -196,6 +202,7 @@ public class GdxTests {
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
 		ParticleEmitterChangeSpriteTest.class,
+		PixelBufferObjectTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
@@ -224,6 +231,7 @@ public class GdxTests {
 		ShaderTest.class,
 		ShadowMappingTest.class,
 		ShapeRendererTest.class,
+		ShapeRendererAlphaTest.class,
 		SimpleAnimationTest.class,
 		SimpleDecalTest.class,
 		SimpleStageCullingTest.class,
@@ -246,6 +254,7 @@ public class GdxTests {
 		TangentialAccelerationTest.class,
 		TextAreaTest.class,
 		TextAreaTest2.class,		
+		TextAreaTest3.class,
 		TextButtonTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
@@ -272,6 +281,7 @@ public class GdxTests {
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
+		UtfFontTest.class,
 		VBOWithVAOPerformanceTest.class,
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,
@@ -289,12 +299,14 @@ public class GdxTests {
 		FreeTypeTest.class,
 		InternationalFontsTest.class,
 		PngTest.class,
-		JsonTest.class
+		JsonTest.class,
+		QuadTreeFloatTest.class,
+		QuadTreeFloatNearestTest.class
 		// @on
 
-		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
-		// VorbisTest.class
-		));
+	// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
+	// VorbisTest.class
+	));
 
 	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();
 	static final ObjectMap<String, String> originalToObfuscated = new ObjectMap();
@@ -332,7 +344,7 @@ public class GdxTests {
 		return names;
 	}
 
-	private static Class<? extends GdxTest> forName (String name) {
+	public static Class<? extends GdxTest> forName (String name) {
 		name = originalToObfuscated.get(name, name);
 		for (Class clazz : tests)
 			if (clazz.getSimpleName().equals(name)) return clazz;

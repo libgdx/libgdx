@@ -16,8 +16,11 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -87,6 +90,22 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
+	/** Creates a Pixmap from a part of the current framebuffer.
+	 * @param x framebuffer region x
+	 * @param y framebuffer region y
+	 * @param w framebuffer region width
+	 * @param h framebuffer region height
+	 * @return the pixmap */
+	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = pixmap.getPixels();
+		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+
+		return pixmap;
+	}
+
 	private Blending blending = Blending.SourceOver;
 	private Filter filter = Filter.BiLinear;
 
@@ -121,6 +140,8 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
+	 * Not available on GWT backend.
+	 *
 	 * @param encodedData the encoded image data
 	 * @param offset the offset
 	 * @param len the length */
@@ -149,6 +170,44 @@ public class Pixmap implements Disposable {
 	 * @param pixmap */
 	public Pixmap (Gdx2DPixmap pixmap) {
 		this.pixmap = pixmap;
+	}
+
+	/**
+	 * Downloads an image from http(s) url and passes it as a {@link Pixmap} to the specified {@link DownloadPixmapResponseListener}
+	 *
+	 * @param url http url to download the image from
+	 * @param responseListener the listener to call once the image is available as a {@link Pixmap}
+	 */
+	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+		Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+		request.setUrl(url);
+		Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				final byte[] result = httpResponse.getResult();
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Pixmap pixmap = new Pixmap(result, 0, result.length);
+							responseListener.downloadComplete(pixmap);
+						} catch (Throwable t) {
+							failed(t);
+						}
+					}
+				});
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				responseListener.downloadFailed(t);
+			}
+
+			@Override
+			public void cancelled() {
+				// no way to cancel, will never get called
+			}
+		});
 	}
 
 	/** Sets the color for the following drawing operations
@@ -365,6 +424,13 @@ public class Pixmap implements Disposable {
 		return pixmap.getPixels();
 	}
 
+	/** Sets pixels from a provided byte buffer.
+	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	public void setPixels (ByteBuffer pixels) {
+		ByteBuffer dst = pixmap.getPixels();
+		BufferUtils.copy(pixels, dst, dst.limit());
+	}
+
 	/** @return the {@link Format} of this Pixmap. */
 	public Format getFormat () {
 		return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
@@ -378,5 +444,22 @@ public class Pixmap implements Disposable {
 	/** @return the currently set {@link Filter} */
 	public Filter getFilter (){
 		return filter;
+	}
+
+	/**
+	 * Response listener for {@link #downloadFromUrl(String, DownloadPixmapResponseListener)}
+	 */
+	public interface DownloadPixmapResponseListener {
+
+		/**
+		 * Called on the render thread when image was downloaded successfully.
+		 * @param pixmap
+		 */
+		void downloadComplete(Pixmap pixmap);
+
+		/**
+		 * Called when image download failed. This might get called on a background thread.
+		 */
+		void downloadFailed(Throwable t);
 	}
 }

@@ -43,20 +43,27 @@ import java.util.NoSuchElementException;
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;
 
+	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public OrderedMap () {
 		keys = new Array();
 	}
 
+	/** Creates a new map with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public OrderedMap (int initialCapacity) {
 		super(initialCapacity);
 		keys = new Array(initialCapacity);
 	}
 
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public OrderedMap (int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 		keys = new Array(initialCapacity);
 	}
 
+	/** Creates a new map containing the items in the specified map. */
 	public OrderedMap (OrderedMap<? extends K, ? extends V> map) {
 		super(map);
 		keys = new Array(map.keys);
@@ -208,19 +215,20 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return keys2;
 	}
 
-	public String toString () {
-		if (size == 0) return "{}";
+	protected String toString (String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
-		buffer.append('{');
+		if (braces) buffer.append('{');
 		Array<K> keys = this.keys;
 		for (int i = 0, n = keys.size; i < n; i++) {
 			K key = keys.get(i);
-			if (i > 0) buffer.append(", ");
-			buffer.append(key);
+			if (i > 0) buffer.append(separator);
+			buffer.append(key == this ? "(this)" : key);
 			buffer.append('=');
-			buffer.append(get(key));
+			V value = get(key);
+			buffer.append(value == this ? "(this)" : value);
 		}
-		buffer.append('}');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
