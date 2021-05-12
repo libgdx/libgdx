@@ -104,15 +104,15 @@ public class FlushablePoolTest {
      */
     private class FlushablePoolClass extends FlushablePool<String> {
 
-        private FlushablePoolClass () {
+        FlushablePoolClass () {
             super();
         }
 
-        private FlushablePoolClass (int initialCapacity) {
+        FlushablePoolClass (int initialCapacity) {
             super(initialCapacity);
         }
 
-        private FlushablePoolClass (int initialCapacity, int max) {
+        FlushablePoolClass (int initialCapacity, int max) {
             super(initialCapacity, max);
         }
 

@@ -59,8 +59,12 @@ public final class MathUtils {
 		static {
 			for (int i = 0; i < SIN_COUNT; i++)
 				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
-			for (int i = 0; i < 360; i += 90)
-				table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.sin(i * degreesToRadians);
+			// The four right angles get extra-precise values, because they are
+			// the most likely to need to be correct.
+			table[0] = 0f;
+			table[(int)(90 * degToIndex) & SIN_MASK] = 1f;
+			table[(int)(180 * degToIndex) & SIN_MASK] = 0f;
+			table[(int)(270 * degToIndex) & SIN_MASK] = -1f;
 		}
 	}
 
