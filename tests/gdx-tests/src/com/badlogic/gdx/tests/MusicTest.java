@@ -59,7 +59,7 @@ public class MusicTest extends GdxTest {
 		MP3, OGG, WAV, MP3_CLOCK
 	}
 
-	private float time;
+	float time;
 	
 	@Override
 	public void create () {

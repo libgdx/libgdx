@@ -80,6 +80,7 @@ public class IOSUIViewController extends GLKViewController {
 		if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
 			graphics.makeCurrent();
 			graphics.updateSafeInsets();
+			graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
 			if (graphics.config.hdpiMode == HdpiMode.Pixels) {
 				app.listener.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
 			} else {
