@@ -182,26 +182,25 @@ public class ScrollPane extends WidgetGroup {
 		});
 	}
 
+	/** Called by constructor. */
 	protected ActorGestureListener getFlickScrollListener () {
 		return new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				setScrollbarsVisible(true);
+				if (!scrollX) deltaX = 0;
+				if (!scrollY) deltaY = 0;
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				if (cancelTouchFocus && ((scrollX && deltaX != 0) || (scrollY && deltaY != 0))) cancelTouchFocus();
+				if (cancelTouchFocus && (deltaX != 0 || deltaY != 0)) cancelTouchFocus();
 			}
 
 			public void fling (InputEvent event, float x, float y, int button) {
-				if (Math.abs(x) > 150 && scrollX) {
-					flingTimer = flingTime;
-					velocityX = x;
+				float velocityX = Math.abs(x) > 150 && scrollX ? x : 0;
+				float velocityY = Math.abs(y) > 150 && scrollY ? -y : 0;
+				if (velocityX != 0 || velocityY != 0) {
 					if (cancelTouchFocus) cancelTouchFocus();
-				}
-				if (Math.abs(y) > 150 && scrollY) {
-					flingTimer = flingTime;
-					velocityY = -y;
-					if (cancelTouchFocus) cancelTouchFocus();
+					ScrollPane.this.fling(flingTime, velocityX, velocityY);
 				}
 			}
 
