@@ -24,6 +24,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class OpenBrowserExample extends GdxTest {
 	@Override
 	public void create () {
-		Gdx.net.openURI("http://libgdx.badlogicgames.com");
+		Gdx.net.openURI("https://libgdx.com");
 	}
 }
