@@ -67,17 +67,17 @@ public class Lwjgl3Net implements Net {
 	}
 
 	@Override
-	public boolean openURI (String URI) {
+	public boolean openURI (String uri) {
 		if(SharedLibraryLoader.isMac) {
 			try {
-				(Runtime.getRuntime()).exec("open " + URI);
+				(Runtime.getRuntime()).exec("open " + (new URI(uri)));
 				return true;
-			} catch (IOException e) {
+			} catch (Throwable t) {
 				return false;
 			}
 		} else {
 			try {
-				Desktop.getDesktop().browse(new URI(URI));
+				Desktop.getDesktop().browse(new URI(uri));
 				return true;
 			} catch (Throwable t) {
 				return false;
