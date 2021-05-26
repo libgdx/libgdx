@@ -548,6 +548,10 @@ public class DefaultShader extends BaseShader {
 		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
+		if (renderable.bones != null && renderable.bones.length > config.numBones) {
+			throw new GdxRuntimeException("too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
+		}
+
 		// Global uniforms
 		u_projTrans = register(Inputs.projTrans, Setters.projTrans);
 		u_viewTrans = register(Inputs.viewTrans, Setters.viewTrans);
@@ -721,6 +725,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean canRender (final Renderable renderable) {
+		if (renderable.bones != null && renderable.bones.length > config.numBones) return false;
 		final long renderableMask = combineAttributeMasks(renderable);
 		return (attributesMask == (renderableMask | optionalAttributes))
 			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked()) && (renderable.environment != null) == lighting;

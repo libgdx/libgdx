@@ -1,5 +1,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
@@ -79,7 +80,12 @@ public class IOSUIViewController extends GLKViewController {
 		if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
 			graphics.makeCurrent();
 			graphics.updateSafeInsets();
-			app.listener.resize(newBounds.width, newBounds.height);
+			graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+			if (graphics.config.hdpiMode == HdpiMode.Pixels) {
+				app.listener.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
+			} else {
+				app.listener.resize(newBounds.width, newBounds.height);
+			}
 		}
 
 	}
