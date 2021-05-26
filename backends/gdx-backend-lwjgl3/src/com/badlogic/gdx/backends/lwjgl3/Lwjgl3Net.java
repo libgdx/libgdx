@@ -70,8 +70,8 @@ public class Lwjgl3Net implements Net {
 	public boolean openURI (String URI) {
 		if(SharedLibraryLoader.isMac) {
 			try {
-                (Runtime.getRuntime()).exec("open " + URI);
-                return true;
+				(Runtime.getRuntime()).exec("open " + URI);
+				return true;
 			} catch (IOException e) {
 				return false;
 			}
