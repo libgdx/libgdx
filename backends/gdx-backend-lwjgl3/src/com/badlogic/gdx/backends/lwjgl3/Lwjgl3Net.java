@@ -68,7 +68,7 @@ public class Lwjgl3Net implements Net {
 	public boolean openURI (String uri) {
 		if(SharedLibraryLoader.isMac) {
 			try {
-				(new ProcessBuilder("open", uri)).start();
+				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
 				return true;
 			} catch (Throwable t) {
 				return false;
