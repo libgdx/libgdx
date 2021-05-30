@@ -58,6 +58,7 @@ public class LwjglApplication implements LwjglApplicationBase {
 	protected ApplicationLogger applicationLogger;
 	protected String preferencesdir;
 	protected Files.FileType preferencesFileType;
+	protected Thread.UncaughtExceptionHandler exceptionHandler;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
 		this(listener, createConfig(title, width, height));
@@ -68,18 +69,33 @@ public class LwjglApplication implements LwjglApplicationBase {
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
-		this(listener, config, new LwjglGraphics(config));
+		this(listener, config, new LwjglGraphics(config), null);
+	}
+
+	public LwjglApplication (ApplicationListener listener,
+							 LwjglApplicationConfiguration config,
+							 Thread.UncaughtExceptionHandler handler
+	) {
+		this(listener, config, new LwjglGraphics(config), handler);
 	}
 
 	public LwjglApplication (ApplicationListener listener, Canvas canvas) {
-		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas));
+		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas), null);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
-		this(listener, config, new LwjglGraphics(canvas, config));
+		this(listener, config, new LwjglGraphics(canvas, config), null);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
+	    this(listener, config, graphics, null);
+    }
+
+	public LwjglApplication (ApplicationListener listener,
+							 LwjglApplicationConfiguration config,
+							 LwjglGraphics graphics,
+							 Thread.UncaughtExceptionHandler handler
+	) {
 		LwjglNativesLoader.load();
 		setApplicationLogger(new LwjglApplicationLogger());
 
@@ -99,6 +115,7 @@ public class LwjglApplication implements LwjglApplicationBase {
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
 		this.preferencesFileType = config.preferencesFileType;
+		this.exceptionHandler = handler;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -135,6 +152,9 @@ public class LwjglApplication implements LwjglApplicationBase {
 				}
 			}
 		};
+		if (exceptionHandler != null) {
+			mainLoopThread.setUncaughtExceptionHandler(exceptionHandler);
+		}
 		mainLoopThread.start();
 	}
 
