@@ -17,10 +17,8 @@
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.awt.Desktop;
-import java.io.IOException;
 import java.net.URI;
 
-import com.apple.eio.FileManager;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.NetJavaServerSocketImpl;
@@ -67,17 +65,17 @@ public class Lwjgl3Net implements Net {
 	}
 
 	@Override
-	public boolean openURI (String URI) {
+	public boolean openURI (String uri) {
 		if(SharedLibraryLoader.isMac) {
 			try {
-				FileManager.openURL(URI);
+				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
 				return true;
-			} catch (IOException e) {
+			} catch (Throwable t) {
 				return false;
 			}
 		} else {
 			try {
-				Desktop.getDesktop().browse(new URI(URI));
+				Desktop.getDesktop().browse(new URI(uri));
 				return true;
 			} catch (Throwable t) {
 				return false;
