@@ -36,6 +36,7 @@
                                 <resource><directory>${basedir}/../../libs/linuxarm32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linuxarm64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosxarm64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>
                             </resources>
