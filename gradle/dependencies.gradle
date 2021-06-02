@@ -30,7 +30,6 @@ versions.lwjgl3 = "3.2.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
-versions.appleExtension = "1.4"
 versions.androidPlugin = "4.1.3"
 versions.multiDex = "2.0.1"
 versions.androidCompileSdk = 30
@@ -96,7 +95,6 @@ libraries.lwjgl3 = [
         // "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
-        "com.apple:AppleJavaExtensions:${versions.appleExtension}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
