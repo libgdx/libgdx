@@ -637,6 +637,7 @@ public class UnicodeFont {
 		} else {
 			String fontFile = getFontFile();
 			if (fontFile != null) {
+				if (generator != null) generator.dispose();
 				generator = new FreeTypeFontGenerator(Gdx.files.absolute(fontFile));
 				FreeTypeFontParameter param = new FreeTypeFontParameter();
 				param.size = font.getSize();
