@@ -64,6 +64,7 @@ public class CameraInputController extends GestureDetector {
 	protected boolean rotateRightPressed;
 	public int rotateLeftKey = Keys.D;
 	protected boolean rotateLeftPressed;
+	protected boolean controlsInverted;
 	/** The camera. */
 	public Camera camera;
 	/** The current (first) button being pressed. */
@@ -171,6 +172,18 @@ public class CameraInputController extends GestureDetector {
 		multiTouch = !MathUtils.isPowerOfTwo(touched);
 		if (button == this.button) this.button = -1;
 		return super.touchUp(screenX, screenY, pointer, button) || activatePressed;
+	}
+
+	/**
+	 * Sets the CameraInputControllers' control inversion.
+	 * @param invertControls Whether or not to invert the controls
+	 */
+	public void setInvertedControls(boolean invertControls) {
+		if (this.controlsInverted != invertControls) {
+			// Flip the rotation angle
+			this.rotateAngle = -this.rotateAngle;
+		}
+		this.controlsInverted = invertControls;
 	}
 
 	protected boolean process (float deltaX, float deltaY, int button) {
