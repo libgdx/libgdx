@@ -277,7 +277,7 @@ public class GlyphLayout implements Poolable {
 		for (int i = 0; i < runsSize; i++) {
 			GlyphRun run = (GlyphRun)runsItems[i];
 			float[] xAdvances = run.xAdvances.items;
-			float runWidth = xAdvances[0], max = 0;
+			float runWidth = run.x + xAdvances[0], max = 0; // run.x is needed to ensure floats are rounded same as above.
 			Object[] glyphs = run.glyphs.items;
 			for (int ii = 0, nn = run.glyphs.size; ii < nn;) {
 				Glyph glyph = (Glyph)glyphs[ii];
@@ -286,7 +286,7 @@ public class GlyphLayout implements Poolable {
 				ii++;
 				runWidth += xAdvances[ii];
 			}
-			run.width = Math.max(runWidth, max);
+			run.width = Math.max(runWidth, max) - run.x;
 			width = Math.max(width, run.x + run.width);
 		}
 		this.width = width;
