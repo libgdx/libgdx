@@ -22,23 +22,25 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner */
 public class Gdx2DPixmap implements Disposable {
-	public static final int GDX2D_FORMAT_ALPHA = 1;
-	public static final int GDX2D_FORMAT_LUMINANCE_ALPHA = 2;
-	public static final int GDX2D_FORMAT_RGB888 = 3;
-	public static final int GDX2D_FORMAT_RGBA8888 = 4;
-	public static final int GDX2D_FORMAT_RGB565 = 5;
-	public static final int GDX2D_FORMAT_RGBA4444 = 6;
+	public static final short GDX2D_FORMAT_ALPHA = 1;
+	public static final short GDX2D_FORMAT_LUMINANCE_ALPHA = 2;
+	public static final short GDX2D_FORMAT_RGB888 = 3;
+	public static final short GDX2D_FORMAT_RGBA8888 = 4;
+	public static final short GDX2D_FORMAT_RGB565 = 5;
+	public static final short GDX2D_FORMAT_RGBA4444 = 6;
+	public static final short GDX2D_FORMAT_SRGB = 7;
 
-	public static final int GDX2D_SCALE_NEAREST = 0;
-	public static final int GDX2D_SCALE_LINEAR = 1;
+	public static final short GDX2D_SCALE_NEAREST = 0;
+	public static final short GDX2D_SCALE_LINEAR = 1;
 
-	public static final int GDX2D_BLEND_NONE = 0;
-	public static final int GDX2D_BLEND_SRC_OVER = 1;
+	public static final short GDX2D_BLEND_NONE = 0;
+	public static final short GDX2D_BLEND_SRC_OVER = 1;
 
 	public static int toGlFormat (int format) {
 		switch (format) {
@@ -52,8 +54,10 @@ public class Gdx2DPixmap implements Disposable {
 		case GDX2D_FORMAT_RGBA8888:
 		case GDX2D_FORMAT_RGBA4444:
 			return GL20.GL_RGBA;
+		case GDX2D_FORMAT_SRGB:
+			return GL30.GL_SRGB8_ALPHA8;
 		default:
-			throw new GdxRuntimeException("unknown format: " + format);
+			throw new GdxRuntimeException("Unknown format: " + format);
 		}
 	}
 
@@ -69,7 +73,7 @@ public class Gdx2DPixmap implements Disposable {
 		case GDX2D_FORMAT_RGBA4444:
 			return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
 		default:
-			throw new GdxRuntimeException("unknown format: " + format);
+			throw new GdxRuntimeException("Unknown format: " + format);
 		}
 	}
 
