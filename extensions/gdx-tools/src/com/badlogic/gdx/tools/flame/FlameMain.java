@@ -219,8 +219,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		lwjglCanvas = new LwjglCanvas(renderer = new AppRenderer());
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
-				//System.exit(0);
-				Gdx.app.exit();
+			Gdx.app.exit();
 			}
 		});
 
@@ -250,47 +249,47 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
 				
-				//Ensure no listener is left watching for events
-				EventManager.get().clear();
-				
-				//Clear
-				editorPropertiesPanel.removeAll();
-				influencerBox.removeAllItems();
-				controllerPropertiesPanel.removeAll();
-				
-				//Editor props
-				addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, fovValue, "Field of View", ""));
-				addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, deltaMultiplier, "Delta multiplier", ""));
-				addRow(editorPropertiesPanel, new GradientPanel(FlameMain.this,backgroundColor, "Background color", "", true));
-				addRow(editorPropertiesPanel, new DrawPanel(FlameMain.this, "Draw", ""));
-				addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
-				addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
-				addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
-				editorPropertiesPanel.repaint();
-				
-				//Controller props
-				ParticleController controller = getEmitter();
-				if(controller != null){
-					//Reload available influencers
-					DefaultComboBoxModel model = (DefaultComboBoxModel)influencerBox.getModel();			
-					ControllerType type = getControllerType();
-					if(type != null){
-						for(Object value : type.wrappers)
-							model.addElement(value);
-					}
-					JPanel panel = null;
-					addRow(controllerPropertiesPanel, getPanel(controller.emitter));
-					for(int i=0, c = controller.influencers.size; i < c; ++i){
-						Influencer influencer = (Influencer)controller.influencers.get(i);
-						panel = getPanel(influencer);
-						if(panel != null)
-							addRow(controllerPropertiesPanel, panel, 1, i == c-1 ? 1 : 0);
-					}
-					for (Component component : controllerPropertiesPanel.getComponents())
-						if (component instanceof EditorPanel) 
-							((EditorPanel)component).update(FlameMain.this);
+			//Ensure no listener is left watching for events
+			EventManager.get().clear();
+
+			//Clear
+			editorPropertiesPanel.removeAll();
+			influencerBox.removeAllItems();
+			controllerPropertiesPanel.removeAll();
+
+			//Editor props
+			addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, fovValue, "Field of View", ""));
+			addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, deltaMultiplier, "Delta multiplier", ""));
+			addRow(editorPropertiesPanel, new GradientPanel(FlameMain.this,backgroundColor, "Background color", "", true));
+			addRow(editorPropertiesPanel, new DrawPanel(FlameMain.this, "Draw", ""));
+			addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
+			addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
+			addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
+			editorPropertiesPanel.repaint();
+
+			//Controller props
+			ParticleController controller = getEmitter();
+			if(controller != null){
+				//Reload available influencers
+				DefaultComboBoxModel model = (DefaultComboBoxModel)influencerBox.getModel();
+				ControllerType type = getControllerType();
+				if(type != null){
+					for(Object value : type.wrappers)
+						model.addElement(value);
 				}
-				controllerPropertiesPanel.repaint();
+				JPanel panel = null;
+				addRow(controllerPropertiesPanel, getPanel(controller.emitter));
+				for(int i=0, c = controller.influencers.size; i < c; ++i){
+					Influencer influencer = (Influencer)controller.influencers.get(i);
+					panel = getPanel(influencer);
+					if(panel != null)
+						addRow(controllerPropertiesPanel, panel, 1, i == c-1 ? 1 : 0);
+				}
+				for (Component component : controllerPropertiesPanel.getComponents())
+					if (component instanceof EditorPanel)
+						((EditorPanel)component).update(FlameMain.this);
+			}
+			controllerPropertiesPanel.repaint();
 			}
 		});
 	}
@@ -380,14 +379,13 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	private void rebuildActiveControllers () {
-		//rebuild list
+		// Rebuild list
 		Array<ParticleController> effectControllers = effect.getControllers();
 		effectControllers.clear();
 		for(ControllerData controllerData : controllersData){
 			if(controllerData.enabled)
 				effectControllers.add(controllerData.controller);
 		}
-		//System.out.println("rebuilding active controllers");
 
 		effect.init();
 		effect.start();
@@ -694,7 +692,6 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			setDrawXYZ(true);
 			setDrawXZPlane(true);
 
-
 			//Load default resources
 			ParticleEffectLoader.ParticleEffectLoadParameter params = new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches());
 			assetManager.load(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
@@ -706,7 +703,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new AbsoluteFileHandleResolver()));
 			assetManager.get(DEFAULT_MODEL_PARTICLE, Model.class).materials.get(0).set(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1));
 			
-			//Ui
+			//UI
 			stringBuilder = new StringBuilder();
 			Skin skin = assetManager.get(DEFAULT_SKIN, Skin.class);
 			ui = new Stage();
@@ -763,7 +760,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			cameraInputController.update();
 			if(isUpdate){
 				particleSystem.update(delta);
-				//Update ui
+				//Update UI
 				stringBuilder.delete(0, stringBuilder.length);
 				stringBuilder.append("Point Sprites : ").append(pointSpriteBatch.getBufferedCount());
 				pointCountLabel.setText(stringBuilder);
