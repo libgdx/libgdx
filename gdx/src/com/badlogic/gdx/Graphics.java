@@ -216,6 +216,8 @@ public interface Graphics {
 	 * android.util.DisplayMetrics#density, where one DIP is one pixel on an approximately 160 dpi screen. Thus on a 160dpi screen
 	 * this density value will be 1; on a 120 dpi screen it would be .75; etc.
 	 *
+	 * If the density could not be determined, this returns a default value of 1.
+	 *
 	 * @return the Density Independent Pixel factor of the display. */
 	float getDensity ();
 
