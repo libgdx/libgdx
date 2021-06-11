@@ -70,7 +70,7 @@ public class IOSApplication implements Application {
 		protected abstract IOSApplication createApplication ();
 
 		@Override
-		public boolean applicationDidFinishLaunchingWithOptions (UIApplication application, NSDictionary<?, ?> launchOptions) {
+		public boolean applicationDidFinishLaunchingWithOptions (UIApplication application, NSDictionary launchOptions) {
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
 		}
@@ -453,6 +453,11 @@ public class IOSApplication implements Application {
 			@Override
 			public void setContents (String content) {
 				UIPasteboard.generalPasteboard().setString(content);
+			}
+
+			@Override
+			public boolean hasContents() {
+				return UIPasteboard.generalPasteboard().hasStrings();
 			}
 
 			@Override

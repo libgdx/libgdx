@@ -340,6 +340,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
+	public float getBackBufferScale() {
+		return getBackBufferWidth() / (float) getWidth();
+	}
+
+	@Override
 	public float getDeltaTime () {
 		return deltaTime;
 	}
@@ -466,6 +471,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setVSync (boolean vsync) {
+	}
+
+	@Override
+	public void setForegroundFPS(int fps) {
+		viewController.setPreferredFramesPerSecond(fps);
 	}
 
 	@Override

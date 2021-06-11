@@ -322,6 +322,12 @@ public class IOSInput implements Input {
 		buildUIAlertView(listener, title, text, hint).show();
 	}
 
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		// TODO: 11.06.2021 Informieren wie der Type implementiert werden kann
+		buildUIAlertView(listener, title, text, hint).show();
+	}
+
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegate() {
 		@Override
@@ -368,13 +374,42 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
 		if (textfield == null) createDefaultTextField();
 		if (visible) {
 			textfield.becomeFirstResponder();
+			textfield.setKeyboardType(getIosInputType(type));
 			textfield.setDelegate(textDelegate);
 		} else {
 			textfield.resignFirstResponder();
 		}
+	}
+
+	protected long getIosInputType(OnscreenKeyboardType type) {
+		long preferredInputType;
+		switch (type) {
+			case NumberPad:
+				preferredInputType = UIKeyboardType.NumberPad;
+				break;
+			case PhonePad:
+				preferredInputType = UIKeyboardType.PhonePad;
+				break;
+			case Email:
+				preferredInputType = UIKeyboardType.EmailAddress;
+				break;
+			case URI:
+				preferredInputType = UIKeyboardType.URL;
+				break;
+			case Password: //no equivalent in UIKeyboardType?
+			default:
+				preferredInputType = UIKeyboardType.Default;
+				break;
+		}
+		return preferredInputType;
 	}
 
 	/** Set the keyboard to close when the UITextField return key is pressed

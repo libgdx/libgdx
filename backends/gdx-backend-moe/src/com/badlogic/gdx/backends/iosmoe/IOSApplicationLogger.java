@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import android.util.Log;
 import com.badlogic.gdx.ApplicationLogger;
 
 /**
@@ -25,32 +24,35 @@ import com.badlogic.gdx.ApplicationLogger;
 public class IOSApplicationLogger implements ApplicationLogger {
 
 	@Override
-	public void log (String tag, String message) {
-		Log.i(tag, message);
+	public void log(String tag, String message) {
+		System.out.println(tag + ": " + message);
 	}
 
 	@Override
-	public void log (String tag, String message, Throwable exception) {
-		Log.i(tag, message, exception);
+	public void log(String tag, String message, Throwable exception) {
+		System.out.println(tag + ": " + message);
+		exception.printStackTrace();
 	}
 
 	@Override
-	public void error (String tag, String message) {
-		Log.e(tag, message);
+	public void error(String tag, String message) {
+		System.err.println(tag + ": " + message);
 	}
 
 	@Override
-	public void error (String tag, String message, Throwable exception) {
-		Log.e(tag, message, exception);
+	public void error(String tag, String message, Throwable exception) {
+		System.err.println(tag + ": " + message);
+		exception.printStackTrace();
 	}
 
 	@Override
-	public void debug (String tag, String message) {
-		Log.d(tag, message);
+	public void debug(String tag, String message) {
+		System.out.println(tag + ": " + message);
 	}
 
 	@Override
-	public void debug (String tag, String message, Throwable exception) {
-		Log.d(tag, message, exception);
+	public void debug(String tag, String message, Throwable exception) {
+		System.out.println(tag + ": " + message);
+		exception.printStackTrace();
 	}
 }
