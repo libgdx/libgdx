@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Octree;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -46,7 +47,8 @@ import java.util.Random;
 
 public class OctreeTest extends GdxTest implements ApplicationListener {
 	private static final float AREA_SIZE = 100;
-	private static final float BOXES = 5000;
+	private static final int BOXES = 5000;
+	private static final int REMOVE_BOXES = 500;
 	public static final int MAX_DEPTH = 8;
 	public static final int MAX_ITEMS_PER_NODE = 200;
 
@@ -105,7 +107,11 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		});
 
 		generateGameObjects();
-    	generateOctreeInstances();
+
+		for (int i = 0; i < REMOVE_BOXES; i++)
+			octree.remove(gameObjects.removeIndex(MathUtils.random(0, gameObjects.size - 1)));
+
+		generateOctreeInstances();
 	}
 
 	@Override
@@ -128,7 +134,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		if (octreeVisible) {
 			for (ModelInstance instance : octreeBounds) {
 				modelBatch.render(instance);
-		    }
+			}
 		}
 
 		modelBatch.end();
@@ -184,7 +190,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		Material wireframeMaterial = new Material();
 		wireframeMaterial.set(ColorAttribute.createDiffuse(Color.RED));
 
-		for (int i = 0; i < BOXES; i++) {
+		for (int i = 0, n = BOXES + REMOVE_BOXES; i < n; i++) {
 			float width = random.nextFloat() * 3;
 			float height = random.nextFloat() * 3;
 			float depth = random.nextFloat() * 3;
@@ -240,7 +246,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		gameObjects.clear();
 	}
 
-	private static class GameObject {
+	static class GameObject {
 		ModelInstance instance;
 		ModelInstance boxEdges;
 		BoundingBox box;
