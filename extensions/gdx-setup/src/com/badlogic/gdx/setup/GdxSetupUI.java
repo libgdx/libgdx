@@ -532,6 +532,10 @@ public class GdxSetupUI extends JFrame {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
 				}
+				if (projectType == ProjectType.IOSMOE) {
+					//Disable
+					continue;
+				}
 
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
 				if (projectType == ProjectType.HTML) {
