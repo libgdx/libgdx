@@ -52,3 +52,7 @@ moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+if (System.getenv('PLATFORM_NAME') != null) {
+    moeXcodeInternal.dependsOn copyNatives
+}
