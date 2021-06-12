@@ -504,7 +504,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setHeight(height);
 			validate();
 			float width = Math.max(getPrefWidth(), selectBox.getWidth());
-			if (getPrefHeight() > height && !disableY) width += getScrollBarWidth();
 			setWidth(width);
 
 			validate();
