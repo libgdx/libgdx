@@ -44,6 +44,19 @@
       <systemPath>${basedir}/libs/moe-ios.jar</systemPath>
       <optional>true</optional>
     </dependency>
+      <dependency>
+          <groupId>org.graalvm.sdk</groupId>
+          <artifactId>graal-sdk</artifactId>
+          <version>21.0.0.2</version>
+          <scope>provided</scope>
+      </dependency>
+      <!--Why is the JNI Registration not in the sdk?-->
+      <dependency>
+          <groupId>org.graalvm.nativeimage</groupId>
+          <artifactId>svm</artifactId>
+          <version>21.0.0.2</version>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 
   <build>
