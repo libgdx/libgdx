@@ -230,11 +230,12 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
+			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs, String graalVMLocation) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
 		String sdkPath = sdkLocation.replace('\\', '/');
+		String graalVM = graalVMLocation.replace('\\', '/');
 
 		if (!isSdkLocationValid(sdkLocation)) {
 			System.out.println("Android SDK location '" + sdkLocation + "' doesn't contain an SDK");
@@ -374,6 +375,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
+			project.files.add(new ProjectFile("local.properties", true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -384,6 +386,7 @@ public class GdxSetup {
 		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
 		values.put("%ANDROID_SDK%", sdkPath);
+		values.put("%GRAALVM_HOME%", graalVM);
 		values.put("%ASSET_PATH%", assetPath);
 		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
@@ -653,6 +656,7 @@ public class GdxSetup {
 				  }
 			 }
 
+		    String graalVMLocation = params.get("graalVMLocation");
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();
@@ -699,7 +703,7 @@ public class GdxSetup {
 					public void character (char c) {
 						System.out.print(c);
 					}
-				}, null);
+				}, null, graalVMLocation);
 		}
 	}
 }

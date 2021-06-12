@@ -174,7 +174,13 @@ public class GdxSetupUI extends JFrame {
 							"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
 		}
-		
+
+		final String graalVMLocation = ui.form.graalvmLocationText.getText().trim();
+		if (graalVMLocation.length() == 0 && modules.contains(ProjectType.IOSMOE)) {
+			JOptionPane.showMessageDialog(this, "Please enter your GraalVM path");
+			return;
+		}
+
 		if (modules.contains(ProjectType.HTML) && !languageEnum.gwtSupported) {
 			JOptionPane.showMessageDialog(this, "HTML sub-projects are not supported by the selected programming language.");
 			ui.form.gwtCheckBox.setSelected(false);
@@ -266,7 +272,7 @@ public class GdxSetupUI extends JFrame {
 					public void character (char c) {
 						log(c);
 					}
-				}, ui.settings.getGradleArgs());
+				}, ui.settings.getGradleArgs(), graalVMLocation);
 				log("Done!");
 				log("To import in Eclipse: File -> Import -> Gradle -> Existing Gradle Project");
 				log("To import to Intellij IDEA: File -> Open -> build.gradle");
@@ -456,6 +462,14 @@ public class GdxSetupUI extends JFrame {
 		);
 		SetupButton sdkLocationButton = new SetupButton("Browse");
 
+		JLabel graalvmLocationLabel = new JLabel("GraalVM Home");
+		JTextField graalvmLocationText = new JTextField(
+				System.getProperty("os.name").contains("Windows")
+						? "C:\\Path\\To\\GraalVM"
+						: "/path/to/GraalVM"
+		);
+		SetupButton graalvmLocationButton = new SetupButton("Browse");
+
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
@@ -475,13 +489,16 @@ public class GdxSetupUI extends JFrame {
 			gameClassText.setCaretColor(Color.WHITE);
 			destinationText.setCaretColor(Color.WHITE);
 			sdkLocationText.setCaretColor(Color.WHITE);
+			graalvmLocationText.setDisabledTextColor(Color.GRAY);
 
 			nameLabel.setForeground(Color.WHITE);
 			packageLabel.setForeground(Color.WHITE);
 			gameClassLabel.setForeground(Color.WHITE);
 			destinationLabel.setForeground(Color.WHITE);
 			sdkLocationLabel.setForeground(Color.WHITE);
+			graalvmLocationLabel.setForeground(Color.WHITE);
 			sdkLocationText.setDisabledTextColor(Color.GRAY);
+			graalvmLocationText.setDisabledTextColor(Color.GRAY);
 
 			projectsLabel.setForeground(new Color(255, 20, 20));
 			extensionsLabel.setForeground(new Color(255, 20, 20));
@@ -499,6 +516,7 @@ public class GdxSetupUI extends JFrame {
 			gameClassLabel.setToolTipText("The name of the main class implementing ApplicationListener");
 			destinationLabel.setToolTipText("The root directory of the project, it will be created if it does not exist");
 			sdkLocationLabel.setToolTipText("The location of your Android SDK");
+			graalvmLocationLabel.setToolTipText("The location of GraalVM");
 		}
 
 		private void uiLayout () {
@@ -527,13 +545,13 @@ public class GdxSetupUI extends JFrame {
 			add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
 
+			add(graalvmLocationLabel, new GridBagConstraints(0, 5, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
+			add(graalvmLocationText, new GridBagConstraints(1, 5, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			add(graalvmLocationButton, new GridBagConstraints(2, 5, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
+
 
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
-					continue;
-				}
-				if (projectType == ProjectType.IOSMOE) {
-					//Disable
 					continue;
 				}
 
@@ -662,6 +680,18 @@ public class GdxSetupUI extends JFrame {
 					if (path != null) {
 						sdkLocationText.setText(path.getAbsolutePath());
 						prefs.putString("ANDROID_HOME", path.getAbsolutePath());
+						prefs.flush();
+					}
+				}
+			});
+			graalvmLocationButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed (ActionEvent e) {
+					File path = getDirectory("Choose GraalVM hone");
+					if (path != null) {
+						graalvmLocationText.setText(path.getAbsolutePath());
+						// TODO: 11.06.2021 Hier weiter ansetzen
+						prefs.putString("GRAALVM_HOME", path.getAbsolutePath());
 						prefs.flush();
 					}
 				}

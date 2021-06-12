@@ -319,13 +319,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
-		buildUIAlertView(listener, title, text, hint).show();
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
-		// TODO: 11.06.2021 Informieren wie der Type implementiert werden kann
-		buildUIAlertView(listener, title, text, hint).show();
+		buildUIAlertView(listener, title, text, hint, type).show();
 	}
 
 	private UITextField textfield = null;
@@ -446,7 +445,7 @@ public class IOSInput implements Input {
 	 * @param title Dialog title
 	 * @param text Text for text field
 	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
+	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder, OnscreenKeyboardType type) {
 		UIAlertViewDelegate delegate = new UIAlertViewDelegate() {
 			@Override
 			public void alertViewClickedButtonAtIndex (UIAlertView alertView, @NInt long buttonIndex) {
@@ -477,6 +476,7 @@ public class IOSInput implements Input {
 		UITextField textField = uiAlertView.textFieldAtIndex(0);
 		textField.setPlaceholder(placeholder);
 		textField.setText(text);
+		textField.setKeyboardType(getIosInputType(type));
 
 		return uiAlertView;
 	}

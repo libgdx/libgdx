@@ -48,7 +48,7 @@
     <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.2.3</lwjgl3.version>
     <robovm.version>2.3.12</robovm.version>
-    <moe.version>1.4.0</moe.version>
+    <moe.version>2.0.0-SNAPSHOT</moe.version>
   </properties>
 
   <modules>
