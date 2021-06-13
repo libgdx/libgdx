@@ -28,12 +28,12 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class FirstPersonCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
-	private int STRAFE_LEFT = Keys.A;
-	private int STRAFE_RIGHT = Keys.D;
-	private int FORWARD = Keys.W;
-	private int BACKWARD = Keys.S;
-	private int UP = Keys.Q;
-	private int DOWN = Keys.E;
+	public int STRAFE_LEFT = Keys.A;
+	public int STRAFE_RIGHT = Keys.D;
+	public int FORWARD = Keys.W;
+	public int BACKWARD = Keys.S;
+	public int UP = Keys.Q;
+	public int DOWN = Keys.E;
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
@@ -73,7 +73,6 @@ public class FirstPersonCameraController extends InputAdapter {
 		camera.direction.rotate(camera.up, deltaX);
 		tmp.set(camera.direction).crs(camera.up).nor();
 		camera.direction.rotate(tmp, deltaY);
-// camera.up.rotate(tmp, deltaY);
 		return true;
 	}
 
