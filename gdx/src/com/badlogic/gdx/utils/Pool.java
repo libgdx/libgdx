@@ -112,10 +112,10 @@ abstract public class Pool<T> {
 
 	/** Removes and discards all free objects from this pool. */
 	public void clear () {
-		for (int i = 0; i < freeObjects.size; i++) {
-			T obj = freeObjects.pop();
-			discard(obj);
-		}
+		Array<T> freeObjects = this.freeObjects;
+		for (int i = 0, n = freeObjects.size; i < n; i++)
+			discard(freeObjects.get(i));
+		freeObjects.clear();
 	}
 
 	/** The number of objects available to be obtained. */
