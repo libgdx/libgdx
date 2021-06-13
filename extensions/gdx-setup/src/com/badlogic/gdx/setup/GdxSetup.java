@@ -403,6 +403,10 @@ public class GdxSetup {
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
 
+		if(builder.modules.contains(ProjectType.IOSMOE)) {
+			Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "moeUpdateXcodeSettings" + parseGradleArgs(builder.modules, gradleArgs), callback);
+		}
+
 		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs), callback);
 	}
 
