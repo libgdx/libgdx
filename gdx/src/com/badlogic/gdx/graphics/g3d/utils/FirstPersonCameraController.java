@@ -28,12 +28,12 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class FirstPersonCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
-	public int STRAFE_LEFT = Keys.A;
-	public int STRAFE_RIGHT = Keys.D;
-	public int FORWARD = Keys.W;
-	public int BACKWARD = Keys.S;
-	public int UP = Keys.Q;
-	public int DOWN = Keys.E;
+	public int strafeLeftKey = Keys.A;
+	public int strafeRightKey = Keys.D;
+	public int forwardKey = Keys.W;
+	public int backwardKey = Keys.S;
+	public int upKey = Keys.Q;
+	public int downKey = Keys.E;
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
@@ -81,27 +81,27 @@ public class FirstPersonCameraController extends InputAdapter {
 	}
 
 	public void update (float deltaTime) {
-		if (keys.containsKey(FORWARD)) {
+		if (keys.containsKey(forwardKey)) {
 			tmp.set(camera.direction).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(BACKWARD)) {
+		if (keys.containsKey(backwardKey)) {
 			tmp.set(camera.direction).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(STRAFE_LEFT)) {
+		if (keys.containsKey(strafeLeftKey)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(STRAFE_RIGHT)) {
+		if (keys.containsKey(strafeRightKey)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(UP)) {
+		if (keys.containsKey(upKey)) {
 			tmp.set(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(DOWN)) {
+		if (keys.containsKey(downKey)) {
 			tmp.set(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
