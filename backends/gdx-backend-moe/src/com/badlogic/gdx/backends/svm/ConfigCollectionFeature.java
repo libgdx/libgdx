@@ -1,4 +1,4 @@
-package org.moe.svm;
+package com.badlogic.gdx.backends.svm;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
