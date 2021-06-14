@@ -37,6 +37,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 // Setup Multi-OS Engine
 moe {
+    nativeImage.options = ["--features=com.badlogic.gdx.backends.svm.ConfigCollectionFeature"]
     xcode {
         project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
