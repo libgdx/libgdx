@@ -197,7 +197,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					AtlasRegion region = atlas.findRegion(regionName);
 					if (region == null)
 						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
-					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
+					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY, tileElement);
 				}
 			}
 		}
