@@ -44,16 +44,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**com/badlogic/gdx/utils/SharedLibraryLoader.class</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
     </plugins>
     
     <resources>
