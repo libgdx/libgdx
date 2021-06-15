@@ -28,12 +28,13 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class FirstPersonCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
-	public int strafeLeftKey = Keys.A;
-	public int strafeRightKey = Keys.D;
-	public int forwardKey = Keys.W;
-	public int backwardKey = Keys.S;
-	public int upKey = Keys.Q;
-	public int downKey = Keys.E;
+	private boolean autoUpdate = true;
+	private int strafeLeftKey = Keys.A;
+	private int strafeRightKey = Keys.D;
+	private int forwardKey = Keys.W;
+	private int backwardKey = Keys.S;
+	private int upKey = Keys.Q;
+	private int downKey = Keys.E;
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
@@ -52,18 +53,6 @@ public class FirstPersonCameraController extends InputAdapter {
 	public boolean keyUp (int keycode) {
 		keys.remove(keycode, 0);
 		return true;
-	}
-
-	/** Sets the velocity in units per second for moving forward, backward and strafing left/right.
-	 * @param velocity the velocity in units per second */
-	public void setVelocity (float velocity) {
-		this.velocity = velocity;
-	}
-
-	/** Sets how many degrees to rotate per pixel the mouse moved.
-	 * @param degreesPerPixel */
-	public void setDegreesPerPixel (float degreesPerPixel) {
-		this.degreesPerPixel = degreesPerPixel;
 	}
 
 	@Override
@@ -105,6 +94,83 @@ public class FirstPersonCameraController extends InputAdapter {
 			tmp.set(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		camera.update(true);
+		if (autoUpdate)
+			 camera.update(true);
 	}
+
+	 public float getVelocity () {
+		  return velocity;
+	 }
+
+	 /** Sets the velocity in units per second for moving forward, backward and strafing left/right.
+	  * @param velocity the velocity in units per second */
+	 public void setVelocity (float velocity) {
+		  this.velocity = velocity;
+	 }
+
+	 public float getDegreesPerPixel () {
+		  return degreesPerPixel;
+	 }
+
+	 /** Sets how many degrees to rotate per pixel the mouse moved.
+	  * @param degreesPerPixel */
+	 public void setDegreesPerPixel (float degreesPerPixel) {
+		  this.degreesPerPixel = degreesPerPixel;
+	 }
+
+	 public boolean isAutoUpdate () {
+		  return autoUpdate;
+	 }
+
+	 public void setAutoUpdate (boolean autoUpdate) {
+		  this.autoUpdate = autoUpdate;
+	 }
+
+	 public int getStrafeLeftKey () {
+		  return strafeLeftKey;
+	 }
+
+	 public void setStrafeLeftKey (int strafeLeftKey) {
+		  this.strafeLeftKey = strafeLeftKey;
+	 }
+
+	 public int getStrafeRightKey () {
+		  return strafeRightKey;
+	 }
+
+	 public void setStrafeRightKey (int strafeRightKey) {
+		  this.strafeRightKey = strafeRightKey;
+	 }
+
+	 public int getForwardKey () {
+		  return forwardKey;
+	 }
+
+	 public void setForwardKey (int forwardKey) {
+		  this.forwardKey = forwardKey;
+	 }
+
+	 public int getBackwardKey () {
+		  return backwardKey;
+	 }
+
+	 public void setBackwardKey (int backwardKey) {
+		  this.backwardKey = backwardKey;
+	 }
+
+	 public int getUpKey () {
+		  return upKey;
+	 }
+
+	 public void setUpKey (int upKey) {
+		  this.upKey = upKey;
+	 }
+
+	 public int getDownKey () {
+		  return downKey;
+	 }
+
+	 public void setDownKey (int downKey) {
+		  this.downKey = downKey;
+	 }
 }
