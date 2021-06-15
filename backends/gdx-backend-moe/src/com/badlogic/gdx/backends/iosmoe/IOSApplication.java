@@ -444,7 +444,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		NSThread.exit();
+		throw new UnsupportedOperationException("The iOS App shouldn't be terminated manually! (iOS Human Interface Guidelines)");
 	}
 
 	@Override
