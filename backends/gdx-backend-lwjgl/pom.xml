@@ -23,6 +23,16 @@
       <groupId>org.lwjgl.lwjgl</groupId>
       <artifactId>lwjgl</artifactId>
       <version>${lwjgl.version}</version>
+      <exclusions> 
+         <exclusion>
+             <groupId>org.lwjgl.lwjgl</groupId> 
+             <artifactId>lwjgl-platform</artifactId>
+          </exclusion>  
+          <exclusion>
+              <groupId>net.java.jutils</groupId>
+              <artifactId>jutils</artifactId>
+          </exclusion>
+       </exclusions>
     </dependency>
 
     <dependency>
