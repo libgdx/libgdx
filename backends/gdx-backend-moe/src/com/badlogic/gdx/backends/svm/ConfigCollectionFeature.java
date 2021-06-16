@@ -10,9 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 import com.oracle.svm.core.jni.JNIRuntimeAccess;
 import org.graalvm.nativeimage.hosted.Feature;
+import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
 
@@ -37,7 +39,15 @@ public class ConfigCollectionFeature implements Feature {
             RuntimeReflection.register(Button.ButtonStyle.class, CheckBox.CheckBoxStyle.class, ImageButton.ImageButtonStyle.class, ImageTextButton.ImageTextButtonStyle.class, Label.LabelStyle.class, List.ListStyle.class, ProgressBar.ProgressBarStyle.class, ScrollPane.ScrollPaneStyle.class, SelectBox.SelectBoxStyle.class, Skin.TintedDrawable.class, Slider.SliderStyle.class, SplitPane.SplitPaneStyle.class, Table.DebugRect.class, TextButton.TextButtonStyle.class, TextField.TextFieldFilter.DigitsOnlyFilter.class, TextField.DefaultOnscreenKeyboard.class, TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class, Tree.TreeStyle.class, Value.Fixed.class, Window.WindowStyle.class);
             RuntimeReflection.register(Button.ButtonStyle.class.getConstructor(), CheckBox.CheckBoxStyle.class.getConstructor(), ImageButton.ImageButtonStyle.class.getConstructor(), ImageTextButton.ImageTextButtonStyle.class.getConstructor(), Label.LabelStyle.class.getConstructor(), List.ListStyle.class.getConstructor(), ProgressBar.ProgressBarStyle.class.getConstructor(), ScrollPane.ScrollPaneStyle.class.getConstructor(), SelectBox.SelectBoxStyle.class.getConstructor(), Skin.TintedDrawable.class.getConstructor(), Slider.SliderStyle.class.getConstructor(), SplitPane.SplitPaneStyle.class.getConstructor(), Table.DebugRect.class.getConstructor(), TextButton.TextButtonStyle.class.getConstructor(), TextField.TextFieldFilter.DigitsOnlyFilter.class.getConstructor(), TextField.DefaultOnscreenKeyboard.class.getConstructor(), TextField.TextFieldStyle.class.getConstructor(), TextTooltip.TextTooltipStyle.class.getConstructor(), Touchpad.TouchpadStyle.class.getConstructor(), Tree.TreeStyle.class.getConstructor(), Value.Fixed.class.getConstructor(float.class), Window.WindowStyle.class.getConstructor());
             RuntimeReflection.register(concatArrays(Button.ButtonStyle.class.getDeclaredFields(), CheckBox.CheckBoxStyle.class.getDeclaredFields(), ImageButton.ImageButtonStyle.class.getDeclaredFields(), ImageTextButton.ImageTextButtonStyle.class.getDeclaredFields(), Label.LabelStyle.class.getDeclaredFields(), List.ListStyle.class.getDeclaredFields(), ProgressBar.ProgressBarStyle.class.getDeclaredFields(), ScrollPane.ScrollPaneStyle.class.getDeclaredFields(), SelectBox.SelectBoxStyle.class.getDeclaredFields(), Skin.TintedDrawable.class.getDeclaredFields(), Slider.SliderStyle.class.getDeclaredFields(), SplitPane.SplitPaneStyle.class.getDeclaredFields(), Table.DebugRect.class.getDeclaredFields(), TextButton.TextButtonStyle.class.getDeclaredFields(), TextField.TextFieldFilter.DigitsOnlyFilter.class.getDeclaredFields(), TextField.DefaultOnscreenKeyboard.class.getDeclaredFields(), TextField.TextFieldStyle.class.getDeclaredFields(), TextTooltip.TextTooltipStyle.class.getDeclaredFields(), Touchpad.TouchpadStyle.class.getDeclaredFields(), Tree.TreeStyle.class.getDeclaredFields(), Value.Fixed.class.getDeclaredFields(), Window.WindowStyle.class.getDeclaredFields()));
-        }catch (NoSuchMethodException e){
+            RuntimeReflection.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSMusic$1").getMethods());
+            RuntimeReflection.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSInput$4").getMethods());
+            RuntimeReflection.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSInput$5").getMethods());
+            RuntimeClassInitialization.initializeAtBuildTime(UIUtils.class);
+
+            JNIRuntimeAccess.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSMusic$1").getMethods());
+            JNIRuntimeAccess.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSInput$4").getMethods());
+            JNIRuntimeAccess.register(Class.forName("com.badlogic.gdx.backends.iosmoe.IOSInput$5").getMethods());
+        }catch (NoSuchMethodException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
