@@ -134,7 +134,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		camera.up.set(0, 1, 0);
 		camera.update();
 		cameraController = new FirstPersonCameraController(camera);
-		cameraController.setVelocity(50);
+		cameraController.velocity= 50;
 		Gdx.input.setInputProcessor(cameraController);
 
 		GLFrameBuffer.FrameBufferBuilder frameBufferBuilder = new GLFrameBuffer.FrameBufferBuilder(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
