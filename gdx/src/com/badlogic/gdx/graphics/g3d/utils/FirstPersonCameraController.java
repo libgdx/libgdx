@@ -99,5 +99,4 @@ public class FirstPersonCameraController extends InputAdapter {
 		if (autoUpdate)
 			 camera.update(true);
 	}
-
 }
