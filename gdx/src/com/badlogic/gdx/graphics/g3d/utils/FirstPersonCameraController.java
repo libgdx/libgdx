@@ -26,20 +26,18 @@ import com.badlogic.gdx.utils.IntIntMap;
 /** Takes a {@link Camera} instance and controls it via w,a,s,d and mouse panning.
  * @author badlogic */
 public class FirstPersonCameraController extends InputAdapter {
-	 protected final Camera camera;
-	 protected final IntIntMap keys = new IntIntMap();
-	 protected final Vector3 tmp = new Vector3();
-
-	 public boolean autoUpdate = true;
-	 public float velocity = 5;    /* Velocity in units per second for moving forward, backward and strafing left/right.*/
-	 public float degreesPerPixel = 0.5f;    /* Sets how many degrees to rotate per pixel the mouse moved.*/
-
-	 public int strafeLeftKey = Keys.A;
-	 public int strafeRightKey = Keys.D;
-	 public int forwardKey = Keys.W;
-	 public int backwardKey = Keys.S;
-	 public int upKey = Keys.Q;
-	 public int downKey = Keys.E;
+	protected final Camera camera;
+	protected final IntIntMap keys = new IntIntMap();
+	public int strafeLeftKey = Keys.A;
+	public int strafeRightKey = Keys.D;
+	public int forwardKey = Keys.W;
+	public int backwardKey = Keys.S;
+	public int upKey = Keys.Q;
+	public int downKey = Keys.E;
+	public boolean autoUpdate = true;
+	protected float velocity = 5;
+	protected float degreesPerPixel = 0.5f;
+	protected final Vector3 tmp = new Vector3();
 
 	public FirstPersonCameraController (Camera camera) {
 		this.camera = camera;
@@ -55,6 +53,18 @@ public class FirstPersonCameraController extends InputAdapter {
 	public boolean keyUp (int keycode) {
 		keys.remove(keycode, 0);
 		return true;
+	}
+
+	/** Sets the velocity in units per second for moving forward, backward and strafing left/right.
+	 * @param velocity the velocity in units per second */
+	public void setVelocity (float velocity) {
+		this.velocity = velocity;
+	}
+
+	/** Sets how many degrees to rotate per pixel the mouse moved.
+	 * @param degreesPerPixel */
+	public void setDegreesPerPixel (float degreesPerPixel) {
+		this.degreesPerPixel = degreesPerPixel;
 	}
 
 	@Override
