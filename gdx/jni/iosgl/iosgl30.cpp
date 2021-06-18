@@ -3,8 +3,7 @@
 
 #if TARGET_OS_IPHONE
 #include "iosgl30.h"
-#include <OpenGLES/ES3/gl.h>
-#include <OpenGLES/ES3/glext.h>
+#include <MetalANGLE/GLES3/gl3.h>
 #include <stdio.h>
 
 static jclass bufferClass;
