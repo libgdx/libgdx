@@ -352,6 +352,7 @@
 		<include name="math/MathUtils.java"/>
 		<include name="math/Matrix3.java"/>
 		<include name="math/Matrix4.java"/> <!-- Emulated: JNI -->
+		<include name="math/Octree.java"/>
 		<include name="math/Path.java"/>
 		<include name="math/Plane.java"/>
 		<include name="math/Polygon.java"/>

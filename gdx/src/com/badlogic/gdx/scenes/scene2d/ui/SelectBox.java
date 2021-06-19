@@ -230,7 +230,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the appropriate label font color from the style based on the current button state. */
-	protected @Null Color getFontColor () {
+	protected Color getFontColor () {
 		if (isDisabled() && style.disabledFontColor != null) return style.disabledFontColor;
 		if (style.overFontColor != null && (isOver() || selectBoxList.hasParent())) return style.overFontColor;
 		return style.fontColor;
@@ -504,7 +504,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setHeight(height);
 			validate();
 			float width = Math.max(getPrefWidth(), selectBox.getWidth());
-			if (getPrefHeight() > height && !disableY) width += getScrollBarWidth();
 			setWidth(width);
 
 			validate();

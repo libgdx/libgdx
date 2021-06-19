@@ -80,6 +80,7 @@
               <phase>prepare-package</phase>
               <goals><goal>run</goal></goals>
               <configuration>
+              <skip>${skipFetchNatives}</skip>
               <target>
                 <ant antfile="${basedir}/fetch.xml">
                   <target name="fetch-gdx" />
