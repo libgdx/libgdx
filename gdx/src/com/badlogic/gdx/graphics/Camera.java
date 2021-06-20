@@ -192,10 +192,7 @@ public abstract class Camera {
 	 * @param viewportHeight the height of the viewport in pixels
 	 * @return the mutated and unprojected screenCoords {@link Vector3} */
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
-		float x = screenCoords.x, y = screenCoords.y;
-		x = x - viewportX;
-		y = Gdx.graphics.getHeight() - y;
-		y = y - viewportY;
+		float x = screenCoords.x - viewportX, y = Gdx.graphics.getHeight() - screenCoords.y - viewportY;
 		screenCoords.x = (2 * x) / viewportWidth - 1;
 		screenCoords.y = (2 * y) / viewportHeight - 1;
 		screenCoords.z = 2 * screenCoords.z - 1;
