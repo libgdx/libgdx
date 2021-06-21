@@ -22,7 +22,7 @@ import java.nio.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ConfigCollectionFeature implements Feature {
+public class ConfigCollectionFeatureBase implements Feature {
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
