@@ -188,7 +188,7 @@ public class Polygon implements Shape2D {
 
 	 public Vector2 getCentroid(Vector2 centroid){
 		  float[] vertices = getTransformedVertices();
-		  return GeometryUtils.polygonCentroid(vertices,0,vertices.length,centroid);
+		  return GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
 	 }
 
 	/** Returns an axis-aligned bounding box of this polygon.
