@@ -169,6 +169,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		if (items.size == 0) return;
 		items.clear();
 		selection.clear();
+		selectBoxList.list.clearItems();
 		invalidateHierarchy();
 	}
 
