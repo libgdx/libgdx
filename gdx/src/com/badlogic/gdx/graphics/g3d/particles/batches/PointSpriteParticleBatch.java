@@ -80,13 +80,13 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		pointSpritesEnabled = true;
 	}
 
-	private BlendingAttribute blendingAttribute;
-	private DepthTestAttribute depthTestAttribute;
+	private float[] vertices;
+	protected BlendingAttribute blendingAttribute;
+	protected DepthTestAttribute depthTestAttribute;
 	private RenderablePool renderablePool;
 	protected Array<Renderable> renderables;
 	protected Shader shader;
 	protected Texture texture;
-	protected float[] vertices;
 
 	public PointSpriteParticleBatch () {
 		this(1000);
