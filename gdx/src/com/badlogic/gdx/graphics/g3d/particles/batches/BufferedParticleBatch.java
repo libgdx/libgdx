@@ -24,6 +24,11 @@ import com.badlogic.gdx.utils.Array;
 /** Base class of all the batches requiring to buffer {@link ParticleControllerRenderData}
  * @author Inferno */
 public abstract class BufferedParticleBatch<T extends ParticleControllerRenderData> implements ParticleBatch<T> {
+	/** Option when dealing with both transparent models and transparent particles in a scene. 
+	 * When enabled, at least one renderable is produced per controller and produces correct results. 
+	 * Default is false to minimize renderables (and then draw calls). 
+	 * User code can enable/disable it dynamically. */
+	public boolean splitRenderablesPerController = false;
 	protected Array<T> renderData;
 	protected int bufferedParticlesCount, currentCapacity = 0;
 	protected ParticleSorter sorter;
@@ -51,7 +56,7 @@ public abstract class BufferedParticleBatch<T extends ParticleControllerRenderDa
 	public void end () {
 		if (bufferedParticlesCount > 0) {
 			ensureCapacity(bufferedParticlesCount);
-			flush(sorter.sort(renderData));
+			flush(sorter.sort(renderData, splitRenderablesPerController));
 		}
 	}
 

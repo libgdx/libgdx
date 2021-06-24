@@ -361,6 +361,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
+			int lastTp = tp;
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -393,6 +394,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				baseOffset += currentVertexSize;
 				putVertex(vertices, baseOffset, px, py, pz, u, v, -sx, sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
+			}
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
 			}
 		}
 	}
@@ -477,6 +484,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
+			int lastTp = tp;
 
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
@@ -537,6 +545,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
 				}
 			}
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
 		}
 	}
 
@@ -552,6 +566,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
+			int lastTp = tp;
 
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
@@ -609,6 +624,42 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
 				}
 			}
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * currentVertexSize * 4;
+				int numVertices = data.controller.particles.size * 4;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
+		}
+	}
+
+	/** Obtains a Renderable from the pool and sets its vertices. If the number of vertices is too large to fit into one Mesh,
+	 * multiple Renderables will be used.
+	 *
+	 * @param offsetVertices Offset into the vertices array.
+	 * @param numVertices Number of vertices.
+	 * @param center Vector to use as the center of the Mesh (in model space, which is equal to world space in this case). */
+	private void addRenderable (int offsetVertices, int numVertices, Vector3 center) {
+		Vector3 halfExtents = null;
+		float radius = -1;
+		int meshVertexCount;
+		for (int totalVertexCount = 0; totalVertexCount < numVertices; totalVertexCount += meshVertexCount) {
+			meshVertexCount = Math.min(numVertices - totalVertexCount, MAX_VERTICES_PER_MESH);
+			Renderable renderable = renderablePool.obtain();
+			renderable.meshPart.size = meshVertexCount / 4 * 6; // Each billboard has 4 vertices, 6 indices
+			renderable.meshPart.mesh.setVertices(vertices, offsetVertices + totalVertexCount * currentVertexSize,
+				meshVertexCount * currentVertexSize);
+			if (halfExtents == null) {
+				renderable.meshPart.update();
+				halfExtents = renderable.meshPart.halfExtents;
+				radius = renderable.meshPart.radius;
+			} else {
+				// If this particle controller was split into multiple meshes, use cached values to avoid costly MeshPart#update()
+				renderable.meshPart.halfExtents.set(halfExtents);
+				renderable.meshPart.radius = radius;
+			}
+			renderable.meshPart.center.set(center);
+			renderables.add(renderable);
 		}
 	}
 
@@ -629,16 +680,18 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			// fillVerticesToParticleDirectionCPU(offsets);
 		}
 
-		// send vertices to meshes
-		int addedVertexCount = 0;
-		int vCount = bufferedParticlesCount * 4;
-		for (int v = 0; v < vCount; v += addedVertexCount) {
-			addedVertexCount = Math.min(vCount - v, MAX_VERTICES_PER_MESH);
-			Renderable renderable = renderablePool.obtain();
-			renderable.meshPart.size = (addedVertexCount / 4) * 6;
-			renderable.meshPart.mesh.setVertices(vertices, currentVertexSize * v, currentVertexSize * addedVertexCount);
-			renderable.meshPart.update();
-			renderables.add(renderable);
+		if (!splitRenderablesPerController) {
+			// send vertices to meshes
+			int addedVertexCount = 0;
+			int vCount = bufferedParticlesCount * 4;
+			for (int v = 0; v < vCount; v += addedVertexCount) {
+				addedVertexCount = Math.min(vCount - v, MAX_VERTICES_PER_MESH);
+				Renderable renderable = renderablePool.obtain();
+				renderable.meshPart.size = (addedVertexCount / 4) * 6;
+				renderable.meshPart.mesh.setVertices(vertices, currentVertexSize * v, currentVertexSize * addedVertexCount);
+				renderable.meshPart.update();
+				renderables.add(renderable);
+			}
 		}
 	}
 

@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteControllerRenderData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -45,6 +47,17 @@ import com.badlogic.gdx.utils.Pool;
 /** This class is used to draw particles as point sprites.
  * @author Inferno */
 public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteControllerRenderData> {
+
+	private class RenderablePool extends Pool<Renderable> {
+		RenderablePool () {
+		}
+
+		@Override
+		public Renderable newObject () {
+			return allocRenderable();
+		}
+	}
+
 	private static boolean pointSpritesEnabled = false;
 	protected static final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
@@ -57,6 +70,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
 		CPU_REGION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset / 4),
 		CPU_SIZE_AND_ROTATION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset / 4);
+	protected static final int MAX_PARTICLES_PER_MESH = Short.MAX_VALUE, MAX_VERTICES_PER_MESH = Short.MAX_VALUE;
 
 	private static void enablePointSprites () {
 		Gdx.gl.glEnable(GL20.GL_VERTEX_PROGRAM_POINT_SIZE);
@@ -67,9 +81,12 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	}
 
 	private float[] vertices;
-	Renderable renderable;
 	protected BlendingAttribute blendingAttribute;
 	protected DepthTestAttribute depthTestAttribute;
+	private RenderablePool renderablePool;
+	protected Array<Renderable> renderables;
+	protected Shader shader;
+	protected Texture texture;
 
 	public PointSpriteParticleBatch () {
 		this(1000);
@@ -96,34 +113,76 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
 		if (this.depthTestAttribute == null) this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
 
-		allocRenderable();
+		renderables = new Array<Renderable>();
+		renderablePool = new RenderablePool();
+		clearRenderablesPool();
+		allocShader(shaderConfig);
+		resetCapacity();
 		ensureCapacity(capacity);
-		renderable.shader = new ParticleShader(renderable, shaderConfig);
-		renderable.shader.init();
+		allocRenderables(bufferedParticlesCount);
 	}
 
 	@Override
 	protected void allocParticlesData (int capacity) {
 		vertices = new float[capacity * CPU_VERTEX_SIZE];
-		if (renderable.meshPart.mesh != null) renderable.meshPart.mesh.dispose();
-		renderable.meshPart.mesh = new Mesh(false, capacity, 0, CPU_ATTRIBUTES);
+		allocRenderables(capacity);
 	}
 
-	protected void allocRenderable () {
-		renderable = new Renderable();
+	protected Renderable allocRenderable () {
+		Renderable renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_POINTS;
 		renderable.meshPart.offset = 0;
-		renderable.material = new Material(blendingAttribute, depthTestAttribute, TextureAttribute.createDiffuse((Texture)null));
+		renderable.material = new Material(blendingAttribute, depthTestAttribute, TextureAttribute.createDiffuse(texture));
+		renderable.meshPart.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, 0, CPU_ATTRIBUTES);
+		renderable.shader = shader;
+		return renderable;
+	}
+
+	private void allocRenderables (int capacity) {
+		// Free old meshes
+		int meshCount = MathUtils.ceil(capacity / MAX_PARTICLES_PER_MESH), free = renderablePool.getFree();
+		if (free < meshCount) {
+			for (int i = 0, left = meshCount - free; i < left; ++i)
+				renderablePool.free(renderablePool.newObject());
+		}
+	}
+
+	private void allocShader (ParticleShader.Config shaderConfig) {
+		Renderable newRenderable = allocRenderable();
+		shader = newRenderable.shader = new ParticleShader(newRenderable, shaderConfig);
+		newRenderable.shader.init();
+		renderablePool.free(newRenderable);
+	}
+
+	@Override
+	public void begin () {
+		super.begin();
+		renderablePool.freeAll(renderables);
+		renderables.clear();
+	}
+
+	private void clearRenderablesPool () {
+		renderablePool.freeAll(renderables);
+		for (int i = 0, free = renderablePool.getFree(); i < free; ++i) {
+			Renderable renderable = renderablePool.obtain();
+			renderable.meshPart.mesh.dispose();
+		}
+		renderables.clear();
 	}
 
 	public void setTexture (Texture texture) {
-		TextureAttribute attribute = (TextureAttribute)renderable.material.get(TextureAttribute.Diffuse);
-		attribute.textureDescription.texture = texture;
+		renderablePool.freeAll(renderables);
+		renderables.clear();
+		for (int i = 0, free = renderablePool.getFree(); i < free; ++i) {
+			Renderable renderable = renderablePool.obtain();
+			TextureAttribute attribute = (TextureAttribute)renderable.material.get(TextureAttribute.Diffuse);
+			attribute.textureDescription.texture = texture;
+		}
+		this.texture = texture;
 	}
 
 	public Texture getTexture () {
-		TextureAttribute attribute = (TextureAttribute)renderable.material.get(TextureAttribute.Diffuse);
-		return attribute.textureDescription.texture;
+		return texture;
 	}
 
 	public BlendingAttribute getBlendingAttribute () {
@@ -140,6 +199,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
 
+			int lastTp = tp;
 			for (int p = 0; p < data.controller.particles.size; ++p, ++tp) {
 				int offset = offsets[tp] * CPU_VERTEX_SIZE;
 				int regionOffset = p * regionChannel.strideSize;
@@ -164,16 +224,56 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 				vertices[offset + CPU_REGION_OFFSET + 2] = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				vertices[offset + CPU_REGION_OFFSET + 3] = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
 			}
+			if (splitRenderablesPerController) {
+				int offsetVertices = lastTp * CPU_VERTEX_SIZE;
+				int numVertices = data.controller.particles.size;
+				Vector3 center = data.controller.transform.getTranslation(TMP_V1);
+				addRenderable(offsetVertices, numVertices, center);
+			}
 		}
+		if(!splitRenderablesPerController){
+			Renderable renderable = allocRenderable();
+			renderable.meshPart.size = bufferedParticlesCount;
+			renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount * CPU_VERTEX_SIZE);
+			renderable.meshPart.update();
+			renderables.add(renderable);
+		}
+	}
 
-		renderable.meshPart.size = bufferedParticlesCount;
-		renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount * CPU_VERTEX_SIZE);
-		renderable.meshPart.update();
+	/** Obtains a Renderable from the pool and sets its vertices. If the number of vertices is too large to fit into one Mesh,
+	 * multiple Renderables will be used.
+	 *
+	 * @param offsetVertices Offset into the vertices array.
+	 * @param numVertices Number of vertices.
+	 * @param center Vector to use as the center of the Mesh (in model space, which is equal to world space in this case). */
+	private void addRenderable (int offsetVertices, int numVertices, Vector3 center) {
+		Vector3 halfExtents = null;
+		float radius = -1;
+		int meshVertexCount;
+		for (int totalVertexCount = 0; totalVertexCount < numVertices; totalVertexCount += meshVertexCount) {
+			meshVertexCount = Math.min(numVertices - totalVertexCount, MAX_VERTICES_PER_MESH);
+			Renderable renderable = renderablePool.obtain();
+			renderable.meshPart.size = meshVertexCount;
+			renderable.meshPart.mesh.setVertices(vertices, offsetVertices + totalVertexCount * CPU_VERTEX_SIZE,
+				meshVertexCount * CPU_VERTEX_SIZE);
+			if (halfExtents == null) {
+				renderable.meshPart.update();
+				halfExtents = renderable.meshPart.halfExtents;
+				radius = renderable.meshPart.radius;
+			} else {
+				// If this particle controller was split into multiple meshes, use cached values to avoid costly MeshPart#update()
+				renderable.meshPart.halfExtents.set(halfExtents);
+				renderable.meshPart.radius = radius;
+			}
+			renderable.meshPart.center.set(center);
+			renderables.add(renderable);
+		}
 	}
 
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
-		if (bufferedParticlesCount > 0) renderables.add(pool.obtain().set(renderable));
+		for (Renderable renderable : this.renderables)
+			renderables.add(pool.obtain().set(renderable));
 	}
 
 	@Override
