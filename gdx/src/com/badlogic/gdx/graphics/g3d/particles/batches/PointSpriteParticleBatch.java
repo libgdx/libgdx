@@ -115,8 +115,6 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 		renderables = new Array<Renderable>();
 		renderablePool = new RenderablePool();
-		blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
-		depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
 		clearRenderablesPool();
 		allocShader(shaderConfig);
 		resetCapacity();
