@@ -43,7 +43,7 @@ public abstract class ParticleSorter {
 		}
 
 		@Override
-		public <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData) {
+		public <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData, boolean sortPerController) {
 			return indices;
 		}
 	}
@@ -65,7 +65,7 @@ public abstract class ParticleSorter {
 		}
 
 		@Override
-		public <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData) {
+		public <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData, boolean sortPerController) {
 			float[] val = camera.view.val;
 			float cx = val[Matrix4.M20], cy = val[Matrix4.M21], cz = val[Matrix4.M22];
 			int count = 0, i = 0;
@@ -77,9 +77,11 @@ public abstract class ParticleSorter {
 					particleIndices[i] = i;
 				}
 				// Sort the particles of each controller separately so they can be rendered with individual meshes
-				qsort(count, count + data.controller.particles.size - 1);
+				if(sortPerController) qsort(count, count + data.controller.particles.size - 1);
 				count += data.controller.particles.size;
 			}
+
+			if(!sortPerController) qsort(0, count - 1);
 
 			for (i = 0; i < count; ++i) {
 				particleOffsets[particleIndices[i]] = i;
@@ -146,9 +148,13 @@ public abstract class ParticleSorter {
 
 	protected Camera camera;
 
-	/** @return an array of offsets where each particle should be put in the resulting mesh (also if more than one mesh will be
+	/** @param renderData particles to sort.
+	 * @param sortPerController when true, particles should be sorted per controller, this is necessary when controllers need to be
+	 *           rendered separately. When false, all particles should be sorted all together, this is necessary when controllers
+	 *           need to be rendered merged.
+	 * @return an array of offsets where each particle should be put in the resulting mesh (also if more than one mesh will be
 	 *         generated, this is an absolute offset considering a BIG output array). */
-	public abstract <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData);
+	public abstract <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData, boolean sortPerController);
 
 	public void setCamera (Camera camera) {
 		this.camera = camera;
