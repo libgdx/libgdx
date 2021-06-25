@@ -112,7 +112,7 @@ public class BitmapFontTest extends GdxTest {
 			// text = "How quickly da[RED]ft jumping zebras vex.";
 			text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
 			// text = "test with AGWlWi      AGWlWi issue";
-			text = "AAA BBB CCC DDD    [RED]EEE";
+			text = "AAA BBB    [RED]EEE[] or ([GREEN]5[] FFF)";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
@@ -125,6 +125,7 @@ public class BitmapFontTest extends GdxTest {
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			renderer.setColor(0, 1, 0, 1);
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
+				renderer.setColor(i % 2, (i + 1) % 2, i % 2, 1);
 				GlyphRun r = layout.runs.get(i);
 				renderer.rect(10 + r.x, 10 + meowy + r.y, r.width, -font.getLineHeight());
 			}

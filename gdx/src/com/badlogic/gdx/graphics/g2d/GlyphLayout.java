@@ -145,7 +145,6 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
-							lastGlyph = null; // Only needed for newLine
 						} else if (length == -2) {
 							start++; // Skip first of "[[" escape sequence.
 							continue outer;
@@ -170,7 +169,7 @@ public class GlyphLayout implements Poolable {
 						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
 							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
 					}
-					if(newline) lastGlyph = run.glyphs.peek(); // Only needed for newLine, not color markup runs
+					lastGlyph = run.glyphs.peek();
 					run.x = x;
 					run.y = y;
 					if (newline || runEnd == end) adjustLastGlyph(fontData, run);
@@ -187,8 +186,8 @@ public class GlyphLayout implements Poolable {
 					}
 
 					// Wrap or truncate.
-					x += xAdvances[0] + xAdvances[1]; // X offset relative to the drawing position + first xAdvance.
-					for (int i = 2; i < n; i++) {
+					x += xAdvances[0]; // X offset relative to the drawing position. (Color-markup-runs can have just one letter)
+					for (int i = 1; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
 						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
 						if (x + glyphWidth - epsilon <= targetWidth) {
