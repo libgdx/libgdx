@@ -204,7 +204,7 @@ public class GlyphLayout implements Poolable {
 
 						// Wrap.
 						y += down;
-						lastGlyph = null;
+						if (newline) lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.

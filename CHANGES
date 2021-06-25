@@ -5,6 +5,7 @@
 - API Addition: Polygon have method setVertex (int index, float x, float y).
 - API Addition: TMX built-in tile property "type" is now supported.
 - API Addition: Octree structure.
+- Fix: GlyphLayout with multiline texts with colormarkup uses the correct distance between GlyphLayout#GlyphRuns
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
