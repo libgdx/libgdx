@@ -145,6 +145,7 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
+							lastGlyph = null; // Only needed for newLine
 						} else if (length == -2) {
 							start++; // Skip first of "[[" escape sequence.
 							continue outer;
@@ -169,7 +170,7 @@ public class GlyphLayout implements Poolable {
 						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
 							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
 					}
-					lastGlyph = run.glyphs.peek();
+					if(newline) lastGlyph = run.glyphs.peek(); // Only needed for newLine, not color markup runs
 					run.x = x;
 					run.y = y;
 					if (newline || runEnd == end) adjustLastGlyph(fontData, run);
