@@ -91,6 +91,7 @@ import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
+import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -316,8 +317,12 @@ public class GwtTestWrapper extends AbstractTestWrapper {
             }
         }, new GwtInstancer() {
             public GdxTest instance () {
-                return new OpenBrowserExample();
+                return new OctreeTest();
             }
+        }, new GwtInstancer() {
+                public GdxTest instance () {
+                    return new OpenBrowserExample();
+                }
 // }, new GwtInstancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to
 // the use of Thread
         }, new GwtInstancer() {

@@ -174,9 +174,16 @@ public class Json {
 		metadata.deprecated = deprecated;
 	}
 
-	/** When true, fields are sorted alphabetically when written, otherwise the source code order is used. Default is false. */
+	/** When true, fields are sorted alphabetically when written, otherwise the source code order is used. Default is false.
+	 * @see #sortFields(Class, Array) */
 	public void setSortFields (boolean sortFields) {
 		this.sortFields = sortFields;
+	}
+
+	/** Called to sort the fields for a class. Default implementation sorts alphabetically if {@link #setSortFields(boolean)} is
+	 * true. */
+	protected void sortFields (Class type, Array<String> fieldNames) {
+		if (sortFields) fieldNames.sort();
 	}
 
 	private OrderedMap<String, FieldMetadata> getFields (Class type) {
@@ -211,7 +218,7 @@ public class Json {
 
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
-		if (sortFields) nameToField.keys.sort();
+		sortFields(type, nameToField.keys);
 		typeToFields.put(type, nameToField);
 		return nameToField;
 	}
