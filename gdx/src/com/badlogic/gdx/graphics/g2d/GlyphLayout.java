@@ -272,10 +272,8 @@ public class GlyphLayout implements Poolable {
 		float width = 0;
 		Object[] runsItems = runs.items;
 		int runsSize = runs.size;
-		System.out.println();
 		for (int i = 0; i < runsSize; i++) {
 			GlyphRun run = (GlyphRun)runsItems[i];
-			System.out.println(run);
 			float[] xAdvances = run.xAdvances.items;
 			float runWidth = run.x + xAdvances[0], max = 0; // run.x is needed to ensure floats are rounded same as above.
 			Object[] glyphs = run.glyphs.items;
