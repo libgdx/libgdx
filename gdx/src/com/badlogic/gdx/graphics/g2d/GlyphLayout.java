@@ -165,9 +165,10 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
-					float[] xAdvances = run.xAdvances.items;
-					if (lastGlyph != null) // Move back the width of the last glyph from the previous run.
-						xAdvances[0] -= runs.peek().xAdvances.peek();
+					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
+						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
+							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
+					}
 					lastGlyph = run.glyphs.peek();
 					run.x = x;
 					run.y = y;
@@ -175,6 +176,7 @@ public class GlyphLayout implements Poolable {
 					runs.add(run);
 
 					int n = run.xAdvances.size;
+					float[] xAdvances = run.xAdvances.items;
 					if (!wrap || n == 0) { // No wrap or truncate, or no glyphs.
 						if (markupEnabled) { // If disabled any subsequent run is sure to be on the next line.
 							for (int i = 0; i < n; i++)
