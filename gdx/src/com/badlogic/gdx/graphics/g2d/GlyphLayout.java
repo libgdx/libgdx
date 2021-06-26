@@ -165,10 +165,9 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
-					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
-						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
-							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
-					}
+					float[] xAdvances = run.xAdvances.items;
+					if (lastGlyph != null) // Move back the width of the last glyph from the previous run.
+						xAdvances[0] -= runs.peek().xAdvances.peek();
 					lastGlyph = run.glyphs.peek();
 					run.x = x;
 					run.y = y;
@@ -176,7 +175,6 @@ public class GlyphLayout implements Poolable {
 					runs.add(run);
 
 					int n = run.xAdvances.size;
-					float[] xAdvances = run.xAdvances.items;
 					if (!wrap || n == 0) { // No wrap or truncate, or no glyphs.
 						if (markupEnabled) { // If disabled any subsequent run is sure to be on the next line.
 							for (int i = 0; i < n; i++)
@@ -186,7 +184,7 @@ public class GlyphLayout implements Poolable {
 					}
 
 					// Wrap or truncate.
-					x += xAdvances[0]; // X offset relative to the drawing position. (Color-markup-runs can have just one letter)
+					x += xAdvances[0]; // X offset relative to the drawing position.
 					for (int i = 1; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
 						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
@@ -204,7 +202,7 @@ public class GlyphLayout implements Poolable {
 
 						// Wrap.
 						y += down;
-						if (newline) lastGlyph = null;
+						lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -274,8 +272,10 @@ public class GlyphLayout implements Poolable {
 		float width = 0;
 		Object[] runsItems = runs.items;
 		int runsSize = runs.size;
+		System.out.println();
 		for (int i = 0; i < runsSize; i++) {
 			GlyphRun run = (GlyphRun)runsItems[i];
+			System.out.println(run);
 			float[] xAdvances = run.xAdvances.items;
 			float runWidth = run.x + xAdvances[0], max = 0; // run.x is needed to ensure floats are rounded same as above.
 			Object[] glyphs = run.glyphs.items;
