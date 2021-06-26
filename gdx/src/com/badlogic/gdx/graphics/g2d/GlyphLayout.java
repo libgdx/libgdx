@@ -186,8 +186,8 @@ public class GlyphLayout implements Poolable {
 					}
 
 					// Wrap or truncate.
-					x += xAdvances[0] + xAdvances[1]; // X offset relative to the drawing position + first xAdvance.
-					for (int i = 2; i < n; i++) {
+					x += xAdvances[0]; // X offset relative to the drawing position.
+					for (int i = 1; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
 						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
 						if (x + glyphWidth - epsilon <= targetWidth) {
