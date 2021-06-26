@@ -120,7 +120,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		float x = 0, y = 0, down = fontData.down;
-		Glyph lastGlyph = null;
+		Glyph lastGlyph = null; // Last glyph of last run, used for kerning (e.g. reducing the distance between "To" or "Va")
 		int runStart = start;
 		outer:
 		while (true) {
