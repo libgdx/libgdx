@@ -174,13 +174,13 @@ public class Polygon implements Shape2D {
 		return GeometryUtils.polygonArea(vertices, 0, vertices.length);
 	}
 
-	 public int getNbVertices(){
+	 public int getVertexCount(){
 		  return this.localVertices.length / 2;
 	 }
 	 
 	 /** @return Position(transformed) of vertex */
 	 public Vector2 getVertex (int vertexNum, Vector2 pos) {
-		  if (vertexNum < 0 || vertexNum > getNbVertices())
+		  if (vertexNum < 0 || vertexNum > getVertexCount())
 				throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
 		  float[] vertices = this.getTransformedVertices();
 		  return pos.set(vertices[2 * vertexNum], vertices[2 * vertexNum + 1]);
