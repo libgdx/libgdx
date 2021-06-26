@@ -112,7 +112,7 @@ public class BitmapFontTest extends GdxTest {
 			// text = "How quickly da[RED]ft jumping zebras vex.";
 			text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
 			// text = "test with AGWlWi      AGWlWi issue";
-			text = "AAA BBB    [RED]EEE[] or ([GREEN]5[] FFF)";
+			text = "AAA BBB    [RED]EEE[] or ([GREEN]5[] FFF [YELLOW]Color at the end)";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.

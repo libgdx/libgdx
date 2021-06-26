@@ -814,7 +814,7 @@ public class BitmapFont implements Disposable {
 		}
 
 		/** Returns the glyph for the specified character, or null if no such glyph exists. Note that
-		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int, Glyph)} should be be used to shape a string of characters into a list
+		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int)} should be be used to shape a string of characters into a list
 		 * of glyphs. */
 		public Glyph getGlyph (char ch) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
@@ -824,9 +824,8 @@ public class BitmapFont implements Disposable {
 
 		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
 		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
-		 *           square bracket.
-		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
-		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+		 *           square bracket. */
+		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end) {
 			int max = end - start;
 			if (max == 0) return;
 			boolean markupEnabled = this.markupEnabled;
@@ -838,6 +837,7 @@ public class BitmapFont implements Disposable {
 			glyphs.ensureCapacity(max);
 			run.xAdvances.ensureCapacity(max + 1);
 
+			Glyph lastGlyph = null;			
 			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.

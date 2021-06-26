@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Pools;
  * When wrapping occurs, whitespace is removed before and after the wrap position. Whitespace is determined by
  * {@link BitmapFontData#isWhitespace(char)}.
  * <p>
- * Glyphs positions are determined by {@link BitmapFontData#getGlyphs(GlyphRun, CharSequence, int, int, Glyph)}.
+ * Glyphs positions are determined by {@link BitmapFontData#getGlyphs(GlyphRun, CharSequence, int, int)}.
  * <p>
  * This class is not thread safe, even if synchronized externally, and must only be used from the game thread.
  * @author Nathan Sweet
@@ -120,7 +120,6 @@ public class GlyphLayout implements Poolable {
 		}
 
 		float x = 0, y = 0, down = fontData.down;
-		Glyph lastGlyph = null;
 		int runStart = start;
 		outer:
 		while (true) {
@@ -160,16 +159,11 @@ public class GlyphLayout implements Poolable {
 					// Store the run that has ended.
 					GlyphRun run = glyphRunPool.obtain();
 					run.color.set(color);
-					fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
+					fontData.getGlyphs(run, str, runStart, runEnd);
 					if (run.glyphs.size == 0) {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
-					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
-						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
-							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
-					}
-					lastGlyph = run.glyphs.peek();
 					run.x = x;
 					run.y = y;
 					if (newline || runEnd == end) adjustLastGlyph(fontData, run);
@@ -204,7 +198,6 @@ public class GlyphLayout implements Poolable {
 
 						// Wrap.
 						y += down;
-						if (newline) lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -261,7 +254,6 @@ public class GlyphLayout implements Poolable {
 						y += down * fontData.blankLineScale;
 					else
 						y += down;
-					lastGlyph = null;
 				}
 
 				runStart = start;
@@ -321,7 +313,7 @@ public class GlyphLayout implements Poolable {
 
 		// Determine truncate string size.
 		GlyphRun truncateRun = glyphRunPool.obtain();
-		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
+		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length());
 		float truncateWidth = 0;
 		if (truncateRun.xAdvances.size > 0) {
 			adjustLastGlyph(fontData, truncateRun);
