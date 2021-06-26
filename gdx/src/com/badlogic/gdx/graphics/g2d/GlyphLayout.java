@@ -165,18 +165,24 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(run);
 						break runEnded;
 					}
-					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
-						x -= lastGlyph.fixedWidth ? lastGlyph.xadvance * fontData.scaleX
-							: (lastGlyph.width + lastGlyph.xoffset) * fontData.scaleX - fontData.padRight;
-					}
-					lastGlyph = run.glyphs.peek();
-					run.x = x;
-					run.y = y;
-					if (newline || runEnd == end) adjustLastGlyph(fontData, run);
-					runs.add(run);
-
 					int n = run.xAdvances.size;
 					float[] xAdvances = run.xAdvances.items;
+					GlyphRun previous = null;
+					if (lastGlyph != null) { // Move back the width of the last glyph from the previous run.
+						previous = runs.peek();
+						x += xAdvances[0] - previous.xAdvances.peek();
+						xAdvances[0] = 0;
+					}
+					run.x = x;
+					run.y = y;
+					runs.add(run);
+
+					if (newline || runEnd == end) {
+						adjustLastGlyph(fontData, run);
+						lastGlyph = null;
+					} else
+						lastGlyph = run.glyphs.peek();
+
 					if (!wrap || n == 0) { // No wrap or truncate, or no glyphs.
 						if (markupEnabled) { // If disabled any subsequent run is sure to be on the next line.
 							for (int i = 0; i < n; i++)
@@ -204,7 +210,6 @@ public class GlyphLayout implements Poolable {
 
 						// Wrap.
 						y += down;
-						if (newline) lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -223,9 +228,8 @@ public class GlyphLayout implements Poolable {
 							}
 							xAdvances[0] = -run.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
 
-							if (runs.size > 1) { // Previous run is now at the end of a line.
+							if (previous != null) { // Previous run is now at the end of a line.
 								// Remove trailing whitespace and adjust last glyph.
-								GlyphRun previous = runs.get(runs.size - 2);
 								int lastIndex = previous.glyphs.size - 1;
 								for (; lastIndex > 0; lastIndex--)
 									if (!fontData.isWhitespace((char)previous.glyphs.get(lastIndex).id)) break;
@@ -237,6 +241,8 @@ public class GlyphLayout implements Poolable {
 							next = wrap(fontData, run, wrapIndex, i);
 							if (next == null) { // All wrapped glyphs were whitespace.
 								x = 0;
+								newline = false; // We've already moved down a line.
+								lastGlyph = null;
 								break;
 							}
 							runs.add(next);
@@ -261,7 +267,6 @@ public class GlyphLayout implements Poolable {
 						y += down * fontData.blankLineScale;
 					else
 						y += down;
-					lastGlyph = null;
 				}
 
 				runStart = start;
