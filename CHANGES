@@ -5,6 +5,7 @@
 - API Addition: Polygon have method setVertex (int index, float x, float y).
 - API Addition: TMX built-in tile property "type" is now supported.
 - API Addition: Octree structure.
+- API Addition: Added StringBuilder#toStringAndClear() method.
 - FirstPersonCameraController keys mapping is now configurable
 - Fix: GlyphLayout: Several fixes for color markup runs with multi-line or wrapping texts
 
