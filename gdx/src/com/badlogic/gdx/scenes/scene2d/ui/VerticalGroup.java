@@ -253,6 +253,7 @@ public class VerticalGroup extends WidgetGroup {
 			}
 
 			if (y - height - space < padBottom || r == 0) {
+				r = Math.min(r, columnSizes.size - 2); // In case an actor changed size without invalidating this layout.
 				y = yStart;
 				if ((align & Align.bottom) != 0)
 					y -= maxHeight - columnSizes.get(r);

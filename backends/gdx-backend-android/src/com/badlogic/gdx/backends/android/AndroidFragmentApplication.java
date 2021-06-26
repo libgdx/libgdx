@@ -137,7 +137,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			: config.resolutionStrategy);
 		input = createInput(this, getActivity(), graphics.view, config);
 		audio = createAudio(getActivity(), config);
-		files = new AndroidFiles(getResources().getAssets(), getActivity());
+		files = createFiles();
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();
@@ -455,6 +455,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		return new DefaultAndroidInput(this, getActivity(), graphics.view, config);
+	}
+
+	protected AndroidFiles createFiles() {
+		return new DefaultAndroidFiles(getResources().getAssets(), getActivity(), true);
 	}
 
 	@Override

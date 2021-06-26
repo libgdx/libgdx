@@ -222,7 +222,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			audio = createAudio();
 		}
 		Gdx.audio = audio;
-		Gdx.files = new GwtFiles(preloader);
+		Gdx.files = createFiles();
 		this.input = createInput(graphics.canvas, this.config);
 		Gdx.input = this.input;
 		this.net = new GwtNet(config);
@@ -481,6 +481,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	protected GwtAudio createAudio () {
 		return new DefaultGwtAudio();
+	}
+
+	protected Files createFiles() {
+		return new GwtFiles(preloader);
 	}
 
 	protected GwtInput createInput(CanvasElement canvas, GwtApplicationConfiguration config) {

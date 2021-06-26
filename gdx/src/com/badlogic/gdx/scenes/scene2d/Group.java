@@ -349,11 +349,20 @@ public class Group extends Actor implements Cullable {
 		return actor;
 	}
 
-	/** Removes all actors from this group. */
+	/** Removes all actors from this group and unfocuses them. Calls {@link #clearChildren(boolean)} with true. */
 	public void clearChildren () {
+		clearChildren(true);
+	}
+
+	/** Removes all actors from this group. */
+	public void clearChildren (boolean unfocus) {
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = actors[i];
+			if (unfocus) {
+				Stage stage = getStage();
+				if (stage != null) stage.unfocus(child);
+			}
 			child.setStage(null);
 			child.setParent(null);
 		}
@@ -362,10 +371,16 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Removes all children, actions, and listeners from this group. */
+	/** Removes all children, actions, and listeners from this group. The children are unfocused. */
 	public void clear () {
 		super.clear();
-		clearChildren();
+		clearChildren(true);
+	}
+
+	/** Removes all children, actions, and listeners from this group. */
+	public void clear (boolean unfocus) {
+		super.clear();
+		clearChildren(unfocus);
 	}
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the

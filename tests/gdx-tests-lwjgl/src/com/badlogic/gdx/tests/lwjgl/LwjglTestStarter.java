@@ -43,8 +43,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
-import com.badlogic.gdx.utils.Array;
 
 public class LwjglTestStarter extends JFrame {
 	static CommandLineOptions options;
@@ -85,7 +85,7 @@ public class LwjglTestStarter extends JFrame {
 			ShaderProgram.prependVertexCode = "";
 			ShaderProgram.prependFragmentCode = "";			
 		}
-		new LwjglApplication(test, config);
+		new LwjglApplication(new GdxTestWrapper(test, options.logGLErrors), config);
 		return true;
 	}
 

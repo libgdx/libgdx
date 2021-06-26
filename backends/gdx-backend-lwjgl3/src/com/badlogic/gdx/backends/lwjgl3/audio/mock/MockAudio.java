@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3.audio.mock;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;

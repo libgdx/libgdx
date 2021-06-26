@@ -53,7 +53,6 @@ public class HeadlessApplication implements Application {
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	private String preferencesdir;
-	private final long renderInterval;
 
 	public HeadlessApplication(ApplicationListener listener) {
 		this(listener, null);
@@ -71,6 +70,7 @@ public class HeadlessApplication implements Application {
 		// the following elements are not applicable for headless applications
 		// they are only implemented as mock objects
 		this.graphics = new MockGraphics();
+		this.graphics.setForegroundFPS(config.updatesPerSecond);
 		this.audio = new MockAudio();
 		this.input = new MockInput();
 
@@ -82,9 +82,7 @@ public class HeadlessApplication implements Application {
 		Gdx.audio = audio;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
-		
-		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
-		
+
 		initialize();
 	}
 
@@ -112,8 +110,8 @@ public class HeadlessApplication implements Application {
 
 		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
-		long t = TimeUtils.nanoTime() + renderInterval;
-		if (renderInterval >= 0f) {
+		long t = TimeUtils.nanoTime() + graphics.getTargetRenderInterval();
+		if (graphics.getTargetRenderInterval() >= 0f) {
 			while (running) {
 				final long n = TimeUtils.nanoTime();
 				if (t > n) {
@@ -121,9 +119,9 @@ public class HeadlessApplication implements Application {
 						long sleep = t - n;
 						Thread.sleep(sleep / 1000000, (int) (sleep % 1000000));
 					} catch (InterruptedException e) {}
-					t = t + renderInterval;
+					t = t + graphics.getTargetRenderInterval();
 				} else
-					t = n + renderInterval;
+					t = n + graphics.getTargetRenderInterval();
 				
 				executeRunnables();
 				graphics.incrementFrameId();

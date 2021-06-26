@@ -7,7 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,7 +1,6 @@
 ![logo](https://libgdx.com/assets/images/logo.png)
 
-[![Jenkins build status](https://libgdx.badlogicgames.com/jenkins/buildStatus/icon?subject=Jenkins&job=libgdx&.png)](https://libgdx.badlogicgames.com/jenkins/job/libgdx/) 
-[![GitHub Actions build status](https://img.shields.io/github/workflow/status/libgdx/libgdx/Java%20CI%20with%20Gradle/master?label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Java+CI+with+Gradle%22)
+[![GitHub Actions build status](https://img.shields.io/github/workflow/status/libgdx/libgdx/Java%20CI%20with%20Gradle/master?label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Build+Snapshot%22)
 
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org&label=version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org&label=snapshot)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)

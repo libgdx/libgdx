@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -32,7 +30,6 @@ import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
-import com.badlogic.gdx.tests.bullet.ContactCallbackTest2.TestContactListener;
 import com.badlogic.gdx.utils.Array;
 
 public class ContactCacheTest extends BaseBulletTest {

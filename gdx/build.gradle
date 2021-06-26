@@ -29,8 +29,8 @@ compileJava {
 }
 
 dependencies {
-    compileOnly project(":extensions:gdx-jnigen")
     testCompile libraries.junit
+    compile "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
 }
 
 test {
@@ -45,3 +45,26 @@ task copyIdeaResources(type: Copy) {
     into "${buildDir}/classes/java/main/"
 }
 processResources.dependsOn copyIdeaResources
+
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+jnigen {
+    sharedLibName = "gdx"
+    temporaryDir = "../target/native"
+    all {
+        cppExcludes = ["iosgl/**"]
+    }
+    add(Windows, x32)
+    add(Windows, x64)
+    add(Linux, x64)
+    add(Linux, x32, ARM)
+    add(Linux, x64, ARM)
+    add(Android) {
+        linkerFlags += " -llog"
+    }
+    add(MacOsX, x64)
+    add(MacOsX, x64, ARM)
+    add(IOS) {
+        headerDirs = ["iosgl"]
+        cppExcludes = []
+    }
+}

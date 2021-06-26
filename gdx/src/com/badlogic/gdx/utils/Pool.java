@@ -54,7 +54,7 @@ abstract public class Pool<T> {
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
-	 * {@link #max} free objects, the specified object is reset but not added to the pool.
+	 * {@link #max} free objects, the specified object is {@link #discard(Object) discarded} and not added to the pool.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times. */
 	public void free (T object) {
@@ -62,8 +62,10 @@ abstract public class Pool<T> {
 		if (freeObjects.size < max) {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
+			reset(object);
+		} else {
+			discard(object);
 		}
-		reset(object);
 	}
 
 	/** Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be
@@ -82,6 +84,11 @@ abstract public class Pool<T> {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
+	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is reached,
+	 * and when the pool is {@link #clear() cleared} */
+	protected void discard (T object) {
+	}
+
 	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times.
@@ -93,14 +100,21 @@ abstract public class Pool<T> {
 		for (int i = 0, n = objects.size; i < n; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
-			if (freeObjects.size < max) freeObjects.add(object);
-			reset(object);
+			if (freeObjects.size < max) {
+				freeObjects.add(object);
+				reset(object);
+			} else {
+				discard(object);
+			}
 		}
 		peak = Math.max(peak, freeObjects.size);
 	}
 
-	/** Removes all free objects from this pool. */
+	/** Removes and discards all free objects from this pool. */
 	public void clear () {
+		Array<T> freeObjects = this.freeObjects;
+		for (int i = 0, n = freeObjects.size; i < n; i++)
+			discard(freeObjects.get(i));
 		freeObjects.clear();
 	}
 

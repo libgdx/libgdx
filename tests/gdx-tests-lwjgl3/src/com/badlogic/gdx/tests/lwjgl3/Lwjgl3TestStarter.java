@@ -25,20 +25,16 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
-import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.tests.utils.GdxTestConfig;
+import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -61,10 +57,22 @@ public class Lwjgl3TestStarter {
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
+
 		if(options.gl30){
+			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
+			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+
 			config.useOpenGL3(true, 3, 2);
 		}
 
+		if (options.startupTestName != null) {
+			ApplicationListener test = GdxTests.newTest(options.startupTestName);
+			if (test != null) {
+				new Lwjgl3Application(test, config);
+				return;
+			}
+			// Otherwise, fall back to showing the list
+		}
 		new Lwjgl3Application(new TestChooser(), config);
 	}
 
@@ -108,7 +116,7 @@ public class Lwjgl3TestStarter {
 						winConfig.setWindowedMode(640, 480);
 						winConfig.setWindowPosition(((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionX() + 40,
 							((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionY() + 40);
-						((Lwjgl3Application)Gdx.app).newWindow(test, winConfig);
+						((Lwjgl3Application)Gdx.app).newWindow(new GdxTestWrapper(test, options.logGLErrors), winConfig);
 						System.out.println("Started test: " + testName);
 						prefs.putString("LastTest", testName);
 						prefs.flush();

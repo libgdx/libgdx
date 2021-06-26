@@ -59,8 +59,12 @@ public final class MathUtils {
 		static {
 			for (int i = 0; i < SIN_COUNT; i++)
 				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
-			for (int i = 0; i < 360; i += 90)
-				table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.sin(i * degreesToRadians);
+			// The four right angles get extra-precise values, because they are
+			// the most likely to need to be correct.
+			table[0] = 0f;
+			table[(int)(90 * degToIndex) & SIN_MASK] = 1f;
+			table[(int)(180 * degToIndex) & SIN_MASK] = 0f;
+			table[(int)(270 * degToIndex) & SIN_MASK] = -1f;
 		}
 	}
 
@@ -76,13 +80,13 @@ public final class MathUtils {
 		return Sin.table[(int)((radians + HALF_PI) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the sine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in degrees from a lookup table. For optimal precision, use radians between -360 and 360 (both
+	/** Returns the cosine in degrees from a lookup table. For optimal precision, use degrees between -360 and 360 (both
 	 * inclusive). */
 	static public float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
@@ -160,12 +164,28 @@ public final class MathUtils {
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public long random (long range) {
-		return (long)(random.nextDouble() * range);
+		// Uses the lower-bounded overload defined below, which is simpler and doesn't lose much optimization.
+		return random(0L, range);
 	}
 
 	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public long random (long start, long end) {
-		return start + (long)(random.nextDouble() * (end - start));
+		final long rand = random.nextLong();
+		// In order to get the range to go from start to end, instead of overflowing after end and going
+		// back around to start, start must be less than end.
+		if(end < start) {
+			long t = end;
+			end = start;
+			start = t;
+		}
+		long bound = end - start + 1L; // inclusive on end
+		// Credit to https://oroboro.com/large-random-in-range/ for the following technique
+		// It's a 128-bit-product where only the upper 64 of 128 bits are used.
+		final long randLow = rand & 0xFFFFFFFFL;
+		final long boundLow = bound & 0xFFFFFFFFL;
+		final long randHigh = (rand >>> 32);
+		final long boundHigh = (bound >>> 32);
+		return start + (randHigh * boundLow >>> 32) + (randLow * boundHigh >>> 32) + randHigh * boundHigh;
 	}
 
 	/** Returns a random boolean value. */

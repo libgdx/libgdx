@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
@@ -246,7 +247,7 @@ public class LwjglGraphics extends AbstractGraphics {
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-					icons[i].put(pixmap.getPixels()).flip();
+					((Buffer) icons[i].put(pixmap.getPixels())).flip();
 					pixmap.dispose();
 				}
 				Display.setIcon(icons);
@@ -641,6 +642,16 @@ public class LwjglGraphics extends AbstractGraphics {
 		this.vsync = vsync;
 		Display.setVSyncEnabled(vsync);
 	}
+
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive.
+	 * The cpu sleeps as needed. Use 0 to never sleep. Default is 60.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		this.config.foregroundFPS = fps;
+	}
+
 
 	@Override
 	public boolean supportsExtension (String extension) {

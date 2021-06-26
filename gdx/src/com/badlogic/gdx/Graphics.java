@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -217,6 +216,8 @@ public interface Graphics {
 	 * android.util.DisplayMetrics#density, where one DIP is one pixel on an approximately 160 dpi screen. Thus on a 160dpi screen
 	 * this density value will be 1; on a 120 dpi screen it would be .75; etc.
 	 *
+	 * If the density could not be determined, this returns a default value of 1.
+	 *
 	 * @return the Density Independent Pixel factor of the display. */
 	float getDensity ();
 
@@ -293,6 +294,12 @@ public interface Graphics {
 	 *
 	 * @param vsync vsync enabled or not. */
 	void setVSync (boolean vsync);
+
+	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms. Is not
+	 * generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the targeted fps; default differs by platform */
+	public void setForegroundFPS (int fps );
 
 	/** @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance */
 	BufferFormat getBufferFormat ();

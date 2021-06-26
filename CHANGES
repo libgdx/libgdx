@@ -1,9 +1,36 @@
+[1.10.1]
+- API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
+- API Addition: PointSpriteParticleBatch blending is now configurable.
+- TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
+- API Addition: Polygon have method setVertex (int index, float x, float y).
+- API Addition: TMX built-in tile property "type" is now supported.
+- API Addition: Octree structure.
+- Fix: GlyphLayout: Several fixes for color markup runs with multi-line or wrapping texts
+
+[1.10.0]
+- [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
+- [BREAKING CHANGE] tvOS libraries have been removed. No migration steps required.
+- [BREAKING CHANGE] Linux x86 (32-bit) support has been removed. No migration steps required.
+- [BREAKING CHANGE] Requires Java 7 or above.
+- [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
+- [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
+- [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
+- API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
+- Fix for #6377 Gdx.net.openURI not working with targetSdk 30
+- Api Addition: Added a Pool#discard(T) method.
+- Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
+- API Addition: Desktop Sound now returns number of channels and sample rate.
+
 [1.9.14]
 - [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
 - [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
 - [BREAKING CHANGE] InputEventQueue no longer implements InputProcessor, pass InputProcessor to #drain.
+- [BREAKING CHANGE] HeadlessApplicationConfiguration#renderInterval was changed to #updatesPerSecond
 - API addition: Added Pixmap#setPixels(ByteBuffer).
 - API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
+- API Addition: Added overridable createFiles() methods to backend application classes to allow initializing custom module implementations.
+- API Addition: Add a Graphics#setForegroundFPS() method.
 
 [1.9.13]
 - [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.

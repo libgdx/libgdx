@@ -8,8 +8,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>
 	<classpathentry kind="lib" path="libs/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="libs/hamcrest-core-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-jnigen-loader.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

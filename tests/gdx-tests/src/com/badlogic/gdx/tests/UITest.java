@@ -76,7 +76,7 @@ public class UITest extends GdxTest {
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
-		// Group.debug = true;
+		// stage.setDebugAll(true);
 
 		ImageButtonStyle style = new ImageButtonStyle(skin.get(ButtonStyle.class));
 		style.imageUp = new TextureRegionDrawable(image);

@@ -186,8 +186,8 @@ public class GlyphLayout implements Poolable {
 					}
 
 					// Wrap or truncate.
-					x += xAdvances[0] + xAdvances[1]; // X offset relative to the drawing position + first xAdvance.
-					for (int i = 2; i < n; i++) {
+					x += xAdvances[0]; // X offset relative to the drawing position.
+					for (int i = 1; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
 						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
 						if (x + glyphWidth - epsilon <= targetWidth) {
@@ -204,7 +204,7 @@ public class GlyphLayout implements Poolable {
 
 						// Wrap.
 						y += down;
-						lastGlyph = null;
+						if (newline) lastGlyph = null;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -277,7 +277,7 @@ public class GlyphLayout implements Poolable {
 		for (int i = 0; i < runsSize; i++) {
 			GlyphRun run = (GlyphRun)runsItems[i];
 			float[] xAdvances = run.xAdvances.items;
-			float runWidth = xAdvances[0], max = 0;
+			float runWidth = run.x + xAdvances[0], max = 0; // run.x is needed to ensure floats are rounded same as above.
 			Object[] glyphs = run.glyphs.items;
 			for (int ii = 0, nn = run.glyphs.size; ii < nn;) {
 				Glyph glyph = (Glyph)glyphs[ii];
@@ -286,7 +286,7 @@ public class GlyphLayout implements Poolable {
 				ii++;
 				runWidth += xAdvances[ii];
 			}
-			run.width = Math.max(runWidth, max);
+			run.width = Math.max(runWidth, max) - run.x;
 			width = Math.max(width, run.x + run.width);
 		}
 		this.width = width;

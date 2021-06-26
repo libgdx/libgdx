@@ -113,8 +113,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 			: config.resolutionStrategy);
 		input = createInput(this, this, graphics.view, config);
 		audio = createAudio(this, config);
-		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this);
+		files = createFiles();
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();
@@ -414,6 +413,11 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		return new DefaultAndroidInput(this, this, graphics.view, config);
+	}
+
+	protected AndroidFiles createFiles() {
+		this.getFilesDir(); // workaround for Android bug #10515463
+		return new DefaultAndroidFiles(this.getAssets(), this, true);
 	}
 
 	@Override

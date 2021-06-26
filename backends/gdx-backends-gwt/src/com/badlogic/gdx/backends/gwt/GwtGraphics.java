@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -502,8 +501,9 @@ public class GwtGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public void setTitle (String title) {
-	}
+	public native void setTitle (String title) /*-{
+		$wnd.document.title = title;
+	}-*/;
 
 	@Override
 	public void setUndecorated (boolean undecorated) {
@@ -515,6 +515,10 @@ public class GwtGraphics extends AbstractGraphics {
 
 	@Override
 	public void setVSync (boolean vsync) {
+	}
+
+	@Override
+	public void setForegroundFPS (int fps) {
 	}
 
 	/**

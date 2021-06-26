@@ -14,6 +14,7 @@ extern "C" {
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_init
   (JNIEnv *, jclass);
+
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
  * Method:    glReadBuffer
@@ -245,6 +246,15 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glRend
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glFramebufferTextureLayer
   (JNIEnv *, jobject, jint, jint, jint, jint, jint);
+
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glMapBufferRange
+ * Signature: (IIII)Ljava/nio/Buffer;
+ */
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glMapBufferRange
+  (JNIEnv *, jobject, jint, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30

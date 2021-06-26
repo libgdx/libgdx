@@ -18,22 +18,27 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class MusicTest extends GdxTest {
 
@@ -41,11 +46,10 @@ public class MusicTest extends GdxTest {
 	float songDuration;
 	float currentPosition;
 
-	TextureRegion buttons;
 	SpriteBatch batch;
-	BitmapFont font;
 
 	Stage stage;
+	Label label;
 	Slider slider;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
@@ -55,19 +59,21 @@ public class MusicTest extends GdxTest {
 		MP3, OGG, WAV, MP3_CLOCK
 	}
 
-	private float time;
+	float time;
 	
 	@Override
 	public void create () {
 
-		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 
-		stage = new Stage();
+		stage = new Stage(new ExtendViewport(600, 480));
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		
+		Table sliderTable = new Table();
+		label = new Label("", skin);
 		slider = new Slider(0, 100, 0.1f, false, skin);
-		slider.setPosition(200, 20);
+		sliderTable.add(slider).expand();
+		sliderTable.add(label).left().width(60f);
 		slider.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -92,20 +98,54 @@ public class MusicTest extends GdxTest {
 				if(music != null) music.setLooping(btLoop.isChecked());
 			}
 		});
+
+		// Build buttons
+		Table controlsTable = new Table();
+		controlsTable.setSize(200f, 80f);
+		Button playButton = new ImageButton(getDrawable("data/player_play.png"));
+		Button pauseButton = new ImageButton(getDrawable("data/player_pause.png"));
+		Button stopButton = new ImageButton(getDrawable("data/player_stop.png"));
+		float buttonSize = 64f;
+		controlsTable.add(playButton).size(buttonSize);
+		controlsTable.add(pauseButton).size(buttonSize);
+		controlsTable.add(stopButton).size(buttonSize);
+		playButton.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				music.play();
+				time = 0;
+			}
+		});
+		pauseButton.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				music.pause();
+			}
+		});
+		stopButton.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				music.stop();
+			}
+		});
+		
+		Table footerTable = new Table();
+		footerTable.setSize(500f, 120f);
+		footerTable.add(controlsTable);
+		footerTable.add(sliderTable).width(250f);
 		
 		setSong(musicBox.getSelected());
-
 		
 		Table table = new Table(skin);
 		table.add(musicBox);
 		table.add(btLoop);
 		table.setFillParent(true);
 		stage.addActor(table);
+		stage.addActor(footerTable);
 		
-		stage.addActor(slider);
-
 		Gdx.input.setInputProcessor(stage);
 	}
+				
 
 	void setSong (Song song) {
 		if (music != null) {
@@ -137,7 +177,7 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -147,12 +187,9 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void render () {
+		ScreenUtils.clear(Color.BLACK);
 		currentPosition = music.getPosition();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(buttons, 0, 0);
-		font.draw(batch, (int)currentPosition / 60 + ":" + (int)currentPosition % 60, 365, 35);
-		batch.end();
+		label.setText((int)currentPosition / 60 + ":" + (int)currentPosition % 60);
 
 		sliderUpdating = true;
 		slider.setValue((currentPosition / songDuration) * 100f);
@@ -160,30 +197,20 @@ public class MusicTest extends GdxTest {
 		stage.act();
 		stage.draw();
 
-		if (Gdx.input.justTouched()) {
-			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
-				if (Gdx.input.getX() < 64) {
-					music.play();
-					time = 0;
-				}
-				if (Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
-					music.stop();
-				}
-				if (Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
-					music.pause();
-				}
-			}
-		}
-		if(music.isPlaying()){
-			time += Gdx.graphics.getDeltaTime();
-			System.out.println("realtime: " + time + " music time: " + currentPosition);
-		}
+		
+//		if(music.isPlaying()){
+//			time += Gdx.graphics.getDeltaTime();
+//			System.out.println("realtime: " + time + " music time: " + currentPosition);
+//		}
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
-		buttons.getTexture().dispose();
 		music.dispose();
+	}
+
+	private Drawable getDrawable(String path) {
+		return new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path))));
 	}
 }
