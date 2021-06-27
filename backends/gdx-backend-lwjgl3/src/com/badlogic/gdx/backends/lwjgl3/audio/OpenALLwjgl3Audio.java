@@ -313,8 +313,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			alDeleteSources(sourceID);
 		}
 
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
+		sourceToSoundId = null;
+		soundIdToSource = null;
 
 		alcDestroyContext(context);
 		alcCloseDevice(device);

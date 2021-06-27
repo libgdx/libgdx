@@ -426,7 +426,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				public void clicked (InputEvent event, float x, float y) {
 					T selected = list.getSelected();
 					// Force clicking the already selected item to trigger a change event.
-					if (selected != null) selectBox.selection.items().clear();
+					if (selected != null) selectBox.selection.items().clear(51);
 					selectBox.selection.choose(selected);
 					hide();
 				}
