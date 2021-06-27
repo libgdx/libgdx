@@ -276,6 +276,13 @@ public class GlyphLayout implements Poolable {
 		height = fontData.capHeight + Math.abs(y);
 
 		// Calculate run widths and the entire layout width.
+		calculateAndSetWidths(fontData);
+
+		// Align runs to center or right of targetWidth.
+		alignRuns(targetWidth, halign);
+	}
+
+	private void calculateAndSetWidths (BitmapFontData fontData) {
 		float width = 0;
 		Object[] runsItems = runs.items;
 		int runsSize = runs.size;
@@ -295,10 +302,13 @@ public class GlyphLayout implements Poolable {
 			width = Math.max(width, run.x + run.width);
 		}
 		this.width = width;
+	}
 
-		// Align runs to center or right of targetWidth.
+	private void alignRuns (float targetWidth, int halign) {
 		if ((halign & Align.left) == 0) { // Not left aligned, so must be center or right aligned.
 			boolean center = (halign & Align.center) != 0;
+			Object[] runsItems = runs.items;
+			int runsSize = runs.size;
 			float lineWidth = 0, lineY = Integer.MIN_VALUE;
 			int lineStart = 0;
 			for (int i = 0; i < runsSize; i++) {
