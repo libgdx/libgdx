@@ -51,6 +51,12 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 	/** cache of the value calculated by {@link #getMask()} **/
 	private long mask = -1;
 
+	/** cache for bone weight units. */
+	private int boneWeightUnits = -1;
+
+	/** cache for texture coordinate units. */
+	private int textureCoordinates = -1;
+
 	private ReadonlyIterable<VertexAttribute> iterable;
 
 	/** Constructor, sets the vertex attributes in a specific order */
@@ -167,6 +173,34 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 	 * @return the mask with attributes count packed into the last 32 bits. */
 	public long getMaskWithSizePacked () {
 		return getMask() | ((long)attributes.length << 32);
+	}
+
+	/** @return Number of bone weights based on {@link VertexAttribute#unit} */
+	public int getBoneWeights () {
+		if (boneWeightUnits < 0) {
+			boneWeightUnits = 0;
+			for (int i = 0; i < attributes.length; i++) {
+				VertexAttribute a = attributes[i];
+				if (a.usage == Usage.BoneWeight) {
+					boneWeightUnits = Math.max(boneWeightUnits, a.unit + 1);
+				}
+			}
+		}
+		return boneWeightUnits;
+	}
+
+	/** @return Number of texture coordinates based on {@link VertexAttribute#unit} */
+	public int getTextureCoordinates () {
+		if (textureCoordinates < 0) {
+			textureCoordinates = 0;
+			for (int i = 0; i < attributes.length; i++) {
+				VertexAttribute a = attributes[i];
+				if (a.usage == Usage.TextureCoordinates) {
+					textureCoordinates = Math.max(textureCoordinates, a.unit + 1);
+				}
+			}
+		}
+		return textureCoordinates;
 	}
 
 	@Override
