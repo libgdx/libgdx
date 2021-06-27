@@ -2,7 +2,7 @@
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
-- API Addition: Polygon have method setVertex (int index, float x, float y).
+- API Addition: Polygon methods setVertex, getVertex, getVertexCount, getCentroid.
 - API Addition: TMX built-in tile property "type" is now supported.
 - API Addition: Octree structure.
 - API Addition: Added StringBuilder#toStringAndClear() method.
