@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -94,9 +95,10 @@ public class BitmapFontTest extends GdxTest {
 		ScreenUtils.clear(0, 0, 0, 1);
 
 		// Test wrapping or truncation with the font directly.
-		if (false) {
+		if (true) {
 			// BitmapFont font = label.getStyle().font;
 			BitmapFont font = this.font;
+			font.getData().markupEnabled = true;
 			font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
 			font.getData().setScale(2f);
@@ -111,8 +113,9 @@ public class BitmapFontTest extends GdxTest {
 			String text = "your new";
 			// text = "How quickly da[RED]ft jumping zebras vex.";
 			text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
-			// text = "test with AGWlWi      AGWlWi issue";
-			text = "AAA BBB    [RED]EEE[] or ([GREEN]5[] FFF)";
+			// text = "test with AGWlWi AGWlWi issue";
+			text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
+			text = "AA BB [RED]EE[] T [GREEN]e[] V[YELLOW]a bb[] ([CYAN]5[]FFF)";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
@@ -122,10 +125,17 @@ public class BitmapFontTest extends GdxTest {
 			font.draw(spriteBatch, layout, 10, 10 + meowy);
 			spriteBatch.end();
 
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
-			renderer.setColor(0, 1, 0, 1);
+			float c = 0.8f;
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
-				renderer.setColor(i % 2, (i + 1) % 2, i % 2, 1);
+				if (i % 3 == 0)
+					renderer.setColor(c, 0, c, 1);
+				else if (i % 2 == 0)
+					renderer.setColor(0, c, c, 1);
+				else
+					renderer.setColor(c, c, 0, 1);
 				GlyphRun r = layout.runs.get(i);
 				renderer.rect(10 + r.x, 10 + meowy + r.y, r.width, -font.getLineHeight());
 			}
