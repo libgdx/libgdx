@@ -98,10 +98,6 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.freeAll(runs);
 		runs.clear();
 
-		for (int i = 1, n = colorStack.size; i < n; i++)
-			colorPool.free(colorStack.get(i));
-		colorStack.clear();
-
 		BitmapFontData fontData = font.data;
 		if (start == end) { // Empty string.
 			width = 0;
@@ -109,8 +105,8 @@ public class GlyphLayout implements Poolable {
 			return;
 		}
 
-		boolean wrapOrTruncate = (wrap && targetWidth > fontData.spaceXadvance * 3) // Minimum width for wrapping is 3 * spaceXadvance.
-			|| truncate != null;
+		float minimumTargetWidthForWrapping = fontData.spaceXadvance * 3; // Avoid one line per character, which is very inefficient.
+		boolean wrapOrTruncate = (wrap && targetWidth > minimumTargetWidthForWrapping) || truncate != null;
 
 		Color nextColor = color;
 		boolean markupEnabled = fontData.markupEnabled;
@@ -286,6 +282,13 @@ public class GlyphLayout implements Poolable {
 
 		// Align runs to center or right of targetWidth.
 		alignRuns(targetWidth, halign);
+		
+		// Free colorStack resources 
+		if (markupEnabled) {
+			for (int i = 1, n = colorStack.size; i < n; i++)
+				colorPool.free(colorStack.get(i));
+			colorStack.clear();
+		}
 	}
 
 	private void calculateAndSetWidths (BitmapFontData fontData) {
@@ -431,7 +434,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	private float getRunOffset (Array<Glyph> glyphs, BitmapFontData fontData) {
-		return glyphs.isEmpty() ? 0 : -glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
+		return -glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
 	}
 
 	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
