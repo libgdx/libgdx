@@ -208,7 +208,6 @@ public class GlyphLayout implements Poolable {
 						}
 
 						// Wrap.
-						y += down;
 						int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 						if ((wrapIndex == 0 && run.x == 0) // Require at least one glyph per line.
 							|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
@@ -216,12 +215,16 @@ public class GlyphLayout implements Poolable {
 						}
 						GlyphRun next;
 						if (wrapIndex == 0) { // Move entire run to next line.
-							next = run;
-
 							// Remove leading whitespace.
-							for (int glyphCount = run.glyphs.size; wrapIndex < glyphCount; wrapIndex++)
+							int glyphCount = run.glyphs.size;
+							for (; wrapIndex < glyphCount; wrapIndex++)
 								if (!fontData.isWhitespace((char)run.glyphs.get(wrapIndex).id)) break;
 							if (wrapIndex > 0) {
+								if (wrapIndex == glyphCount) { // Wrapped run was all whitespace.
+									runs.pop();
+									glyphRunPool.free(run);
+									break runEnded;
+								}
 								run.glyphs.removeRange(0, wrapIndex - 1);
 								run.xAdvances.removeRange(1, wrapIndex);
 							}
@@ -236,13 +239,16 @@ public class GlyphLayout implements Poolable {
 								previous.xAdvances.truncate(lastIndex + 2);
 								adjustLastGlyph(fontData, previous);
 							}
+
+							next = run;
 						} else {
 							next = wrap(fontData, run, wrapIndex);
 							if (next == null) { // All wrapped glyphs were whitespace.
 								x = 0;
+								y += down;
 								newline = false; // We've already moved down a line.
 								lastGlyph = null;
-								break;
+								break runEnded;
 							}
 							runs.add(next);
 						}
@@ -252,6 +258,7 @@ public class GlyphLayout implements Poolable {
 						xAdvances = next.xAdvances.items;
 						x = xAdvances[0];
 						if (xAdvancesSize > 1) x += xAdvances[1];
+						y += down;
 						next.x = 0;
 						next.y = y;
 						i = 1;
