@@ -106,7 +106,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		final boolean wrapOrTruncate = truncate != null
-			|| wrap && targetWidth > fontData.spaceXadvance * 3; // Avoid one line per character, which is very inefficient.
+			|| (wrap && targetWidth > fontData.spaceXadvance * 3); // Avoid one line per character, which is very inefficient.
 
 		Color nextColor = color;
 		boolean markupEnabled = fontData.markupEnabled;
