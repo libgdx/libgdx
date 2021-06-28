@@ -112,10 +112,9 @@ public class BitmapFontTest extends GdxTest {
 			spriteBatch.begin();
 			String text = "your new";
 			// text = "How quickly da[RED]ft jumping zebras vex.";
-			text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
+			// text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
 			// text = "test with AGWlWi AGWlWi issue";
-			text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
-			text = "AA BB [RED]EE[] T [GREEN]e[] V[YELLOW]a bb[] ([CYAN]5[]FFF)";
+			// text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
 			text = "AA BB [RED]EE[] T [GREEN]e[] \n\nV[YELLOW]a bb[] ([CYAN]5[]FFF)";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
@@ -130,6 +129,13 @@ public class BitmapFontTest extends GdxTest {
 			Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			float c = 0.8f;
+
+			// GlyphLayout bounds
+			if (true) {
+				renderer.setColor(c, c, c, 1);
+				renderer.rect(10 + 0.5f * (w - layout.width), 10 + meowy, layout.width, -layout.height);
+			}
+			// GlyphRun bounds
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
 				if (i % 3 == 0)
 					renderer.setColor(c, 0, c, 1);
