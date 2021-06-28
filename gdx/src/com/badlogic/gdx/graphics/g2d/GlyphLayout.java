@@ -109,8 +109,8 @@ public class GlyphLayout implements Poolable {
 			return;
 		}
 
-		final boolean wrapOrTruncate = truncate != null
-			|| (wrap && targetWidth > fontData.spaceXadvance * 3); // Minimum width for wrapping is 3 * spaceXadvance.
+		boolean wrapOrTruncate = (wrap && targetWidth > fontData.spaceXadvance * 3) // Minimum width for wrapping is 3 * spaceXadvance.
+			|| truncate != null;
 
 		Color nextColor = color;
 		boolean markupEnabled = fontData.markupEnabled;
@@ -139,7 +139,7 @@ public class GlyphLayout implements Poolable {
 				case '[':
 					// Possible color tag.
 					if (markupEnabled) {
-						int length = parseColorMarkup(str, start, end, colorPool);
+						int length = parseColorMarkup(str, start, end);
 						if (length >= 0) {
 							runEnd = start - 1;
 							start += length + 1;
@@ -194,7 +194,7 @@ public class GlyphLayout implements Poolable {
 					x += xAdvances[0]; // X offset relative to the drawing position.
 					for (int i = 1; i < n; i++) {
 						Glyph glyph = run.glyphs.get(i - 1);
-						float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
+						float glyphWidth = getGlyphWidth(glyph, fontData);
 						if (x + glyphWidth - epsilon <= targetWidth) {
 							// Glyph fits.
 							x += xAdvances[i];
@@ -292,7 +292,7 @@ public class GlyphLayout implements Poolable {
 			Object[] glyphs = run.glyphs.items;
 			for (int ii = 0, nn = run.glyphs.size; ii < nn;) {
 				Glyph glyph = (Glyph)glyphs[ii];
-				float glyphWidth = (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
+				float glyphWidth = getGlyphWidth(glyph, fontData);
 				max = Math.max(max, runWidth + glyphWidth); // A glyph can extend past the right edge of subsequent glyphs.
 				ii++;
 				runWidth += xAdvances[ii];
@@ -429,11 +429,15 @@ public class GlyphLayout implements Poolable {
 	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
 		if (last.fixedWidth) return;
-		float width = (last.width + last.xoffset) * fontData.scaleX - fontData.padRight;
-		run.xAdvances.items[run.xAdvances.size - 1] = width;
+		float glyphWidth = getGlyphWidth(last, fontData);
+		run.xAdvances.items[run.xAdvances.size - 1] = glyphWidth;
 	}
 
-	private int parseColorMarkup (CharSequence str, int start, int end, Pool<Color> colorPool) {
+	private float getGlyphWidth (Glyph glyph, BitmapFontData fontData) {
+		return (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
+	}
+
+	private int parseColorMarkup (CharSequence str, int start, int end) {
 		if (start == end) return -1; // String ended with "[".
 		switch (str.charAt(start)) {
 		case '#':
