@@ -226,7 +226,7 @@ public class GlyphLayout implements Poolable {
 								run.glyphs.removeRange(0, wrapIndex - 1);
 								run.xAdvances.removeRange(1, wrapIndex);
 							}
-							xAdvances[0] = -run.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
+							xAdvances[0] = getRunOffset(run.glyphs, fontData);
 
 							if (previous != null) { // Previous run is now at the end of a line.
 								// Remove trailing whitespace and adjust last glyph.
@@ -397,7 +397,7 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances1 = second.xAdvances; // Starts empty.
 			xAdvances1.addAll(xAdvances2, 0, firstEnd + 1);
 			xAdvances2.removeRange(1, secondStart); // Leave first entry to be overwritten by next line.
-			xAdvances2.items[0] = -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft;
+			xAdvances2.items[0] = getRunOffset(glyphs2, fontData);
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 		} else {
@@ -422,6 +422,10 @@ public class GlyphLayout implements Poolable {
 		if (last.fixedWidth) return;
 		float width = (last.width + last.xoffset) * fontData.scaleX - fontData.padRight;
 		run.xAdvances.items[run.xAdvances.size - 1] = width;
+	}
+
+	private float getRunOffset (Array<Glyph> glyphs, BitmapFontData fontData) {
+		return glyphs.isEmpty() ? 0 : -glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
 	}
 
 	private int parseColorMarkup (CharSequence str, int start, int end, Pool<Color> colorPool) {
