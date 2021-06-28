@@ -116,6 +116,7 @@ public class BitmapFontTest extends GdxTest {
 			// text = "test with AGWlWi AGWlWi issue";
 			text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
 			text = "AA BB [RED]EE[] T [GREEN]e[] V[YELLOW]a bb[] ([CYAN]5[]FFF)";
+			text = "AA BB [RED]EE[] T [GREEN]e[] \n\nV[YELLOW]a bb[] ([CYAN]5[]FFF)";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
