@@ -105,10 +105,8 @@ public class GlyphLayout implements Poolable {
 			return;
 		}
 
-		if (truncate != null)
-			wrap = true; // Ensures truncate code runs, doesn't actually cause wrapping.
-		else if (targetWidth <= fontData.spaceXadvance * 3) //
-			wrap = false; // Avoid one line per character, which is very inefficient.
+		final boolean wrapOrTruncate = truncate != null
+			|| wrap && targetWidth > fontData.spaceXadvance * 3; // Avoid one line per character, which is very inefficient.
 
 		Color nextColor = color;
 		boolean markupEnabled = fontData.markupEnabled;
@@ -183,7 +181,7 @@ public class GlyphLayout implements Poolable {
 					} else
 						lastGlyph = run.glyphs.peek();
 
-					if (!wrap || n == 0) { // No wrap or truncate, or no glyphs.
+					if (!wrapOrTruncate || n == 0) { // No wrap or truncate, or no glyphs.
 						if (markupEnabled) { // If disabled any subsequent run is sure to be on the next line.
 							for (int i = 0; i < n; i++)
 								x += xAdvances[i];
