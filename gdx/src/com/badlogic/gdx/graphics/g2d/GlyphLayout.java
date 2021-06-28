@@ -98,6 +98,10 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.freeAll(runs);
 		runs.clear();
 
+		for (int i = 1, n = colorStack.size; i < n; i++)
+			colorPool.free(colorStack.get(i));
+		colorStack.clear();
+
 		BitmapFontData fontData = font.data;
 		if (start == end) { // Empty string.
 			width = 0;
@@ -106,14 +110,11 @@ public class GlyphLayout implements Poolable {
 		}
 
 		final boolean wrapOrTruncate = truncate != null
-			|| (wrap && targetWidth > fontData.spaceXadvance * 3); // Avoid one line per character, which is very inefficient.
+			|| (wrap && targetWidth > fontData.spaceXadvance * 3); // Minimum width for wrapping is 3 * spaceXadvance.
 
 		Color nextColor = color;
 		boolean markupEnabled = fontData.markupEnabled;
 		if (markupEnabled) {
-			for (int i = 1, n = colorStack.size; i < n; i++)
-				colorPool.free(colorStack.get(i));
-			colorStack.clear();
 			colorStack.add(color);
 		}
 
