@@ -129,6 +129,13 @@ public class BitmapFontTest extends GdxTest {
 			Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			float c = 0.8f;
+
+			// GlyphLayout bounds
+			if (true) {
+				renderer.setColor(c, c, c, 1);
+				renderer.rect(10 + 0.5f * (w - layout.width), 10 + meowy, layout.width, -layout.height);
+			}
+			// GlyphRun bounds
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
 				if (i % 3 == 0)
 					renderer.setColor(c, 0, c, 1);
