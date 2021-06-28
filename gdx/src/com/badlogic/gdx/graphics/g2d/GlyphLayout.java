@@ -224,7 +224,7 @@ public class GlyphLayout implements Poolable {
 								run.glyphs.removeRange(0, wrapIndex - 1);
 								run.xAdvances.removeRange(1, wrapIndex);
 							}
-							xAdvances[0] = getRunOffset(run.glyphs, fontData);
+							xAdvances[0] = getLineOffset(run.glyphs, fontData);
 
 							if (previous != null) { // Previous run is now at the end of a line.
 								// Remove trailing whitespace and adjust last glyph.
@@ -414,7 +414,7 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances1 = second.xAdvances; // Starts empty.
 			xAdvances1.addAll(xAdvances2, 0, firstEnd + 1);
 			xAdvances2.removeRange(1, secondStart); // Leave first entry to be overwritten by next line.
-			xAdvances2.items[0] = getRunOffset(glyphs2, fontData);
+			xAdvances2.items[0] = getLineOffset(glyphs2, fontData);
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 		} else {
@@ -433,7 +433,7 @@ public class GlyphLayout implements Poolable {
 		return second;
 	}
 
-	private float getRunOffset (Array<Glyph> glyphs, BitmapFontData fontData) {
+	private float getLineOffset (Array<Glyph> glyphs, BitmapFontData fontData) {
 		return -glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
 	}
 
