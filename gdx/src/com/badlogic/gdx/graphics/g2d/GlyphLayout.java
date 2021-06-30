@@ -117,6 +117,7 @@ public class GlyphLayout implements Poolable {
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
+		glyphLine.color.set(color);
 		glyphLine.y = y;
 		Glyph lastGlyph = null; // Last glyph of the previous run on the same line, used for kerning between runs.
 		int runStart = start;
@@ -527,7 +528,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	static private class GlyphLine extends GlyphRun {
-		public final IntMap<Color> colors = new IntMap(16);
+		private final IntMap<Color> colors = new IntMap(16);
 
 		private Color lastColorAdded;
 
