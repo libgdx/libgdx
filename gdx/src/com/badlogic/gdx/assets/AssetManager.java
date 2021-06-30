@@ -720,7 +720,7 @@ public class AssetManager implements Disposable {
 			ObjectIntMap<String> dependencyCount = new ObjectIntMap<String>();
 			while (assetTypes.size > 0) {
 				// for each asset, figure out how often it was referenced
-				dependencyCount.clear();
+				dependencyCount.clear(51);
 				Array<String> assets = assetTypes.keys().toArray();
 				for (String asset : assets) {
 					Array<String> dependencies = assetDependencies.get(asset);
@@ -734,9 +734,9 @@ public class AssetManager implements Disposable {
 					if (dependencyCount.get(asset, 0) == 0) unload(asset);
 			}
 
-			this.assets.clear();
-			this.assetTypes.clear();
-			this.assetDependencies.clear();
+			this.assets.clear(51);
+			this.assetTypes.clear(51);
+			this.assetDependencies.clear(51);
 			this.loaded = 0;
 			this.toLoad = 0;
 			this.peakTasks = 0;
