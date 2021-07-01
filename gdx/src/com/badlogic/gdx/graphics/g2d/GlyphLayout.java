@@ -115,7 +115,7 @@ public class GlyphLayout implements Poolable {
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
-		GlyphRun lineRun = null; // Run used for wrapping and truncating
+		GlyphRun lineRun = null; // Aggregated runs of a line
 		Glyph lastGlyph = null; // Last glyph of the previous run on the same line, used for kerning between runs.
 		int runStart = start;
 		outer:
@@ -173,17 +173,17 @@ public class GlyphLayout implements Poolable {
 					} else
 						lastGlyph = newRun.glyphs.peek();
 
-					if (!wrapOrTruncate || newRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
-						runs.add(newRun);
-						break runEnded;
-					}
-
 					if (lineRun == null) {
 						lineRun = newRun;
 						runs.add(lineRun);
 					} else {
 						lineRun.addRun(newRun);
 						glyphRunPool.free(newRun);
+					}
+
+					if (!wrapOrTruncate || newRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
+						if (newline) lineRun = null;
+						break runEnded;
 					}
 
 					if (newline || isLastRun) {
