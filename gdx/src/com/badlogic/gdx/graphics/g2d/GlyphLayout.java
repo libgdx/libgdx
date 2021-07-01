@@ -181,7 +181,7 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(newRun);
 					}
 
-					if (!wrapOrTruncate || newRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
+					if (!wrapOrTruncate || lineRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
 						if (newline) lineRun = null;
 						break runEnded;
 					}
@@ -240,11 +240,6 @@ public class GlyphLayout implements Poolable {
 						y += down * fontData.blankLineScale;
 					else
 						y += down;
-
-					if (lineRun != null) {
-						lineRun.x = 0;
-						lineRun.y = y;
-					}
 				}
 
 				runStart = start;
