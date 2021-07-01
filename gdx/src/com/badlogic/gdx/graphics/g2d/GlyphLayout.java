@@ -412,26 +412,34 @@ public class GlyphLayout implements Poolable {
 		} else
 			adjustXadvanceOfLastGlyph(fontData, first);
 
-		if (second != null) {
-			final int firstGlyphCount = first.glyphs.size;
-			for (int i = 0, n = first.colorIndices.size; i < n; i++) {
-				final int changeColorIndex = first.colorIndices.get(i);
-				if (changeColorIndex > firstGlyphCount) {
-					first.colorIndices.removeIndex(i);
-					final Color changeColor = first.colors.removeIndex(i);
-					second.colorIndices.add(changeColorIndex - firstGlyphCount);
-					second.colors.add(changeColor);
-					i--;
-					n--;
+		if (fontData.markupEnabled) {
+			Color lastColorOfFirstRun = first.color;
+			if (second != null) {
+				final int firstGlyphCount = first.glyphs.size;
+				for (int i = 0, n = first.colorIndices.size; i < n; i++) {
+					final int changeColorIndex = first.colorIndices.get(i);
+					if (changeColorIndex <= firstGlyphCount) {
+						if (first.colors.notEmpty()) {
+							lastColorOfFirstRun = first.colors.get(i);
+						}
+					} else {
+						first.colorIndices.removeIndex(i);
+						final Color changeColor = first.colors.removeIndex(i);
+						second.colorIndices.add(changeColorIndex - firstGlyphCount - 1);
+						second.colors.add(changeColor);
+						i--;
+						n--;
+					}
 				}
-			}
-		} else {
-			while (true) {
-				if (first.colorIndices.isEmpty() || first.colorIndices.peek() < first.glyphs.size) {
-					break;
-				} else {
-					first.colorIndices.pop();
-					colorPool.free(first.colors.pop());
+				second.color.set(lastColorOfFirstRun);
+			} else {
+				while (true) {
+					if (first.colorIndices.isEmpty() || first.colorIndices.peek() < first.glyphs.size) {
+						break;
+					} else {
+						first.colorIndices.pop();
+						colorPool.free(first.colors.pop());
+					}
 				}
 			}
 		}
