@@ -121,14 +121,14 @@ public class BitmapFontCache {
 			for (int ii = 0, nn = layout.runs.size; ii < nn; ii++) {
 				GlyphRun run = layout.runs.get(ii);
 				Array<Glyph> glyphs = run.glyphs;
-				float colorFloat = run.color.mul(tint).toFloatBits();
-				int colorIndex = 0;
-				int nextColorChangeIndex = run.colorIndices.notEmpty() ? run.colorIndices.get(0) : -1;
+				final IntArray rgba8888Colors = run.colors;
+				int lastRgba8888Color = Integer.MAX_VALUE;
+				float lastColorFloatBits = Float.MAX_VALUE;
 				for (int iii = 0, nnn = glyphs.size; iii < nnn; iii++) {
-					if (iii == nextColorChangeIndex) {
-						colorFloat = tempColor.set(run.colors.get(colorIndex)).mul(tint).toFloatBits();
-						colorIndex++;
-						nextColorChangeIndex = run.colorIndices.size > colorIndex ? run.colorIndices.get(colorIndex) : -1;
+					final int rgba8888Color = rgba8888Colors.get(iii);
+					if (rgba8888Color != lastRgba8888Color) {
+						lastRgba8888Color = rgba8888Color;
+						lastColorFloatBits = tempColor.set(rgba8888Color).mul(tint).toFloatBits();
 					}
 					Glyph glyph = glyphs.get(iii);
 					int page = glyph.page;
@@ -136,7 +136,7 @@ public class BitmapFontCache {
 					tempGlyphCount[page]++;
 					float[] vertices = pageVertices[page];
 					for (int v = 0; v < 20; v += 5)
-						vertices[offset + v] = colorFloat;
+						vertices[offset + v] = lastColorFloatBits;
 				}
 			}
 		}
@@ -378,19 +378,19 @@ public class BitmapFontCache {
 			GlyphRun run = layout.runs.get(i);
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
-			float color = run.color.toFloatBits();
-			int colorIndex = 0;
-			int nextColorChangeIndex = run.colorIndices.notEmpty() ? run.colorIndices.get(0) : -1;
+			final IntArray rgba8888Colors = run.colors;
+			int lastRgba8888Color = Integer.MAX_VALUE;
+			float lastColorFloatBits = Float.MAX_VALUE;
 			float gx = x + run.x, gy = y + run.y;
 			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
-				if (ii == nextColorChangeIndex) {
-					color = tempColor.set(run.colors.get(colorIndex)).toFloatBits();
-					colorIndex++;
-					nextColorChangeIndex = run.colorIndices.size > colorIndex ? run.colorIndices.get(colorIndex) : -1;
+				final int rgba8888Color = rgba8888Colors.get(ii);
+				if (rgba8888Color != lastRgba8888Color) {
+					lastRgba8888Color = rgba8888Color;
+					lastColorFloatBits = tempColor.set(rgba8888Color).toFloatBits();
 				}
 				Glyph glyph = glyphs.get(ii);
 				gx += xAdvances.get(ii);
-				addGlyph(glyph, gx, gy, color);
+				addGlyph(glyph, gx, gy, lastColorFloatBits);
 			}
 		}
 
