@@ -2,7 +2,7 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../%ASSET_PATH%"]
 
-project.ext.mainClassName = "%PACKAGE%.desktop.DesktopLauncher"
+project.ext.mainClassName = "%PACKAGE%.DesktopLauncher"
 project.ext.assetsDir = new File("../%ASSET_PATH%")
 
 import org.gradle.internal.os.OperatingSystem
