@@ -177,7 +177,7 @@ public class GlyphLayout implements Poolable {
 						lineRun = newRun;
 						runs.add(lineRun);
 					} else {
-						lineRun.addRun(newRun);
+						lineRun.appendRun(newRun);
 						glyphRunPool.free(newRun);
 					}
 
@@ -516,7 +516,7 @@ public class GlyphLayout implements Poolable {
 		public float x, y, width;
 		public IntArray colors = new IntArray(); // rgba8888
 
-		private void addRun (GlyphRun run) {
+		private void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
 			for (int i = xAdvances.isEmpty() ? 0 : 1, n = run.xAdvances.size; i < n; i++) {
 				xAdvances.add(run.xAdvances.get(i));
