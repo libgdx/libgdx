@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	package="com.badlogic.gdx.tests.android"
-	android:installLocation="preferExternal">
+	android:installLocation="auto">
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
@@ -19,7 +19,6 @@
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
-				<category android:name="tv.ouya.intent.category.GAME"/>
 			</intent-filter>
 		</activity>
 		
