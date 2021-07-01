@@ -115,7 +115,7 @@ public class GlyphLayout implements Poolable {
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
-		GlyphRun lineRun = null;
+		GlyphRun lineRun = null; // Run used for wrapping and truncating
 		Glyph lastGlyph = null; // Last glyph of the previous run on the same line, used for kerning between runs.
 		int runStart = start;
 		outer:
@@ -200,7 +200,6 @@ public class GlyphLayout implements Poolable {
 
 							if (truncate != null) {
 								// Truncate.
-								lineRun = null;
 								truncate(fontData, runs.peek(), targetWidth, truncate);
 								break outer;
 							}
@@ -253,7 +252,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		height = fontData.capHeight + Math.abs(y);
-		
+
 		calculateAndSetWidths(fontData);
 
 		alignRuns(targetWidth, halign);
@@ -344,14 +343,20 @@ public class GlyphLayout implements Poolable {
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
 			adjustXadvanceOfLastGlyph(fontData, run);
-			if (truncateRun.xAdvances.size > 0) run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
+			if (truncateRun.xAdvances.size > 0)
+				run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
+			run.colors.truncate(count - 1 + truncate.length());
 		} else {
 			// No run glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
+			run.colors.removeRange(truncate.length(), run.colors.size - 1);
 		}
 		run.glyphs.addAll(truncateRun.glyphs);
+		while(run.glyphs.size > run.colors.size){
+			run.colors.add(run.colors.peek());
+		}
 
 		glyphRunPool.free(truncateRun);
 	}
