@@ -641,6 +641,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		if (probability != null) {
 			tile.getProperties().put("probability", probability);
 		}
+		String type = tileElement.getAttribute("type", null);
+		if (type != null) {
+			tile.getProperties().put("type", type);
+		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {
 			loadProperties(tile.getProperties(), properties);

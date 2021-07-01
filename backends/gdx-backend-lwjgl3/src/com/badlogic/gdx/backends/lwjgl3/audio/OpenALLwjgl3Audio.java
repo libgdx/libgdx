@@ -174,12 +174,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
+				Long oldSoundId = sourceToSoundId.remove(sourceId);
+				if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					Long oldSoundId = sourceToSoundId.remove(sourceId);
-					if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
-
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);

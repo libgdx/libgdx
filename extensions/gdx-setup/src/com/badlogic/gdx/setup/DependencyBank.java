@@ -27,7 +27,7 @@ public class DependencyBank {
 	static String libgdxNightlyVersion = "1.10.1-SNAPSHOT";
 	static String roboVMVersion = "2.3.12";
 	static String buildToolsVersion = "29.0.3";
-	static String androidAPILevel = "29";
+	static String androidAPILevel = "30";
 	static String androidMinAPILevel = "14";
 	static String gwtVersion = "2.8.2";
 
@@ -43,7 +43,7 @@ public class DependencyBank {
 	//Project plugins
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
 	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
-	static String androidPluginImport = "com.android.tools.build:gradle:3.5.4";
+	static String androidPluginImport = "com.android.tools.build:gradle:4.1.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
 

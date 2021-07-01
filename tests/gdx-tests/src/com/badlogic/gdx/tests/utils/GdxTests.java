@@ -38,6 +38,7 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.conformance.AudioSoundAndMusicIsolationTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
@@ -103,6 +104,7 @@ public class GdxTests {
 		AtlasIssueTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
+		AudioSoundAndMusicIsolationTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
 		Benchmark3DTest.class,

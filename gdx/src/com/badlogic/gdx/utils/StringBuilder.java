@@ -918,6 +918,13 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
+	/** Appends the specified separator if the builder is not empty, then the specified string. */
+	public StringBuilder append (String str, String separator) {
+		if (length > 0) append0(separator);
+		append0(str);
+		return this;
+	}
+
 	/** Appends the contents of the specified string, then create a new line. If the string is {@code null}, then the string
 	 * {@code "null"} is appended.
 	 * 

@@ -260,13 +260,13 @@ public class GdxSetup {
 		// lwjgl2 project
 		if (builder.modules.contains(ProjectType.LWJGL2)) {
 			project.files.add(new ProjectFile("lwjgl2/build.gradle", "legacy_desktop/build.gradle", true));
-			project.files.add(new ProjectFile("lwjgl2/src/DesktopLauncher", "legacy_desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+			project.files.add(new ProjectFile("lwjgl2/src/DesktopLauncher", "legacy_desktop/src/" + packageDir + "/DesktopLauncher.java", true));
 		}
 
 		// lwjgl3 project
 		if (builder.modules.contains(ProjectType.LWJGL3)) {
 			project.files.add(new ProjectFile("lwjgl3/build.gradle", "desktop/build.gradle", true));
-			project.files.add(new ProjectFile("lwjgl3/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+			project.files.add(new ProjectFile("lwjgl3/src/DesktopLauncher", "desktop/src/" + packageDir + "/DesktopLauncher.java", true));
 		}
 
 		// Assets
