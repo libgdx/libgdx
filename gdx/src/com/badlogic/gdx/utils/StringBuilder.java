@@ -502,6 +502,15 @@ public class StringBuilder implements Appendable, CharSequence {
 		return new String(chars, 0, length);
 	}
 
+	/** Returns the current String representation and clears the StringBuilder.
+	 * 
+	 * @return a String containing the characters in this instance. */
+	public String toStringAndClear () {
+		final String s = toString();
+		clear();
+		return s;
+	}
+
 	/** Returns a {@code CharSequence} of the subsequence from the {@code start} index to the {@code end} index.
 	 * 
 	 * @param start the inclusive start index to begin the subsequence.

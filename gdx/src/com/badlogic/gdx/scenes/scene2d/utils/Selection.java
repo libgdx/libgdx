@@ -199,7 +199,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	public void clear () {
-		if (selected.size == 0) return;
+		if (selected.size == 0) {
+			lastSelected = null;
+			return;
+		}
 		snapshot();
 		selected.clear(8);
 		if (programmaticChangeEvents && fireChangeEvent())

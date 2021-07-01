@@ -84,7 +84,6 @@ public abstract class OpenALMusic implements Music {
 					throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
 			}
 
-			alSourcei(sourceID, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
 
