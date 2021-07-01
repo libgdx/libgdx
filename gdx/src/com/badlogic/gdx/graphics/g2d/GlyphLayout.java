@@ -159,6 +159,7 @@ public class GlyphLayout implements Poolable {
 				if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
 					// Store the run that has ended.
 					GlyphRun run = glyphRunPool.obtain();
+					run.y = y;
 					fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
 					if (run.glyphs.size == 0) {
 						glyphRunPool.free(run);
@@ -193,9 +194,8 @@ public class GlyphLayout implements Poolable {
 
 							if (truncate != null) {
 								// Truncate.
-								final GlyphRun glyphRun = glyphLine.toGlyphRunAndReset();
-								runs.add(glyphRun);
-								truncate(fontData, glyphRun, targetWidth, truncate);
+								glyphLine.addGlyphRunsAndReset(runs);
+								truncate(fontData, runs.peek(), targetWidth, truncate);
 								break outer;
 							}
 
@@ -206,13 +206,13 @@ public class GlyphLayout implements Poolable {
 								wrapIndex = i - 1;
 							}
 							GlyphRun next = wrap(fontData, glyphLine, wrapIndex);
+							glyphLine.addGlyphRunsAndReset(runs);
 							if (next == null) { // All wrapped glyphs were whitespace.
 								y += down;
 								newline = false; // We've already moved down a line.
 								lastGlyph = null;
 								break runEnded;
 							}
-							runs.add(glyphLine.toGlyphRunAndReset());
 
 							glyphLine.addRun(next, nextColor);
 							glyphRunPool.free(next);
@@ -226,6 +226,8 @@ public class GlyphLayout implements Poolable {
 							glyphLine.y = y;
 							i = 1;
 						}
+
+						if (newline) glyphLine.addGlyphRunsAndReset(runs);
 					}
 				}
 
@@ -235,9 +237,12 @@ public class GlyphLayout implements Poolable {
 						y += down * fontData.blankLineScale;
 					else
 						y += down;
+
+					glyphLine.x = 0;
+					glyphLine.y = y;
 				}
-				
-				if (isLastRun) runs.add(glyphLine.toGlyphRunAndReset());
+
+				if (isLastRun) glyphLine.addGlyphRunsAndReset(runs);
 
 				runStart = start;
 			}
@@ -543,16 +548,16 @@ public class GlyphLayout implements Poolable {
 			}
 		}
 
-		private GlyphRun toGlyphRunAndReset () {
+		private void addGlyphRunsAndReset (Array<GlyphRun> runs) {
 			final GlyphRun run = glyphRunPool.obtain();
 			run.glyphs.addAll(glyphs);
 			run.xAdvances.addAll(xAdvances);
 			run.x = x;
 			run.y = y;
 			run.color.set(color);
+			runs.add(run);
 
 			reset();
-			return run;
 		}
 
 		@Override
