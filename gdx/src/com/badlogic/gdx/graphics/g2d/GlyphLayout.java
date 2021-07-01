@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -44,7 +44,6 @@ import com.badlogic.gdx.utils.Pools;
  * @author davebaol
  * @author Alexander Dorokhov */
 public class GlyphLayout implements Poolable {
-	static private final GlyphLine glyphLine = new GlyphLine();
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
 	static private final Pool<Color> colorPool = Pools.get(Color.class);
 	static private final Array<Color> colorStack = new Array(4);
@@ -95,7 +94,6 @@ public class GlyphLayout implements Poolable {
 	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, @Null String truncate) {
-		glyphLine.reset(); //TODO: This should be done at the end 
 
 		Array<GlyphRun> runs = this.runs;
 		glyphRunPool.freeAll(runs);
@@ -117,8 +115,7 @@ public class GlyphLayout implements Poolable {
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
-		glyphLine.color.set(color);
-		glyphLine.y = y;
+		GlyphRun lineRun = null;
 		Glyph lastGlyph = null; // Last glyph of the previous run on the same line, used for kerning between runs.
 		int runStart = start;
 		outer:
@@ -157,77 +154,82 @@ public class GlyphLayout implements Poolable {
 			if (runEnd != -1) {
 				runEnded:
 				if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
-					// Store the run that has ended.
-					GlyphRun run = glyphRunPool.obtain();
-					run.y = y;
-					fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
-					if (run.glyphs.size == 0) {
-						glyphRunPool.free(run);
+					// Store the newRun that has ended.
+					GlyphRun newRun = glyphRunPool.obtain();
+					newRun.y = y;
+					newRun.color.set(nextColor);
+					fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
+					if (newRun.glyphs.size == 0) {
+						glyphRunPool.free(newRun);
 						break runEnded;
 					}
 
 					if (newline || isLastRun) {
-						adjustXadvanceOfLastGlyph(fontData, run);
+						adjustXadvanceOfLastGlyph(fontData, newRun);
 						lastGlyph = null;
 					} else
-						lastGlyph = run.glyphs.peek();
+						lastGlyph = newRun.glyphs.peek();
 
-					if (!wrapOrTruncate || run.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
-						runs.add(run);
+					if (!wrapOrTruncate || newRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
+						runs.add(newRun);
 						break runEnded;
 					}
 
-					glyphLine.addRun(run, nextColor);
-					glyphRunPool.free(run);
+					if (lineRun == null) {
+						lineRun = newRun;
+						runs.add(lineRun);
+					} else {
+						lineRun.addRun(newRun, nextColor);
+						glyphRunPool.free(newRun);
+					}
 
 					if (newline || isLastRun) {
 						// Wrap or truncate.
-						float runWidth = glyphLine.xAdvances.items[0]; // First xadvance is the first glyph's X offset relative to the drawing position.
-						for (int i = 1; i < glyphLine.xAdvances.size; i++) {
-							Glyph glyph = glyphLine.glyphs.get(i - 1);
+						float runWidth = lineRun.xAdvances.items[0]; // First xadvance is the first glyph's X offset relative to the drawing position.
+						for (int i = 1; i < lineRun.xAdvances.size; i++) {
+							Glyph glyph = lineRun.glyphs.get(i - 1);
 							float glyphWidth = getGlyphWidth(glyph, fontData);
 							if (runWidth + glyphWidth - epsilon <= targetWidth) {
 								// Glyph fits.
-								runWidth += glyphLine.xAdvances.items[i];
+								runWidth += lineRun.xAdvances.items[i];
 								continue;
 							}
 
 							if (truncate != null) {
 								// Truncate.
-								glyphLine.addGlyphRunsAndReset(runs);
+								lineRun = null;
 								truncate(fontData, runs.peek(), targetWidth, truncate);
 								break outer;
 							}
 
 							// Wrap.
-							int wrapIndex = fontData.getWrapIndex(glyphLine.glyphs, i);
-							if ((wrapIndex == 0 && glyphLine.x == 0) // Require at least one glyph per line.
-								|| wrapIndex >= glyphLine.glyphs.size) { // Wrap at least the glyph that didn't fit.
+							int wrapIndex = fontData.getWrapIndex(lineRun.glyphs, i);
+							if ((wrapIndex == 0 && lineRun.x == 0) // Require at least one glyph per line.
+								|| wrapIndex >= lineRun.glyphs.size) { // Wrap at least the glyph that didn't fit.
 								wrapIndex = i - 1;
 							}
-							GlyphRun next = wrap(fontData, glyphLine, wrapIndex);
-							glyphLine.addGlyphRunsAndReset(runs);
+							//TODO: Set colors
+							GlyphRun next = wrap(fontData, lineRun, wrapIndex);
+							lineRun = next;
 							if (next == null) { // All wrapped glyphs were whitespace.
 								y += down;
 								newline = false; // We've already moved down a line.
 								lastGlyph = null;
 								break runEnded;
 							}
+							runs.add(next);
 
-							glyphLine.addRun(next, nextColor);
-							glyphRunPool.free(next);
-
-							// Start the loop over with the new run on the next line.
-							runWidth = glyphLine.xAdvances.items[0];
-							if (glyphLine.xAdvances.items.length > 1)
-								runWidth += glyphLine.xAdvances.items[1];
+							// Start the loop over with the new newRun on the next line.
+							runWidth = lineRun.xAdvances.items[0];
+							if (lineRun.xAdvances.items.length > 1)
+								runWidth += lineRun.xAdvances.items[1];
 							y += down;
-							glyphLine.x = 0;
-							glyphLine.y = y;
+							lineRun.x = 0;
+							lineRun.y = y;
 							i = 1;
 						}
 
-						if (newline) glyphLine.addGlyphRunsAndReset(runs);
+						if (newline) lineRun = null;
 					}
 				}
 
@@ -238,11 +240,11 @@ public class GlyphLayout implements Poolable {
 					else
 						y += down;
 
-					glyphLine.x = 0;
-					glyphLine.y = y;
+					if (lineRun != null) {
+						lineRun.x = 0;
+						lineRun.y = y;
+					}
 				}
-
-				if (isLastRun) glyphLine.addGlyphRunsAndReset(runs);
 
 				runStart = start;
 			}
@@ -506,11 +508,32 @@ public class GlyphLayout implements Poolable {
 		public FloatArray xAdvances = new FloatArray();
 		public float x, y, width;
 		public Color color = new Color();
+		
+		public final IntArray changeColorIndices = new IntArray(4);
+		public final Array<Color> changeColors = new Array(4);
+		private Color lastColorAdded;
 
+		private void addRun (GlyphRun run, Color color) {
+			if (color != lastColorAdded) {
+				changeColorIndices.add(glyphs.size);
+				changeColors.add(color);
+				lastColorAdded = color;
+			}
+			glyphs.addAll(run.glyphs);
+			for (int i = xAdvances.isEmpty() ? 0 : 1, n = run.xAdvances.size; i < n; i++) {
+				xAdvances.add(run.xAdvances.get(i));
+			}
+		}
+		
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
+			x = 0;
+			y = 0;
 			width = 0;
+			changeColorIndices.clear();
+			changeColors.clear();
+			lastColorAdded = null;
 		}
 
 		public String toString () {
@@ -529,43 +552,6 @@ public class GlyphLayout implements Poolable {
 			buffer.append(", ");
 			buffer.append(width);
 			return buffer.toString();
-		}
-	}
-
-	static private class GlyphLine extends GlyphRun {
-		private final IntMap<Color> colors = new IntMap(16);
-
-		private Color lastColorAdded;
-
-		private void addRun (GlyphRun run, Color color) {
-			if (color != lastColorAdded) {
-				colors.put(glyphs.size, color);
-				lastColorAdded = color;
-			}
-			glyphs.addAll(run.glyphs);
-			for (int i = xAdvances.isEmpty() ? 0 : 1, n = run.xAdvances.size; i < n; i++) {
-				xAdvances.add(run.xAdvances.get(i));
-			}
-		}
-
-		private void addGlyphRunsAndReset (Array<GlyphRun> runs) {
-			final GlyphRun run = glyphRunPool.obtain();
-			run.glyphs.addAll(glyphs);
-			run.xAdvances.addAll(xAdvances);
-			run.x = x;
-			run.y = y;
-			run.color.set(color);
-			runs.add(run);
-
-			reset();
-		}
-
-		@Override
-		public void reset () {
-			super.reset();
-			colors.clear();
-
-			lastColorAdded = null;
 		}
 	}
 }
