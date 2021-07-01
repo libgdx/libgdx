@@ -121,8 +121,15 @@ public class BitmapFontCache {
 			for (int ii = 0, nn = layout.runs.size; ii < nn; ii++) {
 				GlyphRun run = layout.runs.get(ii);
 				Array<Glyph> glyphs = run.glyphs;
-				float colorFloat = tempColor.set(run.color).mul(tint).toFloatBits();
+				float colorFloat = run.color.mul(tint).toFloatBits();
+				int colorIndex = 0;
+				int nextColorChangeIndex = run.colorIndices.notEmpty() ? run.colorIndices.get(0) : -1;
 				for (int iii = 0, nnn = glyphs.size; iii < nnn; iii++) {
+					if (iii == nextColorChangeIndex) {
+						colorFloat = tempColor.set(run.colors.get(colorIndex)).mul(tint).toFloatBits();
+						colorIndex++;
+						nextColorChangeIndex = run.colorIndices.size > colorIndex ? run.colorIndices.get(colorIndex) : -1;
+					}
 					Glyph glyph = glyphs.get(iii);
 					int page = glyph.page;
 					int offset = tempGlyphCount[page] * 20 + 2;
@@ -372,8 +379,15 @@ public class BitmapFontCache {
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 			float color = run.color.toFloatBits();
+			int colorIndex = 0;
+			int nextColorChangeIndex = run.colorIndices.notEmpty() ? run.colorIndices.get(0) : -1;
 			float gx = x + run.x, gy = y + run.y;
 			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
+				if (ii == nextColorChangeIndex) {
+					color = tempColor.set(run.colors.get(colorIndex)).toFloatBits();
+					colorIndex++;
+					nextColorChangeIndex = run.colorIndices.size > colorIndex ? run.colorIndices.get(colorIndex) : -1;
+				}
 				Glyph glyph = glyphs.get(ii);
 				gx += xAdvances.get(ii);
 				addGlyph(glyph, gx, gy, color);
