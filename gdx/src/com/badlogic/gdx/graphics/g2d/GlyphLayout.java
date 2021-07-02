@@ -172,7 +172,7 @@ public class GlyphLayout implements Poolable {
 					}
 
 					if (newline || isLastRun) {
-						adjustLastGlyph(fontData, lineRun);
+						setLastGlyphXAdvance(fontData, lineRun);
 						lastGlyph = null;
 					} else
 						lastGlyph = lineRun.glyphs.peek();
@@ -291,7 +291,7 @@ public class GlyphLayout implements Poolable {
 		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
 		float truncateWidth = 0;
 		if (truncateRun.xAdvances.size > 0) {
-			adjustLastGlyph(fontData, truncateRun);
+			setLastGlyphXAdvance(fontData, truncateRun);
 			float[] xAdvances = truncateRun.xAdvances.items;
 			for (int i = 1, n = truncateRun.xAdvances.size; i < n; i++) // Skip first for tight bounds.
 				truncateWidth += xAdvances[i];
@@ -313,7 +313,7 @@ public class GlyphLayout implements Poolable {
 			// Some run glyphs fit, append truncate glyphs.
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
-			adjustLastGlyph(fontData, run);
+			setLastGlyphXAdvance(fontData, run);
 			if (truncateRun.xAdvances.size > 0) run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
 			// No run glyphs fit, use only truncate glyphs.
@@ -431,13 +431,13 @@ public class GlyphLayout implements Poolable {
 			glyphRunPool.free(first);
 			runs.pop();
 		} else
-			adjustLastGlyph(fontData, first);
+			setLastGlyphXAdvance(fontData, first);
 
 		return second;
 	}
 
-	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
-	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
+	/** Sets the xadvance of the last glyph to use its width instead of xadvance. */
+	private void setLastGlyphXAdvance (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
 		if (!last.fixedWidth) run.xAdvances.items[run.xAdvances.size - 1] = getGlyphWidth(last, fontData);
 	}
