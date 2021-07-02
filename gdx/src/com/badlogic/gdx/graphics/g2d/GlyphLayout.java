@@ -384,10 +384,9 @@ public class GlyphLayout implements Poolable {
 			} else {
 				final int firstGlyphCount = first.glyphs.size; // After wrapping it
 				final int secondGlyphCount = second.glyphs.size;
-				final int totalGlyphCount = firstGlyphCount + secondGlyphCount; // Total glyph count after dropping whitespace
 
 				// Adjust colorChangeIndices according to droppedGlyphCount
-				final int droppedGlyphCount = glyphCount - totalGlyphCount; // Number of glyphs dropped by wrapping
+				final int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount; // Number of glyphs dropped by wrapping
 				for (int i = first.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because first value is never adjusted
 					final int colorChangeIndex = first.colorChangeIndices.get(i);
 					if (colorChangeIndex > firstGlyphCount)
@@ -398,11 +397,7 @@ public class GlyphLayout implements Poolable {
 
 				for (int i = 0, n = first.colorChangeIndices.size; i < n; i++) { // i = 1 because first color is always added
 					final int firstColorChangeIndex = first.colorChangeIndices.get(i);
-					if (firstColorChangeIndex >= totalGlyphCount) { // Can happen when whitespace gets dropped
-						first.colorChangeIndices.removeRange(i, first.colorChangeIndices.size - 1);
-						first.colors.removeRange(i, first.colors.size - 1);
-						break;
-					} else if (firstColorChangeIndex < firstGlyphCount) {
+					if (firstColorChangeIndex < firstGlyphCount) {
 						if (second.colorChangeIndices.isEmpty()) {
 							second.colorChangeIndices.add(0); // Set run start color
 							second.colors.add(first.colors.get(i));
@@ -503,11 +498,10 @@ public class GlyphLayout implements Poolable {
 			return 0;
 		}
 		// Parse named color.
-		int colorStart = start;
 		for (int i = start + 1; i < end; i++) {
 			char ch = str.charAt(i);
 			if (ch != ']') continue;
-			Color namedColor = Colors.get(str.subSequence(colorStart, i).toString());
+			Color namedColor = Colors.get(str.subSequence(start, i).toString());
 			if (namedColor == null) return -1; // Unknown color name.
 			Color color = colorPool.obtain();
 			colorStack.add(color);
