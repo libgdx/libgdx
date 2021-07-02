@@ -387,13 +387,14 @@ public class GlyphLayout implements Poolable {
 
 				// Adjust colorChangeIndices according to droppedGlyphCount
 				final int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount; // Number of glyphs dropped by wrapping
-				for (int i = first.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because first value is never adjusted
-					final int colorChangeIndex = first.colorChangeIndices.get(i);
-					if (colorChangeIndex > firstGlyphCount)
-						first.colorChangeIndices.set(i, colorChangeIndex - droppedGlyphCount);
-					else
-						break;
-				}
+				if (droppedGlyphCount > 0)
+					for (int i = first.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because first value is never adjusted
+						final int colorChangeIndex = first.colorChangeIndices.get(i);
+						if (colorChangeIndex > firstGlyphCount)
+							first.colorChangeIndices.set(i, colorChangeIndex - droppedGlyphCount);
+						else
+							break;
+					}
 
 				for (int i = 0, n = first.colorChangeIndices.size; i < n; i++) { // i = 1 because first color is always added
 					final int firstColorChangeIndex = first.colorChangeIndices.get(i);
