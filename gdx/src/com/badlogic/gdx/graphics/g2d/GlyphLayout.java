@@ -319,8 +319,7 @@ public class GlyphLayout implements Poolable {
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
 			adjustLastGlyph(fontData, run);
-			if (truncateRun.xAdvances.size > 0)
-				run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
+			if (truncateRun.xAdvances.size > 0) run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
 			// No run glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
@@ -563,17 +562,22 @@ public class GlyphLayout implements Poolable {
 			for (int i = xadvanceStartIndex, n = run.xAdvances.size; i < n; i++)
 				xAdvances.add(run.xAdvances.get(i));
 
-			if (markupEnabled) {
-				// First color is always set but only needs to be added if different from last color
-				final int runColor = run.colors.first();
-				if (runColor != colors.peek()) {
-					colorChangeIndices.add(glyphsCount);
-					colors.add(runColor);
-				}
-				// Append other color changes
-				for (int i = 1, n = run.colorChangeIndices.size; i < n; i++) {
-					colorChangeIndices.add(run.colorChangeIndices.get(i) + glyphsCount);
-					colors.add(run.colors.get(i));
+			if (colorChangeIndices.isEmpty()) {
+				colorChangeIndices.add(0);
+				colors.add(run.colors.peek());
+			} else {
+				if (markupEnabled) {
+					// First color is always set but only needs to be added if different from last color
+					final int runColor = run.colors.first();
+					if (runColor != colors.peek()) {
+						colorChangeIndices.add(glyphsCount);
+						colors.add(runColor);
+					}
+					// Append other color changes
+					for (int i = 1, n = run.colorChangeIndices.size; i < n; i++) {
+						colorChangeIndices.add(run.colorChangeIndices.get(i) + glyphsCount);
+						colors.add(run.colors.get(i));
+					}
 				}
 			}
 		}
