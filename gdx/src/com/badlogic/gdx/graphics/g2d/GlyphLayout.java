@@ -153,7 +153,7 @@ public class GlyphLayout implements Poolable {
 
 			if (runEnd != -1) {
 				runEnded:
-				if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
+				if (true) { // Can occur eg when a color tag is at text start or a line is "\n".
 					// Store the newRun that has ended.
 					GlyphRun newRun = glyphRunPool.obtain();
 					fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
@@ -164,22 +164,23 @@ public class GlyphLayout implements Poolable {
 					color = nextColor;
 					if (newRun.glyphs.size == 0) {
 						glyphRunPool.free(newRun);
-						break runEnded;
+						if (lineRun == null || !wrapOrTruncate) break runEnded; // else wrap and truncate must still be processed
+					} else {
+						if (lineRun == null) {
+							lineRun = newRun;
+							runs.add(lineRun);
+						} else {
+							lineRun.appendRun(newRun, markupEnabled);
+							glyphRunPool.free(newRun);
+						}
 					}
 
 					if (newline || isLastRun) {
-						adjustXadvanceOfLastGlyph(fontData, newRun);
+						adjustXadvanceOfLastGlyph(fontData, lineRun);
 						lastGlyph = null;
 					} else
-						lastGlyph = newRun.glyphs.peek();
+						lastGlyph = lineRun.glyphs.peek();
 
-					if (lineRun == null) {
-						lineRun = newRun;
-						runs.add(lineRun);
-					} else {
-						lineRun.appendRun(newRun, markupEnabled);
-						glyphRunPool.free(newRun);
-					}
 
 					if (!wrapOrTruncate || lineRun.glyphs.size == 0) // No wrap or truncate, or no glyphs.
 						break runEnded;
