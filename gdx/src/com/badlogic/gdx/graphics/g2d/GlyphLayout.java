@@ -120,7 +120,7 @@ public class GlyphLayout implements Poolable {
 		int runStart = start;
 		outer:
 		while (true) {
-			int runEnd = -1;
+			int runEnd;
 			boolean newline = false;
 			if (start == end) { // End of text.
 				if (runStart == end) break; // No run to process, we're done.
@@ -140,100 +140,99 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
-						} else if (length == -2) {
-							start++; // Skip first of "[[" escape sequence.
-							continue outer;
+							break;
 						}
+						if (length == -2) start++; // Skip first of "[[" escape sequence.
 					}
-					break;
+					// Fall through.
+				default:
+					continue outer;
 				}
 			}
 
-			if (runEnd != -1) {
-				runEnded:
-				if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
-					// Store the newRun that has ended.
-					GlyphRun newRun = glyphRunPool.obtain();
-					fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
-					newRun.x = 0;
-					newRun.y = y;
-					newRun.colorChangeIndices.add(0);
-					newRun.colors.add(Color.rgba8888(color));
-					color = nextColor;
-					if (newRun.glyphs.size == 0) {
-						glyphRunPool.free(newRun);
-						if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
-					} else if (lineRun == null) {
-						lineRun = newRun;
-						runs.add(lineRun);
-					} else {
-						lineRun.appendRun(newRun, markupEnabled);
-						glyphRunPool.free(newRun);
-					}
-
-					if (newline || isLastRun) {
-						setLastGlyphXAdvance(fontData, lineRun);
-						lastGlyph = null;
-					} else
-						lastGlyph = lineRun.glyphs.peek();
-
-					if (!wrapOrTruncate || lineRun.glyphs.size == 0) // No wrap or truncate, or no glyphs.
-						break runEnded;
-
-					if (newline || isLastRun) {
-						// Wrap or truncate. First xadvance is the first glyph's X offset relative to the drawing position.
-						float runWidth = lineRun.xAdvances.first();
-						for (int i = 1; i < lineRun.xAdvances.size; i++) {
-							Glyph glyph = lineRun.glyphs.get(i - 1);
-							float glyphWidth = getGlyphWidth(glyph, fontData);
-							if (runWidth + glyphWidth - epsilon <= targetWidth) {
-								// Glyph fits.
-								runWidth += lineRun.xAdvances.items[i];
-								continue;
-							}
-
-							if (truncate != null) {
-								// Truncate.
-								truncate(fontData, runs.peek(), targetWidth, truncate);
-								break outer;
-							}
-
-							// Wrap.
-							int wrapIndex = fontData.getWrapIndex(lineRun.glyphs, i);
-							if ((wrapIndex == 0 && lineRun.x == 0) // Require at least one glyph per line.
-								|| wrapIndex >= lineRun.glyphs.size) { // Wrap at least the glyph that didn't fit.
-								wrapIndex = i - 1;
-							}
-							GlyphRun next = wrap(fontData, lineRun, wrapIndex);
-							lineRun = next;
-							if (next == null) break runEnded; // All wrapped glyphs were whitespace.
-							runs.add(next);
-
-							y += down;
-							lineRun.x = 0;
-							lineRun.y = y;
-
-							// Start the wrap-loop again, another wrap might be necessary.
-							runWidth = lineRun.xAdvances.first();
-							if (lineRun.xAdvances.size > 1) runWidth += lineRun.xAdvances.get(1);
-							i = 1;
-						}
-					}
+			runEnded:
+			if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
+				// Store the newRun that has ended.
+				GlyphRun newRun = glyphRunPool.obtain();
+				fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
+				newRun.x = 0;
+				newRun.y = y;
+				newRun.colorChangeIndices.add(0);
+				newRun.colors.add(Color.rgba8888(color));
+				color = nextColor;
+				if (newRun.glyphs.size == 0) {
+					glyphRunPool.free(newRun);
+					if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
+				} else if (lineRun == null) {
+					lineRun = newRun;
+					runs.add(lineRun);
+				} else {
+					lineRun.appendRun(newRun, markupEnabled);
+					glyphRunPool.free(newRun);
 				}
 
-				if (newline) {
-					lineRun = null;
+				if (newline || isLastRun) {
+					setLastGlyphXAdvance(fontData, lineRun);
 					lastGlyph = null;
+				} else
+					lastGlyph = lineRun.glyphs.peek();
 
-					// Next run will be on the next line.
-					if (runEnd == runStart) // Blank line.
-						y += down * fontData.blankLineScale;
-					else
+				if (!wrapOrTruncate || lineRun.glyphs.size == 0) // No wrap or truncate, or no glyphs.
+					break runEnded;
+
+				if (newline || isLastRun) {
+					// Wrap or truncate. First xadvance is the first glyph's X offset relative to the drawing position.
+					float runWidth = lineRun.xAdvances.first();
+					for (int i = 1; i < lineRun.xAdvances.size; i++) {
+						Glyph glyph = lineRun.glyphs.get(i - 1);
+						float glyphWidth = getGlyphWidth(glyph, fontData);
+						if (runWidth + glyphWidth - epsilon <= targetWidth) {
+							// Glyph fits.
+							runWidth += lineRun.xAdvances.items[i];
+							continue;
+						}
+
+						if (truncate != null) {
+							// Truncate.
+							truncate(fontData, runs.peek(), targetWidth, truncate);
+							break outer;
+						}
+
+						// Wrap.
+						int wrapIndex = fontData.getWrapIndex(lineRun.glyphs, i);
+						if ((wrapIndex == 0 && lineRun.x == 0) // Require at least one glyph per line.
+							|| wrapIndex >= lineRun.glyphs.size) { // Wrap at least the glyph that didn't fit.
+							wrapIndex = i - 1;
+						}
+						GlyphRun next = wrap(fontData, lineRun, wrapIndex);
+						lineRun = next;
+						if (next == null) break runEnded; // All wrapped glyphs were whitespace.
+						runs.add(next);
+
 						y += down;
-				}
+						lineRun.x = 0;
+						lineRun.y = y;
 
-				runStart = start;
+						// Start the wrap-loop again, another wrap might be necessary.
+						runWidth = lineRun.xAdvances.first();
+						if (lineRun.xAdvances.size > 1) runWidth += lineRun.xAdvances.get(1);
+						i = 1;
+					}
+				}
 			}
+
+			if (newline) {
+				lineRun = null;
+				lastGlyph = null;
+
+				// Next run will be on the next line.
+				if (runEnd == runStart) // Blank line.
+					y += down * fontData.blankLineScale;
+				else
+					y += down;
+			}
+
+			runStart = start;
 		}
 
 		height = fontData.capHeight + Math.abs(y);
