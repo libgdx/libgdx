@@ -181,9 +181,8 @@ public class GlyphLayout implements Poolable {
 						glyphRunPool.free(newRun);
 					}
 
-					if (!wrapOrTruncate || lineRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
+					if (!wrapOrTruncate || lineRun.glyphs.size == 0) // No wrap or truncate, or no glyphs.
 						break runEnded;
-					}
 
 					if (newline || isLastRun) {
 						// Wrap or truncate.
@@ -211,9 +210,8 @@ public class GlyphLayout implements Poolable {
 							}
 							GlyphRun next = wrap(fontData, lineRun, wrapIndex);
 							lineRun = next;
-							if (next == null) { // All wrapped glyphs were whitespace.
+							if (next == null) // All wrapped glyphs were whitespace.
 								break runEnded;
-							}
 							runs.add(next);
 
 							// Start the loop over with the new newRun on the next line.
@@ -420,9 +418,8 @@ public class GlyphLayout implements Poolable {
 						if (second.colorChangeIndices.isEmpty()) {
 							second.colorChangeIndices.add(0); // Set run start color
 							second.colors.add(first.colors.get(i));
-						} else {
+						} else
 							second.colors.set(0, first.colors.get(i)); // Update run start color
-						}
 					} else {
 						first.colorChangeIndices.removeIndex(i);
 						final int color = first.colors.removeIndex(i);
