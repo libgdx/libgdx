@@ -182,7 +182,6 @@ public class GlyphLayout implements Poolable {
 					}
 
 					if (!wrapOrTruncate || lineRun.glyphs.size == 0) { // No wrap or truncate, or no glyphs.
-						if (newline) lineRun = null;
 						break runEnded;
 					}
 
@@ -213,9 +212,6 @@ public class GlyphLayout implements Poolable {
 							GlyphRun next = wrap(fontData, lineRun, wrapIndex);
 							lineRun = next;
 							if (next == null) { // All wrapped glyphs were whitespace.
-								y += down;
-								newline = false; // We've already moved down a line.
-								lastGlyph = null;
 								break runEnded;
 							}
 							runs.add(next);
@@ -229,12 +225,13 @@ public class GlyphLayout implements Poolable {
 							lineRun.y = y;
 							i = 1;
 						}
-
-						if (newline) lineRun = null;
 					}
 				}
 
 				if (newline) {
+					lineRun = null;
+					lastGlyph = null;
+
 					// Next run will be on the next line.
 					if (runEnd == runStart) // Blank line.
 						y += down * fontData.blankLineScale;
