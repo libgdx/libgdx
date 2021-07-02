@@ -151,7 +151,7 @@ public class GlyphLayout implements Poolable {
 
 			if (runEnd != -1) {
 				runEnded:
-				if (true) { // Can occur eg when a color tag is at text start or a line is "\n".
+				if (runEnd != runStart) { // Can occur eg when a color tag is at text start or a line is "\n".
 					// Store the newRun that has ended.
 					GlyphRun newRun = glyphRunPool.obtain();
 					fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
