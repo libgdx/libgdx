@@ -214,13 +214,14 @@ public class GlyphLayout implements Poolable {
 								break runEnded;
 							runs.add(next);
 
+							y += down;
+							lineRun.x = 0;
+							lineRun.y = y;
+						
 							// Start the loop over with the new newRun on the next line.
 							runWidth = lineRun.xAdvances.get(0);
 							if (lineRun.xAdvances.size > 1)
 								runWidth += lineRun.xAdvances.get(1);
-							y += down;
-							lineRun.x = 0;
-							lineRun.y = y;
 							i = 1;
 						}
 					}
