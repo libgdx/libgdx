@@ -218,7 +218,7 @@ public class GlyphLayout implements Poolable {
 							lineRun.x = 0;
 							lineRun.y = y;
 						
-							// Start the loop over with the new newRun on the next line.
+							// Start the wrap-loop again, another wrap might be necessary.
 							runWidth = lineRun.xAdvances.get(0);
 							if (lineRun.xAdvances.size > 1)
 								runWidth += lineRun.xAdvances.get(1);
