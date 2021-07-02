@@ -164,7 +164,7 @@ public class GlyphLayout implements Poolable {
 					color = nextColor;
 					if (newRun.glyphs.size == 0) {
 						glyphRunPool.free(newRun);
-						if (lineRun == null || !wrapOrTruncate) break runEnded; // else wrap and truncate must still be processed
+						if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun
 					} else {
 						if (lineRun == null) {
 							lineRun = newRun;
