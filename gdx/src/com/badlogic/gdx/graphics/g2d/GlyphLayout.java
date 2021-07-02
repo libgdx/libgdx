@@ -277,29 +277,15 @@ public class GlyphLayout implements Poolable {
 		this.width = width;
 	}
 
-	/** Align runs to center or right of targetWidth. */
+	/** Align runs to center or right of targetWidth. Requires run.width of runs to be already set */
 	private void alignRuns (float targetWidth, int halign) {
 		if ((halign & Align.left) == 0) { // Not left aligned, so must be center or right aligned.
 			boolean center = (halign & Align.center) != 0;
 			Object[] runsItems = runs.items;
-			float lineWidth = 0, lineY = Integer.MIN_VALUE;
-			int runsCount = runs.size, lineStart = 0;
-			for (int i = 0; i < runsCount; i++) {
+			for (int i = 0, n = runs.size; i < n; i++) {
 				GlyphRun run = (GlyphRun)runsItems[i];
-				if (run.y != lineY) {
-					lineY = run.y;
-					float shift = targetWidth - lineWidth;
-					if (center) shift /= 2;
-					while (lineStart < i)
-						((GlyphRun)runsItems[lineStart++]).x += shift;
-					lineWidth = run.x + run.width;
-				} else
-					lineWidth = Math.max(lineWidth, run.x + run.width);
+				run.x += center ? 0.5f * (targetWidth - run.width) : targetWidth - run.width; 
 			}
-			float shift = targetWidth - lineWidth;
-			if (center) shift /= 2;
-			while (lineStart < runsCount)
-				((GlyphRun)runsItems[lineStart++]).x += shift;
 		}
 	}
 
