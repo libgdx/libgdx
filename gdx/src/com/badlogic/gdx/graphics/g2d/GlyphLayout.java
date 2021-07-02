@@ -237,7 +237,7 @@ public class GlyphLayout implements Poolable {
 
 		height = fontData.capHeight + Math.abs(y);
 
-		calculateAndSetWidths(fontData);
+		calculateWidths(fontData);
 
 		alignRuns(targetWidth, halign);
 
@@ -250,7 +250,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	/** Calculate run widths and the entire layout width. */
-	private void calculateAndSetWidths (BitmapFontData fontData) {
+	private void calculateWidths (BitmapFontData fontData) {
 		float width = 0;
 		Object[] runsItems = runs.items;
 		for (int i = 0, n = runs.size; i < n; i++) {
