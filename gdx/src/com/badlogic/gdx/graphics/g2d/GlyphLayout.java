@@ -48,7 +48,10 @@ public class GlyphLayout implements Poolable {
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
 
+	/** Runs are pooled, references should not be kept past the next call to
+	 * {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String)}. */
 	public final Array<GlyphRun> runs = new Array(1);
+
 	public float width, height;
 
 	/** Creates an empty GlyphLayout. */
@@ -151,23 +154,23 @@ public class GlyphLayout implements Poolable {
 
 			runEnded:
 			{
-				// Store the newRun that has ended.
-				GlyphRun newRun = glyphRunPool.obtain();
-				fontData.getGlyphs(newRun, str, runStart, runEnd, lastGlyph);
-				newRun.x = 0;
-				newRun.y = y;
-				newRun.colorChangeIndices.add(0);
-				newRun.colors.add(currentColor);
+				// Store the run that has ended.
+				GlyphRun run = glyphRunPool.obtain();
+				fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
+				run.x = 0;
+				run.y = y;
+				run.colorChangeIndices.add(0);
+				run.colors.add(currentColor);
 				currentColor = nextColor;
-				if (newRun.glyphs.size == 0) {
-					glyphRunPool.free(newRun);
+				if (run.glyphs.size == 0) {
+					glyphRunPool.free(run);
 					if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
 				} else if (lineRun == null) {
-					lineRun = newRun;
+					lineRun = run;
 					runs.add(lineRun);
 				} else {
-					lineRun.appendRun(newRun, markupEnabled);
-					glyphRunPool.free(newRun);
+					lineRun.appendRun(run, markupEnabled);
+					glyphRunPool.free(run);
 				}
 
 				if (newline || isLastRun) {
@@ -176,8 +179,7 @@ public class GlyphLayout implements Poolable {
 				} else
 					lastGlyph = lineRun.glyphs.peek();
 
-				if (!wrapOrTruncate || lineRun.glyphs.size == 0) // No wrap or truncate, or no glyphs.
-					break runEnded;
+				if (!wrapOrTruncate || lineRun.glyphs.size == 0) break runEnded; // No wrap or truncate, or no glyphs.
 
 				if (newline || isLastRun) {
 					// Wrap or truncate. First xadvance is the first glyph's X offset relative to the drawing position.
