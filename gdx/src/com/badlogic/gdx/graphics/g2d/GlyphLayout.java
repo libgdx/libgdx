@@ -42,7 +42,8 @@ import com.badlogic.gdx.utils.Pools;
  * This class is not thread safe, even if synchronized externally, and must only be used from the game thread.
  * @author Nathan Sweet
  * @author davebaol
- * @author Alexander Dorokhov */
+ * @author Alexander Dorokhov
+ * @author Thomas Creutzenberg */
 public class GlyphLayout implements Poolable {
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
 	static private final IntArray colorStack = new IntArray(4);
@@ -537,7 +538,7 @@ public class GlyphLayout implements Poolable {
 			if (xAdvances.isEmpty())
 				xAdvances.addAll(run.xAdvances.items);
 			else {
-				xAdvances.set(xAdvances.size - 1, run.xAdvances.get(0)); // Last xAdvance might change because of kerning.
+				xAdvances.set(xAdvances.size - 1, run.xAdvances.get(0)); // Touching xAdvance might have changed because of kerning (e.g. "...V|a...").
 				xAdvances.addAll(run.xAdvances.items, 1, run.xAdvances.size - 1);
 			}
 
