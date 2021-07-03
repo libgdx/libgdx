@@ -534,9 +534,12 @@ public class GlyphLayout implements Poolable {
 		void appendRun (GlyphRun run, boolean markupEnabled) {
 			int glyphsCount = glyphs.size;
 			glyphs.addAll(run.glyphs);
-			// xAdvances[0] is the offset of the whole line, so it should only be added to an empty run.
-			int startIndex = xAdvances.isEmpty() ? 0 : 1;
-			xAdvances.addAll(run.xAdvances.items, startIndex, run.xAdvances.size - startIndex);
+			if (xAdvances.isEmpty())
+				xAdvances.addAll(run.xAdvances.items);
+			else {
+				xAdvances.set(xAdvances.size - 1, run.xAdvances.get(0)); // Last xAdvance might change because of kerning.
+				xAdvances.addAll(run.xAdvances.items, 1, run.xAdvances.size - 1);
+			}
 
 			if (colorChangeIndices.isEmpty()) {
 				colorChangeIndices.add(0);
