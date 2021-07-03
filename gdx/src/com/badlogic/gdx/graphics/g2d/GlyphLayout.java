@@ -45,8 +45,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Alexander Dorokhov */
 public class GlyphLayout implements Poolable {
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
-	static private final Pool<Color> colorPool = Pools.get(Color.class);
-	static private final Array<Color> colorStack = new Array(4);
+	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
 
 	public final Array<GlyphRun> runs = new Array(1);
@@ -109,9 +108,9 @@ public class GlyphLayout implements Poolable {
 		// Avoid wrapping one line per character, which is very inefficient.
 		boolean wrapOrTruncate = (wrap && targetWidth > fontData.spaceXadvance * 3) || truncate != null;
 
-		Color nextColor = color;
+		int currentColor = Color.rgba8888(color), nextColor = currentColor;
 		boolean markupEnabled = fontData.markupEnabled;
-		if (markupEnabled) colorStack.add(color);
+		if (markupEnabled) colorStack.add(currentColor);
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
@@ -158,8 +157,8 @@ public class GlyphLayout implements Poolable {
 				newRun.x = 0;
 				newRun.y = y;
 				newRun.colorChangeIndices.add(0);
-				newRun.colors.add(Color.rgba8888(color));
-				color = nextColor;
+				newRun.colors.add(currentColor);
+				currentColor = nextColor;
 				if (newRun.glyphs.size == 0) {
 					glyphRunPool.free(newRun);
 					if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
@@ -241,12 +240,8 @@ public class GlyphLayout implements Poolable {
 
 		alignRuns(targetWidth, halign);
 
-		// Free the color stack.
-		if (markupEnabled) {
-			for (int i = 1, n = colorStack.size; i < n; i++) // Skip the first color, which was passed in.
-				colorPool.free(colorStack.get(i));
-			colorStack.clear();
-		}
+		// Clear the color stack.
+		if (markupEnabled) colorStack.clear();
 	}
 
 	/** Calculate run widths and the entire layout width. */
@@ -456,27 +451,25 @@ public class GlyphLayout implements Poolable {
 		switch (str.charAt(start)) {
 		case '#':
 			// Parse hex color RRGGBBAA where AA is optional and defaults to 0xFF if less than 6 chars are used.
-			int colorInt = 0;
+			int color = 0;
 			for (int i = start + 1; i < end; i++) {
 				char ch = str.charAt(i);
 				if (ch == ']') {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
 					if (i - start <= 7) { // RRGGBB or fewer chars.
 						for (int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
-							colorInt = colorInt << 4;
-						colorInt |= 0xff;
+							color = color << 4;
+						color |= 0xff;
 					}
-					Color color = colorPool.obtain();
 					colorStack.add(color);
-					Color.rgba8888ToColor(color, colorInt);
 					return i - start;
 				}
 				if (ch >= '0' && ch <= '9')
-					colorInt = colorInt * 16 + (ch - '0');
+					color = color * 16 + (ch - '0');
 				else if (ch >= 'a' && ch <= 'f')
-					colorInt = colorInt * 16 + (ch - ('a' - 10));
+					color = color * 16 + (ch - ('a' - 10));
 				else if (ch >= 'A' && ch <= 'F')
-					colorInt = colorInt * 16 + (ch - ('A' - 10));
+					color = color * 16 + (ch - ('A' - 10));
 				else
 					break; // Unexpected character in hex color.
 			}
@@ -484,18 +477,16 @@ public class GlyphLayout implements Poolable {
 		case '[': // "[[" is an escaped left square bracket.
 			return -2;
 		case ']': // "[]" is a "pop" color tag.
-			if (colorStack.size > 1) colorPool.free(colorStack.pop());
+			if (colorStack.size > 1) colorStack.pop();
 			return 0;
 		}
 		// Parse named color.
 		for (int i = start + 1; i < end; i++) {
 			char ch = str.charAt(i);
 			if (ch != ']') continue;
-			Color namedColor = Colors.get(str.subSequence(start, i).toString());
-			if (namedColor == null) return -1; // Unknown color name.
-			Color color = colorPool.obtain();
-			colorStack.add(color);
-			color.set(namedColor);
+			Color color = Colors.get(str.subSequence(start, i).toString());
+			if (color == null) return -1; // Unknown color name.
+			colorStack.add(Color.rgba8888(color));
 			return i - start;
 		}
 		return -1; // Unclosed color tag.
@@ -549,7 +540,6 @@ public class GlyphLayout implements Poolable {
 				colorChangeIndices.add(0);
 				colors.add(run.colors.peek());
 			} else if (markupEnabled) {
-
 				// First color is always set but only needs to be added if different from the last color.
 				int firstColor = run.colors.first();
 				if (firstColor != colors.peek()) {
