@@ -541,22 +541,22 @@ public class GlyphLayout implements Poolable {
 		void appendRun (GlyphRun run, boolean markupEnabled) {
 			int glyphsCount = glyphs.size;
 			glyphs.addAll(run.glyphs);
-			// xAdvances[0] is the offset of the whole line so it it should only be added to an empty run
-			int xadvanceStartIndex = xAdvances.isEmpty() ? 0 : 1;
-			for (int i = xadvanceStartIndex, n = run.xAdvances.size; i < n; i++)
-				xAdvances.add(run.xAdvances.get(i));
+			// xAdvances[0] is the offset of the whole line, so it should only be added to an empty run.
+			int startIndex = xAdvances.isEmpty() ? 0 : 1;
+			xAdvances.addAll(run.xAdvances.items, startIndex, run.xAdvances.size - startIndex);
 
 			if (colorChangeIndices.isEmpty()) {
 				colorChangeIndices.add(0);
 				colors.add(run.colors.peek());
 			} else if (markupEnabled) {
-				// First color is always set but only needs to be added if different from last color
-				int runColor = run.colors.first();
-				if (runColor != colors.peek()) {
+
+				// First color is always set but only needs to be added if different from the last color.
+				int firstColor = run.colors.first();
+				if (firstColor != colors.peek()) {
 					colorChangeIndices.add(glyphsCount);
-					colors.add(runColor);
+					colors.add(firstColor);
 				}
-				// Append other color changes
+				// Append other color changes.
 				for (int i = 1, n = run.colorChangeIndices.size; i < n; i++) {
 					colorChangeIndices.add(run.colorChangeIndices.get(i) + glyphsCount);
 					colors.add(run.colors.get(i));
@@ -567,7 +567,6 @@ public class GlyphLayout implements Poolable {
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
-			width = 0;
 			colorChangeIndices.clear();
 			colors.clear();
 		}
