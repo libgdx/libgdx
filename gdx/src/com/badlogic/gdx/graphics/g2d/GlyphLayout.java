@@ -535,12 +535,8 @@ public class GlyphLayout implements Poolable {
 		void appendRun (GlyphRun run, boolean markupEnabled) {
 			int glyphsCount = glyphs.size;
 			glyphs.addAll(run.glyphs);
-			if (xAdvances.isEmpty())
-				xAdvances.addAll(run.xAdvances.items);
-			else {
-				xAdvances.set(xAdvances.size - 1, run.xAdvances.get(0)); // Touching xAdvance might have changed because of kerning (e.g. "...V|a...").
-				xAdvances.addAll(run.xAdvances.items, 1, run.xAdvances.size - 1);
-			}
+			if (xAdvances.notEmpty()) xAdvances.pop(); // First xadvance of append-run applies kerning to this run's last glyphs xadvance.
+			xAdvances.addAll(run.xAdvances);
 
 			if (colorChangeIndices.isEmpty()) {
 				colorChangeIndices.add(0);
