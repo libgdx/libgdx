@@ -338,12 +338,12 @@ public class GlyphLayout implements Poolable {
 		}
 		run.glyphs.addAll(truncateRun.glyphs);
 
-		totalGlyphCount -= runGlyphCountBefore - run.glyphs.size;
-		
-		if (fontData.markupEnabled) {
-			while(colors.get(colors.size - 2) >= totalGlyphCount){
+		int droppedGlyphCount = runGlyphCountBefore - run.glyphs.size;
+		totalGlyphCount -= droppedGlyphCount;
+
+		if (fontData.markupEnabled && droppedGlyphCount > 0) {
+			while (colors.get(colors.size - 2) >= totalGlyphCount)
 				colors.truncate(colors.size - 2);
-			}
 		}
 
 		glyphRunPool.free(truncateRun);
@@ -389,15 +389,13 @@ public class GlyphLayout implements Poolable {
 			int secondGlyphCount = second.glyphs.size;
 			int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount;
 			totalGlyphCount -= droppedGlyphCount;
-			
-			if (fontData.markupEnabled) {
+
+			if (fontData.markupEnabled && droppedGlyphCount > 0) {
 				int reductionThreshold = totalGlyphCount - secondGlyphCount;
-				if (droppedGlyphCount > 0) {
-					for (int i = colors.size - 2; i >= 2; i -= 2) { // i >= 1 because first 2 values always determine the base color.
-						int colorChangeIndex = colors.get(i);
-						if (colorChangeIndex <= reductionThreshold) break;
-						colors.set(i, colorChangeIndex - droppedGlyphCount);
-					}
+				for (int i = colors.size - 2; i >= 2; i -= 2) { // i >= 1 because first 2 values always determine the base color.
+					int colorChangeIndex = colors.get(i);
+					if (colorChangeIndex <= reductionThreshold) break;
+					colors.set(i, colorChangeIndex - droppedGlyphCount);
 				}
 			}
 		} else {
@@ -407,9 +405,10 @@ public class GlyphLayout implements Poolable {
 
 			int droppedGlyphCount = secondStart - firstEnd;
 			totalGlyphCount -= droppedGlyphCount;
+
 			if (fontData.markupEnabled && droppedGlyphCount > 0) {
 				// As many color changes could be hidden in the dropped whitespace, just leave the last color and remove the other
-				// entries with color change indices > totalGlyphCount
+				// entries with color change indices > totalGlyphCount.
 				while (colors.get(colors.size - 2) > totalGlyphCount)
 					colors.removeRange(colors.size - 3, colors.size - 2);
 				colors.set(colors.size - 2, totalGlyphCount);
