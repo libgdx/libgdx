@@ -53,6 +53,12 @@ public class GlyphLayout implements Poolable {
 	 * {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String)}. */
 	public final Array<GlyphRun> runs = new Array(1);
 
+	/** Colors determines the color changes for glpyhs. It always is a pair of 2 entries:
+	 * ["index of glyph", "color as rgba8888 int", "index of glyph", "color as rgba8888 int", ...  ]
+	 * Normally has a first entry [0, startColor] */
+	public final IntArray colors = new IntArray(2);
+	public int totalGlyphCount = 0; // Current number of glyphs
+
 	public float width, height;
 
 	/** Creates an empty GlyphLayout. */
@@ -101,6 +107,8 @@ public class GlyphLayout implements Poolable {
 		Array<GlyphRun> runs = this.runs;
 		glyphRunPool.freeAll(runs);
 		runs.clear();
+		colors.clear();
+		totalGlyphCount = 0;
 
 		BitmapFontData fontData = font.data;
 		if (start == end) { // Empty string.
@@ -113,6 +121,7 @@ public class GlyphLayout implements Poolable {
 		boolean wrapOrTruncate = (wrap && targetWidth > fontData.spaceXadvance * 3) || truncate != null;
 
 		int currentColor = Color.rgba8888(color), nextColor = currentColor;
+		colors.add(0, currentColor);		
 		boolean markupEnabled = fontData.markupEnabled;
 		if (markupEnabled) colorStack.add(currentColor);
 
@@ -160,9 +169,16 @@ public class GlyphLayout implements Poolable {
 				fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
 				run.x = 0;
 				run.y = y;
-				run.colorChangeIndices.add(0);
-				run.colors.add(currentColor);
-				currentColor = nextColor;
+				totalGlyphCount += run.glyphs.size;
+				if (nextColor != currentColor) { // Can only be different if markupEnabled.
+					if (colors.get(colors.size - 2) == totalGlyphCount) // Color change after empty run or at beginning of str. 
+						colors.set(colors.size - 1, nextColor);
+					else {
+						colors.add(totalGlyphCount);
+						colors.add(nextColor);
+					}
+					currentColor = nextColor;
+				}
 				if (run.glyphs.size == 0) {
 					glyphRunPool.free(run);
 					if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
@@ -170,7 +186,7 @@ public class GlyphLayout implements Poolable {
 					lineRun = run;
 					runs.add(lineRun);
 				} else {
-					lineRun.appendRun(run, markupEnabled);
+					lineRun.appendRun(run);
 					glyphRunPool.free(run);
 				}
 
@@ -283,6 +299,8 @@ public class GlyphLayout implements Poolable {
 
 	/** @param truncate May be empty string. */
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate) {
+		int runGlyphCountBefore = run.glyphs.size;
+		
 		// Determine truncate string size.
 		GlyphRun truncateRun = glyphRunPool.obtain();
 		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
@@ -320,12 +338,11 @@ public class GlyphLayout implements Poolable {
 		}
 		run.glyphs.addAll(truncateRun.glyphs);
 
+		totalGlyphCount -= runGlyphCountBefore - run.glyphs.size;
+		
 		if (fontData.markupEnabled) {
-			// Remove all color changes for indices > run.glyphs.size.
-			for (int i = run.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because first value is never dropped
-				if (run.colorChangeIndices.get(i) < run.glyphs.size) break;
-				run.colorChangeIndices.pop();
-				run.colors.pop();
+			while(colors.get(colors.size - 2) >= totalGlyphCount){
+				colors.truncate(colors.size - 2);
 			}
 		}
 
@@ -368,43 +385,18 @@ public class GlyphLayout implements Poolable {
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 
-			if (!fontData.markupEnabled) {
-				second.colorChangeIndices.add(0); // Set run color.
-				second.colors.add(first.colors.peek());
-			} else {
-				int firstGlyphCount = first.glyphs.size; // After wrapping it.
-				int secondGlyphCount = second.glyphs.size;
-
-				// Adjust colorChangeIndices according to droppedGlyphCount, which is the number of glyphs dropped by wrapping.
-				int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount;
+			int firstGlyphCount = first.glyphs.size; // After wrapping it.
+			int secondGlyphCount = second.glyphs.size;
+			int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount;
+			totalGlyphCount -= droppedGlyphCount;
+			
+			if (fontData.markupEnabled) {
+				int reductionThreshold = totalGlyphCount - secondGlyphCount;
 				if (droppedGlyphCount > 0) {
-					for (int i = first.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because first the value is never adjusted.
-						int colorChangeIndex = first.colorChangeIndices.get(i);
-						if (colorChangeIndex <= firstGlyphCount) break;
-						first.colorChangeIndices.set(i, colorChangeIndex - droppedGlyphCount);
-					}
-				}
-
-				for (int i = 0, n = first.colorChangeIndices.size; i < n; i++) {
-					int firstColorChangeIndex = first.colorChangeIndices.get(i);
-					if (firstColorChangeIndex < firstGlyphCount) {
-						if (second.colorChangeIndices.isEmpty()) {
-							second.colorChangeIndices.add(0); // Set run start color.
-							second.colors.add(first.colors.get(i));
-						} else
-							second.colors.set(0, first.colors.get(i)); // Update run start color.
-					} else {
-						first.colorChangeIndices.removeIndex(i);
-						int color = first.colors.removeIndex(i);
-						n--;
-						i--;
-						int index = firstColorChangeIndex - firstGlyphCount;
-						if (index == 0)
-							second.colors.set(0, color); // Update run start color.
-						else {
-							second.colorChangeIndices.add(index);
-							second.colors.add(color);
-						}
+					for (int i = colors.size - 2; i >= 2; i -= 2) { // i >= 1 because first 2 values always determine the base color.
+						int colorChangeIndex = colors.get(i);
+						if (colorChangeIndex <= reductionThreshold) break;
+						colors.set(i, colorChangeIndex - droppedGlyphCount);
 					}
 				}
 			}
@@ -413,13 +405,14 @@ public class GlyphLayout implements Poolable {
 			glyphs2.truncate(firstEnd);
 			xAdvances2.truncate(firstEnd + 1);
 
-			if (fontData.markupEnabled) {
-				// Remove all color changes for indices >= firstEnd.
-				for (int i = first.colorChangeIndices.size - 1; i > 0; i--) { // i > 0 because the first value is never dropped.
-					if (first.colorChangeIndices.get(i) < firstEnd) break;
-					first.colorChangeIndices.pop();
-					first.colors.pop();
-				}
+			int droppedGlyphCount = secondStart - firstEnd;
+			totalGlyphCount -= droppedGlyphCount;
+			if (fontData.markupEnabled && droppedGlyphCount > 0) {
+				// As many color changes could be hidden in the dropped whitespace, just leave the last color and remove the other
+				// entries with color change indices > totalGlyphCount
+				while (colors.get(colors.size - 2) > totalGlyphCount)
+					colors.removeRange(colors.size - 3, colors.size - 2);
+				colors.set(colors.size - 2, totalGlyphCount);
 			}
 		}
 
@@ -498,6 +491,8 @@ public class GlyphLayout implements Poolable {
 	public void reset () {
 		Pools.get(GlyphRun.class).freeAll(runs);
 		runs.clear();
+		colors.clear();
+		totalGlyphCount = 0;
 		width = 0;
 		height = 0;
 	}
@@ -526,41 +521,15 @@ public class GlyphLayout implements Poolable {
 		public FloatArray xAdvances = new FloatArray();
 		public float x, y, width;
 
-		/** The indexes at which the color of the glyphs changes. The new color can be retrieved from colors. The first entry (0)
-		 * must be set and will normally be 0 (start to use the first color of colors from the first glyph on) */
-		public IntArray colorChangeIndices = new IntArray(4);
-		/** The change colors for colorChangeIndices. The first entry (0) must be set and states the base color for this run */
-		public IntArray colors = new IntArray(4); // rgba8888
-
-		void appendRun (GlyphRun run, boolean markupEnabled) {
-			int glyphsCount = glyphs.size;
+		void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
 			if (xAdvances.notEmpty()) xAdvances.pop(); // First xadvance of append-run applies kerning to this run's last glyphs xadvance.
 			xAdvances.addAll(run.xAdvances);
-
-			if (colorChangeIndices.isEmpty()) {
-				colorChangeIndices.add(0);
-				colors.add(run.colors.peek());
-			} else if (markupEnabled) {
-				// First color is always set but only needs to be added if different from the last color.
-				int firstColor = run.colors.first();
-				if (firstColor != colors.peek()) {
-					colorChangeIndices.add(glyphsCount);
-					colors.add(firstColor);
-				}
-				// Append other color changes.
-				for (int i = 1, n = run.colorChangeIndices.size; i < n; i++) {
-					colorChangeIndices.add(run.colorChangeIndices.get(i) + glyphsCount);
-					colors.add(run.colors.get(i));
-				}
-			}
 		}
 
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
-			colorChangeIndices.clear();
-			colors.clear();
 		}
 
 		public String toString () {
