@@ -166,7 +166,7 @@ public class GlyphLayout implements Poolable {
 				run.y = y;
 				totalGlyphCount += run.glyphs.size;
 				if (nextColor != currentColor) { // Can only be different if markupEnabled.
-					if (colors.get(colors.size - 2) == totalGlyphCount) // Color change after empty run or at beginning of str. 
+					if (colors.get(colors.size - 2) == totalGlyphCount) // Consecutive color changes or after empty run or at beginning of str. 
 						colors.set(colors.size - 1, nextColor);
 					else {
 						colors.add(totalGlyphCount);
@@ -294,7 +294,7 @@ public class GlyphLayout implements Poolable {
 
 	/** @param truncate May be empty string. */
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate) {
-		int runGlyphCountBefore = run.glyphs.size;
+		int glyphCount = run.glyphs.size;
 		
 		// Determine truncate string size.
 		GlyphRun truncateRun = glyphRunPool.obtain();
@@ -333,7 +333,7 @@ public class GlyphLayout implements Poolable {
 		}
 		run.glyphs.addAll(truncateRun.glyphs);
 
-		int droppedGlyphCount = runGlyphCountBefore - run.glyphs.size;
+		int droppedGlyphCount = glyphCount - run.glyphs.size;
 		totalGlyphCount -= droppedGlyphCount;
 
 		if (fontData.markupEnabled && droppedGlyphCount > 0) {
