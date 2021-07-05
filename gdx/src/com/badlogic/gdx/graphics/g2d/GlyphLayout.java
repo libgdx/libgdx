@@ -208,7 +208,7 @@ public class GlyphLayout implements Poolable {
 
 						if (truncate != null) {
 							// Truncate.
-							truncate(fontData, runs.peek(), targetWidth, truncate);
+							truncate(fontData, lineRun, targetWidth, truncate);
 							break outer;
 						}
 
@@ -506,11 +506,12 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
-	/** Stores glyphs and positions for a piece of text and indices and colors of color changes and does not span multiple lines.
+	/** Stores glyphs and positions for a piece of text.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
 		public Array<Glyph> glyphs = new Array();
-		/** Contains glyphs.size+1 entries: First entry is X offset relative to the drawing position (the offset of the line).
+		/** Contains glyphs.size+1 entries: First entry is 0 if it is the first/only run in a line. If it is a run to append to another
+		 * run the first entry is the kerning adjusted xAdvance of the previous run's last glyph relative to the first glyph of this run.
 		 * Subsequent entries are the X advance relative to previous glyph position. Last entry is the width of the last glyph. */
 		public FloatArray xAdvances = new FloatArray();
 		public float x, y, width;
