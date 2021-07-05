@@ -402,11 +402,13 @@ public class GlyphLayout implements Poolable {
 			totalGlyphCount -= droppedGlyphCount;
 
 			if (fontData.markupEnabled && droppedGlyphCount > 0) {
-				// As many color changes could be hidden in the dropped whitespace, just leave the last color and remove the other
-				// entries with color change indices > totalGlyphCount.
-				while (colors.get(colors.size - 2) > totalGlyphCount)
-					colors.removeRange(colors.size - 3, colors.size - 2);
-				colors.set(colors.size - 2, totalGlyphCount);
+				// As many color changes can be hidden in the dropped whitespace, just keep the last color and remove the other entries.
+				int i = colors.size - 2;
+				while (colors.get(i) <= totalGlyphCount) i -= 2;
+				if (i < colors.size) {
+					colors.removeRange(i - 1, colors.size - 2);
+					colors.set(colors.size - 2, totalGlyphCount); // Update color change index.
+				}
 			}
 		}
 
