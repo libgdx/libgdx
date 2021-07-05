@@ -310,11 +310,8 @@ public class BitmapFontCache {
 
 	private void requireGlyphs (GlyphLayout layout) {
 		if (pageVertices.length == 1) {
-			// Simpler counting if we just have one page.
-			int newGlyphCount = 0;
-			for (int i = 0, n = layout.runs.size; i < n; i++)
-				newGlyphCount += layout.runs.get(i).glyphs.size;
-			requirePageGlyphs(0, newGlyphCount);
+			// Simple if we just have one page.
+			requirePageGlyphs(0, layout.totalGlyphCount);
 		} else {
 			int[] tempGlyphCount = this.tempGlyphCount;
 			for (int i = 0, n = tempGlyphCount.length; i < n; i++)
