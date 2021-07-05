@@ -104,15 +104,10 @@ public class GlyphLayout implements Poolable {
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, @Null String truncate) {
 
-		Array<GlyphRun> runs = this.runs;
-		glyphRunPool.freeAll(runs);
-		runs.clear();
-		colors.clear();
-		totalGlyphCount = 0;
+		reset();
 
 		BitmapFontData fontData = font.data;
 		if (start == end) { // Empty string.
-			width = 0;
 			height = fontData.capHeight;
 			return;
 		}
@@ -488,7 +483,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	public void reset () {
-		Pools.get(GlyphRun.class).freeAll(runs);
+		glyphRunPool.freeAll(runs);
 		runs.clear();
 		colors.clear();
 		totalGlyphCount = 0;
