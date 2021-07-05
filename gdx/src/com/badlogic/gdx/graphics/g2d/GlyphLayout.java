@@ -54,7 +54,8 @@ public class GlyphLayout implements Poolable {
 	public final Array<GlyphRun> runs = new Array(1);
 
 	/** Colors determines the color changes for glpyhs. It always is a pair of 2 entries:
-	 * ["index of glyph", "color as rgba8888 int", "index of glyph", "color as rgba8888 int", ...  ]
+	 * ["glyphIndex for color change", "color as rgba8888 int", "glyphIndex for color change", "color as rgba8888 int", ...  ]
+	 * E.g. [0, "WHITE", 4, "GREEN", 5, "WHITE"]: Glpyhs 0 to 3 are WHITE, 4 is GREEN and 5 to end are WHITE.
 	 * Normally has a first entry [0, startColor] */
 	public final IntArray colors = new IntArray(2);
 	public int totalGlyphCount = 0; // Current number of glyphs
