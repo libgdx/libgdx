@@ -13,7 +13,7 @@
   <version>1.10.1-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
-  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
+  <description>Android/Desktop/iOS/HTML5 game development framework</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://github.com/libgdx/libgdx/issues</url>
