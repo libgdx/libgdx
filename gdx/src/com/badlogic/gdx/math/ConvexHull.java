@@ -97,7 +97,7 @@ public class ConvexHull {
 	/** Computes a hull the same as {@link #computePolygon(float[], int, int, boolean)} but returns indices of the specified
 	 * points. */
 	public IntArray computeIndices (float[] points, int offset, int count, boolean sorted, boolean yDown) {
-		if (count > 32767) throw new IllegalArgumentException("count must be <= " + 32767);
+		if (count > 65535) throw new IllegalArgumentException("count must be <= " + 65535);
 		int end = offset + count;
 
 		if (!sorted) {

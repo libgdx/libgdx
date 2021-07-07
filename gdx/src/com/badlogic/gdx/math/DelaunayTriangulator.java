@@ -24,6 +24,12 @@ import com.badlogic.gdx.utils.ShortArray;
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
  * @author Nathan Sweet */
 public class DelaunayTriangulator {
+	/**
+	 * This is a maximum number of vertices that can be drawn in one draw call (batch). Indices in a draw call are using
+	 * unsigned short, therefore at most there can be 2^16-1 vertices (so 65535).
+	 */
+	public static final int MAX_VERTEX_COUNT = 65535;
+
 	static private final float EPSILON = 0.000001f;
 	static private final int INSIDE = 0;
 	static private final int COMPLETE = 1;
@@ -56,7 +62,7 @@ public class DelaunayTriangulator {
 	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
 	public ShortArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
-		if (count > 32767) throw new IllegalArgumentException("count must be <= " + 32767);
+		if (count > MAX_VERTEX_COUNT) throw new IllegalArgumentException("count must be <= " + MAX_VERTEX_COUNT);
 		ShortArray triangles = this.triangles;
 		triangles.clear();
 		if (count < 6) return triangles;

@@ -56,6 +56,12 @@ import com.badlogic.gdx.math.Matrix4;
  * @author Stefan Bachmann
  * @author Nathan Sweet */
 public class PolygonSpriteBatch implements PolygonBatch {
+	/**
+	 * This is a maximum number of vertices that can be drawn in one draw call (batch). Indices in a draw call are using
+	 * unsigned short, therefore at most there can be 2^16-1 vertices (so 65535).
+	 */
+	public static final int MAX_VERTEX_COUNT = 65535;
+
 	private Mesh mesh;
 
 	private final float[] vertices;
@@ -98,14 +104,14 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	}
 
 	/** Constructs a PolygonSpriteBatch with the default shader, size vertices, and size * 2 triangles.
-	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
+	 * @param size The max number of vertices and number of triangles in a single batch. Max of 65535.
 	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size) {
 		this(size, size * 2, null);
 	}
 
 	/** Constructs a PolygonSpriteBatch with the specified shader, size vertices and size * 2 triangles.
-	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
+	 * @param size The max number of vertices and number of triangles in a single batch. Max of 65535.
 	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
 		this(size, size * 2, defaultShader);
@@ -117,14 +123,13 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
-	 * @param maxVertices The max number of vertices in a single batch. Max of 32767.
+	 * @param maxVertices The max number of vertices in a single batch. Max of 65535.
 	 * @param maxTriangles The max number of triangles in a single batch.
 	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately.
 	 *           May be null to use the default shader. */
 	public PolygonSpriteBatch (int maxVertices, int maxTriangles, ShaderProgram defaultShader) {
-		// 32767 is max vertex index.
-		if (maxVertices > 32767)
-			throw new IllegalArgumentException("Can't have more than 32767 vertices per batch: " + maxVertices);
+		if (maxVertices > MAX_VERTEX_COUNT)
+			throw new IllegalArgumentException("Can't have more than "+MAX_VERTEX_COUNT+" vertices per batch: " + maxVertices);
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
 		if (Gdx.gl30 != null) {

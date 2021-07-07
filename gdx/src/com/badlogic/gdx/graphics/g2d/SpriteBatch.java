@@ -36,6 +36,13 @@ import java.nio.Buffer;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
+	/**
+	 * This is a maximum number of sprites that can be drawn in one draw call (batch). Indices in a draw call are using
+	 * unsigned short, therefore at most there can be 2^16-1 vertices. Since each sprite uses 4 vertices, there can be
+	 * at most 2^14-1 sprites, so - 16383.
+	 */
+	public static final int MAX_SPRITE_COUNT = 16383;
+
 	/** @deprecated Do not use, this field is for testing only and is likely to be removed. Sets the {@link VertexDataType} to be
 	 *             used when gles 3 is not available, defaults to {@link VertexDataType#VertexArray}. */
 	@Deprecated public static VertexDataType defaultVertexDataType = VertexDataType.VertexArray;
@@ -93,11 +100,10 @@ public class SpriteBatch implements Batch {
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link #createDefaultShader()}.
-	 * @param size The max number of sprites in a single batch. Max of 8191.
+	 * @param size The max number of sprites in a single batch. Max of {@link #MAX_SPRITE_COUNT} (16383).
 	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
-		// 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
-		if (size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
+		if (size > MAX_SPRITE_COUNT) throw new IllegalArgumentException("Can't have more than "+MAX_SPRITE_COUNT+" sprites per batch: " + size);
 
 		VertexDataType vertexDataType = (Gdx.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
 

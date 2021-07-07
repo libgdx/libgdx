@@ -88,7 +88,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		CPU_UV_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset / 4),
 		CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
 		CPU_VERTEX_SIZE = CPU_ATTRIBUTES.vertexSize / 4;
-	private final static int MAX_PARTICLES_PER_MESH = Short.MAX_VALUE / 4, MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH * 4;
+	private final static int MAX_PARTICLES_PER_MESH = 16383, MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH * 4;
 
 	private class RenderablePool extends Pool<Renderable> {
 		public RenderablePool () {
