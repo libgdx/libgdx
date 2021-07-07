@@ -56,9 +56,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> */
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	static final String TAG = "WallpaperService";
 	static boolean DEBUG = false; // TODO remember to disable this
