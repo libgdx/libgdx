@@ -344,6 +344,9 @@ public interface GL30 extends GL20 {
 
 	public void glDrawRangeElements (int mode, int start, int end, int count, int type, int offset);
 
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		int offset);
+
 	// C function void glTexImage3D ( GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei
 // depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels )
 
@@ -355,6 +358,9 @@ public interface GL30 extends GL20 {
 
 	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
 		int type, int offset);
+
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset);
 
 	// C function void glTexSubImage3D ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width,
 // GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels )

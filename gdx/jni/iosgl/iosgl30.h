@@ -41,6 +41,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDraw
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glTexImage2D
+ * Signature: (IIIIIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage2D
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
  * Method:    glTexImage3D
  * Signature: (IIIIIIIIILjava/nio/Buffer;)V
  */
@@ -54,6 +62,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexI
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage3D__IIIIIIIIII
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glTexSubImage2D
+ * Signature: (IIIIIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexSubImage2D
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
