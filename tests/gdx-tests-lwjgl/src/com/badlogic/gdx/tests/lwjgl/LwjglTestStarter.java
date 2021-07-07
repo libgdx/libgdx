@@ -50,7 +50,7 @@ public class LwjglTestStarter extends JFrame {
 	static CommandLineOptions options;
 
 	public LwjglTestStarter () throws HeadlessException {
-		super("libgdx Tests");
+		super("libGDX Tests");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(new TestList());
 		pack();

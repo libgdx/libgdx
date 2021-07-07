@@ -1,5 +1,5 @@
 <project name="gdx" default="all" basedir=".">
-	<description>libgdx distribution build file</description>
+	<description>libGDX distribution build file</description>
 	<property environment="env" />
 
 	<!-- library version -->
@@ -212,10 +212,11 @@
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
-		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true"
+		windowtitle="libGDX API" doctitle="libGDX API" footer="libGDX API"
+			useexternalfile="true"
 		additionalparam="-Xdoclint:none -encoding UTF-8">
 			<header><![CDATA[
-				libgdx API
+				libGDX API
 				<style>
 				body, td, th { font-family:Helvetica, Tahoma, Arial, sans-serif; font-size:10pt }
 				pre, code, tt { font-size:9pt; font-family:Lucida Console, Courier New, sans-serif }

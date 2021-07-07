@@ -99,7 +99,7 @@ public class GdxSetupUI extends JFrame {
 	static SetupPreferences prefs = new SetupPreferences();
 
 	public GdxSetupUI () {
-		setTitle("LibGDX Project Generator");
+		setTitle("libGDX Project Generator");
 		setLayout(new BorderLayout());
 		add(ui, BorderLayout.CENTER);
 		setSize(620, 720);

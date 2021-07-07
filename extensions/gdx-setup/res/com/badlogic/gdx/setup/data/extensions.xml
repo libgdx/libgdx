@@ -160,7 +160,7 @@
 	</extension>
 	<extension>
 		<name>gdx-kiwi</name>
-		<description>Guava-inspired utilities for LibGDX.</description>
+		<description>Guava-inspired utilities for libGDX.</description>
 		<package>com.github.czyzby.kiwi</package>
 		<version>1.9.1.9.6</version>
 		<compatibility>1.9.6</compatibility>

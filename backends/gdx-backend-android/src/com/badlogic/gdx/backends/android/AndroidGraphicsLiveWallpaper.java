@@ -53,7 +53,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	// getHolder in created GLSurfaceView20 instances
 	@Override
 	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
-		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy) {
