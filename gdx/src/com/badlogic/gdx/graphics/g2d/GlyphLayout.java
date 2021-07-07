@@ -49,16 +49,23 @@ public class GlyphLayout implements Poolable {
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
 
-	/** Runs are pooled, references should not be kept past the next call to
-	 * {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String)}. */
+	/** Each run has the glyphs for a line of text.
+	 * <p>
+	 * Runs are pooled, so references should not be kept past the next call to
+	 * {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String)} or {@link #reset()}. */
 	public final Array<GlyphRun> runs = new Array(1);
 
-	/** Colors determines the color changes for glpyhs. It always is a pair of 2 entries:
-	 * ["glyphIndex for color change", "color as rgba8888 int", "glyphIndex for color change", "color as rgba8888 int", ...  ]
-	 * E.g. [0, "WHITE", 4, "GREEN", 5, "WHITE"]: Glpyhs 0 to 3 are WHITE, 4 is GREEN and 5 to end are WHITE.
-	 * Normally has a first entry [0, startColor] */
+	/** Determines the colors of the glpyhs in the {@link #runs}. Entries are pairs where the first is the glyph index (across all
+	 * runs) where the color starts and the second is the color encoded as ABGR8888.
+	 * <p>
+	 * For example: <code>[0, WHITE, 4, GREEN, 5, WHITE]</code><br>
+	 * Glpyhs 0 to 3 are WHITE, 4 is GREEN and 5 to the end are WHITE.
+	 * <p>
+	 * The array is empty if there are no runs, otherwise it has at least two entries: <code>[0, startColor]</code> */
 	public final IntArray colors = new IntArray(2);
-	public int totalGlyphCount = 0; // Current number of glyphs
+
+	/** Number of glyphs across all {@link #runs}. */
+	public int glyphCount;
 
 	public float width, height;
 
@@ -114,10 +121,11 @@ public class GlyphLayout implements Poolable {
 		}
 
 		// Avoid wrapping one line per character, which is very inefficient.
-		boolean wrapOrTruncate = (wrap && targetWidth > fontData.spaceXadvance * 3) || truncate != null;
+		if (wrap) targetWidth = Math.max(targetWidth, fontData.spaceXadvance * 3);
+		boolean wrapOrTruncate = wrap || truncate != null;
 
-		int currentColor = Color.rgba8888(color), nextColor = currentColor;
-		colors.add(0, currentColor);		
+		int currentColor = color.toIntBits(), nextColor = currentColor;
+		colors.add(0, currentColor);
 		boolean markupEnabled = fontData.markupEnabled;
 		if (markupEnabled) colorStack.add(currentColor);
 
@@ -162,22 +170,25 @@ public class GlyphLayout implements Poolable {
 			{
 				// Store the run that has ended.
 				GlyphRun run = glyphRunPool.obtain();
-				fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
 				run.x = 0;
 				run.y = y;
-				totalGlyphCount += run.glyphs.size;
+				fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
+				glyphCount += run.glyphs.size;
+
 				if (nextColor != currentColor) { // Can only be different if markupEnabled.
-					if (colors.get(colors.size - 2) == totalGlyphCount) // Consecutive color changes or after empty run or at beginning of str. 
+					if (colors.get(colors.size - 2) == glyphCount) {
+						// Consecutive color changes, or after an empty run, or at the beginning of the string.
 						colors.set(colors.size - 1, nextColor);
-					else {
-						colors.add(totalGlyphCount);
+					} else {
+						colors.add(glyphCount);
 						colors.add(nextColor);
 					}
 					currentColor = nextColor;
 				}
+
 				if (run.glyphs.size == 0) {
 					glyphRunPool.free(run);
-					if (lineRun == null) break runEnded; // else wrap and truncate must still be processed for lineRun.
+					if (lineRun == null) break runEnded; // Otherwise wrap and truncate must still be processed for lineRun.
 				} else if (lineRun == null) {
 					lineRun = run;
 					runs.add(lineRun);
@@ -196,8 +207,8 @@ public class GlyphLayout implements Poolable {
 
 				if (newline || isLastRun) {
 					// Wrap or truncate. First xadvance is the first glyph's X offset relative to the drawing position.
-					float runWidth = lineRun.xAdvances.first();
-					for (int i = 1; i < lineRun.xAdvances.size; i++) {
+					float runWidth = lineRun.xAdvances.first() + lineRun.xAdvances.get(1); // At least the first glyph will fit.
+					for (int i = 2; i < lineRun.xAdvances.size; i++) {
 						Glyph glyph = lineRun.glyphs.get(i - 1);
 						float glyphWidth = getGlyphWidth(glyph, fontData);
 						if (runWidth + glyphWidth - epsilon <= targetWidth) {
@@ -218,18 +229,16 @@ public class GlyphLayout implements Poolable {
 							|| wrapIndex >= lineRun.glyphs.size) { // Wrap at least the glyph that didn't fit.
 							wrapIndex = i - 1;
 						}
-						GlyphRun next = wrap(fontData, lineRun, wrapIndex);
-						lineRun = next;
-						if (next == null) break runEnded; // All wrapped glyphs were whitespace.
-						runs.add(next);
+						lineRun = wrap(fontData, lineRun, wrapIndex);
+						if (lineRun == null) break runEnded; // All wrapped glyphs were whitespace.
+						runs.add(lineRun);
 
 						y += down;
 						lineRun.x = 0;
 						lineRun.y = y;
 
-						// Start the wrap-loop again, another wrap might be necessary.
-						runWidth = lineRun.xAdvances.first();
-						if (lineRun.xAdvances.size > 1) runWidth += lineRun.xAdvances.get(1);
+						// Start the wrap loop again, another wrap might be necessary.
+						runWidth = lineRun.xAdvances.first() + lineRun.xAdvances.get(1); // At least the first glyph will fit.
 						i = 1;
 					}
 				}
@@ -296,7 +305,7 @@ public class GlyphLayout implements Poolable {
 	/** @param truncate May be empty string. */
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate) {
 		int glyphCount = run.glyphs.size;
-		
+
 		// Determine truncate string size.
 		GlyphRun truncateRun = glyphRunPool.obtain();
 		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
@@ -332,15 +341,18 @@ public class GlyphLayout implements Poolable {
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
 		}
-		run.glyphs.addAll(truncateRun.glyphs);
 
 		int droppedGlyphCount = glyphCount - run.glyphs.size;
-		totalGlyphCount -= droppedGlyphCount;
-
-		if (fontData.markupEnabled && droppedGlyphCount > 0) {
-			while (colors.get(colors.size - 2) >= totalGlyphCount)
-				colors.truncate(colors.size - 2);
+		if (droppedGlyphCount > 0) {
+			this.glyphCount -= droppedGlyphCount;
+			if (fontData.markupEnabled) {
+				while (colors.size > 2 && colors.get(colors.size - 2) >= this.glyphCount)
+					colors.size -= 2;
+			}
 		}
+
+		run.glyphs.addAll(truncateRun.glyphs);
+		this.glyphCount += truncate.length();
 
 		glyphRunPool.free(truncateRun);
 	}
@@ -384,10 +396,10 @@ public class GlyphLayout implements Poolable {
 			int firstGlyphCount = first.glyphs.size; // After wrapping it.
 			int secondGlyphCount = second.glyphs.size;
 			int droppedGlyphCount = glyphCount - firstGlyphCount - secondGlyphCount;
-			totalGlyphCount -= droppedGlyphCount;
+			this.glyphCount -= droppedGlyphCount;
 
 			if (fontData.markupEnabled && droppedGlyphCount > 0) {
-				int reductionThreshold = totalGlyphCount - secondGlyphCount;
+				int reductionThreshold = this.glyphCount - secondGlyphCount;
 				for (int i = colors.size - 2; i >= 2; i -= 2) { // i >= 1 because first 2 values always determine the base color.
 					int colorChangeIndex = colors.get(i);
 					if (colorChangeIndex <= reductionThreshold) break;
@@ -400,13 +412,14 @@ public class GlyphLayout implements Poolable {
 			xAdvances2.truncate(firstEnd + 1);
 
 			int droppedGlyphCount = secondStart - firstEnd;
-			totalGlyphCount -= droppedGlyphCount;
-
-			if (fontData.markupEnabled && droppedGlyphCount > 0) {
-				// As many color changes can be hidden in the dropped whitespace, just keep the last color and remove the other entries.
-				while (colors.get(colors.size - 2) > totalGlyphCount)
-					colors.removeRange(colors.size - 3, colors.size - 2);
-				colors.set(colors.size - 2, totalGlyphCount); // Update color change index.
+			if (droppedGlyphCount > 0) {
+				this.glyphCount -= droppedGlyphCount;
+				if (fontData.markupEnabled) {
+					// Many color changes can be hidden in the dropped whitespace, so keep only the previous color entry.
+					while (colors.get(colors.size - 2) > this.glyphCount)
+						colors.size -= 2;
+					colors.set(colors.size - 2, this.glyphCount); // Update color change index.
+				}
 			}
 		}
 
@@ -440,26 +453,23 @@ public class GlyphLayout implements Poolable {
 		if (start == end) return -1; // String ended with "[".
 		switch (str.charAt(start)) {
 		case '#':
-			// Parse hex color RRGGBBAA where AA is optional and defaults to 0xFF if less than 6 chars are used.
+			// Parse hex color RRGGBBAA to an ABGR int, where AA is optional and defaults to FF if omitted.
 			int color = 0;
 			for (int i = start + 1; i < end; i++) {
 				char ch = str.charAt(i);
 				if (ch == ']') {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
-					if (i - start <= 7) { // RRGGBB or fewer chars.
-						for (int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
-							color = color << 4;
-						color |= 0xff;
-					}
-					colorStack.add(color);
+					if (i - start < 8) color = color << (9 - (i - start) << 2) | 0xff; // RRGGBB or fewer chars.
+					colorStack.add(Integer.reverseBytes(color));
 					return i - start;
 				}
+				color = (color << 4) + ch;
 				if (ch >= '0' && ch <= '9')
-					color = color * 16 + (ch - '0');
-				else if (ch >= 'a' && ch <= 'f')
-					color = color * 16 + (ch - ('a' - 10));
+					color -= '0';
 				else if (ch >= 'A' && ch <= 'F')
-					color = color * 16 + (ch - ('A' - 10));
+					color -= 'A' - 10;
+				else if (ch >= 'a' && ch <= 'f')
+					color -= 'a' - 10;
 				else
 					break; // Unexpected character in hex color.
 			}
@@ -476,7 +486,7 @@ public class GlyphLayout implements Poolable {
 			if (ch != ']') continue;
 			Color color = Colors.get(str.subSequence(start, i).toString());
 			if (color == null) return -1; // Unknown color name.
-			colorStack.add(Color.rgba8888(color));
+			colorStack.add(color.toIntBits());
 			return i - start;
 		}
 		return -1; // Unclosed color tag.
@@ -486,7 +496,7 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.freeAll(runs);
 		runs.clear();
 		colors.clear();
-		totalGlyphCount = 0;
+		glyphCount = 0;
 		width = 0;
 		height = 0;
 	}
@@ -506,19 +516,23 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
-	/** Stores glyphs and positions for a piece of text.
+	/** Stores glyphs and positions for a line of text.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
 		public Array<Glyph> glyphs = new Array();
-		/** Contains glyphs.size+1 entries: First entry is 0 if it is the first/only run in a line. If it is a run to append to another
-		 * run the first entry is the kerning adjusted xAdvance of the previous run's last glyph relative to the first glyph of this run.
-		 * Subsequent entries are the X advance relative to previous glyph position. Last entry is the width of the last glyph. */
+
+		/** Contains glyphs.size+1 entries:<br>
+		 * The first entry is the X offset relative to the drawing position.<br>
+		 * Subsequent entries are the X advance relative to previous glyph position.<br>
+		 * The last entry is the width of the last glyph. */
 		public FloatArray xAdvances = new FloatArray();
+
 		public float x, y, width;
 
 		void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
-			if (xAdvances.notEmpty()) xAdvances.pop(); // First xadvance of append-run applies kerning to this run's last glyphs xadvance.
+			// Remove the width of the last glyph. The first xadvance of the appended run has kerning for the last glyph of this run.
+			if (xAdvances.notEmpty()) xAdvances.size--;
 			xAdvances.addAll(run.xAdvances);
 		}
 

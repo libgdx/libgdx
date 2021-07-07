@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.Pools;
@@ -311,7 +310,7 @@ public class BitmapFontCache {
 	private void requireGlyphs (GlyphLayout layout) {
 		if (pageVertices.length == 1) {
 			// Simple if we just have one page.
-			requirePageGlyphs(0, layout.totalGlyphCount);
+			requirePageGlyphs(0, layout.glyphCount);
 		} else {
 			int[] tempGlyphCount = this.tempGlyphCount;
 			for (int i = 0, n = tempGlyphCount.length; i < n; i++)
@@ -346,6 +345,9 @@ public class BitmapFontCache {
 	}
 
 	private void addToCache (GlyphLayout layout, float x, float y) {
+		int runCount = layout.runs.size;
+		if (runCount == 0) return;
+
 		// Check if the number of font pages has changed.
 		int pageCount = font.regions.size;
 		if (pageVertices.length < pageCount) {
@@ -377,18 +379,18 @@ public class BitmapFontCache {
 		int nextColorChangeGlyphIndex = colors.get(colorsIndex);
 		float lastColorFloatBits = Float.MAX_VALUE;
 		int glyphIndex = 0;
-		for (int i = 0, n = layout.runs.size; i < n; i++) {
+		for (int i = 0; i < runCount; i++) {
 			GlyphRun run = layout.runs.get(i);
-			Array<Glyph> glyphs = run.glyphs;
-			FloatArray xAdvances = run.xAdvances;
+			Object[] glyphs = run.glyphs.items;
+			float[] xAdvances = run.xAdvances.items;
 			float gx = x + run.x, gy = y + run.y;
-			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
+			for (int ii = 0, nn = run.glyphs.size; ii < nn; ii++) {
 				if (glyphIndex++ == nextColorChangeGlyphIndex) {
-					lastColorFloatBits = tempColor.set(colors.get(++colorsIndex)).toFloatBits();
+					lastColorFloatBits = NumberUtils.intToFloatColor(colors.get(++colorsIndex));
 					nextColorChangeGlyphIndex = ++colorsIndex < colors.size ? colors.get(colorsIndex) : -1;
 				}
-				Glyph glyph = glyphs.get(ii);
-				gx += xAdvances.get(ii);
+				Glyph glyph = (Glyph)glyphs[ii];
+				gx += xAdvances[ii];
 				addGlyph(glyph, gx, gy, lastColorFloatBits);
 			}
 		}
