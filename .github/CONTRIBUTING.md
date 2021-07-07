@@ -67,7 +67,7 @@ provide as much detail and context as possible.
 Contributing to libGDX is easy:
 
   * Fork libGDX on [`http://github.com/libgdx/libgdx`](http://github.com/libgdx/libgdx)
-  * Learn how to [Work with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
+  * Learn how to [Work with the Source](https://libgdx.com/dev/from-source/)
   * Hack away, and send a pull request on GitHub!
 
 ### API Changes & Additions
