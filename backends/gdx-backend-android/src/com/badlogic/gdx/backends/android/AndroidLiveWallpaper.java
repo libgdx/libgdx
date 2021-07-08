@@ -59,7 +59,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		if (this.getVersion() < MINIMUM_SDK) {
-			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+			throw new GdxRuntimeException("libGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
 		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());

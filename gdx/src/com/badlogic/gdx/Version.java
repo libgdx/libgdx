@@ -18,20 +18,20 @@ package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** The version of libgdx
+/** The version of libGDX
  * 
  * @author mzechner */
 public class Version {
-	/** the current version of libgdx as a String in the major.minor.revision format **/
+	/** The current version of libGDX as a String in the major.minor.revision format **/
 	public static final String VERSION = "1.10.1";
 
-	/** the current major version of libgdx **/
+	/** The current major version of libGDX **/
 	public static final int MAJOR;
 
-	/** the current minor version of libgdx **/
+	/** The current minor version of libGDX **/
 	public static final int MINOR;
 
-	/** the current revision version of libgdx **/
+	/** The current revision version of libGDX **/
 	public static final int REVISION;
 
 	static {
