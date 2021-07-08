@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -53,7 +54,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
- * 
+ *
  * @author mzechner */
 /** @author jshapcot */
 public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
@@ -200,7 +201,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		return gyroscopeValues[0];
@@ -232,7 +233,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					input.setInputType(getAndroidInputType(keyboardType));
 				}
 				input.setHint(hint);
-				input.setText(text);				
+				input.setText(text);
 				input.setSingleLine();
 				if (keyboardType == OnscreenKeyboardType.Password) {
 					input.setTransformationMethod(new PasswordTransformationMethod());
@@ -552,7 +553,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			if (e.getKeyCode() < 0 || e.getKeyCode() > Keys.MAX_KEYCODE) {
 				return false;
 			}
-			
+
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
@@ -641,6 +642,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -649,6 +651,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void vibrate (long[] pattern, int repeat) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
@@ -657,6 +660,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
+	@SuppressLint("MissingPermission")
 	public void cancelVibrate () {
 		vibrator.cancel();
 	}
@@ -750,7 +754,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			}
 		} else
 			accelerometerAvailable = false;
-		
+
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty()) {
@@ -782,7 +786,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 						config.sensorDelay);
 			}
 		}
-		
+
 		if (config.useCompass && !rotationVectorAvailable) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -1011,9 +1015,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
 	private class SensorListener implements SensorEventListener {
-		
+
 		public SensorListener (){
-			
+
 		}
 
 		@Override

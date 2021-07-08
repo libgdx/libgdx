@@ -44,7 +44,7 @@ allprojects {
     }
 }
 
-configure(subprojects - project(":tests:gdx-tests-android")) {
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
     apply plugin: "idea"
     apply plugin: "java"
 
@@ -55,7 +55,7 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
 }
 
 ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName    
+    "ant-task-" + antTargetName
 }
 task fetchNatives(dependsOn: "ant-task-all"){
     doLast {
