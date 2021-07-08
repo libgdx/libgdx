@@ -488,6 +488,15 @@ public class Color {
 		color.b = ((value & 0x000000ff)) / 255f;
 	}
 
+	/** Sets the Color components using the specified integer value in the format ABGR8888.
+	 * @param color The Color to be modified. */
+	public static void abgr8888ToColor (Color color, int value) {
+		color.a = ((value & 0xff000000) >>> 24) / 255f;
+		color.b = ((value & 0x00ff0000) >>> 16) / 255f;
+		color.g = ((value & 0x0000ff00) >>> 8) / 255f;
+		color.r = ((value & 0x000000ff)) / 255f;
+	}
+
 	/** Sets the Color components using the specified float value in the format ABGR8888.
 	 * @param color The Color to be modified. */
 	public static void abgr8888ToColor (Color color, float value) {
