@@ -155,7 +155,10 @@ public class GlyphLayout implements Poolable {
 						if (length >= 0) {
 							runEnd = start - 1;
 							start += length + 1;
-							nextColor = colorStack.peek();
+							if (start == end)
+								isLastRun = true; // Color tag is the last element in the string.
+							else
+								nextColor = colorStack.peek();
 							break;
 						}
 						if (length == -2) start++; // Skip first of "[[" escape sequence.
