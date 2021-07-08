@@ -104,7 +104,7 @@ public class BitmapFontTest extends GdxTest {
 			font.getData().setScale(2f);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			renderer.setColor(0, 1, 0, 1);
-			float w = Gdx.input.getX();
+			float w = Gdx.input.getX() - 10;
 			// w = 855;
 			renderer.rect(10, 10, w, 500);
 			renderer.end();
@@ -112,10 +112,10 @@ public class BitmapFontTest extends GdxTest {
 			spriteBatch.begin();
 			String text = "your new";
 			// text = "How quickly da[RED]ft jumping zebras vex.";
-			// text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
+			// text = "Another font wrap is-sue, this time with multiple whitespace characters.";
 			// text = "test with AGWlWi AGWlWi issue";
 			// text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
-			text = "AA BB [RED]EE[] T [GREEN]e[] \n\nV[YELLOW]a bb[] ([CYAN]5[]FFF)";
+			text = "[BLUE]A[]A BB [#00f000]EE[] T [GREEN]e[]   \r\r[PINK]\n[]\nV[YELLOW]a bb[] ([CYAN]5[]FFFurz)\nV[PURPLE]a[]\nVa\n[PURPLE]V[]a";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.

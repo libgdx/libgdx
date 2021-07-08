@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.Pools;
@@ -118,18 +117,26 @@ public class BitmapFontCache {
 
 		for (int i = 0, n = layouts.size; i < n; i++) {
 			GlyphLayout layout = layouts.get(i);
+			final IntArray colors = layout.colors;
+			int colorsIndex = 0; // Current index of colors
+			int nextColorChangeGlyphIndex = colors.get(colorsIndex);
+			float lastColorFloatBits = Float.MAX_VALUE;
+			int glyphIndex = 0;
 			for (int ii = 0, nn = layout.runs.size; ii < nn; ii++) {
 				GlyphRun run = layout.runs.get(ii);
 				Array<Glyph> glyphs = run.glyphs;
-				float colorFloat = tempColor.set(run.color).mul(tint).toFloatBits();
 				for (int iii = 0, nnn = glyphs.size; iii < nnn; iii++) {
+					if (glyphIndex++ == nextColorChangeGlyphIndex) {
+						lastColorFloatBits = tempColor.set(colors.get(++colorsIndex)).mul(tint).toFloatBits();
+						nextColorChangeGlyphIndex = ++colorsIndex < colors.size ? colors.get(colorsIndex) : -1;
+					}
 					Glyph glyph = glyphs.get(iii);
 					int page = glyph.page;
 					int offset = tempGlyphCount[page] * 20 + 2;
 					tempGlyphCount[page]++;
 					float[] vertices = pageVertices[page];
 					for (int v = 0; v < 20; v += 5)
-						vertices[offset + v] = colorFloat;
+						vertices[offset + v] = lastColorFloatBits;
 				}
 			}
 		}
@@ -302,11 +309,8 @@ public class BitmapFontCache {
 
 	private void requireGlyphs (GlyphLayout layout) {
 		if (pageVertices.length == 1) {
-			// Simpler counting if we just have one page.
-			int newGlyphCount = 0;
-			for (int i = 0, n = layout.runs.size; i < n; i++)
-				newGlyphCount += layout.runs.get(i).glyphs.size;
-			requirePageGlyphs(0, newGlyphCount);
+			// Simple if we just have one page.
+			requirePageGlyphs(0, layout.glyphCount);
 		} else {
 			int[] tempGlyphCount = this.tempGlyphCount;
 			for (int i = 0, n = tempGlyphCount.length; i < n; i++)
@@ -341,6 +345,9 @@ public class BitmapFontCache {
 	}
 
 	private void addToCache (GlyphLayout layout, float x, float y) {
+		int runCount = layout.runs.size;
+		if (runCount == 0) return;
+
 		// Check if the number of font pages has changed.
 		int pageCount = font.regions.size;
 		if (pageVertices.length < pageCount) {
@@ -367,16 +374,24 @@ public class BitmapFontCache {
 
 		layouts.add(layout);
 		requireGlyphs(layout);
-		for (int i = 0, n = layout.runs.size; i < n; i++) {
+		final IntArray colors = layout.colors;
+		int colorsIndex = 0; // Current index of colors
+		int nextColorChangeGlyphIndex = colors.get(colorsIndex);
+		float lastColorFloatBits = Float.MAX_VALUE;
+		int glyphIndex = 0;
+		for (int i = 0; i < runCount; i++) {
 			GlyphRun run = layout.runs.get(i);
-			Array<Glyph> glyphs = run.glyphs;
-			FloatArray xAdvances = run.xAdvances;
-			float color = run.color.toFloatBits();
+			Object[] glyphs = run.glyphs.items;
+			float[] xAdvances = run.xAdvances.items;
 			float gx = x + run.x, gy = y + run.y;
-			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
-				Glyph glyph = glyphs.get(ii);
-				gx += xAdvances.get(ii);
-				addGlyph(glyph, gx, gy, color);
+			for (int ii = 0, nn = run.glyphs.size; ii < nn; ii++) {
+				if (glyphIndex++ == nextColorChangeGlyphIndex) {
+					lastColorFloatBits = NumberUtils.intToFloatColor(colors.get(++colorsIndex));
+					nextColorChangeGlyphIndex = ++colorsIndex < colors.size ? colors.get(colorsIndex) : -1;
+				}
+				Glyph glyph = (Glyph)glyphs[ii];
+				gx += xAdvances[ii];
+				addGlyph(glyph, gx, gy, lastColorFloatBits);
 			}
 		}
 
