@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -149,7 +150,9 @@ public class ImageProcessor {
 
 		if (image.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
 			BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-			newImage.getGraphics().drawImage(image, 0, 0, null);
+			Graphics2D g = (Graphics2D)newImage.getGraphics();
+			g.setComposite(AlphaComposite.Src);
+			g.drawImage(image, 0, 0, null);
 			image = newImage;
 		}
 
@@ -165,7 +168,9 @@ public class ImageProcessor {
 			width -= 2;
 			height -= 2;
 			BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-			newImage.getGraphics().drawImage(image, 0, 0, width, height, 1, 1, width + 1, height + 1, null);
+			Graphics2D g = (Graphics2D)newImage.getGraphics();
+			g.setComposite(AlphaComposite.Src);
+			g.drawImage(image, 0, 0, width, height, 1, 1, width + 1, height + 1, null);
 			image = newImage;
 		}
 
@@ -175,10 +180,11 @@ public class ImageProcessor {
 			width = Math.max(1, Math.round(width * scale));
 			height = Math.max(1, Math.round(height * scale));
 			BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.setComposite(AlphaComposite.Src);
 			if (scale < 1) {
-				newImage.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);
+				g.drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);
 			} else {
-				Graphics2D g = (Graphics2D)newImage.getGraphics();
 				g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, resampling.value);
 				g.drawImage(image, 0, 0, width, height, null);
@@ -442,8 +448,10 @@ public class ImageProcessor {
 			int width = image.getWidth();
 			int height = image.getHeight();
 			if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
-				BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				newImage.getGraphics().drawImage(image, 0, 0, null);
+				BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = (Graphics2D)newImage.getGraphics();
+				g.setComposite(AlphaComposite.Src);
+				g.drawImage(image, 0, 0, null);
 				image = newImage;
 			}
 

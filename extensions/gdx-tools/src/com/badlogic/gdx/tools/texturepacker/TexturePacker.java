@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -46,9 +47,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Null;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /** @author Nathan Sweet */
@@ -335,7 +333,9 @@ public class TexturePacker {
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg")) {
 					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-					newImage.getGraphics().drawImage(canvas, 0, 0, null);
+					Graphics2D g2 = (Graphics2D) newImage.getGraphics();
+					g2.setComposite(AlphaComposite.Src);
+					g2.drawImage(canvas, 0, 0, null);
 					canvas = newImage;
 
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
