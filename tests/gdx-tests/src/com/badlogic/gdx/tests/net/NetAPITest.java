@@ -113,7 +113,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					else if (clickedButton == btnDownloadError)
 						url = "https://www.badlogicgames.com/doesnotexist";
 					else if (clickedButton == btnOpenUri) {
-						Gdx.net.openURI("https://libgdx.badlogicgames.com/");
+						Gdx.net.openURI("https://libgdx.com");
 						return;
 					}
 					else {

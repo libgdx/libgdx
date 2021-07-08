@@ -119,6 +119,17 @@ public class Polygon implements Shape2D {
 		dirty = true;
 	}
 
+	 /** Set vertex position
+	  * @param vertexNum min=0, max=vertices.length/2-1
+	  * @throws IllegalArgumentException if vertex doesnt exist */
+	 public void setVertex (int vertexNum, float x, float y) {
+		  if (vertexNum < 0 || vertexNum > localVertices.length / 2 - 1)
+				throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
+		  localVertices[2 * vertexNum] = x;
+		  localVertices[2 * vertexNum + 1] = y;
+		  dirty = true;
+	 }
+
 	/** Translates the polygon's position by the specified horizontal and vertical amounts. */
 	public void translate (float x, float y) {
 		this.x += x;
@@ -162,6 +173,23 @@ public class Polygon implements Shape2D {
 		float[] vertices = getTransformedVertices();
 		return GeometryUtils.polygonArea(vertices, 0, vertices.length);
 	}
+
+	 public int getVertexCount(){
+		  return this.localVertices.length / 2;
+	 }
+	 
+	 /** @return Position(transformed) of vertex */
+	 public Vector2 getVertex (int vertexNum, Vector2 pos) {
+		  if (vertexNum < 0 || vertexNum > getVertexCount())
+				throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
+		  float[] vertices = this.getTransformedVertices();
+		  return pos.set(vertices[2 * vertexNum], vertices[2 * vertexNum + 1]);
+	 }
+
+	 public Vector2 getCentroid(Vector2 centroid){
+		  float[] vertices = getTransformedVertices();
+		  return GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
+	 }
 
 	/** Returns an axis-aligned bounding box of this polygon.
 	 * 

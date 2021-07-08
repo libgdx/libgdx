@@ -347,6 +347,32 @@ public final class Intersector {
 		return v2a.len2() <= circle.radius * circle.radius;
 	}
 
+	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
+	 * @param frustum The frustum
+	 * @param bounds The bounding box
+	 * @return Whether the frustum intersects the bounding box*/
+	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
+		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner001(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner010(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner011(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner100(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner101(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner110(tmp)) ||
+				frustum.pointInFrustum(bounds.getCorner111(tmp));
+
+		if (boundsIntersectsFrustum) {
+			return true;
+		}
+
+		boolean frustumIsInsideBounds = false;
+		for (Vector3 point : frustum.planePoints) {
+			frustumIsInsideBounds |= bounds.contains(point);
+		}
+
+		return frustumIsInsideBounds;
+	}
+
 	/** Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point. You can get the
 	 * intersection point by: Vector2 point(direction1).scl(scalar).add(start1); For more information, check:
 	 * http://stackoverflow.com/a/565282/1091440
