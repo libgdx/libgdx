@@ -389,5 +389,5 @@ jobs:
       - name: Upload artifacts to S3                  
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
-          aws s3 cp ./extensions/gdx-tools/build/libs/* s3://libgdx-nightlies/libgdx-runnables/
+          aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
 
