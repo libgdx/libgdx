@@ -187,17 +187,16 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		// Add tiles with individual image sources
 		for (Element tileElement : tileElements) {
-			int tileId = firstgid + tileElement.getIntAttribute("id", 0);
-			TiledMapTile tile = tileSet.getTile(tileId);
+			int tileId = tileElement.getIntAttribute("id", 0);
+			int tileGid = firstgid + tileId;
+			TiledMapTile tile = tileSet.getTile(tileGid);
 			if (tile == null) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
-					String regionName = imageElement.getAttribute("source");
-					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
-					AtlasRegion region = atlas.findRegion(regionName);
+					TextureRegion region = atlas.findRegion(regionsName, tileId);
 					if (region == null)
-						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
-					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
+						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionsName);
+					addStaticTiledMapTile(tileSet, region, tileGid, offsetX, offsetY);
 				}
 			}
 		}
