@@ -26,6 +26,10 @@ public class StaticTiledMapTile implements TiledMapTile {
 
 	private int id;
 
+	private String type;
+
+	private float probability;
+
 	private BlendMode blendMode = BlendMode.ALPHA;
 
 	private MapProperties properties;
@@ -47,6 +51,18 @@ public class StaticTiledMapTile implements TiledMapTile {
 	public void setId (int id) {
 		this.id = id;
 	}
+
+	@Override
+	public String getType () { return type; }
+
+	@Override
+	public void setType (String type) { this.type = type; }
+
+	@Override
+	public float getProbability () { return probability; }
+
+	@Override
+	public void setProbability (float probability) { this.probability = probability; }
 
 	@Override
 	public BlendMode getBlendMode () {

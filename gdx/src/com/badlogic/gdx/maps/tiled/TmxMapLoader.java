@@ -201,7 +201,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				}
 				TextureRegion texture = imageResolver.getImage(image.path());
 				int tileId = firstgid + tileElement.getIntAttribute("id");
-				addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
+				addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY, tileElement);
 			}
 		}
 	}
