@@ -141,7 +141,7 @@ public class ParticleEmitterTest extends GdxTest {
 		if (fpsCounter > 3) {
 			fpsCounter = 0;
 			int activeCount = emitters.get(emitterIndex).getActiveCount();
-			Gdx.app.log("libgdx", activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
+			Gdx.app.log("libGDX", activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
 	}
 

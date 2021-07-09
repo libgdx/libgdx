@@ -8,7 +8,7 @@
 [![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://libgdx.com/community/discord/)
 
 ## Cross-platform Game Development Framework
-**[libGDX](https://libgdx.com) is a cross-platform Java game development framework based on OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, iOS and your WebGL enabled browser.** It provides a well-tried and robust environment for rapid prototyping and fast iterations. LibGDX does not force a specific design or coding style on you, it rather gives you the freedom to create a game the way you like it.
+**[libGDX](https://libgdx.com) is a cross-platform Java game development framework based on OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, iOS and your WebGL enabled browser.** It provides a well-tried and robust environment for rapid prototyping and fast iterations. libGDX does not force a specific design or coding style on you, it rather gives you the freedom to create a game the way you like it.
 
 ## Open Source, Feature Packed and Offering a Big Third-Party Ecosystem
 libGDX is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) meaning you can use it free of charge, without strings attached in commercial and non-commercial projects. We, however, love to get (non-mandatory) credit in case you release a game or app using libGDX! See our [showcase](https://libgdx.com/showcase/) for a selection of some popular libGDX games. libGDX comes with [batteries included](https://libgdx.com/features/) and provides everything required to develop multi-platform 2D and 3D games with Java.

@@ -47,7 +47,7 @@ public class BitmapFontWriter {
 	/** The output format */
 	private static OutputFormat format = OutputFormat.Text;
 
-	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for LibGDX) or XML (for other engines, like
+	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for libGDX) or XML (for other engines, like
 	 * Pixi.js).
 	 * 
 	 * @param fmt the output format to use */
@@ -82,7 +82,7 @@ public class BitmapFontWriter {
 		public int horizontal, vertical;
 	}
 
-	/** The font "info" line; everything except padding and override metrics are ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
+	/** The font "info" line; everything except padding and override metrics are ignored by libGDX's BitmapFont reader, it is otherwise just useful for
 	 * clean and organized output. */
 	public static class FontInfo {
 		/** Face name */
@@ -155,10 +155,10 @@ public class BitmapFontWriter {
 	 * texture page. The glyphs in BitmapFontData have a "page" id, which references the index of the pageRef you specify here.
 	 * 
 	 * The FontInfo parameter is useful for cleaner output; such as including a size and font face name hint. However, it can be
-	 * null to use default values. LibGDX ignores most of the "info" line when reading back fonts, only padding is used. Padding
+	 * null to use default values. libGDX ignores most of the "info" line when reading back fonts, only padding is used. Padding
 	 * also affects the size, location, and offset of the glyphs that are output.
 	 * 
-	 * Likewise, the scaleW and scaleH are only for cleaner output. They are currently ignored by LibGDX's reader. For maximum
+	 * Likewise, the scaleW and scaleH are only for cleaner output. They are currently ignored by libGDX's reader. For maximum
 	 * compatibility with other BMFont tools, you should use the width and height of your texture pages (each page should be the
 	 * same size).
 	 * 

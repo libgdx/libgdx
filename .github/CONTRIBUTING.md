@@ -67,7 +67,7 @@ provide as much detail and context as possible.
 Contributing to libGDX is easy:
 
   * Fork libGDX on [`http://github.com/libgdx/libgdx`](http://github.com/libgdx/libgdx)
-  * Learn how to [Work with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
+  * Learn how to [Work with the Source](https://libgdx.com/dev/from-source/)
   * Hack away, and send a pull request on GitHub!
 
 ### API Changes & Additions
@@ -77,7 +77,7 @@ If you want to poll the brains of other devs, either send a pull request and sta
 
 ### Contributor License Agreement
 
-Libgdx is licensed under the [Apache 2.0 license](http://en.wikipedia.org/wiki/Apache_License). Before we can accept code contributions, we need you to sign our [contributor license agreement](https://github.com/libgdx/libgdx/blob/master/CLA.txt). Just print it out, fill in the blanks and send a copy to [`contact@badlogicgames.com`](mailto:contact@badlogicgames.com?subject=[LibGDX]%20CLA), with the subject `[Libgdx] CLA`.
+libGDX is licensed under the [Apache 2.0 license](http://en.wikipedia.org/wiki/Apache_License). Before we can accept code contributions, we need you to sign our [contributor license agreement](https://github.com/libgdx/libgdx/blob/master/CLA.txt). Just print it out, fill in the blanks and send a copy to [`contact@badlogicgames.com`](mailto:contact@badlogicgames.com?subject=[libGDX]%20CLA), with the subject `[libGDX] CLA`.
 
 Signing the CLA will allow us to use and distribute your code. This is a non-exclusive license, so you retain all rights to your code. It's a fail-safe for us should someone contribute essential code and later decide to take it back.
 
@@ -91,7 +91,7 @@ If you are using IntelliJ IDEA, you can still make use of the eclipse code forma
 
 ### Code Style
 
-LibGDX does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html), and so should you.
+libGDX does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html), and so should you.
 
 A few things we'd rather not like to see:
 
@@ -111,7 +111,7 @@ If your class is explicitly thread-safe, mention it in the Javadoc. The default 
 
 ### Performance Considerations
 
-LibGDX is meant to run on both desktop and mobile platforms, including browsers (JavaScript!). While the desktop HotSpot VM can take quite a beating in terms of unnecessary allocations, Dalvik and consorts don't.
+libGDX is meant to run on both desktop and mobile platforms, including browsers (JavaScript!). While the desktop HotSpot VM can take quite a beating in terms of unnecessary allocations, Dalvik and consorts don't.
 
 A couple of guidelines:
 
@@ -129,4 +129,4 @@ Most of the libGDX team members are Git novices. As such, we are just learning t
 
 We do open new branches for bigger API changes. If you help out with a new API, make sure your pull request targets that specific branch.
 
-Pull requests for the master repository will be checked by multiple core contributors before inclusion. We may reject your pull request to `master` if we do not deem them to be ready or fitting. Please don't take offense in that case. LibGDX is used by thousands of projects around the world. We need to make sure things stay somewhat sane and stable.
+Pull requests for the master repository will be checked by multiple core contributors before inclusion. We may reject your pull request to `master` if we do not deem them to be ready or fitting. Please don't take offense in that case. libGDX is used by thousands of projects around the world. We need to make sure things stay somewhat sane and stable.
