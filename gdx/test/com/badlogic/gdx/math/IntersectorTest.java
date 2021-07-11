@@ -3,6 +3,8 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -184,5 +186,16 @@ public class IntersectorTest {
 		assertEquals(-102.63903f, intersection.x, 0.1f);
 		assertEquals(-57.7337f, intersection.y, 0.1f);
 		assertEquals(100, intersection.z, 0.1f);
+	}
+
+	@Test
+	public void testIntersectRayAABBDegenerated() {
+		Vector3 bottomLeft = new Vector3(3f, 3f, 0f);
+		Vector3 topRight = new Vector3(4f, 4f, 0f);
+		//Bounding box from (3,3) to (4,4)
+		BoundingBox boundingBox = new BoundingBox(bottomLeft, topRight);
+		//Ray from (0,0), direction (1,1)
+		Ray ray = new Ray(Vector3.Zero, new Vector3(1f, 1f, 0f).nor());
+		assertTrue(Intersector.intersectRayBoundsFast(ray, boundingBox));
 	}
 }
