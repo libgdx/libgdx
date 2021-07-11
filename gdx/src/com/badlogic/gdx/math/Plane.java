@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+
 import java.io.Serializable;
 
 /** A plane defined via a unit length normal and the distance from the origin, as you learned in your math class.
@@ -132,6 +134,50 @@ public class Plane implements Serializable {
 			return PlaneSide.Back;
 		else
 			return PlaneSide.Front;
+	}
+
+	/** Returns on which side the given bounds lies relative to the plane and its normal. PlaneSide.Front refers to the side the
+	 * plane normal points to.
+	 *
+	 * @param boundingBox The box
+	 * @return The side the bounds lies relative to the plane */
+	public PlaneSide testBounds (BoundingBox boundingBox) {
+		return testBounds(boundingBox.getCenterX(),
+				boundingBox.getCenterY(),
+				boundingBox.getCenterZ(),
+				boundingBox.getWidth() * 0.5f,
+				boundingBox.getHeight() * 0.5f,
+				boundingBox.getDepth() * 0.5f);
+	}
+
+	/** Returns on which side the given bounds lies relative to the plane and its normal. PlaneSide.Front refers to the side the
+	 * plane normal points to.
+	 *
+	 * Code adapted from Christer Ericson's Real Time Collision
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param halfWidth
+	 * @param halfHeight
+	 * @param halfDepth
+	 * @return The side the bounds lies relative to the plane */
+	public PlaneSide testBounds (float x, float y, float z, float halfWidth, float halfHeight, float halfDepth) {
+		// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
+		float radius = halfWidth * Math.abs(normal.x) +
+				halfHeight * Math.abs(normal.y) +
+				halfDepth * Math.abs(normal.z);
+
+		// Compute distance of box center from plane
+		float dist = normal.dot(x, y, z) + d;
+
+		// Intersection occurs when plane distance falls within [-r,+r] interval
+		if (dist > radius) {
+			return PlaneSide.Front;
+		} else if (dist < -radius) {
+			return PlaneSide.Back;
+		}
+		return PlaneSide.OnPlane;
 	}
 
 	/** Returns whether the plane is facing the direction vector. Think of the direction vector as the direction a camera looks in.
