@@ -88,7 +88,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3AWTCanvas;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -127,7 +127,7 @@ public class Hiero extends JFrame {
 	JTextPane sampleTextPane;
 	JSpinner padAdvanceXSpinner;
 	JList effectsList;
-	LwjglCanvas rendererCanvas;
+	Lwjgl3AWTCanvas rendererCanvas;
 	JPanel gamePanel;
 	JTextField fontFileText;
 	JRadioButton fontFileRadio;
@@ -179,7 +179,7 @@ public class Hiero extends JFrame {
 		initialize();
 		splash.close();
 
-		rendererCanvas = new LwjglCanvas(new Renderer());
+		rendererCanvas = new Lwjgl3AWTCanvas(new Renderer());
 		gamePanel.add(rendererCanvas.getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero.class);
@@ -1269,7 +1269,7 @@ public class Hiero extends JFrame {
 			});
 
 			updateValues();
-			updateFont();
+			rendererCanvas.getCanvas().runInContext(Hiero.this::updateFont);
 			updateUpDownButtons();
 		}
 

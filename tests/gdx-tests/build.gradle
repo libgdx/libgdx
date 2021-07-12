@@ -19,5 +19,4 @@ dependencies {
     compile project(":extensions:gdx-box2d-parent:gdx-box2d")
     compile project(":extensions:gdx-bullet")
     compile project(":extensions:gdx-freetype")
-    compileOnly project(":extensions:gdx-tools")
 }

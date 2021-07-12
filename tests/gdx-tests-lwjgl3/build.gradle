@@ -26,6 +26,7 @@ dependencies {
     compile project(":tests:gdx-tests")
     compile project(":backends:gdx-backend-lwjgl3")
     compile testnatives.desktop
+    compileOnly project(":extensions:gdx-tools")
 }
 
 task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {

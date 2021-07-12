@@ -305,6 +305,12 @@
     -->
 
     <dependency>
+      <groupId>org.lwjglx</groupId>
+      <artifactId>lwjgl3-awt</artifactId>
+      <version>0.1.8</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.badlogicgames.jlayer</groupId>
       <artifactId>jlayer</artifactId>
       <version>1.0.1-gdx</version>

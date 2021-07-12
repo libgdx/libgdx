@@ -12,7 +12,10 @@
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
     <property name="lwjgl-version" value="3.2.3"/>
-    
+
+    <property name="lwjgl-awt" value="https://repo.maven.apache.org/maven2/org/lwjglx"/>
+    <property name="lwjgl-awt-version" value="0.1.8"/>
+
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
         <parallel>
@@ -79,6 +82,9 @@
             <!--<get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-macos-arm64.jar"/>-->
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-windows-x86.jar"/>
+            <!-- lwjgl-jawt -->
+            <get src="${lwjgl}/lwjgl-jawt/${lwjgl-version}/lwjgl-jawt-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jawt.jar"/>
+            <get src="${lwjgl-awt}/lwjgl3-awt/${lwjgl-awt-version}/lwjgl3-awt-${lwjgl-awt-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-awt.jar"/>
         </parallel>
     </target>
 
