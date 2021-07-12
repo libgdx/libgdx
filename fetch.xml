@@ -7,6 +7,11 @@
 
     <property name="robovm-version" value="2.3.12"/>
 
+    <property name="moe" value="https://oss.sonatype.org/service/local/repositories/snapshots/content/org/multi-os-engine/moe-sdk/"/>
+    <property name="moe-version" value="2.0.0-SNAPSHOT"/>
+    <!--Temporary-->
+    <property name="moe-version-snapshot" value="moe-sdk-2.0.0-20210519.092848-3"/>
+
     <property name="jnigen" value="https://oss.sonatype.org/content/repositories/releases/com/badlogicgames/gdx"/>
     <property name="jnigen-version" value="2.2.0"/>
 
@@ -21,6 +26,18 @@
             <get src="${robovm}/robovm-objc/${robovm-version}/robovm-objc-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-objc.jar"/>
             <get src="${robovm}/robovm-rt/${robovm-version}/robovm-rt-${robovm-version}.jar" dest="backends/gdx-backend-robovm/libs/robovm-rt.jar"/>
         </parallel>
+    </target>
+
+    <target name="fetch-moe">
+        <mkdir dir="backends/gdx-backend-moe/libs/"/>
+        <get src="${moe}/${moe-version}/${moe-version-snapshot}.zip" dest="./"/>
+        <mkdir dir="${moe-version-snapshot}/"/>
+        <unzip src="${moe-version-snapshot}.zip" dest="${moe-version-snapshot}/"/>
+
+        <copyfile forceoverwrite="true" src="${moe-version-snapshot}/sdk/moe-core.jar" dest="backends/gdx-backend-moe/libs/moe-core.jar"/>
+        <copyfile forceoverwrite="true" src="${moe-version-snapshot}/sdk/moe-ios.jar" dest="backends/gdx-backend-moe/libs/moe-ios.jar"/>
+        <delete dir="${moe-version-snapshot}"/>
+        <delete file="${moe-version-snapshot}.zip"/>
     </target>
 
     <target name="fetch-lwjgl3">
@@ -119,7 +136,8 @@
         <parallel>
             <antcall target="fetch-gdx"/>
             <antcall target="fetch-robovm"/>
-            <antcall target="fetch-lwjgl3"/>  
+            <antcall target="fetch-lwjgl3"/>
+            <antcall target="fetch-moe"/>
         </parallel>
     </target>
 </project>

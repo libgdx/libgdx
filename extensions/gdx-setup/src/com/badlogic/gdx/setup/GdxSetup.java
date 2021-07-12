@@ -230,11 +230,12 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
+			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs, String graalVMLocation) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
 		String sdkPath = sdkLocation.replace('\\', '/');
+		String graalVM = graalVMLocation.replace('\\', '/');
 
 		if (!isSdkLocationValid(sdkLocation)) {
 			System.out.println("Android SDK location '" + sdkLocation + "' doesn't contain an SDK");
@@ -334,6 +335,48 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
 		}
 
+		if(builder.modules.contains(ProjectType.IOSMOE)) {
+			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
+
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/Contents.json", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/Contents.json", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
+			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
+			project.files.add(new ProjectFile("local.properties", true));
+		}
+
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%APP_NAME_ESCAPED%", appName.replace("'", "\\'"));
@@ -342,6 +385,7 @@ public class GdxSetup {
 		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
 		values.put("%ANDROID_SDK%", sdkPath);
+		values.put("%GRAALVM_HOME%", graalVM);
 		values.put("%ASSET_PATH%", assetPath);
 		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
@@ -357,6 +401,10 @@ public class GdxSetup {
 
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
+
+		if(builder.modules.contains(ProjectType.IOSMOE)) {
+			Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "moeUpdateXcodeSettings" + parseGradleArgs(builder.modules, gradleArgs), callback);
+		}
 
 		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs), callback);
 	}
@@ -611,6 +659,7 @@ public class GdxSetup {
 				  }
 			 }
 
+		    String graalVMLocation = params.get("graalVMLocation");
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();
@@ -620,6 +669,7 @@ public class GdxSetup {
 				  projects.add(ProjectType.DESKTOP);
 				  projects.add(ProjectType.ANDROID);
 				  projects.add(ProjectType.IOS);
+				  projects.add(ProjectType.IOSMOE);
 				  projects.add(ProjectType.HTML);
 			 } else {
 				  if (!excludedModules.contains("desktop"))
@@ -628,6 +678,8 @@ public class GdxSetup {
 						projects.add(ProjectType.ANDROID);
 				  if (!excludedModules.contains("ios"))
 						projects.add(ProjectType.IOS);
+				  if (!excludedModules.contains("iosmoe"))
+					  	projects.add(ProjectType.IOSMOE);
 				  if (!excludedModules.contains("html"))
 						projects.add(ProjectType.HTML);
 			 }
@@ -654,7 +706,7 @@ public class GdxSetup {
 					public void character (char c) {
 						System.out.print(c);
 					}
-				}, null);
+				}, null, graalVMLocation);
 		}
 	}
 }
