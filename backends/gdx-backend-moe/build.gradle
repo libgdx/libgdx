@@ -16,4 +16,5 @@
 
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly "org.graalvm.nativeimage:svm:21.0.0.2"
 }
