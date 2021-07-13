@@ -221,9 +221,6 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
-		// convert all windows path separators to unix style
-		fileName = fileName.replace('\\', '/');
-
 		// check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
 		if (tasks.size > 0) {
 			AssetLoadingTask currentTask = tasks.first();
