@@ -397,7 +397,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** @author Nathan Sweet */
-	static class SelectBoxList<T> extends ScrollPane {
+	static public class SelectBoxList<T> extends ScrollPane {
 		private final SelectBox<T> selectBox;
 		int maxListCount;
 		private final Vector2 stagePosition = new Vector2();
@@ -557,6 +557,11 @@ public class SelectBox<T> extends Widget implements Disableable {
 				oldStage.removeListener(list.getKeyListener());
 			}
 			super.setStage(stage);
+		}
+		
+		public SelectBox<T> getSelectBox()
+		{
+			return selectBox;
 		}
 	}
 
