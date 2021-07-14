@@ -1,9 +1,11 @@
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../%ASSET_PATH%"]
 
 project.ext.mainClassName = "%PACKAGE%.DesktopLauncher"
 project.ext.assetsDir = new File("../%ASSET_PATH%")
+
+import org.gradle.internal.os.OperatingSystem
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
@@ -11,6 +13,11 @@ task run(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+
+    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+        // Required to run on macOS
+        jvmArgs += "-XstartOnFirstThread"
+    }
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
