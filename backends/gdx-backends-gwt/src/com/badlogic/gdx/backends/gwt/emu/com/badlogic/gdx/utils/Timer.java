@@ -195,7 +195,7 @@ public class Timer {
 		}
 	}
 
-	/** Manages the single timer thread. Stops thread on libgdx application pause and dispose, starts thread on resume.
+	/** Manages the single timer thread. Stops thread on libGDX application pause and dispose, starts thread on resume.
 	 * @author Nathan Sweet */
 	static class TimerThread extends com.google.gwt.user.client.Timer implements Runnable, LifecycleListener {
 		private Application app;

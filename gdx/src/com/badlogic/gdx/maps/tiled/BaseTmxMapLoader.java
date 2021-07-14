@@ -43,7 +43,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		public TextureFilter textureMagFilter = TextureFilter.Nearest;
 		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
 		public boolean convertObjectToTileSpace = false;
-		/** Whether to flip all Y coordinates so that Y positive is up. All LibGDX renderers require flipped Y coordinates, and
+		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and
 		 * thus flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
 		public boolean flipY = true;
 	}

@@ -173,7 +173,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = config.knownDevices.get(machineString);
-		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to libGDX");
 		int ppi = device != null ? device.ppi : app.guessUnknownPpi();
 		density = ppi / 160f;
 		ppiX = ppi;

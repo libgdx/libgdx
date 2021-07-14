@@ -55,7 +55,7 @@ public class UISimpleTest extends GdxTest {
 		pixmap.fill();
 		skin.add("white", new Texture(pixmap));
 
-		// Store the default libgdx font under the name "default".
+		// Store the default libGDX font under the name "default".
 		skin.add("default", new BitmapFont());
 
 		// Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.

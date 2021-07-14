@@ -87,7 +87,7 @@ public class GLVersion {
 		try {
 			return Integer.parseInt(v);
 		} catch (NumberFormatException nfe) {
-			Gdx.app.error("LibGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
+			Gdx.app.error("libGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
 			return defaultValue;
 		}
 	}

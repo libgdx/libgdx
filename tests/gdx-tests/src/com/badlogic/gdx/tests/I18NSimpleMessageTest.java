@@ -89,7 +89,7 @@ public class I18NSimpleMessageTest extends GdxTest {
 	}
 
 	private String getParametricMessage (String header, I18NBundle rb) {
-		return header + " -> " + rb.format("msgWithArgs", "LibGDX", MathUtils.PI, now);
+		return header + " -> " + rb.format("msgWithArgs", "libGDX", MathUtils.PI, now);
 	}
 
 	private void println (String line) {
