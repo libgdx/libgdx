@@ -31,6 +31,10 @@ struct btFace
 	btAlignedObjectArray<int>	m_indices;
 //	btAlignedObjectArray<int>	m_connectedFaces;
 	btScalar	m_plane[4];
+	
+	bool operator==(const btFace& other) const {return false;}
+	bool operator>(const btFace& other) const {return false;}
+	bool operator<(const btFace& other) const {return false;}
 };
 
 

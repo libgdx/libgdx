@@ -587,3 +587,6 @@ CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision
 #include <BulletCollision/NarrowPhaseCollision/btMprPenetration.h>
 %}
 %include "BulletCollision/NarrowPhaseCollision/btMprPenetration.h"
+
+%template(btFaceArray) btAlignedObjectArray<btFace>;
+%template(btIntArray) btAlignedObjectArray<int>;
