@@ -56,6 +56,7 @@ public class Type {
 
 	Class componentType;
 	Object[] enumConstants;
+	IReflectionCache source;
 
 	private Field[] allFields;
 	private Method[] allMethods;

@@ -53,7 +53,7 @@ public class ReflectionCacheSourceCreator {
 	final String packageName;
 	SourceWriter sw;
 	final StringBuilder source = new StringBuilder();
-	final List<JType> types = new ArrayList<JType>();
+	final List<JType> types;
 	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
 	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<String, String>();
@@ -90,12 +90,13 @@ public class ReflectionCacheSourceCreator {
 		boolean unused;
 	}
 
-	public ReflectionCacheSourceCreator (TreeLogger logger, GeneratorContext context, JClassType type) {
+	public ReflectionCacheSourceCreator (TreeLogger logger, GeneratorContext context, JClassType type, List<JType> types) {
 		this.logger = logger;
 		this.context = context;
 		this.type = type;
 		this.packageName = type.getPackage().getName();
 		this.simpleName = type.getSimpleSourceName() + "Generated";
+		this.types = types;
 		logger.log(Type.INFO, type.getQualifiedSourceName());
 	}
 
@@ -140,49 +141,6 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void generateLookups () {
-		TypeOracle typeOracle = context.getTypeOracle();
-		JPackage[] packages = typeOracle.getPackages();
-
-		// gather all types from wanted packages
-		for (JPackage p : packages) {
-			for (JClassType t : p.getTypes()) {
-				gatherTypes(t.getErasedType(), types);
-			}
-		}
-
-		// gather all types from explicitly requested packages
-		try {
-			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
-			for (String s : prop.getValues()) {
-				JClassType type = typeOracle.findType(s);
-				if (type != null) gatherTypes(type.getErasedType(), types);
-			}
-		} catch (BadPropertyValueException e) {
-		}
-
-		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.Map").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.String").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Boolean").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Byte").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Long").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Character").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Short").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Integer").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Float").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.CharSequence").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Double").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Object").getErasedType(), types);
-
-		// sort the types so the generated output will be stable between runs
-		Collections.sort(types, new Comparator<JType>() {
-			public int compare (JType o1, JType o2) {
-				return o1.getQualifiedSourceName().compareTo(o2.getQualifiedSourceName());
-			}
-		});
-
 		// generate Type lookup generator methods.
 		for (JType t : types) {
 			p(createTypeGenerator(t));
@@ -222,110 +180,6 @@ public class ReflectionCacheSourceCreator {
 		}
 
 		logger.log(Type.INFO, types.size() + " types reflected");
-	}
-
-	private void out (String message, int nesting) {
-		String nestedMsg = "";
-		for (int i = 0; i < nesting; i++)
-			nestedMsg += "  ";
-		logger.log(Type.INFO, nestedMsg);
-	}
-
-	int nesting = 0;
-
-	private void gatherTypes (JType type, List<JType> types) {
-		nesting++;
-		// came here from a type that has no super class
-		if (type == null) {
-			nesting--;
-			return;
-		}
-		// package info
-		if (type.getQualifiedSourceName().contains("-")) {
-			nesting--;
-			return;
-		}
-
-		// not visible
-		if (!isVisible(type)) {
-			nesting--;
-			return;
-		}
-
-		// filter reflection scope based on configuration in gwt xml module
-		boolean keep = false;
-		String name = type.getQualifiedSourceName();
-		try {
-			ConfigurationProperty prop;
-			keep |= !name.contains(".");
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
-			for (String s : prop.getValues())
-				keep |= name.contains(s);
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.exclude");
-			for (String s : prop.getValues())
-				keep &= !name.equals(s);
-		} catch (BadPropertyValueException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (!keep) {
-			nesting--;
-			return;
-		}
-
-		// already visited this type
-		if (types.contains(type.getErasedType())) {
-			nesting--;
-			return;
-		}
-		types.add(type.getErasedType());
-		out(type.getErasedType().getQualifiedSourceName(), nesting);
-
-		if (type instanceof JPrimitiveType) {
-			// nothing to do for a primitive type
-			nesting--;
-			return;
-		} else {
-			// gather fields
-			JClassType c = (JClassType)type;
-			JField[] fields = c.getFields();
-			if (fields != null) {
-				for (JField field : fields) {
-					gatherTypes(field.getType().getErasedType(), types);
-				}
-			}
-
-			// gather super types & interfaces
-			gatherTypes(c.getSuperclass(), types);
-			JClassType[] interfaces = c.getImplementedInterfaces();
-			if (interfaces != null) {
-				for (JClassType i : interfaces) {
-					gatherTypes(i.getErasedType(), types);
-				}
-			}
-
-			// gather method parameter & return types
-			JMethod[] methods = c.getMethods();
-			if (methods != null) {
-				for (JMethod m : methods) {
-					gatherTypes(m.getReturnType().getErasedType(), types);
-					if (m.getParameterTypes() != null) {
-						for (JType p : m.getParameterTypes()) {
-							gatherTypes(p.getErasedType(), types);
-						}
-					}
-				}
-			}
-
-			// gather inner classes
-			JClassType[] inner = c.getNestedTypes();
-			if (inner != null) {
-				for (JClassType i : inner) {
-					gatherTypes(i.getErasedType(), types);
-				}
-			}
-		}
-		nesting--;
 	}
 
 	private String generateMethodStub (MethodStub stub) {
@@ -465,7 +319,7 @@ public class ReflectionCacheSourceCreator {
 		return sb.toString();
 	}
 
-	private boolean isVisible (JType type) {
+	static boolean isVisible (JType type) {
 		if (type == null) return false;
 
 		if (type instanceof JClassType) {
