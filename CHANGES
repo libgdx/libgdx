@@ -10,7 +10,7 @@
 - FirstPersonCameraController keys mapping is now configurable
 - Fix: GlyphLayout: Several fixes for color markup runs with multi-line or wrapping texts
 - API change: GlyphLayout#GlyphRun is now one GlyphRun per line. "color" was removed from GlyphRun and is now handled by GlyphLayout.
-- Target Android API 30 and update AGP plugin to 4.1.3
+- Gdx Setup Tool: Target Android API 30 and update AGP plugin to 4.1.3
 - API Fix: Sound IDs are now properly removed; this prevents changes to music instances with the same ID
 - API Fix: LWJGL3Net#openURI does now work on macOS & JDK >= 16
 - API Fix: Fixed a possible deadlock with AssetManager#dispose() and #clear()
