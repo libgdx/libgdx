@@ -74,8 +74,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			window.makeCurrent();
 			gl20.glViewport(0, 0, width, height);
 			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
-			GLFW.glfwSwapBuffers(windowHandle);
+			window.requestRendering();
 		}
 	};
 
