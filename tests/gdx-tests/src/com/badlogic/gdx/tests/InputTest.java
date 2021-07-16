@@ -85,7 +85,7 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		Gdx.app.log("Input Test", "touch down: " + x + ", " + y + ", button: " + getButtonString(button));
+		Gdx.app.log("Input Test", "touch down: " + x + ", " + y + ", button: " + getButtonString(button) + ", pointer: " + pointer);
 		return false;
 	}
 
@@ -97,7 +97,7 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		Gdx.app.log("Input Test", "touch up: " + x + ", " + y + ", button: " + getButtonString(button));
+		Gdx.app.log("Input Test", "touch up: " + x + ", " + y + ", button: " + getButtonString(button) + ", pointer: " + pointer);
 		return false;
 	}
 
