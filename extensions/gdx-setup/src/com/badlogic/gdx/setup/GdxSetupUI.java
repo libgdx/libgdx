@@ -309,7 +309,7 @@ public class GdxSetupUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
 		JPanel topBar = new JPanel();
-		JLabel windowLabel = new JLabel("    Libgdx Project Generator");
+		JLabel windowLabel = new JLabel("    libGDX Project Generator");
 		JButton exit;
 		JButton minimize;
 		JLabel logo;
