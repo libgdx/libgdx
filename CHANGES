@@ -10,6 +10,13 @@
 - FirstPersonCameraController keys mapping is now configurable
 - Fix: GlyphLayout: Several fixes for color markup runs with multi-line or wrapping texts
 - API change: GlyphLayout#GlyphRun is now one GlyphRun per line. "color" was removed from GlyphRun and is now handled by GlyphLayout.
+- Gdx Setup Tool: Target Android API 30 and update AGP plugin to 4.1.3
+- API Fix: Sound IDs are now properly removed; this prevents changes to music instances with the same ID
+- API Fix: LWJGL3Net#openURI does now work on macOS & JDK >= 16
+- API Fix: Fixed a possible deadlock with AssetManager#dispose() and #clear()
+- API Change: Enable the AL_DIRECT_CHANNELS_SOFT option for Sounds and AudioDevices as well to fix stereo sound
+- API Addition: CameraInputController#setInvertedControls(boolean)
+- API Removal: AnimatedTiledMapTile#frameCount
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
