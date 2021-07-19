@@ -115,7 +115,7 @@ public class BitmapFontTest extends GdxTest {
 			// text = "Another font wrap is-sue, this time with multiple whitespace characters.";
 			// text = "test with AGWlWi AGWlWi issue";
 			// text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
-			text = "[BLUE]A[]A BB [#00f000]EE[] T [GREEN]e[]   \r\r[PINK]\n[]\nV[YELLOW]a bb[] ([CYAN]5[]FFFurz)\nV[PURPLE]a[]\nVa\n[PURPLE]V[]a";
+			text = "[BLUE]A[]A BB [#00f000]EE[] T [GREEN]e[]   \r\r[PINK]\n\nV[][YELLOW]a bb[] ([CYAN]5[]FFFurz)\nV[PURPLE]a[]\nVa\n[PURPLE]V[]a";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
