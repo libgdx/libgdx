@@ -120,6 +120,7 @@ public class ReflectionCacheGenerator extends Generator {
 		String nestedMsg = "";
 		for (int i = 0; i < nesting; i++)
 			nestedMsg += "  ";
+		nestedMsg += message;
 		logger.log(Type.INFO, nestedMsg);
 	}
 
