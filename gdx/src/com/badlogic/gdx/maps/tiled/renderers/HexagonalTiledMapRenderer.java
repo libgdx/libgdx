@@ -30,8 +30,8 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 	/** true for X-Axis, false for Y-Axis */
 	private boolean staggerAxisX = true;
-	/** true for even StaggerIndex, false for odd */
-	private boolean staggerIndexEven = false;
+	/** true for even StaggerIndex, true for odd */
+	private boolean staggerIndexOdd = false;
 	/** the parameter defining the shape of the hexagon from tiled. more specifically it represents the length of the sides that
 	 * are parallel to the stagger axis. e.g. with respect to the stagger axis a value of 0 results in a rhombus shape, while a
 	 * value equal to the tile length/height represents a square shape and a value of 0.5 represents a regular hexagon if tile
@@ -70,10 +70,10 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 		String index = map.getProperties().get("staggerindex", String.class);
 		if (index != null) {
-			if (index.equals("even")) {
-				staggerIndexEven = true;
+			if (index.equals("odd")) {
+				staggerIndexOdd = true;
 			} else {
-				staggerIndexEven = false;
+				staggerIndexOdd = false;
 			}
 		}
 
@@ -132,8 +132,8 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				(int)((viewBounds.x + viewBounds.width + tileWidthUpperCorner - layerOffsetY) / tileWidthUpperCorner));
 
 			// depending on the stagger index either draw all even before the odd or vice versa
-			final int colA = (staggerIndexEven == (col1 % 2 == 0)) ? col1 + 1 : col1;
-			final int colB = (staggerIndexEven == (col1 % 2 == 0)) ? col1 : col1 + 1;
+			final int colA = (staggerIndexOdd == (col1 % 2 == 0)) ? col1 + 1 : col1;
+			final int colB = (staggerIndexOdd == (col1 % 2 == 0)) ? col1 : col1 + 1;
 
 			for (int row = row2 - 1; row >= row1; row--) {
 				for (int col = colA; col < col2; col += 2) {
@@ -161,7 +161,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			float shiftX = 0;
 			for (int row = row2 - 1; row >= row1; row--) {
 				// depending on the stagger index either shift for even or uneven indexes
-				if ((row % 2 == 0) == staggerIndexEven)
+				if ((row % 2 == 0) == staggerIndexOdd)
 					shiftX = layerTileWidth50;
 				else
 					shiftX = 0;
