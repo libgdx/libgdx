@@ -309,7 +309,7 @@ public class GdxSetupUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
 		JPanel topBar = new JPanel();
-		JLabel windowLabel = new JLabel("    libGDX Project Generator");
+		JLabel windowLabel = new JLabel("    libGDX Project Generator (" + DependencyBank.libgdxVersion + ")");
 		JButton exit;
 		JButton minimize;
 		JLabel logo;
@@ -439,13 +439,13 @@ public class GdxSetupUI extends JFrame {
 
 	class Form extends JPanel {
 		ExternalExtensionsDialog externalExtensionsDialog = new ExternalExtensionsDialog(dependencies);
-		JLabel nameLabel = new JLabel("Name:");
+		JLabel nameLabel = new JLabel("Project name:");
 		JTextField nameText = new JTextField("my-gdx-game");
-		JLabel packageLabel = new JLabel("Package:");
+		JLabel packageLabel = new JLabel("Package name:");
 		JTextField packageText = new JTextField("com.mygdx.game");
 		JLabel gameClassLabel = new JLabel("Game class:");
 		JTextField gameClassText = new JTextField("MyGdxGame");
-		JLabel destinationLabel = new JLabel("Destination:");
+		JLabel destinationLabel = new JLabel("Output folder:");
 		JTextField destinationText = new JTextField(new File("test").getAbsolutePath());
 		SetupButton destinationButton = new SetupButton("Browse");
 		JLabel sdkLocationLabel = new JLabel("Android SDK");
@@ -457,10 +457,10 @@ public class GdxSetupUI extends JFrame {
 		SetupButton sdkLocationButton = new SetupButton("Browse");
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
-		JLabel projectsLabel = new JLabel("Sub Projects");
-		JLabel extensionsLabel = new JLabel("Extensions");
+		JLabel projectsLabel = new JLabel("Supported Platforms");
+		JLabel extensionsLabel = new JLabel("Official Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
-		SetupButton showMoreExtensionsButton = new SetupButton("Show Third Party Extensions");
+		SetupButton showMoreExtensionsButton = new SetupButton("Show Third-Party Extensions");
 		SetupCheckBox gwtCheckBox;
 
 		{
@@ -483,8 +483,8 @@ public class GdxSetupUI extends JFrame {
 			sdkLocationLabel.setForeground(Color.WHITE);
 			sdkLocationText.setDisabledTextColor(Color.GRAY);
 
-			projectsLabel.setForeground(new Color(255, 20, 20));
-			extensionsLabel.setForeground(new Color(255, 20, 20));
+			projectsLabel.setForeground(new Color(235, 70, 61));
+			extensionsLabel.setForeground(new Color(235, 70, 61));
 
 			subProjectsPanel.setOpaque(true);
 			subProjectsPanel.setBackground(new Color(46, 46, 46));
@@ -497,7 +497,7 @@ public class GdxSetupUI extends JFrame {
 			nameLabel.setToolTipText("The name of the application used in gradle");
 			packageLabel.setToolTipText("The package name of the application");
 			gameClassLabel.setToolTipText("The name of the main class implementing ApplicationListener");
-			destinationLabel.setToolTipText("The root directory of the project, it will be created if it does not exist");
+			destinationLabel.setToolTipText("The root directory of the project; will be created if it does not exist");
 			sdkLocationLabel.setToolTipText("The location of your Android SDK");
 		}
 
@@ -533,7 +533,11 @@ public class GdxSetupUI extends JFrame {
 					continue;
 				}
 
-				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
+				if (projectType.equals(ProjectType.LWJGL2)) {
+					continue; // LWJGL 2 projects can only be built via command line
+				}
+
+				SetupCheckBox checkBox = new SetupCheckBox(projectType.getDisplayName());
 				if (projectType == ProjectType.HTML) {
 					gwtCheckBox = checkBox;
 				} 
@@ -561,7 +565,7 @@ public class GdxSetupUI extends JFrame {
 			}
 
 			add(projectsLabel, new GridBagConstraints(0, 6, 1, 1, 0, 0, WEST, WEST, new Insets(20, 0, 0, 0), 0, 0));
-			add(subProjectsPanel, new GridBagConstraints(0, 7, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			add(subProjectsPanel, new GridBagConstraints(0, 7, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
 
 			int depCounter = 0;
 
@@ -576,9 +580,6 @@ public class GdxSetupUI extends JFrame {
 						}
 						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
 						depCheckBox.setToolTipText(projDep.getDescription());
-						if (projDep.equals(ProjectDependency.BOX2D)) {
-							depCheckBox.setSelected(true);
-						}
 						extensionPanel.add(depCheckBox);
 						depCheckBox.addItemListener(new ItemListener() {
 							@Override

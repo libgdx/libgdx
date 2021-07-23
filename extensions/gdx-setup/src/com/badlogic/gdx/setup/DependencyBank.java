@@ -38,6 +38,7 @@ public class DependencyBank {
 	static String gradlePlugins = "gradlePluginPortal()";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
+	static String jitpackUrl = "https://jitpack.io";
 
 	//Project plugins
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
@@ -48,7 +49,7 @@ public class DependencyBank {
 
 	//Extension versions
 	static String box2DLightsVersion = "1.5";
-	static String ashleyVersion = "1.7.3";
+	static String ashleyVersion = "1.7.4";
 	static String aiVersion = "1.8.2";	
 	static String controllersVersion = "2.2.1";
 
@@ -59,7 +60,8 @@ public class DependencyBank {
 			Dependency dependency = new Dependency(projectDep.name(),
 					projectDep.getGwtInherits(),
 					projectDep.getDependencies(ProjectType.CORE),
-					projectDep.getDependencies(ProjectType.DESKTOP),
+					projectDep.getDependencies(ProjectType.LWJGL2),
+					projectDep.getDependencies(ProjectType.LWJGL3),
 					projectDep.getDependencies(ProjectType.ANDROID),
 					projectDep.getDependencies(ProjectType.IOS),
 					projectDep.getDependencies(ProjectType.HTML));
@@ -85,6 +87,7 @@ public class DependencyBank {
 		GDX(
 			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.mobidevelop.robovm:robovm-rt:$roboVMVersion", "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
@@ -95,6 +98,7 @@ public class DependencyBank {
 		BULLET(
 			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
 			null,
@@ -104,6 +108,7 @@ public class DependencyBank {
 		),
 		FREETYPE(
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
@@ -119,11 +124,13 @@ public class DependencyBank {
 			new String[]{},
 			new String[]{},
 			new String[]{},
+			new String[]{},
 			
 			"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"
 		),
 		CONTROLLERS(
 			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
+			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
 			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
 			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"},
 			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"},
@@ -135,6 +142,7 @@ public class DependencyBank {
 		BOX2D(
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
@@ -144,6 +152,7 @@ public class DependencyBank {
 		),	
 		BOX2DLIGHTS(
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
+			new String[]{},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
@@ -155,6 +164,7 @@ public class DependencyBank {
 		ASHLEY(
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
+			new String[]{},
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
@@ -165,6 +175,7 @@ public class DependencyBank {
 		AI(
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
 			new String[]{},
+			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
@@ -174,16 +185,18 @@ public class DependencyBank {
 		);
 
 		private String[] coreDependencies;
-		private String[] desktopDependencies;
+		private String[] lwjgl2Dependencies;
+		private String[] lwjgl3Dependencies;
 		private String[] androidDependencies;
 		private String[] iosDependencies;
 		private String[] gwtDependencies;
 		private String[] gwtInherits;
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
+		ProjectDependency(String[] coreDeps, String[] lwjgl2Deps, String[] lwjgl3Deps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
 			this.coreDependencies = coreDeps;
-			this.desktopDependencies = desktopDeps;
+			this.lwjgl2Dependencies = lwjgl2Deps;
+			this.lwjgl3Dependencies = lwjgl3Deps;
 			this.androidDependencies = androidDeps;
 			this.iosDependencies = iosDeps;
 			this.gwtDependencies = gwtDeps;
@@ -195,8 +208,10 @@ public class DependencyBank {
 			switch (type) {
 				case CORE:
 					return coreDependencies;
-				case DESKTOP:
-					return desktopDependencies;
+				case LWJGL2:
+					return lwjgl2Dependencies;
+				case LWJGL3:
+					return lwjgl3Dependencies;
 				case ANDROID:
 					return androidDependencies;
 				case IOS:
@@ -218,20 +233,27 @@ public class DependencyBank {
 
 
 	public enum ProjectType {
-		CORE("core"),
-		DESKTOP("desktop"),
-		ANDROID("android"),
-		IOS("ios"),
-		HTML("html");
+		CORE("core", "Core"),
+		LWJGL2("legacy_desktop", "Desktop (LWJGL2)"),
+		LWJGL3("desktop", "Desktop (LWJGL 3)"),
+		ANDROID("android", "Android"),
+		IOS("ios", "iOS"),
+		HTML("html", "HTML");
 
 		private final String name;
+		private final String displayName;
 
-		ProjectType(String name) {
+		ProjectType(String name, String displayName) {
 			this.name = name;
+			this.displayName = displayName;
 		}
 
 		public String getName() {
 			return name;
+		}
+
+		public String getDisplayName() {
+			return displayName;
 		}
 
 		public String[] getPlugins(Language sourceLanguage) {
