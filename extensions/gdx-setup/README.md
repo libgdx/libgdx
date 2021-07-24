@@ -1,4 +1,4 @@
-Libgdx gradle setup
+libGDX gradle setup
 ===================
 
 Modular setup powered by gradle, allowing any combination of sub projects and official extensions to get you up and running in a few clicks.  Although this tool will handle setup for you, LEARN GRADLE!

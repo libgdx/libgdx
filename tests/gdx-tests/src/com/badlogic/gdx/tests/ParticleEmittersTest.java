@@ -113,7 +113,7 @@ public class ParticleEmittersTest extends GdxTest {
 			fpsCounter = 0;
 			String log = effects.size + " particle effects, FPS: " + Gdx.graphics.getFramesPerSecond() + ", Render calls: "
 				+ spriteBatch.renderCalls;
-			Gdx.app.log("libgdx", log);
+			Gdx.app.log("libGDX", log);
 			logLabel.setText(log);
 		}
 		ui.draw();

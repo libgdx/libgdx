@@ -18,7 +18,7 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.utils.Clipboard;
 
-/** Basic implementation of clipboard in GWT. Paste only works inside the libgdx application. */
+/** Basic implementation of clipboard in GWT. Paste only works inside the libGDX application. */
 public class GwtClipboard implements Clipboard {
 
 	private boolean requestedWritePermissions = false;

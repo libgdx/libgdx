@@ -24,17 +24,22 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class SoundTest extends GdxTest {
+
+	private static final String[] FILENAMES = {"shotgun.ogg", "bubblepop.ogg", "bubblepop-stereo-left-only.wav"};
+
 	Sound sound;
 	float volume = 0.5f;
 	long soundId = 0;
@@ -43,10 +48,13 @@ public class SoundTest extends GdxTest {
 
 	@Override
 	public void create () {
-		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.ogg", FileType.Internal));
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		ui = new Stage(new FitViewport(640, 400));
+		final SelectBox<String> soundSelector = new SelectBox<String>(skin);
+		soundSelector.setItems(FILENAMES);
+		setSound(soundSelector.getSelected());
+
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);
 		TextButton loop = new TextButton("Loop", skin);
@@ -63,6 +71,7 @@ public class SoundTest extends GdxTest {
 		table.setFillParent(true);
 
 		table.align(Align.center | Align.top);
+		table.add(soundSelector).colspan(3).row();
 		table.columnDefaults(0).expandX().right().uniformX();
 		table.columnDefaults(2).expandX().left().uniformX();
 		table.add(play);
@@ -81,6 +90,13 @@ public class SoundTest extends GdxTest {
 		table.add(pan);
 		table.add(panValue);
 		ui.addActor(table);
+
+		soundSelector.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				setSound(soundSelector.getSelected());
+			}
+		});
 
 		play.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
@@ -126,6 +142,16 @@ public class SoundTest extends GdxTest {
 			}
 		});
 		Gdx.input.setInputProcessor(ui);
+	}
+
+	protected void setSound (String fileName) {
+		if (sound != null) sound.dispose();
+		sound = Gdx.audio.newSound(Gdx.files.internal("data").child(fileName));
+	}
+
+	@Override
+	public void resize (int width, int height) {
+		ui.getViewport().update(width, height, true);
 	}
 
 	@Override

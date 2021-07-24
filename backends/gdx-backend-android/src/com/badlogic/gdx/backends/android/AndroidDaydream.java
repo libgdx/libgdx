@@ -45,9 +45,6 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author mzechner */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
@@ -108,6 +105,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	private void init (ApplicationListener listener, AndroidApplicationConfiguration config, boolean isForView) {
+		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);

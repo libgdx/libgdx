@@ -284,8 +284,8 @@ public class OpenALLwjglAudio implements LwjglAudio {
 			alDeleteSources(sourceID);
 		}
 
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
+		sourceToSoundId = null;
+		soundIdToSource = null;
 
 		AL.destroy();
 		while (AL.isCreated()) {

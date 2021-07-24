@@ -257,10 +257,16 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		}
 
-		// desktop project
-		if (builder.modules.contains(ProjectType.DESKTOP)) {
-			project.files.add(new ProjectFile("desktop/build.gradle"));
-			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/DesktopLauncher.java", true));
+		// lwjgl2 project
+		if (builder.modules.contains(ProjectType.LWJGL2)) {
+			project.files.add(new ProjectFile("lwjgl2/build.gradle", "legacy_desktop/build.gradle", true));
+			project.files.add(new ProjectFile("lwjgl2/src/DesktopLauncher", "legacy_desktop/src/" + packageDir + "/DesktopLauncher.java", true));
+		}
+
+		// lwjgl3 project
+		if (builder.modules.contains(ProjectType.LWJGL3)) {
+			project.files.add(new ProjectFile("lwjgl3/build.gradle", "desktop/build.gradle", true));
+			project.files.add(new ProjectFile("lwjgl3/src/DesktopLauncher", "desktop/src/" + packageDir + "/DesktopLauncher.java", true));
 		}
 
 		// Assets
@@ -271,7 +277,6 @@ public class GdxSetup {
 		if (builder.modules.contains(ProjectType.ANDROID)) {
 			project.files.add(new ProjectFile("android/res/values/color.xml"));
 			project.files.add(new ProjectFile("android/res/values/strings.xml"));
-			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher_foreground.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
@@ -617,21 +622,19 @@ public class GdxSetup {
 			List<ProjectType> projects = new ArrayList<ProjectType>();
 
 			projects.add(ProjectType.CORE);
-			 if (excludedModules == null) {
-				  projects.add(ProjectType.DESKTOP);
-				  projects.add(ProjectType.ANDROID);
-				  projects.add(ProjectType.IOS);
-				  projects.add(ProjectType.HTML);
-			 } else {
-				  if (!excludedModules.contains("desktop"))
-						projects.add(ProjectType.DESKTOP);
-				  if (!excludedModules.contains("android"))
-						projects.add(ProjectType.ANDROID);
-				  if (!excludedModules.contains("ios"))
-						projects.add(ProjectType.IOS);
-				  if (!excludedModules.contains("html"))
-						projects.add(ProjectType.HTML);
-			 }
+			if (excludedModules == null) {
+				projects.add(ProjectType.LWJGL2);
+				projects.add(ProjectType.LWJGL3);
+				projects.add(ProjectType.ANDROID);
+				projects.add(ProjectType.IOS);
+				projects.add(ProjectType.HTML);
+			} else {
+				if (!excludedModules.contains("lwjgl2")) projects.add(ProjectType.LWJGL2);
+				if (!excludedModules.contains("lwjgl3")) projects.add(ProjectType.LWJGL3);
+				if (!excludedModules.contains("android")) projects.add(ProjectType.ANDROID);
+				if (!excludedModules.contains("ios")) projects.add(ProjectType.IOS);
+				if (!excludedModules.contains("html")) projects.add(ProjectType.HTML);
+			}
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
 			if (params.containsKey("extensions")) {

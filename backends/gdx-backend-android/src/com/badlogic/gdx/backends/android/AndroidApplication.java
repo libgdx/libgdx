@@ -40,9 +40,6 @@ import com.badlogic.gdx.utils.*;
  * 
  * @author mzechner */
 public class AndroidApplication extends Activity implements AndroidApplicationBase {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
@@ -113,8 +110,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	private void init (ApplicationListener listener, AndroidApplicationConfiguration config, boolean isForView) {
 		if (this.getVersion() < MINIMUM_SDK) {
-			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+			throw new GdxRuntimeException("libGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
