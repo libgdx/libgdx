@@ -105,7 +105,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 			}
 		});
 
-		setTitle("Third party external extensions");
+		setTitle("Third-party external extensions");
 		setSize(600, 300);
 		setLocationRelativeTo(null);
 	}
@@ -120,8 +120,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 
 		topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		warningNotice = new JLabel("List of third party extensions for libGDX");
-		warningNotice2 = new JLabel("These are not maintained by the libGDX team, please see the support links for info and help");
+		warningNotice = new JLabel("List of third-party extensions for libGDX");
+		warningNotice2 = new JLabel("These are not maintained by the libGDX team. Please see the support links for info and help.");
 		warningNotice.setHorizontalAlignment(JLabel.CENTER);
 		warningNotice2.setHorizontalAlignment(JLabel.CENTER);
 
@@ -260,8 +260,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		scrollPane.setBackground(new Color(36, 36, 36));
 		scrollPane.getViewport().setBackground(new Color(36, 36, 36));
 
-		warningNotice.setForeground(new Color(255, 20, 20));
-		warningNotice2.setForeground(new Color(255, 20, 20));
+		warningNotice.setForeground(new Color(235, 70, 61));
+		warningNotice2.setForeground(new Color(235, 70, 61));
 	}
 
 	void onOK () {

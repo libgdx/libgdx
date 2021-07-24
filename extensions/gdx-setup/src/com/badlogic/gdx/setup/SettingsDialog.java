@@ -153,7 +153,7 @@ public class SettingsDialog extends JDialog {
 		content.add(settings, new GridBagConstraints(0, 0, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(description, new GridBagConstraints(3, 0, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-		JLabel mavenLabel = new JLabel("Maven Mirror Url");
+		JLabel mavenLabel = new JLabel("Maven Mirror URL");
 		JLabel mavenDesc = new JLabel("Replaces Maven Central with this repository");
 		mavenTextField = new JTextField(15);
 		mavenTextField.setMinimumSize(mavenTextField.getPreferredSize());
@@ -162,7 +162,7 @@ public class SettingsDialog extends JDialog {
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
 		JLabel kotlinLabel = new JLabel("Use Kotlin");
-		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language.");
+		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
