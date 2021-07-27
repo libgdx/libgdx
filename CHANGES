@@ -19,6 +19,7 @@
 - API Removal: AnimatedTiledMapTile#frameCount
 - LWJGL 3 is now the default desktop backend. If you want to port your existing applications, take a look here: https://gist.github.com/crykn/eb37cb4f7a03d006b3a0ecad27292a2d
 - Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
+- API Fix: Escaped characters in XML attributes are now properly un-escaped
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
