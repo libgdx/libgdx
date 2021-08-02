@@ -163,6 +163,13 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
+		final String assetPath;
+		if (ui.settings.oldAssetsBox.isSelected()) {
+			assetPath = builder.modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
+		} else {
+			assetPath = GdxSetup.DEFAULT_ASSET_PATH;
+		}
+
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
 		if (sdkLocation.length() == 0 && modules.contains(ProjectType.ANDROID)) {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
@@ -261,7 +268,7 @@ public class GdxSetupUI extends JFrame {
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, sdkLocation, new CharCallback() {
+				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, assetPath, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						log(c);
