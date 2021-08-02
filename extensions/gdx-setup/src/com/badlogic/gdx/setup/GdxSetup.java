@@ -499,8 +499,8 @@ public class GdxSetup {
 	}
 
 	private static void printHelp () {
-		System.out
-			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> " +
+		System.out.println(
+			"Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> " +
 			"[--assetPath <assetPath>] [--excludeModules <modules>] [--extensions <extensions>]");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
