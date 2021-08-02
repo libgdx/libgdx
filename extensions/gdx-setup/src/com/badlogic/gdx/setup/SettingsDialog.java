@@ -250,6 +250,7 @@ public class SettingsDialog extends JDialog {
 	public void showDialog (Component parent, SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 		setVisible(true);
 		if (gwtCheckBox.isSelected()) {
 			kotlinBox.setSelected(false);
