@@ -303,7 +303,6 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
 			project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
 			project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
-			project.files.add(new ProjectFile("html/war/refresh.png", "html/webapp/refresh.png", false));
 			project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
 		}
 
