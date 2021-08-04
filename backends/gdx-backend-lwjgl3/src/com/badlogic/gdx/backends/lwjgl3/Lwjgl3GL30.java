@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 	@Override
-	public void glReadBuffer (int mode) {		
+	public void glReadBuffer (int mode) {
 		GL11.glReadBuffer(mode);
 	}
 
@@ -182,9 +182,9 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 	@Override
 	public void glDrawBuffers (int n, IntBuffer bufs) {
 		int limit = bufs.limit();
-		bufs.limit(n);
+		((Buffer) bufs).limit(n);
 		GL20.glDrawBuffers(bufs);
-		bufs.limit(limit);
+		((Buffer) bufs).limit(limit);
 	}
 
 	@Override
@@ -417,7 +417,7 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 	public void glVertexAttribI4ui (int index, int x, int y, int z, int w) {
 		GL30.glVertexAttribI4ui(index, x, y, z, w);
 	}
-	
+
 	@Override
 	public void glGetUniformuiv (int program, int location, IntBuffer params) {
 		GL30.glGetUniformuiv(program, location, params);
@@ -516,7 +516,7 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 	@Override
 	public void glDrawElementsInstanced (int mode, int count, int type, int indicesOffset, int instanceCount) {
 		GL31.glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
-		
+
 	}
 
 	@Override
@@ -590,7 +590,7 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetSamplerParameterfv (int sampler, int pname, FloatBuffer params) {
-		GL33.glGetSamplerParameterfv(sampler, pname, params);		
+		GL33.glGetSamplerParameterfv(sampler, pname, params);
 	}
 
 	@Override

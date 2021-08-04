@@ -35,6 +35,7 @@ public class MockGraphics extends AbstractGraphics {
 	int frames = 0;
 	int fps;
 	long lastTime = System.nanoTime();
+	long targetRenderInterval;
 	GLVersion glVersion = new GLVersion(Application.ApplicationType.HeadlessDesktop, "", "", "");
 	@Override
 	public boolean isGL30Available() {
@@ -179,6 +180,19 @@ public class MockGraphics extends AbstractGraphics {
 	@Override
 	public void setVSync(boolean vsync) {
 
+	}
+
+	/** Sets the target framerate for the application. Use 0 to never sleep;  negative to not call the render method at all.
+	 *  Default is 60.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		this.targetRenderInterval = (long) (fps <= 0 ? (fps == 0 ? 0 : -1) : ((1F / fps) * 1000000000F));
+	}
+
+	public long getTargetRenderInterval() {
+		return targetRenderInterval;
 	}
 
 	@Override

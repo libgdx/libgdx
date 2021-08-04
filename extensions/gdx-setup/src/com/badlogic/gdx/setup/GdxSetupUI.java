@@ -99,7 +99,7 @@ public class GdxSetupUI extends JFrame {
 	static SetupPreferences prefs = new SetupPreferences();
 
 	public GdxSetupUI () {
-		setTitle("LibGDX Project Generator");
+		setTitle("libGDX Project Generator");
 		setLayout(new BorderLayout());
 		add(ui, BorderLayout.CENTER);
 		setSize(620, 720);
@@ -309,7 +309,7 @@ public class GdxSetupUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
 		JPanel topBar = new JPanel();
-		JLabel windowLabel = new JLabel("    Libgdx Project Generator");
+		JLabel windowLabel = new JLabel("    libGDX Project Generator");
 		JButton exit;
 		JButton minimize;
 		JLabel logo;

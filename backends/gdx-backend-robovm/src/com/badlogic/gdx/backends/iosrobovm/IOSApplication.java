@@ -31,7 +31,6 @@ import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIViewController;
@@ -469,7 +468,7 @@ public class IOSApplication implements Application {
 		}
 	}
 
-	/** Add a listener to handle events from the libgdx root view controller
+	/** Add a listener to handle events from the libGDX root view controller
 	 * @param listener The {#link IOSViewControllerListener} to add */
 	public void addViewControllerListener (IOSViewControllerListener listener) {
 		viewControllerListener = listener;

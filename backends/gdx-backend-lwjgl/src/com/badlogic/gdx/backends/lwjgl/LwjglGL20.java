@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link GL20} interface based on LWJGL. Note that LWJGL shaders and OpenGL ES shaders will not be 100%
  * compatible. Some glGetXXX methods are not implemented.
- * 
+ *
  * @author mzechner */
 class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	private ByteBuffer buffer = null;
@@ -53,14 +53,14 @@ class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		floatBuffer.clear();
+		((Buffer) floatBuffer).clear();
 		com.badlogic.gdx.utils.BufferUtils.copy(v, floatBuffer, count, offset);
 		return floatBuffer;
 	}
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		intBuffer.clear();
+		((Buffer) intBuffer).clear();
 		com.badlogic.gdx.utils.BufferUtils.copy(v, offset, count, intBuffer);
 		return intBuffer;
 	}
@@ -595,7 +595,7 @@ class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
 		if (pixels == null)
-			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, 0L);
+			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)pixels);
 		else if (pixels instanceof ByteBuffer)
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)pixels);
 		else if (pixels instanceof ShortBuffer)

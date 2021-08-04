@@ -1,0 +1,7 @@
+com_badlogic_gdx_*.h
+com_badlogic_gdx_*.cpp
+build*.xml
+Android.mk
+Application.mk
+jni-headers
+memcpy_wrap.c

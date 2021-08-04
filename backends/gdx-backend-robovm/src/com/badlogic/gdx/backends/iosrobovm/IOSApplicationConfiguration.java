@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
@@ -86,6 +89,16 @@ public class IOSApplicationConfiguration {
 
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;
+
+	/**
+	 * This setting allows you to specify whether you want to work in logical or raw pixel units.
+	 * See {@link HdpiMode} for more information. Note that some OpenGL
+	 * functions like {@link GL20#glViewport(int, int, int, int)} and
+	 * {@link GL20#glScissor(int, int, int, int)} require raw pixel units. Use
+	 * {@link HdpiUtils} to help with the conversion if HdpiMode is set to
+	 * {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
+	 */
+	public HdpiMode hdpiMode = HdpiMode.Logical;
 
 	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
 

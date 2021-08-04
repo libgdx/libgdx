@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl.audio;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -75,6 +76,7 @@ public class OpenALLwjglAudio implements LwjglAudio {
 			return;
 		}
 
+		alGetError();
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
 			int sourceID = alGenSources();
@@ -86,11 +88,14 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		sourceToSoundId = new IntMap<Long>();
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
-			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
+			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
+		((Buffer) orientation).flip();
 		alListener(AL_ORIENTATION, orientation);
-		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
+		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		((Buffer) velocity).flip();
 		alListener(AL_VELOCITY, velocity);
-		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
+		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		((Buffer) position).flip();
 		alListener(AL_POSITION, position);
 
 		recentSounds = new OpenALSound[simultaneousSources];
@@ -136,12 +141,11 @@ public class OpenALLwjglAudio implements LwjglAudio {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
+				Long oldSoundId = sourceToSoundId.remove(sourceId);
+				if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					Long oldSoundId = sourceToSoundId.remove(sourceId);
-					if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
-
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);
@@ -159,8 +163,13 @@ public class OpenALLwjglAudio implements LwjglAudio {
 
 	void freeSource (int sourceID) {
 		if (noDevice) return;
+		alGetError();
 		alSourceStop(sourceID);
+		int e = alGetError();
+		if (e != AL_NO_ERROR) throw new GdxRuntimeException("AL Error: " + e);
 		alSourcei(sourceID, AL_BUFFER, 0);
+		e = alGetError();
+		if (e != AL_NO_ERROR) throw new GdxRuntimeException("AL Error: " + e);
 		Long soundId = sourceToSoundId.remove(sourceID);
 		if (soundId != null) soundIdToSource.remove(soundId);
 		idleSources.add(sourceID);
@@ -275,8 +284,8 @@ public class OpenALLwjglAudio implements LwjglAudio {
 			alDeleteSources(sourceID);
 		}
 
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
+		sourceToSoundId = null;
+		soundIdToSource = null;
 
 		AL.destroy();
 		while (AL.isCreated()) {

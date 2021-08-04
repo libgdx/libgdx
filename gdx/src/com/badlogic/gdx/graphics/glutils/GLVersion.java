@@ -19,8 +19,6 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +87,7 @@ public class GLVersion {
 		try {
 			return Integer.parseInt(v);
 		} catch (NumberFormatException nfe) {
-			Gdx.app.error("LibGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
+			Gdx.app.error("libGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
 			return defaultValue;
 		}
 	}

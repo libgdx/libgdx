@@ -76,6 +76,7 @@ public abstract class Interpolation {
 	static public final Interpolation pow2OutInverse = new Interpolation() {
 		public float apply (float a) {
 			if (a < MathUtils.FLOAT_ROUNDING_ERROR) return 0;
+			if (a > 1) return 1;
 			return 1 - (float)Math.sqrt(-(a - 1));
 		}
 	};

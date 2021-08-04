@@ -25,8 +25,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,8 +39,6 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.AsyncTask;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -126,7 +123,7 @@ public class NetJavaImpl {
 		}
 	}
 
-	private final ExecutorService executorService;
+	private final ThreadPoolExecutor executorService;
 	final ObjectMap<HttpRequest, HttpURLConnection> connections;
 	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
 
@@ -135,9 +132,11 @@ public class NetJavaImpl {
 	}
 
 	public NetJavaImpl (int maxThreads) {
-		executorService = new ThreadPoolExecutor(0, maxThreads,
+		final boolean isCachedPool = maxThreads == Integer.MAX_VALUE;
+		executorService = new ThreadPoolExecutor(
+				isCachedPool ? 0 : maxThreads, maxThreads,
 				60L, TimeUnit.SECONDS,
-				new SynchronousQueue<Runnable>(),
+				isCachedPool ? new SynchronousQueue<Runnable>() : new LinkedBlockingQueue<Runnable>(),
 				new ThreadFactory() {
 					AtomicInteger threadID = new AtomicInteger();
 					@Override
@@ -147,6 +146,7 @@ public class NetJavaImpl {
 						return thread;
 					}
 				});
+		executorService.allowCoreThreadTimeOut(!isCachedPool);
 		connections = new ObjectMap<HttpRequest, HttpURLConnection>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}

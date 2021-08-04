@@ -30,11 +30,10 @@ versions.lwjgl3 = "3.2.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
-versions.appleExtension = "1.4"
-versions.androidPlugin = "3.5.4"
+versions.androidPlugin = "4.1.3"
 versions.multiDex = "2.0.1"
 versions.androidCompileSdk = 30
-versions.androidTargetSdk = 29
+versions.androidTargetSdk = 30
 versions.androidMinSdk = 14
 versions.androidBuildTools = "29.0.3"
 versions.androidFragment = "1.2.3"
@@ -53,6 +52,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
@@ -60,6 +60,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
@@ -67,6 +68,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
@@ -74,6 +76,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
@@ -81,6 +84,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
@@ -88,16 +92,11 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
+        // "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
-        "com.apple:AppleJavaExtensions:${versions.appleExtension}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
-]
-
-libraries.jglfw = [
-        "com.badlogicgames.jglfw:jglfw:${versions.jglwf}",
-        "com.badlogicgames.jglfw:jglfw-platform:${versions.jglwf}:natives-desktop"
 ]
 
 libraries.robovm = [
@@ -119,15 +118,10 @@ libraries.junit = [
         "junit:junit:${versions.junit}"
 ]
 
-libraries.jnigen = [
-        "com.github.javaparser:javaparser-core:${versions.javaparser}"
-]
-
 testnatives.desktop = [
         files("gdx/libs/gdx-natives.jar"),
         files("extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar"),
         files("extensions/gdx-bullet/libs/gdx-bullet-natives.jar"),
-        files("extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"),
         files("extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
 ]
 

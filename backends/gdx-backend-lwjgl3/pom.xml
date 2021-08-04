@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.14-SNAPSHOT</version>
+    <version>1.10.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -67,6 +67,15 @@
       <classifier>natives-macos</classifier>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-glfw</artifactId>
@@ -115,6 +124,15 @@
       <classifier>natives-macos</classifier>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-jemalloc</artifactId>
@@ -163,6 +181,15 @@
       <classifier>natives-macos</classifier>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-opengl</artifactId>
@@ -211,6 +238,15 @@
       <classifier>natives-macos</classifier>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-opengl</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-openal</artifactId>
@@ -258,6 +294,15 @@
       <version>${lwjgl3.version}</version>
       <classifier>natives-macos</classifier>
     </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    -->
 
     <dependency>
       <groupId>com.badlogicgames.jlayer</groupId>
@@ -269,13 +314,6 @@
         <groupId>org.jcraft</groupId>
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
-    </dependency>
-    <dependency>
-      <groupId>com.apple</groupId>
-      <artifactId>AppleJavaExtensions</artifactId>
-      <version>1.4</version>
-      <scope>compile</scope>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 

@@ -27,12 +27,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -45,15 +46,7 @@ import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
 import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
-import org.robovm.apple.uikit.UIInterfaceOrientationMask;
-import org.robovm.apple.uikit.UIPress;
-import org.robovm.apple.uikit.UIPressesEvent;
-import org.robovm.apple.uikit.UIRectEdge;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
-import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
 
 public class IOSGraphics extends AbstractGraphics {
@@ -180,7 +173,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = config.knownDevices.get(machineString);
-		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to libGDX");
 		int ppi = device != null ? device.ppi : app.guessUnknownPpi();
 		density = ppi / 160f;
 		ppiX = ppi;
@@ -232,9 +225,8 @@ public class IOSGraphics extends AbstractGraphics {
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			final int width = screenBounds.width;
-			final int height = screenBounds.height;
-			gl20.glViewport(0, 0, width, height);
+			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
@@ -243,7 +235,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 			updateSafeInsets();
 			app.listener.create();
-			app.listener.resize(width, height);
+			app.listener.resize(getWidth(), getHeight());
 			created = true;
 		}
 		if (appPaused) {
@@ -328,12 +320,20 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public int getWidth () {
-		return screenBounds.width;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferWidth();
+		} else {
+			return screenBounds.width;
+		}
 	}
 
 	@Override
 	public int getHeight () {
-		return screenBounds.height;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferHeight();
+		} else {
+			return screenBounds.height;
+		}
 	}
 
 	@Override
@@ -449,6 +449,12 @@ public class IOSGraphics extends AbstractGraphics {
 			safeInsetLeft = (int) edgeInsets.getLeft();
 			safeInsetRight = (int) edgeInsets.getRight();
 			safeInsetBottom = (int) edgeInsets.getBottom();
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				safeInsetTop *= app.pixelsPerPoint;
+				safeInsetLeft *= app.pixelsPerPoint;
+				safeInsetRight *= app.pixelsPerPoint;
+				safeInsetBottom *= app.pixelsPerPoint;
+			}
 		}
 	}
 
@@ -496,6 +502,14 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public void setVSync (boolean vsync) {
+	}
+
+	/** Sets the preferred framerate for the application. Default is 60. Is not generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the preferred fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		viewController.setPreferredFramesPerSecond(fps);
 	}
 
 	@Override

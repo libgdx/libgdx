@@ -10,10 +10,10 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.14-SNAPSHOT</version>
+  <version>1.10.1-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
-  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
+  <description>Android/Desktop/iOS/HTML5 game development framework</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://github.com/libgdx/libgdx/issues</url>
@@ -47,11 +47,10 @@
     <gwt.version>2.8.2</gwt.version>
     <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.2.3</lwjgl3.version>
-    <robovm.version>2.3.12</robovm.version>
+    <robovm.version>2.3.12</robovm.version>    
   </properties>
 
   <modules>
-    <module>extensions/gdx-jnigen</module>
     <module>gdx</module>
     <module>gdx/jni/maven</module>
     <module>backends/gdx-backend-android</module>
@@ -64,7 +63,6 @@
     <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
-    <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>    
   </modules>
@@ -73,11 +71,32 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+              <id>download-natives</id>
+              <phase>prepare-package</phase>
+              <goals><goal>run</goal></goals>
+              <configuration>
+              <skip>${skipFetchNatives}</skip>
+              <target>
+                <ant antfile="${basedir}/fetch.xml">
+                  <target name="fetch-gdx" />
+                </ant>
+              </target>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <fork>true</fork>
           <showWarnings>true</showWarnings>
         </configuration>

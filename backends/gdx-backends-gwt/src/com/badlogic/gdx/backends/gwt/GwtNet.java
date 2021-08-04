@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -159,10 +160,14 @@ public class GwtNet implements Net {
 			Request request = builder.sendRequest(valueInBody ? value : null, new RequestCallback() {
 
 				@Override
-				public void onResponseReceived (Request request, Response response) {					
+				public void onResponseReceived (Request request, Response response) {
+					if (response.getStatusCode() > 0) {
 						httpResultListener.handleHttpResponse(new HttpClientResponse(response));
 						requests.remove(httpRequest);
 						listeners.remove(httpRequest);
+					} else {
+						onError(request, new IOException("HTTP request failed"));
+					}
 				}
 
 				@Override

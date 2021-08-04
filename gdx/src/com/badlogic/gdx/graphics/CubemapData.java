@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 
 /** Used by a {@link Cubemap} to load the pixel data. The Cubemap will request the CubemapData to prepare itself through

@@ -20,7 +20,6 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.IntIntMap;
 
 /** A VertexData instance holds vertices for rendering with OpenGL. It is implemented as either a {@link VertexArray} or a
  * {@link VertexBufferObject}. Only the later supports OpenGL ES 2.0.

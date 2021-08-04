@@ -160,7 +160,7 @@
 	</extension>
 	<extension>
 		<name>gdx-kiwi</name>
-		<description>Guava-inspired utilities for LibGDX.</description>
+		<description>Guava-inspired utilities for libGDX</description>
 		<package>com.github.czyzby.kiwi</package>
 		<version>1.9.1.9.6</version>
 		<compatibility>1.9.6</compatibility>
@@ -182,7 +182,7 @@
 	</extension>
 	<extension>
 		<name>gdx-lml</name>
-		<description>Parser of HTML-like templates into Scene2D actors.</description>
+		<description>Parser of HTML-like templates into Scene2D actors</description>
 		<package>com.github.czyzby.lml</package>
 		<version>1.9.1.9.6</version>
 		<compatibility>1.9.6</compatibility>
@@ -205,7 +205,7 @@
 	</extension>
 	<extension>
 		<name>gdx-lml-vis</name>
-		<description>Parser of HTML-like templates into VisUI actors.</description>
+		<description>Parser of HTML-like templates into VisUI actors</description>
 		<package>com.github.czyzby.lml.vis</package>
 		<version>1.9.1.9.6</version>
 		<compatibility>1.9.6</compatibility>

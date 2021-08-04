@@ -38,9 +38,9 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.conformance.AudioSoundAndMusicIsolationTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
@@ -49,6 +49,7 @@ import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
+import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.AnisotropyTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
@@ -104,6 +105,7 @@ public class GdxTests {
 		AtlasIssueTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
+		AudioSoundAndMusicIsolationTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
 		Benchmark3DTest.class,
@@ -149,7 +151,6 @@ public class GdxTests {
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
-		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
 		GLES30Test.class,
@@ -195,6 +196,7 @@ public class GdxTests {
 		NinePatchTest.class,
 		NoncontinuousRenderingTest.class,
 		OnscreenKeyboardTest.class,
+		OctreeTest.class,
 		PathTest.class,
 		ParallaxTest.class,
 		ParticleControllerInfluencerSingleTest.class,
@@ -281,6 +283,7 @@ public class GdxTests {
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
+		UtfFontTest.class,
 		VBOWithVAOPerformanceTest.class,
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,

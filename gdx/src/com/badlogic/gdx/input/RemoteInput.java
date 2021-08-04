@@ -24,10 +24,8 @@ import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
 
 /** <p>
  * An {@link Input} implementation that receives touch, key, accelerometer and compass events from a remote Android device. Just
@@ -37,7 +35,7 @@ import com.badlogic.gdx.utils.IntSet;
  * 
  * <p>
  * On your Android device you can use the gdx-remote application available on the Google Code page as an APK or in SVN
- * (extensions/gdx-remote). Open it, specify the IP address and the port of the PC your libgdx app is running on and then tap
+ * (extensions/gdx-remote). Open it, specify the IP address and the port of the PC your libGDX app is running on and then tap
  * away.
  * </p>
  * 

@@ -825,7 +825,8 @@ public class BitmapFont implements Disposable {
 		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
 		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
 		 *           square bracket.
-		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
+		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. Used tp
+		 *           apply kerning between the specified glyph and the first glyph in this run. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
 			int max = end - start;
 			if (max == 0) return;

@@ -16,8 +16,6 @@
 
 package com.badlogic.gwtref.client;
 
-import java.util.Collection;
-
 public interface IReflectionCache {
 	// Class level methods
 	public Type forName (String name);

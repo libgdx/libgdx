@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.AL10.alSourcei;
 import static org.lwjgl.openal.ALC10.*;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -44,7 +45,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.files.FileHandle;
@@ -57,6 +57,7 @@ import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.SOFTDirectChannels;
 
 /** @author Nathan Sweet */
 public class OpenALLwjgl3Audio implements Lwjgl3Audio {
@@ -109,6 +110,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		}
 		AL.createCapabilities(deviceCapabilities);
 
+		alGetError();
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
 			int sourceID = alGenSources();
@@ -120,11 +122,14 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		sourceToSoundId = new IntMap<Long>();
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
-			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
+			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
+		((Buffer) orientation).flip();
 		alListenerfv(AL_ORIENTATION, orientation);
-		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
+		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		((Buffer) velocity).flip();
 		alListenerfv(AL_VELOCITY, velocity);
-		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
+		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		((Buffer) position).flip();
 		alListenerfv(AL_POSITION, position);
 
 		recentSounds = new OpenALSound[simultaneousSources];
@@ -170,12 +175,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
+				Long oldSoundId = sourceToSoundId.remove(sourceId);
+				if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					Long oldSoundId = sourceToSoundId.remove(sourceId);
-					if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
-
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);
@@ -185,6 +189,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
 				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 1f);
+				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, AL10.AL_TRUE);
 				return sourceId;
 			}
 		}
@@ -308,8 +313,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			alDeleteSources(sourceID);
 		}
 
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
+		sourceToSoundId = null;
+		soundIdToSource = null;
 
 		alcDestroyContext(context);
 		alcCloseDevice(device);

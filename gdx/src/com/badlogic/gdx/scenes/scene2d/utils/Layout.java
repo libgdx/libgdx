@@ -18,7 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /** Provides methods for an actor to participate in layout and to provide a minimum, preferred, and maximum size.
  * @author Nathan Sweet */

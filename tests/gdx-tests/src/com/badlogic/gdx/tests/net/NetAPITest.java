@@ -105,19 +105,19 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					String httpMethod = Net.HttpMethods.GET;
 					String requestContent = null;
 					if (clickedButton == btnDownloadImage)
-						url = "http://i.imgur.com/vxomF.jpg";
+						url = "https://i.imgur.com/vxomF.jpg";
 					else if (clickedButton == btnDownloadText)
-						url = "http://www.apache.org/licenses/LICENSE-2.0.txt";
+						url = "https://www.apache.org/licenses/LICENSE-2.0.txt";
 					else if (clickedButton == btnDownloadLarge)
-						url = "http://libgdx.badlogicgames.com/releases/libgdx-1.2.0.zip";
+						url = "https://libgdx.badlogicgames.com/releases/libgdx-1.2.0.zip";
 					else if (clickedButton == btnDownloadError)
-						url = "http://www.badlogicgames.com/doesnotexist";
+						url = "https://www.badlogicgames.com/doesnotexist";
 					else if (clickedButton == btnOpenUri) {
-						Gdx.net.openURI("http://libgdx.badlogicgames.com/");
+						Gdx.net.openURI("https://libgdx.com");
 						return;
 					}
 					else {
-						url = "http://posttestserver.com/post.php?dump";
+						url = "https://httpbin.org/post";
 						httpMethod = Net.HttpMethods.POST;
 						requestContent = "name1=value1&name2=value2";
 					}

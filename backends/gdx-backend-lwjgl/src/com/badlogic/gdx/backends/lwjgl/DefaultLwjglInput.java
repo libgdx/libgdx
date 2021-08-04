@@ -22,8 +22,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.IntSet;
-import com.badlogic.gdx.utils.Pool;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -32,9 +30,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

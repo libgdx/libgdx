@@ -1,9 +1,9 @@
 <project name="gdx" default="all" basedir=".">
-	<description>libgdx distribution build file</description>
+	<description>libGDX distribution build file</description>
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.9.13-SNAPSHOT"/>
+	<property name="version" value="1.10.1-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -14,24 +14,20 @@
 	<!-- should we build natives in release mode -->
 	<property name="release" value="true"/>
 
-	<property name="javacTarget" value="1.6"/>
+	<property name="javacTarget" value="1.7"/>
 
 	<!-- clean distribution/output directory -->
 	<target name="clean">
 		<delete dir="${distDir}"/>
 	</target>
 
-	<!-- build the core of the library plus all backends -->
-	<!-- gdx jnigen -->
-	<target name="gdx-jnigen">
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
-			<property name="distDir" value="${distDir}/extensions/gdx-jnigen"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-jnigen"/>
-			<!-- we shouldn't build any natives -->
-			<property name="build-natives" value="false"/>
+	<!-- fetch the natives -->
+	<target name="fetch">
+		<ant antfile="fetch.xml">			
 		</ant>
 	</target>
+
+	<!-- build the core of the library plus all backends -->
 
 	<!-- new gdx setup, custom target -->
 	<target name="gdx-setup">
@@ -40,10 +36,7 @@
 	</target>
 
 	<!-- gdx core -->
-	<target name="gdx-core" depends="gdx-jnigen">
-		<path id="classpath">
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
+	<target name="gdx-core">
 		<fileset id="resourcefiles" dir="gdx/res">
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl"/>
@@ -93,9 +86,6 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-		<ant antfile="fetch.xml">
-			<target name="fetch-lwjgl3"/>
-		</ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
 			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-backend-lwjgl3"/>
@@ -132,9 +122,6 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-        <ant antfile="fetch.xml">
-            <target name="fetch-robovm"/>
-        </ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
 			<property name="javacTarget" value="${javacTarget}"/>
 			<property name="jar" value="gdx-backend-robovm"/>
@@ -165,7 +152,6 @@
 	<target name="gdx-box2d" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
@@ -192,84 +178,10 @@
 		</ant>
 	</target>
 
-	<!-- gdx controllers -->
-	<target name="gdx-controllers" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers">
-			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-controllers"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-controllers-desktop" depends="gdx-core,gdx-jnigen,gdx-controllers">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop">
-			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-controllers-desktop"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-controllers-lwjgl3" depends="gdx-core,gdx-controllers,gdx-backend-lwjgl3">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-lwjgl3.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
-			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
-			<property name="javacTarget" value="1.8"/>
-			<property name="jar" value="gdx-controllers-lwjgl3"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-controllers-android" depends="gdx-core,gdx-backend-android,gdx-controllers">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-android.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-30.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
-			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-controllers-android"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-controllers-gwt" depends="gdx-core,gdx-backend-gwt,gdx-controllers">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/find-bugs.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
-			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
-			<property name="javacTarget" value="${javacTarget}"/>
-			<property name="jar" value="gdx-controllers-gwt"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
 	<!-- gdx freetype -->
 	<target name="gdx-freetype" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-freetype">
 			<property name="distDir" value="${distDir}/extensions/gdx-freetype"/>
@@ -283,7 +195,6 @@
 	<target name="gdx-bullet" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<path id="src">
 				<pathelement location="extensions/gdx-bullet/src"/>
@@ -301,10 +212,11 @@
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
-		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true"
+		windowtitle="libGDX API" doctitle="libGDX API" footer="libGDX API"
+			useexternalfile="true"
 		additionalparam="-Xdoclint:none -encoding UTF-8">
 			<header><![CDATA[
-				libgdx API
+				libGDX API
 				<style>
 				body, td, th { font-family:Helvetica, Tahoma, Arial, sans-serif; font-size:10pt }
 				pre, code, tt { font-size:9pt; font-family:Lucida Console, Courier New, sans-serif }
@@ -346,7 +258,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-lwjgl3,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,fetch,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

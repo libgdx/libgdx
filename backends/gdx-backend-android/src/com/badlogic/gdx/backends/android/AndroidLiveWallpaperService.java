@@ -27,7 +27,6 @@ import android.app.WallpaperColors;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -57,9 +56,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> */
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	static final String TAG = "WallpaperService";
 	static boolean DEBUG = false; // TODO remember to disable this

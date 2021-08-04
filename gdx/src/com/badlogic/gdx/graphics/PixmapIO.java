@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -89,7 +90,6 @@ public class PixmapIO {
 			DataOutputStream out = null;
 
 			try {
-				// long start = System.nanoTime();
 				DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(file.write(false));
 				out = new DataOutputStream(deflaterOutputStream);
 				out.writeInt(pixmap.getWidth());
@@ -97,8 +97,8 @@ public class PixmapIO {
 				out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));
 
 				ByteBuffer pixelBuf = pixmap.getPixels();
-				pixelBuf.position(0);
-				pixelBuf.limit(pixelBuf.capacity());
+				((Buffer) pixelBuf).position(0);
+				((Buffer) pixelBuf).limit(pixelBuf.capacity());
 
 				int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
 				int iterations = pixelBuf.capacity() / BUFFER_SIZE;
@@ -113,10 +113,8 @@ public class PixmapIO {
 					out.write(writeBuffer, 0, remainingBytes);
 				}
 
-				pixelBuf.position(0);
-				pixelBuf.limit(pixelBuf.capacity());
-				// Gdx.app.log("PixmapIO", "write (" + file.name() + "):" + (System.nanoTime() - start) / 1000000000.0f + ", " +
-				// Thread.currentThread().getName());
+				((Buffer) pixelBuf).position(0);
+				((Buffer) pixelBuf).limit(pixelBuf.capacity());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
 			} finally {
@@ -128,7 +126,6 @@ public class PixmapIO {
 			DataInputStream in = null;
 
 			try {
-				// long start = System.nanoTime();
 				in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read())));
 				int width = in.readInt();
 				int height = in.readInt();
@@ -136,8 +133,8 @@ public class PixmapIO {
 				Pixmap pixmap = new Pixmap(width, height, format);
 
 				ByteBuffer pixelBuf = pixmap.getPixels();
-				pixelBuf.position(0);
-				pixelBuf.limit(pixelBuf.capacity());
+				((Buffer) pixelBuf).position(0);
+				((Buffer) pixelBuf).limit(pixelBuf.capacity());
 
 				synchronized (readBuffer) {
 					int readBytes = 0;
@@ -146,9 +143,8 @@ public class PixmapIO {
 					}
 				}
 
-				pixelBuf.position(0);
-				pixelBuf.limit(pixelBuf.capacity());
-				// Gdx.app.log("PixmapIO", "read:" + (System.nanoTime() - start) / 1000000000.0f);
+				((Buffer) pixelBuf).position(0);
+				((Buffer) pixelBuf).limit(pixelBuf.capacity());
 				return pixmap;
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
@@ -159,21 +155,21 @@ public class PixmapIO {
 	}
 
 	/** PNG encoder with compression. An instance can be reused to encode multiple PNGs with minimal allocation.
-	 * 
+	 *
 	 * <pre>
 	 * Copyright (c) 2007 Matthias Mann - www.matthiasmann.de
 	 * Copyright (c) 2014 Nathan Sweet
-	 * 
+	 *
 	 * Permission is hereby granted, free of charge, to any person obtaining a copy
 	 * of this software and associated documentation files (the "Software"), to deal
 	 * in the Software without restriction, including without limitation the rights
 	 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	 * copies of the Software, and to permit persons to whom the Software is
 	 * furnished to do so, subject to the following conditions:
-	 * 
+	 *
 	 * The above copyright notice and this permission notice shall be included in
 	 * all copies or substantial portions of the Software.
-	 * 
+	 *
 	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -267,7 +263,7 @@ public class PixmapIO {
 			for (int y = 0, h = pixmap.getHeight(); y < h; y++) {
 				int py = flipY ? (h - y - 1) : y;
 				if (rgba8888) {
-					pixels.position(py * lineLen);
+					((Buffer) pixels).position(py * lineLen);
 					pixels.get(curLine, 0, lineLen);
 				} else {
 					for (int px = 0, x = 0; px < pixmap.getWidth(); px++) {
@@ -309,7 +305,7 @@ public class PixmapIO {
 				curLine = prevLine;
 				prevLine = temp;
 			}
-			pixels.position(oldPosition);
+			((Buffer) pixels).position(oldPosition);
 			deflaterOutput.finish();
 			buffer.endChunk(dataOutput);
 

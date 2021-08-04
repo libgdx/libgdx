@@ -7,8 +7,7 @@
         android:icon="@drawable/ic_launcher"
         android:isGame="true"
         android:appCategory="game"
-        android:label="@string/app_name"
-        android:theme="@style/GdxTheme" >
+        android:label="@string/app_name">
         <activity
             android:name="%PACKAGE%.AndroidLauncher"
             android:label="@string/app_name" 

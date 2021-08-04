@@ -33,10 +33,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		void exit ();
 	}
 
-	static {
-		GdxNativesLoader.load();
-	}
-
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -130,8 +126,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		if (this.getVersion() < MINIMUM_SDK) {
-			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+			throw new GdxRuntimeException("libGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);

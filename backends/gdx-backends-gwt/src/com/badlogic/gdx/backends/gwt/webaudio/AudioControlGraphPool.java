@@ -16,10 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.webaudio;
 
-import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.badlogic.gdx.utils.Pool;
 
 public class AudioControlGraphPool extends Pool<AudioControlGraph> {
 	public JavaScriptObject audioContext;
