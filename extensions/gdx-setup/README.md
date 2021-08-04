@@ -1,11 +1,10 @@
-libGDX gradle setup
-===================
+# libGDX Gradle setup
 
-Modular setup powered by gradle, allowing any combination of sub projects and official extensions to get you up and running in a few clicks.  Although this tool will handle setup for you, LEARN GRADLE!
+Modular setup powered by gradle, allowing any combination of subprojects and official extensions to get you up and running in a few clicks. Although this tool will handle setup for you, LEARN GRADLE!
 
-![Setup Ui](http://i.imgur.com/M1e5TLU.png)
+![Setup UI](https://user-images.githubusercontent.com/60154347/128180000-6999f3e1-cd7e-4df9-80c7-79cedad21735.png)
 
-Example of use:
+## Code example
 
 ```java
 DependencyBank bank = new DependencyBank();
@@ -29,27 +28,11 @@ List<String> incompatList = builder.buildProject(modules, dependencies);
 // The setup ui checks for these and pops up a dialog.
 ```
 
+The builder will generate the settings.gradle and build.gradle files, as well as alter all the platform specific files that reference dependencies/assets.
 
-The builder will generate the settings.gradle, build.gradle file, as well as alter all the platform specific files that reference dependencies/assets.
-
-Files Altered:
-* settings.gradle
-* build.gradle
-* GdxDefinition.gwt.xml
-* GdxDefinitionSuperDev.gwt.xml
-* robovm.xml
-* desktop/build.gradle (for eclipse task)
-
-Modular setup classes
-=====================
+## Modular setup classes
 
 * BuildScriptHelper - Helper class for writing the build.gradle script to file.
-* Dependency - Holds all the information for a dependency for all platforms
-* ProjectBuilder - The project builder, manages the writers and temporary files
-* DependencyBank - The bank for all supported sub modules, and dependencies.  Project repositories and plugin versions are defined here.
-
-Assets
-======
-
-android/assets is the assets directory, however if there is no android project selected, it will configure the project to use core/assets
-
+* Dependency - Holds all the information for a dependency for all platforms.
+* ProjectBuilder - The project builder, manages the writers and temporary files.
+* DependencyBank - The bank for all supported submodules, and dependencies. Project repositories and plugin versions are defined here.
