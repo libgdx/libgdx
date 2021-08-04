@@ -101,6 +101,8 @@ public class RopeJoint extends Joint {
       m_u.setZero();
       m_mass = 0.0f;
       m_impulse = 0.0f;
+      pool.pushRot(2);
+      pool.pushVec2(1);
       return;
     }
 

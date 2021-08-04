@@ -464,7 +464,10 @@ public class ReflectionCacheSourceCreator {
 
 			Annotation[] annotations = c.getDeclaredAnnotations();
 			if (annotations != null && annotations.length > 0) {
-				pb(varName + ".annotations = " + getAnnotations(annotations) + ";");
+				String annotations1 = getAnnotations(annotations);
+				if ( !"null".equals(annotations1) ) { // avoid nulling the default empty array for annotations.
+					pb(varName + ".annotations = " + annotations1 + ";");
+				}
 			}
 		} else {
 			pb(varName + ".isAbstract = true;"); // Primitives are _always_ abstract
