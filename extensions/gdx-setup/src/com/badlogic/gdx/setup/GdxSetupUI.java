@@ -165,7 +165,7 @@ public class GdxSetupUI extends JFrame {
 
 		final String assetPath;
 		if (ui.settings.oldAssetsBox.isSelected()) {
-			assetPath = builder.modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
+			assetPath = modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
 		} else {
 			assetPath = GdxSetup.DEFAULT_ASSET_PATH;
 		}
