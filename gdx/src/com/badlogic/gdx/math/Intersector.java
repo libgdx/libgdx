@@ -905,25 +905,7 @@ public final class Intersector {
 	/** Quick check whether the given {@link BoundingBox} and {@link Plane} intersect.
 	 * @return Whether the bounding box and the plane intersect. */
 	public static boolean intersectBoundsPlaneFast (BoundingBox box, Plane plane) {
-		return intersectBoundsPlaneFast(box.getCenter(tmp1), box.getDimensions(tmp2).scl(0.5f), plane.normal, plane.d);
-	}
-
-	/** Quick check whether the given bounding box and a plane intersect. Code adapted from Christer Ericson's Real Time Collision
-	 * @param center The center of the bounding box
-	 * @param halfDimensions Half of the dimensions (width, height and depth) of the bounding box
-	 * @param normal The normal of the plane
-	 * @param distance The distance of the plane
-	 * @return Whether the bounding box and the plane intersect. */
-	public static boolean intersectBoundsPlaneFast (Vector3 center, Vector3 halfDimensions, Vector3 normal, float distance) {
-		// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
-		float radius = halfDimensions.x * Math.abs(normal.x) + halfDimensions.y * Math.abs(normal.y)
-			+ halfDimensions.z * Math.abs(normal.z);
-
-		// Compute distance of box center from plane
-		float s = normal.dot(center) - distance;
-
-		// Intersection occurs when plane distance falls within [-r,+r] interval
-		return Math.abs(s) <= radius;
+		return PlaneSide.OnPlane == plane.testBounds(box);
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.
