@@ -276,13 +276,28 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, (ShortBuffer)indices);
-		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer());
-		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE)
-			GL11.glDrawElements(mode, (ByteBuffer)indices);
-		else
+		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT) {
+			ShortBuffer sb = (ShortBuffer)indices;
+			int position = sb.position();
+			int oldLimit = sb.limit();
+			sb.limit(position + count);
+			GL11.glDrawElements(mode, sb);
+			sb.limit(oldLimit);
+		} else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT) {
+			ShortBuffer sb = ((ByteBuffer)indices).asShortBuffer();
+			int position = sb.position();
+			int oldLimit = sb.limit();
+			sb.limit(position + count);
+			GL11.glDrawElements(mode, sb);
+			sb.limit(oldLimit);
+		} else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE) {
+			ByteBuffer bb = (ByteBuffer)indices;
+			int position = bb.position();
+			int oldLimit = bb.limit();
+			bb.limit(position + count);
+			GL11.glDrawElements(mode, bb);
+			bb.limit(oldLimit);
+		} else
 			throw new GdxRuntimeException("Can't use " + indices.getClass().getName()
 				+ " with this method. Use ShortBuffer or ByteBuffer instead. Blame LWJGL");
 	}

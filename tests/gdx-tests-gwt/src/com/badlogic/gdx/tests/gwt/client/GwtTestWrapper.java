@@ -90,6 +90,7 @@ import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
@@ -491,6 +492,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				public GdxTest instance () {
 					return new TextAreaTest3();
 				}
+        }, new GwtInstancer() {
+           public GdxTest instance () {
+              return new VertexArrayTest();
+          }
 			} // these may have issues with tab getting intercepted by the browser
 		};
 
