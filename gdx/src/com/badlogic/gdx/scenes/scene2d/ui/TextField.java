@@ -105,7 +105,7 @@ public class TextField extends Widget implements Disableable {
 
 	protected float fontOffset, textHeight, textOffset;
 	float renderOffset;
-	private int visibleTextStart, visibleTextEnd;
+	protected int visibleTextStart, visibleTextEnd;
 	private int maxLength;
 
 	boolean focused;
