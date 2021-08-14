@@ -16,7 +16,7 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  [the forum](http://badlogicgames.com/forum/) or IRC). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
+  the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
@@ -95,7 +95,7 @@ libGDX does not have an official coding standard. We mostly follow the usual [Ja
 
 A few things we'd rather not like to see:
 
-  * underscores in any kind of identifier
+  * Underscores in any kind of identifier
   * [Hungarian notation](http://en.wikipedia.org/wiki/Hungarian_notation)
   * Prefixes for fields or arguments
   * Curlies on new lines
