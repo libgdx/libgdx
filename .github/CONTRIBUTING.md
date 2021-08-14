@@ -16,7 +16,8 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
+  the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)).
+  See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
