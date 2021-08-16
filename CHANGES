@@ -1,6 +1,5 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
-- [BREAKING CHANGE] Texture Packer: Filenames are now zero-indexed, including the first file (when there are multiple pages) - e.g. pack.png, pack2.png would now be pack0.png, pack1.png
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
@@ -22,6 +21,7 @@
 - Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
 - API Fix: Escaped characters in XML attributes are now properly un-escaped
 - Bug Fix: AssetManager backslash conversion removed - fixes use of filenames containing backslashes
+- TOOLS Features: legacyPages flag added to Texture Packer. When set to false, filenames for multiple-page atlases are zero-indexed, including the first file.
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.

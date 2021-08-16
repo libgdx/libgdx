@@ -201,7 +201,7 @@ public class TexturePacker {
 		File packDir = packFileNoExt.getParentFile();
 		String imageName = packFileNoExt.getName();
 
-		int fileIndex = 0;
+		int fileIndex = settings.legacyPages ? 1 : 0;
 		for (int p = 0, pn = pages.size; p < pn; p++) {
 			Page page = pages.get(p);
 
@@ -235,7 +235,7 @@ public class TexturePacker {
 			File outputFile;
 			do {
 				String name = imageName;
-				if (pages.size > 1) {
+				if (settings.legacyPages && fileIndex > 1 || !settings.legacyPages && pages.size > 1) {
 					// Last character is a digit or a digit + 'x'.
 					char last = name.charAt(name.length() - 1);
 					if (Character.isDigit(last)
@@ -930,6 +930,7 @@ public class TexturePacker {
 		public String atlasExtension = ".atlas";
 		public boolean prettyPrint = true;
 		public boolean legacyOutput = true;
+		public boolean legacyPages = true;
 
 		public Settings () {
 		}
@@ -983,6 +984,7 @@ public class TexturePacker {
 			atlasExtension = settings.atlasExtension;
 			prettyPrint = settings.prettyPrint;
 			legacyOutput = settings.legacyOutput;
+			legacyPages = settings.legacyPages;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
