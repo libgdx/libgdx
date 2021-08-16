@@ -717,7 +717,7 @@ public class TexturePacker {
 		}
 	}
 
-	public enum Resampling {
+	static public enum Resampling {
 		nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR), //
 		bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR), //
 		bicubic(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
