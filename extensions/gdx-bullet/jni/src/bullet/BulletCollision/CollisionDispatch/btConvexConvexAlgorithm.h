@@ -37,7 +37,7 @@ class btConvexPenetrationDepthSolver;
 
 ///The convexConvexAlgorithm collision algorithm implements time of impact, convex closest points and penetration depth calculations between two convex objects.
 ///Multiple contact points are calculated by perturbing the orientation of the smallest object orthogonal to the separating normal.
-///This idea was described by Gino van den Bergen in this forum topic http://www.bulletphysics.com/Bullet/phpBB3/viewtopic.php?f=4&t=288&p=888#p888
+///This idea was described by Gino van den Bergen in this forum topic https://pybullet.org/Bullet/phpBB3/viewtopic.php?f=4&t=288&p=888#p888
 class btConvexConvexAlgorithm : public btActivatingCollisionAlgorithm
 {
 #ifdef USE_SEPDISTANCE_UTIL2
