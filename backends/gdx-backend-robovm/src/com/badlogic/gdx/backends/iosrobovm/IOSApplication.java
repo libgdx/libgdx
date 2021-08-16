@@ -240,7 +240,7 @@ public class IOSApplication implements Application {
 	final void didBecomeActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
 		OALAudioSession audioSession = OALAudioSession.sharedInstance();
 		if (audioSession != null) {
 			audioSession.forceEndInterruption();
