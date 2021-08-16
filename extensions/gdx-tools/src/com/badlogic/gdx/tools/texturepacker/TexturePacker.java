@@ -201,7 +201,7 @@ public class TexturePacker {
 		File packDir = packFileNoExt.getParentFile();
 		String imageName = packFileNoExt.getName();
 
-		int fileIndex = 1;
+		int fileIndex = 0;
 		for (int p = 0, pn = pages.size; p < pn; p++) {
 			Page page = pages.get(p);
 
@@ -233,9 +233,9 @@ public class TexturePacker {
 			page.imageHeight = height;
 
 			File outputFile;
-			while (true) {
+			do {
 				String name = imageName;
-				if (fileIndex > 1) {
+				if (pages.size > 1) {
 					// Last character is a digit or a digit + 'x'.
 					char last = name.charAt(name.length() - 1);
 					if (Character.isDigit(last)
@@ -246,8 +246,7 @@ public class TexturePacker {
 				}
 				fileIndex++;
 				outputFile = new File(packDir, name + "." + settings.outputFormat);
-				if (!outputFile.exists()) break;
-			}
+			} while (outputFile.exists());
 			new FileHandle(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
@@ -704,9 +703,8 @@ public class TexturePacker {
 			if (getClass() != obj.getClass()) return false;
 			Rect other = (Rect)obj;
 			if (name == null) {
-				if (other.name != null) return false;
-			} else if (!name.equals(other.name)) return false;
-			return true;
+				return other.name == null;
+			} else return name.equals(other.name);
 		}
 
 		@Override
@@ -719,7 +717,7 @@ public class TexturePacker {
 		}
 	}
 
-	static public enum Resampling {
+	public enum Resampling {
 		nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR), //
 		bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR), //
 		bicubic(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -802,10 +800,10 @@ public class TexturePacker {
 		return false;
 	}
 
-	static public interface Packer {
-		public Array<Page> pack (Array<Rect> inputRects);
+	public interface Packer {
+		Array<Page> pack(Array<Rect> inputRects);
 
-		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
+		Array<Page> pack(ProgressListener progress, Array<Rect> inputRects);
 	}
 
 	static final class InputImage {

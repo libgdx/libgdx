@@ -1,5 +1,6 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
+- [BREAKING CHANGE] Texture Packer: Filenames are now zero-indexed, including the first file (when there are multiple pages) - e.g. pack.png, pack2.png would now be pack0.png, pack1.png
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
