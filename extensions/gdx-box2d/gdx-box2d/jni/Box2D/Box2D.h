@@ -24,9 +24,9 @@
 
 \section intro_sec Getting Started
 
-For documentation please see http://box2d.org/documentation.html
+For documentation please see https://box2d.org/documentation/
 
-For discussion please visit http://box2d.org/forum
+For discussion please visit https://discord.gg/NKYgCBP or https://www.reddit.com/r/box2d/
 */
 
 // These include files constitute the main Box2D API
