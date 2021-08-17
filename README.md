@@ -1,4 +1,4 @@
-![logo](https://libgdx.com/assets/brand/logo.svg)
+![logo](libgdx_logo.svg)
 
 [![GitHub Actions build status](https://img.shields.io/github/workflow/status/libgdx/libgdx/Java%20CI%20with%20Gradle/master?label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Build+Snapshot%22)
 
