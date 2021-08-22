@@ -235,7 +235,7 @@ public class TexturePacker {
 			File outputFile;
 			do {
 				String name = imageName;
-				if (settings.legacyPages && fileIndex > 1 || !settings.legacyPages && pages.size > 1) {
+				if ((settings.legacyPages && fileIndex > 1) || (!settings.legacyPages && pages.size > 1)) {
 					// Last character is a digit or a digit + 'x'.
 					char last = name.charAt(name.length() - 1);
 					if (Character.isDigit(last)
