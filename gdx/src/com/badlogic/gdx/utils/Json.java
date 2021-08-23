@@ -664,10 +664,9 @@ public class Json {
 
 			// Enum special case.
 			if (ClassReflection.isAssignableFrom(Enum.class, actualType)) {
+				if (actualType.getEnumConstants() == null) // Get the enum type when an enum value is an inner class (enum A {b{}}).
+					actualType = actualType.getSuperclass();
 				if (typeName != null && (knownType == null || knownType != actualType)) {
-					// Ensures that enums with specific implementations (abstract logic) serialize correctly.
-					if (actualType.getEnumConstants() == null) actualType = actualType.getSuperclass();
-
 					writeObjectStart(actualType, null);
 					writer.name("value");
 					writer.value(convertToString((Enum)value));
