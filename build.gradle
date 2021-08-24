@@ -21,7 +21,8 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:3.23.1"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:5.14.3"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
     }
 }
 
@@ -38,9 +39,6 @@ allprojects {
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
             maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         }
-        dependencies {
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
-        }
     }
 
     repositories {
@@ -56,7 +54,7 @@ allprojects {
 configure(subprojects - project(":tests:gdx-tests-android")) {
     apply plugin: "idea"
     apply plugin: "java"
-    apply plugin: "com.diffplug.gradle.spotless"
+    apply plugin: "com.diffplug.spotless"
 
     compileJava {
         options.fork = true
@@ -64,6 +62,8 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     }
 
     spotless {
+        ratchetFrom 'origin/master'
+
         lineEndings 'UNIX'
 
         java {
@@ -84,14 +84,6 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
                     ' ******************************************************************************/\n'
             removeUnusedImports()
             eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
-        }
-
-        cpp {
-            indentWithTabs()
-        }
-
-        xml {
-            indentWithTabs()
         }
     }
 }
