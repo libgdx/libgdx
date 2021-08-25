@@ -17,11 +17,13 @@
 apply from: "gradle/dependencies.gradle"
 
 buildscript {
+    apply from: "gradle/dependencies.gradle"
+
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:5.14.3"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
         classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
     }
 }
