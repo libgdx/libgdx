@@ -25,7 +25,7 @@ As we use Gradle, there's no need to download libGDX itself  &ndash; this can al
 - [A Simple Game](https://libgdx.com/dev/simple_game/)
 - [Tutorials & Demos](https://libgdx.com/dev/tutorials/)
 
-We also provide [javadocs](https://libgdx.badlogicgames.com/nightlies/docs/api/) online. The javadocs are also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
+We also provide [javadocs](https://libgdx.badlogicgames.com/nightlies/docs/api/) online. The javadocs are bundled with every libGDX distribution for consumption in your favorite IDE.
 
 ## Community & Contributing
 You can follow the **latest news** about libGDX on our [blog](https://libgdx.com/news/). Another good way to get in touch with our community is to join the official [libGDX Discord](https://libgdx.com/community/discord/).
