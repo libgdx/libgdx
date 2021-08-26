@@ -45,27 +45,33 @@ public class Pixmap implements Disposable {
 	 * 
 	 * @author mzechner */
 	public enum Format {
-		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
+		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888, SRGB;
 
 		public static int toGdx2DPixmapFormat (Format format) {
-			if (format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
-			if (format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
-			if (format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
-			if (format == RGB565) return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
-			if (format == RGBA4444) return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
-			if (format == RGB888) return Gdx2DPixmap.GDX2D_FORMAT_RGB888;
-			if (format == RGBA8888) return Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
-			throw new GdxRuntimeException("Unknown Format: " + format);
+			switch (format) {
+				case Alpha:
+				case Intensity: return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
+				case LuminanceAlpha: return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
+				case RGB565: return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
+				case RGBA4444: return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
+				case RGB888: return Gdx2DPixmap.GDX2D_FORMAT_RGB888;
+				case RGBA8888: return Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
+				case SRGB: return Gdx2DPixmap.GDX2D_FORMAT_SRGB;
+				default: throw new GdxRuntimeException("Unknown Format: " + format);
+			}
 		}
 
 		public static Format fromGdx2DPixmapFormat (int format) {
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA) return Alpha;
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA) return LuminanceAlpha;
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB565) return RGB565;
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA4444) return RGBA4444;
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB888) return RGB888;
-			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
-			throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+			switch (format) {
+				case Gdx2DPixmap.GDX2D_FORMAT_ALPHA: return Alpha;
+				case Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA: return LuminanceAlpha;
+				case Gdx2DPixmap.GDX2D_FORMAT_RGB565: return RGB565;
+				case Gdx2DPixmap.GDX2D_FORMAT_RGBA4444: return RGBA4444;
+				case Gdx2DPixmap.GDX2D_FORMAT_RGB888: return RGB888;
+				case Gdx2DPixmap.GDX2D_FORMAT_RGBA8888: return RGBA8888;
+				case Gdx2DPixmap.GDX2D_FORMAT_SRGB: return SRGB;
+				default: throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+			}
 		}
 		
 		public static int toGlFormat (Format format) {
