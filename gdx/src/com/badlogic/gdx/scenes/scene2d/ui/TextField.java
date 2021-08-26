@@ -238,6 +238,7 @@ public class TextField extends Widget implements Disableable {
 		float[] glyphPositions = this.glyphPositions.items;
 
 		// Check if the cursor has gone out the left or right side of the visible area and adjust renderOffset.
+		cursor = MathUtils.clamp(cursor, 0, glyphCount - 1);
 		float distance = glyphPositions[Math.max(0, cursor - 1)] + renderOffset;
 		if (distance <= 0)
 			renderOffset -= distance;
