@@ -573,7 +573,7 @@ public class GdxSetupUI extends JFrame {
 				while (depCounter < ProjectDependency.values().length) {
 					if (ProjectDependency.values()[depCounter] != null) {
 						final ProjectDependency projDep = ProjectDependency.values()[depCounter];
-						if (projDep.equals(ProjectDependency.GDX) || projDep.equals(ProjectDependency.TOOLS)) {
+						if (projDep.equals(ProjectDependency.GDX)) {
 							depCounter++;
 							continue;
 						}
@@ -601,7 +601,7 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 				
-				for (int left = ((depCounter - 1) % 5); left > 2; left--) {
+				for (int left = ((depCounter - 1) % 5); left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
 
