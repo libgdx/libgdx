@@ -125,7 +125,6 @@ public class GdxSetupUI extends JFrame {
 		builder = new ProjectBuilder(new DependencyBank());
 		modules.add(ProjectType.CORE);
 		dependencies.add(builder.bank.getDependency(ProjectDependency.GDX));
-		dependencies.add(builder.bank.getDependency(ProjectDependency.BOX2D));
 	}
 
 	void generate () {
