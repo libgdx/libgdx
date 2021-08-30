@@ -201,7 +201,7 @@ public class TexturePacker {
 		File packDir = packFileNoExt.getParentFile();
 		String imageName = packFileNoExt.getName();
 
-		int fileIndex = 1;
+		int fileIndex = settings.legacyPages ? 1 : 0;
 		for (int p = 0, pn = pages.size; p < pn; p++) {
 			Page page = pages.get(p);
 
@@ -233,9 +233,9 @@ public class TexturePacker {
 			page.imageHeight = height;
 
 			File outputFile;
-			while (true) {
+			do {
 				String name = imageName;
-				if (fileIndex > 1) {
+				if ((settings.legacyPages && fileIndex > 1) || (!settings.legacyPages && pages.size > 1)) {
 					// Last character is a digit or a digit + 'x'.
 					char last = name.charAt(name.length() - 1);
 					if (Character.isDigit(last)
@@ -246,8 +246,7 @@ public class TexturePacker {
 				}
 				fileIndex++;
 				outputFile = new File(packDir, name + "." + settings.outputFormat);
-				if (!outputFile.exists()) break;
-			}
+			} while (outputFile.exists());
 			new FileHandle(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
@@ -704,9 +703,8 @@ public class TexturePacker {
 			if (getClass() != obj.getClass()) return false;
 			Rect other = (Rect)obj;
 			if (name == null) {
-				if (other.name != null) return false;
-			} else if (!name.equals(other.name)) return false;
-			return true;
+				return other.name == null;
+			} else return name.equals(other.name);
 		}
 
 		@Override
@@ -802,10 +800,10 @@ public class TexturePacker {
 		return false;
 	}
 
-	static public interface Packer {
-		public Array<Page> pack (Array<Rect> inputRects);
+	public interface Packer {
+		Array<Page> pack(Array<Rect> inputRects);
 
-		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
+		Array<Page> pack(ProgressListener progress, Array<Rect> inputRects);
 	}
 
 	static final class InputImage {
@@ -932,6 +930,7 @@ public class TexturePacker {
 		public String atlasExtension = ".atlas";
 		public boolean prettyPrint = true;
 		public boolean legacyOutput = true;
+		public boolean legacyPages = true;
 
 		public Settings () {
 		}
@@ -985,6 +984,7 @@ public class TexturePacker {
 			atlasExtension = settings.atlasExtension;
 			prettyPrint = settings.prettyPrint;
 			legacyOutput = settings.legacyOutput;
+			legacyPages = settings.legacyPages;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {

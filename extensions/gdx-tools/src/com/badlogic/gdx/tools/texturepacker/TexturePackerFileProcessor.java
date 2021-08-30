@@ -38,9 +38,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TexturePackerFileProcessor extends FileProcessor {
 	private final Settings defaultSettings;
 	private final ProgressListener progress;
-	private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
-	private Json json = new Json();
-	private String packFileName;
+	private final ObjectMap<File, Settings> dirToSettings = new ObjectMap();
+	private final Json json = new Json();
+	private final String packFileName;
 	private File root;
 	ArrayList<File> ignoreDirs = new ArrayList();
 	boolean countOnly;
