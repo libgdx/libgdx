@@ -38,6 +38,7 @@ versions.androidMinSdk = 14
 versions.androidBuildTools = "29.0.3"
 versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
+versions.spotless = "5.14.3"
 
 libraries.lwjgl = [
         "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
