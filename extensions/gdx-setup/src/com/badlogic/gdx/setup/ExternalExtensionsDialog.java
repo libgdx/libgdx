@@ -113,6 +113,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 	public void showDialog (Component parent) {
 		takeSnapshot();
 		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 		setVisible(true);
 	}
 

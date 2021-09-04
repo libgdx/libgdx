@@ -69,9 +69,11 @@ public class SettingsDialog extends JDialog {
 	private JTextField mavenTextField;
 	SetupCheckBox offlineBox;
 	SetupCheckBox kotlinBox;
+	SetupCheckBox oldAssetsBox;
 	private String mavenSnapshot;
 	private boolean offlineSnapshot;
 	private boolean kotlinSnapshot;
+	private boolean oldAssetsSnapshot;
 
 	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
@@ -159,14 +161,16 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setMinimumSize(mavenTextField.getPreferredSize());
 		mavenLabel.setForeground(new Color(170, 170, 170));
 		mavenDesc.setForeground(new Color(170, 170, 170));
+
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
-		JLabel kotlinLabel = new JLabel("Use Kotlin");
-		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
+
+		JLabel kotlinLabel = new JLabel("Use Kotlin");
+		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language");
 		kotlinBox = new SetupCheckBox();
 		kotlinBox.addActionListener(new ActionListener() {
 			@Override
@@ -181,9 +185,16 @@ public class SettingsDialog extends JDialog {
 				}
 			}
 		});
-		offlineBox.setBackground(new Color(36, 36, 36));
 		kotlinLabel.setForeground(new Color(170, 170, 170));
 		kotlinDesc.setForeground(new Color(170, 170, 170));
+
+		JLabel oldAssetsLabel = new JLabel("Legacy Assets Dir");
+		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.10.1 location");
+		oldAssetsDesc.setToolTipText("(in android or core folder instead of project root)");
+		oldAssetsBox = new SetupCheckBox();
+		oldAssetsLabel.setForeground(new Color(170, 170, 170));
+		oldAssetsDesc.setForeground(new Color(170, 170, 170));
+		oldAssetsBox.setBackground(new Color(36, 36, 36));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -203,6 +214,9 @@ public class SettingsDialog extends JDialog {
 		content.add(kotlinBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(kotlinDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
+		content.add(oldAssetsLabel, new GridBagConstraints(0, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(oldAssetsBox, new GridBagConstraints(1, 5, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(oldAssetsDesc, new GridBagConstraints(3, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";
 		linkText = new JLabel("<html>" + text + "</html>");
@@ -236,6 +250,7 @@ public class SettingsDialog extends JDialog {
 	public void showDialog (Component parent, SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 		setVisible(true);
 		if (gwtCheckBox.isSelected()) {
 			kotlinBox.setSelected(false);
@@ -270,11 +285,13 @@ public class SettingsDialog extends JDialog {
 		mavenSnapshot = mavenTextField.getText();
 		offlineSnapshot = offlineBox.isSelected();
 		kotlinSnapshot = kotlinBox.isSelected();
+		oldAssetsSnapshot = oldAssetsBox.isSelected();
 	}
 
 	private void restore () {
 		mavenTextField.setText(mavenSnapshot);
 		offlineBox.setSelected(offlineSnapshot);
 		kotlinBox.setSelected(kotlinSnapshot);
+		oldAssetsBox.setSelected(oldAssetsSnapshot);
 	}
 }
