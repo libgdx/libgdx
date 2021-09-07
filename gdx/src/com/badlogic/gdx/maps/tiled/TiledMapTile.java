@@ -31,6 +31,14 @@ public interface TiledMapTile {
 
 	public void setId (int id);
 
+	public String getType ();
+
+	public void setType (String type);
+
+	public float getProbability ();
+
+	public void setProbability (float probability);
+
 	/** @return the {@link BlendMode} to use for rendering the tile */
 	public BlendMode getBlendMode ();
 

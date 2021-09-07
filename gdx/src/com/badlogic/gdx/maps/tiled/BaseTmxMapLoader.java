@@ -606,14 +606,20 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
 
 			for (Element tileElement : tileElements) {
-				int localtid = tileElement.getIntAttribute("id", 0);
-				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
+				int localid = tileElement.getIntAttribute("id", 0);
+				TiledMapTile tile = tileSet.getTile(firstgid + localid);
 				if (tile != null) {
 					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
 					if (animatedTile != null) {
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
 					}
+
+					// Add tile-level attributes
+					tile.setType(tileElement.getAttribute("type", null));
+					tile.setProbability(Float.parseFloat(tileElement.getAttribute("probability", "1f")));
+
+					// Add properties and object groups
 					addTileProperties(tile, tileElement);
 					addTileObjectGroup(tile, tileElement);
 				}
@@ -678,10 +684,22 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return null;
 	}
 
-	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
-		float offsetY) {
+	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion,
+										  int tileId, float offsetX, float offsetY) {
+		addStaticTiledMapTile(tileSet, textureRegion, tileId, offsetX, offsetY, null);
+	}
+
+	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion,
+										  int tileId, float offsetX, float offsetY, Element tileElement) {
 		TiledMapTile tile = new StaticTiledMapTile(textureRegion);
 		tile.setId(tileId);
+
+		if (tileElement != null) {
+			// Add tile-level attributes
+			tile.setType(tileElement.getAttribute("type", null));
+			tile.setProbability(Float.parseFloat(tileElement.getAttribute("probability", "1f")));
+		}
+
 		tile.setOffsetX(offsetX);
 		tile.setOffsetY(flipY ? -offsetY : offsetY);
 		tileSet.putTile(tileId, tile);
