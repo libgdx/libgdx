@@ -22,7 +22,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3AWTFrame;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -108,6 +108,6 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			System.out.println("Please run TiledMapPackerTest.");
 			return;
 		}
-		new LwjglApplication(new TiledMapPackerTestRender(), "", 640, 480);
+		new Lwjgl3AWTFrame(new TiledMapPackerTestRender(), "", 640, 480);
 	}
 }
