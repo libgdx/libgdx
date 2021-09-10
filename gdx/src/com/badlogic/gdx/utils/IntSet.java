@@ -126,7 +126,7 @@ public class IntSet {
 		}
 	}
 
-	/** Returns true if the key was not already in the set. */
+	/** Returns true if the key was added to the set or false if it was already in the set. */
 	public boolean add (int key) {
 		if (key == 0) {
 			if (hasZeroValue) return false;

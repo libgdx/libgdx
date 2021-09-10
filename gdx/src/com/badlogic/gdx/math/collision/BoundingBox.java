@@ -31,7 +31,11 @@ public class BoundingBox implements Serializable {
 
 	private final static Vector3 tmpVector = new Vector3();
 
+	/** Minimum vector. All XYZ components should be inferior to corresponding {@link #max} components. Call {@link #update()} if
+	 * you manually change this vector. */
 	public final Vector3 min = new Vector3();
+	/** Maximum vector. All XYZ components should be superior to corresponding {@link #min} components. Call {@link #update()} if
+	 * you manually change this vector. */
 	public final Vector3 max = new Vector3();
 
 	private final Vector3 cnt = new Vector3();
@@ -155,9 +159,14 @@ public class BoundingBox implements Serializable {
 			minimum.z < maximum.z ? minimum.z : maximum.z);
 		max.set(minimum.x > maximum.x ? minimum.x : maximum.x, minimum.y > maximum.y ? minimum.y : maximum.y,
 			minimum.z > maximum.z ? minimum.z : maximum.z);
+		update();
+		return this;
+	}
+
+	/** Should be called if you modify {@link #min} and/or {@link #max} vectors manually. */
+	public void update () {
 		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
-		return this;
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.

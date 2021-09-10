@@ -78,6 +78,7 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.gradlePlugins);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
+		write(wr, "maven { url \"" + DependencyBank.jitpackUrl + "\" }");
 		write(wr, "}");
 		write(wr, "}");
 	}
