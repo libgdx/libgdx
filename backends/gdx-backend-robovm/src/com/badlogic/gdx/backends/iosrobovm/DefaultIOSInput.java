@@ -140,11 +140,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		//motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
-		haptics = new IOSHaptics();
-		if (app.getVersion() >= 9){
-			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
-			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
-		}
+		setupHaptics();
+		setupPressure();
 	}
 
 	protected void setupCompass () {
@@ -171,6 +168,17 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			};
 			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
 			UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
+		}
+	}
+
+	protected void setupHaptics() {
+		haptics = new IOSHaptics(config.useHaptics);
+	}
+
+	protected void setupPressure() {
+		if (app.getVersion() >= 9){
+			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
 	}
 

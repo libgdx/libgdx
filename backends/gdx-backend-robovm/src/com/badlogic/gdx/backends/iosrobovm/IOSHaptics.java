@@ -5,8 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.corehaptic.CHHapticEngine;
-import org.robovm.apple.corehaptic.CHHapticEventParameter;
-import org.robovm.apple.corehaptic.CHHapticEventParameterID;
 import org.robovm.apple.corehaptic.CHHapticEventType;
 import org.robovm.apple.corehaptic.CHHapticPattern;
 import org.robovm.apple.corehaptic.CHHapticPatternDict;
@@ -27,9 +25,9 @@ public class IOSHaptics {
 	private CHHapticEngine hapticEngine;
 	private boolean hapticsSupport;
 	
-	public IOSHaptics () {
+	public IOSHaptics (boolean useHaptics) {
 		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
-			hapticsSupport = CHHapticEngine.capabilitiesForHardware().supportsHaptics();
+			hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
 			if (hapticsSupport) {
 				try {
 					hapticEngine = new CHHapticEngine();
@@ -96,15 +94,6 @@ public class IOSHaptics {
 	}
 
 	private CHHapticPatternDict getChHapticPatternDict(int milliseconds, float intensity) {
-//		NSArray<NSObject> parameters = new NSArray<NSObject>(
-//				new CHHapticPatternDict().setEventParameters(
-//						new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"), new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity)))
-//				)
-//			.getDictionary()
-//		);
-//		NSArray<NSObject> parameters = new NSArray<NSObject>(
-//				new NSArray<NSObject>(new CHHapticEventParameter(CHHapticEventParameterID.HapticIntensity, intensity))
-//		);
 		return new CHHapticPatternDict()
 			.setPattern(
 				new NSArray<NSObject>(
@@ -114,6 +103,7 @@ public class IOSHaptics {
 								.setEventType(CHHapticEventType.HapticTransient)
 								.setTime(0.0)
 								.setEventDuration(milliseconds / 1000f)
+									// TODO There should be a better/safer way to provide the event parameters using CHHapticEventParameterID
 								.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"), new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity))))
 						)
 					.getDictionary()
