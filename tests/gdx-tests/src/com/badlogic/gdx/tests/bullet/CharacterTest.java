@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
@@ -32,10 +33,10 @@ public class CharacterTest extends BaseBulletTest {
 	final float BOXOFFSET_X = -2.5f;
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 0f;
-	
+
 	BulletEntity ground;
 	BulletEntity character;
-	
+
 	btGhostPairCallback ghostPairCallback;
 	btPairCachingGhostObject ghostObject;
 	btConvexShape ghostShape;
@@ -43,7 +44,7 @@ public class CharacterTest extends BaseBulletTest {
 	Matrix4 characterTransform;
 	Vector3 characterDirection = new Vector3();
 	Vector3 walkDirection = new Vector3();
-	
+
 	@Override
 	public BulletWorld createWorld () {
 		// We create the world using an axis sweep broadphase for this test
@@ -56,16 +57,18 @@ public class CharacterTest extends BaseBulletTest {
 		sweep.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
 		return new BulletWorld(collisionConfiguration, dispatcher, sweep, solver, collisionWorld);
 	}
-	
+
 	@Override
 	public void create () {
 		super.create();
 		instructions = "Tap to shoot\nArrow keys to move\nR to reset\nLong press to toggle debug mode\nSwipe for next test";
-		
-		// Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually)
+
+		// Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that
+		// manually)
 		final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		disposables.add(texture);
-		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1,1,1,1), FloatAttribute.createShininess(8f));
+		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1),
+			FloatAttribute.createShininess(8f));
 		final long attributes = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
 		final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
 		disposables.add(capsule);
@@ -73,7 +76,7 @@ public class CharacterTest extends BaseBulletTest {
 		character = world.add("capsule", 5f, 3f, 5f);
 		characterTransform = character.transform; // Set by reference
 		characterTransform.rotate(Vector3.X, 90);
-		
+
 		// Create the physics representation of the character
 		ghostObject = new btPairCachingGhostObject();
 		ghostObject.setWorldTransform(characterTransform);
@@ -81,27 +84,26 @@ public class CharacterTest extends BaseBulletTest {
 		ghostObject.setCollisionShape(ghostShape);
 		ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
 		characterController = new btKinematicCharacterController(ghostObject, ghostShape, .35f, Vector3.Y);
-		
+
 		// And add it to the physics world
-		world.collisionWorld.addCollisionObject(ghostObject, 
-			(short)btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
+		world.collisionWorld.addCollisionObject(ghostObject, (short)btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
 			(short)(btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
 		((btDiscreteDynamicsWorld)(world.collisionWorld)).addAction(characterController);
-		
+
 		// Add the ground
-		(ground = world.add("ground", 0f, 0f, 0f))
-			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		(ground = world.add("ground", 0f, 0f, 0f)).setColor(0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		// Create some boxes to play with
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z)
-						.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float)Math.random(),
+						0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void update () {
 		// If the left or right key is pressed, rotate the character and update its physics update accordingly.
@@ -114,11 +116,10 @@ public class CharacterTest extends BaseBulletTest {
 			ghostObject.setWorldTransform(characterTransform);
 		}
 		// Fetch which direction the character is facing now
-		characterDirection.set(-1,0,0).rot(characterTransform).nor();
+		characterDirection.set(-1, 0, 0).rot(characterTransform).nor();
 		// Set the walking direction accordingly (either forward or backward)
-		walkDirection.set(0,0,0);
-		if (Gdx.input.isKeyPressed(Keys.UP))
-			walkDirection.add(characterDirection);
+		walkDirection.set(0, 0, 0);
+		if (Gdx.input.isKeyPressed(Keys.UP)) walkDirection.add(characterDirection);
 		if (Gdx.input.isKeyPressed(Keys.DOWN))
 			walkDirection.add(-characterDirection.x, -characterDirection.y, -characterDirection.z);
 		walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
@@ -129,19 +130,19 @@ public class CharacterTest extends BaseBulletTest {
 		// And fetch the new transformation of the character (this will make the model be rendered correctly)
 		ghostObject.getWorldTransform(characterTransform);
 	}
-	
+
 	@Override
 	protected void renderWorld () {
 		// TODO Auto-generated method stub
 		super.renderWorld();
 	}
-	
+
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
 	}
-	
+
 	@Override
 	public void dispose () {
 		((btDiscreteDynamicsWorld)(world.collisionWorld)).removeAction(characterController);

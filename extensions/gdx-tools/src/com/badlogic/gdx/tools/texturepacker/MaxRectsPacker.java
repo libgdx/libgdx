@@ -27,8 +27,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
 
-/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is
- * used to pack into the smallest bin possible.
+/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
+ * to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker implements Packer {
 	final Settings settings;

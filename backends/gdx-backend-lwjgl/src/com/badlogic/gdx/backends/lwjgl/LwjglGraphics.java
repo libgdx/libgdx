@@ -247,7 +247,7 @@ public class LwjglGraphics extends AbstractGraphics {
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-					((Buffer) icons[i].put(pixmap.getPixels())).flip();
+					((Buffer)icons[i].put(pixmap.getPixels())).flip();
 					pixmap.dispose();
 				}
 				Display.setIcon(icons);
@@ -439,7 +439,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public float getPpcY () {
-		return getPpiY () / 2.54f;
+		return getPpiY() / 2.54f;
 	}
 
 	@Override
@@ -643,15 +643,14 @@ public class LwjglGraphics extends AbstractGraphics {
 		Display.setVSyncEnabled(vsync);
 	}
 
-	/** Sets the target framerate for the application, when using continuous rendering. Must be positive.
-	 * The cpu sleeps as needed. Use 0 to never sleep. Default is 60.
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
+	 * Use 0 to never sleep. Default is 60.
 	 *
 	 * @param fps fps */
 	@Override
 	public void setForegroundFPS (int fps) {
 		this.config.foregroundFPS = fps;
 	}
-
 
 	@Override
 	public boolean supportsExtension (String extension) {

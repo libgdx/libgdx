@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -30,7 +31,8 @@ public class TiledMapGroupLayerTest extends GdxTest {
 	String errorMessage;
 	private String fileName = "data/maps/tiled-groups/test.tmx";
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -52,7 +54,8 @@ public class TiledMapGroupLayerTest extends GdxTest {
 
 		assetManager = new AssetManager();
 		assetManager.setErrorListener(new AssetErrorListener() {
-			@Override public void error (AssetDescriptor asset, Throwable throwable) {
+			@Override
+			public void error (AssetDescriptor asset, Throwable throwable) {
 				errorMessage = throwable.getMessage();
 			}
 		});
@@ -61,7 +64,8 @@ public class TiledMapGroupLayerTest extends GdxTest {
 		assetManager.load(fileName, TiledMap.class);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		camera.update();
 		assetManager.update();

@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
@@ -44,8 +42,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ReflectionCacheSourceCreator {
-	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList("char", "int",
-			"long", "byte", "short", "float", "double", "boolean"));
+	private static final List<String> PRIMITIVE_TYPES = Collections
+		.unmodifiableList(Arrays.asList("char", "int", "long", "byte", "short", "float", "double", "boolean"));
 	final TreeLogger logger;
 	final GeneratorContext context;
 	final JClassType type;
@@ -190,7 +188,8 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 
-		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util")) || stub.enclosingType.contains("google")) {
+		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util"))
+			|| stub.enclosingType.contains("google")) {
 			logger.log(Type.INFO, "not emitting code for accessing method " + stub.name + " in class '" + stub.enclosingType
 				+ ", either in java.* or GWT related class");
 			return "";
@@ -209,8 +208,8 @@ public class ReflectionCacheSourceCreator {
 					+ "' is not invokable because one of its argument types is not visible");
 				return "";
 			} else if (paramType.startsWith("long") || paramType.contains("java.lang.Long")) {
-				logger.log(Type.INFO, "method '" + stub.name + "' of class '" + stub.enclosingType
-					+ " has long parameter, prohibited in JSNI");
+				logger.log(Type.INFO,
+					"method '" + stub.name + "' of class '" + stub.enclosingType + " has long parameter, prohibited in JSNI");
 				return "";
 			} else {
 				stub.parameterTypes.set(i, paramType.replace(".class", ""));
@@ -222,8 +221,8 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 		if (stub.returnType.startsWith("long") || stub.returnType.contains("java.lang.Long")) {
-			logger.log(Type.INFO, "method '" + stub.name + "' of class '" + stub.enclosingType
-				+ " has long return type, prohibited in JSNI");
+			logger.log(Type.INFO,
+				"method '" + stub.name + "' of class '" + stub.enclosingType + " has long return type, prohibited in JSNI");
 			return "";
 		}
 
@@ -370,7 +369,7 @@ public class ReflectionCacheSourceCreator {
 			// if it's not a class, it may be an interface instead
 			c = t.isInterface();
 		}
-		
+
 		if (c != null && c.getImplementedInterfaces() != null) {
 			interfaces = "new HashSet<Class>(Arrays.asList(";
 			boolean used = false;
@@ -385,18 +384,19 @@ public class ReflectionCacheSourceCreator {
 			else
 				interfaces = null;
 		}
-		
+
 		String varName = "c" + id;
 		pb("private static Type " + varName + ";");
 		pb("private static Type " + varName + "() {");
 		pb("if(" + varName + "!=null) return " + varName + ";");
-		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", " + interfaces + ");");
+		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", "
+			+ interfaces + ");");
 
-		if( c == null && t.isArray() != null){
+		if (c == null && t.isArray() != null) {
 			// if it's not a class or an interface, it may be an array instead
 			c = t.isArray();
 		}
-		
+
 		if (c != null) {
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
 			if (c.isArray() != null) {
@@ -410,7 +410,7 @@ public class ReflectionCacheSourceCreator {
 			}
 			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
 			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
-			if (c.isAnnotation() != null) pb(varName + ".isAnnotation = true;");			
+			if (c.isAnnotation() != null) pb(varName + ".isAnnotation = true;");
 
 			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
@@ -465,7 +465,7 @@ public class ReflectionCacheSourceCreator {
 			Annotation[] annotations = c.getDeclaredAnnotations();
 			if (annotations != null && annotations.length > 0) {
 				String annotations1 = getAnnotations(annotations);
-				if ( !"null".equals(annotations1) ) { // avoid nulling the default empty array for annotations.
+				if (!"null".equals(annotations1)) { // avoid nulling the default empty array for annotations.
 					pb(varName + ".annotations = " + annotations1 + ";");
 				}
 			}
@@ -515,7 +515,7 @@ public class ReflectionCacheSourceCreator {
 					}
 					stub.isConstructor = true;
 					stub.returnType = stub.enclosingType;
-				}				
+				}
 				stub.jnsi = "";
 				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
@@ -530,8 +530,8 @@ public class ReflectionCacheSourceCreator {
 					for (JParameter p : m.getParameters()) {
 						stub.parameterTypes.add(getType(p.getType()));
 						stub.jnsi += p.getType().getErasedType().getJNISignature();
-						String paramName = (p.getName() + "__" + p.getType().getErasedType().getJNISignature()).replaceAll(
-							"[/;\\[\\]]", "_");
+						String paramName = (p.getName() + "__" + p.getType().getErasedType().getJNISignature()).replaceAll("[/;\\[\\]]",
+							"_");
 						String paramInstantiation = "new Parameter(\"" + p.getName() + "\", " + getType(p.getType()) + ", \""
 							+ p.getType().getJNISignature() + "\")";
 						parameterName2ParameterInstantiation.put(paramName, paramInstantiation);
@@ -543,8 +543,8 @@ public class ReflectionCacheSourceCreator {
 				}
 
 				pb(stub.isAbstract + ", " + stub.isFinal + ", " + stub.isStatic + ", " + m.isDefaultAccess() + ", " + m.isPrivate()
-					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", "
-					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
+					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", " + stub.isMethod
+					+ ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
 			}
 			pb("};");
 		}
@@ -578,10 +578,7 @@ public class ReflectionCacheSourceCreator {
 	private String getAnnotations (Annotation[] annotations) {
 		if (annotations != null && annotations.length > 0) {
 			int numValidAnnotations = 0;
-			final Class<?>[] ignoredAnnotations = {
-				Nonnull.class, Nullable.class,
-				Deprecated.class, Retention.class,
-			};
+			final Class<?>[] ignoredAnnotations = {Nonnull.class, Nullable.class, Deprecated.class, Retention.class,};
 			StringBuilder b = new StringBuilder();
 			b.append("new java.lang.annotation.Annotation[] {");
 			for (Annotation annotation : annotations) {
@@ -770,8 +767,8 @@ public class ReflectionCacheSourceCreator {
 		SwitchedCodeBlock pc = new SwitchedCodeBlock("field.setter");
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			pc.add(stub.setter, "s" + stub.setter + "(" + cast(stub.enclosingType, "obj") + ", " + cast(stub.type, "value")
-				+ "); return;");
+			pc.add(stub.setter,
+				"s" + stub.setter + "(" + cast(stub.enclosingType, "obj") + ", " + cast(stub.type, "value") + "); return;");
 		}
 		pc.print();
 		p("   throw new IllegalArgumentException(\"Missing setter-stub \" + field.setter + \" for field \" + field.name);");

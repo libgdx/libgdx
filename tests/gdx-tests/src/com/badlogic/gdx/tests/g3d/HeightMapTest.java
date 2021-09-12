@@ -64,7 +64,7 @@ public class HeightMapTest extends BaseG3dTest {
 		batch.render(instances);
 		batch.render(ground);
 	}
-	
+
 	@Override
 	public void dispose () {
 		super.dispose();

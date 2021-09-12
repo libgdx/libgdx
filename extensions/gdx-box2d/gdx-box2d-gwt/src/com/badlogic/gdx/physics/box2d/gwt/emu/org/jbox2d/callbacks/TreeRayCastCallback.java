@@ -21,6 +21,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.callbacks;
 
 import org.jbox2d.collision.RayCastInput;
@@ -28,17 +29,11 @@ import org.jbox2d.collision.broadphase.DynamicTree;
 
 // updated to rev 100
 
-/**
- * callback for {@link DynamicTree}
- * @author Daniel Murphy
- *
- */
+/** callback for {@link DynamicTree}
+ * @author Daniel Murphy */
 public interface TreeRayCastCallback {
-	/**
-	 * 
-	 * @param input
+	/** @param input
 	 * @param nodeId
-	 * @return the fraction to the node
-	 */
-	public float raycastCallback( RayCastInput input, int nodeId);
+	 * @return the fraction to the node */
+	public float raycastCallback (RayCastInput input, int nodeId);
 }

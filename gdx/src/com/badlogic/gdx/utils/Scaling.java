@@ -41,7 +41,7 @@ public abstract class Scaling {
 	};
 
 	/** Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in
-	 * both directions. This may cause the source to be smaller than the target in one or both directions.  */
+	 * both directions. This may cause the source to be smaller than the target in one or both directions. */
 	public static final Scaling contain = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
 			float targetRatio = targetHeight / targetWidth;

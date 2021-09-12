@@ -174,11 +174,9 @@ public class CameraInputController extends GestureDetector {
 		return super.touchUp(screenX, screenY, pointer, button) || activatePressed;
 	}
 
-	/**
-	 * Sets the CameraInputControllers' control inversion.
-	 * @param invertControls Whether or not to invert the controls
-	 */
-	public void setInvertedControls(boolean invertControls) {
+	/** Sets the CameraInputControllers' control inversion.
+	 * @param invertControls Whether or not to invert the controls */
+	public void setInvertedControls (boolean invertControls) {
 		if (this.controlsInverted != invertControls) {
 			// Flip the rotation angle
 			this.rotateAngle = -this.rotateAngle;

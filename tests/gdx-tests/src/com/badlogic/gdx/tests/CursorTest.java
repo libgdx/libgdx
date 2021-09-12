@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/** Simple test case for mouse cursor change
- * Switch between two cursors every frame, a third cursor is used when a mouse button is pressed
+/** Simple test case for mouse cursor change Switch between two cursors every frame, a third cursor is used when a mouse button is
+ * pressed
  * @author haedri */
 public class CursorTest extends GdxTest {
 	Cursor cursor1;
@@ -37,12 +37,12 @@ public class CursorTest extends GdxTest {
 
 		Pixmap pixmap1 = new Pixmap(Gdx.files.internal("data/bobargb8888-32x32.png"));
 		cursor1 = Gdx.graphics.newCursor(pixmap1, 16, 16);
-		
+
 		Pixmap pixmap2 = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap2.setColor(Color.RED);
 		pixmap2.fillCircle(16, 16, 8);
 		cursor2 = Gdx.graphics.newCursor(pixmap2, 16, 16);
-		
+
 		Pixmap pixmap3 = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap3.setColor(Color.BLUE);
 		pixmap3.fillCircle(16, 16, 8);

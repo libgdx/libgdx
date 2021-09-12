@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class copy_elements_func extends BulletBase {
 	private long swigCPtr;
-	
-	protected copy_elements_func(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected copy_elements_func (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new copy_elements_func, normally you should not need this constructor it's intended for low-level usage. */ 
-	public copy_elements_func(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new copy_elements_func, normally you should not need this constructor it's intended for low-level usage. */
+	public copy_elements_func (long cPtr, boolean cMemoryOwn) {
 		this("copy_elements_func", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(copy_elements_func obj) {
+
+	public static long getCPtr (copy_elements_func obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,8 +53,8 @@ public class copy_elements_func extends BulletBase {
 		super.delete();
 	}
 
-  public copy_elements_func() {
-    this(CollisionJNI.new_copy_elements_func(), true);
-  }
+	public copy_elements_func () {
+		this(CollisionJNI.new_copy_elements_func(), true);
+	}
 
 }

@@ -36,8 +36,8 @@ public class ConstraintsTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Model barModel = modelBuilder.createBox(10f, 1f, 1f, new Material(new ColorAttribute(ColorAttribute.Diffuse,
-			Color.WHITE)), Usage.Position | Usage.Normal);
+		final Model barModel = modelBuilder.createBox(10f, 1f, 1f,
+			new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), Usage.Position | Usage.Normal);
 		disposables.add(barModel);
 		world.addConstructor("bar", new BulletConstructor(barModel, 0f)); // mass = 0: static body
 
@@ -62,14 +62,14 @@ public class ConstraintsTest extends BaseBulletTest {
 				box2 = world.add("box", -3.5f + (float)i, 6f, 0f);
 				box2.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(),
 					0.5f + 0.5f * (float)Math.random(), 1f);
-				constraint = new btPoint2PointConstraint((btRigidBody)box1.body, (btRigidBody)box2.body, tmpV1.set(0.5f, -0.5f,
-					0.5f), tmpV2.set(-0.5f, -0.5f, 0.5f));
+				constraint = new btPoint2PointConstraint((btRigidBody)box1.body, (btRigidBody)box2.body, tmpV1.set(0.5f, -0.5f, 0.5f),
+					tmpV2.set(-0.5f, -0.5f, 0.5f));
 			} else {
 				box1 = world.add("box", -3.5f + (float)i, 6f, 0f);
 				box1.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(),
 					0.5f + 0.5f * (float)Math.random(), 1f);
-				constraint = new btPoint2PointConstraint((btRigidBody)box2.body, (btRigidBody)box1.body, tmpV1.set(0.5f, 0.5f,
-					-0.5f), tmpV2.set(-0.5f, 0.5f, -0.5f));
+				constraint = new btPoint2PointConstraint((btRigidBody)box2.body, (btRigidBody)box1.body, tmpV1.set(0.5f, 0.5f, -0.5f),
+					tmpV2.set(-0.5f, 0.5f, -0.5f));
 			}
 			((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);
 			constraints.add(constraint);

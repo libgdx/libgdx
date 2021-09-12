@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.lwjgl3;
 
 import com.badlogic.gdx.*;
@@ -11,12 +12,12 @@ public class MultiWindowCursorTest {
 	static class WindowWithCursorListener implements ApplicationListener {
 		ApplicationListener listener;
 
-		WindowWithCursorListener(ApplicationListener listener) {
+		WindowWithCursorListener (ApplicationListener listener) {
 			this.listener = listener;
 		}
 
 		@Override
-		public void create() {
+		public void create () {
 			listener.create();
 			if (MathUtils.randomBoolean()) {
 				Cursor.SystemCursor[] systemCursors = Cursor.SystemCursor.values();
@@ -36,39 +37,39 @@ public class MultiWindowCursorTest {
 		}
 
 		@Override
-		public void resize(int width, int height) {
+		public void resize (int width, int height) {
 			listener.resize(width, height);
 		}
 
 		@Override
-		public void render() {
+		public void render () {
 			listener.render();
 		}
 
 		@Override
-		public void pause() {
+		public void pause () {
 			listener.pause();
 		}
 
 		@Override
-		public void resume() {
+		public void resume () {
 			listener.resume();
 		}
 
 		@Override
-		public void dispose() {
+		public void dispose () {
 			listener.dispose();
 		}
 	}
 
 	public static class MainWindow extends MultiWindowTest.MainWindow {
 		@Override
-		public ApplicationListener createChildWindowClass(Class clazz) {
+		public ApplicationListener createChildWindowClass (Class clazz) {
 			return new WindowWithCursorListener(super.createChildWindowClass(clazz));
 		}
 	}
 
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Multi-window test with cursors");
 		new Lwjgl3Application(new MainWindow(), config);

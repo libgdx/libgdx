@@ -42,7 +42,7 @@ public class DirectionalLightsAttribute extends Attribute {
 			result = 1229 * result + (light == null ? 0 : light.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return type < o.type ? -1 : 1;

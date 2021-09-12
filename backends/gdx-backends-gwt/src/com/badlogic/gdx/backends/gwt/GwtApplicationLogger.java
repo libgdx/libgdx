@@ -19,9 +19,7 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.ApplicationLogger;
 import com.google.gwt.user.client.ui.TextArea;
 
-/**
- * Default implementation of {@link ApplicationLogger} for gwt
- */
+/** Default implementation of {@link ApplicationLogger} for gwt */
 public class GwtApplicationLogger implements ApplicationLogger {
 
 	private TextArea log;
@@ -35,7 +33,7 @@ public class GwtApplicationLogger implements ApplicationLogger {
 		logText(tag + ": " + message, false);
 	}
 
-	private void logText(String message, boolean error) {
+	private void logText (String message, boolean error) {
 		if (log != null) {
 			log.setText(log.getText() + "\n" + message + "\n");
 			log.setCursorPos(log.getText().length() - 1);
@@ -46,11 +44,11 @@ public class GwtApplicationLogger implements ApplicationLogger {
 		}
 	}
 
-	native static public void consoleLog(String message) /*-{
+	native static public void consoleLog (String message) /*-{
 		console.log( message );
 	}-*/;
 
-	native static public void consoleError(String message) /*-{
+	native static public void consoleError (String message) /*-{
 		console.error( message );
 	}-*/;
 

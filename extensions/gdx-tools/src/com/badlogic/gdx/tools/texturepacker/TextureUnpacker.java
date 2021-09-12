@@ -103,11 +103,12 @@ public class TextureUnpacker {
 					if (region.findValue("split") == null) {
 						splitImage = extractImage(img, region, outputDirFile, 0);
 						if (region.width != region.originalWidth || region.height != region.originalHeight) {
-						    BufferedImage originalImg = new BufferedImage(region.originalWidth, region.originalHeight, img.getType());
-						    Graphics2D g2 = originalImg.createGraphics();
-						    g2.drawImage(splitImage, (int) region.offsetX, (int) (region.originalHeight - region.height - region.offsetY), null);
-						    g2.dispose();
-						    splitImage = originalImg;
+							BufferedImage originalImg = new BufferedImage(region.originalWidth, region.originalHeight, img.getType());
+							Graphics2D g2 = originalImg.createGraphics();
+							g2.drawImage(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY),
+								null);
+							g2.dispose();
+							splitImage = originalImg;
 						}
 						extension = OUTPUT_TYPE;
 					} else {

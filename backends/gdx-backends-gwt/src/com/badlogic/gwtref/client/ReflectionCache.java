@@ -39,8 +39,7 @@ public class ReflectionCache {
 	}
 
 	public static Type getType (Class clazz) {
-		if (clazz == null)
-			return null;
+		if (clazz == null) return null;
 		Type type = instance1.forName(convert(clazz.getName()));
 		if (type == null) {
 			type = instance2.forName(convert(clazz.getName()));

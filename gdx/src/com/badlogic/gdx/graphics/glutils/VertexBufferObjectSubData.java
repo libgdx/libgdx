@@ -27,13 +27,14 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** <p>
+/**
+ * <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
  * <p>
  * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object.
  * <p>
- * The data is bound via glVertexAttribPointer() according to the attribute aliases specified via {@link VertexAttributes}
- * in the constructor.
+ * The data is bound via glVertexAttribPointer() according to the attribute aliases specified via {@link VertexAttributes} in the
+ * constructor.
  * <p>
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  *
@@ -72,8 +73,8 @@ public class VertexBufferObjectSubData implements VertexData {
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asFloatBuffer();
 		bufferHandle = createBufferObject();
-		((Buffer) buffer).flip();
-		((Buffer) byteBuffer).flip();
+		((Buffer)buffer).flip();
+		((Buffer)byteBuffer).flip();
 	}
 
 	private int createBufferObject () {
@@ -117,14 +118,14 @@ public class VertexBufferObjectSubData implements VertexData {
 		isDirty = true;
 		if (isDirect) {
 			BufferUtils.copy(vertices, byteBuffer, count, offset);
-			((Buffer) buffer).position(0);
-			((Buffer) buffer).limit(count);
+			((Buffer)buffer).position(0);
+			((Buffer)buffer).limit(count);
 		} else {
-			((Buffer) buffer).clear();
+			((Buffer)buffer).clear();
 			buffer.put(vertices, offset, count);
-			((Buffer) buffer).flip();
-			((Buffer) byteBuffer).position(0);
-			((Buffer) byteBuffer).limit(buffer.limit() << 2);
+			((Buffer)buffer).flip();
+			((Buffer)byteBuffer).position(0);
+			((Buffer)byteBuffer).limit(buffer.limit() << 2);
 		}
 
 		bufferChanged();
@@ -135,9 +136,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		isDirty = true;
 		if (isDirect) {
 			final int pos = byteBuffer.position();
-			((Buffer) byteBuffer).position(targetOffset * 4);
+			((Buffer)byteBuffer).position(targetOffset * 4);
 			BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
-			((Buffer) byteBuffer).position(pos);
+			((Buffer)byteBuffer).position(pos);
 		} else
 			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
 
@@ -158,7 +159,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
-			((Buffer) byteBuffer).limit(buffer.limit() * 4);
+			((Buffer)byteBuffer).limit(buffer.limit() * 4);
 			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
@@ -171,8 +172,8 @@ public class VertexBufferObjectSubData implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -181,8 +182,8 @@ public class VertexBufferObjectSubData implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		}
 		isBound = true;

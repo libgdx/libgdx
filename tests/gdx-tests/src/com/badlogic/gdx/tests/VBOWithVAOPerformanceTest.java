@@ -43,7 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-@GdxTestConfig(requireGL30=true)
+@GdxTestConfig(requireGL30 = true)
 public class VBOWithVAOPerformanceTest extends GdxTest {
 
 	ShaderProgram shader;
@@ -85,13 +85,14 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		}
 
 		int numSprites = 1000;
-		int maxIndices =  numSprites * 6;
+		int maxIndices = numSprites * 6;
 		int maxVertices = numSprites * 6;
 
-		VertexAttribute[] vertexAttributes = new VertexAttribute[] {VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0)};
+		VertexAttribute[] vertexAttributes = new VertexAttribute[] {VertexAttribute.Position(), VertexAttribute.ColorUnpacked(),
+			VertexAttribute.TexCoords(0)};
 
-		VertexBufferObjectWithVAO newVBOWithVAO =  new VertexBufferObjectWithVAO(false, maxVertices, vertexAttributes);
-		OldVertexBufferObjectWithVAO oldVBOWithVAO =  new OldVertexBufferObjectWithVAO(false, maxVertices, vertexAttributes);
+		VertexBufferObjectWithVAO newVBOWithVAO = new VertexBufferObjectWithVAO(false, maxVertices, vertexAttributes);
+		OldVertexBufferObjectWithVAO oldVBOWithVAO = new OldVertexBufferObjectWithVAO(false, maxVertices, vertexAttributes);
 
 		IndexBufferObjectSubData newIndices = new IndexBufferObjectSubData(false, maxIndices);
 		IndexBufferObjectSubData oldIndices = new IndexBufferObjectSubData(false, maxIndices);
@@ -204,7 +205,6 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-
 		texture.bind();
 		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);
@@ -227,7 +227,6 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		Gdx.gl.glFlush();
 		newCounter.addValue((System.nanoTime() - beforeNew));
 
-
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		texture.bind();
@@ -240,7 +239,6 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			oldVBOWithVAOMesh.render(shader, GL20.GL_TRIANGLES);
 		Gdx.gl.glFlush();
 		oldCounterStress.addValue((System.nanoTime() - beforeOldStress));
-
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -255,8 +253,6 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		Gdx.gl.glFlush();
 		newCounterStress.addValue((System.nanoTime() - beforeNewStress));
 
-
-
 		batch.begin();
 		stringBuilder.setLength(0);
 		stringBuilder.append("O Mean Time: ");
@@ -270,7 +266,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		float oldMean = oldCounter.getMean();
 		float newMean = newCounter.getMean();
 
-		float meanedAverage = newMean/oldMean;
+		float meanedAverage = newMean / oldMean;
 		stringBuilder.setLength(0);
 		stringBuilder.append("New VBO time as a percentage of Old Time: ");
 		stringBuilder.append(meanedAverage);
@@ -288,12 +284,11 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		float oldMeanStress = oldCounterStress.getMean();
 		float newMeanStress = newCounterStress.getMean();
 
-		float meanedStressAverage = newMeanStress/oldMeanStress;
+		float meanedStressAverage = newMeanStress / oldMeanStress;
 		stringBuilder.setLength(0);
 		stringBuilder.append("Stress: New VBO time as a percentage of Old Time: ");
 		stringBuilder.append(meanedStressAverage);
 		bitmapFont.draw(batch, stringBuilder, 0, 200 - 120);
-
 
 		batch.end();
 	}
@@ -330,34 +325,34 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 
 			byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
 			buffer = byteBuffer.asFloatBuffer();
-			((Buffer) buffer).flip();
-			((Buffer) byteBuffer).flip();
+			((Buffer)buffer).flip();
+			((Buffer)byteBuffer).flip();
 			bufferHandle = Gdx.gl20.glGenBuffer();
 			usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 		}
 
 		@Override
-		public VertexAttributes getAttributes() {
+		public VertexAttributes getAttributes () {
 			return attributes;
 		}
 
 		@Override
-		public int getNumVertices() {
+		public int getNumVertices () {
 			return buffer.limit() * 4 / attributes.vertexSize;
 		}
 
 		@Override
-		public int getNumMaxVertices() {
+		public int getNumMaxVertices () {
 			return byteBuffer.capacity() / attributes.vertexSize;
 		}
 
 		@Override
-		public FloatBuffer getBuffer() {
+		public FloatBuffer getBuffer () {
 			isDirty = true;
 			return buffer;
 		}
 
-		private void bufferChanged() {
+		private void bufferChanged () {
 			if (isBound) {
 				Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 				isDirty = false;
@@ -365,55 +360,55 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 		}
 
 		@Override
-		public void setVertices(float[] vertices, int offset, int count) {
+		public void setVertices (float[] vertices, int offset, int count) {
 			isDirty = true;
 			BufferUtils.copy(vertices, byteBuffer, count, offset);
-			((Buffer) buffer).position(0);
-			((Buffer) buffer).limit(count);
+			((Buffer)buffer).position(0);
+			((Buffer)buffer).limit(count);
 			bufferChanged();
 		}
 
 		@Override
-		public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count) {
+		public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
 			isDirty = true;
 			final int pos = byteBuffer.position();
-			((Buffer) byteBuffer).position(targetOffset * 4);
+			((Buffer)byteBuffer).position(targetOffset * 4);
 			BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
-			((Buffer) byteBuffer).position(pos);
-			((Buffer) buffer).position(0);
+			((Buffer)byteBuffer).position(pos);
+			((Buffer)buffer).position(0);
 			bufferChanged();
 		}
 
 		@Override
-		public void bind(ShaderProgram shader) {
+		public void bind (ShaderProgram shader) {
 			bind(shader, null);
 		}
 
 		@Override
-		public void bind(ShaderProgram shader, int[] locations) {
+		public void bind (ShaderProgram shader, int[] locations) {
 			GL30 gl = Gdx.gl30;
 			if (vaoDirty || !gl.glIsVertexArray(vaoHandle)) {
-				//initialize the VAO with our vertex attributes and buffer:
-				((Buffer) tmpHandle).clear();
+				// initialize the VAO with our vertex attributes and buffer:
+				((Buffer)tmpHandle).clear();
 				gl.glGenVertexArrays(1, tmpHandle);
 				vaoHandle = tmpHandle.get(0);
 				gl.glBindVertexArray(vaoHandle);
 				vaoDirty = false;
 
 			} else {
-				//else simply bind the VAO.
+				// else simply bind the VAO.
 				gl.glBindVertexArray(vaoHandle);
 			}
 
 			bindAttributes(shader, locations);
 
-			//if our data has changed upload it:
+			// if our data has changed upload it:
 			bindData(gl);
 
 			isBound = true;
 		}
 
-		private void bindAttributes(ShaderProgram shader, int[] locations) {
+		private void bindAttributes (ShaderProgram shader, int[] locations) {
 			final GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 			final int numAttributes = attributes.size();
@@ -424,8 +419,8 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 					if (location < 0) continue;
 					shader.enableVertexAttribute(location);
 
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+						attributes.vertexSize, attribute.offset);
 				}
 
 			} else {
@@ -435,42 +430,42 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 					if (location < 0) continue;
 					shader.enableVertexAttribute(location);
 
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+						attributes.vertexSize, attribute.offset);
 				}
 			}
 		}
 
-		private void bindData(GL20 gl) {
+		private void bindData (GL20 gl) {
 			if (isDirty) {
 				gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-				((Buffer) byteBuffer).limit(buffer.limit() * 4);
+				((Buffer)byteBuffer).limit(buffer.limit() * 4);
 				gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 				isDirty = false;
 			}
 		}
 
 		@Override
-		public void unbind(final ShaderProgram shader) {
+		public void unbind (final ShaderProgram shader) {
 			unbind(shader, null);
 		}
 
 		@Override
-		public void unbind(final ShaderProgram shader, final int[] locations) {
+		public void unbind (final ShaderProgram shader, final int[] locations) {
 			GL30 gl = Gdx.gl30;
 			gl.glBindVertexArray(0);
 			isBound = false;
 		}
 
 		@Override
-		public void invalidate() {
+		public void invalidate () {
 			bufferHandle = Gdx.gl20.glGenBuffer();
 			isDirty = true;
 			vaoDirty = true;
 		}
 
 		@Override
-		public void dispose() {
+		public void dispose () {
 			GL30 gl = Gdx.gl30;
 
 			gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
@@ -479,9 +474,9 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 
 			if (gl.glIsVertexArray(vaoHandle)) {
-				((Buffer) tmpHandle).clear();
+				((Buffer)tmpHandle).clear();
 				tmpHandle.put(vaoHandle);
-				((Buffer) tmpHandle).flip();
+				((Buffer)tmpHandle).flip();
 				gl.glDeleteVertexArrays(1, tmpHandle);
 			}
 		}

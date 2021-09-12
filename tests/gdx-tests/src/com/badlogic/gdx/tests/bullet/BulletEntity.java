@@ -35,7 +35,8 @@ public class BulletEntity extends BaseEntity {
 	public final BoundingBox boundingBox = new BoundingBox();
 	public final float boundingBoxRadius;
 
-	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
+	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y,
+		final float z) {
 		this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), x, y, z);
 	}
 

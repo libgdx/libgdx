@@ -121,7 +121,8 @@ public class EffectUtil {
 
 	/** Returns a value that represents a fixed number of options. All options are strings.
 	 * @param options The first array has an entry for each option. Each entry is either a String[1] that is both the display value
-	 *           and actual value, or a String[2] whose first element is the display value and second element is the actual value. */
+	 *           and actual value, or a String[2] whose first element is the display value and second element is the actual
+	 *           value. */
 	static public Value optionValue (String name, final String currentValue, final String[][] options, final String description) {
 		return new DefaultValue(name, currentValue.toString()) {
 			public void showDialog () {
@@ -168,8 +169,8 @@ public class EffectUtil {
 	/** Converts a string to a color. */
 	static public Color fromString (String rgb) {
 		if (rgb == null || rgb.length() != 6) return Color.white;
-		return new Color(Integer.parseInt(rgb.substring(0, 2), 16), Integer.parseInt(rgb.substring(2, 4), 16), Integer.parseInt(
-			rgb.substring(4, 6), 16));
+		return new Color(Integer.parseInt(rgb.substring(0, 2), 16), Integer.parseInt(rgb.substring(2, 4), 16),
+			Integer.parseInt(rgb.substring(4, 6), 16));
 	}
 
 	/** Provides generic functionality for an effect's configurable value. */
@@ -230,10 +231,8 @@ public class EffectUtil {
 
 			JPanel descriptionPanel = new JPanel();
 			descriptionPanel.setLayout(new GridBagLayout());
-			getContentPane().add(
-				descriptionPanel,
-				new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0,
-					0), 0, 0));
+			getContentPane().add(descriptionPanel, new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 			descriptionPanel.setBackground(Color.white);
 			descriptionPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
 			{
@@ -247,18 +246,14 @@ public class EffectUtil {
 			}
 
 			JPanel panel = new JPanel();
-			getContentPane().add(
-				panel,
-				new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, 5, 0,
-					5), 0, 0));
+			getContentPane().add(panel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
 			panel.add(new JLabel(name + ":"));
 			panel.add(component);
 
 			JPanel buttonPanel = new JPanel();
-			getContentPane().add(
-				buttonPanel,
-				new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-					new Insets(0, 0, 0, 0), 0, 0));
+			getContentPane().add(buttonPanel, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			{
 				JButton okButton = new JButton("OK");
 				buttonPanel.add(okButton);

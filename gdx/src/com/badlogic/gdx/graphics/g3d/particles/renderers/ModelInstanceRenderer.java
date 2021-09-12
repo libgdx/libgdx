@@ -27,8 +27,8 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 /** A {@link ParticleControllerRenderer} which will render particles as {@link ModelInstance} to a
  * {@link ModelInstanceParticleBatch}.
  * @author Inferno */
-public class ModelInstanceRenderer extends
-	ParticleControllerRenderer<ModelInstanceControllerRenderData, ModelInstanceParticleBatch> {
+public class ModelInstanceRenderer
+	extends ParticleControllerRenderer<ModelInstanceControllerRenderData, ModelInstanceParticleBatch> {
 	private boolean hasColor, hasScale, hasRotation;
 
 	public ModelInstanceRenderer () {
@@ -58,7 +58,8 @@ public class ModelInstanceRenderer extends
 
 	@Override
 	public void update () {
-		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += renderData.positionChannel.strideSize) {
+		for (int i = 0, positionOffset = 0,
+			c = controller.particles.size; i < c; ++i, positionOffset += renderData.positionChannel.strideSize) {
 			ModelInstance instance = renderData.modelInstanceChannel.data[i];
 			float scale = hasScale ? renderData.scaleChannel.data[i] : 1;
 			float qx = 0, qy = 0, qz = 0, qw = 1;

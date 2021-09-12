@@ -8,52 +8,43 @@
 
 package com.badlogic.gdx.physics.bullet.extras;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.inversedynamics.MultiBodyTree;
-import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btContactSolverInfo;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 
 public class CloneTreeCreator extends MultiBodyTreeCreator {
 	private long swigCPtr;
-	
-	protected CloneTreeCreator(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected CloneTreeCreator (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, ExtrasJNI.CloneTreeCreator_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new CloneTreeCreator, normally you should not need this constructor it's intended for low-level usage. */
-	public CloneTreeCreator(long cPtr, boolean cMemoryOwn) {
+	public CloneTreeCreator (long cPtr, boolean cMemoryOwn) {
 		this("CloneTreeCreator", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(ExtrasJNI.CloneTreeCreator_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(CloneTreeCreator obj) {
+
+	public static long getCPtr (CloneTreeCreator obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -64,8 +55,8 @@ public class CloneTreeCreator extends MultiBodyTreeCreator {
 		super.delete();
 	}
 
-  public CloneTreeCreator(MultiBodyTree reference) {
-    this(ExtrasJNI.new_CloneTreeCreator(MultiBodyTree.getCPtr(reference), reference), true);
-  }
+	public CloneTreeCreator (MultiBodyTree reference) {
+		this(ExtrasJNI.new_CloneTreeCreator(MultiBodyTree.getCPtr(reference), reference), true);
+	}
 
 }

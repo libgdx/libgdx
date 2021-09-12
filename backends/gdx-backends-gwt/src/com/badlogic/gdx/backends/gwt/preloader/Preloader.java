@@ -40,11 +40,11 @@ public class Preloader {
 	private final AssetDownloader loader = new AssetDownloader();
 
 	public interface PreloaderCallback {
-		
-		public void update(PreloaderState state);
-		
+
+		public void update (PreloaderState state);
+
 		public void error (String file);
-		
+
 	}
 
 	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
@@ -56,7 +56,7 @@ public class Preloader {
 	public ObjectMap<String, String> assetNames = new ObjectMap<String, String>();
 
 	public static class Asset {
-		public Asset(String file, String url, AssetType type, long size, String mimeType) {
+		public Asset (String file, String url, AssetType type, long size, String mimeType) {
 			this.file = file;
 			this.url = url;
 			this.type = type;
@@ -74,14 +74,14 @@ public class Preloader {
 		public final long size;
 		public final String mimeType;
 	}
-	
+
 	public static class PreloaderState {
-		
-		public PreloaderState(Array<Asset> assets) {
+
+		public PreloaderState (Array<Asset> assets) {
 			this.assets = assets;
 		}
-		
-		public long getDownloadedSize() {
+
+		public long getDownloadedSize () {
 			long size = 0;
 			for (int i = 0; i < assets.size; i++) {
 				Asset asset = assets.get(i);
@@ -89,8 +89,8 @@ public class Preloader {
 			}
 			return size;
 		}
-		
-		public long getTotalSize() {
+
+		public long getTotalSize () {
 			long size = 0;
 			for (int i = 0; i < assets.size; i++) {
 				Asset asset = assets.get(i);
@@ -98,41 +98,42 @@ public class Preloader {
 			}
 			return size;
 		}
-		
-		public float getProgress() {
+
+		public float getProgress () {
 			long total = getTotalSize();
-			return total == 0 ? 1 : (getDownloadedSize() / (float) total);
+			return total == 0 ? 1 : (getDownloadedSize() / (float)total);
 		}
-		
-		public boolean hasEnded() {
+
+		public boolean hasEnded () {
 			return getDownloadedSize() == getTotalSize();
 		}
-		
+
 		public final Array<Asset> assets;
-		
+
 	}
 
 	public final String baseUrl;
 
-	
 	public Preloader (String newBaseURL) {
-		
+
 		baseUrl = newBaseURL;
-	
+
 		// trigger copying of assets and creation of assets.txt
 		GWT.create(PreloaderBundle.class);
 	}
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
 
-        loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), new AssetLoaderListener<String>() {
+		loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), new AssetLoaderListener<String>() {
 			@Override
 			public void onProgress (double amount) {
 			}
+
 			@Override
 			public void onFailure () {
 				callback.error(assetFileUrl);
 			}
+
 			@Override
 			public void onSuccess (String result) {
 				String[] lines = result.split("\n");
@@ -150,7 +151,6 @@ public class Preloader {
 					String assetMimeType = tokens[4];
 					boolean assetPreload = tokens[5].equals("1");
 
-
 					AssetType type = AssetType.Text;
 					if (assetTypeCode.equals("i")) type = AssetType.Image;
 					if (assetTypeCode.equals("b")) type = AssetType.Binary;
@@ -161,10 +161,10 @@ public class Preloader {
 					}
 					Asset asset = new Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType);
 					assetNames.put(asset.file, asset.url);
-                    if (assetPreload || asset.file.startsWith("com/badlogic/"))
-                        assets.add(asset);
-                    else
-                        stillToFetchAssets.put(asset.file, asset);
+					if (assetPreload || asset.file.startsWith("com/badlogic/"))
+						assets.add(asset);
+					else
+						stillToFetchAssets.put(asset.file, asset);
 				}
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
@@ -180,15 +180,17 @@ public class Preloader {
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
 						public void onProgress (double amount) {
-							asset.loaded = (long) amount;
+							asset.loaded = (long)amount;
 							callback.update(state);
 						}
+
 						@Override
 						public void onFailure () {
 							asset.failed = true;
 							callback.error(asset.file);
 							callback.update(state);
 						}
+
 						@Override
 						public void onSuccess (Object result) {
 							putAssetInMap(result, asset);
@@ -202,14 +204,12 @@ public class Preloader {
 		});
 	}
 
-	public void preloadSingleFile(final String file) {
-		if (!isNotFetchedYet(file))
-			return;
+	public void preloadSingleFile (final String file) {
+		if (!isNotFetchedYet(file)) return;
 
 		final Asset asset = stillToFetchAssets.get(file);
 
-		if (asset.downloadStarted)
-			return;
+		if (asset.downloadStarted) return;
 
 		Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.file);
 
@@ -218,13 +218,15 @@ public class Preloader {
 		loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 			@Override
 			public void onProgress (double amount) {
-				asset.loaded = (long) amount;
+				asset.loaded = (long)amount;
 			}
+
 			@Override
 			public void onFailure () {
 				asset.failed = true;
 				stillToFetchAssets.remove(file);
 			}
+
 			@Override
 			public void onSuccess (Object result) {
 				putAssetInMap(result, asset);
@@ -235,19 +237,19 @@ public class Preloader {
 
 	}
 
-	protected void putAssetInMap(Object result, Asset asset) {
+	protected void putAssetInMap (Object result, Asset asset) {
 		switch (asset.type) {
 		case Text:
-			texts.put(asset.file, (String) result);
+			texts.put(asset.file, (String)result);
 			break;
 		case Image:
-			images.put(asset.file, (ImageElement) result);
+			images.put(asset.file, (ImageElement)result);
 			break;
 		case Binary:
-			binaries.put(asset.file, (Blob) result);
+			binaries.put(asset.file, (Blob)result);
 			break;
 		case Audio:
-			audio.put(asset.file, (Blob) result);
+			audio.put(asset.file, (Blob)result);
 			break;
 		case Directory:
 			directories.put(asset.file, null);
@@ -255,7 +257,7 @@ public class Preloader {
 		}
 	}
 
-	public InputStream read(String file) {
+	public InputStream read (String file) {
 		if (texts.containsKey(file)) {
 			try {
 				return new ByteArrayInputStream(texts.get(file).getBytes("UTF-8"));
@@ -275,35 +277,36 @@ public class Preloader {
 		return null;
 	}
 
-	public boolean contains(String file) {
-		return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file);
+	public boolean contains (String file) {
+		return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file)
+			|| directories.containsKey(file);
 	}
 
-    public boolean isNotFetchedYet (String file) {
-        return stillToFetchAssets.containsKey(file);
-    }
+	public boolean isNotFetchedYet (String file) {
+		return stillToFetchAssets.containsKey(file);
+	}
 
-    public boolean isText(String file) {
+	public boolean isText (String file) {
 		return texts.containsKey(file);
 	}
 
-	public boolean isImage(String file) {
+	public boolean isImage (String file) {
 		return images.containsKey(file);
 	}
 
-	public boolean isBinary(String file) {
+	public boolean isBinary (String file) {
 		return binaries.containsKey(file);
 	}
 
-	public boolean isAudio(String file) {
+	public boolean isAudio (String file) {
 		return audio.containsKey(file);
 	}
 
-	public boolean isDirectory(String file) {
+	public boolean isDirectory (String file) {
 		return directories.containsKey(file);
 	}
 
-	private boolean isChild(String filePath, String directory) {
+	private boolean isChild (String filePath, String directory) {
 		return filePath.startsWith(directory + "/") && (filePath.indexOf('/', directory.length() + 1) < 0);
 	}
 
@@ -343,7 +346,7 @@ public class Preloader {
 		});
 	}
 
-	public long length(String file) {
+	public long length (String file) {
 		if (texts.containsKey(file)) {
 			try {
 				return texts.get(file).getBytes("UTF-8").length;

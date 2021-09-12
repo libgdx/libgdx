@@ -87,7 +87,9 @@ public class SettingsDialog extends JDialog {
 		buttonOK.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				if (offlineBox.isSelected()) {
-					int value = JOptionPane.showConfirmDialog(null, "You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependenices already.\n\nDo you want to continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+					int value = JOptionPane.showConfirmDialog(null,
+						"You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependenices already.\n\nDo you want to continue?",
+						"Warning!", JOptionPane.YES_NO_OPTION);
 					if (value == 0) {
 						onOK();
 					}
@@ -174,13 +176,12 @@ public class SettingsDialog extends JDialog {
 		kotlinBox = new SetupCheckBox();
 		kotlinBox.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed (ActionEvent e) {
 				final String message = "Using Kotlin with the HTML backend is not supported. Do you want to disable the HTML backend?";
-				if(kotlinBox.isSelected() && gwtCheckBox.isSelected() &&
-						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
-						JOptionPane.YES_NO_OPTION) == 0) {
+				if (kotlinBox.isSelected() && gwtCheckBox.isSelected()
+					&& JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", JOptionPane.YES_NO_OPTION) == 0) {
 					gwtCheckBox.setSelected(false);
-				} else if(gwtCheckBox.isSelected()) {
+				} else if (gwtCheckBox.isSelected()) {
 					kotlinBox.setSelected(false);
 				}
 			}
@@ -209,7 +210,7 @@ public class SettingsDialog extends JDialog {
 		content.add(offlineLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(offlineBox, new GridBagConstraints(1, 3, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(offlineDesc, new GridBagConstraints(3, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-		
+
 		content.add(kotlinLabel, new GridBagConstraints(0, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(kotlinBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(kotlinDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
@@ -262,7 +263,7 @@ public class SettingsDialog extends JDialog {
 		List<String> list = new ArrayList<String>();
 		list.add("--no-daemon");
 		if (offlineBox.isSelected()) {
-			list.add("--offline");	
+			list.add("--offline");
 		}
 		return list;
 	}

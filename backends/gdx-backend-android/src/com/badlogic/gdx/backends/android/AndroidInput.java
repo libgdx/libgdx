@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.android;
 
 import android.view.View.OnGenericMotionListener;
@@ -8,16 +9,16 @@ import com.badlogic.gdx.Input;
 public interface AndroidInput extends Input, OnTouchListener, OnKeyListener, OnGenericMotionListener {
 
 	/** Called when the {@link AndroidApplication} is about to pause */
-	void onPause();
+	void onPause ();
 
 	/** Called when the {@link AndroidApplication} is about to resume */
-	void onResume();
+	void onResume ();
 
 	/** Called when an {@link AndroidDaydream} is about to start */
-	void onDreamingStarted();
+	void onDreamingStarted ();
 
 	/** Called when an {@link AndroidDaydream} is about to stop */
-	void onDreamingStopped();
+	void onDreamingStopped ();
 
 	/** Add a custom {@link OnKeyListener} */
 	void addKeyListener (OnKeyListener listener);
@@ -26,9 +27,9 @@ public interface AndroidInput extends Input, OnTouchListener, OnKeyListener, OnG
 	void addGenericMotionListener (OnGenericMotionListener listener);
 
 	/** Process all events (touch, key) that have been registered by the listeners so that event processing is synchronous. */
-	void processEvents();
+	void processEvents ();
 
 	/** Shows/Hides soft screen keyboard */
-	void setKeyboardAvailable(boolean available);
+	void setKeyboardAvailable (boolean available);
 
 }

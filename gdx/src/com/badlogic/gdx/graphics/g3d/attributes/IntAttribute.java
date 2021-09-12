@@ -49,9 +49,9 @@ public class IntAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 983 * result + value;
-		return result; 
+		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return (int)(type - o.type);

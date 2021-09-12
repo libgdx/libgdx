@@ -39,7 +39,7 @@ public class AndroidApplicationConfiguration {
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
-	
+
 	/** whether to use the gyroscope. default: false **/
 	public boolean useGyroscope = false;
 
@@ -60,8 +60,8 @@ public class AndroidApplicationConfiguration {
 	 * <p>
 	 * Default: false */
 	public boolean useRotationVectorSensor = false;
-	
-	/** The requested sensor sampling rate in microseconds or one of the {@code SENSOR_DELAY_*} constants in {@link SensorManager}. 
+
+	/** The requested sensor sampling rate in microseconds or one of the {@code SENSOR_DELAY_*} constants in {@link SensorManager}.
 	 * <p>
 	 * Default: {@link SensorManager#SENSOR_DELAY_GAME} (20 ms updates). */
 	public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
@@ -70,7 +70,8 @@ public class AndroidApplicationConfiguration {
 	 * pre Android 2.0 devices. default: 0 **/
 	public int touchSleepTime = 0;
 
-	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses FLAG_KEEP_SCREEN_ON under the hood. */
+	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses
+	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
 
 	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
@@ -93,9 +94,10 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = false;
 
-	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-	 *  When GL ES 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
-  	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
+	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
+	 * 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API
+	 * level 18).
+	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */

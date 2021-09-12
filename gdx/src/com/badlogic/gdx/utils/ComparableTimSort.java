@@ -13,8 +13,8 @@
 
 package com.badlogic.gdx.utils;
 
-/** This is a near duplicate of {@link TimSort}, modified for use with arrays of objects that implement {@link Comparable}, instead
- * of using explicit comparators.
+/** This is a near duplicate of {@link TimSort}, modified for use with arrays of objects that implement {@link Comparable},
+ * instead of using explicit comparators.
  * 
  * <p>
  * If you are using an optimizing VM, you may find that ComparableTimSort offers no performance benefit over TimSort in

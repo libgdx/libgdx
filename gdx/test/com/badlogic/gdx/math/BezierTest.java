@@ -2,7 +2,6 @@
 package com.badlogic.gdx.math;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Assert;
@@ -28,18 +27,17 @@ public class BezierTest {
 	@Parameters(name = "imported type {0} use setter {1}")
 	public static Collection<Object[]> parameters () {
 		Collection<Object[]> parameters = new ArrayList<Object[]>();
-		for(ImportType type : ImportType.values()){
-			parameters.add(new Object[]{type, true});
-			parameters.add(new Object[]{type, false});
+		for (ImportType type : ImportType.values()) {
+			parameters.add(new Object[] {type, true});
+			parameters.add(new Object[] {type, false});
 		}
 		return parameters;
 	}
-	
+
 	@Parameter(0) public ImportType type;
 
 	/** use constructor or setter */
 	@Parameter(1) public boolean useSetter;
-
 
 	private Bezier<Vector2> bezier;
 

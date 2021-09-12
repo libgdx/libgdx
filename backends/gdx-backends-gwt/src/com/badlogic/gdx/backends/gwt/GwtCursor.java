@@ -16,11 +16,9 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.dom.client.CanvasElement;
 
 public class GwtCursor implements Cursor {
 	String cssCursorProperty;
@@ -36,23 +34,23 @@ public class GwtCursor implements Cursor {
 		}
 
 		if ((pixmap.getWidth() & (pixmap.getWidth() - 1)) != 0) {
-			throw new GdxRuntimeException("Cursor image pixmap width of " + pixmap.getWidth()
-				+ " is not a power-of-two greater than zero.");
+			throw new GdxRuntimeException(
+				"Cursor image pixmap width of " + pixmap.getWidth() + " is not a power-of-two greater than zero.");
 		}
 
 		if ((pixmap.getHeight() & (pixmap.getHeight() - 1)) != 0) {
-			throw new GdxRuntimeException("Cursor image pixmap height of " + pixmap.getHeight()
-				+ " is not a power-of-two greater than zero.");
+			throw new GdxRuntimeException(
+				"Cursor image pixmap height of " + pixmap.getHeight() + " is not a power-of-two greater than zero.");
 		}
 
 		if (xHotspot < 0 || xHotspot >= pixmap.getWidth()) {
-			throw new GdxRuntimeException("xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, "
-				+ pixmap.getWidth() + ").");
+			throw new GdxRuntimeException(
+				"xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, " + pixmap.getWidth() + ").");
 		}
 
 		if (yHotspot < 0 || yHotspot >= pixmap.getHeight()) {
-			throw new GdxRuntimeException("yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, "
-				+ pixmap.getHeight() + ").");
+			throw new GdxRuntimeException(
+				"yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, " + pixmap.getHeight() + ").");
 		}
 		cssCursorProperty = "url('";
 		cssCursorProperty += pixmap.getCanvasElement().toDataUrl("image/png");
@@ -62,7 +60,7 @@ public class GwtCursor implements Cursor {
 		cssCursorProperty += yHotspot;
 		cssCursorProperty += ",auto";
 	}
-	
+
 	static String getNameForSystemCursor (SystemCursor systemCursor) {
 		if (systemCursor == SystemCursor.Arrow) {
 			return "default";
@@ -79,7 +77,7 @@ public class GwtCursor implements Cursor {
 		} else {
 			throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
 		}
-		
+
 	}
 
 	@Override

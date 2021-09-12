@@ -12,44 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class SoftBodyNodeData extends BulletBase {
 	private long swigCPtr;
-	
-	protected SoftBodyNodeData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected SoftBodyNodeData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new SoftBodyNodeData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public SoftBodyNodeData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new SoftBodyNodeData, normally you should not need this constructor it's intended for low-level usage. */
+	public SoftBodyNodeData (long cPtr, boolean cMemoryOwn) {
 		this("SoftBodyNodeData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(SoftBodyNodeData obj) {
+
+	public static long getCPtr (SoftBodyNodeData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,94 +55,94 @@ public class SoftBodyNodeData extends BulletBase {
 		super.delete();
 	}
 
-  public void setMaterial(SoftBodyMaterialData value) {
-    SoftbodyJNI.SoftBodyNodeData_material_set(swigCPtr, this, SoftBodyMaterialData.getCPtr(value), value);
-  }
+	public void setMaterial (SoftBodyMaterialData value) {
+		SoftbodyJNI.SoftBodyNodeData_material_set(swigCPtr, this, SoftBodyMaterialData.getCPtr(value), value);
+	}
 
-  public SoftBodyMaterialData getMaterial() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_material_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyMaterialData(cPtr, false);
-  }
+	public SoftBodyMaterialData getMaterial () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_material_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyMaterialData(cPtr, false);
+	}
 
-  public void setPosition(btVector3FloatData value) {
-    SoftbodyJNI.SoftBodyNodeData_position_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setPosition (btVector3FloatData value) {
+		SoftbodyJNI.SoftBodyNodeData_position_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getPosition() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_position_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getPosition () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_position_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setPreviousPosition(btVector3FloatData value) {
-    SoftbodyJNI.SoftBodyNodeData_previousPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setPreviousPosition (btVector3FloatData value) {
+		SoftbodyJNI.SoftBodyNodeData_previousPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getPreviousPosition() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_previousPosition_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getPreviousPosition () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_previousPosition_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setVelocity(btVector3FloatData value) {
-    SoftbodyJNI.SoftBodyNodeData_velocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setVelocity (btVector3FloatData value) {
+		SoftbodyJNI.SoftBodyNodeData_velocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getVelocity() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_velocity_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getVelocity () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_velocity_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setAccumulatedForce(btVector3FloatData value) {
-    SoftbodyJNI.SoftBodyNodeData_accumulatedForce_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setAccumulatedForce (btVector3FloatData value) {
+		SoftbodyJNI.SoftBodyNodeData_accumulatedForce_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getAccumulatedForce() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_accumulatedForce_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getAccumulatedForce () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_accumulatedForce_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setNormal(btVector3FloatData value) {
-    SoftbodyJNI.SoftBodyNodeData_normal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setNormal (btVector3FloatData value) {
+		SoftbodyJNI.SoftBodyNodeData_normal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getNormal() {
-    long cPtr = SoftbodyJNI.SoftBodyNodeData_normal_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getNormal () {
+		long cPtr = SoftbodyJNI.SoftBodyNodeData_normal_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setInverseMass(float value) {
-    SoftbodyJNI.SoftBodyNodeData_inverseMass_set(swigCPtr, this, value);
-  }
+	public void setInverseMass (float value) {
+		SoftbodyJNI.SoftBodyNodeData_inverseMass_set(swigCPtr, this, value);
+	}
 
-  public float getInverseMass() {
-    return SoftbodyJNI.SoftBodyNodeData_inverseMass_get(swigCPtr, this);
-  }
+	public float getInverseMass () {
+		return SoftbodyJNI.SoftBodyNodeData_inverseMass_get(swigCPtr, this);
+	}
 
-  public void setArea(float value) {
-    SoftbodyJNI.SoftBodyNodeData_area_set(swigCPtr, this, value);
-  }
+	public void setArea (float value) {
+		SoftbodyJNI.SoftBodyNodeData_area_set(swigCPtr, this, value);
+	}
 
-  public float getArea() {
-    return SoftbodyJNI.SoftBodyNodeData_area_get(swigCPtr, this);
-  }
+	public float getArea () {
+		return SoftbodyJNI.SoftBodyNodeData_area_get(swigCPtr, this);
+	}
 
-  public void setAttach(int value) {
-    SoftbodyJNI.SoftBodyNodeData_attach_set(swigCPtr, this, value);
-  }
+	public void setAttach (int value) {
+		SoftbodyJNI.SoftBodyNodeData_attach_set(swigCPtr, this, value);
+	}
 
-  public int getAttach() {
-    return SoftbodyJNI.SoftBodyNodeData_attach_get(swigCPtr, this);
-  }
+	public int getAttach () {
+		return SoftbodyJNI.SoftBodyNodeData_attach_get(swigCPtr, this);
+	}
 
-  public void setPad(int value) {
-    SoftbodyJNI.SoftBodyNodeData_pad_set(swigCPtr, this, value);
-  }
+	public void setPad (int value) {
+		SoftbodyJNI.SoftBodyNodeData_pad_set(swigCPtr, this, value);
+	}
 
-  public int getPad() {
-    return SoftbodyJNI.SoftBodyNodeData_pad_get(swigCPtr, this);
-  }
+	public int getPad () {
+		return SoftbodyJNI.SoftBodyNodeData_pad_get(swigCPtr, this);
+	}
 
-  public SoftBodyNodeData() {
-    this(SoftbodyJNI.new_SoftBodyNodeData(), true);
-  }
+	public SoftBodyNodeData () {
+		this(SoftbodyJNI.new_SoftBodyNodeData(), true);
+	}
 
 }

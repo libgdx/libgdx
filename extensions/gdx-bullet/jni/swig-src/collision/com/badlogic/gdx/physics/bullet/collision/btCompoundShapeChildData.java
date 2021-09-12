@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btCompoundShapeChildData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btCompoundShapeChildData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btCompoundShapeChildData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btCompoundShapeChildData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btCompoundShapeChildData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btCompoundShapeChildData, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btCompoundShapeChildData (long cPtr, boolean cMemoryOwn) {
 		this("btCompoundShapeChildData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btCompoundShapeChildData obj) {
+
+	public static long getCPtr (btCompoundShapeChildData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,42 +54,42 @@ public class btCompoundShapeChildData extends BulletBase {
 		super.delete();
 	}
 
-  public void setTransform(btTransformFloatData value) {
-    CollisionJNI.btCompoundShapeChildData_transform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
-  }
+	public void setTransform (btTransformFloatData value) {
+		CollisionJNI.btCompoundShapeChildData_transform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
+	}
 
-  public btTransformFloatData getTransform() {
-    long cPtr = CollisionJNI.btCompoundShapeChildData_transform_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
-  }
+	public btTransformFloatData getTransform () {
+		long cPtr = CollisionJNI.btCompoundShapeChildData_transform_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
+	}
 
-  public void setChildShape(btCollisionShapeData value) {
-    CollisionJNI.btCompoundShapeChildData_childShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
-  }
+	public void setChildShape (btCollisionShapeData value) {
+		CollisionJNI.btCompoundShapeChildData_childShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
+	}
 
-  public btCollisionShapeData getChildShape() {
-    long cPtr = CollisionJNI.btCompoundShapeChildData_childShape_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
-  }
+	public btCollisionShapeData getChildShape () {
+		long cPtr = CollisionJNI.btCompoundShapeChildData_childShape_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
+	}
 
-  public void setChildShapeType(int value) {
-    CollisionJNI.btCompoundShapeChildData_childShapeType_set(swigCPtr, this, value);
-  }
+	public void setChildShapeType (int value) {
+		CollisionJNI.btCompoundShapeChildData_childShapeType_set(swigCPtr, this, value);
+	}
 
-  public int getChildShapeType() {
-    return CollisionJNI.btCompoundShapeChildData_childShapeType_get(swigCPtr, this);
-  }
+	public int getChildShapeType () {
+		return CollisionJNI.btCompoundShapeChildData_childShapeType_get(swigCPtr, this);
+	}
 
-  public void setChildMargin(float value) {
-    CollisionJNI.btCompoundShapeChildData_childMargin_set(swigCPtr, this, value);
-  }
+	public void setChildMargin (float value) {
+		CollisionJNI.btCompoundShapeChildData_childMargin_set(swigCPtr, this, value);
+	}
 
-  public float getChildMargin() {
-    return CollisionJNI.btCompoundShapeChildData_childMargin_get(swigCPtr, this);
-  }
+	public float getChildMargin () {
+		return CollisionJNI.btCompoundShapeChildData_childMargin_get(swigCPtr, this);
+	}
 
-  public btCompoundShapeChildData() {
-    this(CollisionJNI.new_btCompoundShapeChildData(), true);
-  }
+	public btCompoundShapeChildData () {
+		this(CollisionJNI.new_btCompoundShapeChildData(), true);
+	}
 
 }

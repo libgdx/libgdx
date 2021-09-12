@@ -23,7 +23,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
-/** <p>
+/**
+ * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
  * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
@@ -41,13 +42,12 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * @author mzechner, realitix */
 public class FrameBuffer extends GLFrameBuffer<Texture> {
 
-	FrameBuffer () {}
+	FrameBuffer () {
+	}
 
-	/**
-	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
+	/** Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
-	 * @param bufferBuilder
-	 **/
+	 * @param bufferBuilder **/
 	protected FrameBuffer (GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder) {
 		super(bufferBuilder);
 	}
@@ -77,7 +77,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	@Override
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
-		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
+		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat,
+			attachmentSpec.format, attachmentSpec.type);
 		Texture result = new Texture(data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
@@ -91,7 +92,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	@Override
 	protected void attachFrameBufferColorTexture (Texture texture) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+			texture.getTextureObjectHandle(), 0);
 	}
 
 	/** See {@link GLFrameBuffer#unbind()} */

@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleMeshShapeData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btTriangleMeshShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btTriangleMeshShapeData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btTriangleMeshShapeData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btTriangleMeshShapeData, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btTriangleMeshShapeData (long cPtr, boolean cMemoryOwn) {
 		this("btTriangleMeshShapeData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btTriangleMeshShapeData obj) {
+
+	public static long getCPtr (btTriangleMeshShapeData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,69 +54,69 @@ public class btTriangleMeshShapeData extends BulletBase {
 		super.delete();
 	}
 
-  public void setCollisionShapeData(btCollisionShapeData value) {
-    CollisionJNI.btTriangleMeshShapeData_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
-  }
+	public void setCollisionShapeData (btCollisionShapeData value) {
+		CollisionJNI.btTriangleMeshShapeData_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
+	}
 
-  public btCollisionShapeData getCollisionShapeData() {
-    long cPtr = CollisionJNI.btTriangleMeshShapeData_collisionShapeData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
-  }
+	public btCollisionShapeData getCollisionShapeData () {
+		long cPtr = CollisionJNI.btTriangleMeshShapeData_collisionShapeData_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
+	}
 
-  public void setMeshInterface(btStridingMeshInterfaceData value) {
-    CollisionJNI.btTriangleMeshShapeData_meshInterface_set(swigCPtr, this, btStridingMeshInterfaceData.getCPtr(value), value);
-  }
+	public void setMeshInterface (btStridingMeshInterfaceData value) {
+		CollisionJNI.btTriangleMeshShapeData_meshInterface_set(swigCPtr, this, btStridingMeshInterfaceData.getCPtr(value), value);
+	}
 
-  public btStridingMeshInterfaceData getMeshInterface() {
-    long cPtr = CollisionJNI.btTriangleMeshShapeData_meshInterface_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStridingMeshInterfaceData(cPtr, false);
-  }
+	public btStridingMeshInterfaceData getMeshInterface () {
+		long cPtr = CollisionJNI.btTriangleMeshShapeData_meshInterface_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btStridingMeshInterfaceData(cPtr, false);
+	}
 
-  public void setQuantizedFloatBvh(btQuantizedBvhFloatData value) {
-    CollisionJNI.btTriangleMeshShapeData_quantizedFloatBvh_set(swigCPtr, this, btQuantizedBvhFloatData.getCPtr(value), value);
-  }
+	public void setQuantizedFloatBvh (btQuantizedBvhFloatData value) {
+		CollisionJNI.btTriangleMeshShapeData_quantizedFloatBvh_set(swigCPtr, this, btQuantizedBvhFloatData.getCPtr(value), value);
+	}
 
-  public btQuantizedBvhFloatData getQuantizedFloatBvh() {
-    long cPtr = CollisionJNI.btTriangleMeshShapeData_quantizedFloatBvh_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btQuantizedBvhFloatData(cPtr, false);
-  }
+	public btQuantizedBvhFloatData getQuantizedFloatBvh () {
+		long cPtr = CollisionJNI.btTriangleMeshShapeData_quantizedFloatBvh_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btQuantizedBvhFloatData(cPtr, false);
+	}
 
-  public void setQuantizedDoubleBvh(btQuantizedBvhDoubleData value) {
-    CollisionJNI.btTriangleMeshShapeData_quantizedDoubleBvh_set(swigCPtr, this, btQuantizedBvhDoubleData.getCPtr(value), value);
-  }
+	public void setQuantizedDoubleBvh (btQuantizedBvhDoubleData value) {
+		CollisionJNI.btTriangleMeshShapeData_quantizedDoubleBvh_set(swigCPtr, this, btQuantizedBvhDoubleData.getCPtr(value), value);
+	}
 
-  public btQuantizedBvhDoubleData getQuantizedDoubleBvh() {
-    long cPtr = CollisionJNI.btTriangleMeshShapeData_quantizedDoubleBvh_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btQuantizedBvhDoubleData(cPtr, false);
-  }
+	public btQuantizedBvhDoubleData getQuantizedDoubleBvh () {
+		long cPtr = CollisionJNI.btTriangleMeshShapeData_quantizedDoubleBvh_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btQuantizedBvhDoubleData(cPtr, false);
+	}
 
-  public void setTriangleInfoMap(btTriangleInfoMapData value) {
-    CollisionJNI.btTriangleMeshShapeData_triangleInfoMap_set(swigCPtr, this, btTriangleInfoMapData.getCPtr(value), value);
-  }
+	public void setTriangleInfoMap (btTriangleInfoMapData value) {
+		CollisionJNI.btTriangleMeshShapeData_triangleInfoMap_set(swigCPtr, this, btTriangleInfoMapData.getCPtr(value), value);
+	}
 
-  public btTriangleInfoMapData getTriangleInfoMap() {
-    long cPtr = CollisionJNI.btTriangleMeshShapeData_triangleInfoMap_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTriangleInfoMapData(cPtr, false);
-  }
+	public btTriangleInfoMapData getTriangleInfoMap () {
+		long cPtr = CollisionJNI.btTriangleMeshShapeData_triangleInfoMap_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTriangleInfoMapData(cPtr, false);
+	}
 
-  public void setCollisionMargin(float value) {
-    CollisionJNI.btTriangleMeshShapeData_collisionMargin_set(swigCPtr, this, value);
-  }
+	public void setCollisionMargin (float value) {
+		CollisionJNI.btTriangleMeshShapeData_collisionMargin_set(swigCPtr, this, value);
+	}
 
-  public float getCollisionMargin() {
-    return CollisionJNI.btTriangleMeshShapeData_collisionMargin_get(swigCPtr, this);
-  }
+	public float getCollisionMargin () {
+		return CollisionJNI.btTriangleMeshShapeData_collisionMargin_get(swigCPtr, this);
+	}
 
-  public void setPad3(String value) {
-    CollisionJNI.btTriangleMeshShapeData_pad3_set(swigCPtr, this, value);
-  }
+	public void setPad3 (String value) {
+		CollisionJNI.btTriangleMeshShapeData_pad3_set(swigCPtr, this, value);
+	}
 
-  public String getPad3() {
-    return CollisionJNI.btTriangleMeshShapeData_pad3_get(swigCPtr, this);
-  }
+	public String getPad3 () {
+		return CollisionJNI.btTriangleMeshShapeData_pad3_get(swigCPtr, this);
+	}
 
-  public btTriangleMeshShapeData() {
-    this(CollisionJNI.new_btTriangleMeshShapeData(), true);
-  }
+	public btTriangleMeshShapeData () {
+		this(CollisionJNI.new_btTriangleMeshShapeData(), true);
+	}
 
 }

@@ -20,8 +20,8 @@ import java.util.Random;
 
 /** This class implements the xorshift128+ algorithm that is a very fast, top-quality 64-bit pseudo-random number generator. The
  * quality of this PRNG is much higher than {@link Random}'s, and its cycle length is 2<sup>128</sup>&nbsp;&minus;&nbsp;1, which
- * is more than enough for any single-thread application. More details and algorithms can be found <a
- * href="http://xorshift.di.unimi.it/">here</a>.
+ * is more than enough for any single-thread application. More details and algorithms can be found
+ * <a href="http://xorshift.di.unimi.it/">here</a>.
  * <p>
  * Instances of RandomXS128 are not thread-safe.
  * 
@@ -99,9 +99,9 @@ public class RandomXS128 extends Random {
 		return (int)nextLong(n);
 	}
 
-	/** Returns a pseudo-random, uniformly distributed {@code long} value between 0 (inclusive) and the specified value (exclusive),
-	 * drawn from this random number generator's sequence. The algorithm used to generate the value guarantees that the result is
-	 * uniform, provided that the sequence of 64-bit values produced by this generator is.
+	/** Returns a pseudo-random, uniformly distributed {@code long} value between 0 (inclusive) and the specified value
+	 * (exclusive), drawn from this random number generator's sequence. The algorithm used to generate the value guarantees that
+	 * the result is uniform, provided that the sequence of 64-bit values produced by this generator is.
 	 * <p>
 	 * This implementation uses {@link #nextLong()} internally.
 	 * @param n the positive bound on the random number to be returned.
@@ -174,13 +174,11 @@ public class RandomXS128 extends Random {
 		this.seed0 = seed0;
 		this.seed1 = seed1;
 	}
-	
-	/**
-	 * Returns the internal seeds to allow state saving.
+
+	/** Returns the internal seeds to allow state saving.
 	 * @param seed must be 0 or 1, designating which of the 2 long seeds to return
-	 * @return the internal seed that can be used in setState
-	 */
-	public long getState(int seed) {
+	 * @return the internal seed that can be used in setState */
+	public long getState (int seed) {
 		return seed == 0 ? seed0 : seed1;
 	}
 

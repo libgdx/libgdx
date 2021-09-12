@@ -60,8 +60,8 @@ public class AmbientCubemap {
 	public AmbientCubemap set (float r, float g, float b) {
 		for (int idx = 0; idx < NUM_VALUES;) {
 			data[idx] = r;
-			data[idx+1] = g;
-			data[idx+2] = b;
+			data[idx + 1] = g;
+			data[idx + 2] = b;
 			idx += 3;
 		}
 		return this;

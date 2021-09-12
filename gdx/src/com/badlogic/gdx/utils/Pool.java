@@ -84,8 +84,8 @@ abstract public class Pool<T> {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
-	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is reached,
-	 * and when the pool is {@link #clear() cleared} */
+	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is
+	 * reached, and when the pool is {@link #clear() cleared} */
 	protected void discard (T object) {
 	}
 

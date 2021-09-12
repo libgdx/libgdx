@@ -39,7 +39,7 @@ public class TextureAttribute extends Attribute {
 	public final static long Emissive = register(EmissiveAlias);
 	public final static String ReflectionAlias = "reflectionTexture";
 	public final static long Reflection = register(ReflectionAlias);
-	
+
 	protected static long Mask = Diffuse | Specular | Bump | Normal | Ambient | Emissive | Reflection;
 
 	public final static boolean is (final long mask) {
@@ -73,31 +73,31 @@ public class TextureAttribute extends Attribute {
 	public static TextureAttribute createBump (final Texture texture) {
 		return new TextureAttribute(Bump, texture);
 	}
-	
+
 	public static TextureAttribute createBump (final TextureRegion region) {
 		return new TextureAttribute(Bump, region);
 	}
-	
+
 	public static TextureAttribute createAmbient (final Texture texture) {
 		return new TextureAttribute(Ambient, texture);
 	}
-	
+
 	public static TextureAttribute createAmbient (final TextureRegion region) {
 		return new TextureAttribute(Ambient, region);
 	}
-	
+
 	public static TextureAttribute createEmissive (final Texture texture) {
 		return new TextureAttribute(Emissive, texture);
 	}
-	
+
 	public static TextureAttribute createEmissive (final TextureRegion region) {
 		return new TextureAttribute(Emissive, region);
 	}
-	
+
 	public static TextureAttribute createReflection (final Texture texture) {
 		return new TextureAttribute(Reflection, texture);
 	}
-	
+
 	public static TextureAttribute createReflection (final TextureRegion region) {
 		return new TextureAttribute(Reflection, region);
 	}
@@ -177,7 +177,7 @@ public class TextureAttribute extends Attribute {
 		result = 991 * result + uvIndex;
 		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return type < o.type ? -1 : 1;

@@ -364,7 +364,7 @@ public interface GL20 {
 	public void glCullFace (int mode);
 
 	public void glDeleteTextures (int n, IntBuffer textures);
-	
+
 	public void glDeleteTexture (int texture);
 
 	public void glDepthFunc (int func);
@@ -388,7 +388,7 @@ public interface GL20 {
 	public void glFrontFace (int mode);
 
 	public void glGenTextures (int n, IntBuffer textures);
-	
+
 	public int glGenTexture ();
 
 	public int glGetError ();
@@ -454,19 +454,19 @@ public interface GL20 {
 	public int glCreateProgram ();
 
 	public int glCreateShader (int type);
-	
+
 	public void glDeleteBuffer (int buffer);
 
 	public void glDeleteBuffers (int n, IntBuffer buffers);
 
 	public void glDeleteFramebuffer (int framebuffer);
-	
+
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers);
 
 	public void glDeleteProgram (int program);
 
 	public void glDeleteRenderbuffer (int renderbuffer);
-	
+
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers);
 
 	public void glDeleteShader (int shader);
@@ -484,17 +484,17 @@ public interface GL20 {
 	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level);
 
 	public int glGenBuffer ();
-	
+
 	public void glGenBuffers (int n, IntBuffer buffers);
 
 	public void glGenerateMipmap (int target);
 
 	public int glGenFramebuffer ();
-	
+
 	public void glGenFramebuffers (int n, IntBuffer framebuffers);
 
 	public int glGenRenderbuffer ();
-	
+
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers);
 
 	// deviates
@@ -587,61 +587,61 @@ public interface GL20 {
 	public void glUniform1f (int location, float x);
 
 	public void glUniform1fv (int location, int count, FloatBuffer v);
-	
+
 	public void glUniform1fv (int location, int count, float v[], int offset);
 
 	public void glUniform1i (int location, int x);
 
 	public void glUniform1iv (int location, int count, IntBuffer v);
-	
+
 	public void glUniform1iv (int location, int count, int v[], int offset);
 
 	public void glUniform2f (int location, float x, float y);
 
 	public void glUniform2fv (int location, int count, FloatBuffer v);
-	
+
 	public void glUniform2fv (int location, int count, float v[], int offset);
 
 	public void glUniform2i (int location, int x, int y);
 
 	public void glUniform2iv (int location, int count, IntBuffer v);
-	
+
 	public void glUniform2iv (int location, int count, int[] v, int offset);
 
 	public void glUniform3f (int location, float x, float y, float z);
 
 	public void glUniform3fv (int location, int count, FloatBuffer v);
-	
+
 	public void glUniform3fv (int location, int count, float[] v, int offset);
 
 	public void glUniform3i (int location, int x, int y, int z);
 
 	public void glUniform3iv (int location, int count, IntBuffer v);
-	
+
 	public void glUniform3iv (int location, int count, int v[], int offset);
 
 	public void glUniform4f (int location, float x, float y, float z, float w);
 
 	public void glUniform4fv (int location, int count, FloatBuffer v);
-	
+
 	public void glUniform4fv (int location, int count, float v[], int offset);
 
 	public void glUniform4i (int location, int x, int y, int z, int w);
 
 	public void glUniform4iv (int location, int count, IntBuffer v);
-	
+
 	public void glUniform4iv (int location, int count, int v[], int offset);
 
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value);
-	
+
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, float value[], int offset);
 
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value);
-	
+
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, float value[], int offset);
 
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value);
-	
+
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, float value[], int offset);
 
 	public void glUseProgram (int program);
@@ -664,11 +664,8 @@ public interface GL20 {
 
 	public void glVertexAttrib4fv (int indx, FloatBuffer values);
 
-	/**
-	 * In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid.
-	 * In 3.0 and later, use the other version of this function instead, pass a zero-based
-	 * offset which references the buffer currently bound to GL_ARRAY_BUFFER.
-	 */
+	/** In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid. In 3.0 and later, use the other version of
+	 * this function instead, pass a zero-based offset which references the buffer currently bound to GL_ARRAY_BUFFER. */
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr);

@@ -23,7 +23,8 @@ package java.nio;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
 
 	static ReadWriteCharArrayBuffer copy (CharArrayBuffer other, int markOfOther) {

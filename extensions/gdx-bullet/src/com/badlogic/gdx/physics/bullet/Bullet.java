@@ -62,9 +62,8 @@ public class Bullet {
 		Bullet.enableLogging = logging;
 		new SharedLibraryLoader().load("gdx-bullet");
 		final int version = LinearMath.btGetVersion();
-		if (version != VERSION)
-			throw new GdxRuntimeException("Bullet binaries version (" + version + ") does not match source version (" + VERSION
-				+ ")");
+		if (version != VERSION) throw new GdxRuntimeException(
+			"Bullet binaries version (" + version + ") does not match source version (" + VERSION + ")");
 	}
 
 	protected static class ShapePart {

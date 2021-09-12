@@ -59,10 +59,10 @@ public class TiledMapAnimationLoadingTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 		map = new TmxMapLoader().load("data/maps/tiled-animations/test-load-animations.tmx");
-		
+
 		MapLayer layer = map.getLayers().get("Objects");
 		MapObjects mapObjects = layer.getObjects();
-		
+
 		mapObjects.add(new CircleMapObject(280, 400, 50));
 
 	}

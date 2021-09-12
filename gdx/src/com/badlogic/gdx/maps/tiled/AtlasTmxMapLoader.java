@@ -139,7 +139,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 	}
 
 	@Override
-	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile, TextureLoader.TextureParameter textureParameter) {
+	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
+		TextureLoader.TextureParameter textureParameter) {
 		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 
 		// Atlas dependencies
@@ -195,8 +196,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					String regionName = imageElement.getAttribute("source");
 					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
 					AtlasRegion region = atlas.findRegion(regionName);
-					if (region == null)
-						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
+					if (region == null) throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
 					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
 				}
 			}

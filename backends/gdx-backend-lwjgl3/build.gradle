@@ -18,7 +18,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile libraries.lwjgl3
+	compile libraries.lwjgl3
 }
 
 

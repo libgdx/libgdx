@@ -62,8 +62,8 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 		this.world = world;
 	}
 
-	/** /**Constructs ParticleEmitterBox2D using bufferedReader. Box2d World is used for rayCasting. Assumes that particles use same
-	 * unit system that box2d world does.
+	/** /**Constructs ParticleEmitterBox2D using bufferedReader. Box2d World is used for rayCasting. Assumes that particles use
+	 * same unit system that box2d world does.
 	 * 
 	 * @param world
 	 * @param reader

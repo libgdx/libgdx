@@ -16,14 +16,13 @@
 
 package com.badlogic.gdx.setup;
 
-
 import java.util.HashMap;
 
 public class DependencyBank {
 
-	//Versions
+	// Versions
 	static String libgdxVersion = "1.10.0";
-	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
+	// Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.10.1-SNAPSHOT";
 	static String roboVMVersion = "2.3.12";
 	static String buildToolsVersion = "29.0.3";
@@ -31,7 +30,7 @@ public class DependencyBank {
 	static String androidMinAPILevel = "14";
 	static String gwtVersion = "2.8.2";
 
-	//Repositories
+	// Repositories
 	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String google = "google()";
@@ -40,149 +39,128 @@ public class DependencyBank {
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 	static String jitpackUrl = "https://jitpack.io";
 
-	//Project plugins
+	// Project plugins
 	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
 	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
 	static String androidPluginImport = "com.android.tools.build:gradle:4.1.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
-
-	//Extension versions
+	// Extension versions
 	static String box2DLightsVersion = "1.5";
 	static String ashleyVersion = "1.7.4";
-	static String aiVersion = "1.8.2";	
+	static String aiVersion = "1.8.2";
 	static String controllersVersion = "2.2.1";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 
-	public DependencyBank() {
+	public DependencyBank () {
 		for (ProjectDependency projectDep : ProjectDependency.values()) {
-			Dependency dependency = new Dependency(projectDep.name(),
-					projectDep.getGwtInherits(),
-					projectDep.getDependencies(ProjectType.CORE),
-					projectDep.getDependencies(ProjectType.LWJGL2),
-					projectDep.getDependencies(ProjectType.LWJGL3),
-					projectDep.getDependencies(ProjectType.ANDROID),
-					projectDep.getDependencies(ProjectType.IOS),
-					projectDep.getDependencies(ProjectType.HTML));
+			Dependency dependency = new Dependency(projectDep.name(), projectDep.getGwtInherits(),
+				projectDep.getDependencies(ProjectType.CORE), projectDep.getDependencies(ProjectType.LWJGL2),
+				projectDep.getDependencies(ProjectType.LWJGL3), projectDep.getDependencies(ProjectType.ANDROID),
+				projectDep.getDependencies(ProjectType.IOS), projectDep.getDependencies(ProjectType.HTML));
 			gdxDependencies.put(projectDep, dependency);
 		}
 	}
 
-	public Dependency getDependency(ProjectDependency gdx) {
+	public Dependency getDependency (ProjectDependency gdx) {
 		return gdxDependencies.get(gdx);
 	}
 
-	/**
-	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
-	 * and allow the option to choose extensions as the user wishes.
+	/** This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default, and allow
+	 * the option to choose extensions as the user wishes.
 	 * <p/>
 	 * These dependency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
 	 * project generation
 	 *
 	 * @see Dependency for the object that handles sub-module dependencies. If no dependency is found for a sub-module, ie
-	 * FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatability
-	 */
+	 *      FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatability */
 	public enum ProjectDependency {
-		GDX(
-			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"},
-			new String[]{"com.mobidevelop.robovm:robovm-rt:$roboVMVersion", "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
-			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
-			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
-			
-			"Core Library for libGDX"
-		),
-		BULLET(
-			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"},
-			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
-			null,
-			null,
-			
-			"3D Collision Detection and Rigid Body Dynamics"
-		),
-		FREETYPE(
-			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"},
-			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
-			null,
-			null,
-			
-			"Generate BitmapFonts from .ttf font files"
-		),
-		TOOLS(
-			new String[]{},
-			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
-			new String[]{},
-			new String[]{},
-			new String[]{},
-			new String[]{},
-			new String[]{},
-			
-			"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"
-		),
-		CONTROLLERS(
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"},
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"},
-			new String[]{"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion:sources", "com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion", "com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion:sources"},
-			new String[]{"com.badlogic.gdx.controllers", "com.badlogic.gdx.controllers.controllers-gwt"},
+		GDX(new String[] {"com.badlogicgames.gdx:gdx:$gdxVersion"},
+			new String[] {"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
+			new String[] {"com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
+			new String[] {"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"},
+			new String[] {"com.mobidevelop.robovm:robovm-rt:$roboVMVersion",
+				"com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion",
+				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
+			new String[] {"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources",
+				"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
+			new String[] {"com.badlogic.gdx.backends.gdx_backends_gwt"},
 
-			"Game Controller/Gamepad API"
-		),
-		BOX2D(
-			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
-			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
-			new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"},
-			
-			"2D Physics Library"
-		),	
-		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
-			new String[]{},
-			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
-			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
-			new String[]{"Box2DLights"},
-			
-			"2D Lighting framework that utilises Box2D"
-		),
-		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
-			new String[]{},
-			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
-			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
-			new String[]{"com.badlogic.ashley_gwt"},
-			
-			"Lightweight Entity framework"
-		),
-		AI(
-			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
-			new String[]{},
-			new String[]{},
-			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
-			new String[]{},
-			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
-			new String[]{"com.badlogic.gdx.ai"},
-			
-			"Artificial Intelligence framework"
-		);
+			"Core Library for libGDX"), BULLET(new String[] {"com.badlogicgames.gdx:gdx-bullet:$gdxVersion"},
+				new String[] {"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
+				new String[] {"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
+				new String[] {"com.badlogicgames.gdx:gdx-bullet:$gdxVersion",
+					"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a",
+					"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a",
+					"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86",
+					"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"},
+				new String[] {"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"}, null, null,
+
+				"3D Collision Detection and Rigid Body Dynamics"), FREETYPE(
+					new String[] {"com.badlogicgames.gdx:gdx-freetype:$gdxVersion"},
+					new String[] {"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
+					new String[] {"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
+					new String[] {"com.badlogicgames.gdx:gdx-freetype:$gdxVersion",
+						"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a",
+						"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a",
+						"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86",
+						"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"},
+					new String[] {"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"}, null, null,
+
+					"Generate BitmapFonts from .ttf font files"), TOOLS(new String[] {},
+						new String[] {"com.badlogicgames.gdx:gdx-tools:$gdxVersion"}, new String[] {}, new String[] {}, new String[] {},
+						new String[] {}, new String[] {},
+
+						"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"), CONTROLLERS(
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"},
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"},
+							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion:sources",
+								"com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion",
+								"com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion:sources"},
+							new String[] {"com.badlogic.gdx.controllers", "com.badlogic.gdx.controllers.controllers-gwt"},
+
+							"Game Controller/Gamepad API"), BOX2D(new String[] {"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"},
+								new String[] {"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
+								new String[] {"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"},
+								new String[] {"com.badlogicgames.gdx:gdx-box2d:$gdxVersion",
+									"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a",
+									"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a",
+									"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86",
+									"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"},
+								new String[] {"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
+								new String[] {"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources",
+									"com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
+								new String[] {"com.badlogic.gdx.physics.box2d.box2d-gwt"},
+
+								"2D Physics Library"), BOX2DLIGHTS(
+									new String[] {"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"}, new String[] {},
+									new String[] {}, new String[] {"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
+									new String[] {},
+									new String[] {"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
+									new String[] {"Box2DLights"},
+
+									"2D Lighting framework that utilises Box2D"), ASHLEY(
+										new String[] {"com.badlogicgames.ashley:ashley:$ashleyVersion"}, new String[] {}, new String[] {},
+										new String[] {"com.badlogicgames.ashley:ashley:$ashleyVersion"}, new String[] {},
+										new String[] {"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
+										new String[] {"com.badlogic.ashley_gwt"},
+
+										"Lightweight Entity framework"), AI(new String[] {"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+											new String[] {}, new String[] {}, new String[] {"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+											new String[] {}, new String[] {"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
+											new String[] {"com.badlogic.gdx.ai"},
+
+											"Artificial Intelligence framework");
 
 		private String[] coreDependencies;
 		private String[] lwjgl2Dependencies;
@@ -193,7 +171,8 @@ public class DependencyBank {
 		private String[] gwtInherits;
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] lwjgl2Deps, String[] lwjgl3Deps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
+		ProjectDependency (String[] coreDeps, String[] lwjgl2Deps, String[] lwjgl3Deps, String[] androidDeps, String[] iosDeps,
+			String[] gwtDeps, String[] gwtInhertis, String description) {
 			this.coreDependencies = coreDeps;
 			this.lwjgl2Dependencies = lwjgl2Deps;
 			this.lwjgl3Dependencies = lwjgl3Deps;
@@ -204,59 +183,54 @@ public class DependencyBank {
 			this.description = description;
 		}
 
-		public String[] getDependencies(ProjectType type) {
+		public String[] getDependencies (ProjectType type) {
 			switch (type) {
-				case CORE:
-					return coreDependencies;
-				case LWJGL2:
-					return lwjgl2Dependencies;
-				case LWJGL3:
-					return lwjgl3Dependencies;
-				case ANDROID:
-					return androidDependencies;
-				case IOS:
-					return iosDependencies;
-				case HTML:
-					return gwtDependencies;
+			case CORE:
+				return coreDependencies;
+			case LWJGL2:
+				return lwjgl2Dependencies;
+			case LWJGL3:
+				return lwjgl3Dependencies;
+			case ANDROID:
+				return androidDependencies;
+			case IOS:
+				return iosDependencies;
+			case HTML:
+				return gwtDependencies;
 			}
 			return null;
 		}
-		
-		public String[] getGwtInherits() {
+
+		public String[] getGwtInherits () {
 			return gwtInherits;
 		}
-		
-		public String getDescription() {
+
+		public String getDescription () {
 			return description;
 		}
 	}
 
-
 	public enum ProjectType {
-		CORE("core", "Core"),
-		LWJGL2("legacy_desktop", "Desktop (LWJGL2)"),
-		LWJGL3("desktop", "Desktop (LWJGL 3)"),
-		ANDROID("android", "Android"),
-		IOS("ios", "iOS"),
-		HTML("html", "HTML");
+		CORE("core", "Core"), LWJGL2("legacy_desktop", "Desktop (LWJGL2)"), LWJGL3("desktop",
+			"Desktop (LWJGL 3)"), ANDROID("android", "Android"), IOS("ios", "iOS"), HTML("html", "HTML");
 
 		private final String name;
 		private final String displayName;
 
-		ProjectType(String name, String displayName) {
+		ProjectType (String name, String displayName) {
 			this.name = name;
 			this.displayName = displayName;
 		}
 
-		public String getName() {
+		public String getName () {
 			return name;
 		}
 
-		public String getDisplayName() {
+		public String getDisplayName () {
 			return displayName;
 		}
 
-		public String[] getPlugins(Language sourceLanguage) {
+		public String[] getPlugins (Language sourceLanguage) {
 			return sourceLanguage.platformPlugins[ordinal()];
 		}
 	}

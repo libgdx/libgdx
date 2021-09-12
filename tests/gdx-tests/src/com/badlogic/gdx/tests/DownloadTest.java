@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -23,12 +24,12 @@ public class DownloadTest extends GdxTest {
 		batch = new SpriteBatch();
 		Pixmap.downloadFromUrl(urls.removeFirst(), new Pixmap.DownloadPixmapResponseListener() {
 			@Override
-			public void downloadComplete(Pixmap pixmap) {
+			public void downloadComplete (Pixmap pixmap) {
 				texture = new Texture(new PixmapTextureData(pixmap, pixmap.getFormat(), false, false, true));
 			}
 
 			@Override
-			public void downloadFailed(Throwable t) {
+			public void downloadFailed (Throwable t) {
 				Gdx.app.log("EmptyDownloadTest", "Failed, trying next", t);
 				if (urls.notEmpty()) {
 					Pixmap.downloadFromUrl(urls.removeFirst(), this);
@@ -41,7 +42,7 @@ public class DownloadTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		if(texture != null) batch.draw(texture, 0, 0);
+		if (texture != null) batch.draw(texture, 0, 0);
 		batch.end();
 	}
 }

@@ -6,8 +6,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.badlogic.gdx.math.MathUtils;
-
 public class MathUtilsTest {
 
 	@Test
@@ -32,16 +30,16 @@ public class MathUtilsTest {
 	}
 
 	@Test
-	public void testNorm(){
+	public void testNorm () {
 		assertEquals(-1.0f, MathUtils.norm(10f, 20f, 0f), 0.01f);
-		assertEquals(0.0f,  MathUtils.norm(10f, 20f, 10f), 0.01f);
-		assertEquals(0.5f,  MathUtils.norm(10f, 20f, 15f), 0.01f);
-		assertEquals(1.0f,  MathUtils.norm(10f, 20f, 20f), 0.01f);
-		assertEquals(2.0f,  MathUtils.norm(10f, 20f, 30f), 0.01f);
+		assertEquals(0.0f, MathUtils.norm(10f, 20f, 10f), 0.01f);
+		assertEquals(0.5f, MathUtils.norm(10f, 20f, 15f), 0.01f);
+		assertEquals(1.0f, MathUtils.norm(10f, 20f, 20f), 0.01f);
+		assertEquals(2.0f, MathUtils.norm(10f, 20f, 30f), 0.01f);
 	}
-	
+
 	@Test
-	public void testMap(){
+	public void testMap () {
 		assertEquals(0f, MathUtils.map(10f, 20f, 100f, 200f, 0f), 0.01f);
 		assertEquals(100f, MathUtils.map(10f, 20f, 100f, 200f, 10f), 0.01f);
 		assertEquals(150f, MathUtils.map(10f, 20f, 100f, 200f, 15f), 0.01f);
@@ -50,7 +48,7 @@ public class MathUtilsTest {
 	}
 
 	@Test
-	public void testRandomLong() {
+	public void testRandomLong () {
 		long r;
 		for (int i = 0; i < 512; i++) {
 			assertTrue((r = MathUtils.random(1L, 5L)) >= 1L && r <= 5L);
@@ -61,7 +59,7 @@ public class MathUtilsTest {
 	}
 
 	@Test
-	public void testSinDeg() {
+	public void testSinDeg () {
 		assertEquals(0f, MathUtils.sinDeg(0f), 0f);
 		assertEquals(1f, MathUtils.sinDeg(90f), 0f);
 		assertEquals(0f, MathUtils.sinDeg(180f), 0f);
@@ -69,7 +67,7 @@ public class MathUtilsTest {
 	}
 
 	@Test
-	public void testCosDeg() {
+	public void testCosDeg () {
 		assertEquals(1f, MathUtils.cosDeg(0f), 0f);
 		assertEquals(0f, MathUtils.cosDeg(90f), 0f);
 		assertEquals(-1f, MathUtils.cosDeg(180f), 0f);

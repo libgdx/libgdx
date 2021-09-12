@@ -57,7 +57,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposable {
 	static protected final int NUM_VERTICES = 20;
-	
+
 	protected TiledMap map;
 
 	protected float unitScale;
@@ -181,32 +181,29 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public void renderObject (MapObject object) {
 
 	}
-	
+
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r,
-														  batchColor.g,
-														  batchColor.b,
-														  batchColor.a * layer.getOpacity());
-		
+		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+
 		final float[] vertices = this.vertices;
-		
+
 		TextureRegion region = layer.getTextureRegion();
 
 		if (region == null) {
 			return;
 		}
-		
+
 		final float x = layer.getX();
 		final float y = layer.getY();
 		final float x1 = x * unitScale;
 		final float y1 = y * unitScale;
 		final float x2 = x1 + region.getRegionWidth() * unitScale;
 		final float y2 = y1 + region.getRegionHeight() * unitScale;
-		
+
 		imageBounds.set(x1, y1, x2 - x1, y2 - y1);
-		
+
 		if (viewBounds.contains(imageBounds) || viewBounds.overlaps(imageBounds)) {
 			final float u1 = region.getU();
 			final float v1 = region.getV2();

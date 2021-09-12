@@ -18,8 +18,8 @@ package com.google.gwt.webgl.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-/** The WebGLContextAttributes interface contains drawing surface attributes and is passed as the second parameter to getContext. A
- * native object may be supplied as this parameter; the specified attributes will be queried from this object. */
+/** The WebGLContextAttributes interface contains drawing surface attributes and is passed as the second parameter to getContext.
+ * A native object may be supplied as this parameter; the specified attributes will be queried from this object. */
 public class WebGLContextAttributes extends JavaScriptObject {
 
 	public static native WebGLContextAttributes create () /*-{
@@ -81,7 +81,7 @@ public class WebGLContextAttributes extends JavaScriptObject {
 	public final native void clearPremultipliedAlpha () /*-{
 																			delete this.premultipliedAlpha;
 																			}-*/;
-	
+
 	public final native void setPreserveDrawingBuffer (boolean preserveDrawingBuffer) /*-{
 																			this.preserveDrawingBuffer = preserveDrawingBuffer;
 																			}-*/;

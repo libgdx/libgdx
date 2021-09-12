@@ -48,7 +48,7 @@ public class PreloaderBundleGenerator extends Generator {
 		FileWrapper file;
 		AssetType type;
 
-		public Asset(String filePathOrig, FileWrapper file, AssetType type) {
+		public Asset (String filePathOrig, FileWrapper file, AssetType type) {
 			this.filePathOrig = filePathOrig;
 			this.file = file;
 			this.type = type;
@@ -60,7 +60,7 @@ public class PreloaderBundleGenerator extends Generator {
 		System.out.println(new File(".").getAbsolutePath());
 		String assetPath = getAssetPath(context);
 		String assetOutputPath = getAssetOutputPath(context);
-		if ( assetOutputPath == null ){
+		if (assetOutputPath == null) {
 			assetOutputPath = "war/";
 		}
 		AssetFilter assetFilter = getAssetFilter(context);
@@ -68,14 +68,12 @@ public class PreloaderBundleGenerator extends Generator {
 		FileWrapper source = new FileWrapper(assetPath);
 		if (!source.exists()) {
 			source = new FileWrapper("../" + assetPath);
-			if (!source.exists())
-				throw new RuntimeException("assets path '" + assetPath
-					+ "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
+			if (!source.exists()) throw new RuntimeException("assets path '" + assetPath
+				+ "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
 		}
-		if (!source.isDirectory())
-			throw new RuntimeException("assets path '" + assetPath
-				+ "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
-		System.out.println("Copying resources from " + assetPath + " to " + assetOutputPath );
+		if (!source.isDirectory()) throw new RuntimeException("assets path '" + assetPath
+			+ "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
+		System.out.println("Copying resources from " + assetPath + " to " + assetOutputPath);
 		System.out.println(source.file.getAbsolutePath());
 		FileWrapper target = new FileWrapper("assets/"); // this should always be the war/ directory of the GWT project.
 		System.out.println(target.file.getAbsolutePath());
@@ -90,7 +88,7 @@ public class PreloaderBundleGenerator extends Generator {
 
 		// Now collect classpath files and copy to assets
 		List<String> classpathFiles = getClasspathFiles(context);
-		for (String classpathFile : classpathFiles) {			
+		for (String classpathFile : classpathFiles) {
 			if (assetFilter.accept(classpathFile, false)) {
 				try {
 					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
@@ -102,10 +100,10 @@ public class PreloaderBundleGenerator extends Generator {
 					assets.add(new Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())));
 				} catch (IOException e) {
 					e.printStackTrace();
-				}			
+				}
 			}
-		}		
-		
+		}
+
 		HashMap<String, ArrayList<Asset>> bundles = new HashMap<String, ArrayList<Asset>>();
 		for (Asset asset : assets) {
 			String bundleName = assetFilter.getBundleName(asset.file.path());
@@ -124,22 +122,22 @@ public class PreloaderBundleGenerator extends Generator {
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
 			StringBuilder sb = new StringBuilder();
 			for (Asset asset : bundle.getValue()) {
-                String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+				String pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
 				if (pathOrig.startsWith("/")) pathOrig = pathOrig.substring(1);
-                String pathMd5 = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
-                if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
+				String pathMd5 = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
+				if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1);
 				sb.append(asset.type.code);
 				sb.append(":");
 				sb.append(pathOrig);
 				sb.append(":");
-                sb.append(pathMd5);
-                sb.append(":");
+				sb.append(pathMd5);
+				sb.append(":");
 				sb.append(asset.file.isDirectory() ? 0 : asset.file.length());
 				sb.append(":");
 				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
 				sb.append(mimetype == null ? "application/unknown" : mimetype);
-                sb.append(":");
-                sb.append(asset.file.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
+				sb.append(":");
+				sb.append(asset.file.isDirectory() || assetFilter.preload(pathOrig) ? '1' : '0');
 				sb.append("\n");
 			}
 			target.child(bundle.getKey() + ".txt").writeString(sb.toString(), false);
@@ -147,18 +145,19 @@ public class PreloaderBundleGenerator extends Generator {
 		return createDummyClass(logger, context);
 	}
 
-	private void copyFile(FileWrapper source, String filePathOrig, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets) {
+	private void copyFile (FileWrapper source, String filePathOrig, FileWrapper dest, AssetFilter filter,
+		ArrayList<Asset> assets) {
 		if (!filter.accept(filePathOrig, false)) return;
 		try {
 			assets.add(new Asset(filePathOrig, dest, filter.getType(dest.path())));
 			dest.write(source.read(), false);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error copying source file: " + source + "\n" //
-					+ "To destination: " + dest, ex);
+				+ "To destination: " + dest, ex);
 		}
 	}
 
-	private void copyDirectory(FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, ArrayList<Asset> assets) {
+	private void copyDirectory (FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, ArrayList<Asset> assets) {
 		if (!filter.accept(destDir.path(), true)) return;
 		assets.add(new Asset(destDir.path(), destDir, AssetType.Directory));
 		destDir.mkdirs();
@@ -208,15 +207,15 @@ public class PreloaderBundleGenerator extends Generator {
 				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		}
 		String paths = assetPathProperty.getValues().get(0);
-		if(paths == null) {
+		if (paths == null) {
 			throw new RuntimeException(
 				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		} else {
 			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
-			for(String token: tokens) {
+			for (String token : tokens) {
 				System.out.println(token);
-				if(new FileWrapper(token).exists() || new FileWrapper("../" + token).exists()) {
+				if (new FileWrapper(token).exists() || new FileWrapper("../" + token).exists()) {
 					return token;
 				}
 			}
@@ -224,7 +223,7 @@ public class PreloaderBundleGenerator extends Generator {
 				"No valid gdx.assetpath defined. Fix <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> in your GWT projects gwt.xml file");
 		}
 	}
-	
+
 	private String getAssetOutputPath (GeneratorContext context) {
 		ConfigurationProperty assetPathProperty = null;
 		try {
@@ -236,25 +235,25 @@ public class PreloaderBundleGenerator extends Generator {
 			return null;
 		}
 		String paths = assetPathProperty.getValues().get(0);
-		if(paths == null) {
+		if (paths == null) {
 			return null;
 		} else {
 			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
 			String path = null;
-			for(String token: tokens) {
+			for (String token : tokens) {
 				if (new FileWrapper(token).exists() || new FileWrapper(token).mkdirs()) {
 					path = token;
 				}
 			}
-			if (path != null && !path.endsWith("/")){
+			if (path != null && !path.endsWith("/")) {
 				path += "/";
-			}			
+			}
 			return path;
 		}
 	}
 
-	private List<String> getClasspathFiles(GeneratorContext context) {
+	private List<String> getClasspathFiles (GeneratorContext context) {
 		List<String> classpathFiles = new ArrayList<String>();
 		try {
 			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.files.classpath");
@@ -263,10 +262,10 @@ public class PreloaderBundleGenerator extends Generator {
 			}
 		} catch (BadPropertyValueException e) {
 			// Ignore
-		}		
+		}
 		return classpathFiles;
 	}
-	
+
 	private String createDummyClass (TreeLogger logger, GeneratorContext context) {
 		String packageName = "com.badlogic.gdx.backends.gwt.preloader";
 		String className = "PreloaderBundleImpl";
@@ -281,7 +280,7 @@ public class PreloaderBundleGenerator extends Generator {
 		return packageName + "." + className;
 	}
 
-	private static String fileNameWithMd5(FileWrapper fw, byte[] bytes) {
+	private static String fileNameWithMd5 (FileWrapper fw, byte[] bytes) {
 		String md5;
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");

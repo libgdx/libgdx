@@ -24,7 +24,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** <p>
+/**
+ * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a cubemap for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
  * cubemap by {@link FrameBufferCubemap#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
@@ -67,13 +68,12 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** cubemap sides cache */
 	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
 
-	FrameBufferCubemap () {}
+	FrameBufferCubemap () {
+	}
 
-	/**
-	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
+	/** Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
-	 * @param bufferBuilder
-	 **/
+	 * @param bufferBuilder **/
 	protected FrameBufferCubemap (GLFrameBufferBuilder<? extends GLFrameBuffer<Cubemap>> bufferBuilder) {
 		super(bufferBuilder);
 	}
@@ -107,10 +107,10 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 		build();
 	}
 
-
 	@Override
 	protected Cubemap createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
-		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
+		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat,
+			attachmentSpec.format, attachmentSpec.type);
 		Cubemap result = new Cubemap(data, data, data, data, data, data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
@@ -128,8 +128,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 		int glHandle = texture.getTextureObjectHandle();
 		Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
 		for (Cubemap.CubemapSide side : sides) {
-			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
-				glHandle, 0);
+			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, glHandle, 0);
 		}
 	}
 
@@ -158,11 +157,12 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** Bind the side, making it active to render on. Should be called in between a call to {@link #begin()} and {@link #end()}.
 	 * @param side The side to bind */
 	protected void bindSide (final Cubemap.CubemapSide side) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getColorBufferTexture().getTextureObjectHandle(), 0);
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
+			getColorBufferTexture().getTextureObjectHandle(), 0);
 	}
 
 	/** Get the currently bound side. */
 	public Cubemap.CubemapSide getSide () {
-		return currentSide < 0 ? null : cubemapSides [currentSide];
+		return currentSide < 0 ? null : cubemapSides[currentSide];
 	}
 }

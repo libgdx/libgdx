@@ -71,7 +71,8 @@ public class ModelBatch implements Disposable {
 	/** the {@link RenderableSorter} **/
 	protected final RenderableSorter sorter;
 
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
+	 * yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
@@ -82,21 +83,24 @@ public class ModelBatch implements Disposable {
 		this.shaderProvider = (shaderProvider == null) ? new DefaultShaderProvider() : shaderProvider;
 	}
 
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
+	 * yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
 	public ModelBatch (final RenderContext context, final ShaderProvider shaderProvider) {
 		this(context, shaderProvider, null);
 	}
 
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
+	 * yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch (final RenderContext context, final RenderableSorter sorter) {
 		this(context, null, sorter);
 	}
 
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
+	 * yourself.
 	 * @param context The {@link RenderContext} to use. */
 	public ModelBatch (final RenderContext context) {
 		this(context, null, null);

@@ -16,11 +16,9 @@
 
 package com.badlogic.gdx;
 
-/**
- * The ApplicationLogger provides an interface for a libGDX Application to log messages and exceptions.
- * A default implementations is provided for each backend, custom implementations can be provided and set using
- * {@link Application#setApplicationLogger(ApplicationLogger) }
- */
+/** The ApplicationLogger provides an interface for a libGDX Application to log messages and exceptions. A default implementations
+ * is provided for each backend, custom implementations can be provided and set using
+ * {@link Application#setApplicationLogger(ApplicationLogger) } */
 public interface ApplicationLogger {
 
 	/** Logs a message with a tag */

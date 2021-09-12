@@ -67,8 +67,8 @@ public class PixmapPackerIOTest extends GdxTest {
 		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
 		Pixmap pixmap5 = new Pixmap(Gdx.files.internal("data/badlogic-with-whitespace.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false,
-				true, true, new PixmapPacker.GuillotineStrategy());
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false, true, true,
+			new PixmapPacker.GuillotineStrategy());
 		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
@@ -141,10 +141,14 @@ public class PixmapPackerIOTest extends GdxTest {
 		if (originalRegion.index != loaded.index) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		if (originalRegion.offsetX != loaded.offsetX) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		if (originalRegion.offsetY != loaded.offsetY) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.packedWidth != loaded.packedWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.packedHeight != loaded.packedHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.originalWidth != loaded.originalWidth) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
-		if (originalRegion.originalHeight != loaded.originalHeight) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.packedWidth != loaded.packedWidth)
+			throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.packedHeight != loaded.packedHeight)
+			throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.originalWidth != loaded.originalWidth)
+			throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+		if (originalRegion.originalHeight != loaded.originalHeight)
+			throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 		if (originalRegion.rotate != loaded.rotate) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 
 		int[] originalSplits = originalRegion.findValue("split");
@@ -161,8 +165,7 @@ public class PixmapPackerIOTest extends GdxTest {
 		int[] loadedPads = loaded.findValue("pad");
 		if (originalPads != null && loadedPads != null) {
 			for (int i = 0; i < originalPads.length; i++) {
-				if (originalPads[i] != loadedPads[i])
-					throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
+				if (originalPads[i] != loadedPads[i]) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
 			}
 		} else {
 			if (originalPads != loadedPads) throw new GdxRuntimeException("Original AtlasRegion differs from loaded");
@@ -173,7 +176,7 @@ public class PixmapPackerIOTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		int quarterSize = (int) (size/4f);
+		int quarterSize = (int)(size / 4f);
 		batch.begin();
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
 		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);

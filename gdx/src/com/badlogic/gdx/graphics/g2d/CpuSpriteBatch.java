@@ -57,7 +57,8 @@ public class CpuSpriteBatch extends SpriteBatch {
 		super(size, defaultShader);
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Flushes the batch and realigns the real matrix on the GPU. Subsequent draws won't need adjustment and will be slightly
 	 * faster as long as the transform matrix is not {@link #setTransformMatrix(Matrix4) changed}.
 	 * </p>
@@ -174,8 +175,7 @@ public class CpuSpriteBatch extends SpriteBatch {
 		if (!adjustNeeded) {
 			super.draw(texture, x, y, srcX, srcY, srcWidth, srcHeight);
 		} else {
-			drawAdjusted(texture, x, y, 0, 0, srcWidth, srcHeight, 1, 1, 0, srcX, srcY, srcWidth, srcHeight,
-				false, false);
+			drawAdjusted(texture, x, y, 0, 0, srcWidth, srcHeight, 1, 1, 0, srcX, srcY, srcWidth, srcHeight, false, false);
 		}
 	}
 

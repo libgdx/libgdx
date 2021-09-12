@@ -95,13 +95,13 @@ public class SoftBodyTest extends BaseBulletTest {
 		final int vertCount = softBody.getNodeCount();
 		final int faceCount = softBody.getFaceCount();
 		mesh = new Mesh(false, vertCount, faceCount * 3, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
-				ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final int vertSize = mesh.getVertexSize() / 4;
-		((Buffer) mesh.getVerticesBuffer()).position(0);
-		((Buffer) mesh.getVerticesBuffer()).limit(vertCount * vertSize);
-		((Buffer) mesh.getIndicesBuffer()).position(0);
-		((Buffer) mesh.getIndicesBuffer()).limit(faceCount * 3);
+		((Buffer)mesh.getVerticesBuffer()).position(0);
+		((Buffer)mesh.getVerticesBuffer()).limit(vertCount * vertSize);
+		((Buffer)mesh.getIndicesBuffer()).position(0);
+		((Buffer)mesh.getIndicesBuffer()).limit(faceCount * 3);
 		softBody.getVertices(mesh.getVerticesBuffer(), vertCount, mesh.getVertexSize(), 0);
 		softBody.getIndices(mesh.getIndicesBuffer(), faceCount);
 
@@ -121,10 +121,9 @@ public class SoftBodyTest extends BaseBulletTest {
 
 		ModelBuilder builder = new ModelBuilder();
 		builder.begin();
-		builder.part(
-			new MeshPart("", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES),
-			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-				.createShininess(64f), IntAttribute.createCullFace(0)));
+		builder.part(new MeshPart("", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES),
+			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(64f), IntAttribute.createCullFace(0)));
 		model = builder.end();
 
 		instance = new ModelInstance(model);

@@ -52,7 +52,8 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	// Grabbed from AndroidGraphics superclass and modified to override
 	// getHolder in created GLSurfaceView20 instances
 	@Override
-	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
+	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application,
+		final ResolutionStrategy resolutionStrategy) {
 		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
@@ -78,9 +79,8 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			try {
 				// onDetachedFromWindow stops GLThread by calling mGLThread.requestExitAndWait()
 				view.onDetachedFromWindow();
-				if (AndroidLiveWallpaperService.DEBUG)
-					Log.d(AndroidLiveWallpaperService.TAG,
-						" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
+				if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG,
+					" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
 			} catch (Throwable t) {
 				// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service
 				// wouldn't be able to shutdown completely
@@ -205,7 +205,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	}
 
 	@Override
-	protected void logManagedCachesStatus() {
+	protected void logManagedCachesStatus () {
 		// to prevent creating too many string buffers in live wallpapers
 		if (AndroidLiveWallpaperService.DEBUG) {
 			super.logManagedCachesStatus();

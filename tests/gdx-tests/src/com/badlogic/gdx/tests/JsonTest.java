@@ -101,24 +101,24 @@ public class JsonTest extends GdxTest {
 		roundTrip(test);
 		int sum = 0;
 		// iterate over an IntIntMap so one of its Entries is instantiated
-		for(IntIntMap.Entry e : test.intsToIntsUnboxed) {
+		for (IntIntMap.Entry e : test.intsToIntsUnboxed) {
 			sum += e.value + 1;
 		}
 		// also iterate over an Array, which does not have any problems
 		String concat = "";
-		for(String s : test.stringArray) {
+		for (String s : test.stringArray) {
 			concat += s;
 		}
 		// by round-tripping again, we verify that the Entries is correctly skipped
 		roundTrip(test);
 		int sum2 = 0;
 		// check and make sure that no entries are skipped over or incorrectly added
-		for(IntIntMap.Entry e : test.intsToIntsUnboxed) {
+		for (IntIntMap.Entry e : test.intsToIntsUnboxed) {
 			sum2 += e.value + 1;
 		}
 		String concat2 = "";
 		// also check the Array again
-		for(String s : test.stringArray) {
+		for (String s : test.stringArray) {
 			concat2 += s;
 		}
 

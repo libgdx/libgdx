@@ -10,43 +10,39 @@ package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btAngleCompareFunc extends BulletBase {
 	private long swigCPtr;
-	
-	protected btAngleCompareFunc(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btAngleCompareFunc (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btAngleCompareFunc, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btAngleCompareFunc(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btAngleCompareFunc, normally you should not need this constructor it's intended for low-level usage. */
+	public btAngleCompareFunc (long cPtr, boolean cMemoryOwn) {
 		this("btAngleCompareFunc", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btAngleCompareFunc obj) {
+
+	public static long getCPtr (btAngleCompareFunc obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,21 +53,22 @@ public class btAngleCompareFunc extends BulletBase {
 		super.delete();
 	}
 
-  public void setAnchor(btVector3 value) {
-    LinearMathJNI.btAngleCompareFunc_anchor_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setAnchor (btVector3 value) {
+		LinearMathJNI.btAngleCompareFunc_anchor_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getAnchor() {
-    long cPtr = LinearMathJNI.btAngleCompareFunc_anchor_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getAnchor () {
+		long cPtr = LinearMathJNI.btAngleCompareFunc_anchor_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public btAngleCompareFunc(Vector3 anchor) {
-    this(LinearMathJNI.new_btAngleCompareFunc(anchor), true);
-  }
+	public btAngleCompareFunc (Vector3 anchor) {
+		this(LinearMathJNI.new_btAngleCompareFunc(anchor), true);
+	}
 
-  public boolean operatorFunctionCall(GrahamVector3 a, GrahamVector3 b) {
-    return LinearMathJNI.btAngleCompareFunc_operatorFunctionCall(swigCPtr, this, GrahamVector3.getCPtr(a), a, GrahamVector3.getCPtr(b), b);
-  }
+	public boolean operatorFunctionCall (GrahamVector3 a, GrahamVector3 b) {
+		return LinearMathJNI.btAngleCompareFunc_operatorFunctionCall(swigCPtr, this, GrahamVector3.getCPtr(a), a,
+			GrahamVector3.getCPtr(b), b);
+	}
 
 }
