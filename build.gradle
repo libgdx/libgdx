@@ -16,6 +16,18 @@
 
 apply from: "gradle/dependencies.gradle"
 
+buildscript {
+    apply from: "gradle/dependencies.gradle"
+
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
+    }
+}
+
 allprojects {
     group = 'com.badlogicgames.gdx'
     version = '1.10.0-SNAPSHOT'
@@ -28,9 +40,6 @@ allprojects {
             gradlePluginPortal()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
             maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        }
-        dependencies {
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
         }
     }
 
@@ -47,15 +56,29 @@ allprojects {
 configure(subprojects - project(":tests:gdx-tests-android")) {
     apply plugin: "idea"
     apply plugin: "java"
+    apply plugin: "com.diffplug.spotless"
 
     compileJava {
         options.fork = true
         options.incremental = true
     }
+
+    spotless {
+        lineEndings 'UNIX'
+
+        java {
+            removeUnusedImports()
+            eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+        }
+        groovyGradle {
+            target '*.gradle'
+            greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+        }
+    }
 }
 
 ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName    
+    "ant-task-" + antTargetName
 }
 task fetchNatives(dependsOn: "ant-task-all"){
     doLast {

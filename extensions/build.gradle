@@ -15,13 +15,13 @@
  ******************************************************************************/
 
 subprojects {
-    apply plugin: "java"
+	apply plugin: "java"
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 
-    compileJava.options.encoding = 'UTF-8'
+	compileJava.options.encoding = 'UTF-8'
 
-    sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["res"]
+	sourceSets.main.java.srcDirs = ["src"]
+	sourceSets.main.resources.srcDirs = ["res"]
 }

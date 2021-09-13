@@ -12,44 +12,40 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btVertexBufferDescriptor extends BulletBase {
 	private long swigCPtr;
-	
-	protected btVertexBufferDescriptor(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btVertexBufferDescriptor (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btVertexBufferDescriptor, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btVertexBufferDescriptor(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btVertexBufferDescriptor, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btVertexBufferDescriptor (long cPtr, boolean cMemoryOwn) {
 		this("btVertexBufferDescriptor", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btVertexBufferDescriptor obj) {
+
+	public static long getCPtr (btVertexBufferDescriptor obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,38 +56,38 @@ public class btVertexBufferDescriptor extends BulletBase {
 		super.delete();
 	}
 
-  public boolean hasVertexPositions() {
-    return SoftbodyJNI.btVertexBufferDescriptor_hasVertexPositions(swigCPtr, this);
-  }
+	public boolean hasVertexPositions () {
+		return SoftbodyJNI.btVertexBufferDescriptor_hasVertexPositions(swigCPtr, this);
+	}
 
-  public boolean hasNormals() {
-    return SoftbodyJNI.btVertexBufferDescriptor_hasNormals(swigCPtr, this);
-  }
+	public boolean hasNormals () {
+		return SoftbodyJNI.btVertexBufferDescriptor_hasNormals(swigCPtr, this);
+	}
 
-  public int getBufferType() {
-    return SoftbodyJNI.btVertexBufferDescriptor_getBufferType(swigCPtr, this);
-  }
+	public int getBufferType () {
+		return SoftbodyJNI.btVertexBufferDescriptor_getBufferType(swigCPtr, this);
+	}
 
-  public int getVertexOffset() {
-    return SoftbodyJNI.btVertexBufferDescriptor_getVertexOffset(swigCPtr, this);
-  }
+	public int getVertexOffset () {
+		return SoftbodyJNI.btVertexBufferDescriptor_getVertexOffset(swigCPtr, this);
+	}
 
-  public int getVertexStride() {
-    return SoftbodyJNI.btVertexBufferDescriptor_getVertexStride(swigCPtr, this);
-  }
+	public int getVertexStride () {
+		return SoftbodyJNI.btVertexBufferDescriptor_getVertexStride(swigCPtr, this);
+	}
 
-  public int getNormalOffset() {
-    return SoftbodyJNI.btVertexBufferDescriptor_getNormalOffset(swigCPtr, this);
-  }
+	public int getNormalOffset () {
+		return SoftbodyJNI.btVertexBufferDescriptor_getNormalOffset(swigCPtr, this);
+	}
 
-  public int getNormalStride() {
-    return SoftbodyJNI.btVertexBufferDescriptor_getNormalStride(swigCPtr, this);
-  }
+	public int getNormalStride () {
+		return SoftbodyJNI.btVertexBufferDescriptor_getNormalStride(swigCPtr, this);
+	}
 
-  public final static class BufferTypes {
-    public final static int CPU_BUFFER = 0;
-    public final static int DX11_BUFFER = CPU_BUFFER + 1;
-    public final static int OPENGL_BUFFER = DX11_BUFFER + 1;
-  }
+	public final static class BufferTypes {
+		public final static int CPU_BUFFER = 0;
+		public final static int DX11_BUFFER = CPU_BUFFER + 1;
+		public final static int OPENGL_BUFFER = DX11_BUFFER + 1;
+	}
 
 }

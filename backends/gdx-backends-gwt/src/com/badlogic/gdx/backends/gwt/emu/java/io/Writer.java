@@ -17,8 +17,8 @@
 
 package java.io;
 
-/*** The base class for all writers. A writer is a means of writing data to a target in a character-wise manner. Most output streams
- * expect the {@link #flush()} method to be called before closing the stream, to ensure all data is actually written out.
+/*** The base class for all writers. A writer is a means of writing data to a target in a character-wise manner. Most output
+ * streams expect the {@link #flush()} method to be called before closing the stream, to ensure all data is actually written out.
  * <p>
  * This abstract class does not provide a fully working implementation, so it needs to be subclassed, and at least the
  * {@link #write(char[], int, int)}, {@link #close()} and {@link #flush()} methods needs to be overridden. Overriding some of the

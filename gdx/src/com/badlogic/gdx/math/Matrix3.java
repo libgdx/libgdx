@@ -47,9 +47,9 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Constructs a matrix from the given float array. The array must have at least 9 elements; the first 9 will be copied.
-	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
-	 *           not modified.) */
+	 * @param values The float array to copy. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array
+	 *           is not modified.) */
 	public Matrix3 (float[] values) {
 		this.set(values);
 	}
@@ -75,6 +75,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * A.mul(B) results in A := AB
 	 * </pre>
+	 * 
 	 * @param m Matrix to multiply by.
 	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix3 mul (Matrix3 m) {
@@ -110,6 +111,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * A.mulLeft(B) results in A := BA
 	 * </pre>
+	 * 
 	 * @param m The other Matrix to multiply by
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 mulLeft (Matrix3 m) {
@@ -278,8 +280,8 @@ public class Matrix3 implements Serializable {
 	/** @return The determinant of this matrix */
 	public float det () {
 		float[] val = this.val;
-		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
-			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
+		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21]
+			- val[M00] * val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
@@ -362,8 +364,8 @@ public class Matrix3 implements Serializable {
 	/** Sets the matrix to the given matrix as a float array. The float array must have at least 9 elements; the first 9 will be
 	 * copied.
 	 * 
-	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -524,6 +526,7 @@ public class Matrix3 implements Serializable {
 		position.y = val[M12];
 		return position;
 	}
+
 	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
 	 * @return The provided vector for chaining. */
 	public Vector2 getScale (Vector2 scale) {
@@ -593,6 +596,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * mul(A, B) => A := AB
 	 * </pre>
+	 * 
 	 * @param mata The float array representing the first matrix. Must have at least 9 elements.
 	 * @param matb The float array representing the second matrix. Must have at least 9 elements. */
 	private static void mul (float[] mata, float[] matb) {

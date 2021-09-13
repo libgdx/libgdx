@@ -11,43 +11,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class LocalRayResult extends BulletBase {
 	private long swigCPtr;
-	
-	protected LocalRayResult(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected LocalRayResult (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new LocalRayResult, normally you should not need this constructor it's intended for low-level usage. */ 
-	public LocalRayResult(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new LocalRayResult, normally you should not need this constructor it's intended for low-level usage. */
+	public LocalRayResult (long cPtr, boolean cMemoryOwn) {
 		this("LocalRayResult", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(LocalRayResult obj) {
+
+	public static long getCPtr (LocalRayResult obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,42 +54,44 @@ public class LocalRayResult extends BulletBase {
 		super.delete();
 	}
 
-  public LocalRayResult(btCollisionObject collisionObject, LocalShapeInfo localShapeInfo, Vector3 hitNormalLocal, float hitFraction) {
-    this(CollisionJNI.new_LocalRayResult(btCollisionObject.getCPtr(collisionObject), collisionObject, LocalShapeInfo.getCPtr(localShapeInfo), localShapeInfo, hitNormalLocal, hitFraction), true);
-  }
+	public LocalRayResult (btCollisionObject collisionObject, LocalShapeInfo localShapeInfo, Vector3 hitNormalLocal,
+		float hitFraction) {
+		this(CollisionJNI.new_LocalRayResult(btCollisionObject.getCPtr(collisionObject), collisionObject,
+			LocalShapeInfo.getCPtr(localShapeInfo), localShapeInfo, hitNormalLocal, hitFraction), true);
+	}
 
-  public void setCollisionObject(btCollisionObject value) {
-    CollisionJNI.LocalRayResult_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
-  }
+	public void setCollisionObject (btCollisionObject value) {
+		CollisionJNI.LocalRayResult_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
+	}
 
-  public btCollisionObject getCollisionObject() {
-	return btCollisionObject.getInstance(CollisionJNI.LocalRayResult_collisionObject_get(swigCPtr, this), false);
-}
+	public btCollisionObject getCollisionObject () {
+		return btCollisionObject.getInstance(CollisionJNI.LocalRayResult_collisionObject_get(swigCPtr, this), false);
+	}
 
-  public void setLocalShapeInfo(LocalShapeInfo value) {
-    CollisionJNI.LocalRayResult_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
-  }
+	public void setLocalShapeInfo (LocalShapeInfo value) {
+		CollisionJNI.LocalRayResult_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
+	}
 
-  public LocalShapeInfo getLocalShapeInfo() {
-    long cPtr = CollisionJNI.LocalRayResult_localShapeInfo_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new LocalShapeInfo(cPtr, false);
-  }
+	public LocalShapeInfo getLocalShapeInfo () {
+		long cPtr = CollisionJNI.LocalRayResult_localShapeInfo_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new LocalShapeInfo(cPtr, false);
+	}
 
-  public void setHitNormalLocal(btVector3 value) {
-    CollisionJNI.LocalRayResult_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setHitNormalLocal (btVector3 value) {
+		CollisionJNI.LocalRayResult_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getHitNormalLocal() {
-    long cPtr = CollisionJNI.LocalRayResult_hitNormalLocal_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getHitNormalLocal () {
+		long cPtr = CollisionJNI.LocalRayResult_hitNormalLocal_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setHitFraction(float value) {
-    CollisionJNI.LocalRayResult_hitFraction_set(swigCPtr, this, value);
-  }
+	public void setHitFraction (float value) {
+		CollisionJNI.LocalRayResult_hitFraction_set(swigCPtr, this, value);
+	}
 
-  public float getHitFraction() {
-    return CollisionJNI.LocalRayResult_hitFraction_get(swigCPtr, this);
-  }
+	public float getHitFraction () {
+		return CollisionJNI.LocalRayResult_hitFraction_get(swigCPtr, this);
+	}
 
 }

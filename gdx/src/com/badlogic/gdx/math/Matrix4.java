@@ -37,7 +37,8 @@ public class Matrix4 implements Serializable {
 	/** XZ: Typically the sine of the angle when rotated on the Y axis. On Vector3 multiplication this value is multiplied with the
 	 * source Z component and added to the target X component. */
 	public static final int M02 = 8;
-	/** XW: Typically the translation of the X component. On Vector3 multiplication this value is added to the target X component. */
+	/** XW: Typically the translation of the X component. On Vector3 multiplication this value is added to the target X
+	 * component. */
 	public static final int M03 = 12;
 	/** YX: Typically the sine of the angle when rotated on the Z axis. On Vector3 multiplication this value is multiplied with the
 	 * source X component and added to the target Y component. */
@@ -48,7 +49,8 @@ public class Matrix4 implements Serializable {
 	/** YZ: Typically the negative sine of the angle when rotated on the X axis. On Vector3 multiplication this value is multiplied
 	 * with the source Z component and added to the target Y component. */
 	public static final int M12 = 9;
-	/** YW: Typically the translation of the Y component. On Vector3 multiplication this value is added to the target Y component. */
+	/** YW: Typically the translation of the Y component. On Vector3 multiplication this value is added to the target Y
+	 * component. */
 	public static final int M13 = 13;
 	/** ZX: Typically the negative sine of the angle when rotated on the Y axis. On Vector3 multiplication this value is multiplied
 	 * with the source X component and added to the target Z component. */
@@ -59,7 +61,8 @@ public class Matrix4 implements Serializable {
 	/** ZZ: Typically the unrotated Z component for scaling, also the cosine of the angle when rotated on the X and/or Y axis. On
 	 * Vector3 multiplication this value is multiplied with the source Z component and added to the target Z component. */
 	public static final int M22 = 10;
-	/** ZW: Typically the translation of the Z component. On Vector3 multiplication this value is added to the target Z component. */
+	/** ZW: Typically the translation of the Z component. On Vector3 multiplication this value is added to the target Z
+	 * component. */
 	public static final int M23 = 14;
 	/** WX: Typically the value zero. On Vector3 multiplication this value is ignored. */
 	public static final int M30 = 3;
@@ -98,8 +101,9 @@ public class Matrix4 implements Serializable {
 	}
 
 	/** Constructs a matrix from the given float array. The array must have at least 16 elements; the first 16 will be copied.
-	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified) */
+	 * @param values The float array to copy. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not
+	 *           modified) */
 	public Matrix4 (float[] values) {
 		set(values);
 	}
@@ -128,8 +132,8 @@ public class Matrix4 implements Serializable {
 	/** Sets the matrix to the given matrix as a float array. The float array must have at least 16 elements; the first 16 will be
 	 * copied.
 	 * 
-	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -206,8 +210,8 @@ public class Matrix4 implements Serializable {
 	 * @param scale The scale
 	 * @return This matrix for chaining */
 	public Matrix4 set (Vector3 position, Quaternion orientation, Vector3 scale) {
-		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x,
-			scale.y, scale.z);
+		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x, scale.y,
+			scale.z);
 	}
 
 	/** Sets the matrix to a rotation matrix representing the translation and quaternion.
@@ -386,15 +390,18 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for the purpose of chaining methods together.
 	 * @throws RuntimeException if the matrix is singular (not invertible) */
 	public Matrix4 inv () {
-		float l_det = val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
-			* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
-			* val[M21] * val[M32] * val[M03] - val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
-			+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13] - val[M20] * val[M01] * val[M32]
-			* val[M13] + val[M00] * val[M21] * val[M32] * val[M13] + val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31]
-			* val[M02] * val[M23] - val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23] + val[M10]
-			* val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23] - val[M20] * val[M11] * val[M02] * val[M33]
-			+ val[M10] * val[M21] * val[M02] * val[M33] + val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12]
-			* val[M33] - val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
+		float l_det = val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03]
+			- val[M30] * val[M11] * val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03]
+			+ val[M20] * val[M11] * val[M32] * val[M03] - val[M10] * val[M21] * val[M32] * val[M03]
+			- val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
+			+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13]
+			- val[M20] * val[M01] * val[M32] * val[M13] + val[M00] * val[M21] * val[M32] * val[M13]
+			+ val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31] * val[M02] * val[M23]
+			- val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23]
+			+ val[M10] * val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23]
+			- val[M20] * val[M11] * val[M02] * val[M33] + val[M10] * val[M21] * val[M02] * val[M33]
+			+ val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12] * val[M33]
+			- val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
 		if (l_det == 0f) throw new RuntimeException("non-invertible matrix");
 		float m00 = val[M12] * val[M23] * val[M31] - val[M13] * val[M22] * val[M31] + val[M13] * val[M21] * val[M32]
 			- val[M11] * val[M23] * val[M32] - val[M12] * val[M21] * val[M33] + val[M11] * val[M22] * val[M33];
@@ -450,25 +457,28 @@ public class Matrix4 implements Serializable {
 
 	/** @return The determinant of this matrix */
 	public float det () {
-		return val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
-			* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
-			* val[M21] * val[M32] * val[M03] - val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
-			+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13] - val[M20] * val[M01] * val[M32]
-			* val[M13] + val[M00] * val[M21] * val[M32] * val[M13] + val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31]
-			* val[M02] * val[M23] - val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23] + val[M10]
-			* val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23] - val[M20] * val[M11] * val[M02] * val[M33]
-			+ val[M10] * val[M21] * val[M02] * val[M33] + val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12]
-			* val[M33] - val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
+		return val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03]
+			- val[M30] * val[M11] * val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03]
+			+ val[M20] * val[M11] * val[M32] * val[M03] - val[M10] * val[M21] * val[M32] * val[M03]
+			- val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
+			+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13]
+			- val[M20] * val[M01] * val[M32] * val[M13] + val[M00] * val[M21] * val[M32] * val[M13]
+			+ val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31] * val[M02] * val[M23]
+			- val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23]
+			+ val[M10] * val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23]
+			- val[M20] * val[M11] * val[M02] * val[M33] + val[M10] * val[M21] * val[M02] * val[M33]
+			+ val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12] * val[M33]
+			- val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
 	}
 
 	/** @return The determinant of the 3x3 upper left matrix */
 	public float det3x3 () {
-		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
-			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
+		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21]
+			- val[M00] * val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
-	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio. Note that
-	 * the field of view specified is the angle in degrees for the height, the field of view for the width will be calculated
+	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio. Note
+	 * that the field of view specified is the angle in degrees for the height, the field of view for the width will be calculated
 	 * according to the aspect ratio.
 	 * @param near The near plane
 	 * @param far The far plane
@@ -535,8 +545,8 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to an orthographic projection matrix with the origin at (x,y) extending by width and height. The near plane
-	 * is set to 0, the far plane is set to 1.
+	/** Sets this matrix to an orthographic projection matrix with the origin at (x,y) extending by width and height. The near
+	 * plane is set to 0, the far plane is set to 1.
 	 * @param x The x-coordinate of the origin
 	 * @param y The y-coordinate of the origin
 	 * @param width The width
@@ -764,7 +774,7 @@ public class Matrix4 implements Serializable {
 		quat.setEulerAngles(yaw, pitch, roll);
 		return set(quat);
 	}
-	
+
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in radians
 	 * @param pitch the pitch in radians
@@ -799,7 +809,6 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-
 	/** Sets the matrix to a look at matrix with a direction and an up vector. Multiply with a translation matrix to get a camera
 	 * model view matrix.
 	 * @param direction The direction vector
@@ -822,7 +831,6 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-
 	/** Sets this matrix to a look at matrix with the given position, target and up vector.
 	 * @param position the position
 	 * @param target the target
@@ -835,7 +843,6 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	
 	public Matrix4 setToWorld (Vector3 position, Vector3 forward, Vector3 up) {
 		tmpForward.set(forward).nor();
 		right.set(tmpForward).crs(up).nor();
@@ -953,6 +960,7 @@ public class Matrix4 implements Serializable {
 	 *      [   0    0    1    0   ]
 	 *      [   0    0    0    1   ]
 	 * </pre>
+	 * 
 	 * @param affine the affine matrix
 	 * @return This matrix for chaining */
 	public Matrix4 set (Affine2 affine) {
@@ -984,6 +992,7 @@ public class Matrix4 implements Serializable {
 	 *      [   _    _    _    _   ]
 	 *      [   _    _    _    _   ]
 	 * </pre>
+	 * 
 	 * @param affine the source matrix
 	 * @return This matrix for chaining */
 	public Matrix4 setAsAffine (Affine2 affine) {
@@ -1004,6 +1013,7 @@ public class Matrix4 implements Serializable {
 	 *      [   _    _    _    _   ]
 	 *      [   _    _    _    _   ]
 	 * </pre>
+	 * 
 	 * @param mat the source matrix
 	 * @return This matrix for chaining */
 	public Matrix4 setAsAffine (Matrix4 mat) {
@@ -1312,10 +1322,10 @@ public class Matrix4 implements Serializable {
 		vec[2] = z;
 	}
 
-	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
-	 * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
-	 * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
-	 * same as {@link Vector3#rot(Matrix4)}.
+	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with
+	 * x being the first element, y being the second and z being the last component. The result is stored in the vector array. This
+	 * is the same as {@link Vector3#rot(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void rot (float[] mat, float[] vec) {
@@ -1407,16 +1417,19 @@ public class Matrix4 implements Serializable {
 	 * @param values the matrix values.
 	 * @return the determinante. */
 	public static float det (float[] values) {
-		return values[M30] * values[M21] * values[M12] * values[M03] - values[M20] * values[M31] * values[M12] * values[M03] - values[M30] * values[M11]
-			* values[M22] * values[M03] + values[M10] * values[M31] * values[M22] * values[M03] + values[M20] * values[M11] * values[M32] * values[M03] - values[M10]
-			* values[M21] * values[M32] * values[M03] - values[M30] * values[M21] * values[M02] * values[M13] + values[M20] * values[M31] * values[M02] * values[M13]
-			+ values[M30] * values[M01] * values[M22] * values[M13] - values[M00] * values[M31] * values[M22] * values[M13] - values[M20] * values[M01] * values[M32]
-			* values[M13] + values[M00] * values[M21] * values[M32] * values[M13] + values[M30] * values[M11] * values[M02] * values[M23] - values[M10] * values[M31]
-			* values[M02] * values[M23] - values[M30] * values[M01] * values[M12] * values[M23] + values[M00] * values[M31] * values[M12] * values[M23] + values[M10]
-			* values[M01] * values[M32] * values[M23] - values[M00] * values[M11] * values[M32] * values[M23] - values[M20] * values[M11] * values[M02] * values[M33]
-			+ values[M10] * values[M21] * values[M02] * values[M33] + values[M20] * values[M01] * values[M12] * values[M33] - values[M00] * values[M21] * values[M12]
-			* values[M33] - values[M10] * values[M01] * values[M22] * values[M33] + values[M00] * values[M11] * values[M22] * values[M33];
-		
+		return values[M30] * values[M21] * values[M12] * values[M03] - values[M20] * values[M31] * values[M12] * values[M03]
+			- values[M30] * values[M11] * values[M22] * values[M03] + values[M10] * values[M31] * values[M22] * values[M03]
+			+ values[M20] * values[M11] * values[M32] * values[M03] - values[M10] * values[M21] * values[M32] * values[M03]
+			- values[M30] * values[M21] * values[M02] * values[M13] + values[M20] * values[M31] * values[M02] * values[M13]
+			+ values[M30] * values[M01] * values[M22] * values[M13] - values[M00] * values[M31] * values[M22] * values[M13]
+			- values[M20] * values[M01] * values[M32] * values[M13] + values[M00] * values[M21] * values[M32] * values[M13]
+			+ values[M30] * values[M11] * values[M02] * values[M23] - values[M10] * values[M31] * values[M02] * values[M23]
+			- values[M30] * values[M01] * values[M12] * values[M23] + values[M00] * values[M31] * values[M12] * values[M23]
+			+ values[M10] * values[M01] * values[M32] * values[M23] - values[M00] * values[M11] * values[M32] * values[M23]
+			- values[M20] * values[M11] * values[M02] * values[M33] + values[M10] * values[M21] * values[M02] * values[M33]
+			+ values[M20] * values[M01] * values[M12] * values[M33] - values[M00] * values[M21] * values[M12] * values[M33]
+			- values[M10] * values[M01] * values[M22] * values[M33] + values[M00] * values[M11] * values[M22] * values[M33];
+
 	}
 
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'

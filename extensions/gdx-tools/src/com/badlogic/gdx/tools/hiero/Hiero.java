@@ -312,7 +312,7 @@ public class Hiero extends JFrame {
 		if (nativeRadio.isSelected())
 			unicodeFont.setRenderType(RenderType.Native);
 		else if (freeTypeRadio.isSelected()) {
-			try{
+			try {
 				unicodeFont.setRenderType(RenderType.FreeType);
 			} catch (GdxRuntimeException ex) {
 				unicodeFont.setRenderType(RenderType.Java);
@@ -396,8 +396,7 @@ public class Hiero extends JFrame {
 			nativeRadio.setSelected(true);
 		else if (settings.getRenderType() == RenderType.FreeType.ordinal())
 			freeTypeRadio.setSelected(true);
-		else if (settings.getRenderType() == RenderType.Java.ordinal()) 
-			javaRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.Java.ordinal()) javaRadio.setSelected(true);
 		String gt = settings.getGlyphText();
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
@@ -441,7 +440,7 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				if (evt.getValueIsAdjusting()) return;
 				prefs.put("system.font", (String)fontList.getSelectedValue());
-					updateFont();
+				updateFont();
 			}
 		});
 

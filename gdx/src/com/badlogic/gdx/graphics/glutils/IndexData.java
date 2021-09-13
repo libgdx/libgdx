@@ -29,7 +29,8 @@ public interface IndexData extends Disposable {
 	/** @return the maximum number of indices this IndexBufferObject can store. */
 	public int getNumMaxIndices ();
 
-	/** <p>
+	/**
+	 * <p>
 	 * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of indices to be
 	 * copied to this IndexBufferObject.
 	 * </p>
@@ -57,7 +58,8 @@ public interface IndexData extends Disposable {
 	 * @param count the number of shorts to copy */
 	public void updateIndices (int targetOffset, short[] indices, int offset, int count);
 
-	/** <p>
+	/**
+	 * <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
 	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
 	 * </p>

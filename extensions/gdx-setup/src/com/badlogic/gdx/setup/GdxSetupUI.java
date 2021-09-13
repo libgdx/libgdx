@@ -89,7 +89,7 @@ import com.badlogic.gdx.setup.Executor.CharCallback;
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
 
-	//DependencyBank dependencyBank;
+	// DependencyBank dependencyBank;
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -104,18 +104,18 @@ public class GdxSetupUI extends JFrame {
 		add(ui, BorderLayout.CENTER);
 		setSize(620, 720);
 		setLocationRelativeTo(null);
-		setUndecorated(true);		
+		setUndecorated(true);
 		pack();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
+			public void mousePressed (MouseEvent e) {
 				point.x = e.getX();
 				point.y = e.getY();
 			}
 		});
 		addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent e) {
+			public void mouseDragged (MouseEvent e) {
 				Point p = getLocation();
 				setLocation(p.x + e.getX() - point.x, p.y + e.getY() - point.y);
 			}
@@ -153,7 +153,7 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter a game class name.");
 			return;
 		}
-		
+
 		final Language languageEnum = ui.settings.kotlinBox.isSelected() ? Language.KOTLIN : Language.JAVA;
 
 		final String destination = ui.form.destinationText.getText().trim();
@@ -162,18 +162,24 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
+		final String assetPath;
+		if (ui.settings.oldAssetsBox.isSelected()) {
+			assetPath = modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
+		} else {
+			assetPath = GdxSetup.DEFAULT_ASSET_PATH;
+		}
+
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
 		if (sdkLocation.length() == 0 && modules.contains(ProjectType.ANDROID)) {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
 			return;
 		}
 		if (!GdxSetup.isSdkLocationValid(sdkLocation) && modules.contains(ProjectType.ANDROID)) {
-			JOptionPane
-					.showMessageDialog(this,
-							"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
+			JOptionPane.showMessageDialog(this,
+				"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
 		}
-		
+
 		if (modules.contains(ProjectType.HTML) && !languageEnum.gwtSupported) {
 			JOptionPane.showMessageDialog(this, "HTML sub-projects are not supported by the selected programming language.");
 			ui.form.gwtCheckBox.setSelected(false);
@@ -183,7 +189,7 @@ public class GdxSetupUI extends JFrame {
 		if (modules.contains(ProjectType.ANDROID)) {
 			if (!GdxSetup.isSdkUpToDate(sdkLocation)) {
 				File sdkLocationFile = new File(sdkLocation);
-				try {  //give them a poke in the right direction
+				try { // give them a poke in the right direction
 					if (System.getProperty("os.name").contains("Windows")) {
 						String replaced = sdkLocation.replace("\\", "\\\\");
 						Runtime.getRuntime().exec("\"" + replaced + "\\SDK Manager.exe\"");
@@ -199,7 +205,8 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		if (!GdxSetup.isEmptyDirectory(destination)) {
-			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
+			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!",
+				JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
 				return;
 			}
@@ -221,21 +228,22 @@ public class GdxSetupUI extends JFrame {
 				panel.add(label);
 			}
 
-			JLabel infoLabel = new JLabel("<html><br><br>The project can be generated, but you wont be able to use these extensions in the respective sub modules<br>Please see the link to learn about extensions</html>");
+			JLabel infoLabel = new JLabel(
+				"<html><br><br>The project can be generated, but you wont be able to use these extensions in the respective sub modules<br>Please see the link to learn about extensions</html>");
 			infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			panel.add(infoLabel);
-			JEditorPane pane = new JEditorPane("text/html", "<a href=\"https://github.com/libgdx/libgdx/wiki/Dependency-management-with-Gradle\">Dependency Management</a>");
+			JEditorPane pane = new JEditorPane("text/html",
+				"<a href=\"https://github.com/libgdx/libgdx/wiki/Dependency-management-with-Gradle\">Dependency Management</a>");
 			pane.addHyperlinkListener(new HyperlinkListener() {
 				@Override
-				public void hyperlinkUpdate(HyperlinkEvent e) {
-					if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED))
-						try {
-							Desktop.getDesktop().browse(new URI(e.getURL().toString()));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (URISyntaxException e1) {
-							e1.printStackTrace();
-						}
+				public void hyperlinkUpdate (HyperlinkEvent e) {
+					if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) try {
+						Desktop.getDesktop().browse(new URI(e.getURL().toString()));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
 				}
 			});
 			pane.setEditable(false);
@@ -244,7 +252,8 @@ public class GdxSetupUI extends JFrame {
 			panel.add(pane);
 
 			Object[] options = {"Yes, build it!", "No, I'll change my extensions"};
-			int value = JOptionPane.showOptionDialog(null, panel, "Extension Incompatibilities", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+			int value = JOptionPane.showOptionDialog(null, panel, "Extension Incompatibilities", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, null);
 			if (value != 0) {
 				return;
 			} else {
@@ -260,19 +269,20 @@ public class GdxSetupUI extends JFrame {
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, sdkLocation, new CharCallback() {
-					@Override
-					public void character (char c) {
-						log(c);
-					}
-				}, ui.settings.getGradleArgs());
+				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, assetPath, sdkLocation,
+					new CharCallback() {
+						@Override
+						public void character (char c) {
+							log(c);
+						}
+					}, ui.settings.getGradleArgs());
 				log("Done!");
 				log("To import in Eclipse: File -> Import -> Gradle -> Existing Gradle Project");
 				log("To import to Intellij IDEA: File -> Open -> build.gradle");
 				log("To import to NetBeans: File -> Open Project...");
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
-					public void run() {
+					public void run () {
 						ui.generateButton.setEnabled(true);
 					}
 				});
@@ -327,7 +337,7 @@ public class GdxSetupUI extends JFrame {
 					Border line = BorderFactory.createEtchedBorder();
 					Border pad = new EmptyBorder(0, 5, 0, 0);
 					CompoundBorder compoundBorder = new CompoundBorder(line, pad);
-					((JComponent) component).setBorder(compoundBorder);
+					((JComponent)component).setBorder(compoundBorder);
 					continue;
 				}
 			}
@@ -340,11 +350,16 @@ public class GdxSetupUI extends JFrame {
 
 			try {
 				BufferedImage exitimg = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/exitup.png"));
-				BufferedImage minimg = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizeup.png"));
-				BufferedImage exitimgdown = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/exitdown.png"));
-				BufferedImage minimgdown = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizedown.png"));
-				BufferedImage exithover = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/exithover.png"));
-				BufferedImage minimghover = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizehover.png"));
+				BufferedImage minimg = ImageIO
+					.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizeup.png"));
+				BufferedImage exitimgdown = ImageIO
+					.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/exitdown.png"));
+				BufferedImage minimgdown = ImageIO
+					.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizedown.png"));
+				BufferedImage exithover = ImageIO
+					.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/exithover.png"));
+				BufferedImage minimghover = ImageIO
+					.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/minimizehover.png"));
 
 				BufferedImage img = ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/logo.png"));
 				ImageIcon icon = new ImageIcon(img);
@@ -380,21 +395,21 @@ public class GdxSetupUI extends JFrame {
 			textArea.setEditable(false);
 			textArea.setLineWrap(true);
 			uiLayout();
-			uiEvents(); 
+			uiEvents();
 			settings = new SettingsDialog(form.gwtCheckBox);
 			titleEvents(minimize, exit);
 		}
 
-		private void titleEvents(JButton minimize, JButton exit) {
+		private void titleEvents (JButton minimize, JButton exit) {
 			minimize.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed (ActionEvent e) {
 					setState(ICONIFIED);
 				}
 			});
 			exit.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed (ActionEvent e) {
 					dispose();
 					System.exit(0);
 				}
@@ -403,7 +418,7 @@ public class GdxSetupUI extends JFrame {
 
 		private void uiLayout () {
 			title.setLayout(new GridLayout(1, 2));
-			
+
 			minimize.setPreferredSize(new Dimension(50, 26));
 			exit.setPreferredSize(new Dimension(50, 26));
 
@@ -449,10 +464,7 @@ public class GdxSetupUI extends JFrame {
 		SetupButton destinationButton = new SetupButton("Browse");
 		JLabel sdkLocationLabel = new JLabel("Android SDK");
 		JTextField sdkLocationText = new JTextField(
-				System.getProperty("os.name").contains("Windows")
-				? "C:\\Path\\To\\Your\\Sdk"
-				: "/path/to/your/sdk"
-		);
+			System.getProperty("os.name").contains("Windows") ? "C:\\Path\\To\\Your\\Sdk" : "/path/to/your/sdk");
 		SetupButton sdkLocationButton = new SetupButton("Browse");
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
@@ -468,7 +480,7 @@ public class GdxSetupUI extends JFrame {
 			uiStyle();
 		}
 
-		private void uiStyle() {
+		private void uiStyle () {
 			nameText.setCaretColor(Color.WHITE);
 			packageText.setCaretColor(Color.WHITE);
 			gameClassText.setCaretColor(Color.WHITE);
@@ -526,7 +538,6 @@ public class GdxSetupUI extends JFrame {
 			add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
 
-
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
@@ -539,7 +550,7 @@ public class GdxSetupUI extends JFrame {
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getDisplayName());
 				if (projectType == ProjectType.HTML) {
 					gwtCheckBox = checkBox;
-				} 
+				}
 
 				modules.add(projectType);
 				checkBox.setSelected(true);
@@ -547,8 +558,8 @@ public class GdxSetupUI extends JFrame {
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override
-					public void itemStateChanged(ItemEvent e) {
-						SetupCheckBox box = (SetupCheckBox) e.getSource();
+					public void itemStateChanged (ItemEvent e) {
+						SetupCheckBox box = (SetupCheckBox)e.getSource();
 						if (projectType.equals(ProjectType.ANDROID)) {
 							sdkLocationText.setEnabled(box.isSelected());
 						}
@@ -577,13 +588,14 @@ public class GdxSetupUI extends JFrame {
 							depCounter++;
 							continue;
 						}
-						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
+						SetupCheckBox depCheckBox = new SetupCheckBox(
+							projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
 						depCheckBox.setToolTipText(projDep.getDescription());
 						extensionPanel.add(depCheckBox);
 						depCheckBox.addItemListener(new ItemListener() {
 							@Override
-							public void itemStateChanged(ItemEvent e) {
-								SetupCheckBox box = (SetupCheckBox) e.getSource();
+							public void itemStateChanged (ItemEvent e) {
+								SetupCheckBox box = (SetupCheckBox)e.getSource();
 								if (box.isSelected()) {
 									dependencies.add(builder.bank.getDependency(projDep));
 								} else {
@@ -600,7 +612,7 @@ public class GdxSetupUI extends JFrame {
 						depCounter++;
 					}
 				}
-				
+
 				for (int left = ((depCounter - 1) % 5); left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
@@ -611,7 +623,8 @@ public class GdxSetupUI extends JFrame {
 			add(extensionsLabel, new GridBagConstraints(0, 8, 1, 1, 0, 0, WEST, WEST, new Insets(10, 0, 0, 0), 0, 0));
 			int rowCounter = 9;
 			for (JPanel extensionsPanel : extensionsPanels) {
-				add(extensionsPanel, new GridBagConstraints(0, rowCounter, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
+				add(extensionsPanel,
+					new GridBagConstraints(0, rowCounter, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
 				rowCounter++;
 			}
 			add(showMoreExtensionsButton, new GridBagConstraints(0, 12, 0, 1, 0, 0, CENTER, WEST, new Insets(10, 0, 10, 0), 0, 0));
@@ -663,9 +676,9 @@ public class GdxSetupUI extends JFrame {
 				}
 			});
 			showMoreExtensionsButton.addActionListener(new ActionListener() {
-				 public void actionPerformed (ActionEvent e) {
-					  externalExtensionsDialog.showDialog(Form.this);
-				 }
+				public void actionPerformed (ActionEvent e) {
+					externalExtensionsDialog.showDialog(Form.this);
+				}
 			});
 		}
 	}
@@ -707,13 +720,13 @@ public class GdxSetupUI extends JFrame {
 			super();
 			initUI();
 		}
-		
+
 		SetupCheckBox (String selectName) {
 			super(selectName);
 			initUI();
 		}
 
-		private void initUI() {
+		private void initUI () {
 			setOpaque(false);
 			setBackground(new Color(0, 0, 0));
 			setForeground(new Color(255, 255, 255));
@@ -725,9 +738,9 @@ public class GdxSetupUI extends JFrame {
 			setSelectedIcon(iconSelected);
 			setRolloverSelectedIcon(iconOverSelected);
 		}
-		
+
 		public Icon getPressedIcon () {
-			//checkbox is missing 'pressed selected' icon, this allows us to add it
+			// checkbox is missing 'pressed selected' icon, this allows us to add it
 			if (isSelected())
 				return iconPressedSelected;
 			else
@@ -772,8 +785,8 @@ public class GdxSetupUI extends JFrame {
 	public static void main (String[] args) throws Exception {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
-			public void run() {
-				new GdxSetupUI();				
+			public void run () {
+				new GdxSetupUI();
 			}
 		});
 	}

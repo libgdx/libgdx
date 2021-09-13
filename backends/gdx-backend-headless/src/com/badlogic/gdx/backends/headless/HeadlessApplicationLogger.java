@@ -18,9 +18,7 @@ package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for headless
- */
+/** Default implementation of {@link ApplicationLogger} for headless */
 public class HeadlessApplicationLogger implements ApplicationLogger {
 
 	@Override

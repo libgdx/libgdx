@@ -11,44 +11,39 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btConstraintSetting extends BulletBase {
 	private long swigCPtr;
-	
-	protected btConstraintSetting(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConstraintSetting (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btConstraintSetting, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btConstraintSetting(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btConstraintSetting, normally you should not need this constructor it's intended for low-level usage. */
+	public btConstraintSetting (long cPtr, boolean cMemoryOwn) {
 		this("btConstraintSetting", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConstraintSetting obj) {
+
+	public static long getCPtr (btConstraintSetting obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,32 +54,32 @@ public class btConstraintSetting extends BulletBase {
 		super.delete();
 	}
 
-  public btConstraintSetting() {
-    this(DynamicsJNI.new_btConstraintSetting(), true);
-  }
+	public btConstraintSetting () {
+		this(DynamicsJNI.new_btConstraintSetting(), true);
+	}
 
-  public void setTau(float value) {
-    DynamicsJNI.btConstraintSetting_tau_set(swigCPtr, this, value);
-  }
+	public void setTau (float value) {
+		DynamicsJNI.btConstraintSetting_tau_set(swigCPtr, this, value);
+	}
 
-  public float getTau() {
-    return DynamicsJNI.btConstraintSetting_tau_get(swigCPtr, this);
-  }
+	public float getTau () {
+		return DynamicsJNI.btConstraintSetting_tau_get(swigCPtr, this);
+	}
 
-  public void setDamping(float value) {
-    DynamicsJNI.btConstraintSetting_damping_set(swigCPtr, this, value);
-  }
+	public void setDamping (float value) {
+		DynamicsJNI.btConstraintSetting_damping_set(swigCPtr, this, value);
+	}
 
-  public float getDamping() {
-    return DynamicsJNI.btConstraintSetting_damping_get(swigCPtr, this);
-  }
+	public float getDamping () {
+		return DynamicsJNI.btConstraintSetting_damping_get(swigCPtr, this);
+	}
 
-  public void setImpulseClamp(float value) {
-    DynamicsJNI.btConstraintSetting_impulseClamp_set(swigCPtr, this, value);
-  }
+	public void setImpulseClamp (float value) {
+		DynamicsJNI.btConstraintSetting_impulseClamp_set(swigCPtr, this, value);
+	}
 
-  public float getImpulseClamp() {
-    return DynamicsJNI.btConstraintSetting_impulseClamp_get(swigCPtr, this);
-  }
+	public float getImpulseClamp () {
+		return DynamicsJNI.btConstraintSetting_impulseClamp_get(swigCPtr, this);
+	}
 
 }

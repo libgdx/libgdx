@@ -38,7 +38,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** <p>
+/**
+ * <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
  * </p>
  *
@@ -155,10 +156,8 @@ public class ShaderProgram implements Disposable {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-		if (prependVertexCode != null && prependVertexCode.length() > 0)
-			vertexShader = prependVertexCode + vertexShader;
-		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
-			fragmentShader = prependFragmentCode + fragmentShader;
+		if (prependVertexCode != null && prependVertexCode.length() > 0) vertexShader = prependVertexCode + vertexShader;
+		if (prependFragmentCode != null && prependFragmentCode.length() > 0) fragmentShader = prependFragmentCode + fragmentShader;
 
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
@@ -571,7 +570,7 @@ public class ShaderProgram implements Disposable {
 	public void setUniformMatrix3fv (String name, FloatBuffer buffer, int count, boolean transpose) {
 		GL20 gl = Gdx.gl20;
 		checkManaged();
-		((Buffer) buffer).position(0);
+		((Buffer)buffer).position(0);
 		int location = fetchUniformLocation(name);
 		gl.glUniformMatrix3fv(location, count, transpose, buffer);
 	}
@@ -584,7 +583,7 @@ public class ShaderProgram implements Disposable {
 	public void setUniformMatrix4fv (String name, FloatBuffer buffer, int count, boolean transpose) {
 		GL20 gl = Gdx.gl20;
 		checkManaged();
-		((Buffer) buffer).position(0);
+		((Buffer)buffer).position(0);
 		int location = fetchUniformLocation(name);
 		gl.glUniformMatrix4fv(location, count, transpose, buffer);
 	}
@@ -687,7 +686,7 @@ public class ShaderProgram implements Disposable {
 		bind();
 	}
 
-	public void bind(){
+	public void bind () {
 		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUseProgram(program);
@@ -808,16 +807,16 @@ public class ShaderProgram implements Disposable {
 	IntBuffer type = BufferUtils.newIntBuffer(1);
 
 	private void fetchUniforms () {
-		((Buffer) params).clear();
+		((Buffer)params).clear();
 		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
 		int numUniforms = params.get(0);
 
 		uniformNames = new String[numUniforms];
 
 		for (int i = 0; i < numUniforms; i++) {
-			((Buffer) params).clear();
+			((Buffer)params).clear();
 			params.put(0, 1);
-			((Buffer) type).clear();
+			((Buffer)type).clear();
 			String name = Gdx.gl20.glGetActiveUniform(program, i, params, type);
 			int location = Gdx.gl20.glGetUniformLocation(program, name);
 			uniforms.put(name, location);
@@ -828,16 +827,16 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void fetchAttributes () {
-		((Buffer) params).clear();
+		((Buffer)params).clear();
 		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
 		int numAttributes = params.get(0);
 
 		attributeNames = new String[numAttributes];
 
 		for (int i = 0; i < numAttributes; i++) {
-			((Buffer) params).clear();
+			((Buffer)params).clear();
 			params.put(0, 1);
-			((Buffer) type).clear();
+			((Buffer)type).clear();
 			String name = Gdx.gl20.glGetActiveAttrib(program, i, params, type);
 			int location = Gdx.gl20.glGetAttribLocation(program, name);
 			attributes.put(name, location);

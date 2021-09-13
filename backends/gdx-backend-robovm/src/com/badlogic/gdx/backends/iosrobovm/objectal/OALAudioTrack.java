@@ -23,9 +23,7 @@ import org.robovm.objc.annotation.NativeClass;
 import org.robovm.objc.annotation.Property;
 import org.robovm.rt.bro.annotation.Library;
 
-/**
- * @author Niklas Therning
- */
+/** @author Niklas Therning */
 @Library(Library.INTERNAL)
 @NativeClass
 public class OALAudioTrack extends NSObject {

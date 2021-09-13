@@ -21,7 +21,8 @@ package java.nio;
  * <p>
  * Since all buffer impl classes are package private (except DirectByteBuffer), this factory is the only entrance to access buffer
  * functions from outside of the impl package.
- * </p> */
+ * </p>
+ */
 final class BufferFactory {
 
 	/** Returns a new byte buffer based on the specified byte array.

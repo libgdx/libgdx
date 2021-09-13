@@ -77,8 +77,8 @@ public class IntersectorTest {
 			assertTrue(triangleEquals(split.front, 0, 3, new float[] {0, 0, 5, 10, 0, 0, 0, 0, -5}));
 
 			// There are two ways to triangulate back
-			float[][] firstWay = { {-10, 0, 10, 0, 0, 5, 0, 0, -5}, {-10, 0, 10, 0, 0, -5, -10, 0, -10}};// ADE AEC
-			float[][] secondWay = { {-10, 0, 10, 0, 0, 5, -10, 0, -10}, {0, 0, 5, 0, 0, -5, -10, 0, -10}};// ADC DEC
+			float[][] firstWay = {{-10, 0, 10, 0, 0, 5, 0, 0, -5}, {-10, 0, 10, 0, 0, -5, -10, 0, -10}};// ADE AEC
+			float[][] secondWay = {{-10, 0, 10, 0, 0, 5, -10, 0, -10}, {0, 0, 5, 0, 0, -5, -10, 0, -10}};// ADC DEC
 			float[] base = split.back;
 			boolean first = (triangleEquals(base, 0, 3, firstWay[0]) && triangleEquals(base, 9, 3, firstWay[1]))
 				|| (triangleEquals(base, 0, 3, firstWay[1]) && triangleEquals(base, 9, 3, firstWay[0]));
@@ -97,8 +97,8 @@ public class IntersectorTest {
 			assertTrue(triangleEquals(split.back, 0, 3, new float[] {0, 0, 5, -10, 0, 0, 0, 0, -5}));
 
 			// There are two ways to triangulate front
-			float[][] firstWay = { {10, 0, 10, 0, 0, 5, 0, 0, -5}, {10, 0, 10, 0, 0, -5, 10, 0, -10}};// ADE AEC
-			float[][] secondWay = { {10, 0, 10, 0, 0, 5, 10, 0, -10}, {0, 0, 5, 0, 0, -5, 10, 0, -10}};// ADC DEC
+			float[][] firstWay = {{10, 0, 10, 0, 0, 5, 0, 0, -5}, {10, 0, 10, 0, 0, -5, 10, 0, -10}};// ADE AEC
+			float[][] secondWay = {{10, 0, 10, 0, 0, 5, 10, 0, -10}, {0, 0, 5, 0, 0, -5, 10, 0, -10}};// ADC DEC
 			float[] base = split.front;
 			boolean first = (triangleEquals(base, 0, 3, firstWay[0]) && triangleEquals(base, 9, 3, firstWay[1]))
 				|| (triangleEquals(base, 0, 3, firstWay[1]) && triangleEquals(base, 9, 3, firstWay[0]));
@@ -109,7 +109,7 @@ public class IntersectorTest {
 	}
 
 	@Test
-	public void intersectSegmentCircle() {
+	public void intersectSegmentCircle () {
 		Circle circle = new Circle(5f, 5f, 4f);
 		// Segment intersects, both segment points outside circle
 		boolean intersects = Intersector.intersectSegmentCircle(new Vector2(0, 1f), new Vector2(12f, 3f), circle, null);
@@ -150,19 +150,17 @@ public class IntersectorTest {
 		final int TOP = 4;
 		final int BOTTOM = 5;
 
-		/*camera = new PerspectiveCamera(60, 1280, 720);
-		camera.direction.set(0, 0, 1);
-		camera.near = 0.1f;
-		camera.far = 100f;
-		camera.update();
-		Plane[] planes = camera.frustum.planes;*/
+		/*
+		 * camera = new PerspectiveCamera(60, 1280, 720); camera.direction.set(0, 0, 1); camera.near = 0.1f; camera.far = 100f;
+		 * camera.update(); Plane[] planes = camera.frustum.planes;
+		 */
 		Plane[] planes = new Plane[6];
-		planes[NEAR] = new Plane(new Vector3(0.0f,0.0f,1.0f), -0.1f);
-		planes[FAR] = new Plane(new Vector3(0.0f,-0.0f,-1.0f), 99.99771f);
-		planes[LEFT] = new Plane(new Vector3(-0.69783056f,0.0f,0.71626294f), -9.3877316E-7f);
-		planes[RIGHT] = new Plane(new Vector3(0.6978352f,0.0f,0.71625835f), -0.0f);
-		planes[TOP] = new Plane(new Vector3(0.0f,-0.86602545f,0.5f), -0.0f);
-		planes[BOTTOM] = new Plane(new Vector3(-0.0f,0.86602545f,0.5f), -0.0f);
+		planes[NEAR] = new Plane(new Vector3(0.0f, 0.0f, 1.0f), -0.1f);
+		planes[FAR] = new Plane(new Vector3(0.0f, -0.0f, -1.0f), 99.99771f);
+		planes[LEFT] = new Plane(new Vector3(-0.69783056f, 0.0f, 0.71626294f), -9.3877316E-7f);
+		planes[RIGHT] = new Plane(new Vector3(0.6978352f, 0.0f, 0.71625835f), -0.0f);
+		planes[TOP] = new Plane(new Vector3(0.0f, -0.86602545f, 0.5f), -0.0f);
+		planes[BOTTOM] = new Plane(new Vector3(-0.0f, 0.86602545f, 0.5f), -0.0f);
 
 		Vector3 intersection = new Vector3();
 		Intersector.intersectPlanes(planes[TOP], planes[FAR], planes[LEFT], intersection);

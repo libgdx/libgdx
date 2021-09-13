@@ -67,7 +67,7 @@ public class StaticTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
-	public MapObjects getObjects() {
+	public MapObjects getObjects () {
 		if (objects == null) {
 			objects = new MapObjects();
 		}
@@ -80,7 +80,7 @@ public class StaticTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
-	public void setTextureRegion(TextureRegion textureRegion) {
+	public void setTextureRegion (TextureRegion textureRegion) {
 		this.textureRegion = textureRegion;
 	}
 

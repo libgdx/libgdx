@@ -11,44 +11,40 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btGearConstraintFloatData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btGearConstraintFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btGearConstraintFloatData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btGearConstraintFloatData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btGearConstraintFloatData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btGearConstraintFloatData, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btGearConstraintFloatData (long cPtr, boolean cMemoryOwn) {
 		this("btGearConstraintFloatData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btGearConstraintFloatData obj) {
+
+	public static long getCPtr (btGearConstraintFloatData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,51 +55,52 @@ public class btGearConstraintFloatData extends BulletBase {
 		super.delete();
 	}
 
-  public void setTypeConstraintData(btTypedConstraintFloatData value) {
-    DynamicsJNI.btGearConstraintFloatData_typeConstraintData_set(swigCPtr, this, btTypedConstraintFloatData.getCPtr(value), value);
-  }
+	public void setTypeConstraintData (btTypedConstraintFloatData value) {
+		DynamicsJNI.btGearConstraintFloatData_typeConstraintData_set(swigCPtr, this, btTypedConstraintFloatData.getCPtr(value),
+			value);
+	}
 
-  public btTypedConstraintFloatData getTypeConstraintData() {
-    long cPtr = DynamicsJNI.btGearConstraintFloatData_typeConstraintData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTypedConstraintFloatData(cPtr, false);
-  }
+	public btTypedConstraintFloatData getTypeConstraintData () {
+		long cPtr = DynamicsJNI.btGearConstraintFloatData_typeConstraintData_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTypedConstraintFloatData(cPtr, false);
+	}
 
-  public void setAxisInA(btVector3FloatData value) {
-    DynamicsJNI.btGearConstraintFloatData_axisInA_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setAxisInA (btVector3FloatData value) {
+		DynamicsJNI.btGearConstraintFloatData_axisInA_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getAxisInA() {
-    long cPtr = DynamicsJNI.btGearConstraintFloatData_axisInA_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getAxisInA () {
+		long cPtr = DynamicsJNI.btGearConstraintFloatData_axisInA_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setAxisInB(btVector3FloatData value) {
-    DynamicsJNI.btGearConstraintFloatData_axisInB_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setAxisInB (btVector3FloatData value) {
+		DynamicsJNI.btGearConstraintFloatData_axisInB_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getAxisInB() {
-    long cPtr = DynamicsJNI.btGearConstraintFloatData_axisInB_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getAxisInB () {
+		long cPtr = DynamicsJNI.btGearConstraintFloatData_axisInB_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setRatio(float value) {
-    DynamicsJNI.btGearConstraintFloatData_ratio_set(swigCPtr, this, value);
-  }
+	public void setRatio (float value) {
+		DynamicsJNI.btGearConstraintFloatData_ratio_set(swigCPtr, this, value);
+	}
 
-  public float getRatio() {
-    return DynamicsJNI.btGearConstraintFloatData_ratio_get(swigCPtr, this);
-  }
+	public float getRatio () {
+		return DynamicsJNI.btGearConstraintFloatData_ratio_get(swigCPtr, this);
+	}
 
-  public void setPadding(String value) {
-    DynamicsJNI.btGearConstraintFloatData_padding_set(swigCPtr, this, value);
-  }
+	public void setPadding (String value) {
+		DynamicsJNI.btGearConstraintFloatData_padding_set(swigCPtr, this, value);
+	}
 
-  public String getPadding() {
-    return DynamicsJNI.btGearConstraintFloatData_padding_get(swigCPtr, this);
-  }
+	public String getPadding () {
+		return DynamicsJNI.btGearConstraintFloatData_padding_get(swigCPtr, this);
+	}
 
-  public btGearConstraintFloatData() {
-    this(DynamicsJNI.new_btGearConstraintFloatData(), true);
-  }
+	public btGearConstraintFloatData () {
+		this(DynamicsJNI.new_btGearConstraintFloatData(), true);
+	}
 
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.flame;
 
 import java.awt.BorderLayout;
@@ -114,79 +115,77 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 /** @author Inferno */
 public class FlameMain extends JFrame implements AssetErrorListener {
-	public static final String 	DEFAULT_FONT = "default.fnt",
-											DEFAULT_BILLBOARD_PARTICLE = "pre_particle.png",
-											DEFAULT_MODEL_PARTICLE = "monkey.g3db",
-											//DEFAULT_PFX = "default.pfx",
-											DEFAULT_TEMPLATE_PFX = "defaultTemplate.pfx",
-											DEFAULT_SKIN = "uiskin.json";
-	
+	public static final String DEFAULT_FONT = "default.fnt", DEFAULT_BILLBOARD_PARTICLE = "pre_particle.png",
+		DEFAULT_MODEL_PARTICLE = "monkey.g3db",
+		// DEFAULT_PFX = "default.pfx",
+		DEFAULT_TEMPLATE_PFX = "defaultTemplate.pfx", DEFAULT_SKIN = "uiskin.json";
+
 	public static final int EVT_ASSET_RELOADED = 0;
-	
+
 	static class ControllerData {
 		public boolean enabled = true;
 		public ParticleController controller;
+
 		public ControllerData (ParticleController emitter) {
 			controller = emitter;
 		}
 	}
-	
-	private static class InfluencerWrapper<T>{
+
+	private static class InfluencerWrapper<T> {
 		String string;
 		Class<Influencer> type;
-		public InfluencerWrapper(String string, Class<Influencer> type){
+
+		public InfluencerWrapper (String string, Class<Influencer> type) {
 			this.string = string;
 			this.type = type;
 		}
-		
+
 		@Override
 		public String toString () {
 			return string;
 		}
 	}
 
-	public enum ControllerType{
-		Billboard( "Billboard", new InfluencerWrapper[]{
-			new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
+	public enum ControllerType {
+		Billboard("Billboard", new InfluencerWrapper[] {new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
 			new InfluencerWrapper("Random Color", ColorInfluencer.Random.class),
 			new InfluencerWrapper("Single Region", RegionInfluencer.Single.class),
 			new InfluencerWrapper("Random Region", RegionInfluencer.Random.class),
 			new InfluencerWrapper("Animated Region", RegionInfluencer.Animated.class),
-			new InfluencerWrapper("Scale", ScaleInfluencer.class),
-			new InfluencerWrapper("Spawn", SpawnInfluencer.class),
-			new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}), 
-		PointSprite("Point Sprite", new InfluencerWrapper[]{
-				new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
-				new InfluencerWrapper("Random Color", ColorInfluencer.Random.class),
-				new InfluencerWrapper("Single Region", RegionInfluencer.Single.class),
-				new InfluencerWrapper("Random Region", RegionInfluencer.Random.class),
-				new InfluencerWrapper("Animated Region", RegionInfluencer.Animated.class),
-				new InfluencerWrapper("Scale", ScaleInfluencer.class),
-				new InfluencerWrapper("Spawn", SpawnInfluencer.class),
-				new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}),
-		ModelInstance( "Model Instance", new InfluencerWrapper[]{
-					new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
+			new InfluencerWrapper("Scale", ScaleInfluencer.class), new InfluencerWrapper("Spawn", SpawnInfluencer.class),
+			new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}), PointSprite(
+				"Point Sprite",
+				new InfluencerWrapper[] {new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
 					new InfluencerWrapper("Random Color", ColorInfluencer.Random.class),
-					new InfluencerWrapper("Single Model", ModelInfluencer.Single.class),
-					new InfluencerWrapper("Random Model", ModelInfluencer.Random.class),
-					new InfluencerWrapper("Scale", ScaleInfluencer.class),
-					new InfluencerWrapper("Spawn", SpawnInfluencer.class),
-					new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}),
-		ParticleController("Particle Controller", new InfluencerWrapper[]{
-						new InfluencerWrapper("Single Particle Controller", ParticleControllerInfluencer.Single.class),
-						new InfluencerWrapper("Random Particle Controller", ParticleControllerInfluencer.Random.class),
-						new InfluencerWrapper("Scale", ScaleInfluencer.class),
-						new InfluencerWrapper("Spawn", SpawnInfluencer.class),
-						new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)});
+					new InfluencerWrapper("Single Region", RegionInfluencer.Single.class),
+					new InfluencerWrapper("Random Region", RegionInfluencer.Random.class),
+					new InfluencerWrapper("Animated Region", RegionInfluencer.Animated.class),
+					new InfluencerWrapper("Scale", ScaleInfluencer.class), new InfluencerWrapper("Spawn", SpawnInfluencer.class),
+					new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}), ModelInstance(
+						"Model Instance",
+						new InfluencerWrapper[] {new InfluencerWrapper("Single Color", ColorInfluencer.Single.class),
+							new InfluencerWrapper("Random Color", ColorInfluencer.Random.class),
+							new InfluencerWrapper("Single Model", ModelInfluencer.Single.class),
+							new InfluencerWrapper("Random Model", ModelInfluencer.Random.class),
+							new InfluencerWrapper("Scale", ScaleInfluencer.class), new InfluencerWrapper("Spawn", SpawnInfluencer.class),
+							new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)}), ParticleController(
+								"Particle Controller",
+								new InfluencerWrapper[] {
+									new InfluencerWrapper("Single Particle Controller", ParticleControllerInfluencer.Single.class),
+									new InfluencerWrapper("Random Particle Controller", ParticleControllerInfluencer.Random.class),
+									new InfluencerWrapper("Scale", ScaleInfluencer.class),
+									new InfluencerWrapper("Spawn", SpawnInfluencer.class),
+									new InfluencerWrapper("Dynamics", DynamicsInfluencer.class)});
 
 		public String desc;
 		public InfluencerWrapper[] wrappers;
-		private ControllerType(String desc, InfluencerWrapper[] wrappers){
+
+		private ControllerType (String desc, InfluencerWrapper[] wrappers) {
 			this.desc = desc;
 			this.wrappers = wrappers;
 		}
 	}
-	
+
 	LwjglCanvas lwjglCanvas;
 	JPanel controllerPropertiesPanel;
 	JPanel editorPropertiesPanel;
@@ -215,11 +214,11 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		assetManager.setErrorListener(this);
 		assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new InternalFileHandleResolver()));
 		controllersData = new Array<ControllerData>();
-		
+
 		lwjglCanvas = new LwjglCanvas(renderer = new AppRenderer());
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
-				//System.exit(0);
+				// System.exit(0);
 				Gdx.app.exit();
 			}
 		});
@@ -231,64 +230,61 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
-	
+
 	public ControllerType getControllerType () {
 		ParticleController controller = getEmitter();
 		ControllerType type = null;
-		if(controller.renderer instanceof BillboardRenderer)
+		if (controller.renderer instanceof BillboardRenderer)
 			type = ControllerType.Billboard;
-		else if(controller.renderer instanceof PointSpriteRenderer)
+		else if (controller.renderer instanceof PointSpriteRenderer)
 			type = ControllerType.PointSprite;
-		else if(controller.renderer instanceof ModelInstanceRenderer)
+		else if (controller.renderer instanceof ModelInstanceRenderer)
 			type = ControllerType.ModelInstance;
-		else if(controller.renderer instanceof ParticleControllerControllerRenderer)
-			type = ControllerType.ParticleController;	
+		else if (controller.renderer instanceof ParticleControllerControllerRenderer) type = ControllerType.ParticleController;
 		return type;
 	}
 
 	void reloadRows () {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
-				
-				//Ensure no listener is left watching for events
+
+				// Ensure no listener is left watching for events
 				EventManager.get().clear();
-				
-				//Clear
+
+				// Clear
 				editorPropertiesPanel.removeAll();
 				influencerBox.removeAllItems();
 				controllerPropertiesPanel.removeAll();
-				
-				//Editor props
+
+				// Editor props
 				addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, fovValue, "Field of View", ""));
 				addRow(editorPropertiesPanel, new NumericPanel(FlameMain.this, deltaMultiplier, "Delta multiplier", ""));
-				addRow(editorPropertiesPanel, new GradientPanel(FlameMain.this,backgroundColor, "Background color", "", true));
+				addRow(editorPropertiesPanel, new GradientPanel(FlameMain.this, backgroundColor, "Background color", "", true));
 				addRow(editorPropertiesPanel, new DrawPanel(FlameMain.this, "Draw", ""));
 				addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
 				addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
 				addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
 				editorPropertiesPanel.repaint();
-				
-				//Controller props
+
+				// Controller props
 				ParticleController controller = getEmitter();
-				if(controller != null){
-					//Reload available influencers
-					DefaultComboBoxModel model = (DefaultComboBoxModel)influencerBox.getModel();			
+				if (controller != null) {
+					// Reload available influencers
+					DefaultComboBoxModel model = (DefaultComboBoxModel)influencerBox.getModel();
 					ControllerType type = getControllerType();
-					if(type != null){
-						for(Object value : type.wrappers)
+					if (type != null) {
+						for (Object value : type.wrappers)
 							model.addElement(value);
 					}
 					JPanel panel = null;
 					addRow(controllerPropertiesPanel, getPanel(controller.emitter));
-					for(int i=0, c = controller.influencers.size; i < c; ++i){
+					for (int i = 0, c = controller.influencers.size; i < c; ++i) {
 						Influencer influencer = (Influencer)controller.influencers.get(i);
 						panel = getPanel(influencer);
-						if(panel != null)
-							addRow(controllerPropertiesPanel, panel, 1, i == c-1 ? 1 : 0);
+						if (panel != null) addRow(controllerPropertiesPanel, panel, 1, i == c - 1 ? 1 : 0);
 					}
 					for (Component component : controllerPropertiesPanel.getComponents())
-						if (component instanceof EditorPanel) 
-							((EditorPanel)component).update(FlameMain.this);
+						if (component instanceof EditorPanel) ((EditorPanel)component).update(FlameMain.this);
 				}
 				controllerPropertiesPanel.repaint();
 			}
@@ -296,79 +292,72 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	protected JPanel getPanel (Emitter emitter) {
-		if(emitter instanceof RegularEmitter){
-			return new RegularEmitterPanel(this, (RegularEmitter) emitter);
+		if (emitter instanceof RegularEmitter) {
+			return new RegularEmitterPanel(this, (RegularEmitter)emitter);
 		}
 		return null;
 	}
 
 	protected JPanel getPanel (Influencer influencer) {
-		if(influencer instanceof ColorInfluencer.Single){
-			return new ColorInfluencerPanel(this, (ColorInfluencer.Single) influencer);
+		if (influencer instanceof ColorInfluencer.Single) {
+			return new ColorInfluencerPanel(this, (ColorInfluencer.Single)influencer);
 		}
-		if(influencer instanceof ColorInfluencer.Random){
-			return new InfluencerPanel<ColorInfluencer.Random>(this, (ColorInfluencer.Random) influencer, 
-				"Random Color Influencer", "Assign a random color to the particles") {};
-		}
-		else if(influencer instanceof ScaleInfluencer){
-			return  new ScaleInfluencerPanel(this, (ScaleInfluencer)influencer);
-		}
-		else if(influencer instanceof SpawnInfluencer){
-			return  new SpawnInfluencerPanel(this, (SpawnInfluencer)influencer);
-		}
-		else if(influencer instanceof DynamicsInfluencer){
-			return  new DynamicsInfluencerPanel(this, (DynamicsInfluencer)influencer);
-		}
-		else if(influencer instanceof ModelInfluencer){
+		if (influencer instanceof ColorInfluencer.Random) {
+			return new InfluencerPanel<ColorInfluencer.Random>(this, (ColorInfluencer.Random)influencer, "Random Color Influencer",
+				"Assign a random color to the particles") {};
+		} else if (influencer instanceof ScaleInfluencer) {
+			return new ScaleInfluencerPanel(this, (ScaleInfluencer)influencer);
+		} else if (influencer instanceof SpawnInfluencer) {
+			return new SpawnInfluencerPanel(this, (SpawnInfluencer)influencer);
+		} else if (influencer instanceof DynamicsInfluencer) {
+			return new DynamicsInfluencerPanel(this, (DynamicsInfluencer)influencer);
+		} else if (influencer instanceof ModelInfluencer) {
 			boolean single = influencer instanceof ModelInfluencer.Single;
 			String name = single ? "Model Single Influencer" : "Model Random Influencer";
-			return  new ModelInfluencerPanel(this, (ModelInfluencer)influencer, single, name, "Defines what model will be used for the particles");
-		}
-		else if(influencer instanceof ParticleControllerInfluencer){
+			return new ModelInfluencerPanel(this, (ModelInfluencer)influencer, single, name,
+				"Defines what model will be used for the particles");
+		} else if (influencer instanceof ParticleControllerInfluencer) {
 			boolean single = influencer instanceof ParticleControllerInfluencer.Single;
 			String name = single ? "Particle Controller Single Influencer" : "Particle Controller Random Influencer";
-			return  new ParticleControllerInfluencerPanel(this, (ParticleControllerInfluencer)influencer, single, name, "Defines what controller will be used for the particles");
-		}
-		else if(influencer instanceof RegionInfluencer.Single){
-			return  new RegionInfluencerPanel(this, "Billboard Single Region Influencer", 
-				"Assign the chosen region to the particles", (RegionInfluencer.Single)influencer);
-		}
-		else if(influencer instanceof RegionInfluencer.Animated){
-			return  new RegionInfluencerPanel(this, "Billboard Animated Region Influencer", 
-				"Animates the region of the particles", (RegionInfluencer.Animated)influencer);
-		}
-		else if(influencer instanceof RegionInfluencer.Random){
-			return  new RegionInfluencerPanel(this, "Billboard Random Region Influencer", 
+			return new ParticleControllerInfluencerPanel(this, (ParticleControllerInfluencer)influencer, single, name,
+				"Defines what controller will be used for the particles");
+		} else if (influencer instanceof RegionInfluencer.Single) {
+			return new RegionInfluencerPanel(this, "Billboard Single Region Influencer", "Assign the chosen region to the particles",
+				(RegionInfluencer.Single)influencer);
+		} else if (influencer instanceof RegionInfluencer.Animated) {
+			return new RegionInfluencerPanel(this, "Billboard Animated Region Influencer", "Animates the region of the particles",
+				(RegionInfluencer.Animated)influencer);
+		} else if (influencer instanceof RegionInfluencer.Random) {
+			return new RegionInfluencerPanel(this, "Billboard Random Region Influencer",
 				"Assigns a randomly picked (among those selected) region to the particles", (RegionInfluencer.Random)influencer);
-		}
-		else if(influencer instanceof ParticleControllerFinalizerInfluencer){
-			return new InfluencerPanel<ParticleControllerFinalizerInfluencer>(this, (ParticleControllerFinalizerInfluencer) influencer, 
-				"ParticleControllerFinalizer Influencer", "This is required when dealing with a controller of controllers, it will update the controller assigned to each particle, it MUST be the last influencer always.", 
+		} else if (influencer instanceof ParticleControllerFinalizerInfluencer) {
+			return new InfluencerPanel<ParticleControllerFinalizerInfluencer>(this,
+				(ParticleControllerFinalizerInfluencer)influencer, "ParticleControllerFinalizer Influencer",
+				"This is required when dealing with a controller of controllers, it will update the controller assigned to each particle, it MUST be the last influencer always.",
 				true, false) {};
 		}
-		
+
 		return null;
 	}
 
 	protected JPanel getPanel (ParticleBatch renderer) {
-		if(renderer instanceof PointSpriteParticleBatch){
-			return new PointSpriteBatchPanel(this, (PointSpriteParticleBatch) renderer);
+		if (renderer instanceof PointSpriteParticleBatch) {
+			return new PointSpriteBatchPanel(this, (PointSpriteParticleBatch)renderer);
 		}
-		if(renderer instanceof BillboardParticleBatch){
-			return new BillboardBatchPanel(this, (BillboardParticleBatch) renderer);
-		}
-		else if(renderer instanceof ModelInstanceParticleBatch){
+		if (renderer instanceof BillboardParticleBatch) {
+			return new BillboardBatchPanel(this, (BillboardParticleBatch)renderer);
+		} else if (renderer instanceof ModelInstanceParticleBatch) {
 			return new EmptyPanel(this, "Model Instance Batch", "It renders particles as model instances.");
 		}
-		
+
 		return null;
 	}
 
-	void addRow(JPanel panel, JPanel row) {
+	void addRow (JPanel panel, JPanel row) {
 		addRow(panel, row, 1, 0);
 	}
-	
-	void addRow(JPanel panel, JPanel row, float wx, float wy) {
+
+	void addRow (JPanel panel, JPanel row, float wx, float wy) {
 		row.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, java.awt.Color.black));
 		panel.add(row, new GridBagConstraints(0, -1, 1, 1, wx, wy, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -380,23 +369,22 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	private void rebuildActiveControllers () {
-		//rebuild list
+		// rebuild list
 		Array<ParticleController> effectControllers = effect.getControllers();
 		effectControllers.clear();
-		for(ControllerData controllerData : controllersData){
-			if(controllerData.enabled)
-				effectControllers.add(controllerData.controller);
+		for (ControllerData controllerData : controllersData) {
+			if (controllerData.enabled) effectControllers.add(controllerData.controller);
 		}
-		//System.out.println("rebuilding active controllers");
+		// System.out.println("rebuilding active controllers");
 
 		effect.init();
 		effect.start();
 	}
 
 	public ParticleController getEmitter () {
-		return effectPanel.editIndex >=0 ? controllersData.get(effectPanel.editIndex).controller : null;
+		return effectPanel.editIndex >= 0 ? controllersData.get(effectPanel.editIndex).controller : null;
 	}
-	
+
 	public void addEmitter (ParticleController emitter) {
 		controllersData.add(new ControllerData(emitter));
 		rebuildActiveControllers();
@@ -406,7 +394,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		controllersData.removeIndex(row).controller.dispose();
 		rebuildActiveControllers();
 	}
-        
+
 	public void setEnabled (int emitterIndex, boolean enabled) {
 		ControllerData data = controllersData.get(emitterIndex);
 		data.enabled = enabled;
@@ -437,8 +425,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			{
 				JPanel propertiesPanel = new JPanel(new GridBagLayout());
 				rightSplit.add(propertiesPanel, JSplitPane.TOP);
-				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
-					.createTitledBorder("Editor Properties")));
+				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6),
+					BorderFactory.createTitledBorder("Editor Properties")));
 				{
 					JScrollPane scroll = new JScrollPane();
 					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
@@ -452,7 +440,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 				}
 			}
 
-			{	
+			{
 				JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 				rightSplitPane.setUI(new BasicSplitPaneUI() {
 					public void paint (Graphics g, JComponent jc) {
@@ -464,8 +452,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 				JPanel propertiesPanel = new JPanel(new GridBagLayout());
 				rightSplitPane.add(propertiesPanel, JSplitPane.TOP);
-				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
-					.createTitledBorder("Influencers")));
+				propertiesPanel.setBorder(
+					new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory.createTitledBorder("Influencers")));
 				{
 					JScrollPane scroll = new JScrollPane();
 					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
@@ -480,8 +468,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 							public void actionPerformed (ActionEvent e) {
 								InfluencerWrapper wrapper = (InfluencerWrapper)influencerBox.getSelectedItem();
 								ParticleController controller = getEmitter();
-								if(controller != null)
-									addInfluencer(wrapper.type, controller);
+								if (controller != null) addInfluencer(wrapper.type, controller);
 
 							}
 						});
@@ -493,12 +480,11 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 						scroll.getVerticalScrollBar().setUnitIncrement(70);
 					}
 				}
-				
 
 				propertiesPanel = new JPanel(new GridBagLayout());
 				rightSplitPane.add(propertiesPanel, JSplitPane.BOTTOM);
-				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
-					.createTitledBorder("Particle Controller Components")));
+				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6),
+					BorderFactory.createTitledBorder("Particle Controller Components")));
 				{
 					JScrollPane scroll = new JScrollPane();
 					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
@@ -511,7 +497,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 					}
 				}
 			}
-			
+
 			rightSplit.setDividerLocation(250);
 
 		}
@@ -532,8 +518,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			{
 				JPanel emittersPanel = new JPanel(new BorderLayout());
 				leftSplit.add(emittersPanel, JSplitPane.BOTTOM);
-				emittersPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 6, 6, 0), BorderFactory
-					.createTitledBorder("Particle Controllers")));
+				emittersPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 6, 6, 0),
+					BorderFactory.createTitledBorder("Particle Controllers")));
 				{
 					effectPanel = new EffectPanel(this);
 					emittersPanel.add(effectPanel);
@@ -545,40 +531,39 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	protected void addInfluencer (Class<Influencer> type, ParticleController controller) {
-		if(controller.findInfluencer(type) != null) return;
+		if (controller.findInfluencer(type) != null) return;
 
 		try {
 			controller.end();
-			
+
 			Influencer newInfluencer = type.newInstance();
 			boolean replaced = false;
-			if(ColorInfluencer.class.isAssignableFrom(type)){
-				 replaced = controller.replaceInfluencer(ColorInfluencer.class, (ColorInfluencer)newInfluencer);
-			}
-			else if(RegionInfluencer.class.isAssignableFrom(type)){
-				 replaced = controller.replaceInfluencer(RegionInfluencer.class, (RegionInfluencer)newInfluencer);
-			}
-			else if(ModelInfluencer.class.isAssignableFrom(type)){
-				ModelInfluencer newModelInfluencer = (ModelInfluencer) newInfluencer;
+			if (ColorInfluencer.class.isAssignableFrom(type)) {
+				replaced = controller.replaceInfluencer(ColorInfluencer.class, (ColorInfluencer)newInfluencer);
+			} else if (RegionInfluencer.class.isAssignableFrom(type)) {
+				replaced = controller.replaceInfluencer(RegionInfluencer.class, (RegionInfluencer)newInfluencer);
+			} else if (ModelInfluencer.class.isAssignableFrom(type)) {
+				ModelInfluencer newModelInfluencer = (ModelInfluencer)newInfluencer;
 				ModelInfluencer currentInfluencer = (ModelInfluencer)controller.findInfluencer(ModelInfluencer.class);
-				if(currentInfluencer != null){
-						newModelInfluencer.models.add(currentInfluencer.models.first());
+				if (currentInfluencer != null) {
+					newModelInfluencer.models.add(currentInfluencer.models.first());
 				}
 				replaced = controller.replaceInfluencer(ModelInfluencer.class, (ModelInfluencer)newInfluencer);
-			}
-			else if(ParticleControllerInfluencer.class.isAssignableFrom(type)){		
-				ParticleControllerInfluencer newModelInfluencer = (ParticleControllerInfluencer) newInfluencer;
-				ParticleControllerInfluencer currentInfluencer = (ParticleControllerInfluencer)controller.findInfluencer(ParticleControllerInfluencer.class);
-				if(currentInfluencer != null){
-						newModelInfluencer.templates.add(currentInfluencer.templates.first());
+			} else if (ParticleControllerInfluencer.class.isAssignableFrom(type)) {
+				ParticleControllerInfluencer newModelInfluencer = (ParticleControllerInfluencer)newInfluencer;
+				ParticleControllerInfluencer currentInfluencer = (ParticleControllerInfluencer)controller
+					.findInfluencer(ParticleControllerInfluencer.class);
+				if (currentInfluencer != null) {
+					newModelInfluencer.templates.add(currentInfluencer.templates.first());
 				}
-				replaced = controller.replaceInfluencer(ParticleControllerInfluencer.class, (ParticleControllerInfluencer)newInfluencer);
+				replaced = controller.replaceInfluencer(ParticleControllerInfluencer.class,
+					(ParticleControllerInfluencer)newInfluencer);
 			}
-			
-			if(!replaced){
-				if(getControllerType() != ControllerType.ParticleController)
+
+			if (!replaced) {
+				if (getControllerType() != ControllerType.ParticleController)
 					controller.influencers.add(newInfluencer);
-				else{
+				else {
 					Influencer finalizer = controller.influencers.pop();
 					controller.influencers.add(newInfluencer);
 					controller.influencers.add(finalizer);
@@ -595,19 +580,19 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 	protected boolean canAddInfluencer (Class influencerType, ParticleController controller) {
 		boolean hasSameInfluencer = controller.findInfluencer(influencerType) != null;
-		if(!hasSameInfluencer){
-			if( 	(ColorInfluencer.Single.class.isAssignableFrom(influencerType) && controller.findInfluencer(ColorInfluencer.Random.class) != null) ||
-					(ColorInfluencer.Random.class.isAssignableFrom(influencerType) && controller.findInfluencer(ColorInfluencer.Single.class) != null) ){
+		if (!hasSameInfluencer) {
+			if ((ColorInfluencer.Single.class.isAssignableFrom(influencerType)
+				&& controller.findInfluencer(ColorInfluencer.Random.class) != null)
+				|| (ColorInfluencer.Random.class.isAssignableFrom(influencerType)
+					&& controller.findInfluencer(ColorInfluencer.Single.class) != null)) {
 				return false;
 			}
-			
-			if(RegionInfluencer.class.isAssignableFrom(influencerType)){
+
+			if (RegionInfluencer.class.isAssignableFrom(influencerType)) {
 				return controller.findInfluencer(RegionInfluencer.class) == null;
-			}
-			else if(ModelInfluencer.class.isAssignableFrom(influencerType)){
+			} else if (ModelInfluencer.class.isAssignableFrom(influencerType)) {
 				return controller.findInfluencer(ModelInfluencer.class) == null;
-			}
-			else if(ParticleControllerInfluencer.class.isAssignableFrom(influencerType)){
+			} else if (ParticleControllerInfluencer.class.isAssignableFrom(influencerType)) {
 				return controller.findInfluencer(ParticleControllerInfluencer.class) == null;
 			}
 		}
@@ -615,21 +600,21 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	class AppRenderer implements ApplicationListener {
-		//Stats
+		// Stats
 		private float maxActiveTimer;
 		private int maxActive, lastMaxActive;
 		boolean isUpdate = true;
-		
-		//Controls
+
+		// Controls
 		private CameraInputController cameraInputController;
-		
-		//UI
+
+		// UI
 		private Stage ui;
 		TextButton playPauseButton;
 		private Label fpsLabel, pointCountLabel, billboardCountLabel, modelInstanceCountLabel, maxLabel;
 		StringBuilder stringBuilder;
-		
-		//Render
+
+		// Render
 		public PerspectiveCamera worldCamera;
 		private boolean isDrawXYZ, isDrawXZPlane, isDrawXYPlane;
 		private Array<Model> models;
@@ -639,35 +624,35 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		PointSpriteParticleBatch pointSpriteBatch;
 		BillboardParticleBatch billboardBatch;
 		ModelInstanceParticleBatch modelInstanceParticleBatch;
-		
+
 		public void create () {
 			if (ui != null) return;
 			int w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
 			modelBatch = new ModelBatch();
 			environment = new Environment();
-			environment.add(new DirectionalLight().set(Color.WHITE, 0,0,-1));
-			
+			environment.add(new DirectionalLight().set(Color.WHITE, 0, 0, -1));
+
 			worldCamera = new PerspectiveCamera(67, w, h);
 			worldCamera.position.set(10, 10, 10);
-			worldCamera.lookAt(0,0,0);
+			worldCamera.lookAt(0, 0, 0);
 			worldCamera.near = 0.1f;
 			worldCamera.far = 300f;
 			worldCamera.update();
 
 			cameraInputController = new CameraInputController(worldCamera);
 
-			//Batches
+			// Batches
 			pointSpriteBatch = new PointSpriteParticleBatch();
 			pointSpriteBatch.setCamera(worldCamera);
-			
+
 			billboardBatch = new BillboardParticleBatch();
 			billboardBatch.setCamera(worldCamera);
 			modelInstanceParticleBatch = new ModelInstanceParticleBatch();
-			
+
 			particleSystem.add(billboardBatch);
 			particleSystem.add(pointSpriteBatch);
 			particleSystem.add(modelInstanceParticleBatch);
-			
+
 			fovValue = new NumericValue();
 			fovValue.setValue(67);
 			fovValue.setActive(true);
@@ -678,12 +663,13 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 			backgroundColor = new GradientColorValue();
 			Color color = Color.valueOf("878787");
-			backgroundColor.setColors(new float[] { color.r, color.g, color.b});
+			backgroundColor.setColors(new float[] {color.r, color.g, color.b});
 
 			models = new Array<Model>();
 			ModelBuilder builder = new ModelBuilder();
-			Model 	xyzModel = builder.createXYZCoordinates(10, new Material(), Usage.Position|Usage.ColorPacked),
-				planeModel = builder.createLineGrid(10, 10, 1, 1, new Material(ColorAttribute.createDiffuse(Color.WHITE)), Usage.Position);
+			Model xyzModel = builder.createXYZCoordinates(10, new Material(), Usage.Position | Usage.ColorPacked),
+				planeModel = builder.createLineGrid(10, 10, 1, 1, new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+					Usage.Position);
 			models.add(xyzModel);
 			models.add(planeModel);
 			xyzInstance = new ModelInstance(xyzModel);
@@ -694,19 +680,20 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			setDrawXYZ(true);
 			setDrawXZPlane(true);
 
-
-			//Load default resources
-			ParticleEffectLoader.ParticleEffectLoadParameter params = new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches());
+			// Load default resources
+			ParticleEffectLoader.ParticleEffectLoadParameter params = new ParticleEffectLoader.ParticleEffectLoadParameter(
+				particleSystem.getBatches());
 			assetManager.load(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
 			assetManager.load(DEFAULT_MODEL_PARTICLE, Model.class);
 			assetManager.load(DEFAULT_SKIN, Skin.class);
 			assetManager.load(DEFAULT_TEMPLATE_PFX, ParticleEffect.class, params);
-			
+
 			assetManager.finishLoading();
 			assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new AbsoluteFileHandleResolver()));
-			assetManager.get(DEFAULT_MODEL_PARTICLE, Model.class).materials.get(0).set(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1));
-			
-			//Ui
+			assetManager.get(DEFAULT_MODEL_PARTICLE, Model.class).materials.get(0)
+				.set(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1));
+
+			// Ui
 			stringBuilder = new StringBuilder();
 			Skin skin = assetManager.get(DEFAULT_SKIN, Skin.class);
 			ui = new Stage();
@@ -714,10 +701,10 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			pointCountLabel = new Label("", skin);
 			billboardCountLabel = new Label("", skin);
 			modelInstanceCountLabel = new Label("", skin);
-			
+
 			maxLabel = new Label("", skin);
 			playPauseButton = new TextButton("Pause", skin);
-			playPauseButton.addListener(new ClickListener(){
+			playPauseButton.addListener(new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					isUpdate = !isUpdate;
@@ -734,7 +721,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			table.add(maxLabel).expandX().left().row();
 			table.add(playPauseButton).expand().bottom().left().row();
 			ui.addActor(table);
-			
+
 			setTexture((Texture)assetManager.get(DEFAULT_BILLBOARD_PARTICLE));
 			effectPanel.createDefaultEmitter(ControllerType.Billboard, true, true);
 		}
@@ -761,9 +748,9 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			worldCamera.fieldOfView = fovValue.getValue();
 			worldCamera.update();
 			cameraInputController.update();
-			if(isUpdate){
+			if (isUpdate) {
 				particleSystem.update(delta);
-				//Update ui
+				// Update ui
 				stringBuilder.delete(0, stringBuilder.length);
 				stringBuilder.append("Point Sprites : ").append(pointSpriteBatch.getBufferedCount());
 				pointCountLabel.setText(stringBuilder);
@@ -772,7 +759,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 				billboardCountLabel.setText(stringBuilder);
 				stringBuilder.delete(0, stringBuilder.length);
 				stringBuilder.append("Model Instances : ").append(modelInstanceParticleBatch.getBufferedCount());
-				modelInstanceCountLabel.setText(stringBuilder);	
+				modelInstanceCountLabel.setText(stringBuilder);
 			}
 			stringBuilder.delete(0, stringBuilder.length);
 			stringBuilder.append("FPS : ").append(Gdx.graphics.getFramesPerSecond());
@@ -785,55 +772,52 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 0);
 			modelBatch.begin(worldCamera);
-			if(isDrawXYZ) modelBatch.render(xyzInstance);
-			if(isDrawXZPlane) modelBatch.render(xzPlaneInstance);
-			if(isDrawXYPlane) modelBatch.render(xyPlaneInstance);
+			if (isDrawXYZ) modelBatch.render(xyzInstance);
+			if (isDrawXZPlane) modelBatch.render(xzPlaneInstance);
+			if (isDrawXYPlane) modelBatch.render(xyPlaneInstance);
 			particleSystem.begin();
 			particleSystem.draw();
 			particleSystem.end();
-			
-			//Draw
+
+			// Draw
 			modelBatch.render(particleSystem, environment);
 			modelBatch.end();
 			ui.draw();
 		}
 
 		@Override
-		public void dispose () {}
+		public void dispose () {
+		}
 
 		@Override
-		public void pause () {}
+		public void pause () {
+		}
 
 		@Override
-		public void resume () {}
-		
-		public void setDrawXYZ(boolean isDraw) 
-		{
+		public void resume () {
+		}
+
+		public void setDrawXYZ (boolean isDraw) {
 			isDrawXYZ = isDraw;
 		}
 
-		public boolean IsDrawXYZ() 
-		{
+		public boolean IsDrawXYZ () {
 			return isDrawXYZ;
 		}
 
-		public void setDrawXZPlane(boolean isDraw) 
-		{
+		public void setDrawXZPlane (boolean isDraw) {
 			isDrawXZPlane = isDraw;
 		}
 
-		public boolean IsDrawXZPlane() 
-		{
+		public boolean IsDrawXZPlane () {
 			return isDrawXZPlane;
 		}
-		
-		public void setDrawXYPlane(boolean isDraw) 
-		{
+
+		public void setDrawXYPlane (boolean isDraw) {
 			isDrawXYPlane = isDraw;
 		}
 
-		public boolean IsDrawXYPlane() 
-		{
+		public boolean IsDrawXYPlane () {
 			return isDrawXYPlane;
 		}
 	}
@@ -855,31 +839,31 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		});
 	}
 
-	public AppRenderer getRenderer() {
+	public AppRenderer getRenderer () {
 		return renderer;
 	}
 
 	String lastDir;
+
 	public File showFileLoadDialog () {
 		return showFileDialog("Open", FileDialog.LOAD);
 	}
-	
+
 	public File showFileSaveDialog () {
 		return showFileDialog("Save", FileDialog.SAVE);
 	}
-	
-	private File showFileDialog (String title, int mode ) {
+
+	private File showFileDialog (String title, int mode) {
 		FileDialog dialog = new FileDialog(this, title, mode);
 		if (lastDir != null) dialog.setDirectory(lastDir);
 		dialog.setVisible(true);
 		final String file = dialog.getFile();
 		final String dir = dialog.getDirectory();
-		if (dir == null || file == null || file.trim().length() == 0) 
-			return null;
+		if (dir == null || file == null || file.trim().length() == 0) return null;
 		lastDir = dir;
 		return new File(dir, file);
 	}
-	
+
 	@Override
 	public void error (AssetDescriptor asset, Throwable throwable) {
 		throwable.printStackTrace();
@@ -896,40 +880,40 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	public ModelInstanceParticleBatch getModelInstanceParticleBatch () {
 		return renderer.modelInstanceParticleBatch;
 	}
-	public void setAtlas(TextureAtlas atlas) {
+
+	public void setAtlas (TextureAtlas atlas) {
 		this.textureAtlas = atlas;
 		setTexture(atlas.getTextures().first());
 	}
-	
-	public void setTexture(Texture texture){
+
+	public void setTexture (Texture texture) {
 		renderer.billboardBatch.setTexture(texture);
 		renderer.pointSpriteBatch.setTexture(texture);
 	}
-	
-	public Texture getTexture(){
+
+	public Texture getTexture () {
 		return renderer.billboardBatch.getTexture();
 	}
 
-	public TextureAtlas getAtlas(Texture texture){
+	public TextureAtlas getAtlas (Texture texture) {
 		Array<TextureAtlas> atlases = assetManager.getAll(TextureAtlas.class, new Array<TextureAtlas>());
-		for(TextureAtlas atlas : atlases){
-			if(atlas.getTextures().contains(texture))
-				return atlas;
+		for (TextureAtlas atlas : atlases) {
+			if (atlas.getTextures().contains(texture)) return atlas;
 		}
 		return null;
 	}
-	
-	public TextureAtlas getAtlas(){
+
+	public TextureAtlas getAtlas () {
 		return getAtlas(renderer.billboardBatch.getTexture());
 	}
 
-	public String getAtlasFilename() {
+	public String getAtlasFilename () {
 		if (textureAtlas == null) {
 			return null;
 		}
 		return assetManager.getAssetFileName(textureAtlas);
 	}
-	
+
 	public boolean isUsingDefaultTexture () {
 		return renderer.billboardBatch.getTexture() == assetManager.get(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
 	}
@@ -937,25 +921,25 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	public Array<ParticleEffect> getParticleEffects (Array<ParticleController> controllers, Array<ParticleEffect> out) {
 		out.clear();
 		assetManager.getAll(ParticleEffect.class, out);
-		for(int i=0; i < out.size;){
+		for (int i = 0; i < out.size;) {
 			ParticleEffect effect = out.get(i);
 			Array<ParticleController> effectControllers = effect.getControllers();
 			boolean remove = true;
-			for(ParticleController controller : controllers){
-				if(effectControllers.contains(controller, true)){
+			for (ParticleController controller : controllers) {
+				if (effectControllers.contains(controller, true)) {
 					remove = false;
 					break;
 				}
 			}
-			
-			if(remove){
+
+			if (remove) {
 				out.removeIndex(i);
 				continue;
 			}
-			
+
 			++i;
 		}
-		
+
 		return out;
 	}
 
@@ -963,7 +947,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		Writer fileWriter = null;
 		try {
 			ParticleEffectLoader loader = (ParticleEffectLoader)assetManager.getLoader(ParticleEffect.class);
-			loader.save(effect, new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager, particleSystem.getBatches()));
+			loader.save(effect,
+				new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager, particleSystem.getBatches()));
 		} catch (Exception ex) {
 			System.out.println("Error saving effect: " + file.getAbsolutePath());
 			ex.printStackTrace();
@@ -975,16 +960,16 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 	public ParticleEffect openEffect (File file, boolean replaceCurrentWorkspace) {
 		try {
-			ParticleEffect loadedEffect = load(file.getAbsolutePath(), ParticleEffect.class, null, 
+			ParticleEffect loadedEffect = load(file.getAbsolutePath(), ParticleEffect.class, null,
 				new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches()));
 			loadedEffect = loadedEffect.copy();
 			loadedEffect.init();
-			if(replaceCurrentWorkspace){
+			if (replaceCurrentWorkspace) {
 				effect = loadedEffect;
 				controllersData.clear();
 				particleSystem.removeAll();
 				particleSystem.add(effect);
-				for(ParticleController controller : effect.getControllers())
+				for (ParticleController controller : effect.getControllers())
 					controllersData.add(new ControllerData(controller));
 				rebuildActiveControllers();
 			}
@@ -997,30 +982,27 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		}
 		return null;
 	}
-	
-	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {	
+
+	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {
 		String resolvedPath = new String(resource).replaceAll("\\\\", "/");
 		boolean exist = assetManager.isLoaded(resolvedPath, type);
 		T oldAsset = null;
-		if(exist){
+		if (exist) {
 			oldAsset = assetManager.get(resolvedPath, type);
-			for(int i=assetManager.getReferenceCount(resolvedPath); i > 0; --i)
+			for (int i = assetManager.getReferenceCount(resolvedPath); i > 0; --i)
 				assetManager.unload(resolvedPath);
 		}
-		
+
 		AssetLoader<T, AssetLoaderParameters<T>> currentLoader = assetManager.getLoader(type);
-		if(loader != null)
-			assetManager.setLoader(type, loader); 
+		if (loader != null) assetManager.setLoader(type, loader);
 
 		assetManager.load(resource, type, params);
 		assetManager.finishLoading();
 		T res = assetManager.get(resolvedPath);
-		if(currentLoader != null)
-			assetManager.setLoader(type, currentLoader);
-		
-		if(exist)
-			EventManager.get().fire(EVT_ASSET_RELOADED, new Object[]{oldAsset, res});
-		
+		if (currentLoader != null) assetManager.setLoader(type, currentLoader);
+
+		if (exist) EventManager.get().fire(EVT_ASSET_RELOADED, new Object[] {oldAsset, res});
+
 		return res;
 	}
 

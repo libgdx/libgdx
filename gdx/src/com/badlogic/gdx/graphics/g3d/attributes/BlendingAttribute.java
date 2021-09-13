@@ -29,8 +29,8 @@ public class BlendingAttribute extends Attribute {
 		return (mask & Type) == mask;
 	}
 
-	/** Whether this material should be considered blended (default: true). This is used for sorting (back to front instead of front
-	 * to back). */
+	/** Whether this material should be considered blended (default: true). This is used for sorting (back to front instead of
+	 * front to back). */
 	public boolean blended;
 	/** Specifies how the (incoming) red, green, blue, and alpha source blending factors are computed (default: GL_SRC_ALPHA) */
 	public int sourceFunction;

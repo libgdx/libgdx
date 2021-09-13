@@ -16,7 +16,8 @@
 
 package com.badlogic.gdx;
 
-/** <p>
+/**
+ * <p>
  * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed.
  * All methods are called in a thread that has the OpenGL context current. You can thus safely create and manipulate graphics
  * resources.
@@ -32,8 +33,8 @@ public interface ApplicationListener {
 	/** Called when the {@link Application} is first created. */
 	public void create ();
 
-	/** Called when the {@link Application} is resized. This can happen at any point during a non-paused state but will never happen
-	 * before a call to {@link #create()}.
+	/** Called when the {@link Application} is resized. This can happen at any point during a non-paused state but will never
+	 * happen before a call to {@link #create()}.
 	 * 
 	 * @param width the new width in pixels
 	 * @param height the new height in pixels */

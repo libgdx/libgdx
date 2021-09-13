@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
@@ -317,7 +316,6 @@ public class IOSGraphics extends AbstractGraphics {
 		}
 	}
 
-
 	@Override
 	public int getWidth () {
 		if (config.hdpiMode == HdpiMode.Pixels) {
@@ -337,17 +335,17 @@ public class IOSGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public int getBackBufferWidth() {
+	public int getBackBufferWidth () {
 		return screenBounds.backBufferWidth;
 	}
 
 	@Override
-	public int getBackBufferHeight() {
+	public int getBackBufferHeight () {
 		return screenBounds.backBufferHeight;
 	}
 
 	@Override
-	public float getBackBufferScale() {
+	public float getBackBufferScale () {
 		return app.pixelsPerPoint;
 	}
 
@@ -408,36 +406,36 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public DisplayMode getDisplayMode () {
-		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
-			+ bufferFormat.b + bufferFormat.a);
+		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond,
+			bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
 	}
 
 	@Override
-	public Monitor getPrimaryMonitor() {
+	public Monitor getPrimaryMonitor () {
 		return new IOSMonitor(0, 0, "Primary Monitor");
 	}
 
 	@Override
-	public Monitor getMonitor() {
+	public Monitor getMonitor () {
 		return getPrimaryMonitor();
 	}
 
 	@Override
-	public Monitor[] getMonitors() {
-		return new Monitor[] { getPrimaryMonitor() };
+	public Monitor[] getMonitors () {
+		return new Monitor[] {getPrimaryMonitor()};
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes(Monitor monitor) {
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
 		return getDisplayModes();
 	}
 
 	@Override
-	public DisplayMode getDisplayMode(Monitor monitor) {
+	public DisplayMode getDisplayMode (Monitor monitor) {
 		return getDisplayMode();
 	}
 
-	protected void updateSafeInsets() {
+	protected void updateSafeInsets () {
 		safeInsetTop = 0;
 		safeInsetLeft = 0;
 		safeInsetRight = 0;
@@ -445,10 +443,10 @@ public class IOSGraphics extends AbstractGraphics {
 
 		if (Foundation.getMajorSystemVersion() >= 11) {
 			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-			safeInsetTop = (int) edgeInsets.getTop();
-			safeInsetLeft = (int) edgeInsets.getLeft();
-			safeInsetRight = (int) edgeInsets.getRight();
-			safeInsetBottom = (int) edgeInsets.getBottom();
+			safeInsetTop = (int)edgeInsets.getTop();
+			safeInsetLeft = (int)edgeInsets.getLeft();
+			safeInsetRight = (int)edgeInsets.getRight();
+			safeInsetBottom = (int)edgeInsets.getBottom();
 			if (config.hdpiMode == HdpiMode.Pixels) {
 				safeInsetTop *= app.pixelsPerPoint;
 				safeInsetLeft *= app.pixelsPerPoint;
@@ -459,22 +457,22 @@ public class IOSGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public int getSafeInsetLeft() {
+	public int getSafeInsetLeft () {
 		return safeInsetLeft;
 	}
 
 	@Override
-	public int getSafeInsetTop() {
+	public int getSafeInsetTop () {
 		return safeInsetTop;
 	}
 
 	@Override
-	public int getSafeInsetBottom() {
+	public int getSafeInsetBottom () {
 		return safeInsetBottom;
 	}
 
 	@Override
-	public int getSafeInsetRight() {
+	public int getSafeInsetRight () {
 		return safeInsetRight;
 	}
 
@@ -493,11 +491,11 @@ public class IOSGraphics extends AbstractGraphics {
 	}
 
 	@Override
-	public void setUndecorated(boolean undecorated) {
+	public void setUndecorated (boolean undecorated) {
 	}
 
 	@Override
-	public void setResizable(boolean resizable) {
+	public void setResizable (boolean resizable) {
 	}
 
 	@Override
@@ -567,7 +565,7 @@ public class IOSGraphics extends AbstractGraphics {
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	private class IOSViewDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate {
 		@Override
 		public void update (GLKViewController controller) {

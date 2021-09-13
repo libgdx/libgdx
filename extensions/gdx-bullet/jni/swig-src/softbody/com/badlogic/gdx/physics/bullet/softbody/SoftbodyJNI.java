@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet.softbody;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
@@ -16,1300 +15,2881 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.Pool;
 
 public class SoftbodyJNI {
-  public final static native void delete_btSoftBodySolver(long jarg1);
-  public final static native int btSoftBodySolver_getSolverType(long jarg1, btSoftBodySolver jarg1_);
-  public final static native boolean btSoftBodySolver_checkInitialized(long jarg1, btSoftBodySolver jarg1_);
-  public final static native void btSoftBodySolver_optimize__SWIG_0(long jarg1, btSoftBodySolver jarg1_, long jarg2, boolean jarg3);
-  public final static native void btSoftBodySolver_optimize__SWIG_1(long jarg1, btSoftBodySolver jarg1_, long jarg2);
-  public final static native void btSoftBodySolver_copyBackToSoftBodies__SWIG_0(long jarg1, btSoftBodySolver jarg1_, boolean jarg2);
-  public final static native void btSoftBodySolver_copyBackToSoftBodies__SWIG_1(long jarg1, btSoftBodySolver jarg1_);
-  public final static native void btSoftBodySolver_predictMotion(long jarg1, btSoftBodySolver jarg1_, float jarg2);
-  public final static native void btSoftBodySolver_solveConstraints(long jarg1, btSoftBodySolver jarg1_, float jarg2);
-  public final static native void btSoftBodySolver_updateSoftBodies(long jarg1, btSoftBodySolver jarg1_);
-  public final static native void btSoftBodySolver_processCollision__SWIG_0(long jarg1, btSoftBodySolver jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
-  public final static native void btSoftBodySolver_processCollision__SWIG_1(long jarg1, btSoftBodySolver jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
-  public final static native void btSoftBodySolver_setNumberOfPositionIterations(long jarg1, btSoftBodySolver jarg1_, int jarg2);
-  public final static native int btSoftBodySolver_getNumberOfPositionIterations(long jarg1, btSoftBodySolver jarg1_);
-  public final static native void btSoftBodySolver_setNumberOfVelocityIterations(long jarg1, btSoftBodySolver jarg1_, int jarg2);
-  public final static native int btSoftBodySolver_getNumberOfVelocityIterations(long jarg1, btSoftBodySolver jarg1_);
-  public final static native float btSoftBodySolver_getTimeScale(long jarg1, btSoftBodySolver jarg1_);
-  public final static native void delete_btSoftBodySolverOutput(long jarg1);
-  public final static native void btSoftBodySolverOutput_copySoftBodyToVertexBuffer(long jarg1, btSoftBodySolverOutput jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btVertexBufferDescriptor jarg3_);
-  public final static native long new_btDefaultSoftBodySolver();
-  public final static native void delete_btDefaultSoftBodySolver(long jarg1);
-  public final static native void btDefaultSoftBodySolver_optimize__SWIG_0(long jarg1, btDefaultSoftBodySolver jarg1_, long jarg2, boolean jarg3);
-  public final static native void btDefaultSoftBodySolver_optimize__SWIG_1(long jarg1, btDefaultSoftBodySolver jarg1_, long jarg2);
-  public final static native void btDefaultSoftBodySolver_copyBackToSoftBodies__SWIG_0(long jarg1, btDefaultSoftBodySolver jarg1_, boolean jarg2);
-  public final static native void btDefaultSoftBodySolver_copyBackToSoftBodies__SWIG_1(long jarg1, btDefaultSoftBodySolver jarg1_);
-  public final static native void btDefaultSoftBodySolver_copySoftBodyToVertexBuffer(long jarg1, btDefaultSoftBodySolver jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btVertexBufferDescriptor jarg3_);
-  public final static native void btDefaultSoftBodySolver_processCollision__SWIG_0(long jarg1, btDefaultSoftBodySolver jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
-  public final static native void btDefaultSoftBodySolver_processCollision__SWIG_1(long jarg1, btDefaultSoftBodySolver jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
-  public final static native void btSparseSdf3_IntFrac_b_set(long jarg1, btSparseSdf3.IntFrac jarg1_, int jarg2);
-  public final static native int btSparseSdf3_IntFrac_b_get(long jarg1, btSparseSdf3.IntFrac jarg1_);
-  public final static native void btSparseSdf3_IntFrac_i_set(long jarg1, btSparseSdf3.IntFrac jarg1_, int jarg2);
-  public final static native int btSparseSdf3_IntFrac_i_get(long jarg1, btSparseSdf3.IntFrac jarg1_);
-  public final static native void btSparseSdf3_IntFrac_f_set(long jarg1, btSparseSdf3.IntFrac jarg1_, float jarg2);
-  public final static native float btSparseSdf3_IntFrac_f_get(long jarg1, btSparseSdf3.IntFrac jarg1_);
-  public final static native long new_btSparseSdf3_IntFrac();
-  public final static native void delete_btSparseSdf3_IntFrac(long jarg1);
-  public final static native void btSparseSdf3_Cell_d_set(long jarg1, btSparseSdf3.Cell jarg1_, long jarg2);
-  public final static native long btSparseSdf3_Cell_d_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native void btSparseSdf3_Cell_c_set(long jarg1, btSparseSdf3.Cell jarg1_, int[] jarg2);
-  public final static native int[] btSparseSdf3_Cell_c_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native void btSparseSdf3_Cell_puid_set(long jarg1, btSparseSdf3.Cell jarg1_, int jarg2);
-  public final static native int btSparseSdf3_Cell_puid_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native void btSparseSdf3_Cell_hash_set(long jarg1, btSparseSdf3.Cell jarg1_, long jarg2);
-  public final static native long btSparseSdf3_Cell_hash_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native void btSparseSdf3_Cell_pclient_set(long jarg1, btSparseSdf3.Cell jarg1_, long jarg2, btCollisionShape jarg2_);
-  public final static native long btSparseSdf3_Cell_pclient_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native void btSparseSdf3_Cell_next_set(long jarg1, btSparseSdf3.Cell jarg1_, long jarg2, btSparseSdf3.Cell jarg2_);
-  public final static native long btSparseSdf3_Cell_next_get(long jarg1, btSparseSdf3.Cell jarg1_);
-  public final static native long new_btSparseSdf3_Cell();
-  public final static native void delete_btSparseSdf3_Cell(long jarg1);
-  public final static native void btSparseSdf3_cells_set(long jarg1, btSparseSdf3 jarg1_, long jarg2);
-  public final static native long btSparseSdf3_cells_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_voxelsz_set(long jarg1, btSparseSdf3 jarg1_, float jarg2);
-  public final static native float btSparseSdf3_voxelsz_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_puid_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native int btSparseSdf3_puid_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_ncells_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native int btSparseSdf3_ncells_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_clampCells_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native int btSparseSdf3_clampCells_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_nprobes_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native int btSparseSdf3_nprobes_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_nqueries_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native int btSparseSdf3_nqueries_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_Initialize__SWIG_0(long jarg1, btSparseSdf3 jarg1_, int jarg2, int jarg3);
-  public final static native void btSparseSdf3_Initialize__SWIG_1(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native void btSparseSdf3_Initialize__SWIG_2(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_Reset(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_GarbageCollect__SWIG_0(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native void btSparseSdf3_GarbageCollect__SWIG_1(long jarg1, btSparseSdf3 jarg1_);
-  public final static native int btSparseSdf3_RemoveReferences(long jarg1, btSparseSdf3 jarg1_, long jarg2, btCollisionShape jarg2_);
-  public final static native float btSparseSdf3_Evaluate(long jarg1, btSparseSdf3 jarg1_, Vector3 jarg2, long jarg3, btCollisionShape jarg3_, Vector3 jarg4, float jarg5);
-  public final static native void btSparseSdf3_BuildCell(long jarg1, btSparseSdf3 jarg1_, long jarg2, btSparseSdf3.Cell jarg2_);
-  public final static native float btSparseSdf3_DistanceToShape(Vector3 jarg1, long jarg2, btCollisionShape jarg2_);
-  public final static native long btSparseSdf3_Decompose(float jarg1);
-  public final static native float btSparseSdf3_Lerp(float jarg1, float jarg2, float jarg3);
-  public final static native long btSparseSdf3_Hash(int jarg1, int jarg2, int jarg3, long jarg4, btCollisionShape jarg4_);
-  public final static native long new_btSparseSdf3();
-  public final static native void delete_btSparseSdf3(long jarg1);
-  public final static native void btSoftBodyWorldInfo_air_density_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
-  public final static native float btSoftBodyWorldInfo_air_density_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_water_density_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
-  public final static native float btSoftBodyWorldInfo_water_density_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_water_offset_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
-  public final static native float btSoftBodyWorldInfo_water_offset_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_maxDisplacement_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
-  public final static native float btSoftBodyWorldInfo_maxDisplacement_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_water_normal_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBodyWorldInfo_water_normal_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_broadphase_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btBroadphaseInterface jarg2_);
-  public final static native long btSoftBodyWorldInfo_broadphase_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_dispatcher_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btDispatcher jarg2_);
-  public final static native long btSoftBodyWorldInfo_dispatcher_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_gravity_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBodyWorldInfo_gravity_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBodyWorldInfo_sparsesdf_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btSparseSdf3 jarg2_);
-  public final static native long btSoftBodyWorldInfo_sparsesdf_get(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native long new_btSoftBodyWorldInfo();
-  public final static native void delete_btSoftBodyWorldInfo(long jarg1);
-  public final static native void btSoftBody_collisionDisabledObjects_set(long jarg1, btSoftBody jarg1_, long jarg2, btCollisionObjectConstArray jarg2_);
-  public final static native long btSoftBody_collisionDisabledObjects_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_softBodySolver_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBodySolver jarg2_);
-  public final static native long btSoftBody_softBodySolver_get(long jarg1, btSoftBody jarg1_);
-  public final static native long new_btSoftBody_eAeroModel();
-  public final static native void delete_btSoftBody_eAeroModel(long jarg1);
-  public final static native long new_btSoftBody_eVSolver();
-  public final static native void delete_btSoftBody_eVSolver(long jarg1);
-  public final static native long new_btSoftBody_ePSolver();
-  public final static native void delete_btSoftBody_ePSolver(long jarg1);
-  public final static native long new_btSoftBody_eSolverPresets();
-  public final static native void delete_btSoftBody_eSolverPresets(long jarg1);
-  public final static native long new_btSoftBody_eFeature();
-  public final static native void delete_btSoftBody_eFeature(long jarg1);
-  public final static native long new_btSoftBody_fCollision();
-  public final static native void delete_btSoftBody_fCollision(long jarg1);
-  public final static native long new_btSoftBody_fMaterial();
-  public final static native void delete_btSoftBody_fMaterial(long jarg1);
-  public final static native void btSoftBody_sRayCast_body_set(long jarg1, btSoftBody.sRayCast jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native long btSoftBody_sRayCast_body_get(long jarg1, btSoftBody.sRayCast jarg1_);
-  public final static native void btSoftBody_sRayCast_feature_set(long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
-  public final static native int btSoftBody_sRayCast_feature_get(long jarg1, btSoftBody.sRayCast jarg1_);
-  public final static native void btSoftBody_sRayCast_index_set(long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
-  public final static native int btSoftBody_sRayCast_index_get(long jarg1, btSoftBody.sRayCast jarg1_);
-  public final static native void btSoftBody_sRayCast_fraction_set(long jarg1, btSoftBody.sRayCast jarg1_, float jarg2);
-  public final static native float btSoftBody_sRayCast_fraction_get(long jarg1, btSoftBody.sRayCast jarg1_);
-  public final static native long new_btSoftBody_sRayCast();
-  public final static native void delete_btSoftBody_sRayCast(long jarg1);
-  public final static native void delete_btSoftBody_ImplicitFn(long jarg1);
-  public final static native float btSoftBody_ImplicitFn_Eval(long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_sCti_colObj_set(long jarg1, btSoftBody.sCti jarg1_, long jarg2, btCollisionObject jarg2_);
-  public final static native long btSoftBody_sCti_colObj_get(long jarg1, btSoftBody.sCti jarg1_);
-  public final static native void btSoftBody_sCti_normal_set(long jarg1, btSoftBody.sCti jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_sCti_normal_get(long jarg1, btSoftBody.sCti jarg1_);
-  public final static native void btSoftBody_sCti_offset_set(long jarg1, btSoftBody.sCti jarg1_, float jarg2);
-  public final static native float btSoftBody_sCti_offset_get(long jarg1, btSoftBody.sCti jarg1_);
-  public final static native long new_btSoftBody_sCti();
-  public final static native void delete_btSoftBody_sCti(long jarg1);
-  public final static native void btSoftBody_sMedium_velocity_set(long jarg1, btSoftBody.sMedium jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_sMedium_velocity_get(long jarg1, btSoftBody.sMedium jarg1_);
-  public final static native void btSoftBody_sMedium_pressure_set(long jarg1, btSoftBody.sMedium jarg1_, float jarg2);
-  public final static native float btSoftBody_sMedium_pressure_get(long jarg1, btSoftBody.sMedium jarg1_);
-  public final static native void btSoftBody_sMedium_density_set(long jarg1, btSoftBody.sMedium jarg1_, float jarg2);
-  public final static native float btSoftBody_sMedium_density_get(long jarg1, btSoftBody.sMedium jarg1_);
-  public final static native long new_btSoftBody_sMedium();
-  public final static native void delete_btSoftBody_sMedium(long jarg1);
-  public final static native void btSoftBody_Element_tag_set(long jarg1, btSoftBody.Element jarg1_, long jarg2);
-  public final static native long btSoftBody_Element_tag_get(long jarg1, btSoftBody.Element jarg1_);
-  public final static native long new_btSoftBody_Element();
-  public final static native void delete_btSoftBody_Element(long jarg1);
-  public final static native void btSoftBody_Material_kLST_set(long jarg1, btSoftBody.Material jarg1_, float jarg2);
-  public final static native float btSoftBody_Material_kLST_get(long jarg1, btSoftBody.Material jarg1_);
-  public final static native void btSoftBody_Material_kAST_set(long jarg1, btSoftBody.Material jarg1_, float jarg2);
-  public final static native float btSoftBody_Material_kAST_get(long jarg1, btSoftBody.Material jarg1_);
-  public final static native void btSoftBody_Material_kVST_set(long jarg1, btSoftBody.Material jarg1_, float jarg2);
-  public final static native float btSoftBody_Material_kVST_get(long jarg1, btSoftBody.Material jarg1_);
-  public final static native void btSoftBody_Material_flags_set(long jarg1, btSoftBody.Material jarg1_, int jarg2);
-  public final static native int btSoftBody_Material_flags_get(long jarg1, btSoftBody.Material jarg1_);
-  public final static native long new_btSoftBody_Material();
-  public final static native void delete_btSoftBody_Material(long jarg1);
-  public final static native void btSoftBody_Feature_material_set(long jarg1, btSoftBody.Feature jarg1_, long jarg2, btSoftBody.Material jarg2_);
-  public final static native long btSoftBody_Feature_material_get(long jarg1, btSoftBody.Feature jarg1_);
-  public final static native long new_btSoftBody_Feature();
-  public final static native void delete_btSoftBody_Feature(long jarg1);
-  public final static native void btSoftBody_Node_x_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Node_x_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_q_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Node_q_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_v_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Node_v_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_f_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Node_f_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_n_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Node_n_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_im_set(long jarg1, btSoftBody.Node jarg1_, float jarg2);
-  public final static native float btSoftBody_Node_im_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_area_set(long jarg1, btSoftBody.Node jarg1_, float jarg2);
-  public final static native float btSoftBody_Node_area_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_leaf_set(long jarg1, btSoftBody.Node jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native long btSoftBody_Node_leaf_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native void btSoftBody_Node_battach_set(long jarg1, btSoftBody.Node jarg1_, int jarg2);
-  public final static native int btSoftBody_Node_battach_get(long jarg1, btSoftBody.Node jarg1_);
-  public final static native long new_btSoftBody_Node();
-  public final static native void delete_btSoftBody_Node(long jarg1);
-  public final static native void btSoftBody_Link_c3_set(long jarg1, btSoftBody.Link jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Link_c3_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_n_set(long jarg1, btSoftBody.Link jarg1_, long jarg2);
-  public final static native long btSoftBody_Link_n_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_rl_set(long jarg1, btSoftBody.Link jarg1_, float jarg2);
-  public final static native float btSoftBody_Link_rl_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_bbending_set(long jarg1, btSoftBody.Link jarg1_, int jarg2);
-  public final static native int btSoftBody_Link_bbending_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_c0_set(long jarg1, btSoftBody.Link jarg1_, float jarg2);
-  public final static native float btSoftBody_Link_c0_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_c1_set(long jarg1, btSoftBody.Link jarg1_, float jarg2);
-  public final static native float btSoftBody_Link_c1_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native void btSoftBody_Link_c2_set(long jarg1, btSoftBody.Link jarg1_, float jarg2);
-  public final static native float btSoftBody_Link_c2_get(long jarg1, btSoftBody.Link jarg1_);
-  public final static native long btSoftBody_Link_operatorNew__SWIG_0(long jarg1, btSoftBody.Link jarg1_, long jarg2);
-  public final static native void btSoftBody_Link_operatorDelete__SWIG_0(long jarg1, btSoftBody.Link jarg1_, long jarg2);
-  public final static native long btSoftBody_Link_operatorNew__SWIG_1(long jarg1, btSoftBody.Link jarg1_, long jarg2, long jarg3);
-  public final static native void btSoftBody_Link_operatorDelete__SWIG_1(long jarg1, btSoftBody.Link jarg1_, long jarg2, long jarg3);
-  public final static native long btSoftBody_Link_operatorNewArray__SWIG_0(long jarg1, btSoftBody.Link jarg1_, long jarg2);
-  public final static native void btSoftBody_Link_operatorDeleteArray__SWIG_0(long jarg1, btSoftBody.Link jarg1_, long jarg2);
-  public final static native long btSoftBody_Link_operatorNewArray__SWIG_1(long jarg1, btSoftBody.Link jarg1_, long jarg2, long jarg3);
-  public final static native void btSoftBody_Link_operatorDeleteArray__SWIG_1(long jarg1, btSoftBody.Link jarg1_, long jarg2, long jarg3);
-  public final static native long new_btSoftBody_Link();
-  public final static native void delete_btSoftBody_Link(long jarg1);
-  public final static native void btSoftBody_Face_n_set(long jarg1, btSoftBody.Face jarg1_, long jarg2);
-  public final static native long btSoftBody_Face_n_get(long jarg1, btSoftBody.Face jarg1_);
-  public final static native void btSoftBody_Face_normal_set(long jarg1, btSoftBody.Face jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Face_normal_get(long jarg1, btSoftBody.Face jarg1_);
-  public final static native void btSoftBody_Face_ra_set(long jarg1, btSoftBody.Face jarg1_, float jarg2);
-  public final static native float btSoftBody_Face_ra_get(long jarg1, btSoftBody.Face jarg1_);
-  public final static native void btSoftBody_Face_leaf_set(long jarg1, btSoftBody.Face jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native long btSoftBody_Face_leaf_get(long jarg1, btSoftBody.Face jarg1_);
-  public final static native long new_btSoftBody_Face();
-  public final static native void delete_btSoftBody_Face(long jarg1);
-  public final static native void btSoftBody_Tetra_n_set(long jarg1, btSoftBody.Tetra jarg1_, long jarg2);
-  public final static native long btSoftBody_Tetra_n_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native void btSoftBody_Tetra_rv_set(long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
-  public final static native float btSoftBody_Tetra_rv_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native void btSoftBody_Tetra_leaf_set(long jarg1, btSoftBody.Tetra jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native long btSoftBody_Tetra_leaf_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native void btSoftBody_Tetra_c0_set(long jarg1, btSoftBody.Tetra jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Tetra_c0_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native void btSoftBody_Tetra_c1_set(long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
-  public final static native float btSoftBody_Tetra_c1_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native void btSoftBody_Tetra_c2_set(long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
-  public final static native float btSoftBody_Tetra_c2_get(long jarg1, btSoftBody.Tetra jarg1_);
-  public final static native long new_btSoftBody_Tetra();
-  public final static native void delete_btSoftBody_Tetra(long jarg1);
-  public final static native void btSoftBody_RContact_cti_set(long jarg1, btSoftBody.RContact jarg1_, long jarg2, btSoftBody.sCti jarg2_);
-  public final static native long btSoftBody_RContact_cti_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_node_set(long jarg1, btSoftBody.RContact jarg1_, long jarg2, btSoftBody.Node jarg2_);
-  public final static native long btSoftBody_RContact_node_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_c0_set(long jarg1, btSoftBody.RContact jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_RContact_c0_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_c1_set(long jarg1, btSoftBody.RContact jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_RContact_c1_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_c2_set(long jarg1, btSoftBody.RContact jarg1_, float jarg2);
-  public final static native float btSoftBody_RContact_c2_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_c3_set(long jarg1, btSoftBody.RContact jarg1_, float jarg2);
-  public final static native float btSoftBody_RContact_c3_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native void btSoftBody_RContact_c4_set(long jarg1, btSoftBody.RContact jarg1_, float jarg2);
-  public final static native float btSoftBody_RContact_c4_get(long jarg1, btSoftBody.RContact jarg1_);
-  public final static native long new_btSoftBody_RContact();
-  public final static native void delete_btSoftBody_RContact(long jarg1);
-  public final static native void btSoftBody_SContact_node_set(long jarg1, btSoftBody.SContact jarg1_, long jarg2, btSoftBody.Node jarg2_);
-  public final static native long btSoftBody_SContact_node_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_face_set(long jarg1, btSoftBody.SContact jarg1_, long jarg2, btSoftBody.Face jarg2_);
-  public final static native long btSoftBody_SContact_face_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_weights_set(long jarg1, btSoftBody.SContact jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_SContact_weights_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_normal_set(long jarg1, btSoftBody.SContact jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_SContact_normal_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_margin_set(long jarg1, btSoftBody.SContact jarg1_, float jarg2);
-  public final static native float btSoftBody_SContact_margin_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_friction_set(long jarg1, btSoftBody.SContact jarg1_, float jarg2);
-  public final static native float btSoftBody_SContact_friction_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native void btSoftBody_SContact_cfm_set(long jarg1, btSoftBody.SContact jarg1_, float[] jarg2);
-  public final static native float[] btSoftBody_SContact_cfm_get(long jarg1, btSoftBody.SContact jarg1_);
-  public final static native long new_btSoftBody_SContact();
-  public final static native void delete_btSoftBody_SContact(long jarg1);
-  public final static native void btSoftBody_Anchor_node_set(long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btSoftBody.Node jarg2_);
-  public final static native long btSoftBody_Anchor_node_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_local_set(long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Anchor_local_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_body_set(long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native long btSoftBody_Anchor_body_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_influence_set(long jarg1, btSoftBody.Anchor jarg1_, float jarg2);
-  public final static native float btSoftBody_Anchor_influence_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_c0_set(long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Anchor_c0_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_c1_set(long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Anchor_c1_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native void btSoftBody_Anchor_c2_set(long jarg1, btSoftBody.Anchor jarg1_, float jarg2);
-  public final static native float btSoftBody_Anchor_c2_get(long jarg1, btSoftBody.Anchor jarg1_);
-  public final static native long new_btSoftBody_Anchor();
-  public final static native void delete_btSoftBody_Anchor(long jarg1);
-  public final static native String btSoftBody_Note_text_get(long jarg1, btSoftBody.Note jarg1_);
-  public final static native void btSoftBody_Note_offset_set(long jarg1, btSoftBody.Note jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Note_offset_get(long jarg1, btSoftBody.Note jarg1_);
-  public final static native void btSoftBody_Note_rank_set(long jarg1, btSoftBody.Note jarg1_, int jarg2);
-  public final static native int btSoftBody_Note_rank_get(long jarg1, btSoftBody.Note jarg1_);
-  public final static native void btSoftBody_Note_nodes_set(long jarg1, btSoftBody.Note jarg1_, long jarg2);
-  public final static native long btSoftBody_Note_nodes_get(long jarg1, btSoftBody.Note jarg1_);
-  public final static native void btSoftBody_Note_coords_set(long jarg1, btSoftBody.Note jarg1_, float[] jarg2);
-  public final static native float[] btSoftBody_Note_coords_get(long jarg1, btSoftBody.Note jarg1_);
-  public final static native long new_btSoftBody_Note();
-  public final static native void delete_btSoftBody_Note(long jarg1);
-  public final static native void btSoftBody_Pose_bvolume_set(long jarg1, btSoftBody.Pose jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_Pose_bvolume_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_bframe_set(long jarg1, btSoftBody.Pose jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_Pose_bframe_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_volume_set(long jarg1, btSoftBody.Pose jarg1_, float jarg2);
-  public final static native float btSoftBody_Pose_volume_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_pos_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long btSoftBody_Pose_pos_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_wgh_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btSoftBody_Pose_wgh_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_com_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Pose_com_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_rot_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Pose_rot_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_scl_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Pose_scl_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native void btSoftBody_Pose_aqq_set(long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Pose_aqq_get(long jarg1, btSoftBody.Pose jarg1_);
-  public final static native long new_btSoftBody_Pose();
-  public final static native void delete_btSoftBody_Pose(long jarg1);
-  public final static native void btSoftBody_Cluster_masses_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btSoftBody_Cluster_masses_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_nodes_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2);
-  public final static native long btSoftBody_Cluster_nodes_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_framerefs_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long btSoftBody_Cluster_framerefs_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_framexform_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btSoftBody_Cluster_framexform_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_idmass_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_idmass_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_imass_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_imass_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_locii_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Cluster_locii_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_invwi_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Cluster_invwi_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_com_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Cluster_com_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_vimpulses_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Cluster_vimpulses_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_dimpulses_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Cluster_dimpulses_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_nvimpulses_set(long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
-  public final static native int btSoftBody_Cluster_nvimpulses_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_ndimpulses_set(long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
-  public final static native int btSoftBody_Cluster_ndimpulses_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_lv_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Cluster_lv_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_av_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Cluster_av_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_leaf_set(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native long btSoftBody_Cluster_leaf_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_ndamping_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_ndamping_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_ldamping_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_ldamping_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_adamping_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_adamping_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_matching_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_matching_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_maxSelfCollisionImpulse_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_maxSelfCollisionImpulse_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_selfCollisionImpulseFactor_set(long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
-  public final static native float btSoftBody_Cluster_selfCollisionImpulseFactor_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_containsAnchor_set(long jarg1, btSoftBody.Cluster jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_Cluster_containsAnchor_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_collide_set(long jarg1, btSoftBody.Cluster jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_Cluster_collide_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native void btSoftBody_Cluster_clusterIndex_set(long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
-  public final static native int btSoftBody_Cluster_clusterIndex_get(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native long new_btSoftBody_Cluster();
-  public final static native void delete_btSoftBody_Cluster(long jarg1);
-  public final static native void btSoftBody_Impulse_velocity_set(long jarg1, btSoftBody.Impulse jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Impulse_velocity_get(long jarg1, btSoftBody.Impulse jarg1_);
-  public final static native void btSoftBody_Impulse_drift_set(long jarg1, btSoftBody.Impulse jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Impulse_drift_get(long jarg1, btSoftBody.Impulse jarg1_);
-  public final static native void btSoftBody_Impulse_asVelocity_set(long jarg1, btSoftBody.Impulse jarg1_, int jarg2);
-  public final static native int btSoftBody_Impulse_asVelocity_get(long jarg1, btSoftBody.Impulse jarg1_);
-  public final static native void btSoftBody_Impulse_asDrift_set(long jarg1, btSoftBody.Impulse jarg1_, int jarg2);
-  public final static native int btSoftBody_Impulse_asDrift_get(long jarg1, btSoftBody.Impulse jarg1_);
-  public final static native long new_btSoftBody_Impulse();
-  public final static native long btSoftBody_Impulse_operatorSubtraction(long jarg1, btSoftBody.Impulse jarg1_);
-  public final static native long btSoftBody_Impulse_operatorMultiplication(long jarg1, btSoftBody.Impulse jarg1_, float jarg2);
-  public final static native void delete_btSoftBody_Impulse(long jarg1);
-  public final static native void btSoftBody_Body_soft_set(long jarg1, btSoftBody.Body jarg1_, long jarg2, btSoftBody.Cluster jarg2_);
-  public final static native long btSoftBody_Body_soft_get(long jarg1, btSoftBody.Body jarg1_);
-  public final static native void btSoftBody_Body_rigid_set(long jarg1, btSoftBody.Body jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native long btSoftBody_Body_rigid_get(long jarg1, btSoftBody.Body jarg1_);
-  public final static native void btSoftBody_Body_collisionObject_set(long jarg1, btSoftBody.Body jarg1_, long jarg2, btCollisionObject jarg2_);
-  public final static native long btSoftBody_Body_collisionObject_get(long jarg1, btSoftBody.Body jarg1_);
-  public final static native long new_btSoftBody_Body__SWIG_0();
-  public final static native long new_btSoftBody_Body__SWIG_1(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native long new_btSoftBody_Body__SWIG_2(long jarg1, btCollisionObject jarg1_);
-  public final static native void btSoftBody_Body_activate(long jarg1, btSoftBody.Body jarg1_);
-  public final static native Matrix3 btSoftBody_Body_invWorldInertia(long jarg1, btSoftBody.Body jarg1_);
-  public final static native float btSoftBody_Body_invMass(long jarg1, btSoftBody.Body jarg1_);
-  public final static native Matrix4 btSoftBody_Body_xform(long jarg1, btSoftBody.Body jarg1_);
-  public final static native Vector3 btSoftBody_Body_linearVelocity(long jarg1, btSoftBody.Body jarg1_);
-  public final static native Vector3 btSoftBody_Body_angularVelocity__SWIG_0(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
-  public final static native Vector3 btSoftBody_Body_angularVelocity__SWIG_1(long jarg1, btSoftBody.Body jarg1_);
-  public final static native Vector3 btSoftBody_Body_velocity(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_Body_applyVImpulse(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_Body_applyDImpulse(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_Body_applyImpulse(long jarg1, btSoftBody.Body jarg1_, long jarg2, btSoftBody.Impulse jarg2_, Vector3 jarg3);
-  public final static native void btSoftBody_Body_applyVAImpulse(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_Body_applyDAImpulse(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_Body_applyAImpulse(long jarg1, btSoftBody.Body jarg1_, long jarg2, btSoftBody.Impulse jarg2_);
-  public final static native void btSoftBody_Body_applyDCImpulse(long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
-  public final static native void delete_btSoftBody_Body(long jarg1);
-  public final static native long new_btSoftBody_Joint_eType();
-  public final static native void delete_btSoftBody_Joint_eType(long jarg1);
-  public final static native long new_btSoftBody_Joint_Specs();
-  public final static native void btSoftBody_Joint_Specs_erp_set(long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_Specs_erp_get(long jarg1, btSoftBody.Joint.Specs jarg1_);
-  public final static native void btSoftBody_Joint_Specs_cfm_set(long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_Specs_cfm_get(long jarg1, btSoftBody.Joint.Specs jarg1_);
-  public final static native void btSoftBody_Joint_Specs_split_set(long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_Specs_split_get(long jarg1, btSoftBody.Joint.Specs jarg1_);
-  public final static native void delete_btSoftBody_Joint_Specs(long jarg1);
-  public final static native void btSoftBody_Joint_bodies_set(long jarg1, btSoftBody.Joint jarg1_, long jarg2, btSoftBody.Body jarg2_);
-  public final static native long btSoftBody_Joint_bodies_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_refs_set(long jarg1, btSoftBody.Joint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Joint_refs_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_cfm_set(long jarg1, btSoftBody.Joint jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_cfm_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_erp_set(long jarg1, btSoftBody.Joint jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_erp_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_split_set(long jarg1, btSoftBody.Joint jarg1_, float jarg2);
-  public final static native float btSoftBody_Joint_split_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_drift_set(long jarg1, btSoftBody.Joint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Joint_drift_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_sdrift_set(long jarg1, btSoftBody.Joint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_Joint_sdrift_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_massmatrix_set(long jarg1, btSoftBody.Joint jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSoftBody_Joint_massmatrix_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_Joint_delete_set(long jarg1, btSoftBody.Joint jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_Joint_delete_get(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void delete_btSoftBody_Joint(long jarg1);
-  public final static native void btSoftBody_Joint_Prepare(long jarg1, btSoftBody.Joint jarg1_, float jarg2, int jarg3);
-  public final static native void btSoftBody_Joint_Solve(long jarg1, btSoftBody.Joint jarg1_, float jarg2, float jarg3);
-  public final static native void btSoftBody_Joint_Terminate(long jarg1, btSoftBody.Joint jarg1_, float jarg2);
-  public final static native int btSoftBody_Joint_Type(long jarg1, btSoftBody.Joint jarg1_);
-  public final static native void btSoftBody_LJoint_Specs_position_set(long jarg1, btSoftBody.LJoint.Specs jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_LJoint_Specs_position_get(long jarg1, btSoftBody.LJoint.Specs jarg1_);
-  public final static native long new_btSoftBody_LJoint_Specs();
-  public final static native void delete_btSoftBody_LJoint_Specs(long jarg1);
-  public final static native void btSoftBody_LJoint_rpos_set(long jarg1, btSoftBody.LJoint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_LJoint_rpos_get(long jarg1, btSoftBody.LJoint jarg1_);
-  public final static native long new_btSoftBody_LJoint();
-  public final static native void delete_btSoftBody_LJoint(long jarg1);
-  public final static native void delete_btSoftBody_AJoint_IControl(long jarg1);
-  public final static native void btSoftBody_AJoint_IControl_Prepare(long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2, btSoftBody.AJoint jarg2_);
-  public final static native float btSoftBody_AJoint_IControl_Speed(long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2, btSoftBody.AJoint jarg2_, float jarg3);
-  public final static native long btSoftBody_AJoint_IControl_Default();
-  public final static native long new_btSoftBody_AJoint_IControl();
-  public final static native long new_btSoftBody_AJoint_Specs();
-  public final static native void btSoftBody_AJoint_Specs_axis_set(long jarg1, btSoftBody.AJoint.Specs jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_AJoint_Specs_axis_get(long jarg1, btSoftBody.AJoint.Specs jarg1_);
-  public final static native void btSoftBody_AJoint_Specs_icontrol_set(long jarg1, btSoftBody.AJoint.Specs jarg1_, long jarg2, btSoftBody.AJoint.IControl jarg2_);
-  public final static native long btSoftBody_AJoint_Specs_icontrol_get(long jarg1, btSoftBody.AJoint.Specs jarg1_);
-  public final static native void delete_btSoftBody_AJoint_Specs(long jarg1);
-  public final static native void btSoftBody_AJoint_axis_set(long jarg1, btSoftBody.AJoint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_AJoint_axis_get(long jarg1, btSoftBody.AJoint jarg1_);
-  public final static native void btSoftBody_AJoint_icontrol_set(long jarg1, btSoftBody.AJoint jarg1_, long jarg2, btSoftBody.AJoint.IControl jarg2_);
-  public final static native long btSoftBody_AJoint_icontrol_get(long jarg1, btSoftBody.AJoint jarg1_);
-  public final static native long new_btSoftBody_AJoint();
-  public final static native void delete_btSoftBody_AJoint(long jarg1);
-  public final static native void btSoftBody_CJoint_life_set(long jarg1, btSoftBody.CJoint jarg1_, int jarg2);
-  public final static native int btSoftBody_CJoint_life_get(long jarg1, btSoftBody.CJoint jarg1_);
-  public final static native void btSoftBody_CJoint_maxlife_set(long jarg1, btSoftBody.CJoint jarg1_, int jarg2);
-  public final static native int btSoftBody_CJoint_maxlife_get(long jarg1, btSoftBody.CJoint jarg1_);
-  public final static native void btSoftBody_CJoint_rpos_set(long jarg1, btSoftBody.CJoint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_CJoint_rpos_get(long jarg1, btSoftBody.CJoint jarg1_);
-  public final static native void btSoftBody_CJoint_normal_set(long jarg1, btSoftBody.CJoint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_CJoint_normal_get(long jarg1, btSoftBody.CJoint jarg1_);
-  public final static native void btSoftBody_CJoint_friction_set(long jarg1, btSoftBody.CJoint jarg1_, float jarg2);
-  public final static native float btSoftBody_CJoint_friction_get(long jarg1, btSoftBody.CJoint jarg1_);
-  public final static native long new_btSoftBody_CJoint();
-  public final static native void delete_btSoftBody_CJoint(long jarg1);
-  public final static native void btSoftBody_Config_aeromodel_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_aeromodel_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kVCF_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kVCF_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kDP_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kDP_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kDG_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kDG_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kLF_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kLF_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kPR_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kPR_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kVC_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kVC_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kDF_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kDF_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kMT_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kMT_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kCHR_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kCHR_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kKHR_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kKHR_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSHR_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSHR_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kAHR_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kAHR_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSRHR_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSRHR_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSKHR_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSKHR_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSSHR_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSSHR_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSR_SPLT_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSR_SPLT_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSK_SPLT_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSK_SPLT_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_kSS_SPLT_CL_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_kSS_SPLT_CL_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_maxvolume_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_maxvolume_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_timescale_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
-  public final static native float btSoftBody_Config_timescale_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_viterations_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_viterations_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_piterations_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_piterations_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_diterations_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_diterations_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_citerations_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_citerations_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_collisions_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_collisions_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_vsequence_set(long jarg1, btSoftBody.Config jarg1_, long jarg2);
-  public final static native long btSoftBody_Config_vsequence_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_psequence_set(long jarg1, btSoftBody.Config jarg1_, long jarg2);
-  public final static native long btSoftBody_Config_psequence_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native void btSoftBody_Config_dsequence_set(long jarg1, btSoftBody.Config jarg1_, long jarg2);
-  public final static native long btSoftBody_Config_dsequence_get(long jarg1, btSoftBody.Config jarg1_);
-  public final static native long new_btSoftBody_Config();
-  public final static native void delete_btSoftBody_Config(long jarg1);
-  public final static native void btSoftBody_SolverState_sdt_set(long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
-  public final static native float btSoftBody_SolverState_sdt_get(long jarg1, btSoftBody.SolverState jarg1_);
-  public final static native void btSoftBody_SolverState_isdt_set(long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
-  public final static native float btSoftBody_SolverState_isdt_get(long jarg1, btSoftBody.SolverState jarg1_);
-  public final static native void btSoftBody_SolverState_velmrg_set(long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
-  public final static native float btSoftBody_SolverState_velmrg_get(long jarg1, btSoftBody.SolverState jarg1_);
-  public final static native void btSoftBody_SolverState_radmrg_set(long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
-  public final static native float btSoftBody_SolverState_radmrg_get(long jarg1, btSoftBody.SolverState jarg1_);
-  public final static native void btSoftBody_SolverState_updmrg_set(long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
-  public final static native float btSoftBody_SolverState_updmrg_get(long jarg1, btSoftBody.SolverState jarg1_);
-  public final static native long new_btSoftBody_SolverState();
-  public final static native void delete_btSoftBody_SolverState(long jarg1);
-  public final static native void btSoftBody_RayFromToCaster_rayFrom_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_RayFromToCaster_rayFrom_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native void btSoftBody_RayFromToCaster_rayTo_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_RayFromToCaster_rayTo_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native void btSoftBody_RayFromToCaster_rayNormalizedDirection_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_RayFromToCaster_rayNormalizedDirection_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native void btSoftBody_RayFromToCaster_mint_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, float jarg2);
-  public final static native float btSoftBody_RayFromToCaster_mint_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native void btSoftBody_RayFromToCaster_face_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, long jarg2, btSoftBody.Face jarg2_);
-  public final static native long btSoftBody_RayFromToCaster_face_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native void btSoftBody_RayFromToCaster_tests_set(long jarg1, btSoftBody.RayFromToCaster jarg1_, int jarg2);
-  public final static native int btSoftBody_RayFromToCaster_tests_get(long jarg1, btSoftBody.RayFromToCaster jarg1_);
-  public final static native long new_btSoftBody_RayFromToCaster(Vector3 jarg1, Vector3 jarg2, float jarg3);
-  public final static native float btSoftBody_RayFromToCaster_rayFromToTriangle__SWIG_0(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7);
-  public final static native float btSoftBody_RayFromToCaster_rayFromToTriangle__SWIG_1(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void delete_btSoftBody_RayFromToCaster(long jarg1);
-  public final static native void btSoftBody_cfg_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Config jarg2_);
-  public final static native long btSoftBody_cfg_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_sst_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.SolverState jarg2_);
-  public final static native long btSoftBody_sst_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_pose_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Pose jarg2_);
-  public final static native long btSoftBody_pose_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_tag_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_tag_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_worldInfo_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBodyWorldInfo jarg2_);
-  public final static native long btSoftBody_worldInfo_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_notes_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_notes_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_nodes_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_nodes_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_links_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_links_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_faces_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_faces_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_tetras_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_tetras_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_anchors_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_anchors_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_rcontacts_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_rcontacts_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_scontacts_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_scontacts_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_joints_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_joints_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_materials_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_materials_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_timeacc_set(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native float btSoftBody_timeacc_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_bounds_set(long jarg1, btSoftBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_bounds_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_bUpdateRtCst_set(long jarg1, btSoftBody jarg1_, boolean jarg2);
-  public final static native boolean btSoftBody_bUpdateRtCst_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_ndbvt_set(long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
-  public final static native long btSoftBody_ndbvt_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_fdbvt_set(long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
-  public final static native long btSoftBody_fdbvt_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_cdbvt_set(long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
-  public final static native long btSoftBody_cdbvt_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_clusters_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_clusters_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_clusterConnectivity_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_clusterConnectivity_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_initialWorldTransform_set(long jarg1, btSoftBody jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btSoftBody_initialWorldTransform_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_windVelocity_set(long jarg1, btSoftBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSoftBody_windVelocity_get(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_restLengthScale_set(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native float btSoftBody_restLengthScale_get(long jarg1, btSoftBody jarg1_);
-  public final static native long new_btSoftBody__SWIG_0(long jarg1, btSoftBodyWorldInfo jarg1_, int jarg2, long jarg3, btVector3 jarg3_, java.nio.FloatBuffer jarg4);
-  public final static native long new_btSoftBody__SWIG_1(long jarg1, btSoftBodyWorldInfo jarg1_);
-  public final static native void btSoftBody_initDefaults(long jarg1, btSoftBody jarg1_);
-  public final static native void delete_btSoftBody(long jarg1);
-  public final static native void btSoftBody_userIndexMapping_set(long jarg1, btSoftBody jarg1_, long jarg2);
-  public final static native long btSoftBody_userIndexMapping_get(long jarg1, btSoftBody jarg1_);
-  public final static native boolean btSoftBody_checkLink__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
-  public final static native boolean btSoftBody_checkLink__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_);
-  public final static native boolean btSoftBody_checkFace(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native long btSoftBody_appendMaterial(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_appendNote__SWIG_0(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_, long jarg7, btSoftBody.Node jarg7_, long jarg8, btSoftBody.Node jarg8_);
-  public final static native void btSoftBody_appendNote__SWIG_1(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_, long jarg7, btSoftBody.Node jarg7_);
-  public final static native void btSoftBody_appendNote__SWIG_2(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_);
-  public final static native void btSoftBody_appendNote__SWIG_3(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_);
-  public final static native void btSoftBody_appendNote__SWIG_4(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btVector4 jarg4_);
-  public final static native void btSoftBody_appendNote__SWIG_5(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_appendNote__SWIG_6(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btSoftBody.Node jarg4_);
-  public final static native void btSoftBody_appendNote__SWIG_7(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btSoftBody.Link jarg4_);
-  public final static native void btSoftBody_appendNote__SWIG_8(long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3, long jarg4, btSoftBody.Face jarg4_);
-  public final static native void btSoftBody_appendNode(long jarg1, btSoftBody jarg1_, Vector3 jarg2, float jarg3);
-  public final static native void btSoftBody_appendLink__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btSoftBody.Material jarg3_);
-  public final static native void btSoftBody_appendLink__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_appendLink__SWIG_2(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_appendLink__SWIG_3(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, long jarg4, btSoftBody.Material jarg4_, boolean jarg5);
-  public final static native void btSoftBody_appendLink__SWIG_4(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, long jarg4, btSoftBody.Material jarg4_);
-  public final static native void btSoftBody_appendLink__SWIG_5(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
-  public final static native void btSoftBody_appendLink__SWIG_6(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, long jarg4, btSoftBody.Material jarg4_, boolean jarg5);
-  public final static native void btSoftBody_appendLink__SWIG_7(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, long jarg4, btSoftBody.Material jarg4_);
-  public final static native void btSoftBody_appendLink__SWIG_8(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_);
-  public final static native void btSoftBody_appendFace__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btSoftBody.Material jarg3_);
-  public final static native void btSoftBody_appendFace__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_appendFace__SWIG_2(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_appendFace__SWIG_3(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4, long jarg5, btSoftBody.Material jarg5_);
-  public final static native void btSoftBody_appendFace__SWIG_4(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native void btSoftBody_appendTetra__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btSoftBody.Material jarg3_);
-  public final static native void btSoftBody_appendTetra__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4, int jarg5, long jarg6, btSoftBody.Material jarg6_);
-  public final static native void btSoftBody_appendTetra__SWIG_2(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4, int jarg5);
-  public final static native void btSoftBody_appendAnchor__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, boolean jarg4, float jarg5);
-  public final static native void btSoftBody_appendAnchor__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, boolean jarg4);
-  public final static native void btSoftBody_appendAnchor__SWIG_2(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_);
-  public final static native void btSoftBody_appendAnchor__SWIG_3(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, boolean jarg5, float jarg6);
-  public final static native void btSoftBody_appendAnchor__SWIG_4(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, boolean jarg5);
-  public final static native void btSoftBody_appendAnchor__SWIG_5(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4);
-  public final static native void btSoftBody_appendLinearJoint__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody.Cluster jarg3_, long jarg4, btSoftBody.Body jarg4_);
-  public final static native void btSoftBody_appendLinearJoint__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody.Body jarg3_);
-  public final static native void btSoftBody_appendLinearJoint__SWIG_2(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.LJoint.Specs jarg2_);
-  public final static native void btSoftBody_appendLinearJoint__SWIG_3(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody jarg3_);
-  public final static native void btSoftBody_appendAngularJoint__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody.Cluster jarg3_, long jarg4, btSoftBody.Body jarg4_);
-  public final static native void btSoftBody_appendAngularJoint__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody.Body jarg3_);
-  public final static native void btSoftBody_appendAngularJoint__SWIG_2(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.AJoint.Specs jarg2_);
-  public final static native void btSoftBody_appendAngularJoint__SWIG_3(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody jarg3_);
-  public final static native void btSoftBody_addForce__SWIG_0(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_addForce__SWIG_1(long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
-  public final static native void btSoftBody_addAeroForceToNode(long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
-  public final static native void btSoftBody_addAeroForceToFace(long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
-  public final static native void btSoftBody_addVelocity__SWIG_0(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_setVelocity(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_addVelocity__SWIG_1(long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
-  public final static native void btSoftBody_setMass(long jarg1, btSoftBody jarg1_, int jarg2, float jarg3);
-  public final static native float btSoftBody_getMass(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native float btSoftBody_getTotalMass(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_setTotalMass__SWIG_0(long jarg1, btSoftBody jarg1_, float jarg2, boolean jarg3);
-  public final static native void btSoftBody_setTotalMass__SWIG_1(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setTotalDensity(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setVolumeMass(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setVolumeDensity(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_transform(long jarg1, btSoftBody jarg1_, Matrix4 jarg2);
-  public final static native void btSoftBody_translate(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_rotate(long jarg1, btSoftBody jarg1_, Quaternion jarg2);
-  public final static native void btSoftBody_scale(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_setPose(long jarg1, btSoftBody jarg1_, boolean jarg2, boolean jarg3);
-  public final static native void btSoftBody_resetLinkRestLengths(long jarg1, btSoftBody jarg1_);
-  public final static native float btSoftBody_getVolume(long jarg1, btSoftBody jarg1_);
-  public final static native int btSoftBody_clusterCount(long jarg1, btSoftBody jarg1_);
-  public final static native Vector3 btSoftBody_clusterCom__SWIG_0(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native Vector3 btSoftBody_clusterCom__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native Vector3 btSoftBody_clusterVelocity(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_clusterVImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_clusterDImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_clusterImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2, long jarg3, btSoftBody.Impulse jarg3_);
-  public final static native void btSoftBody_clusterVAImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_clusterDAImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
-  public final static native void btSoftBody_clusterAImpulse(long jarg1, btSoftBody.Cluster jarg1_, long jarg2, btSoftBody.Impulse jarg2_);
-  public final static native void btSoftBody_clusterDCImpulse(long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
-  public final static native int btSoftBody_generateBendingConstraints__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, long jarg3, btSoftBody.Material jarg3_);
-  public final static native int btSoftBody_generateBendingConstraints__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_randomizeConstraints(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_releaseCluster(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_releaseClusters(long jarg1, btSoftBody jarg1_);
-  public final static native int btSoftBody_generateClusters__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
-  public final static native int btSoftBody_generateClusters__SWIG_1(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_refine(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.ImplicitFn jarg2_, float jarg3, boolean jarg4);
-  public final static native boolean btSoftBody_cutLink__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, float jarg4);
-  public final static native boolean btSoftBody_cutLink__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, float jarg4);
-  public final static native boolean btSoftBody_rayTest__SWIG_0(long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btSoftBody.sRayCast jarg4_);
-  public final static native void btSoftBody_setSolver(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_predictMotion(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_solveConstraints(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_staticSolve(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_solveCommonConstraints(long jarg1, int jarg2, int jarg3);
-  public final static native void btSoftBody_solveClusters__SWIG_0(long jarg1);
-  public final static native void btSoftBody_integrateMotion(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_defaultCollisionHandler__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btCollisionObjectWrapper jarg2_);
-  public final static native void btSoftBody_defaultCollisionHandler__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native void btSoftBody_setWindVelocity(long jarg1, btSoftBody jarg1_, Vector3 jarg2);
-  public final static native long btSoftBody_upcastConstBtCollisionObject(long jarg1, btCollisionObject jarg1_);
-  public final static native long btSoftBody_upcast(long jarg1, btCollisionObject jarg1_);
-  public final static native void btSoftBody_getAabb(long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSoftBody_pointersToIndices(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_indicesToPointers__SWIG_0(long jarg1, btSoftBody jarg1_, java.nio.IntBuffer jarg2);
-  public final static native void btSoftBody_indicesToPointers__SWIG_1(long jarg1, btSoftBody jarg1_);
-  public final static native int btSoftBody_rayTest__SWIG_1(long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, long jarg5, long jarg6, boolean jarg7);
-  public final static native void btSoftBody_initializeFaceTree(long jarg1, btSoftBody jarg1_);
-  public final static native Vector3 btSoftBody_evaluateCom(long jarg1, btSoftBody jarg1_);
-  public final static native boolean btSoftBody_checkContact(long jarg1, btSoftBody jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, Vector3 jarg3, float jarg4, long jarg5, btSoftBody.sCti jarg5_);
-  public final static native void btSoftBody_updateNormals(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updateBounds(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updatePose(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updateConstants(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updateLinkConstants(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updateArea__SWIG_0(long jarg1, btSoftBody jarg1_, boolean jarg2);
-  public final static native void btSoftBody_updateArea__SWIG_1(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_initializeClusters(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_updateClusters(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_cleanupClusters(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_prepareClusters(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_solveClusters__SWIG_1(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_applyClusters(long jarg1, btSoftBody jarg1_, boolean jarg2);
-  public final static native void btSoftBody_dampClusters(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_applyForces(long jarg1, btSoftBody jarg1_);
-  public final static native void btSoftBody_PSolve_Anchors(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
-  public final static native void btSoftBody_PSolve_RContacts(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
-  public final static native void btSoftBody_PSolve_SContacts(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
-  public final static native void btSoftBody_PSolve_Links(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
-  public final static native void btSoftBody_VSolve_Links(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native long btSoftBody_getSolver__SWIG_0(int jarg1);
-  public final static native long new_btSoftBody__SWIG_2(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7, int jarg8, java.nio.ShortBuffer jarg9, int jarg10);
-  public final static native int btSoftBody_getNodeCount(long jarg1, btSoftBody jarg1_);
-  public final static native long btSoftBody_getNode(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native int btSoftBody_getLinkCount(long jarg1, btSoftBody jarg1_);
-  public final static native long btSoftBody_getLink(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_getVertices__SWIG_0(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5);
-  public final static native void btSoftBody_getVertices__SWIG_1(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, java.nio.ShortBuffer jarg5, int jarg6, int jarg7, java.nio.ShortBuffer jarg8, int jarg9);
-  public final static native void btSoftBody_getVertices__SWIG_2(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7, int jarg8, java.nio.ShortBuffer jarg9, int jarg10);
-  public final static native int btSoftBody_getFaceCount(long jarg1, btSoftBody jarg1_);
-  public final static native long btSoftBody_getFace(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_getIndices(long jarg1, btSoftBody jarg1_, java.nio.ShortBuffer jarg2, int jarg3);
-  public final static native void btSoftBody_setConfig_kVCF(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kDP(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kDG(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kLF(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kPR(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kVC(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kDF(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kMT(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kCHR(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kKHR(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSHR(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kAHR(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSRHR_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSKHR_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSSHR_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSR_SPLT_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSK_SPLT_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_kSS_SPLT_CL(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_maxvolume(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_timescale(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_viterations(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_setConfig_piterations(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_setConfig_diterations(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_setConfig_citerations(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_setConfig_collisions(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btTriIndex_PartIdTriangleIndex_set(long jarg1, btTriIndex jarg1_, int jarg2);
-  public final static native int btTriIndex_PartIdTriangleIndex_get(long jarg1, btTriIndex jarg1_);
-  public final static native void btTriIndex_childShape_set(long jarg1, btTriIndex jarg1_, long jarg2, btCollisionShape jarg2_);
-  public final static native long btTriIndex_childShape_get(long jarg1, btTriIndex jarg1_);
-  public final static native long new_btTriIndex(int jarg1, int jarg2, long jarg3, btCollisionShape jarg3_);
-  public final static native int btTriIndex_getTriangleIndex(long jarg1, btTriIndex jarg1_);
-  public final static native int btTriIndex_getPartId(long jarg1, btTriIndex jarg1_);
-  public final static native int btTriIndex_getUid(long jarg1, btTriIndex jarg1_);
-  public final static native void delete_btTriIndex(long jarg1);
-  public final static native void btSoftBodyTriangleCallback_triangleCount_set(long jarg1, btSoftBodyTriangleCallback jarg1_, int jarg2);
-  public final static native int btSoftBodyTriangleCallback_triangleCount_get(long jarg1, btSoftBodyTriangleCallback jarg1_);
-  public final static native long new_btSoftBodyTriangleCallback(long jarg1, btDispatcher jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
-  public final static native void btSoftBodyTriangleCallback_setTimeStepAndCounters(long jarg1, btSoftBodyTriangleCallback jarg1_, float jarg2, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
-  public final static native void delete_btSoftBodyTriangleCallback(long jarg1);
-  public final static native void btSoftBodyTriangleCallback_clearCache(long jarg1, btSoftBodyTriangleCallback jarg1_);
-  public final static native Vector3 btSoftBodyTriangleCallback_getAabbMin(long jarg1, btSoftBodyTriangleCallback jarg1_);
-  public final static native Vector3 btSoftBodyTriangleCallback_getAabbMax(long jarg1, btSoftBodyTriangleCallback jarg1_);
-  public final static native long new_btSoftBodyConcaveCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
-  public final static native void delete_btSoftBodyConcaveCollisionAlgorithm(long jarg1);
-  public final static native void btSoftBodyConcaveCollisionAlgorithm_clearCache(long jarg1, btSoftBodyConcaveCollisionAlgorithm jarg1_);
-  public final static native long new_btSoftBodyConcaveCollisionAlgorithm_CreateFunc();
-  public final static native void delete_btSoftBodyConcaveCollisionAlgorithm_CreateFunc(long jarg1);
-  public final static native long new_btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc();
-  public final static native void delete_btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc(long jarg1);
-  public final static native void SoftBodyMaterialData_linearStiffness_set(long jarg1, SoftBodyMaterialData jarg1_, float jarg2);
-  public final static native float SoftBodyMaterialData_linearStiffness_get(long jarg1, SoftBodyMaterialData jarg1_);
-  public final static native void SoftBodyMaterialData_angularStiffness_set(long jarg1, SoftBodyMaterialData jarg1_, float jarg2);
-  public final static native float SoftBodyMaterialData_angularStiffness_get(long jarg1, SoftBodyMaterialData jarg1_);
-  public final static native void SoftBodyMaterialData_volumeStiffness_set(long jarg1, SoftBodyMaterialData jarg1_, float jarg2);
-  public final static native float SoftBodyMaterialData_volumeStiffness_get(long jarg1, SoftBodyMaterialData jarg1_);
-  public final static native void SoftBodyMaterialData_flags_set(long jarg1, SoftBodyMaterialData jarg1_, int jarg2);
-  public final static native int SoftBodyMaterialData_flags_get(long jarg1, SoftBodyMaterialData jarg1_);
-  public final static native long new_SoftBodyMaterialData();
-  public final static native void delete_SoftBodyMaterialData(long jarg1);
-  public final static native void SoftBodyNodeData_material_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
-  public final static native long SoftBodyNodeData_material_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_position_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyNodeData_position_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_previousPosition_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyNodeData_previousPosition_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_velocity_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyNodeData_velocity_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_accumulatedForce_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyNodeData_accumulatedForce_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_normal_set(long jarg1, SoftBodyNodeData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyNodeData_normal_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_inverseMass_set(long jarg1, SoftBodyNodeData jarg1_, float jarg2);
-  public final static native float SoftBodyNodeData_inverseMass_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_area_set(long jarg1, SoftBodyNodeData jarg1_, float jarg2);
-  public final static native float SoftBodyNodeData_area_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_attach_set(long jarg1, SoftBodyNodeData jarg1_, int jarg2);
-  public final static native int SoftBodyNodeData_attach_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native void SoftBodyNodeData_pad_set(long jarg1, SoftBodyNodeData jarg1_, int jarg2);
-  public final static native int SoftBodyNodeData_pad_get(long jarg1, SoftBodyNodeData jarg1_);
-  public final static native long new_SoftBodyNodeData();
-  public final static native void delete_SoftBodyNodeData(long jarg1);
-  public final static native void SoftBodyLinkData_material_set(long jarg1, SoftBodyLinkData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
-  public final static native long SoftBodyLinkData_material_get(long jarg1, SoftBodyLinkData jarg1_);
-  public final static native void SoftBodyLinkData_nodeIndices_set(long jarg1, SoftBodyLinkData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyLinkData_nodeIndices_get(long jarg1, SoftBodyLinkData jarg1_);
-  public final static native void SoftBodyLinkData_restLength_set(long jarg1, SoftBodyLinkData jarg1_, float jarg2);
-  public final static native float SoftBodyLinkData_restLength_get(long jarg1, SoftBodyLinkData jarg1_);
-  public final static native void SoftBodyLinkData_bbending_set(long jarg1, SoftBodyLinkData jarg1_, int jarg2);
-  public final static native int SoftBodyLinkData_bbending_get(long jarg1, SoftBodyLinkData jarg1_);
-  public final static native long new_SoftBodyLinkData();
-  public final static native void delete_SoftBodyLinkData(long jarg1);
-  public final static native void SoftBodyFaceData_normal_set(long jarg1, SoftBodyFaceData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyFaceData_normal_get(long jarg1, SoftBodyFaceData jarg1_);
-  public final static native void SoftBodyFaceData_material_set(long jarg1, SoftBodyFaceData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
-  public final static native long SoftBodyFaceData_material_get(long jarg1, SoftBodyFaceData jarg1_);
-  public final static native void SoftBodyFaceData_nodeIndices_set(long jarg1, SoftBodyFaceData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyFaceData_nodeIndices_get(long jarg1, SoftBodyFaceData jarg1_);
-  public final static native void SoftBodyFaceData_restArea_set(long jarg1, SoftBodyFaceData jarg1_, float jarg2);
-  public final static native float SoftBodyFaceData_restArea_get(long jarg1, SoftBodyFaceData jarg1_);
-  public final static native long new_SoftBodyFaceData();
-  public final static native void delete_SoftBodyFaceData(long jarg1);
-  public final static native void SoftBodyTetraData_c0_set(long jarg1, SoftBodyTetraData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyTetraData_c0_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_material_set(long jarg1, SoftBodyTetraData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
-  public final static native long SoftBodyTetraData_material_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_nodeIndices_set(long jarg1, SoftBodyTetraData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyTetraData_nodeIndices_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_restVolume_set(long jarg1, SoftBodyTetraData jarg1_, float jarg2);
-  public final static native float SoftBodyTetraData_restVolume_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_c1_set(long jarg1, SoftBodyTetraData jarg1_, float jarg2);
-  public final static native float SoftBodyTetraData_c1_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_c2_set(long jarg1, SoftBodyTetraData jarg1_, float jarg2);
-  public final static native float SoftBodyTetraData_c2_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_pad_set(long jarg1, SoftBodyTetraData jarg1_, int jarg2);
-  public final static native int SoftBodyTetraData_pad_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native long new_SoftBodyTetraData();
-  public final static native void delete_SoftBodyTetraData(long jarg1);
-  public final static native void SoftRigidAnchorData_c0_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftRigidAnchorData_c0_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_c1_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftRigidAnchorData_c1_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_localFrame_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftRigidAnchorData_localFrame_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_rigidBody_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
-  public final static native long SoftRigidAnchorData_rigidBody_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_nodeIndex_set(long jarg1, SoftRigidAnchorData jarg1_, int jarg2);
-  public final static native int SoftRigidAnchorData_nodeIndex_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_c2_set(long jarg1, SoftRigidAnchorData jarg1_, float jarg2);
-  public final static native float SoftRigidAnchorData_c2_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native long new_SoftRigidAnchorData();
-  public final static native void delete_SoftRigidAnchorData(long jarg1);
-  public final static native void SoftBodyConfigData_aeroModel_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_aeroModel_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_baumgarte_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_baumgarte_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_damping_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_damping_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_drag_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_drag_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_lift_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_lift_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_pressure_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_pressure_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_volume_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_volume_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_dynamicFriction_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_dynamicFriction_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_poseMatch_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_poseMatch_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_rigidContactHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_rigidContactHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_kineticContactHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_kineticContactHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softContactHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softContactHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_anchorHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_anchorHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softRigidClusterHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softRigidClusterHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softKineticClusterHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softKineticClusterHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softSoftClusterHardness_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softSoftClusterHardness_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softRigidClusterImpulseSplit_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softRigidClusterImpulseSplit_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softKineticClusterImpulseSplit_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softKineticClusterImpulseSplit_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_softSoftClusterImpulseSplit_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_softSoftClusterImpulseSplit_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_maxVolume_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_maxVolume_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_timeScale_set(long jarg1, SoftBodyConfigData jarg1_, float jarg2);
-  public final static native float SoftBodyConfigData_timeScale_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_velocityIterations_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_velocityIterations_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_positionIterations_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_positionIterations_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_driftIterations_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_driftIterations_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_clusterIterations_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_clusterIterations_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native void SoftBodyConfigData_collisionFlags_set(long jarg1, SoftBodyConfigData jarg1_, int jarg2);
-  public final static native int SoftBodyConfigData_collisionFlags_get(long jarg1, SoftBodyConfigData jarg1_);
-  public final static native long new_SoftBodyConfigData();
-  public final static native void delete_SoftBodyConfigData(long jarg1);
-  public final static native void SoftBodyPoseData_rot_set(long jarg1, SoftBodyPoseData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftBodyPoseData_rot_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_scale_set(long jarg1, SoftBodyPoseData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftBodyPoseData_scale_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_aqq_set(long jarg1, SoftBodyPoseData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftBodyPoseData_aqq_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_com_set(long jarg1, SoftBodyPoseData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyPoseData_com_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_positions_set(long jarg1, SoftBodyPoseData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyPoseData_positions_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_weights_set(long jarg1, SoftBodyPoseData jarg1_, java.nio.FloatBuffer jarg2);
-  public final static native java.nio.FloatBuffer SoftBodyPoseData_weights_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_numPositions_set(long jarg1, SoftBodyPoseData jarg1_, int jarg2);
-  public final static native int SoftBodyPoseData_numPositions_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_numWeigts_set(long jarg1, SoftBodyPoseData jarg1_, int jarg2);
-  public final static native int SoftBodyPoseData_numWeigts_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_bvolume_set(long jarg1, SoftBodyPoseData jarg1_, int jarg2);
-  public final static native int SoftBodyPoseData_bvolume_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_bframe_set(long jarg1, SoftBodyPoseData jarg1_, int jarg2);
-  public final static native int SoftBodyPoseData_bframe_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_restVolume_set(long jarg1, SoftBodyPoseData jarg1_, float jarg2);
-  public final static native float SoftBodyPoseData_restVolume_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native void SoftBodyPoseData_pad_set(long jarg1, SoftBodyPoseData jarg1_, int jarg2);
-  public final static native int SoftBodyPoseData_pad_get(long jarg1, SoftBodyPoseData jarg1_);
-  public final static native long new_SoftBodyPoseData();
-  public final static native void delete_SoftBodyPoseData(long jarg1);
-  public final static native void SoftBodyClusterData_framexform_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long SoftBodyClusterData_framexform_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_locii_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_locii_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_invwi_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_invwi_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_com_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_com_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_vimpulses_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_vimpulses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_dimpulses_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_dimpulses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_lv_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_lv_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_av_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_av_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_framerefs_set(long jarg1, SoftBodyClusterData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long SoftBodyClusterData_framerefs_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_nodeIndices_set(long jarg1, SoftBodyClusterData jarg1_, java.nio.IntBuffer jarg2);
-  public final static native java.nio.IntBuffer SoftBodyClusterData_nodeIndices_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_masses_set(long jarg1, SoftBodyClusterData jarg1_, java.nio.FloatBuffer jarg2);
-  public final static native java.nio.FloatBuffer SoftBodyClusterData_masses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_numFrameRefs_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_numFrameRefs_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_numNodes_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_numNodes_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_numMasses_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_numMasses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_idmass_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_idmass_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_imass_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_imass_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_nvimpulses_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_nvimpulses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_ndimpulses_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_ndimpulses_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_ndamping_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_ndamping_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_ldamping_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_ldamping_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_adamping_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_adamping_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_matching_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_matching_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_maxSelfCollisionImpulse_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_maxSelfCollisionImpulse_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_selfCollisionImpulseFactor_set(long jarg1, SoftBodyClusterData jarg1_, float jarg2);
-  public final static native float SoftBodyClusterData_selfCollisionImpulseFactor_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_containsAnchor_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_containsAnchor_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_collide_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_collide_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native void SoftBodyClusterData_clusterIndex_set(long jarg1, SoftBodyClusterData jarg1_, int jarg2);
-  public final static native int SoftBodyClusterData_clusterIndex_get(long jarg1, SoftBodyClusterData jarg1_);
-  public final static native long new_SoftBodyClusterData();
-  public final static native void delete_SoftBodyClusterData(long jarg1);
-  public final static native void btSoftBodyJointData_bodyA_set(long jarg1, btSoftBodyJointData jarg1_, long jarg2);
-  public final static native long btSoftBodyJointData_bodyA_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_bodyB_set(long jarg1, btSoftBodyJointData jarg1_, long jarg2);
-  public final static native long btSoftBodyJointData_bodyB_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_refs_set(long jarg1, btSoftBodyJointData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btSoftBodyJointData_refs_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_cfm_set(long jarg1, btSoftBodyJointData jarg1_, float jarg2);
-  public final static native float btSoftBodyJointData_cfm_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_erp_set(long jarg1, btSoftBodyJointData jarg1_, float jarg2);
-  public final static native float btSoftBodyJointData_erp_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_split_set(long jarg1, btSoftBodyJointData jarg1_, float jarg2);
-  public final static native float btSoftBodyJointData_split_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_delete_set(long jarg1, btSoftBodyJointData jarg1_, int jarg2);
-  public final static native int btSoftBodyJointData_delete_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_relPosition_set(long jarg1, btSoftBodyJointData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btSoftBodyJointData_relPosition_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_bodyAtype_set(long jarg1, btSoftBodyJointData jarg1_, int jarg2);
-  public final static native int btSoftBodyJointData_bodyAtype_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_bodyBtype_set(long jarg1, btSoftBodyJointData jarg1_, int jarg2);
-  public final static native int btSoftBodyJointData_bodyBtype_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_jointType_set(long jarg1, btSoftBodyJointData jarg1_, int jarg2);
-  public final static native int btSoftBodyJointData_jointType_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native void btSoftBodyJointData_pad_set(long jarg1, btSoftBodyJointData jarg1_, int jarg2);
-  public final static native int btSoftBodyJointData_pad_get(long jarg1, btSoftBodyJointData jarg1_);
-  public final static native long new_btSoftBodyJointData();
-  public final static native void delete_btSoftBodyJointData(long jarg1);
-  public final static native void btSoftBodyFloatData_collisionObjectData_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, btCollisionObjectFloatData jarg2_);
-  public final static native long btSoftBodyFloatData_collisionObjectData_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_pose_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyPoseData jarg2_);
-  public final static native long btSoftBodyFloatData_pose_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_materials_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2);
-  public final static native long btSoftBodyFloatData_materials_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_nodes_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyNodeData jarg2_);
-  public final static native long btSoftBodyFloatData_nodes_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_links_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyLinkData jarg2_);
-  public final static native long btSoftBodyFloatData_links_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_faces_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyFaceData jarg2_);
-  public final static native long btSoftBodyFloatData_faces_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_tetrahedra_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyTetraData jarg2_);
-  public final static native long btSoftBodyFloatData_tetrahedra_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_anchors_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftRigidAnchorData jarg2_);
-  public final static native long btSoftBodyFloatData_anchors_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_clusters_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyClusterData jarg2_);
-  public final static native long btSoftBodyFloatData_clusters_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_joints_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, btSoftBodyJointData jarg2_);
-  public final static native long btSoftBodyFloatData_joints_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numMaterials_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numMaterials_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numNodes_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numNodes_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numLinks_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numLinks_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numFaces_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numFaces_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numTetrahedra_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numTetrahedra_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numAnchors_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numAnchors_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numClusters_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numClusters_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_numJoints_set(long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
-  public final static native int btSoftBodyFloatData_numJoints_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native void btSoftBodyFloatData_config_set(long jarg1, btSoftBodyFloatData jarg1_, long jarg2, SoftBodyConfigData jarg2_);
-  public final static native long btSoftBodyFloatData_config_get(long jarg1, btSoftBodyFloatData jarg1_);
-  public final static native long new_btSoftBodyFloatData();
-  public final static native void delete_btSoftBodyFloatData(long jarg1);
-  public final static native long new_fDrawFlags();
-  public final static native void delete_fDrawFlags(long jarg1);
-  public final static native void btSoftBodyHelpers_Draw__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3);
-  public final static native void btSoftBodyHelpers_Draw__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void btSoftBodyHelpers_DrawInfos(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, boolean jarg3, boolean jarg4, boolean jarg5);
-  public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3, int jarg4);
-  public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3);
-  public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_2(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3, int jarg4);
-  public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3);
-  public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_2(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_0(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3, int jarg4);
-  public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_, int jarg3);
-  public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_2(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void btSoftBodyHelpers_DrawFrame(long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native long btSoftBodyHelpers_CreateRope(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, Vector3 jarg3, int jarg4, int jarg5);
-  public final static native long btSoftBodyHelpers_CreatePatch(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9);
-  public final static native long btSoftBodyHelpers_CreatePatchUV__SWIG_0(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9, java.nio.FloatBuffer jarg10);
-  public final static native long btSoftBodyHelpers_CreatePatchUV__SWIG_1(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9);
-  public final static native float btSoftBodyHelpers_CalculateUV(int jarg1, int jarg2, int jarg3, int jarg4, int jarg5);
-  public final static native long btSoftBodyHelpers_CreateEllipsoid(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, Vector3 jarg3, int jarg4);
-  public final static native long btSoftBodyHelpers_CreateFromTriMesh__SWIG_0(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, java.nio.IntBuffer jarg3, int jarg4, boolean jarg5);
-  public final static native long btSoftBodyHelpers_CreateFromTriMesh__SWIG_1(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, java.nio.IntBuffer jarg3, int jarg4);
-  public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_0(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_, int jarg3, boolean jarg4);
-  public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_1(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_, int jarg3);
-  public final static native long btSoftBodyHelpers_CreateFromTetGenData(long jarg1, btSoftBodyWorldInfo jarg1_, String jarg2, String jarg3, String jarg4, boolean jarg5, boolean jarg6, boolean jarg7);
-  public final static native void btSoftBodyHelpers_ReoptimizeLinkOrder(long jarg1, btSoftBody jarg1_);
-  public final static native long new_btSoftBodyHelpers();
-  public final static native void delete_btSoftBodyHelpers(long jarg1);
-  public final static native void btSoftBodyCollisionShape_body_set(long jarg1, btSoftBodyCollisionShape jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native long btSoftBodyCollisionShape_body_get(long jarg1, btSoftBodyCollisionShape jarg1_);
-  public final static native long new_btSoftBodyCollisionShape(long jarg1, btSoftBody jarg1_);
-  public final static native void delete_btSoftBodyCollisionShape(long jarg1);
-  public final static native void btSoftClusterCollisionShape_cluster_set(long jarg1, btSoftClusterCollisionShape jarg1_, long jarg2, btSoftBody.Cluster jarg2_);
-  public final static native long btSoftClusterCollisionShape_cluster_get(long jarg1, btSoftClusterCollisionShape jarg1_);
-  public final static native long new_btSoftClusterCollisionShape(long jarg1, btSoftBody.Cluster jarg1_);
-  public final static native int btSoftClusterCollisionShape_getShapeType(long jarg1, btSoftClusterCollisionShape jarg1_);
-  public final static native void delete_btSoftClusterCollisionShape(long jarg1);
-  public final static native Matrix3 Lerp(Matrix3 jarg1, Matrix3 jarg2, float jarg3);
-  public final static native Vector3 Clamp(Vector3 jarg1, float jarg2);
-  public final static native float ClusterMetric(Vector3 jarg1, Vector3 jarg2);
-  public final static native Matrix3 ScaleAlongAxis(Vector3 jarg1, float jarg2);
-  public final static native Matrix3 Cross(Vector3 jarg1);
-  public final static native Matrix3 Diagonal(float jarg1);
-  public final static native Matrix3 Add(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native Matrix3 Sub(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native Matrix3 Mul(Matrix3 jarg1, float jarg2);
-  public final static native void Orthogonalize(Matrix3 jarg1);
-  public final static native Matrix3 MassMatrix(float jarg1, Matrix3 jarg2, Vector3 jarg3);
-  public final static native Matrix3 ImpulseMatrix__SWIG_0(float jarg1, float jarg2, float jarg3, Matrix3 jarg4, Vector3 jarg5);
-  public final static native Matrix3 ImpulseMatrix__SWIG_1(float jarg1, Matrix3 jarg2, Vector3 jarg3, float jarg4, Matrix3 jarg5, Vector3 jarg6);
-  public final static native Matrix3 AngularImpulseMatrix(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native Vector3 ProjectOnAxis(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 ProjectOnPlane(Vector3 jarg1, Vector3 jarg2);
-  public final static native void ProjectOrigin__SWIG_0(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, long jarg4);
-  public final static native void ProjectOrigin__SWIG_1(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5);
-  public final static native Vector3 BaryCoord(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native float ImplicitSolve__SWIG_0(long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5);
-  public final static native float ImplicitSolve__SWIG_1(long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native void EvaluateMedium(long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, long jarg3, btSoftBody.sMedium jarg3_);
-  public final static native Vector3 NormalizeAny(Vector3 jarg1);
-  public final static native long VolumeOf__SWIG_0(long jarg1, btSoftBody.Face jarg1_, float jarg2);
-  public final static native Vector3 CenterOf(long jarg1, btSoftBody.Face jarg1_);
-  public final static native float AreaOf(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
-  public final static native float VolumeOf__SWIG_1(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void ApplyClampedForce(long jarg1, btSoftBody.Node jarg1_, Vector3 jarg2, float jarg3);
-  public final static native int MatchEdge(long jarg1, btSoftBody.Node jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, long jarg4, btSoftBody.Node jarg4_);
-  public final static native int btEigen_system__SWIG_0(Matrix3 jarg1, long jarg2, btMatrix3x3 jarg2_, long jarg3, btVector3 jarg3_);
-  public final static native int btEigen_system__SWIG_1(Matrix3 jarg1, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long new_btEigen();
-  public final static native void delete_btEigen(long jarg1);
-  public final static native int PolarDecompose(Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
-  public final static native void btSoftColliders_ClusterBase_erp_set(long jarg1, btSoftColliders.ClusterBase jarg1_, float jarg2);
-  public final static native float btSoftColliders_ClusterBase_erp_get(long jarg1, btSoftColliders.ClusterBase jarg1_);
-  public final static native void btSoftColliders_ClusterBase_idt_set(long jarg1, btSoftColliders.ClusterBase jarg1_, float jarg2);
-  public final static native float btSoftColliders_ClusterBase_idt_get(long jarg1, btSoftColliders.ClusterBase jarg1_);
-  public final static native void btSoftColliders_ClusterBase_margin_set(long jarg1, btSoftColliders.ClusterBase jarg1_, float jarg2);
-  public final static native float btSoftColliders_ClusterBase_margin_get(long jarg1, btSoftColliders.ClusterBase jarg1_);
-  public final static native void btSoftColliders_ClusterBase_friction_set(long jarg1, btSoftColliders.ClusterBase jarg1_, float jarg2);
-  public final static native float btSoftColliders_ClusterBase_friction_get(long jarg1, btSoftColliders.ClusterBase jarg1_);
-  public final static native void btSoftColliders_ClusterBase_threshold_set(long jarg1, btSoftColliders.ClusterBase jarg1_, float jarg2);
-  public final static native float btSoftColliders_ClusterBase_threshold_get(long jarg1, btSoftColliders.ClusterBase jarg1_);
-  public final static native long new_btSoftColliders_ClusterBase();
-  public final static native boolean btSoftColliders_ClusterBase_SolveContact(long jarg1, btSoftColliders.ClusterBase jarg1_, long jarg2, btGjkEpaSolver2.sResults jarg2_, long jarg3, btSoftBody.Body jarg3_, long jarg4, btSoftBody.Body jarg4_, long jarg5, btSoftBody.CJoint jarg5_);
-  public final static native void delete_btSoftColliders_ClusterBase(long jarg1);
-  public final static native void btSoftColliders_CollideCL_RS_psb_set(long jarg1, btSoftColliders.CollideCL_RS jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native long btSoftColliders_CollideCL_RS_psb_get(long jarg1, btSoftColliders.CollideCL_RS jarg1_);
-  public final static native void btSoftColliders_CollideCL_RS_colObjWrap_set(long jarg1, btSoftColliders.CollideCL_RS jarg1_, long jarg2, btCollisionObjectWrapper jarg2_);
-  public final static native long btSoftColliders_CollideCL_RS_colObjWrap_get(long jarg1, btSoftColliders.CollideCL_RS jarg1_);
-  public final static native void btSoftColliders_CollideCL_RS_ProcessColObj(long jarg1, btSoftColliders.CollideCL_RS jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
-  public final static native long new_btSoftColliders_CollideCL_RS();
-  public final static native void delete_btSoftColliders_CollideCL_RS(long jarg1);
-  public final static native void btSoftColliders_CollideCL_SS_bodies_set(long jarg1, btSoftColliders.CollideCL_SS jarg1_, long jarg2);
-  public final static native long btSoftColliders_CollideCL_SS_bodies_get(long jarg1, btSoftColliders.CollideCL_SS jarg1_);
-  public final static native void btSoftColliders_CollideCL_SS_ProcessSoftSoft(long jarg1, btSoftColliders.CollideCL_SS jarg1_, long jarg2, btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
-  public final static native long new_btSoftColliders_CollideCL_SS();
-  public final static native void delete_btSoftColliders_CollideCL_SS(long jarg1);
-  public final static native void btSoftColliders_CollideSDF_RS_DoNode(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, long jarg2, btSoftBody.Node jarg2_);
-  public final static native void btSoftColliders_CollideSDF_RS_psb_set(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native long btSoftColliders_CollideSDF_RS_psb_get(long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
-  public final static native void btSoftColliders_CollideSDF_RS_colObj1Wrap_set(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, long jarg2, btCollisionObjectWrapper jarg2_);
-  public final static native long btSoftColliders_CollideSDF_RS_colObj1Wrap_get(long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
-  public final static native void btSoftColliders_CollideSDF_RS_rigidBody_set(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native long btSoftColliders_CollideSDF_RS_rigidBody_get(long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
-  public final static native void btSoftColliders_CollideSDF_RS_dynmargin_set(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, float jarg2);
-  public final static native float btSoftColliders_CollideSDF_RS_dynmargin_get(long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
-  public final static native void btSoftColliders_CollideSDF_RS_stamargin_set(long jarg1, btSoftColliders.CollideSDF_RS jarg1_, float jarg2);
-  public final static native float btSoftColliders_CollideSDF_RS_stamargin_get(long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
-  public final static native long new_btSoftColliders_CollideSDF_RS();
-  public final static native void delete_btSoftColliders_CollideSDF_RS(long jarg1);
-  public final static native void btSoftColliders_CollideVF_SS_psb_set(long jarg1, btSoftColliders.CollideVF_SS jarg1_, long jarg2);
-  public final static native long btSoftColliders_CollideVF_SS_psb_get(long jarg1, btSoftColliders.CollideVF_SS jarg1_);
-  public final static native void btSoftColliders_CollideVF_SS_mrg_set(long jarg1, btSoftColliders.CollideVF_SS jarg1_, float jarg2);
-  public final static native float btSoftColliders_CollideVF_SS_mrg_get(long jarg1, btSoftColliders.CollideVF_SS jarg1_);
-  public final static native long new_btSoftColliders_CollideVF_SS();
-  public final static native void delete_btSoftColliders_CollideVF_SS(long jarg1);
-  public final static native long new_btSoftColliders();
-  public final static native void delete_btSoftColliders(long jarg1);
-  public final static native long new_btSoftBodyRigidBodyCollisionConfiguration__SWIG_0(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
-  public final static native long new_btSoftBodyRigidBodyCollisionConfiguration__SWIG_1();
-  public final static native void delete_btSoftBodyRigidBodyCollisionConfiguration(long jarg1);
-  public final static native void delete_btVertexBufferDescriptor(long jarg1);
-  public final static native boolean btVertexBufferDescriptor_hasVertexPositions(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native boolean btVertexBufferDescriptor_hasNormals(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native int btVertexBufferDescriptor_getBufferType(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native int btVertexBufferDescriptor_getVertexOffset(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native int btVertexBufferDescriptor_getVertexStride(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native int btVertexBufferDescriptor_getNormalOffset(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native int btVertexBufferDescriptor_getNormalStride(long jarg1, btVertexBufferDescriptor jarg1_);
-  public final static native long new_btCPUVertexBufferDescriptor__SWIG_0(java.nio.FloatBuffer jarg1, int jarg2, int jarg3);
-  public final static native long new_btCPUVertexBufferDescriptor__SWIG_1(java.nio.FloatBuffer jarg1, int jarg2, int jarg3, int jarg4, int jarg5);
-  public final static native void delete_btCPUVertexBufferDescriptor(long jarg1);
-  public final static native java.nio.FloatBuffer btCPUVertexBufferDescriptor_getBasePointer(long jarg1, btCPUVertexBufferDescriptor jarg1_);
-  public final static native long new_btSoftRigidCollisionAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, boolean jarg5);
-  public final static native void delete_btSoftRigidCollisionAlgorithm(long jarg1);
-  public final static native long new_btSoftRigidCollisionAlgorithm_CreateFunc();
-  public final static native void delete_btSoftRigidCollisionAlgorithm_CreateFunc(long jarg1);
-  public final static native long new_btSoftRigidDynamicsWorld__SWIG_0(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_, long jarg5, btSoftBodySolver jarg5_);
-  public final static native long new_btSoftRigidDynamicsWorld__SWIG_1(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btSoftRigidDynamicsWorld(long jarg1);
-  public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_0(long jarg1, btSoftRigidDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3, int jarg4);
-  public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_1(long jarg1, btSoftRigidDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3);
-  public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_2(long jarg1, btSoftRigidDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native void btSoftRigidDynamicsWorld_removeSoftBody(long jarg1, btSoftRigidDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native int btSoftRigidDynamicsWorld_getDrawFlags(long jarg1, btSoftRigidDynamicsWorld jarg1_);
-  public final static native void btSoftRigidDynamicsWorld_setDrawFlags(long jarg1, btSoftRigidDynamicsWorld jarg1_, int jarg2);
-  public final static native long btSoftRigidDynamicsWorld_getWorldInfo(long jarg1, btSoftRigidDynamicsWorld jarg1_);
-  public final static native long btSoftRigidDynamicsWorld_getWorldInfoConst(long jarg1, btSoftRigidDynamicsWorld jarg1_);
-  public final static native long btSoftRigidDynamicsWorld_getSoftBodyArray(long jarg1, btSoftRigidDynamicsWorld jarg1_);
-  public final static native long btSoftRigidDynamicsWorld_getSoftBodyArrayConst(long jarg1, btSoftRigidDynamicsWorld jarg1_);
-  public final static native void btSoftRigidDynamicsWorld_rayTestSingle(Matrix4 jarg1, Matrix4 jarg2, long jarg3, btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, Matrix4 jarg5, long jarg6, RayResultCallback jarg6_);
-  public final static native long new_btSoftSoftCollisionAlgorithm__SWIG_0(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_);
-  public final static native long new_btSoftSoftCollisionAlgorithm__SWIG_1(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_);
-  public final static native void delete_btSoftSoftCollisionAlgorithm(long jarg1);
-  public final static native long new_btSoftSoftCollisionAlgorithm_CreateFunc();
-  public final static native void delete_btSoftSoftCollisionAlgorithm_CreateFunc(long jarg1);
-  public final static native long new_btSoftMultiBodyDynamicsWorld__SWIG_0(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_, long jarg5, btSoftBodySolver jarg5_);
-  public final static native long new_btSoftMultiBodyDynamicsWorld__SWIG_1(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btSoftMultiBodyDynamicsWorld(long jarg1);
-  public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_0(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3, int jarg4);
-  public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_1(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3);
-  public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_2(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native void btSoftMultiBodyDynamicsWorld_removeSoftBody(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_);
-  public final static native int btSoftMultiBodyDynamicsWorld_getDrawFlags(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
-  public final static native void btSoftMultiBodyDynamicsWorld_setDrawFlags(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_, int jarg2);
-  public final static native long btSoftMultiBodyDynamicsWorld_getWorldInfo(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
-  public final static native long btSoftMultiBodyDynamicsWorld_getWorldInfoConst(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
-  public final static native long btSoftMultiBodyDynamicsWorld_getSoftBodyArray(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
-  public final static native long btSoftMultiBodyDynamicsWorld_getSoftBodyArrayConst(long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
-  public final static native void btSoftMultiBodyDynamicsWorld_rayTestSingle(Matrix4 jarg1, Matrix4 jarg2, long jarg3, btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, Matrix4 jarg5, long jarg6, RayResultCallback jarg6_);
-  public final static native long btDefaultSoftBodySolver_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Material_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Feature_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Node_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Link_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Face_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Tetra_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_Note_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_LJoint_Specs_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_LJoint_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_AJoint_Specs_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_AJoint_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_CJoint_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_RayFromToCaster_SWIGUpcast(long jarg1);
-  public final static native long btSoftBody_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyTriangleCallback_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyConcaveCollisionAlgorithm_CreateFunc_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyConcaveCollisionAlgorithm_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyCollisionShape_SWIGUpcast(long jarg1);
-  public final static native long btSoftClusterCollisionShape_SWIGUpcast(long jarg1);
-  public final static native long btSoftColliders_ClusterBase_SWIGUpcast(long jarg1);
-  public final static native long btSoftColliders_CollideCL_RS_SWIGUpcast(long jarg1);
-  public final static native long btSoftColliders_CollideCL_SS_SWIGUpcast(long jarg1);
-  public final static native long btSoftColliders_CollideSDF_RS_SWIGUpcast(long jarg1);
-  public final static native long btSoftColliders_CollideVF_SS_SWIGUpcast(long jarg1);
-  public final static native long btSoftBodyRigidBodyCollisionConfiguration_SWIGUpcast(long jarg1);
-  public final static native long btCPUVertexBufferDescriptor_SWIGUpcast(long jarg1);
-  public final static native long btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast(long jarg1);
-  public final static native long btSoftRigidCollisionAlgorithm_SWIGUpcast(long jarg1);
-  public final static native long btSoftRigidDynamicsWorld_SWIGUpcast(long jarg1);
-  public final static native long btSoftSoftCollisionAlgorithm_CreateFunc_SWIGUpcast(long jarg1);
-  public final static native long btSoftSoftCollisionAlgorithm_SWIGUpcast(long jarg1);
-  public final static native long btSoftMultiBodyDynamicsWorld_SWIGUpcast(long jarg1);
+	public final static native void delete_btSoftBodySolver (long jarg1);
+
+	public final static native int btSoftBodySolver_getSolverType (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native boolean btSoftBodySolver_checkInitialized (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native void btSoftBodySolver_optimize__SWIG_0 (long jarg1, btSoftBodySolver jarg1_, long jarg2,
+		boolean jarg3);
+
+	public final static native void btSoftBodySolver_optimize__SWIG_1 (long jarg1, btSoftBodySolver jarg1_, long jarg2);
+
+	public final static native void btSoftBodySolver_copyBackToSoftBodies__SWIG_0 (long jarg1, btSoftBodySolver jarg1_,
+		boolean jarg2);
+
+	public final static native void btSoftBodySolver_copyBackToSoftBodies__SWIG_1 (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native void btSoftBodySolver_predictMotion (long jarg1, btSoftBodySolver jarg1_, float jarg2);
+
+	public final static native void btSoftBodySolver_solveConstraints (long jarg1, btSoftBodySolver jarg1_, float jarg2);
+
+	public final static native void btSoftBodySolver_updateSoftBodies (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native void btSoftBodySolver_processCollision__SWIG_0 (long jarg1, btSoftBodySolver jarg1_, long jarg2,
+		btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
+
+	public final static native void btSoftBodySolver_processCollision__SWIG_1 (long jarg1, btSoftBodySolver jarg1_, long jarg2,
+		btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
+
+	public final static native void btSoftBodySolver_setNumberOfPositionIterations (long jarg1, btSoftBodySolver jarg1_,
+		int jarg2);
+
+	public final static native int btSoftBodySolver_getNumberOfPositionIterations (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native void btSoftBodySolver_setNumberOfVelocityIterations (long jarg1, btSoftBodySolver jarg1_,
+		int jarg2);
+
+	public final static native int btSoftBodySolver_getNumberOfVelocityIterations (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native float btSoftBodySolver_getTimeScale (long jarg1, btSoftBodySolver jarg1_);
+
+	public final static native void delete_btSoftBodySolverOutput (long jarg1);
+
+	public final static native void btSoftBodySolverOutput_copySoftBodyToVertexBuffer (long jarg1, btSoftBodySolverOutput jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btVertexBufferDescriptor jarg3_);
+
+	public final static native long new_btDefaultSoftBodySolver ();
+
+	public final static native void delete_btDefaultSoftBodySolver (long jarg1);
+
+	public final static native void btDefaultSoftBodySolver_optimize__SWIG_0 (long jarg1, btDefaultSoftBodySolver jarg1_,
+		long jarg2, boolean jarg3);
+
+	public final static native void btDefaultSoftBodySolver_optimize__SWIG_1 (long jarg1, btDefaultSoftBodySolver jarg1_,
+		long jarg2);
+
+	public final static native void btDefaultSoftBodySolver_copyBackToSoftBodies__SWIG_0 (long jarg1,
+		btDefaultSoftBodySolver jarg1_, boolean jarg2);
+
+	public final static native void btDefaultSoftBodySolver_copyBackToSoftBodies__SWIG_1 (long jarg1,
+		btDefaultSoftBodySolver jarg1_);
+
+	public final static native void btDefaultSoftBodySolver_copySoftBodyToVertexBuffer (long jarg1, btDefaultSoftBodySolver jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btVertexBufferDescriptor jarg3_);
+
+	public final static native void btDefaultSoftBodySolver_processCollision__SWIG_0 (long jarg1, btDefaultSoftBodySolver jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
+
+	public final static native void btDefaultSoftBodySolver_processCollision__SWIG_1 (long jarg1, btDefaultSoftBodySolver jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
+
+	public final static native void btSparseSdf3_IntFrac_b_set (long jarg1, btSparseSdf3.IntFrac jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_IntFrac_b_get (long jarg1, btSparseSdf3.IntFrac jarg1_);
+
+	public final static native void btSparseSdf3_IntFrac_i_set (long jarg1, btSparseSdf3.IntFrac jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_IntFrac_i_get (long jarg1, btSparseSdf3.IntFrac jarg1_);
+
+	public final static native void btSparseSdf3_IntFrac_f_set (long jarg1, btSparseSdf3.IntFrac jarg1_, float jarg2);
+
+	public final static native float btSparseSdf3_IntFrac_f_get (long jarg1, btSparseSdf3.IntFrac jarg1_);
+
+	public final static native long new_btSparseSdf3_IntFrac ();
+
+	public final static native void delete_btSparseSdf3_IntFrac (long jarg1);
+
+	public final static native void btSparseSdf3_Cell_d_set (long jarg1, btSparseSdf3.Cell jarg1_, long jarg2);
+
+	public final static native long btSparseSdf3_Cell_d_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native void btSparseSdf3_Cell_c_set (long jarg1, btSparseSdf3.Cell jarg1_, int[] jarg2);
+
+	public final static native int[] btSparseSdf3_Cell_c_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native void btSparseSdf3_Cell_puid_set (long jarg1, btSparseSdf3.Cell jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_Cell_puid_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native void btSparseSdf3_Cell_hash_set (long jarg1, btSparseSdf3.Cell jarg1_, long jarg2);
+
+	public final static native long btSparseSdf3_Cell_hash_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native void btSparseSdf3_Cell_pclient_set (long jarg1, btSparseSdf3.Cell jarg1_, long jarg2,
+		btCollisionShape jarg2_);
+
+	public final static native long btSparseSdf3_Cell_pclient_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native void btSparseSdf3_Cell_next_set (long jarg1, btSparseSdf3.Cell jarg1_, long jarg2,
+		btSparseSdf3.Cell jarg2_);
+
+	public final static native long btSparseSdf3_Cell_next_get (long jarg1, btSparseSdf3.Cell jarg1_);
+
+	public final static native long new_btSparseSdf3_Cell ();
+
+	public final static native void delete_btSparseSdf3_Cell (long jarg1);
+
+	public final static native void btSparseSdf3_cells_set (long jarg1, btSparseSdf3 jarg1_, long jarg2);
+
+	public final static native long btSparseSdf3_cells_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_voxelsz_set (long jarg1, btSparseSdf3 jarg1_, float jarg2);
+
+	public final static native float btSparseSdf3_voxelsz_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_puid_set (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_puid_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_ncells_set (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_ncells_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_clampCells_set (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_clampCells_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_nprobes_set (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_nprobes_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_nqueries_set (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native int btSparseSdf3_nqueries_get (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_Initialize__SWIG_0 (long jarg1, btSparseSdf3 jarg1_, int jarg2, int jarg3);
+
+	public final static native void btSparseSdf3_Initialize__SWIG_1 (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native void btSparseSdf3_Initialize__SWIG_2 (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_Reset (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native void btSparseSdf3_GarbageCollect__SWIG_0 (long jarg1, btSparseSdf3 jarg1_, int jarg2);
+
+	public final static native void btSparseSdf3_GarbageCollect__SWIG_1 (long jarg1, btSparseSdf3 jarg1_);
+
+	public final static native int btSparseSdf3_RemoveReferences (long jarg1, btSparseSdf3 jarg1_, long jarg2,
+		btCollisionShape jarg2_);
+
+	public final static native float btSparseSdf3_Evaluate (long jarg1, btSparseSdf3 jarg1_, Vector3 jarg2, long jarg3,
+		btCollisionShape jarg3_, Vector3 jarg4, float jarg5);
+
+	public final static native void btSparseSdf3_BuildCell (long jarg1, btSparseSdf3 jarg1_, long jarg2, btSparseSdf3.Cell jarg2_);
+
+	public final static native float btSparseSdf3_DistanceToShape (Vector3 jarg1, long jarg2, btCollisionShape jarg2_);
+
+	public final static native long btSparseSdf3_Decompose (float jarg1);
+
+	public final static native float btSparseSdf3_Lerp (float jarg1, float jarg2, float jarg3);
+
+	public final static native long btSparseSdf3_Hash (int jarg1, int jarg2, int jarg3, long jarg4, btCollisionShape jarg4_);
+
+	public final static native long new_btSparseSdf3 ();
+
+	public final static native void delete_btSparseSdf3 (long jarg1);
+
+	public final static native void btSoftBodyWorldInfo_air_density_set (long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
+
+	public final static native float btSoftBodyWorldInfo_air_density_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_water_density_set (long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
+
+	public final static native float btSoftBodyWorldInfo_water_density_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_water_offset_set (long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
+
+	public final static native float btSoftBodyWorldInfo_water_offset_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_maxDisplacement_set (long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
+
+	public final static native float btSoftBodyWorldInfo_maxDisplacement_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_water_normal_set (long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBodyWorldInfo_water_normal_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_broadphase_set (long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_);
+
+	public final static native long btSoftBodyWorldInfo_broadphase_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_dispatcher_set (long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2,
+		btDispatcher jarg2_);
+
+	public final static native long btSoftBodyWorldInfo_dispatcher_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_gravity_set (long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBodyWorldInfo_gravity_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBodyWorldInfo_sparsesdf_set (long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2,
+		btSparseSdf3 jarg2_);
+
+	public final static native long btSoftBodyWorldInfo_sparsesdf_get (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native long new_btSoftBodyWorldInfo ();
+
+	public final static native void delete_btSoftBodyWorldInfo (long jarg1);
+
+	public final static native void btSoftBody_collisionDisabledObjects_set (long jarg1, btSoftBody jarg1_, long jarg2,
+		btCollisionObjectConstArray jarg2_);
+
+	public final static native long btSoftBody_collisionDisabledObjects_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_softBodySolver_set (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBodySolver jarg2_);
+
+	public final static native long btSoftBody_softBodySolver_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native long new_btSoftBody_eAeroModel ();
+
+	public final static native void delete_btSoftBody_eAeroModel (long jarg1);
+
+	public final static native long new_btSoftBody_eVSolver ();
+
+	public final static native void delete_btSoftBody_eVSolver (long jarg1);
+
+	public final static native long new_btSoftBody_ePSolver ();
+
+	public final static native void delete_btSoftBody_ePSolver (long jarg1);
+
+	public final static native long new_btSoftBody_eSolverPresets ();
+
+	public final static native void delete_btSoftBody_eSolverPresets (long jarg1);
+
+	public final static native long new_btSoftBody_eFeature ();
+
+	public final static native void delete_btSoftBody_eFeature (long jarg1);
+
+	public final static native long new_btSoftBody_fCollision ();
+
+	public final static native void delete_btSoftBody_fCollision (long jarg1);
+
+	public final static native long new_btSoftBody_fMaterial ();
+
+	public final static native void delete_btSoftBody_fMaterial (long jarg1);
+
+	public final static native void btSoftBody_sRayCast_body_set (long jarg1, btSoftBody.sRayCast jarg1_, long jarg2,
+		btSoftBody jarg2_);
+
+	public final static native long btSoftBody_sRayCast_body_get (long jarg1, btSoftBody.sRayCast jarg1_);
+
+	public final static native void btSoftBody_sRayCast_feature_set (long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
+
+	public final static native int btSoftBody_sRayCast_feature_get (long jarg1, btSoftBody.sRayCast jarg1_);
+
+	public final static native void btSoftBody_sRayCast_index_set (long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
+
+	public final static native int btSoftBody_sRayCast_index_get (long jarg1, btSoftBody.sRayCast jarg1_);
+
+	public final static native void btSoftBody_sRayCast_fraction_set (long jarg1, btSoftBody.sRayCast jarg1_, float jarg2);
+
+	public final static native float btSoftBody_sRayCast_fraction_get (long jarg1, btSoftBody.sRayCast jarg1_);
+
+	public final static native long new_btSoftBody_sRayCast ();
+
+	public final static native void delete_btSoftBody_sRayCast (long jarg1);
+
+	public final static native void delete_btSoftBody_ImplicitFn (long jarg1);
+
+	public final static native float btSoftBody_ImplicitFn_Eval (long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_sCti_colObj_set (long jarg1, btSoftBody.sCti jarg1_, long jarg2,
+		btCollisionObject jarg2_);
+
+	public final static native long btSoftBody_sCti_colObj_get (long jarg1, btSoftBody.sCti jarg1_);
+
+	public final static native void btSoftBody_sCti_normal_set (long jarg1, btSoftBody.sCti jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_sCti_normal_get (long jarg1, btSoftBody.sCti jarg1_);
+
+	public final static native void btSoftBody_sCti_offset_set (long jarg1, btSoftBody.sCti jarg1_, float jarg2);
+
+	public final static native float btSoftBody_sCti_offset_get (long jarg1, btSoftBody.sCti jarg1_);
+
+	public final static native long new_btSoftBody_sCti ();
+
+	public final static native void delete_btSoftBody_sCti (long jarg1);
+
+	public final static native void btSoftBody_sMedium_velocity_set (long jarg1, btSoftBody.sMedium jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_sMedium_velocity_get (long jarg1, btSoftBody.sMedium jarg1_);
+
+	public final static native void btSoftBody_sMedium_pressure_set (long jarg1, btSoftBody.sMedium jarg1_, float jarg2);
+
+	public final static native float btSoftBody_sMedium_pressure_get (long jarg1, btSoftBody.sMedium jarg1_);
+
+	public final static native void btSoftBody_sMedium_density_set (long jarg1, btSoftBody.sMedium jarg1_, float jarg2);
+
+	public final static native float btSoftBody_sMedium_density_get (long jarg1, btSoftBody.sMedium jarg1_);
+
+	public final static native long new_btSoftBody_sMedium ();
+
+	public final static native void delete_btSoftBody_sMedium (long jarg1);
+
+	public final static native void btSoftBody_Element_tag_set (long jarg1, btSoftBody.Element jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Element_tag_get (long jarg1, btSoftBody.Element jarg1_);
+
+	public final static native long new_btSoftBody_Element ();
+
+	public final static native void delete_btSoftBody_Element (long jarg1);
+
+	public final static native void btSoftBody_Material_kLST_set (long jarg1, btSoftBody.Material jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Material_kLST_get (long jarg1, btSoftBody.Material jarg1_);
+
+	public final static native void btSoftBody_Material_kAST_set (long jarg1, btSoftBody.Material jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Material_kAST_get (long jarg1, btSoftBody.Material jarg1_);
+
+	public final static native void btSoftBody_Material_kVST_set (long jarg1, btSoftBody.Material jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Material_kVST_get (long jarg1, btSoftBody.Material jarg1_);
+
+	public final static native void btSoftBody_Material_flags_set (long jarg1, btSoftBody.Material jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Material_flags_get (long jarg1, btSoftBody.Material jarg1_);
+
+	public final static native long new_btSoftBody_Material ();
+
+	public final static native void delete_btSoftBody_Material (long jarg1);
+
+	public final static native void btSoftBody_Feature_material_set (long jarg1, btSoftBody.Feature jarg1_, long jarg2,
+		btSoftBody.Material jarg2_);
+
+	public final static native long btSoftBody_Feature_material_get (long jarg1, btSoftBody.Feature jarg1_);
+
+	public final static native long new_btSoftBody_Feature ();
+
+	public final static native void delete_btSoftBody_Feature (long jarg1);
+
+	public final static native void btSoftBody_Node_x_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Node_x_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_q_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Node_q_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_v_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Node_v_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_f_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Node_f_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_n_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Node_n_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_im_set (long jarg1, btSoftBody.Node jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Node_im_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_area_set (long jarg1, btSoftBody.Node jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Node_area_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_leaf_set (long jarg1, btSoftBody.Node jarg1_, long jarg2, btDbvtNode jarg2_);
+
+	public final static native long btSoftBody_Node_leaf_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native void btSoftBody_Node_battach_set (long jarg1, btSoftBody.Node jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Node_battach_get (long jarg1, btSoftBody.Node jarg1_);
+
+	public final static native long new_btSoftBody_Node ();
+
+	public final static native void delete_btSoftBody_Node (long jarg1);
+
+	public final static native void btSoftBody_Link_c3_set (long jarg1, btSoftBody.Link jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Link_c3_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_n_set (long jarg1, btSoftBody.Link jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Link_n_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_rl_set (long jarg1, btSoftBody.Link jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Link_rl_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_bbending_set (long jarg1, btSoftBody.Link jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Link_bbending_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_c0_set (long jarg1, btSoftBody.Link jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Link_c0_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_c1_set (long jarg1, btSoftBody.Link jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Link_c1_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native void btSoftBody_Link_c2_set (long jarg1, btSoftBody.Link jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Link_c2_get (long jarg1, btSoftBody.Link jarg1_);
+
+	public final static native long btSoftBody_Link_operatorNew__SWIG_0 (long jarg1, btSoftBody.Link jarg1_, long jarg2);
+
+	public final static native void btSoftBody_Link_operatorDelete__SWIG_0 (long jarg1, btSoftBody.Link jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Link_operatorNew__SWIG_1 (long jarg1, btSoftBody.Link jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSoftBody_Link_operatorDelete__SWIG_1 (long jarg1, btSoftBody.Link jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btSoftBody_Link_operatorNewArray__SWIG_0 (long jarg1, btSoftBody.Link jarg1_, long jarg2);
+
+	public final static native void btSoftBody_Link_operatorDeleteArray__SWIG_0 (long jarg1, btSoftBody.Link jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Link_operatorNewArray__SWIG_1 (long jarg1, btSoftBody.Link jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSoftBody_Link_operatorDeleteArray__SWIG_1 (long jarg1, btSoftBody.Link jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long new_btSoftBody_Link ();
+
+	public final static native void delete_btSoftBody_Link (long jarg1);
+
+	public final static native void btSoftBody_Face_n_set (long jarg1, btSoftBody.Face jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Face_n_get (long jarg1, btSoftBody.Face jarg1_);
+
+	public final static native void btSoftBody_Face_normal_set (long jarg1, btSoftBody.Face jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Face_normal_get (long jarg1, btSoftBody.Face jarg1_);
+
+	public final static native void btSoftBody_Face_ra_set (long jarg1, btSoftBody.Face jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Face_ra_get (long jarg1, btSoftBody.Face jarg1_);
+
+	public final static native void btSoftBody_Face_leaf_set (long jarg1, btSoftBody.Face jarg1_, long jarg2, btDbvtNode jarg2_);
+
+	public final static native long btSoftBody_Face_leaf_get (long jarg1, btSoftBody.Face jarg1_);
+
+	public final static native long new_btSoftBody_Face ();
+
+	public final static native void delete_btSoftBody_Face (long jarg1);
+
+	public final static native void btSoftBody_Tetra_n_set (long jarg1, btSoftBody.Tetra jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Tetra_n_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native void btSoftBody_Tetra_rv_set (long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Tetra_rv_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native void btSoftBody_Tetra_leaf_set (long jarg1, btSoftBody.Tetra jarg1_, long jarg2, btDbvtNode jarg2_);
+
+	public final static native long btSoftBody_Tetra_leaf_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native void btSoftBody_Tetra_c0_set (long jarg1, btSoftBody.Tetra jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Tetra_c0_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native void btSoftBody_Tetra_c1_set (long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Tetra_c1_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native void btSoftBody_Tetra_c2_set (long jarg1, btSoftBody.Tetra jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Tetra_c2_get (long jarg1, btSoftBody.Tetra jarg1_);
+
+	public final static native long new_btSoftBody_Tetra ();
+
+	public final static native void delete_btSoftBody_Tetra (long jarg1);
+
+	public final static native void btSoftBody_RContact_cti_set (long jarg1, btSoftBody.RContact jarg1_, long jarg2,
+		btSoftBody.sCti jarg2_);
+
+	public final static native long btSoftBody_RContact_cti_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_node_set (long jarg1, btSoftBody.RContact jarg1_, long jarg2,
+		btSoftBody.Node jarg2_);
+
+	public final static native long btSoftBody_RContact_node_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_c0_set (long jarg1, btSoftBody.RContact jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_RContact_c0_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_c1_set (long jarg1, btSoftBody.RContact jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_RContact_c1_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_c2_set (long jarg1, btSoftBody.RContact jarg1_, float jarg2);
+
+	public final static native float btSoftBody_RContact_c2_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_c3_set (long jarg1, btSoftBody.RContact jarg1_, float jarg2);
+
+	public final static native float btSoftBody_RContact_c3_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native void btSoftBody_RContact_c4_set (long jarg1, btSoftBody.RContact jarg1_, float jarg2);
+
+	public final static native float btSoftBody_RContact_c4_get (long jarg1, btSoftBody.RContact jarg1_);
+
+	public final static native long new_btSoftBody_RContact ();
+
+	public final static native void delete_btSoftBody_RContact (long jarg1);
+
+	public final static native void btSoftBody_SContact_node_set (long jarg1, btSoftBody.SContact jarg1_, long jarg2,
+		btSoftBody.Node jarg2_);
+
+	public final static native long btSoftBody_SContact_node_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_face_set (long jarg1, btSoftBody.SContact jarg1_, long jarg2,
+		btSoftBody.Face jarg2_);
+
+	public final static native long btSoftBody_SContact_face_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_weights_set (long jarg1, btSoftBody.SContact jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_SContact_weights_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_normal_set (long jarg1, btSoftBody.SContact jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_SContact_normal_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_margin_set (long jarg1, btSoftBody.SContact jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SContact_margin_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_friction_set (long jarg1, btSoftBody.SContact jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SContact_friction_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native void btSoftBody_SContact_cfm_set (long jarg1, btSoftBody.SContact jarg1_, float[] jarg2);
+
+	public final static native float[] btSoftBody_SContact_cfm_get (long jarg1, btSoftBody.SContact jarg1_);
+
+	public final static native long new_btSoftBody_SContact ();
+
+	public final static native void delete_btSoftBody_SContact (long jarg1);
+
+	public final static native void btSoftBody_Anchor_node_set (long jarg1, btSoftBody.Anchor jarg1_, long jarg2,
+		btSoftBody.Node jarg2_);
+
+	public final static native long btSoftBody_Anchor_node_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_local_set (long jarg1, btSoftBody.Anchor jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Anchor_local_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_body_set (long jarg1, btSoftBody.Anchor jarg1_, long jarg2,
+		btRigidBody jarg2_);
+
+	public final static native long btSoftBody_Anchor_body_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_influence_set (long jarg1, btSoftBody.Anchor jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Anchor_influence_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_c0_set (long jarg1, btSoftBody.Anchor jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Anchor_c0_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_c1_set (long jarg1, btSoftBody.Anchor jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Anchor_c1_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native void btSoftBody_Anchor_c2_set (long jarg1, btSoftBody.Anchor jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Anchor_c2_get (long jarg1, btSoftBody.Anchor jarg1_);
+
+	public final static native long new_btSoftBody_Anchor ();
+
+	public final static native void delete_btSoftBody_Anchor (long jarg1);
+
+	public final static native String btSoftBody_Note_text_get (long jarg1, btSoftBody.Note jarg1_);
+
+	public final static native void btSoftBody_Note_offset_set (long jarg1, btSoftBody.Note jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Note_offset_get (long jarg1, btSoftBody.Note jarg1_);
+
+	public final static native void btSoftBody_Note_rank_set (long jarg1, btSoftBody.Note jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Note_rank_get (long jarg1, btSoftBody.Note jarg1_);
+
+	public final static native void btSoftBody_Note_nodes_set (long jarg1, btSoftBody.Note jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Note_nodes_get (long jarg1, btSoftBody.Note jarg1_);
+
+	public final static native void btSoftBody_Note_coords_set (long jarg1, btSoftBody.Note jarg1_, float[] jarg2);
+
+	public final static native float[] btSoftBody_Note_coords_get (long jarg1, btSoftBody.Note jarg1_);
+
+	public final static native long new_btSoftBody_Note ();
+
+	public final static native void delete_btSoftBody_Note (long jarg1);
+
+	public final static native void btSoftBody_Pose_bvolume_set (long jarg1, btSoftBody.Pose jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_Pose_bvolume_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_bframe_set (long jarg1, btSoftBody.Pose jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_Pose_bframe_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_volume_set (long jarg1, btSoftBody.Pose jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Pose_volume_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_pos_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long btSoftBody_Pose_pos_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_wgh_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2, btScalarArray jarg2_);
+
+	public final static native long btSoftBody_Pose_wgh_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_com_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Pose_com_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_rot_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Pose_rot_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_scl_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Pose_scl_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native void btSoftBody_Pose_aqq_set (long jarg1, btSoftBody.Pose jarg1_, long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Pose_aqq_get (long jarg1, btSoftBody.Pose jarg1_);
+
+	public final static native long new_btSoftBody_Pose ();
+
+	public final static native void delete_btSoftBody_Pose (long jarg1);
+
+	public final static native void btSoftBody_Cluster_masses_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btSoftBody_Cluster_masses_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_nodes_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Cluster_nodes_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_framerefs_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long btSoftBody_Cluster_framerefs_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_framexform_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btSoftBody_Cluster_framexform_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_idmass_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_idmass_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_imass_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_imass_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_locii_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_locii_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_invwi_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_invwi_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_com_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_com_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_vimpulses_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_vimpulses_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_dimpulses_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_dimpulses_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_nvimpulses_set (long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Cluster_nvimpulses_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_ndimpulses_set (long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Cluster_ndimpulses_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_lv_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_lv_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_av_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Cluster_av_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_leaf_set (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btDbvtNode jarg2_);
+
+	public final static native long btSoftBody_Cluster_leaf_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_ndamping_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_ndamping_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_ldamping_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_ldamping_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_adamping_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_adamping_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_matching_set (long jarg1, btSoftBody.Cluster jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Cluster_matching_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_maxSelfCollisionImpulse_set (long jarg1, btSoftBody.Cluster jarg1_,
+		float jarg2);
+
+	public final static native float btSoftBody_Cluster_maxSelfCollisionImpulse_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_selfCollisionImpulseFactor_set (long jarg1, btSoftBody.Cluster jarg1_,
+		float jarg2);
+
+	public final static native float btSoftBody_Cluster_selfCollisionImpulseFactor_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_containsAnchor_set (long jarg1, btSoftBody.Cluster jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_Cluster_containsAnchor_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_collide_set (long jarg1, btSoftBody.Cluster jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_Cluster_collide_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native void btSoftBody_Cluster_clusterIndex_set (long jarg1, btSoftBody.Cluster jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Cluster_clusterIndex_get (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native long new_btSoftBody_Cluster ();
+
+	public final static native void delete_btSoftBody_Cluster (long jarg1);
+
+	public final static native void btSoftBody_Impulse_velocity_set (long jarg1, btSoftBody.Impulse jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Impulse_velocity_get (long jarg1, btSoftBody.Impulse jarg1_);
+
+	public final static native void btSoftBody_Impulse_drift_set (long jarg1, btSoftBody.Impulse jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Impulse_drift_get (long jarg1, btSoftBody.Impulse jarg1_);
+
+	public final static native void btSoftBody_Impulse_asVelocity_set (long jarg1, btSoftBody.Impulse jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Impulse_asVelocity_get (long jarg1, btSoftBody.Impulse jarg1_);
+
+	public final static native void btSoftBody_Impulse_asDrift_set (long jarg1, btSoftBody.Impulse jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Impulse_asDrift_get (long jarg1, btSoftBody.Impulse jarg1_);
+
+	public final static native long new_btSoftBody_Impulse ();
+
+	public final static native long btSoftBody_Impulse_operatorSubtraction (long jarg1, btSoftBody.Impulse jarg1_);
+
+	public final static native long btSoftBody_Impulse_operatorMultiplication (long jarg1, btSoftBody.Impulse jarg1_, float jarg2);
+
+	public final static native void delete_btSoftBody_Impulse (long jarg1);
+
+	public final static native void btSoftBody_Body_soft_set (long jarg1, btSoftBody.Body jarg1_, long jarg2,
+		btSoftBody.Cluster jarg2_);
+
+	public final static native long btSoftBody_Body_soft_get (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native void btSoftBody_Body_rigid_set (long jarg1, btSoftBody.Body jarg1_, long jarg2, btRigidBody jarg2_);
+
+	public final static native long btSoftBody_Body_rigid_get (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native void btSoftBody_Body_collisionObject_set (long jarg1, btSoftBody.Body jarg1_, long jarg2,
+		btCollisionObject jarg2_);
+
+	public final static native long btSoftBody_Body_collisionObject_get (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native long new_btSoftBody_Body__SWIG_0 ();
+
+	public final static native long new_btSoftBody_Body__SWIG_1 (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native long new_btSoftBody_Body__SWIG_2 (long jarg1, btCollisionObject jarg1_);
+
+	public final static native void btSoftBody_Body_activate (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native Matrix3 btSoftBody_Body_invWorldInertia (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native float btSoftBody_Body_invMass (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native Matrix4 btSoftBody_Body_xform (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native Vector3 btSoftBody_Body_linearVelocity (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native Vector3 btSoftBody_Body_angularVelocity__SWIG_0 (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btSoftBody_Body_angularVelocity__SWIG_1 (long jarg1, btSoftBody.Body jarg1_);
+
+	public final static native Vector3 btSoftBody_Body_velocity (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_Body_applyVImpulse (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSoftBody_Body_applyDImpulse (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSoftBody_Body_applyImpulse (long jarg1, btSoftBody.Body jarg1_, long jarg2,
+		btSoftBody.Impulse jarg2_, Vector3 jarg3);
+
+	public final static native void btSoftBody_Body_applyVAImpulse (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_Body_applyDAImpulse (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_Body_applyAImpulse (long jarg1, btSoftBody.Body jarg1_, long jarg2,
+		btSoftBody.Impulse jarg2_);
+
+	public final static native void btSoftBody_Body_applyDCImpulse (long jarg1, btSoftBody.Body jarg1_, Vector3 jarg2);
+
+	public final static native void delete_btSoftBody_Body (long jarg1);
+
+	public final static native long new_btSoftBody_Joint_eType ();
+
+	public final static native void delete_btSoftBody_Joint_eType (long jarg1);
+
+	public final static native long new_btSoftBody_Joint_Specs ();
+
+	public final static native void btSoftBody_Joint_Specs_erp_set (long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_Specs_erp_get (long jarg1, btSoftBody.Joint.Specs jarg1_);
+
+	public final static native void btSoftBody_Joint_Specs_cfm_set (long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_Specs_cfm_get (long jarg1, btSoftBody.Joint.Specs jarg1_);
+
+	public final static native void btSoftBody_Joint_Specs_split_set (long jarg1, btSoftBody.Joint.Specs jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_Specs_split_get (long jarg1, btSoftBody.Joint.Specs jarg1_);
+
+	public final static native void delete_btSoftBody_Joint_Specs (long jarg1);
+
+	public final static native void btSoftBody_Joint_bodies_set (long jarg1, btSoftBody.Joint jarg1_, long jarg2,
+		btSoftBody.Body jarg2_);
+
+	public final static native long btSoftBody_Joint_bodies_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_refs_set (long jarg1, btSoftBody.Joint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Joint_refs_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_cfm_set (long jarg1, btSoftBody.Joint jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_cfm_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_erp_set (long jarg1, btSoftBody.Joint jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_erp_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_split_set (long jarg1, btSoftBody.Joint jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Joint_split_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_drift_set (long jarg1, btSoftBody.Joint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_Joint_drift_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_sdrift_set (long jarg1, btSoftBody.Joint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_Joint_sdrift_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_massmatrix_set (long jarg1, btSoftBody.Joint jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSoftBody_Joint_massmatrix_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_Joint_delete_set (long jarg1, btSoftBody.Joint jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_Joint_delete_get (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void delete_btSoftBody_Joint (long jarg1);
+
+	public final static native void btSoftBody_Joint_Prepare (long jarg1, btSoftBody.Joint jarg1_, float jarg2, int jarg3);
+
+	public final static native void btSoftBody_Joint_Solve (long jarg1, btSoftBody.Joint jarg1_, float jarg2, float jarg3);
+
+	public final static native void btSoftBody_Joint_Terminate (long jarg1, btSoftBody.Joint jarg1_, float jarg2);
+
+	public final static native int btSoftBody_Joint_Type (long jarg1, btSoftBody.Joint jarg1_);
+
+	public final static native void btSoftBody_LJoint_Specs_position_set (long jarg1, btSoftBody.LJoint.Specs jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_LJoint_Specs_position_get (long jarg1, btSoftBody.LJoint.Specs jarg1_);
+
+	public final static native long new_btSoftBody_LJoint_Specs ();
+
+	public final static native void delete_btSoftBody_LJoint_Specs (long jarg1);
+
+	public final static native void btSoftBody_LJoint_rpos_set (long jarg1, btSoftBody.LJoint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_LJoint_rpos_get (long jarg1, btSoftBody.LJoint jarg1_);
+
+	public final static native long new_btSoftBody_LJoint ();
+
+	public final static native void delete_btSoftBody_LJoint (long jarg1);
+
+	public final static native void delete_btSoftBody_AJoint_IControl (long jarg1);
+
+	public final static native void btSoftBody_AJoint_IControl_Prepare (long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2,
+		btSoftBody.AJoint jarg2_);
+
+	public final static native float btSoftBody_AJoint_IControl_Speed (long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2,
+		btSoftBody.AJoint jarg2_, float jarg3);
+
+	public final static native long btSoftBody_AJoint_IControl_Default ();
+
+	public final static native long new_btSoftBody_AJoint_IControl ();
+
+	public final static native long new_btSoftBody_AJoint_Specs ();
+
+	public final static native void btSoftBody_AJoint_Specs_axis_set (long jarg1, btSoftBody.AJoint.Specs jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_AJoint_Specs_axis_get (long jarg1, btSoftBody.AJoint.Specs jarg1_);
+
+	public final static native void btSoftBody_AJoint_Specs_icontrol_set (long jarg1, btSoftBody.AJoint.Specs jarg1_, long jarg2,
+		btSoftBody.AJoint.IControl jarg2_);
+
+	public final static native long btSoftBody_AJoint_Specs_icontrol_get (long jarg1, btSoftBody.AJoint.Specs jarg1_);
+
+	public final static native void delete_btSoftBody_AJoint_Specs (long jarg1);
+
+	public final static native void btSoftBody_AJoint_axis_set (long jarg1, btSoftBody.AJoint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_AJoint_axis_get (long jarg1, btSoftBody.AJoint jarg1_);
+
+	public final static native void btSoftBody_AJoint_icontrol_set (long jarg1, btSoftBody.AJoint jarg1_, long jarg2,
+		btSoftBody.AJoint.IControl jarg2_);
+
+	public final static native long btSoftBody_AJoint_icontrol_get (long jarg1, btSoftBody.AJoint jarg1_);
+
+	public final static native long new_btSoftBody_AJoint ();
+
+	public final static native void delete_btSoftBody_AJoint (long jarg1);
+
+	public final static native void btSoftBody_CJoint_life_set (long jarg1, btSoftBody.CJoint jarg1_, int jarg2);
+
+	public final static native int btSoftBody_CJoint_life_get (long jarg1, btSoftBody.CJoint jarg1_);
+
+	public final static native void btSoftBody_CJoint_maxlife_set (long jarg1, btSoftBody.CJoint jarg1_, int jarg2);
+
+	public final static native int btSoftBody_CJoint_maxlife_get (long jarg1, btSoftBody.CJoint jarg1_);
+
+	public final static native void btSoftBody_CJoint_rpos_set (long jarg1, btSoftBody.CJoint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_CJoint_rpos_get (long jarg1, btSoftBody.CJoint jarg1_);
+
+	public final static native void btSoftBody_CJoint_normal_set (long jarg1, btSoftBody.CJoint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSoftBody_CJoint_normal_get (long jarg1, btSoftBody.CJoint jarg1_);
+
+	public final static native void btSoftBody_CJoint_friction_set (long jarg1, btSoftBody.CJoint jarg1_, float jarg2);
+
+	public final static native float btSoftBody_CJoint_friction_get (long jarg1, btSoftBody.CJoint jarg1_);
+
+	public final static native long new_btSoftBody_CJoint ();
+
+	public final static native void delete_btSoftBody_CJoint (long jarg1);
+
+	public final static native void btSoftBody_Config_aeromodel_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_aeromodel_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kVCF_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kVCF_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kDP_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kDP_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kDG_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kDG_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kLF_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kLF_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kPR_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kPR_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kVC_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kVC_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kDF_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kDF_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kMT_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kMT_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kCHR_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kCHR_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kKHR_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kKHR_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSHR_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSHR_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kAHR_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kAHR_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSRHR_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSRHR_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSKHR_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSKHR_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSSHR_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSSHR_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSR_SPLT_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSR_SPLT_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSK_SPLT_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSK_SPLT_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_kSS_SPLT_CL_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_kSS_SPLT_CL_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_maxvolume_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_maxvolume_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_timescale_set (long jarg1, btSoftBody.Config jarg1_, float jarg2);
+
+	public final static native float btSoftBody_Config_timescale_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_viterations_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_viterations_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_piterations_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_piterations_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_diterations_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_diterations_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_citerations_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_citerations_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_collisions_set (long jarg1, btSoftBody.Config jarg1_, int jarg2);
+
+	public final static native int btSoftBody_Config_collisions_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_vsequence_set (long jarg1, btSoftBody.Config jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Config_vsequence_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_psequence_set (long jarg1, btSoftBody.Config jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Config_psequence_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native void btSoftBody_Config_dsequence_set (long jarg1, btSoftBody.Config jarg1_, long jarg2);
+
+	public final static native long btSoftBody_Config_dsequence_get (long jarg1, btSoftBody.Config jarg1_);
+
+	public final static native long new_btSoftBody_Config ();
+
+	public final static native void delete_btSoftBody_Config (long jarg1);
+
+	public final static native void btSoftBody_SolverState_sdt_set (long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SolverState_sdt_get (long jarg1, btSoftBody.SolverState jarg1_);
+
+	public final static native void btSoftBody_SolverState_isdt_set (long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SolverState_isdt_get (long jarg1, btSoftBody.SolverState jarg1_);
+
+	public final static native void btSoftBody_SolverState_velmrg_set (long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SolverState_velmrg_get (long jarg1, btSoftBody.SolverState jarg1_);
+
+	public final static native void btSoftBody_SolverState_radmrg_set (long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SolverState_radmrg_get (long jarg1, btSoftBody.SolverState jarg1_);
+
+	public final static native void btSoftBody_SolverState_updmrg_set (long jarg1, btSoftBody.SolverState jarg1_, float jarg2);
+
+	public final static native float btSoftBody_SolverState_updmrg_get (long jarg1, btSoftBody.SolverState jarg1_);
+
+	public final static native long new_btSoftBody_SolverState ();
+
+	public final static native void delete_btSoftBody_SolverState (long jarg1);
+
+	public final static native void btSoftBody_RayFromToCaster_rayFrom_set (long jarg1, btSoftBody.RayFromToCaster jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_RayFromToCaster_rayFrom_get (long jarg1, btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native void btSoftBody_RayFromToCaster_rayTo_set (long jarg1, btSoftBody.RayFromToCaster jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_RayFromToCaster_rayTo_get (long jarg1, btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native void btSoftBody_RayFromToCaster_rayNormalizedDirection_set (long jarg1,
+		btSoftBody.RayFromToCaster jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_RayFromToCaster_rayNormalizedDirection_get (long jarg1,
+		btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native void btSoftBody_RayFromToCaster_mint_set (long jarg1, btSoftBody.RayFromToCaster jarg1_,
+		float jarg2);
+
+	public final static native float btSoftBody_RayFromToCaster_mint_get (long jarg1, btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native void btSoftBody_RayFromToCaster_face_set (long jarg1, btSoftBody.RayFromToCaster jarg1_, long jarg2,
+		btSoftBody.Face jarg2_);
+
+	public final static native long btSoftBody_RayFromToCaster_face_get (long jarg1, btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native void btSoftBody_RayFromToCaster_tests_set (long jarg1, btSoftBody.RayFromToCaster jarg1_,
+		int jarg2);
+
+	public final static native int btSoftBody_RayFromToCaster_tests_get (long jarg1, btSoftBody.RayFromToCaster jarg1_);
+
+	public final static native long new_btSoftBody_RayFromToCaster (Vector3 jarg1, Vector3 jarg2, float jarg3);
+
+	public final static native float btSoftBody_RayFromToCaster_rayFromToTriangle__SWIG_0 (Vector3 jarg1, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7);
+
+	public final static native float btSoftBody_RayFromToCaster_rayFromToTriangle__SWIG_1 (Vector3 jarg1, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native void delete_btSoftBody_RayFromToCaster (long jarg1);
+
+	public final static native void btSoftBody_cfg_set (long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Config jarg2_);
+
+	public final static native long btSoftBody_cfg_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_sst_set (long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.SolverState jarg2_);
+
+	public final static native long btSoftBody_sst_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_pose_set (long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Pose jarg2_);
+
+	public final static native long btSoftBody_pose_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_tag_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_tag_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_worldInfo_set (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBodyWorldInfo jarg2_);
+
+	public final static native long btSoftBody_worldInfo_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_notes_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_notes_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_nodes_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_nodes_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_links_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_links_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_faces_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_faces_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_tetras_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_tetras_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_anchors_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_anchors_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_rcontacts_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_rcontacts_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_scontacts_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_scontacts_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_joints_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_joints_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_materials_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_materials_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_timeacc_set (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native float btSoftBody_timeacc_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_bounds_set (long jarg1, btSoftBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_bounds_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_bUpdateRtCst_set (long jarg1, btSoftBody jarg1_, boolean jarg2);
+
+	public final static native boolean btSoftBody_bUpdateRtCst_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_ndbvt_set (long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
+
+	public final static native long btSoftBody_ndbvt_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_fdbvt_set (long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
+
+	public final static native long btSoftBody_fdbvt_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_cdbvt_set (long jarg1, btSoftBody jarg1_, long jarg2, btDbvt jarg2_);
+
+	public final static native long btSoftBody_cdbvt_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_clusters_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_clusters_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_clusterConnectivity_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_clusterConnectivity_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_initialWorldTransform_set (long jarg1, btSoftBody jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btSoftBody_initialWorldTransform_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_windVelocity_set (long jarg1, btSoftBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSoftBody_windVelocity_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_restLengthScale_set (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native float btSoftBody_restLengthScale_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native long new_btSoftBody__SWIG_0 (long jarg1, btSoftBodyWorldInfo jarg1_, int jarg2, long jarg3,
+		btVector3 jarg3_, java.nio.FloatBuffer jarg4);
+
+	public final static native long new_btSoftBody__SWIG_1 (long jarg1, btSoftBodyWorldInfo jarg1_);
+
+	public final static native void btSoftBody_initDefaults (long jarg1, btSoftBody jarg1_);
+
+	public final static native void delete_btSoftBody (long jarg1);
+
+	public final static native void btSoftBody_userIndexMapping_set (long jarg1, btSoftBody jarg1_, long jarg2);
+
+	public final static native long btSoftBody_userIndexMapping_get (long jarg1, btSoftBody jarg1_);
+
+	public final static native boolean btSoftBody_checkLink__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
+
+	public final static native boolean btSoftBody_checkLink__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_);
+
+	public final static native boolean btSoftBody_checkFace (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4);
+
+	public final static native long btSoftBody_appendMaterial (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_appendNote__SWIG_0 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_, long jarg7,
+		btSoftBody.Node jarg7_, long jarg8, btSoftBody.Node jarg8_);
+
+	public final static native void btSoftBody_appendNote__SWIG_1 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_, long jarg7,
+		btSoftBody.Node jarg7_);
+
+	public final static native void btSoftBody_appendNote__SWIG_2 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_, long jarg6, btSoftBody.Node jarg6_);
+
+	public final static native void btSoftBody_appendNote__SWIG_3 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btVector4 jarg4_, long jarg5, btSoftBody.Node jarg5_);
+
+	public final static native void btSoftBody_appendNote__SWIG_4 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btVector4 jarg4_);
+
+	public final static native void btSoftBody_appendNote__SWIG_5 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3);
+
+	public final static native void btSoftBody_appendNote__SWIG_6 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btSoftBody.Node jarg4_);
+
+	public final static native void btSoftBody_appendNote__SWIG_7 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btSoftBody.Link jarg4_);
+
+	public final static native void btSoftBody_appendNote__SWIG_8 (long jarg1, btSoftBody jarg1_, String jarg2, Vector3 jarg3,
+		long jarg4, btSoftBody.Face jarg4_);
+
+	public final static native void btSoftBody_appendNode (long jarg1, btSoftBody jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native void btSoftBody_appendLink__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btSoftBody.Material jarg3_);
+
+	public final static native void btSoftBody_appendLink__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_appendLink__SWIG_2 (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_appendLink__SWIG_3 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, long jarg4,
+		btSoftBody.Material jarg4_, boolean jarg5);
+
+	public final static native void btSoftBody_appendLink__SWIG_4 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, long jarg4,
+		btSoftBody.Material jarg4_);
+
+	public final static native void btSoftBody_appendLink__SWIG_5 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
+
+	public final static native void btSoftBody_appendLink__SWIG_6 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, long jarg4, btSoftBody.Material jarg4_, boolean jarg5);
+
+	public final static native void btSoftBody_appendLink__SWIG_7 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, long jarg4, btSoftBody.Material jarg4_);
+
+	public final static native void btSoftBody_appendLink__SWIG_8 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_);
+
+	public final static native void btSoftBody_appendFace__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btSoftBody.Material jarg3_);
+
+	public final static native void btSoftBody_appendFace__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_appendFace__SWIG_2 (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_appendFace__SWIG_3 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4,
+		long jarg5, btSoftBody.Material jarg5_);
+
+	public final static native void btSoftBody_appendFace__SWIG_4 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4);
+
+	public final static native void btSoftBody_appendTetra__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btSoftBody.Material jarg3_);
+
+	public final static native void btSoftBody_appendTetra__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4,
+		int jarg5, long jarg6, btSoftBody.Material jarg6_);
+
+	public final static native void btSoftBody_appendTetra__SWIG_2 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, int jarg4,
+		int jarg5);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, boolean jarg4, float jarg5);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, boolean jarg4);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_2 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_3 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, boolean jarg5, float jarg6);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_4 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, boolean jarg5);
+
+	public final static native void btSoftBody_appendAnchor__SWIG_5 (long jarg1, btSoftBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4);
+
+	public final static native void btSoftBody_appendLinearJoint__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody.Cluster jarg3_, long jarg4, btSoftBody.Body jarg4_);
+
+	public final static native void btSoftBody_appendLinearJoint__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody.Body jarg3_);
+
+	public final static native void btSoftBody_appendLinearJoint__SWIG_2 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.LJoint.Specs jarg2_);
+
+	public final static native void btSoftBody_appendLinearJoint__SWIG_3 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.LJoint.Specs jarg2_, long jarg3, btSoftBody jarg3_);
+
+	public final static native void btSoftBody_appendAngularJoint__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody.Cluster jarg3_, long jarg4, btSoftBody.Body jarg4_);
+
+	public final static native void btSoftBody_appendAngularJoint__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody.Body jarg3_);
+
+	public final static native void btSoftBody_appendAngularJoint__SWIG_2 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.AJoint.Specs jarg2_);
+
+	public final static native void btSoftBody_appendAngularJoint__SWIG_3 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.AJoint.Specs jarg2_, long jarg3, btSoftBody jarg3_);
+
+	public final static native void btSoftBody_addForce__SWIG_0 (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_addForce__SWIG_1 (long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
+
+	public final static native void btSoftBody_addAeroForceToNode (long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
+
+	public final static native void btSoftBody_addAeroForceToFace (long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
+
+	public final static native void btSoftBody_addVelocity__SWIG_0 (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_setVelocity (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_addVelocity__SWIG_1 (long jarg1, btSoftBody jarg1_, Vector3 jarg2, int jarg3);
+
+	public final static native void btSoftBody_setMass (long jarg1, btSoftBody jarg1_, int jarg2, float jarg3);
+
+	public final static native float btSoftBody_getMass (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native float btSoftBody_getTotalMass (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_setTotalMass__SWIG_0 (long jarg1, btSoftBody jarg1_, float jarg2, boolean jarg3);
+
+	public final static native void btSoftBody_setTotalMass__SWIG_1 (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setTotalDensity (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setVolumeMass (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setVolumeDensity (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_transform (long jarg1, btSoftBody jarg1_, Matrix4 jarg2);
+
+	public final static native void btSoftBody_translate (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_rotate (long jarg1, btSoftBody jarg1_, Quaternion jarg2);
+
+	public final static native void btSoftBody_scale (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_setPose (long jarg1, btSoftBody jarg1_, boolean jarg2, boolean jarg3);
+
+	public final static native void btSoftBody_resetLinkRestLengths (long jarg1, btSoftBody jarg1_);
+
+	public final static native float btSoftBody_getVolume (long jarg1, btSoftBody jarg1_);
+
+	public final static native int btSoftBody_clusterCount (long jarg1, btSoftBody jarg1_);
+
+	public final static native Vector3 btSoftBody_clusterCom__SWIG_0 (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native Vector3 btSoftBody_clusterCom__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native Vector3 btSoftBody_clusterVelocity (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_clusterVImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSoftBody_clusterDImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSoftBody_clusterImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2, long jarg3,
+		btSoftBody.Impulse jarg3_);
+
+	public final static native void btSoftBody_clusterVAImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_clusterDAImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
+
+	public final static native void btSoftBody_clusterAImpulse (long jarg1, btSoftBody.Cluster jarg1_, long jarg2,
+		btSoftBody.Impulse jarg2_);
+
+	public final static native void btSoftBody_clusterDCImpulse (long jarg1, btSoftBody.Cluster jarg1_, Vector3 jarg2);
+
+	public final static native int btSoftBody_generateBendingConstraints__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2,
+		long jarg3, btSoftBody.Material jarg3_);
+
+	public final static native int btSoftBody_generateBendingConstraints__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_randomizeConstraints (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_releaseCluster (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_releaseClusters (long jarg1, btSoftBody jarg1_);
+
+	public final static native int btSoftBody_generateClusters__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3);
+
+	public final static native int btSoftBody_generateClusters__SWIG_1 (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_refine (long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.ImplicitFn jarg2_,
+		float jarg3, boolean jarg4);
+
+	public final static native boolean btSoftBody_cutLink__SWIG_0 (long jarg1, btSoftBody jarg1_, int jarg2, int jarg3,
+		float jarg4);
+
+	public final static native boolean btSoftBody_cutLink__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, float jarg4);
+
+	public final static native boolean btSoftBody_rayTest__SWIG_0 (long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3,
+		long jarg4, btSoftBody.sRayCast jarg4_);
+
+	public final static native void btSoftBody_setSolver (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_predictMotion (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_solveConstraints (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_staticSolve (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_solveCommonConstraints (long jarg1, int jarg2, int jarg3);
+
+	public final static native void btSoftBody_solveClusters__SWIG_0 (long jarg1);
+
+	public final static native void btSoftBody_integrateMotion (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_defaultCollisionHandler__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btCollisionObjectWrapper jarg2_);
+
+	public final static native void btSoftBody_defaultCollisionHandler__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btSoftBody jarg2_);
+
+	public final static native void btSoftBody_setWindVelocity (long jarg1, btSoftBody jarg1_, Vector3 jarg2);
+
+	public final static native long btSoftBody_upcastConstBtCollisionObject (long jarg1, btCollisionObject jarg1_);
+
+	public final static native long btSoftBody_upcast (long jarg1, btCollisionObject jarg1_);
+
+	public final static native void btSoftBody_getAabb (long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void btSoftBody_pointersToIndices (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_indicesToPointers__SWIG_0 (long jarg1, btSoftBody jarg1_, java.nio.IntBuffer jarg2);
+
+	public final static native void btSoftBody_indicesToPointers__SWIG_1 (long jarg1, btSoftBody jarg1_);
+
+	public final static native int btSoftBody_rayTest__SWIG_1 (long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3,
+		long jarg4, long jarg5, long jarg6, boolean jarg7);
+
+	public final static native void btSoftBody_initializeFaceTree (long jarg1, btSoftBody jarg1_);
+
+	public final static native Vector3 btSoftBody_evaluateCom (long jarg1, btSoftBody jarg1_);
+
+	public final static native boolean btSoftBody_checkContact (long jarg1, btSoftBody jarg1_, long jarg2,
+		btCollisionObjectWrapper jarg2_, Vector3 jarg3, float jarg4, long jarg5, btSoftBody.sCti jarg5_);
+
+	public final static native void btSoftBody_updateNormals (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updateBounds (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updatePose (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updateConstants (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updateLinkConstants (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updateArea__SWIG_0 (long jarg1, btSoftBody jarg1_, boolean jarg2);
+
+	public final static native void btSoftBody_updateArea__SWIG_1 (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_initializeClusters (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_updateClusters (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_cleanupClusters (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_prepareClusters (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_solveClusters__SWIG_1 (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_applyClusters (long jarg1, btSoftBody jarg1_, boolean jarg2);
+
+	public final static native void btSoftBody_dampClusters (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_applyForces (long jarg1, btSoftBody jarg1_);
+
+	public final static native void btSoftBody_PSolve_Anchors (long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
+
+	public final static native void btSoftBody_PSolve_RContacts (long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
+
+	public final static native void btSoftBody_PSolve_SContacts (long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
+
+	public final static native void btSoftBody_PSolve_Links (long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
+
+	public final static native void btSoftBody_VSolve_Links (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native long btSoftBody_getSolver__SWIG_0 (int jarg1);
+
+	public final static native long new_btSoftBody__SWIG_2 (long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2,
+		int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7, int jarg8, java.nio.ShortBuffer jarg9, int jarg10);
+
+	public final static native int btSoftBody_getNodeCount (long jarg1, btSoftBody jarg1_);
+
+	public final static native long btSoftBody_getNode (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native int btSoftBody_getLinkCount (long jarg1, btSoftBody jarg1_);
+
+	public final static native long btSoftBody_getLink (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_getVertices__SWIG_0 (long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2,
+		int jarg3, int jarg4, int jarg5);
+
+	public final static native void btSoftBody_getVertices__SWIG_1 (long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2,
+		int jarg3, int jarg4, java.nio.ShortBuffer jarg5, int jarg6, int jarg7, java.nio.ShortBuffer jarg8, int jarg9);
+
+	public final static native void btSoftBody_getVertices__SWIG_2 (long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2,
+		int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7, int jarg8, java.nio.ShortBuffer jarg9, int jarg10);
+
+	public final static native int btSoftBody_getFaceCount (long jarg1, btSoftBody jarg1_);
+
+	public final static native long btSoftBody_getFace (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_getIndices (long jarg1, btSoftBody jarg1_, java.nio.ShortBuffer jarg2, int jarg3);
+
+	public final static native void btSoftBody_setConfig_kVCF (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kDP (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kDG (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kLF (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kPR (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kVC (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kDF (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kMT (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kCHR (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kKHR (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSHR (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kAHR (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSRHR_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSKHR_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSSHR_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSR_SPLT_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSK_SPLT_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_kSS_SPLT_CL (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_maxvolume (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_timescale (long jarg1, btSoftBody jarg1_, float jarg2);
+
+	public final static native void btSoftBody_setConfig_viterations (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_setConfig_piterations (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_setConfig_diterations (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_setConfig_citerations (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btSoftBody_setConfig_collisions (long jarg1, btSoftBody jarg1_, int jarg2);
+
+	public final static native void btTriIndex_PartIdTriangleIndex_set (long jarg1, btTriIndex jarg1_, int jarg2);
+
+	public final static native int btTriIndex_PartIdTriangleIndex_get (long jarg1, btTriIndex jarg1_);
+
+	public final static native void btTriIndex_childShape_set (long jarg1, btTriIndex jarg1_, long jarg2, btCollisionShape jarg2_);
+
+	public final static native long btTriIndex_childShape_get (long jarg1, btTriIndex jarg1_);
+
+	public final static native long new_btTriIndex (int jarg1, int jarg2, long jarg3, btCollisionShape jarg3_);
+
+	public final static native int btTriIndex_getTriangleIndex (long jarg1, btTriIndex jarg1_);
+
+	public final static native int btTriIndex_getPartId (long jarg1, btTriIndex jarg1_);
+
+	public final static native int btTriIndex_getUid (long jarg1, btTriIndex jarg1_);
+
+	public final static native void delete_btTriIndex (long jarg1);
+
+	public final static native void btSoftBodyTriangleCallback_triangleCount_set (long jarg1, btSoftBodyTriangleCallback jarg1_,
+		int jarg2);
+
+	public final static native int btSoftBodyTriangleCallback_triangleCount_get (long jarg1, btSoftBodyTriangleCallback jarg1_);
+
+	public final static native long new_btSoftBodyTriangleCallback (long jarg1, btDispatcher jarg1_, long jarg2,
+		btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
+
+	public final static native void btSoftBodyTriangleCallback_setTimeStepAndCounters (long jarg1,
+		btSoftBodyTriangleCallback jarg1_, float jarg2, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4,
+		btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
+
+	public final static native void delete_btSoftBodyTriangleCallback (long jarg1);
+
+	public final static native void btSoftBodyTriangleCallback_clearCache (long jarg1, btSoftBodyTriangleCallback jarg1_);
+
+	public final static native Vector3 btSoftBodyTriangleCallback_getAabbMin (long jarg1, btSoftBodyTriangleCallback jarg1_);
+
+	public final static native Vector3 btSoftBodyTriangleCallback_getAabbMax (long jarg1, btSoftBodyTriangleCallback jarg1_);
+
+	public final static native long new_btSoftBodyConcaveCollisionAlgorithm (long jarg1,
+		btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3,
+		btCollisionObjectWrapper jarg3_, boolean jarg4);
+
+	public final static native void delete_btSoftBodyConcaveCollisionAlgorithm (long jarg1);
+
+	public final static native void btSoftBodyConcaveCollisionAlgorithm_clearCache (long jarg1,
+		btSoftBodyConcaveCollisionAlgorithm jarg1_);
+
+	public final static native long new_btSoftBodyConcaveCollisionAlgorithm_CreateFunc ();
+
+	public final static native void delete_btSoftBodyConcaveCollisionAlgorithm_CreateFunc (long jarg1);
+
+	public final static native long new_btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc ();
+
+	public final static native void delete_btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc (long jarg1);
+
+	public final static native void SoftBodyMaterialData_linearStiffness_set (long jarg1, SoftBodyMaterialData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyMaterialData_linearStiffness_get (long jarg1, SoftBodyMaterialData jarg1_);
+
+	public final static native void SoftBodyMaterialData_angularStiffness_set (long jarg1, SoftBodyMaterialData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyMaterialData_angularStiffness_get (long jarg1, SoftBodyMaterialData jarg1_);
+
+	public final static native void SoftBodyMaterialData_volumeStiffness_set (long jarg1, SoftBodyMaterialData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyMaterialData_volumeStiffness_get (long jarg1, SoftBodyMaterialData jarg1_);
+
+	public final static native void SoftBodyMaterialData_flags_set (long jarg1, SoftBodyMaterialData jarg1_, int jarg2);
+
+	public final static native int SoftBodyMaterialData_flags_get (long jarg1, SoftBodyMaterialData jarg1_);
+
+	public final static native long new_SoftBodyMaterialData ();
+
+	public final static native void delete_SoftBodyMaterialData (long jarg1);
+
+	public final static native void SoftBodyNodeData_material_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		SoftBodyMaterialData jarg2_);
+
+	public final static native long SoftBodyNodeData_material_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_position_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyNodeData_position_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_previousPosition_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyNodeData_previousPosition_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_velocity_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyNodeData_velocity_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_accumulatedForce_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyNodeData_accumulatedForce_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_normal_set (long jarg1, SoftBodyNodeData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyNodeData_normal_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_inverseMass_set (long jarg1, SoftBodyNodeData jarg1_, float jarg2);
+
+	public final static native float SoftBodyNodeData_inverseMass_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_area_set (long jarg1, SoftBodyNodeData jarg1_, float jarg2);
+
+	public final static native float SoftBodyNodeData_area_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_attach_set (long jarg1, SoftBodyNodeData jarg1_, int jarg2);
+
+	public final static native int SoftBodyNodeData_attach_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native void SoftBodyNodeData_pad_set (long jarg1, SoftBodyNodeData jarg1_, int jarg2);
+
+	public final static native int SoftBodyNodeData_pad_get (long jarg1, SoftBodyNodeData jarg1_);
+
+	public final static native long new_SoftBodyNodeData ();
+
+	public final static native void delete_SoftBodyNodeData (long jarg1);
+
+	public final static native void SoftBodyLinkData_material_set (long jarg1, SoftBodyLinkData jarg1_, long jarg2,
+		SoftBodyMaterialData jarg2_);
+
+	public final static native long SoftBodyLinkData_material_get (long jarg1, SoftBodyLinkData jarg1_);
+
+	public final static native void SoftBodyLinkData_nodeIndices_set (long jarg1, SoftBodyLinkData jarg1_, int[] jarg2);
+
+	public final static native int[] SoftBodyLinkData_nodeIndices_get (long jarg1, SoftBodyLinkData jarg1_);
+
+	public final static native void SoftBodyLinkData_restLength_set (long jarg1, SoftBodyLinkData jarg1_, float jarg2);
+
+	public final static native float SoftBodyLinkData_restLength_get (long jarg1, SoftBodyLinkData jarg1_);
+
+	public final static native void SoftBodyLinkData_bbending_set (long jarg1, SoftBodyLinkData jarg1_, int jarg2);
+
+	public final static native int SoftBodyLinkData_bbending_get (long jarg1, SoftBodyLinkData jarg1_);
+
+	public final static native long new_SoftBodyLinkData ();
+
+	public final static native void delete_SoftBodyLinkData (long jarg1);
+
+	public final static native void SoftBodyFaceData_normal_set (long jarg1, SoftBodyFaceData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyFaceData_normal_get (long jarg1, SoftBodyFaceData jarg1_);
+
+	public final static native void SoftBodyFaceData_material_set (long jarg1, SoftBodyFaceData jarg1_, long jarg2,
+		SoftBodyMaterialData jarg2_);
+
+	public final static native long SoftBodyFaceData_material_get (long jarg1, SoftBodyFaceData jarg1_);
+
+	public final static native void SoftBodyFaceData_nodeIndices_set (long jarg1, SoftBodyFaceData jarg1_, int[] jarg2);
+
+	public final static native int[] SoftBodyFaceData_nodeIndices_get (long jarg1, SoftBodyFaceData jarg1_);
+
+	public final static native void SoftBodyFaceData_restArea_set (long jarg1, SoftBodyFaceData jarg1_, float jarg2);
+
+	public final static native float SoftBodyFaceData_restArea_get (long jarg1, SoftBodyFaceData jarg1_);
+
+	public final static native long new_SoftBodyFaceData ();
+
+	public final static native void delete_SoftBodyFaceData (long jarg1);
+
+	public final static native void SoftBodyTetraData_c0_set (long jarg1, SoftBodyTetraData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyTetraData_c0_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_material_set (long jarg1, SoftBodyTetraData jarg1_, long jarg2,
+		SoftBodyMaterialData jarg2_);
+
+	public final static native long SoftBodyTetraData_material_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_nodeIndices_set (long jarg1, SoftBodyTetraData jarg1_, int[] jarg2);
+
+	public final static native int[] SoftBodyTetraData_nodeIndices_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_restVolume_set (long jarg1, SoftBodyTetraData jarg1_, float jarg2);
+
+	public final static native float SoftBodyTetraData_restVolume_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_c1_set (long jarg1, SoftBodyTetraData jarg1_, float jarg2);
+
+	public final static native float SoftBodyTetraData_c1_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_c2_set (long jarg1, SoftBodyTetraData jarg1_, float jarg2);
+
+	public final static native float SoftBodyTetraData_c2_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native void SoftBodyTetraData_pad_set (long jarg1, SoftBodyTetraData jarg1_, int jarg2);
+
+	public final static native int SoftBodyTetraData_pad_get (long jarg1, SoftBodyTetraData jarg1_);
+
+	public final static native long new_SoftBodyTetraData ();
+
+	public final static native void delete_SoftBodyTetraData (long jarg1);
+
+	public final static native void SoftRigidAnchorData_c0_set (long jarg1, SoftRigidAnchorData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftRigidAnchorData_c0_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native void SoftRigidAnchorData_c1_set (long jarg1, SoftRigidAnchorData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftRigidAnchorData_c1_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native void SoftRigidAnchorData_localFrame_set (long jarg1, SoftRigidAnchorData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftRigidAnchorData_localFrame_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native void SoftRigidAnchorData_rigidBody_set (long jarg1, SoftRigidAnchorData jarg1_, long jarg2,
+		btRigidBodyFloatData jarg2_);
+
+	public final static native long SoftRigidAnchorData_rigidBody_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native void SoftRigidAnchorData_nodeIndex_set (long jarg1, SoftRigidAnchorData jarg1_, int jarg2);
+
+	public final static native int SoftRigidAnchorData_nodeIndex_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native void SoftRigidAnchorData_c2_set (long jarg1, SoftRigidAnchorData jarg1_, float jarg2);
+
+	public final static native float SoftRigidAnchorData_c2_get (long jarg1, SoftRigidAnchorData jarg1_);
+
+	public final static native long new_SoftRigidAnchorData ();
+
+	public final static native void delete_SoftRigidAnchorData (long jarg1);
+
+	public final static native void SoftBodyConfigData_aeroModel_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_aeroModel_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_baumgarte_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_baumgarte_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_damping_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_damping_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_drag_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_drag_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_lift_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_lift_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_pressure_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_pressure_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_volume_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_volume_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_dynamicFriction_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_dynamicFriction_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_poseMatch_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_poseMatch_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_rigidContactHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_rigidContactHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_kineticContactHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_kineticContactHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softContactHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softContactHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_anchorHardness_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_anchorHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softRigidClusterHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softRigidClusterHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softKineticClusterHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softKineticClusterHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softSoftClusterHardness_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softSoftClusterHardness_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softRigidClusterImpulseSplit_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softRigidClusterImpulseSplit_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softKineticClusterImpulseSplit_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softKineticClusterImpulseSplit_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_softSoftClusterImpulseSplit_set (long jarg1, SoftBodyConfigData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyConfigData_softSoftClusterImpulseSplit_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_maxVolume_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_maxVolume_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_timeScale_set (long jarg1, SoftBodyConfigData jarg1_, float jarg2);
+
+	public final static native float SoftBodyConfigData_timeScale_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_velocityIterations_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_velocityIterations_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_positionIterations_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_positionIterations_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_driftIterations_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_driftIterations_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_clusterIterations_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_clusterIterations_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native void SoftBodyConfigData_collisionFlags_set (long jarg1, SoftBodyConfigData jarg1_, int jarg2);
+
+	public final static native int SoftBodyConfigData_collisionFlags_get (long jarg1, SoftBodyConfigData jarg1_);
+
+	public final static native long new_SoftBodyConfigData ();
+
+	public final static native void delete_SoftBodyConfigData (long jarg1);
+
+	public final static native void SoftBodyPoseData_rot_set (long jarg1, SoftBodyPoseData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftBodyPoseData_rot_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_scale_set (long jarg1, SoftBodyPoseData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftBodyPoseData_scale_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_aqq_set (long jarg1, SoftBodyPoseData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftBodyPoseData_aqq_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_com_set (long jarg1, SoftBodyPoseData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyPoseData_com_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_positions_set (long jarg1, SoftBodyPoseData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyPoseData_positions_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_weights_set (long jarg1, SoftBodyPoseData jarg1_, java.nio.FloatBuffer jarg2);
+
+	public final static native java.nio.FloatBuffer SoftBodyPoseData_weights_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_numPositions_set (long jarg1, SoftBodyPoseData jarg1_, int jarg2);
+
+	public final static native int SoftBodyPoseData_numPositions_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_numWeigts_set (long jarg1, SoftBodyPoseData jarg1_, int jarg2);
+
+	public final static native int SoftBodyPoseData_numWeigts_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_bvolume_set (long jarg1, SoftBodyPoseData jarg1_, int jarg2);
+
+	public final static native int SoftBodyPoseData_bvolume_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_bframe_set (long jarg1, SoftBodyPoseData jarg1_, int jarg2);
+
+	public final static native int SoftBodyPoseData_bframe_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_restVolume_set (long jarg1, SoftBodyPoseData jarg1_, float jarg2);
+
+	public final static native float SoftBodyPoseData_restVolume_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native void SoftBodyPoseData_pad_set (long jarg1, SoftBodyPoseData jarg1_, int jarg2);
+
+	public final static native int SoftBodyPoseData_pad_get (long jarg1, SoftBodyPoseData jarg1_);
+
+	public final static native long new_SoftBodyPoseData ();
+
+	public final static native void delete_SoftBodyPoseData (long jarg1);
+
+	public final static native void SoftBodyClusterData_framexform_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_framexform_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_locii_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_locii_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_invwi_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_invwi_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_com_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_com_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_vimpulses_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_vimpulses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_dimpulses_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_dimpulses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_lv_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_lv_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_av_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_av_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_framerefs_set (long jarg1, SoftBodyClusterData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long SoftBodyClusterData_framerefs_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_nodeIndices_set (long jarg1, SoftBodyClusterData jarg1_,
+		java.nio.IntBuffer jarg2);
+
+	public final static native java.nio.IntBuffer SoftBodyClusterData_nodeIndices_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_masses_set (long jarg1, SoftBodyClusterData jarg1_,
+		java.nio.FloatBuffer jarg2);
+
+	public final static native java.nio.FloatBuffer SoftBodyClusterData_masses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_numFrameRefs_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_numFrameRefs_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_numNodes_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_numNodes_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_numMasses_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_numMasses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_idmass_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_idmass_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_imass_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_imass_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_nvimpulses_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_nvimpulses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_ndimpulses_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_ndimpulses_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_ndamping_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_ndamping_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_ldamping_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_ldamping_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_adamping_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_adamping_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_matching_set (long jarg1, SoftBodyClusterData jarg1_, float jarg2);
+
+	public final static native float SoftBodyClusterData_matching_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_maxSelfCollisionImpulse_set (long jarg1, SoftBodyClusterData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyClusterData_maxSelfCollisionImpulse_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_selfCollisionImpulseFactor_set (long jarg1, SoftBodyClusterData jarg1_,
+		float jarg2);
+
+	public final static native float SoftBodyClusterData_selfCollisionImpulseFactor_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_containsAnchor_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_containsAnchor_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_collide_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_collide_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native void SoftBodyClusterData_clusterIndex_set (long jarg1, SoftBodyClusterData jarg1_, int jarg2);
+
+	public final static native int SoftBodyClusterData_clusterIndex_get (long jarg1, SoftBodyClusterData jarg1_);
+
+	public final static native long new_SoftBodyClusterData ();
+
+	public final static native void delete_SoftBodyClusterData (long jarg1);
+
+	public final static native void btSoftBodyJointData_bodyA_set (long jarg1, btSoftBodyJointData jarg1_, long jarg2);
+
+	public final static native long btSoftBodyJointData_bodyA_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_bodyB_set (long jarg1, btSoftBodyJointData jarg1_, long jarg2);
+
+	public final static native long btSoftBodyJointData_bodyB_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_refs_set (long jarg1, btSoftBodyJointData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btSoftBodyJointData_refs_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_cfm_set (long jarg1, btSoftBodyJointData jarg1_, float jarg2);
+
+	public final static native float btSoftBodyJointData_cfm_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_erp_set (long jarg1, btSoftBodyJointData jarg1_, float jarg2);
+
+	public final static native float btSoftBodyJointData_erp_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_split_set (long jarg1, btSoftBodyJointData jarg1_, float jarg2);
+
+	public final static native float btSoftBodyJointData_split_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_delete_set (long jarg1, btSoftBodyJointData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyJointData_delete_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_relPosition_set (long jarg1, btSoftBodyJointData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btSoftBodyJointData_relPosition_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_bodyAtype_set (long jarg1, btSoftBodyJointData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyJointData_bodyAtype_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_bodyBtype_set (long jarg1, btSoftBodyJointData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyJointData_bodyBtype_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_jointType_set (long jarg1, btSoftBodyJointData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyJointData_jointType_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native void btSoftBodyJointData_pad_set (long jarg1, btSoftBodyJointData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyJointData_pad_get (long jarg1, btSoftBodyJointData jarg1_);
+
+	public final static native long new_btSoftBodyJointData ();
+
+	public final static native void delete_btSoftBodyJointData (long jarg1);
+
+	public final static native void btSoftBodyFloatData_collisionObjectData_set (long jarg1, btSoftBodyFloatData jarg1_,
+		long jarg2, btCollisionObjectFloatData jarg2_);
+
+	public final static native long btSoftBodyFloatData_collisionObjectData_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_pose_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyPoseData jarg2_);
+
+	public final static native long btSoftBodyFloatData_pose_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_materials_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2);
+
+	public final static native long btSoftBodyFloatData_materials_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_nodes_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyNodeData jarg2_);
+
+	public final static native long btSoftBodyFloatData_nodes_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_links_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyLinkData jarg2_);
+
+	public final static native long btSoftBodyFloatData_links_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_faces_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyFaceData jarg2_);
+
+	public final static native long btSoftBodyFloatData_faces_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_tetrahedra_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyTetraData jarg2_);
+
+	public final static native long btSoftBodyFloatData_tetrahedra_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_anchors_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftRigidAnchorData jarg2_);
+
+	public final static native long btSoftBodyFloatData_anchors_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_clusters_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyClusterData jarg2_);
+
+	public final static native long btSoftBodyFloatData_clusters_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_joints_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		btSoftBodyJointData jarg2_);
+
+	public final static native long btSoftBodyFloatData_joints_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numMaterials_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numMaterials_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numNodes_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numNodes_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numLinks_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numLinks_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numFaces_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numFaces_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numTetrahedra_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numTetrahedra_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numAnchors_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numAnchors_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numClusters_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numClusters_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_numJoints_set (long jarg1, btSoftBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btSoftBodyFloatData_numJoints_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native void btSoftBodyFloatData_config_set (long jarg1, btSoftBodyFloatData jarg1_, long jarg2,
+		SoftBodyConfigData jarg2_);
+
+	public final static native long btSoftBodyFloatData_config_get (long jarg1, btSoftBodyFloatData jarg1_);
+
+	public final static native long new_btSoftBodyFloatData ();
+
+	public final static native void delete_btSoftBodyFloatData (long jarg1);
+
+	public final static native long new_fDrawFlags ();
+
+	public final static native void delete_fDrawFlags (long jarg1);
+
+	public final static native void btSoftBodyHelpers_Draw__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_,
+		int jarg3);
+
+	public final static native void btSoftBodyHelpers_Draw__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void btSoftBodyHelpers_DrawInfos (long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_,
+		boolean jarg3, boolean jarg4, boolean jarg5);
+
+	public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3, int jarg4);
+
+	public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3);
+
+	public final static native void btSoftBodyHelpers_DrawNodeTree__SWIG_2 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3, int jarg4);
+
+	public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3);
+
+	public final static native void btSoftBodyHelpers_DrawFaceTree__SWIG_2 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_0 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3, int jarg4);
+
+	public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_1 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_, int jarg3);
+
+	public final static native void btSoftBodyHelpers_DrawClusterTree__SWIG_2 (long jarg1, btSoftBody jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void btSoftBodyHelpers_DrawFrame (long jarg1, btSoftBody jarg1_, long jarg2, btIDebugDraw jarg2_);
+
+	public final static native long btSoftBodyHelpers_CreateRope (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2,
+		Vector3 jarg3, int jarg4, int jarg5);
+
+	public final static native long btSoftBodyHelpers_CreatePatch (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9);
+
+	public final static native long btSoftBodyHelpers_CreatePatchUV__SWIG_0 (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9, java.nio.FloatBuffer jarg10);
+
+	public final static native long btSoftBodyHelpers_CreatePatchUV__SWIG_1 (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9);
+
+	public final static native float btSoftBodyHelpers_CalculateUV (int jarg1, int jarg2, int jarg3, int jarg4, int jarg5);
+
+	public final static native long btSoftBodyHelpers_CreateEllipsoid (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2,
+		Vector3 jarg3, int jarg4);
+
+	public final static native long btSoftBodyHelpers_CreateFromTriMesh__SWIG_0 (long jarg1, btSoftBodyWorldInfo jarg1_,
+		java.nio.FloatBuffer jarg2, java.nio.IntBuffer jarg3, int jarg4, boolean jarg5);
+
+	public final static native long btSoftBodyHelpers_CreateFromTriMesh__SWIG_1 (long jarg1, btSoftBodyWorldInfo jarg1_,
+		java.nio.FloatBuffer jarg2, java.nio.IntBuffer jarg3, int jarg4);
+
+	public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_0 (long jarg1, btSoftBodyWorldInfo jarg1_,
+		long jarg2, btVector3 jarg2_, int jarg3, boolean jarg4);
+
+	public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_1 (long jarg1, btSoftBodyWorldInfo jarg1_,
+		long jarg2, btVector3 jarg2_, int jarg3);
+
+	public final static native long btSoftBodyHelpers_CreateFromTetGenData (long jarg1, btSoftBodyWorldInfo jarg1_, String jarg2,
+		String jarg3, String jarg4, boolean jarg5, boolean jarg6, boolean jarg7);
+
+	public final static native void btSoftBodyHelpers_ReoptimizeLinkOrder (long jarg1, btSoftBody jarg1_);
+
+	public final static native long new_btSoftBodyHelpers ();
+
+	public final static native void delete_btSoftBodyHelpers (long jarg1);
+
+	public final static native void btSoftBodyCollisionShape_body_set (long jarg1, btSoftBodyCollisionShape jarg1_, long jarg2,
+		btSoftBody jarg2_);
+
+	public final static native long btSoftBodyCollisionShape_body_get (long jarg1, btSoftBodyCollisionShape jarg1_);
+
+	public final static native long new_btSoftBodyCollisionShape (long jarg1, btSoftBody jarg1_);
+
+	public final static native void delete_btSoftBodyCollisionShape (long jarg1);
+
+	public final static native void btSoftClusterCollisionShape_cluster_set (long jarg1, btSoftClusterCollisionShape jarg1_,
+		long jarg2, btSoftBody.Cluster jarg2_);
+
+	public final static native long btSoftClusterCollisionShape_cluster_get (long jarg1, btSoftClusterCollisionShape jarg1_);
+
+	public final static native long new_btSoftClusterCollisionShape (long jarg1, btSoftBody.Cluster jarg1_);
+
+	public final static native int btSoftClusterCollisionShape_getShapeType (long jarg1, btSoftClusterCollisionShape jarg1_);
+
+	public final static native void delete_btSoftClusterCollisionShape (long jarg1);
+
+	public final static native Matrix3 Lerp (Matrix3 jarg1, Matrix3 jarg2, float jarg3);
+
+	public final static native Vector3 Clamp (Vector3 jarg1, float jarg2);
+
+	public final static native float ClusterMetric (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Matrix3 ScaleAlongAxis (Vector3 jarg1, float jarg2);
+
+	public final static native Matrix3 Cross (Vector3 jarg1);
+
+	public final static native Matrix3 Diagonal (float jarg1);
+
+	public final static native Matrix3 Add (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native Matrix3 Sub (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native Matrix3 Mul (Matrix3 jarg1, float jarg2);
+
+	public final static native void Orthogonalize (Matrix3 jarg1);
+
+	public final static native Matrix3 MassMatrix (float jarg1, Matrix3 jarg2, Vector3 jarg3);
+
+	public final static native Matrix3 ImpulseMatrix__SWIG_0 (float jarg1, float jarg2, float jarg3, Matrix3 jarg4, Vector3 jarg5);
+
+	public final static native Matrix3 ImpulseMatrix__SWIG_1 (float jarg1, Matrix3 jarg2, Vector3 jarg3, float jarg4,
+		Matrix3 jarg5, Vector3 jarg6);
+
+	public final static native Matrix3 AngularImpulseMatrix (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native Vector3 ProjectOnAxis (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 ProjectOnPlane (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native void ProjectOrigin__SWIG_0 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, long jarg4);
+
+	public final static native void ProjectOrigin__SWIG_1 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5);
+
+	public final static native Vector3 BaryCoord (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native float ImplicitSolve__SWIG_0 (long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2, Vector3 jarg3,
+		float jarg4, int jarg5);
+
+	public final static native float ImplicitSolve__SWIG_1 (long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2, Vector3 jarg3,
+		float jarg4);
+
+	public final static native void EvaluateMedium (long jarg1, btSoftBodyWorldInfo jarg1_, Vector3 jarg2, long jarg3,
+		btSoftBody.sMedium jarg3_);
+
+	public final static native Vector3 NormalizeAny (Vector3 jarg1);
+
+	public final static native long VolumeOf__SWIG_0 (long jarg1, btSoftBody.Face jarg1_, float jarg2);
+
+	public final static native Vector3 CenterOf (long jarg1, btSoftBody.Face jarg1_);
+
+	public final static native float AreaOf (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native float VolumeOf__SWIG_1 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native void ApplyClampedForce (long jarg1, btSoftBody.Node jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native int MatchEdge (long jarg1, btSoftBody.Node jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3,
+		btSoftBody.Node jarg3_, long jarg4, btSoftBody.Node jarg4_);
+
+	public final static native int btEigen_system__SWIG_0 (Matrix3 jarg1, long jarg2, btMatrix3x3 jarg2_, long jarg3,
+		btVector3 jarg3_);
+
+	public final static native int btEigen_system__SWIG_1 (Matrix3 jarg1, long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long new_btEigen ();
+
+	public final static native void delete_btEigen (long jarg1);
+
+	public final static native int PolarDecompose (Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
+
+	public final static native void btSoftColliders_ClusterBase_erp_set (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_ClusterBase_erp_get (long jarg1, btSoftColliders.ClusterBase jarg1_);
+
+	public final static native void btSoftColliders_ClusterBase_idt_set (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_ClusterBase_idt_get (long jarg1, btSoftColliders.ClusterBase jarg1_);
+
+	public final static native void btSoftColliders_ClusterBase_margin_set (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_ClusterBase_margin_get (long jarg1, btSoftColliders.ClusterBase jarg1_);
+
+	public final static native void btSoftColliders_ClusterBase_friction_set (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_ClusterBase_friction_get (long jarg1, btSoftColliders.ClusterBase jarg1_);
+
+	public final static native void btSoftColliders_ClusterBase_threshold_set (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_ClusterBase_threshold_get (long jarg1, btSoftColliders.ClusterBase jarg1_);
+
+	public final static native long new_btSoftColliders_ClusterBase ();
+
+	public final static native boolean btSoftColliders_ClusterBase_SolveContact (long jarg1, btSoftColliders.ClusterBase jarg1_,
+		long jarg2, btGjkEpaSolver2.sResults jarg2_, long jarg3, btSoftBody.Body jarg3_, long jarg4, btSoftBody.Body jarg4_,
+		long jarg5, btSoftBody.CJoint jarg5_);
+
+	public final static native void delete_btSoftColliders_ClusterBase (long jarg1);
+
+	public final static native void btSoftColliders_CollideCL_RS_psb_set (long jarg1, btSoftColliders.CollideCL_RS jarg1_,
+		long jarg2, btSoftBody jarg2_);
+
+	public final static native long btSoftColliders_CollideCL_RS_psb_get (long jarg1, btSoftColliders.CollideCL_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideCL_RS_colObjWrap_set (long jarg1, btSoftColliders.CollideCL_RS jarg1_,
+		long jarg2, btCollisionObjectWrapper jarg2_);
+
+	public final static native long btSoftColliders_CollideCL_RS_colObjWrap_get (long jarg1, btSoftColliders.CollideCL_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideCL_RS_ProcessColObj (long jarg1, btSoftColliders.CollideCL_RS jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
+
+	public final static native long new_btSoftColliders_CollideCL_RS ();
+
+	public final static native void delete_btSoftColliders_CollideCL_RS (long jarg1);
+
+	public final static native void btSoftColliders_CollideCL_SS_bodies_set (long jarg1, btSoftColliders.CollideCL_SS jarg1_,
+		long jarg2);
+
+	public final static native long btSoftColliders_CollideCL_SS_bodies_get (long jarg1, btSoftColliders.CollideCL_SS jarg1_);
+
+	public final static native void btSoftColliders_CollideCL_SS_ProcessSoftSoft (long jarg1, btSoftColliders.CollideCL_SS jarg1_,
+		long jarg2, btSoftBody jarg2_, long jarg3, btSoftBody jarg3_);
+
+	public final static native long new_btSoftColliders_CollideCL_SS ();
+
+	public final static native void delete_btSoftColliders_CollideCL_SS (long jarg1);
+
+	public final static native void btSoftColliders_CollideSDF_RS_DoNode (long jarg1, btSoftColliders.CollideSDF_RS jarg1_,
+		long jarg2, btSoftBody.Node jarg2_);
+
+	public final static native void btSoftColliders_CollideSDF_RS_psb_set (long jarg1, btSoftColliders.CollideSDF_RS jarg1_,
+		long jarg2, btSoftBody jarg2_);
+
+	public final static native long btSoftColliders_CollideSDF_RS_psb_get (long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideSDF_RS_colObj1Wrap_set (long jarg1,
+		btSoftColliders.CollideSDF_RS jarg1_, long jarg2, btCollisionObjectWrapper jarg2_);
+
+	public final static native long btSoftColliders_CollideSDF_RS_colObj1Wrap_get (long jarg1,
+		btSoftColliders.CollideSDF_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideSDF_RS_rigidBody_set (long jarg1, btSoftColliders.CollideSDF_RS jarg1_,
+		long jarg2, btRigidBody jarg2_);
+
+	public final static native long btSoftColliders_CollideSDF_RS_rigidBody_get (long jarg1, btSoftColliders.CollideSDF_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideSDF_RS_dynmargin_set (long jarg1, btSoftColliders.CollideSDF_RS jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_CollideSDF_RS_dynmargin_get (long jarg1,
+		btSoftColliders.CollideSDF_RS jarg1_);
+
+	public final static native void btSoftColliders_CollideSDF_RS_stamargin_set (long jarg1, btSoftColliders.CollideSDF_RS jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_CollideSDF_RS_stamargin_get (long jarg1,
+		btSoftColliders.CollideSDF_RS jarg1_);
+
+	public final static native long new_btSoftColliders_CollideSDF_RS ();
+
+	public final static native void delete_btSoftColliders_CollideSDF_RS (long jarg1);
+
+	public final static native void btSoftColliders_CollideVF_SS_psb_set (long jarg1, btSoftColliders.CollideVF_SS jarg1_,
+		long jarg2);
+
+	public final static native long btSoftColliders_CollideVF_SS_psb_get (long jarg1, btSoftColliders.CollideVF_SS jarg1_);
+
+	public final static native void btSoftColliders_CollideVF_SS_mrg_set (long jarg1, btSoftColliders.CollideVF_SS jarg1_,
+		float jarg2);
+
+	public final static native float btSoftColliders_CollideVF_SS_mrg_get (long jarg1, btSoftColliders.CollideVF_SS jarg1_);
+
+	public final static native long new_btSoftColliders_CollideVF_SS ();
+
+	public final static native void delete_btSoftColliders_CollideVF_SS (long jarg1);
+
+	public final static native long new_btSoftColliders ();
+
+	public final static native void delete_btSoftColliders (long jarg1);
+
+	public final static native long new_btSoftBodyRigidBodyCollisionConfiguration__SWIG_0 (long jarg1,
+		btDefaultCollisionConstructionInfo jarg1_);
+
+	public final static native long new_btSoftBodyRigidBodyCollisionConfiguration__SWIG_1 ();
+
+	public final static native void delete_btSoftBodyRigidBodyCollisionConfiguration (long jarg1);
+
+	public final static native void delete_btVertexBufferDescriptor (long jarg1);
+
+	public final static native boolean btVertexBufferDescriptor_hasVertexPositions (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native boolean btVertexBufferDescriptor_hasNormals (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native int btVertexBufferDescriptor_getBufferType (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native int btVertexBufferDescriptor_getVertexOffset (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native int btVertexBufferDescriptor_getVertexStride (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native int btVertexBufferDescriptor_getNormalOffset (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native int btVertexBufferDescriptor_getNormalStride (long jarg1, btVertexBufferDescriptor jarg1_);
+
+	public final static native long new_btCPUVertexBufferDescriptor__SWIG_0 (java.nio.FloatBuffer jarg1, int jarg2, int jarg3);
+
+	public final static native long new_btCPUVertexBufferDescriptor__SWIG_1 (java.nio.FloatBuffer jarg1, int jarg2, int jarg3,
+		int jarg4, int jarg5);
+
+	public final static native void delete_btCPUVertexBufferDescriptor (long jarg1);
+
+	public final static native java.nio.FloatBuffer btCPUVertexBufferDescriptor_getBasePointer (long jarg1,
+		btCPUVertexBufferDescriptor jarg1_);
+
+	public final static native long new_btSoftRigidCollisionAlgorithm (long jarg1, btPersistentManifold jarg1_, long jarg2,
+		btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4,
+		btCollisionObjectWrapper jarg4_, boolean jarg5);
+
+	public final static native void delete_btSoftRigidCollisionAlgorithm (long jarg1);
+
+	public final static native long new_btSoftRigidCollisionAlgorithm_CreateFunc ();
+
+	public final static native void delete_btSoftRigidCollisionAlgorithm_CreateFunc (long jarg1);
+
+	public final static native long new_btSoftRigidDynamicsWorld__SWIG_0 (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_,
+		long jarg5, btSoftBodySolver jarg5_);
+
+	public final static native long new_btSoftRigidDynamicsWorld__SWIG_1 (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btSoftRigidDynamicsWorld (long jarg1);
+
+	public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_0 (long jarg1, btSoftRigidDynamicsWorld jarg1_,
+		long jarg2, btSoftBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_1 (long jarg1, btSoftRigidDynamicsWorld jarg1_,
+		long jarg2, btSoftBody jarg2_, int jarg3);
+
+	public final static native void btSoftRigidDynamicsWorld_addSoftBody__SWIG_2 (long jarg1, btSoftRigidDynamicsWorld jarg1_,
+		long jarg2, btSoftBody jarg2_);
+
+	public final static native void btSoftRigidDynamicsWorld_removeSoftBody (long jarg1, btSoftRigidDynamicsWorld jarg1_,
+		long jarg2, btSoftBody jarg2_);
+
+	public final static native int btSoftRigidDynamicsWorld_getDrawFlags (long jarg1, btSoftRigidDynamicsWorld jarg1_);
+
+	public final static native void btSoftRigidDynamicsWorld_setDrawFlags (long jarg1, btSoftRigidDynamicsWorld jarg1_, int jarg2);
+
+	public final static native long btSoftRigidDynamicsWorld_getWorldInfo (long jarg1, btSoftRigidDynamicsWorld jarg1_);
+
+	public final static native long btSoftRigidDynamicsWorld_getWorldInfoConst (long jarg1, btSoftRigidDynamicsWorld jarg1_);
+
+	public final static native long btSoftRigidDynamicsWorld_getSoftBodyArray (long jarg1, btSoftRigidDynamicsWorld jarg1_);
+
+	public final static native long btSoftRigidDynamicsWorld_getSoftBodyArrayConst (long jarg1, btSoftRigidDynamicsWorld jarg1_);
+
+	public final static native void btSoftRigidDynamicsWorld_rayTestSingle (Matrix4 jarg1, Matrix4 jarg2, long jarg3,
+		btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, Matrix4 jarg5, long jarg6, RayResultCallback jarg6_);
+
+	public final static native long new_btSoftSoftCollisionAlgorithm__SWIG_0 (long jarg1,
+		btCollisionAlgorithmConstructionInfo jarg1_);
+
+	public final static native long new_btSoftSoftCollisionAlgorithm__SWIG_1 (long jarg1, btPersistentManifold jarg1_, long jarg2,
+		btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4,
+		btCollisionObjectWrapper jarg4_);
+
+	public final static native void delete_btSoftSoftCollisionAlgorithm (long jarg1);
+
+	public final static native long new_btSoftSoftCollisionAlgorithm_CreateFunc ();
+
+	public final static native void delete_btSoftSoftCollisionAlgorithm_CreateFunc (long jarg1);
+
+	public final static native long new_btSoftMultiBodyDynamicsWorld__SWIG_0 (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_,
+		long jarg5, btSoftBodySolver jarg5_);
+
+	public final static native long new_btSoftMultiBodyDynamicsWorld__SWIG_1 (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btSoftMultiBodyDynamicsWorld (long jarg1);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_0 (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_1 (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_, int jarg3);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_addSoftBody__SWIG_2 (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_, long jarg2, btSoftBody jarg2_);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_removeSoftBody (long jarg1, btSoftMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btSoftBody jarg2_);
+
+	public final static native int btSoftMultiBodyDynamicsWorld_getDrawFlags (long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_setDrawFlags (long jarg1, btSoftMultiBodyDynamicsWorld jarg1_,
+		int jarg2);
+
+	public final static native long btSoftMultiBodyDynamicsWorld_getWorldInfo (long jarg1, btSoftMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long btSoftMultiBodyDynamicsWorld_getWorldInfoConst (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long btSoftMultiBodyDynamicsWorld_getSoftBodyArray (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long btSoftMultiBodyDynamicsWorld_getSoftBodyArrayConst (long jarg1,
+		btSoftMultiBodyDynamicsWorld jarg1_);
+
+	public final static native void btSoftMultiBodyDynamicsWorld_rayTestSingle (Matrix4 jarg1, Matrix4 jarg2, long jarg3,
+		btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, Matrix4 jarg5, long jarg6, RayResultCallback jarg6_);
+
+	public final static native long btDefaultSoftBodySolver_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Material_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Feature_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Node_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Link_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Face_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Tetra_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_Note_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_LJoint_Specs_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_LJoint_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_AJoint_Specs_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_AJoint_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_CJoint_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_RayFromToCaster_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBody_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyTriangleCallback_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyConcaveCollisionAlgorithm_CreateFunc_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyConcaveCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyConcaveCollisionAlgorithm_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyCollisionShape_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftClusterCollisionShape_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftColliders_ClusterBase_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftColliders_CollideCL_RS_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftColliders_CollideCL_SS_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftColliders_CollideSDF_RS_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftColliders_CollideVF_SS_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftBodyRigidBodyCollisionConfiguration_SWIGUpcast (long jarg1);
+
+	public final static native long btCPUVertexBufferDescriptor_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftRigidCollisionAlgorithm_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftRigidDynamicsWorld_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftSoftCollisionAlgorithm_CreateFunc_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftSoftCollisionAlgorithm_SWIGUpcast (long jarg1);
+
+	public final static native long btSoftMultiBodyDynamicsWorld_SWIGUpcast (long jarg1);
 }

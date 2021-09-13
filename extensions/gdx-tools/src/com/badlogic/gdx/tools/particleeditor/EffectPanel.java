@@ -61,7 +61,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setHigh(1);
 
 		emitter.setMaxParticleCount(25);
-		emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PARTICLE }));
+		emitter.setImagePaths(new Array<String>(new String[] {ParticleEditor.DEFAULT_PARTICLE}));
 
 		addEmitter(name, select, emitter);
 		return emitter;
@@ -102,7 +102,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 
 		emitter.setMaxParticleCount(200);
-		emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PARTICLE }));
+		emitter.setImagePaths(new Array<String>(new String[] {ParticleEditor.DEFAULT_PARTICLE}));
 
 		addEmitter(name, select, emitter);
 		return emitter;
@@ -149,8 +149,8 @@ class EffectPanel extends JPanel {
 		try {
 			File effectFile = new File(dir, file);
 			effect.loadEmitters(Gdx.files.absolute(effectFile.getAbsolutePath()));
-			if (mergeIntoCurrent){
-				for (ParticleEmitter emitter : effect.getEmitters()){
+			if (mergeIntoCurrent) {
+				for (ParticleEmitter emitter : effect.getEmitters()) {
 					addEmitter(emitter.getName(), false, emitter);
 				}
 			} else {
@@ -349,8 +349,8 @@ class EffectPanel extends JPanel {
 		}
 		{
 			JScrollPane scroll = new JScrollPane();
-			add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,
-				0, 0, 6), 0, 0));
+			add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(0, 0, 0, 6), 0, 0));
 			{
 				emitterTable = new JTable() {
 					public Class getColumnClass (int column) {

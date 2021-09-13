@@ -27,8 +27,8 @@ import com.badlogic.gdx.utils.I18NBundle;
 
 /** {@link AssetLoader} for {@link I18NBundle} instances. The I18NBundle is loaded asynchronously.
  * <p>
- * Notice that you can't load two bundles with the same base name and different locale or encoding using the same {@link AssetManager}.
- * For example, if you try to load the 2 bundles below
+ * Notice that you can't load two bundles with the same base name and different locale or encoding using the same
+ * {@link AssetManager}. For example, if you try to load the 2 bundles below
  * 
  * <pre>
  * manager.load(&quot;i18n/message&quot;, I18NBundle.class, new I18NBundleParameter(Locale.ITALIAN));

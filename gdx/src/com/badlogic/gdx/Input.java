@@ -18,7 +18,8 @@ package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.ObjectIntMap;
 
-/** <p>
+/**
+ * <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
  * all backends.
@@ -212,13 +213,13 @@ public interface Input {
 		public static final int NUMPAD_7 = 151;
 		public static final int NUMPAD_8 = 152;
 		public static final int NUMPAD_9 = 153;
-		
+
 		public static final int NUMPAD_DIVIDE = 154;
 		public static final int NUMPAD_MULTIPLY = 155;
-		public static final int NUMPAD_SUBTRACT= 156;
+		public static final int NUMPAD_SUBTRACT = 156;
 		public static final int NUMPAD_ADD = 157;
 		public static final int NUMPAD_DOT = 158;
-		public static final int NUMPAD_COMMA= 159;
+		public static final int NUMPAD_COMMA = 159;
 		public static final int NUMPAD_ENTER = 160;
 		public static final int NUMPAD_EQUALS = 161;
 		public static final int NUMPAD_LEFT_PAREN = 162;
@@ -612,7 +613,7 @@ public interface Input {
 				return "Pause";
 			case PRINT_SCREEN:
 				return "Print";
-				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
+			// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 			default:
 				// key name not found
 				return null;
@@ -661,7 +662,7 @@ public interface Input {
 
 	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ ();
-	
+
 	/** @return The maximum number of pointers supported */
 	public int getMaxPointers ();
 
@@ -721,23 +722,23 @@ public interface Input {
 	/** @return the pressure of the first pointer */
 	public float getPressure ();
 
-	/** Returns the pressure of the given pointer, where 0 is untouched. On Android it should be
-	 * up to 1.0, but it can go above that slightly and its not consistent between devices. On iOS 1.0 is the normal touch
-	 * and significantly more of hard touch. Check relevant manufacturer documentation for details.
-	 * Check availability with {@link Input#isPeripheralAvailable(Peripheral)}. If not supported, returns 1.0 when touched.
+	/** Returns the pressure of the given pointer, where 0 is untouched. On Android it should be up to 1.0, but it can go above
+	 * that slightly and its not consistent between devices. On iOS 1.0 is the normal touch and significantly more of hard touch.
+	 * Check relevant manufacturer documentation for details. Check availability with
+	 * {@link Input#isPeripheralAvailable(Peripheral)}. If not supported, returns 1.0 when touched.
 	 *
 	 * @param pointer the pointer id.
 	 * @return the pressure */
 	public float getPressure (int pointer);
 
-	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
-	 * constant is meaningful before version 4.0.
+	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the
+	 * Buttons#LEFT constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
-	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the Buttons#LEFT
-	 * constant is meaningful before version 4.0. On WebGL (GWT), only LEFT, RIGHT and MIDDLE buttons are supported.
+	/** Returns whether a given button has just been pressed. Button constants can be found in {@link Buttons}. On Android only the
+	 * Buttons#LEFT constant is meaningful before version 4.0. On WebGL (GWT), only LEFT, RIGHT and MIDDLE buttons are supported.
 	 *
 	 * @param button the button to check.
 	 * @return true or false. */
@@ -755,18 +756,18 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyJustPressed (int key);
 
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Will use the Default keyboard type.
-	 * Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering thread.
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as
+	 * a message for the user. Will use the Default keyboard type. Once the dialog has been closed the provided
+	 * {@link TextInputListener} will be called on the rendering thread.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text, String hint);
 
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
-	 * thread.
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as
+	 * a message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
+	 * rendering thread.
 	 *
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
@@ -795,9 +796,9 @@ public interface Input {
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
-	/** Vibrate with a given pattern. Pass in an array of ints that are the times at which to turn on or off the vibrator. The first
-	 * one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index into
-	 * the pattern at which to start the repeat.
+	/** Vibrate with a given pattern. Pass in an array of ints that are the times at which to turn on or off the vibrator. The
+	 * first one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index
+	 * into the pattern at which to start the repeat.
 	 * @param pattern an array of longs of times to turn the vibrator on or off.
 	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat. */
 	public void vibrate (long[] pattern, int repeat);
@@ -809,83 +810,76 @@ public interface Input {
 	 * center.
 	 * 
 	 * @see <a
-	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],
+	 *      float[], float[], float[])</a>
 	 * @return the azimuth in degrees */
 	public float getAzimuth ();
 
 	/** The pitch is the angle of the device's orientation around the x-axis. The positive x-axis roughly points to the west and is
 	 * orthogonal to the z- and y-axis.
 	 * @see <a
-	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],
+	 *      float[], float[], float[])</a>
 	 * @return the pitch in degrees */
 	public float getPitch ();
 
 	/** The roll is the angle of the device's orientation around the y-axis. The positive y-axis points to the magnetic north pole
 	 * of the earth.
 	 * @see <a
-	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],
+	 *      float[], float[], float[])</a>
 	 * @return the roll in degrees */
 	public float getRoll ();
 
-	/** Returns the rotation matrix describing the devices rotation as per <a href=
-	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])"
-	 * >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix if the platform
-	 * does not have an accelerometer.
+	/** Returns the rotation matrix describing the devices rotation as per
+	 * <a href= "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[],
+	 * float[], float[])" >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix
+	 * if the platform does not have an accelerometer.
 	 * @param matrix */
 	public void getRotationMatrix (float[] matrix);
 
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();
 
-	/**
-	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	/** @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
 	 *
-	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
-	 * on the desktop.
+	 *             Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have
+	 *             no effect on the desktop.
 	 *
 	 * @param catchBack whether to catch the back button */
 	@Deprecated
 	public void setCatchBackKey (boolean catchBack);
 
-	/**
-	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+	/** @deprecated use {@link Input#isCatchKey(int keycode)} instead
 	 * @return whether the back button is currently being caught */
 	@Deprecated
 	public boolean isCatchBackKey ();
 
-	/**
-	 * @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
+	/** @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
 	 *
-	 * Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
-	 * effect on the desktop.
+	 *             Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up.
+	 *             Will have no effect on the desktop.
 	 * 
 	 * @param catchMenu whether to catch the menu button */
 	@Deprecated
 	public void setCatchMenuKey (boolean catchMenu);
-	
-	/**
-	 * @deprecated use {@link Input#isCatchKey(int keycode)} instead
+
+	/** @deprecated use {@link Input#isCatchKey(int keycode)} instead
 	 * @return whether the menu button is currently being caught */
 	@Deprecated
 	public boolean isCatchMenuKey ();
 
-	/**
-	 * Sets whether the given key on Android or GWT should be caught. No effect on other platforms.
-	 * All keys that are not caught may be handled by other apps or background processes on Android, or may
-	 * trigger default browser behaviour on GWT. For example, media or volume buttons are handled by
-	 * background media players if present, or Space key triggers a scroll. All keys you need to control your
-	 * game should be caught to prevent unintended behaviour.
+	/** Sets whether the given key on Android or GWT should be caught. No effect on other platforms. All keys that are not caught
+	 * may be handled by other apps or background processes on Android, or may trigger default browser behaviour on GWT. For
+	 * example, media or volume buttons are handled by background media players if present, or Space key triggers a scroll. All
+	 * keys you need to control your game should be caught to prevent unintended behaviour.
 	 *
-	 * @param keycode  keycode to catch
-	 * @param catchKey whether to catch the given keycode
-	 */
+	 * @param keycode keycode to catch
+	 * @param catchKey whether to catch the given keycode */
 	public void setCatchKey (int keycode, boolean catchKey);
 
-	/**
-	 *
-	 * @param keycode keycode to check if caught
-	 * @return true if the given keycode is configured to be caught
-	 */
+	/** @param keycode keycode to check if caught
+	 * @return true if the given keycode is configured to be caught */
 	public boolean isCatchKey (int keycode);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the

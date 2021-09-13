@@ -25,8 +25,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-/** Compute near and far plane based on renderable providers passed in constructor. Renderable providers array should contains only
- * renderable in camera frustum.
+/** Compute near and far plane based on renderable providers passed in constructor. Renderable providers array should contains
+ * only renderable in camera frustum.
  * @author realitix */
 public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	/** Near and far initialization before computation. You should put the same values as the main camera */

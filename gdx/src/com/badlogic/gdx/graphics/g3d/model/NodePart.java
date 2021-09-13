@@ -55,10 +55,10 @@ public class NodePart {
 
 	// FIXME add copy constructor and override #equals.
 
-	/** Convenience method to set the material, mesh, meshPartOffset, meshPartSize, primitiveType and bones members of the specified
-	 * Renderable. The other member of the provided {@link Renderable} remain untouched. Note that the material, mesh and bones
-	 * members are referenced, not copied. Any changes made to those objects will be reflected in both the NodePart and Renderable
-	 * object.
+	/** Convenience method to set the material, mesh, meshPartOffset, meshPartSize, primitiveType and bones members of the
+	 * specified Renderable. The other member of the provided {@link Renderable} remain untouched. Note that the material, mesh and
+	 * bones members are referenced, not copied. Any changes made to those objects will be reflected in both the NodePart and
+	 * Renderable object.
 	 * @param out The Renderable of which to set the members to the values of this NodePart. */
 	public Renderable setRenderable (final Renderable out) {
 		out.material = material;
@@ -80,17 +80,16 @@ public class NodePart {
 			bones = null;
 		} else {
 			if (invBoneBindTransforms == null)
-				invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true, other.invBoneBindTransforms.size, Node.class, Matrix4.class);
+				invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true, other.invBoneBindTransforms.size, Node.class,
+					Matrix4.class);
 			else
 				invBoneBindTransforms.clear();
 			invBoneBindTransforms.putAll(other.invBoneBindTransforms);
-			
-			if (bones == null || bones.length != invBoneBindTransforms.size)
-				bones = new Matrix4[invBoneBindTransforms.size];
-			
+
+			if (bones == null || bones.length != invBoneBindTransforms.size) bones = new Matrix4[invBoneBindTransforms.size];
+
 			for (int i = 0; i < bones.length; i++) {
-				if (bones[i] == null)
-					bones[i] = new Matrix4();
+				if (bones[i] == null) bones[i] = new Matrix4();
 			}
 		}
 		return this;

@@ -184,12 +184,12 @@ public class SpriteCache implements Disposable {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		if (cacheID == caches.size - 1) {
 			Cache oldCache = caches.removeIndex(cacheID);
-			((Buffer) mesh.getVerticesBuffer()).limit(oldCache.offset);
+			((Buffer)mesh.getVerticesBuffer()).limit(oldCache.offset);
 			beginCache();
 			return;
 		}
 		currentCache = caches.get(cacheID);
-		((Buffer) mesh.getVerticesBuffer()).position(currentCache.offset);
+		((Buffer)mesh.getVerticesBuffer()).position(currentCache.offset);
 	}
 
 	/** Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}. */
@@ -206,7 +206,7 @@ public class SpriteCache implements Disposable {
 			for (int i = 0, n = counts.size; i < n; i++)
 				cache.counts[i] = counts.get(i);
 
-			((Buffer) mesh.getVerticesBuffer()).flip();
+			((Buffer)mesh.getVerticesBuffer()).flip();
 		} else {
 			// Redefine existing cache.
 			if (cacheCount > cache.maxCount) {
@@ -226,9 +226,9 @@ public class SpriteCache implements Disposable {
 				cache.counts[i] = counts.get(i);
 
 			FloatBuffer vertices = mesh.getVerticesBuffer();
-			((Buffer) vertices).position(0);
+			((Buffer)vertices).position(0);
 			Cache lastCache = caches.get(caches.size - 1);
-			((Buffer) vertices).limit(lastCache.offset + lastCache.maxCount);
+			((Buffer)vertices).limit(lastCache.offset + lastCache.maxCount);
 		}
 
 		currentCache = null;
@@ -241,7 +241,7 @@ public class SpriteCache implements Disposable {
 	/** Invalidates all cache IDs and resets the SpriteCache so new caches can be added. */
 	public void clear () {
 		caches.clear();
-		((Buffer) mesh.getVerticesBuffer()).clear().flip();
+		((Buffer)mesh.getVerticesBuffer()).clear().flip();
 	}
 
 	/** Adds the specified vertices to the cache. Each vertex should have 5 elements, one for each of the attributes: x, y, color,

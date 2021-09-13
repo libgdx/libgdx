@@ -59,8 +59,7 @@ class ScaledNumericPanel extends EditorPanel {
 		highMaxSlider.setValue(value.getHighMax());
 		chart.setValues(value.getTimeline(), value.getScaling());
 		relativeCheckBox.setSelected(value.isRelative());
-		if (hasIndependent)
-			independentCheckbox.setSelected(((ParticleEmitter.IndependentScaledNumericValue)value).isIndependent());
+		if (hasIndependent) independentCheckbox.setSelected(((ParticleEmitter.IndependentScaledNumericValue)value).isIndependent());
 		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				value.setLowMin((Float)lowMinSlider.getValue());
@@ -91,8 +90,8 @@ class ScaledNumericPanel extends EditorPanel {
 		});
 		if (hasIndependent) {
 			independentCheckbox.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					((ParticleEmitter.IndependentScaledNumericValue) value).setIndependent(independentCheckbox.isSelected());
+				public void actionPerformed (ActionEvent event) {
+					((ParticleEmitter.IndependentScaledNumericValue)value).setIndependent(independentCheckbox.isSelected());
 				}
 			});
 		}
@@ -146,8 +145,7 @@ class ScaledNumericPanel extends EditorPanel {
 				layout.setConstraints(chart, chartConstraints);
 				layout.setConstraints(expandButton, expandButtonConstraints);
 				relativeCheckBox.setVisible(!expanded);
-				if (hasIndependent)
-					independentCheckbox.setVisible(!expanded);
+				if (hasIndependent) independentCheckbox.setVisible(!expanded);
 				formPanel.setVisible(!expanded);
 				chart.revalidate();
 			}
@@ -195,13 +193,13 @@ class ScaledNumericPanel extends EditorPanel {
 			}
 			{
 				lowMinSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
-				formPanel.add(lowMinSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
-					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+				formPanel.add(lowMinSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			{
 				lowMaxSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
-				formPanel.add(lowMaxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
-					GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
+				formPanel.add(lowMaxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+					new Insets(0, 6, 0, 0), 0, 0));
 			}
 			{
 				lowRangeButton = new JButton("<");
@@ -236,7 +234,7 @@ class ScaledNumericPanel extends EditorPanel {
 			if (hasIndependent) {
 				independentCheckbox = new JCheckBox("Independent");
 				contentPanel.add(independentCheckbox, new GridBagConstraints(8, 5, 1, 1, 1, 0, GridBagConstraints.WEST,
-						GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
+					GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
 			}
 		}
 	}

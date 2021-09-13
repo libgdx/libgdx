@@ -148,8 +148,8 @@ public class InterpolationTest extends GdxTest {
 		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getBatch().begin();
-		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2, bottomLeftY + graphSize
-			+ list.getStyle().font.getLineHeight(), 0, Align.center, false);
+		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2,
+			bottomLeftY + graphSize + list.getStyle().font.getLineHeight(), 0, Align.center, false);
 		stage.getBatch().end();
 
 		renderer.begin(ShapeType.Line);

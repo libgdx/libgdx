@@ -79,7 +79,7 @@ class ImagePanel extends EditorPanel {
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					final ParticleEmitter emitter = editor.getEmitter();
-					emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PARTICLE }));
+					emitter.setImagePaths(new Array<String>(new String[] {ParticleEditor.DEFAULT_PARTICLE}));
 					emitter.getSprites().clear();
 					updateImageList(emitter.getImagePaths());
 				}
@@ -90,7 +90,7 @@ class ImagePanel extends EditorPanel {
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					final ParticleEmitter emitter = editor.getEmitter();
-					emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PREMULT_PARTICLE }));
+					emitter.setImagePaths(new Array<String>(new String[] {ParticleEditor.DEFAULT_PREMULT_PARTICLE}));
 					emitter.getSprites().clear();
 					updateImageList(emitter.getImagePaths());
 				}
@@ -98,8 +98,8 @@ class ImagePanel extends EditorPanel {
 		}
 		{
 			JPanel modesPanel = new JPanel(new GridLayout(4, 1));
-			contentPanel.add(modesPanel, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
+			contentPanel.add(modesPanel, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			JLabel label = new JLabel("Sprite mode:");
 			modesPanel.add(label);
 			ButtonGroup checkboxGroup = new ButtonGroup();
@@ -139,14 +139,14 @@ class ImagePanel extends EditorPanel {
 		}
 		{
 			imagesPanel = new JPanel(new GridBagLayout());
-			contentPanel.add(imagesPanel, new GridBagConstraints(2, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
+			contentPanel.add(imagesPanel, new GridBagConstraints(2, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			imageListModel = new DefaultListModel<String>();
 			imageList = new JList<String>(imageListModel);
 			imageList.setFixedCellWidth(250);
 			imageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			imagesPanel.add(imageList, new GridBagConstraints(0, 0, 1, 3, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
+			imagesPanel.add(imageList, new GridBagConstraints(0, 0, 1, 3, 0, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			JButton upButton = new JButton("\u2191");
 			imagesPanel.add(upButton, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
@@ -164,8 +164,8 @@ class ImagePanel extends EditorPanel {
 				}
 			});
 			JButton downButton = new JButton("\u2193");
-			imagesPanel.add(downButton, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
+			imagesPanel.add(downButton, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			downButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed (ActionEvent e) {
@@ -180,8 +180,8 @@ class ImagePanel extends EditorPanel {
 				}
 			});
 			JButton removeButton = new JButton("X");
-			imagesPanel.add(removeButton, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
+			imagesPanel.add(removeButton, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			removeButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed (ActionEvent e) {

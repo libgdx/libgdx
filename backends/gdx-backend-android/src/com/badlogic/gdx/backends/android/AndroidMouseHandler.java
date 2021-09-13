@@ -77,7 +77,8 @@ public class AndroidMouseHandler {
 		Gdx.app.log("AndroidMouseHandler", "action " + actionStr);
 	}
 
-	private void postTouchEvent (DefaultAndroidInput input, int type, int x, int y, int scrollAmountX, int scrollAmountY, long timeStamp) {
+	private void postTouchEvent (DefaultAndroidInput input, int type, int x, int y, int scrollAmountX, int scrollAmountY,
+		long timeStamp) {
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.x = x;

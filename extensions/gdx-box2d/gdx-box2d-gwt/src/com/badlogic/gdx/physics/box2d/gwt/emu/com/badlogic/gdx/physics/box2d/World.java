@@ -153,7 +153,7 @@ public final class World implements Disposable {
 	public void destroyBody (Body body) {
 		JointEdge jointEdge = body.body.getJointList();
 		while (jointEdge != null) {
-			JointEdge next = jointEdge.next;			
+			JointEdge next = jointEdge.next;
 			world.destroyJoint(jointEdge.joint);
 			joints.remove(jointEdge.joint);
 			jointEdge = next;
@@ -165,8 +165,8 @@ public final class World implements Disposable {
 		}
 	}
 
-	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
-	 * to cease colliding.
+	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected
+	 * bodies to cease colliding.
 	 * @warning This function is locked during callbacks. */
 	public Joint createJoint (JointDef def) {
 		org.jbox2d.dynamics.joints.JointDef jd = def.toJBox2d();
@@ -174,7 +174,8 @@ public final class World implements Disposable {
 		Joint joint = null;
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, (org.jbox2d.dynamics.joints.FrictionJoint)j);
-		if (def.type == JointType.GearJoint) joint = new GearJoint(this, (org.jbox2d.dynamics.joints.GearJoint)j, ((GearJointDef) def).joint1, ((GearJointDef) def).joint2);
+		if (def.type == JointType.GearJoint) joint = new GearJoint(this, (org.jbox2d.dynamics.joints.GearJoint)j,
+			((GearJointDef)def).joint1, ((GearJointDef)def).joint2);
 		if (def.type == JointType.MotorJoint) joint = new MotorJoint(this, (org.jbox2d.dynamics.joints.MotorJoint)j);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, (org.jbox2d.dynamics.joints.MouseJoint)j);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, (org.jbox2d.dynamics.joints.PrismaticJoint)j);

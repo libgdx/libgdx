@@ -8,46 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSimpleBroadphaseProxy extends btBroadphaseProxy {
 	private long swigCPtr;
-	
-	protected btSimpleBroadphaseProxy(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSimpleBroadphaseProxy (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btSimpleBroadphaseProxy_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSimpleBroadphaseProxy, normally you should not need this constructor it's intended for low-level usage. */
-	public btSimpleBroadphaseProxy(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSimpleBroadphaseProxy, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btSimpleBroadphaseProxy (long cPtr, boolean cMemoryOwn) {
 		this("btSimpleBroadphaseProxy", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btSimpleBroadphaseProxy_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSimpleBroadphaseProxy obj) {
+
+	public static long getCPtr (btSimpleBroadphaseProxy obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,28 +54,30 @@ public class btSimpleBroadphaseProxy extends btBroadphaseProxy {
 		super.delete();
 	}
 
-  public void setNextFree(int value) {
-    CollisionJNI.btSimpleBroadphaseProxy_nextFree_set(swigCPtr, this, value);
-  }
+	public void setNextFree (int value) {
+		CollisionJNI.btSimpleBroadphaseProxy_nextFree_set(swigCPtr, this, value);
+	}
 
-  public int getNextFree() {
-    return CollisionJNI.btSimpleBroadphaseProxy_nextFree_get(swigCPtr, this);
-  }
+	public int getNextFree () {
+		return CollisionJNI.btSimpleBroadphaseProxy_nextFree_get(swigCPtr, this);
+	}
 
-  public btSimpleBroadphaseProxy() {
-    this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_0(), true);
-  }
+	public btSimpleBroadphaseProxy () {
+		this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_0(), true);
+	}
 
-  public btSimpleBroadphaseProxy(Vector3 minpt, Vector3 maxpt, int shapeType, long userPtr, int collisionFilterGroup, int collisionFilterMask) {
-    this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_1(minpt, maxpt, shapeType, userPtr, collisionFilterGroup, collisionFilterMask), true);
-  }
+	public btSimpleBroadphaseProxy (Vector3 minpt, Vector3 maxpt, int shapeType, long userPtr, int collisionFilterGroup,
+		int collisionFilterMask) {
+		this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_1(minpt, maxpt, shapeType, userPtr, collisionFilterGroup,
+			collisionFilterMask), true);
+	}
 
-  public void SetNextFree(int next) {
-    CollisionJNI.btSimpleBroadphaseProxy_SetNextFree(swigCPtr, this, next);
-  }
+	public void SetNextFree (int next) {
+		CollisionJNI.btSimpleBroadphaseProxy_SetNextFree(swigCPtr, this, next);
+	}
 
-  public int GetNextFree() {
-    return CollisionJNI.btSimpleBroadphaseProxy_GetNextFree(swigCPtr, this);
-  }
+	public int GetNextFree () {
+		return CollisionJNI.btSimpleBroadphaseProxy_GetNextFree(swigCPtr, this);
+	}
 
 }

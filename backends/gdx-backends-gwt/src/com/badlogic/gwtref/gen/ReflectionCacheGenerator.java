@@ -22,7 +22,6 @@ import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -76,8 +75,7 @@ public class ReflectionCacheGenerator extends Generator {
 			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
 			for (String s : prop.getValues()) {
 				JClassType type = typeOracle.findType(s);
-				if (type != null)
-					gatherTypes(type.getErasedType(), types);
+				if (type != null) gatherTypes(type.getErasedType(), types);
 			}
 		} catch (BadPropertyValueException e) {
 		}

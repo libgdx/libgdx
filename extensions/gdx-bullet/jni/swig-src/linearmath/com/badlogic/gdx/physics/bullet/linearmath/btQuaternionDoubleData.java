@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btQuaternionDoubleData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btQuaternionDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btQuaternionDoubleData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btQuaternionDoubleData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btQuaternionDoubleData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btQuaternionDoubleData, normally you should not need this constructor it's intended for low-level usage. */
+	public btQuaternionDoubleData (long cPtr, boolean cMemoryOwn) {
 		this("btQuaternionDoubleData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btQuaternionDoubleData obj) {
+
+	public static long getCPtr (btQuaternionDoubleData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,16 +52,16 @@ public class btQuaternionDoubleData extends BulletBase {
 		super.delete();
 	}
 
-  public void setFloats(double[] value) {
-    LinearMathJNI.btQuaternionDoubleData_floats_set(swigCPtr, this, value);
-  }
+	public void setFloats (double[] value) {
+		LinearMathJNI.btQuaternionDoubleData_floats_set(swigCPtr, this, value);
+	}
 
-  public double[] getFloats() {
-    return LinearMathJNI.btQuaternionDoubleData_floats_get(swigCPtr, this);
-  }
+	public double[] getFloats () {
+		return LinearMathJNI.btQuaternionDoubleData_floats_get(swigCPtr, this);
+	}
 
-  public btQuaternionDoubleData() {
-    this(LinearMathJNI.new_btQuaternionDoubleData(), true);
-  }
+	public btQuaternionDoubleData () {
+		this(LinearMathJNI.new_btQuaternionDoubleData(), true);
+	}
 
 }

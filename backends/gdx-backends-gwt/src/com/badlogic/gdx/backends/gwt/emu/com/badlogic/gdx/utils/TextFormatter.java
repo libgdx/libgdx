@@ -64,8 +64,7 @@ public class TextFormatter {
 				}
 			} else { // processing placeholder part
 				if (ch == '}') {
-					if (placeholder >= args.length)
-						throw new IllegalArgumentException("Argument index out of bounds: " + placeholder);
+					if (placeholder >= args.length) throw new IllegalArgumentException("Argument index out of bounds: " + placeholder);
 					if (pattern.charAt(i - 1) == '{')
 						throw new IllegalArgumentException("Missing argument index after a left curly brace");
 					if (args[placeholder] == null)

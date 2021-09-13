@@ -37,7 +37,7 @@ public class HeadlessNet implements Net {
 
 	NetJavaImpl netJavaImpl;
 
-	public HeadlessNet(HeadlessApplicationConfiguration configuration) {
+	public HeadlessNet (HeadlessApplicationConfiguration configuration) {
 		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
 	}
 
@@ -50,12 +50,12 @@ public class HeadlessNet implements Net {
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, port, hints);
@@ -76,7 +76,7 @@ public class HeadlessNet implements Net {
 					result = true;
 				}
 			} else {
-				Gdx.app.error("HeadlessNet", "Opening URIs on this environment is not supported. Ignoring.");		
+				Gdx.app.error("HeadlessNet", "Opening URIs on this environment is not supported. Ignoring.");
 			}
 		} catch (Throwable t) {
 			Gdx.app.error("HeadlessNet", "Failed to open URI. ", t);

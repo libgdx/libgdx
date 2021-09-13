@@ -59,12 +59,10 @@ public class LwjglTestStarter extends JFrame {
 		setVisible(true);
 	}
 
-	/**
-	 * Runs the {@link GdxTest} with the given name.
+	/** Runs the {@link GdxTest} with the given name.
 	 * 
 	 * @param testName the name of a test class
-	 * @return {@code true} if the test was found and run, {@code false} otherwise
-	 */
+	 * @return {@code true} if the test was found and run, {@code false} otherwise */
 	public static boolean runTest (String testName) {
 		boolean useGL30 = options.gl30;
 		GdxTest test = GdxTests.newTest(testName);
@@ -83,7 +81,7 @@ public class LwjglTestStarter extends JFrame {
 		} else {
 			config.useGL30 = false;
 			ShaderProgram.prependVertexCode = "";
-			ShaderProgram.prependFragmentCode = "";			
+			ShaderProgram.prependFragmentCode = "";
 		}
 		new LwjglApplication(new GdxTestWrapper(test, options.logGLErrors), config);
 		return true;
@@ -115,8 +113,8 @@ public class LwjglTestStarter extends JFrame {
 				}
 			});
 
-			final Preferences prefs = new LwjglPreferences(new FileHandle(new LwjglFiles().getExternalStoragePath()
-				+ ".prefs/lwjgl-tests"));
+			final Preferences prefs = new LwjglPreferences(
+				new FileHandle(new LwjglFiles().getExternalStoragePath() + ".prefs/lwjgl-tests"));
 			list.setSelectedValue(prefs.getString("last", null), true);
 
 			button.addActionListener(new ActionListener() {
@@ -138,15 +136,12 @@ public class LwjglTestStarter extends JFrame {
 		}
 	}
 
-	/**
-	 * Runs a libGDX test.
+	/** Runs a libGDX test.
 	 * 
-	 * If no arguments are provided on the command line, shows a list of tests to choose from.
-	 * If an argument is present, the test with that name will immediately be run.
-	 * Additional options can be passed, see {@link CommandLineOptions}
+	 * If no arguments are provided on the command line, shows a list of tests to choose from. If an argument is present, the test
+	 * with that name will immediately be run. Additional options can be passed, see {@link CommandLineOptions}
 	 * 
-	 * @param argv command line arguments
-	 */
+	 * @param argv command line arguments */
 	public static void main (String[] argv) throws Exception {
 		options = new CommandLineOptions(argv);
 		if (options.startupTestName != null) {

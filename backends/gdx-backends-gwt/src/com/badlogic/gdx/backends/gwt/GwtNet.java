@@ -57,8 +57,8 @@ public class GwtNet implements Net {
 
 		@Override
 		public byte[] getResult () {
-			throw new GdxRuntimeException("HttpResponse.getResult() is not available on GWT. " +
-					"Use getResultAsString() if possible, or make use of AssetDownloader class.");
+			throw new GdxRuntimeException("HttpResponse.getResult() is not available on GWT. "
+				+ "Use getResultAsString() if possible, or make use of AssetDownloader class.");
 		}
 
 		@Override
@@ -68,8 +68,8 @@ public class GwtNet implements Net {
 
 		@Override
 		public InputStream getResultAsStream () {
-			throw new GdxRuntimeException("HttpResponse.getResultAsStream() is not available on GWT. " +
-					"Use getResultAsString() if possible, or make use of AssetDownloader class.");
+			throw new GdxRuntimeException("HttpResponse.getResultAsStream() is not available on GWT. "
+				+ "Use getResultAsString() if possible, or make use of AssetDownloader class.");
 		}
 
 		@Override
@@ -115,20 +115,19 @@ public class GwtNet implements Net {
 			return;
 		}
 
-		final String method = httpRequest.getMethod();		
+		final String method = httpRequest.getMethod();
 		final String value = httpRequest.getContent();
 		final boolean valueInBody = method.equalsIgnoreCase(HttpMethods.POST) || method.equals(HttpMethods.PUT);
-		
+
 		RequestBuilder builder;
-		
+
 		String url = httpRequest.getUrl();
 		if (method.equalsIgnoreCase(HttpMethods.HEAD)) {
 			if (value != null) {
 				url += "?" + value;
 			}
 			builder = new RequestBuilder(RequestBuilder.HEAD, url);
-		}
-		else if (method.equalsIgnoreCase(HttpMethods.GET)) {
+		} else if (method.equalsIgnoreCase(HttpMethods.GET)) {
 			if (value != null) {
 				url += "?" + value;
 			}
@@ -155,7 +154,7 @@ public class GwtNet implements Net {
 		builder.setTimeoutMillis(httpRequest.getTimeOut());
 
 		builder.setIncludeCredentials(httpRequest.getIncludeCredentials());
-		
+
 		try {
 			Request request = builder.sendRequest(valueInBody ? value : null, new RequestCallback() {
 
@@ -172,9 +171,9 @@ public class GwtNet implements Net {
 
 				@Override
 				public void onError (Request request, Throwable exception) {
-						httpResultListener.failed(exception);
-						requests.remove(httpRequest);
-						listeners.remove(httpRequest);
+					httpResultListener.failed(exception);
+					requests.remove(httpRequest);
+					listeners.remove(httpRequest);
 				}
 			});
 			requests.put(httpRequest, request);
@@ -198,7 +197,7 @@ public class GwtNet implements Net {
 			listeners.remove(httpRequest);
 		}
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		throw new UnsupportedOperationException("Not implemented");

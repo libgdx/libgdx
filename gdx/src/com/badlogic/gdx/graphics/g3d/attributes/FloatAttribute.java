@@ -55,9 +55,9 @@ public class FloatAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 977 * result + NumberUtils.floatToRawIntBits(value);
-		return result; 
+		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return (int)(type - o.type);

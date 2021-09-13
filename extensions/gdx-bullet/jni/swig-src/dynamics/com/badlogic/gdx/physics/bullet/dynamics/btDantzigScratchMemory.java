@@ -11,44 +11,39 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btDantzigScratchMemory extends BulletBase {
 	private long swigCPtr;
-	
-	protected btDantzigScratchMemory(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btDantzigScratchMemory (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btDantzigScratchMemory, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btDantzigScratchMemory(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btDantzigScratchMemory, normally you should not need this constructor it's intended for low-level usage. */
+	public btDantzigScratchMemory (long cPtr, boolean cMemoryOwn) {
 		this("btDantzigScratchMemory", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btDantzigScratchMemory obj) {
+
+	public static long getCPtr (btDantzigScratchMemory obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,107 +54,107 @@ public class btDantzigScratchMemory extends BulletBase {
 		super.delete();
 	}
 
-  public void setScratch(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_scratch_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setScratch (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_scratch_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getScratch() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_scratch_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getScratch () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_scratch_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setL(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_L_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setL (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_L_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getL() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_L_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getL () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_L_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setD(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_d_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setD (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_d_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getD() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_d_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getD () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_d_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setDelta_w(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_delta_w_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setDelta_w (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_delta_w_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getDelta_w() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_delta_w_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getDelta_w () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_delta_w_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setDelta_x(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_delta_x_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setDelta_x (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_delta_x_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getDelta_x() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_delta_x_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getDelta_x () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_delta_x_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setDell(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_Dell_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setDell (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_Dell_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getDell() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_Dell_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getDell () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_Dell_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setEll(btScalarArray value) {
-    DynamicsJNI.btDantzigScratchMemory_ell_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
-  }
+	public void setEll (btScalarArray value) {
+		DynamicsJNI.btDantzigScratchMemory_ell_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
+	}
 
-  public btScalarArray getEll() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_ell_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
-  }
+	public btScalarArray getEll () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_ell_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
+	}
 
-  public void setArows(SWIGTYPE_p_btAlignedObjectArrayT_float_p_t value) {
-    DynamicsJNI.btDantzigScratchMemory_Arows_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_float_p_t.getCPtr(value));
-  }
+	public void setArows (SWIGTYPE_p_btAlignedObjectArrayT_float_p_t value) {
+		DynamicsJNI.btDantzigScratchMemory_Arows_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_float_p_t.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_float_p_t getArows() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_Arows_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_float_p_t(cPtr, false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_float_p_t getArows () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_Arows_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_float_p_t(cPtr, false);
+	}
 
-  public void setP(SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
-    DynamicsJNI.btDantzigScratchMemory_p_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
-  }
+	public void setP (SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
+		DynamicsJNI.btDantzigScratchMemory_p_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_int_t getP() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_p_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_int_t getP () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_p_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
+	}
 
-  public void setC(SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
-    DynamicsJNI.btDantzigScratchMemory_C_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
-  }
+	public void setC (SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
+		DynamicsJNI.btDantzigScratchMemory_C_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_int_t getC() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_C_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_int_t getC () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_C_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
+	}
 
-  public void setState(SWIGTYPE_p_btAlignedObjectArrayT_bool_t value) {
-    DynamicsJNI.btDantzigScratchMemory_state_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_bool_t.getCPtr(value));
-  }
+	public void setState (SWIGTYPE_p_btAlignedObjectArrayT_bool_t value) {
+		DynamicsJNI.btDantzigScratchMemory_state_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_bool_t.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_bool_t getState() {
-    long cPtr = DynamicsJNI.btDantzigScratchMemory_state_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_bool_t(cPtr, false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_bool_t getState () {
+		long cPtr = DynamicsJNI.btDantzigScratchMemory_state_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_bool_t(cPtr, false);
+	}
 
-  public btDantzigScratchMemory() {
-    this(DynamicsJNI.new_btDantzigScratchMemory(), true);
-  }
+	public btDantzigScratchMemory () {
+		this(DynamicsJNI.new_btDantzigScratchMemory(), true);
+	}
 
 }

@@ -9,8 +9,7 @@
 package com.badlogic.gdx.physics.bullet.collision;
 
 public final class eBT_PLANE_INTERSECTION_TYPE {
-  public final static int BT_CONST_BACK_PLANE = 0;
-  public final static int BT_CONST_COLLIDE_PLANE = BT_CONST_BACK_PLANE + 1;
-  public final static int BT_CONST_FRONT_PLANE = BT_CONST_COLLIDE_PLANE + 1;
+	public final static int BT_CONST_BACK_PLANE = 0;
+	public final static int BT_CONST_COLLIDE_PLANE = BT_CONST_BACK_PLANE + 1;
+	public final static int BT_CONST_FRONT_PLANE = BT_CONST_COLLIDE_PLANE + 1;
 }
-

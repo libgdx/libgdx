@@ -72,7 +72,7 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				ParticleEmitter emitter = emitters.get(emitterIndex);
 				currentSprite = (currentSprite + 1) % sprites.size;
-				emitter.setSprites(new Array<Sprite>(new Sprite[] { sprites.get(currentSprite) }));
+				emitter.setSprites(new Array<Sprite>(new Sprite[] {sprites.get(currentSprite)}));
 				return false;
 			}
 

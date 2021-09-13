@@ -9,8 +9,7 @@
 package com.badlogic.gdx.physics.bullet.collision;
 
 public final class btInternalEdgeAdjustFlags {
-  public final static int BT_TRIANGLE_CONVEX_BACKFACE_MODE = 1;
-  public final static int BT_TRIANGLE_CONCAVE_DOUBLE_SIDED = 2;
-  public final static int BT_TRIANGLE_CONVEX_DOUBLE_SIDED = 4;
+	public final static int BT_TRIANGLE_CONVEX_BACKFACE_MODE = 1;
+	public final static int BT_TRIANGLE_CONCAVE_DOUBLE_SIDED = 2;
+	public final static int BT_TRIANGLE_CONVEX_DOUBLE_SIDED = 4;
 }
-

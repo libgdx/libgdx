@@ -89,13 +89,13 @@ public class OpenALLwjglAudio implements LwjglAudio {
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
-		((Buffer) orientation).flip();
+		((Buffer)orientation).flip();
 		alListener(AL_ORIENTATION, orientation);
 		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
-		((Buffer) velocity).flip();
+		((Buffer)velocity).flip();
 		alListener(AL_VELOCITY, velocity);
 		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
-		((Buffer) position).flip();
+		((Buffer)position).flip();
 		alListener(AL_POSITION, position);
 
 		recentSounds = new OpenALSound[simultaneousSources];

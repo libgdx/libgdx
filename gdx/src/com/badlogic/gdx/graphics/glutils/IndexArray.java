@@ -41,8 +41,8 @@ public class IndexArray implements IndexData {
 
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		buffer = byteBuffer.asShortBuffer();
-		((Buffer) buffer).flip();
-		((Buffer) byteBuffer).flip();
+		((Buffer)buffer).flip();
+		((Buffer)byteBuffer).flip();
 	}
 
 	/** @return the number of indices currently stored in this buffer */
@@ -55,7 +55,8 @@ public class IndexArray implements IndexData {
 		return empty ? 0 : buffer.capacity();
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Sets the indices of this IndexArray, discarding the old indices. The count must equal the number of indices to be copied to
 	 * this IndexArray.
 	 * </p>
@@ -68,33 +69,34 @@ public class IndexArray implements IndexData {
 	 * @param offset the offset to start copying the data from
 	 * @param count the number of shorts to copy */
 	public void setIndices (short[] indices, int offset, int count) {
-		((Buffer) buffer).clear();
+		((Buffer)buffer).clear();
 		buffer.put(indices, offset, count);
-		((Buffer) buffer).flip();
-		((Buffer) byteBuffer).position(0);
-		((Buffer) byteBuffer).limit(count << 1);
+		((Buffer)buffer).flip();
+		((Buffer)byteBuffer).position(0);
+		((Buffer)byteBuffer).limit(count << 1);
 	}
 
 	public void setIndices (ShortBuffer indices) {
 		int pos = indices.position();
-		((Buffer) buffer).clear();
-		((Buffer) buffer).limit(indices.remaining());
+		((Buffer)buffer).clear();
+		((Buffer)buffer).limit(indices.remaining());
 		buffer.put(indices);
-		((Buffer) buffer).flip();
-		((Buffer) indices).position(pos);
-		((Buffer) byteBuffer).position(0);
-		((Buffer) byteBuffer).limit(buffer.limit() << 1);
+		((Buffer)buffer).flip();
+		((Buffer)indices).position(pos);
+		((Buffer)byteBuffer).position(0);
+		((Buffer)byteBuffer).limit(buffer.limit() << 1);
 	}
 
 	@Override
 	public void updateIndices (int targetOffset, short[] indices, int offset, int count) {
 		final int pos = byteBuffer.position();
-		((Buffer) byteBuffer).position(targetOffset * 2);
+		((Buffer)byteBuffer).position(targetOffset * 2);
 		BufferUtils.copy(indices, offset, byteBuffer, count);
-		((Buffer) byteBuffer).position(pos);
+		((Buffer)byteBuffer).position(pos);
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
 	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
 	 * </p>

@@ -38,8 +38,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * be created, one will have to set the required batches manually otherwise the {@link ParticleController} instances contained
  * inside the effect will not be able to render themselves.
  * @author inferno */
-public class ParticleEffectLoader extends
-	AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
+public class ParticleEffectLoader
+	extends AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
 	protected Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>> items = new Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>>();
 
 	public ParticleEffectLoader (FileHandleResolver resolver) {
@@ -109,7 +109,8 @@ public class ParticleEffectLoader extends
 	}
 
 	@Override
-	public ParticleEffect loadSync (AssetManager manager, String fileName, FileHandle file, ParticleEffectLoadParameter parameter) {
+	public ParticleEffect loadSync (AssetManager manager, String fileName, FileHandle file,
+		ParticleEffectLoadParameter parameter) {
 		ResourceData<ParticleEffect> effectData = null;
 		synchronized (items) {
 			for (int i = 0; i < items.size; ++i) {

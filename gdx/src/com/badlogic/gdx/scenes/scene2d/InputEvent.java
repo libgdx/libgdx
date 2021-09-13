@@ -107,6 +107,7 @@ public class InputEvent extends Event {
 	public float getScrollAmountX () {
 		return scrollAmountX;
 	}
+
 	/** The amount the mouse was scrolled vertically. Valid for: scrolled. */
 	public float getScrollAmountY () {
 		return scrollAmountY;

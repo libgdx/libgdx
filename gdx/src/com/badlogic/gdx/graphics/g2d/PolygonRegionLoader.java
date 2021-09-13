@@ -55,11 +55,11 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 	private PolygonRegionParameters defaultParameters = new PolygonRegionParameters();
 
 	private EarClippingTriangulator triangulator = new EarClippingTriangulator();
-	
-	public PolygonRegionLoader() {
+
+	public PolygonRegionLoader () {
 		this(new InternalFileHandleResolver());
 	}
-	
+
 	public PolygonRegionLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -136,5 +136,5 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		}
 		throw new GdxRuntimeException("Polygon shape not found: " + file);
 	}
-	
+
 }

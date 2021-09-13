@@ -41,8 +41,10 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	@Override
 	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
 		int type, java.nio.Buffer pixels) {
-		if (pixels == null) GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, 0);
-		else GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		if (pixels == null)
+			GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, 0);
+		else
+			GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override

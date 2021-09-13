@@ -115,8 +115,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					else if (clickedButton == btnOpenUri) {
 						Gdx.net.openURI("https://libgdx.com");
 						return;
-					}
-					else {
+					} else {
 						url = "https://httpbin.org/post";
 						httpMethod = Net.HttpMethods.POST;
 						requestContent = "name1=value1&name2=value2";
@@ -172,11 +171,11 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			btnPost.setPosition(btnDownloadError.getX() + btnDownloadError.getWidth() + 10, 60f);
 			btnPost.addListener(clickListener);
 			stage.addActor(btnPost);
-			
+
 			btnOpenUri = new TextButton("Open URI", skin);
 			btnOpenUri.setPosition(btnPost.getX() + btnPost.getWidth() + 10, 60f);
 			btnOpenUri.addListener(clickListener);
-			
+
 			stage.addActor(btnOpenUri);
 		}
 

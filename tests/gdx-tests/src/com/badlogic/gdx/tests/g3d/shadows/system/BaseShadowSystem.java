@@ -119,8 +119,9 @@ public abstract class BaseShadowSystem implements ShadowSystem, Disposable {
 
 	/** Construct the system with default values */
 	public BaseShadowSystem () {
-		this(new AABBNearFarAnalyzer(), new FixedShadowMapAllocator(FixedShadowMapAllocator.QUALITY_MED,
-			FixedShadowMapAllocator.QUANTITY_MAP_MED), new BoundingSphereDirectionalAnalyzer(), new FrustumLightFilter());
+		this(new AABBNearFarAnalyzer(),
+			new FixedShadowMapAllocator(FixedShadowMapAllocator.QUALITY_MED, FixedShadowMapAllocator.QUANTITY_MAP_MED),
+			new BoundingSphereDirectionalAnalyzer(), new FrustumLightFilter());
 	}
 
 	/** Initialize framebuffers and shader providers. You should call super.init() in subclass. */
@@ -386,7 +387,7 @@ public abstract class BaseShadowSystem implements ShadowSystem, Disposable {
 
 		TextureRegion region = lp.region;
 		region.setTexture(frameBuffers[currentPass].getColorBufferTexture());
-		
+
 		// We don't use HdpiUtils
 		// gl commands related to shadow map size and not to screen size
 		Gdx.gl.glViewport(r.x, r.y, r.width, r.height);

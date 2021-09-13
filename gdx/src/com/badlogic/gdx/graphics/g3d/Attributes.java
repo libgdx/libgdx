@@ -91,23 +91,26 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		} else {
 			attributes.set(idx, attribute);
 		}
-		sort(); //FIXME: See #4186
+		sort(); // FIXME: See #4186
 	}
 
-	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is overwritten. */
+	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is
+	 * overwritten. */
 	public final void set (final Attribute attribute1, final Attribute attribute2) {
 		set(attribute1);
 		set(attribute2);
 	}
 
-	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is overwritten. */
+	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is
+	 * overwritten. */
 	public final void set (final Attribute attribute1, final Attribute attribute2, final Attribute attribute3) {
 		set(attribute1);
 		set(attribute2);
 		set(attribute3);
 	}
 
-	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is overwritten. */
+	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is
+	 * overwritten. */
 	public final void set (final Attribute attribute1, final Attribute attribute2, final Attribute attribute3,
 		final Attribute attribute4) {
 		set(attribute1);
@@ -141,7 +144,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 				sorted = false;
 			}
 		}
-		sort(); //FIXME: See #4186
+		sort(); // FIXME: See #4186
 	}
 
 	/** @return True if this collection has the specified attribute, i.e. attributes.has(ColorAttribute.Diffuse); Or when multiple
@@ -191,8 +194,8 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		return attributes.iterator();
 	}
 
-	/** @return A hash code based on only the attribute values, which might be different compared to {@link #hashCode()} because the latter
-	 * might include other properties as well, i.e. the material id. */
+	/** @return A hash code based on only the attribute values, which might be different compared to {@link #hashCode()} because
+	 *         the latter might include other properties as well, i.e. the material id. */
 	public int attributesHash () {
 		sort();
 		final int n = attributes.size;
@@ -217,16 +220,13 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 
 	@Override
 	public int compareTo (Attributes other) {
-		if (other == this)
-			return 0;
-		if (mask != other.mask)
-			return mask < other.mask ? -1 : 1;
+		if (other == this) return 0;
+		if (mask != other.mask) return mask < other.mask ? -1 : 1;
 		sort();
 		other.sort();
 		for (int i = 0; i < attributes.size; i++) {
 			final int c = attributes.get(i).compareTo(other.attributes.get(i));
-			if (c != 0)
-				return c < 0 ? -1 : (c > 0 ? 1 : 0);
+			if (c != 0) return c < 0 ? -1 : (c > 0 ? 1 : 0);
 		}
 		return 0;
 	}

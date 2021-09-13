@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
@@ -65,7 +66,7 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
+	public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures () {
 		return app.config.screenEdgesDeferringSystemGestures;
 	}
 
@@ -96,7 +97,7 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public boolean prefersHomeIndicatorAutoHidden() {
+	public boolean prefersHomeIndicatorAutoHidden () {
 		return app.config.hideHomeIndicator;
 	}
 
@@ -108,14 +109,14 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+	public void pressesBegan (NSSet<UIPress> presses, UIPressesEvent event) {
 		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
 			super.pressesBegan(presses, event);
 		}
 	}
 
 	@Override
-	public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+	public void pressesEnded (NSSet<UIPress> presses, UIPressesEvent event) {
 		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
 			super.pressesEnded(presses, event);
 		}

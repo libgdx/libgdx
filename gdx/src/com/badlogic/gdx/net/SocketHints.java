@@ -43,7 +43,8 @@ public class SocketHints {
 	 * <li>IPTOS_RELIABILITY (0x04) - reliable connection with little package loss.
 	 * <li>IPTOS_THROUGHPUT (0x08) - lots of data being sent.
 	 * <li>IPTOS_LOWDELAY (0x10) - low delay.
-	 * </ul> */
+	 * </ul>
+	 */
 	public int trafficClass = 0x14; // low delay + reliable
 	/** True to enable SO_KEEPALIVE. */
 	public boolean keepAlive = true;

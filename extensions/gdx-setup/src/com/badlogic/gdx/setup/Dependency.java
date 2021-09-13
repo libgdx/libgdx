@@ -52,7 +52,7 @@ public class Dependency {
 	public String[] getGwtInherits () {
 		return gwtInherits;
 	}
-	
+
 	public String getName () {
 		return name;
 	}

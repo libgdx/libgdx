@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** a headless implementation of a GDX Application primarily intended to be used in servers
- *  @author Jon Renner */
+ * @author Jon Renner */
 public class HeadlessApplication implements Application {
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
@@ -54,14 +54,13 @@ public class HeadlessApplication implements Application {
 	protected ApplicationLogger applicationLogger;
 	private String preferencesdir;
 
-	public HeadlessApplication(ApplicationListener listener) {
+	public HeadlessApplication (ApplicationListener listener) {
 		this(listener, null);
 	}
-	
-	public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config) {
-		if (config == null)
-			config = new HeadlessApplicationConfiguration();
-		
+
+	public HeadlessApplication (ApplicationListener listener, HeadlessApplicationConfiguration config) {
+		if (config == null) config = new HeadlessApplicationConfiguration();
+
 		HeadlessNativesLoader.load();
 		setApplicationLogger(new HeadlessApplicationLogger());
 		this.listener = listener;
@@ -117,17 +116,18 @@ public class HeadlessApplication implements Application {
 				if (t > n) {
 					try {
 						long sleep = t - n;
-						Thread.sleep(sleep / 1000000, (int) (sleep % 1000000));
-					} catch (InterruptedException e) {}
+						Thread.sleep(sleep / 1000000, (int)(sleep % 1000000));
+					} catch (InterruptedException e) {
+					}
 					t = t + graphics.getTargetRenderInterval();
 				} else
 					t = n + graphics.getTargetRenderInterval();
-				
+
 				executeRunnables();
 				graphics.incrementFrameId();
 				listener.render();
 				graphics.updateTime();
-	
+
 				// If one of the runnables set running to false, for example after an exit().
 				if (!running) break;
 			}
@@ -156,42 +156,42 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public ApplicationListener getApplicationListener() {
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 
 	@Override
-	public Graphics getGraphics() {
+	public Graphics getGraphics () {
 		return graphics;
 	}
 
 	@Override
-	public Audio getAudio() {
+	public Audio getAudio () {
 		return audio;
 	}
 
 	@Override
-	public Input getInput() {
+	public Input getInput () {
 		return input;
 	}
 
 	@Override
-	public Files getFiles() {
+	public Files getFiles () {
 		return files;
 	}
 
 	@Override
-	public Net getNet() {
+	public Net getNet () {
 		return net;
 	}
 
 	@Override
-	public ApplicationType getType() {
+	public ApplicationType getType () {
 		return ApplicationType.HeadlessDesktop;
 	}
 
 	@Override
-	public int getVersion() {
+	public int getVersion () {
 		return 0;
 	}
 
@@ -208,7 +208,7 @@ public class HeadlessApplication implements Application {
 	ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
 
 	@Override
-	public Preferences getPreferences(String name) {
+	public Preferences getPreferences (String name) {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
@@ -267,7 +267,7 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

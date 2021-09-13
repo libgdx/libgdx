@@ -37,7 +37,7 @@ public class File {
 	public static final String pathSeparator = "" + pathSeparatorChar;
 
 	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported();
-	
+
 	File parent;
 	String name;
 	boolean absolute;

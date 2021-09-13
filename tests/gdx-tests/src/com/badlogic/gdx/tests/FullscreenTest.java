@@ -51,15 +51,15 @@ public class FullscreenTest extends GdxTest {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 1);
-		
+
 		batch.begin();
-		batch.setColor(Gdx.input.getX() < Gdx.graphics.getSafeInsetLeft() ||
-				Gdx.input.getX() + tex.getWidth() > Gdx.graphics.getWidth() - Gdx.graphics.getSafeInsetRight()
-				? Color.RED : Color.WHITE);
+		batch.setColor(Gdx.input.getX() < Gdx.graphics.getSafeInsetLeft()
+			|| Gdx.input.getX() + tex.getWidth() > Gdx.graphics.getWidth() - Gdx.graphics.getSafeInsetRight() ? Color.RED
+				: Color.WHITE);
 		batch.draw(tex, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		font.draw(batch, "" + Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight(), 0, 20);
 		batch.end();
-		
+
 		if (Gdx.input.justTouched()) {
 			if (fullscreen) {
 				Gdx.graphics.setWindowedMode(480, 320);
@@ -68,16 +68,16 @@ public class FullscreenTest extends GdxTest {
 				fullscreen = false;
 			} else {
 				DisplayMode m = null;
-				for(DisplayMode mode: Gdx.graphics.getDisplayModes()) {
-					if(m == null) {
+				for (DisplayMode mode : Gdx.graphics.getDisplayModes()) {
+					if (m == null) {
 						m = mode;
 					} else {
-						if(m.width < mode.width) {
+						if (m.width < mode.width) {
 							m = mode;
 						}
 					}
 				}
-				
+
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
@@ -89,8 +89,7 @@ public class FullscreenTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		Gdx.app.log("FullscreenTest", "resized: " + width + ", " + height);
-		Gdx.app.log("FullscreenTest", "safe insets: " + Gdx.graphics.getSafeInsetLeft() +
-				"/" + Gdx.graphics.getSafeInsetRight());
+		Gdx.app.log("FullscreenTest", "safe insets: " + Gdx.graphics.getSafeInsetLeft() + "/" + Gdx.graphics.getSafeInsetRight());
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 

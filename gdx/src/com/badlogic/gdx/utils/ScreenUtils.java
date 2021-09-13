@@ -29,18 +29,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-/** Class with static helper methods related to currently bound OpenGL frame buffer, including access to the current OpenGL FrameBuffer. These methods can be used to get the
- * entire screen content or a portion thereof.
+/** Class with static helper methods related to currently bound OpenGL frame buffer, including access to the current OpenGL
+ * FrameBuffer. These methods can be used to get the entire screen content or a portion thereof.
  *
  * @author espitz */
 public final class ScreenUtils {
 
 	/** Clears the color buffers with the specified Color.
-	@param color Color to clear the color buffers with. */
+	 * @param color Color to clear the color buffers with. */
 	public static void clear (Color color) {
 		clear(color.r, color.g, color.b, color.a, false);
 	}
-	
+
 	/** Clears the color buffers with the specified color. */
 	public static void clear (float r, float g, float b, float a) {
 		clear(r, g, b, a, false);
@@ -53,16 +53,15 @@ public final class ScreenUtils {
 		clear(color.r, color.g, color.b, color.a, clearDepth);
 	}
 
-	/** Clears the color buffers and optionally the depth buffer. 
+	/** Clears the color buffers and optionally the depth buffer.
 	 * @param clearDepth Clears the depth buffer if true. */
 	public static void clear (float r, float g, float b, float a, boolean clearDepth) {
 		Gdx.gl.glClearColor(r, g, b, a);
 		int mask = GL20.GL_COLOR_BUFFER_BIT;
-		if (clearDepth)
-			mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
+		if (clearDepth) mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
 		Gdx.gl.glClear(mask);
 	}
-	
+
 	/** Returns the current framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
 	 * size. The base {@link Texture} always has {@link MathUtils#nextPowerOfTwo} dimensions and RGBA8888 {@link Format}. It can be
 	 * accessed via {@link TextureRegion#getTexture}. The texture is not managed and has to be reloaded manually on a context loss.
@@ -105,10 +104,10 @@ public final class ScreenUtils {
 		return Pixmap.createFromFrameBuffer(x, y, w, h);
 	}
 
-	/** Returns the current framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[] will
-	 * always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be flipped
-	 * along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this functionality
-	 * wisely.
+	/** Returns the current framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[]
+	 * will always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be
+	 * flipped along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this
+	 * functionality wisely.
 	 *
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (boolean flipY) {
@@ -134,11 +133,11 @@ public final class ScreenUtils {
 		if (flipY) {
 			final int numBytesPerLine = w * 4;
 			for (int i = 0; i < h; i++) {
-				((Buffer) pixels).position((h - i - 1) * numBytesPerLine);
+				((Buffer)pixels).position((h - i - 1) * numBytesPerLine);
 				pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
 			}
 		} else {
-			((Buffer) pixels).clear();
+			((Buffer)pixels).clear();
 			pixels.get(lines);
 		}
 		return lines;

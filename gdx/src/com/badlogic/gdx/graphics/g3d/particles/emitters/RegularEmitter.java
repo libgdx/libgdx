@@ -32,8 +32,8 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 	public enum EmissionMode {
 		/** New particles can be emitted. */
 		Enabled,
-		/** Only valid for continuous emitters. It will only emit particles until the end of the effect duration. After that emission
-		 * cycle will not be restarted. */
+		/** Only valid for continuous emitters. It will only emit particles until the end of the effect duration. After that
+		 * emission cycle will not be restarted. */
 		EnabledUntilCycleEnd,
 		/** Prevents new particle emission. */
 		Disabled
@@ -111,7 +111,8 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		}
 		float lifePercent = 1 - currentLife / (float)currentTotaLife;
 
-		for (int i = startIndex * lifeChannel.strideSize, c = i + count * lifeChannel.strideSize; i < c; i += lifeChannel.strideSize) {
+		for (int i = startIndex * lifeChannel.strideSize,
+			c = i + count * lifeChannel.strideSize; i < c; i += lifeChannel.strideSize) {
 			lifeChannel.data[i + ParticleChannels.CurrentLifeOffset] = currentLife;
 			lifeChannel.data[i + ParticleChannels.TotalLifeOffset] = currentTotaLife;
 			lifeChannel.data[i + ParticleChannels.LifePercentOffset] = lifePercent;
@@ -163,7 +164,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 			} else {
 				lifeChannel.data[k + ParticleChannels.LifePercentOffset] = 1
 					- lifeChannel.data[k + ParticleChannels.CurrentLifeOffset]
-					/ lifeChannel.data[k + ParticleChannels.TotalLifeOffset];
+						/ lifeChannel.data[k + ParticleChannels.TotalLifeOffset];
 			}
 			++i;
 			k += lifeChannel.strideSize;

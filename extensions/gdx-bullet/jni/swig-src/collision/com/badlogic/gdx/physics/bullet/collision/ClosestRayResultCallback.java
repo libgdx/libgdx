@@ -8,46 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class ClosestRayResultCallback extends RayResultCallback {
 	private long swigCPtr;
-	
-	protected ClosestRayResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected ClosestRayResultCallback (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.ClosestRayResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new ClosestRayResultCallback, normally you should not need this constructor it's intended for low-level usage. */
-	public ClosestRayResultCallback(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new ClosestRayResultCallback, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public ClosestRayResultCallback (long cPtr, boolean cMemoryOwn) {
 		this("ClosestRayResultCallback", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.ClosestRayResultCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(ClosestRayResultCallback obj) {
+
+	public static long getCPtr (ClosestRayResultCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,60 +54,64 @@ public class ClosestRayResultCallback extends RayResultCallback {
 		super.delete();
 	}
 
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
+	protected void swigDirectorDisconnect () {
+		swigCMemOwn = false;
+		delete();
+	}
 
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    CollisionJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, false);
-  }
+	public void swigReleaseOwnership () {
+		swigCMemOwn = false;
+		CollisionJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, false);
+	}
 
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    CollisionJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, true);
-  }
+	public void swigTakeOwnership () {
+		swigCMemOwn = true;
+		CollisionJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, true);
+	}
 
-  public ClosestRayResultCallback(Vector3 rayFromWorld, Vector3 rayToWorld) {
-    this(CollisionJNI.new_ClosestRayResultCallback(rayFromWorld, rayToWorld), true);
-    CollisionJNI.ClosestRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
-  }
+	public ClosestRayResultCallback (Vector3 rayFromWorld, Vector3 rayToWorld) {
+		this(CollisionJNI.new_ClosestRayResultCallback(rayFromWorld, rayToWorld), true);
+		CollisionJNI.ClosestRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+	}
 
-  public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {
-    return (getClass() == ClosestRayResultCallback.class) ? CollisionJNI.ClosestRayResultCallback_addSingleResult(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace) : CollisionJNI.ClosestRayResultCallback_addSingleResultSwigExplicitClosestRayResultCallback(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace);
-  }
+	public float addSingleResult (LocalRayResult rayResult, boolean normalInWorldSpace) {
+		return (getClass() == ClosestRayResultCallback.class)
+			? CollisionJNI.ClosestRayResultCallback_addSingleResult(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult,
+				normalInWorldSpace)
+			: CollisionJNI.ClosestRayResultCallback_addSingleResultSwigExplicitClosestRayResultCallback(swigCPtr, this,
+				LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace);
+	}
 
-  public void getRayFromWorld(Vector3 out) {
-    CollisionJNI.ClosestRayResultCallback_getRayFromWorld(swigCPtr, this, out);
-  }
+	public void getRayFromWorld (Vector3 out) {
+		CollisionJNI.ClosestRayResultCallback_getRayFromWorld(swigCPtr, this, out);
+	}
 
-  public void setRayFromWorld(Vector3 value) {
-    CollisionJNI.ClosestRayResultCallback_setRayFromWorld(swigCPtr, this, value);
-  }
+	public void setRayFromWorld (Vector3 value) {
+		CollisionJNI.ClosestRayResultCallback_setRayFromWorld(swigCPtr, this, value);
+	}
 
-  public void getRayToWorld(Vector3 out) {
-    CollisionJNI.ClosestRayResultCallback_getRayToWorld(swigCPtr, this, out);
-  }
+	public void getRayToWorld (Vector3 out) {
+		CollisionJNI.ClosestRayResultCallback_getRayToWorld(swigCPtr, this, out);
+	}
 
-  public void setRayToWorld(Vector3 value) {
-    CollisionJNI.ClosestRayResultCallback_setRayToWorld(swigCPtr, this, value);
-  }
+	public void setRayToWorld (Vector3 value) {
+		CollisionJNI.ClosestRayResultCallback_setRayToWorld(swigCPtr, this, value);
+	}
 
-  public void getHitNormalWorld(Vector3 out) {
-    CollisionJNI.ClosestRayResultCallback_getHitNormalWorld(swigCPtr, this, out);
-  }
+	public void getHitNormalWorld (Vector3 out) {
+		CollisionJNI.ClosestRayResultCallback_getHitNormalWorld(swigCPtr, this, out);
+	}
 
-  public void setHitNormalWorld(Vector3 value) {
-    CollisionJNI.ClosestRayResultCallback_setHitNormalWorld(swigCPtr, this, value);
-  }
+	public void setHitNormalWorld (Vector3 value) {
+		CollisionJNI.ClosestRayResultCallback_setHitNormalWorld(swigCPtr, this, value);
+	}
 
-  public void getHitPointWorld(Vector3 out) {
-    CollisionJNI.ClosestRayResultCallback_getHitPointWorld(swigCPtr, this, out);
-  }
+	public void getHitPointWorld (Vector3 out) {
+		CollisionJNI.ClosestRayResultCallback_getHitPointWorld(swigCPtr, this, out);
+	}
 
-  public void setHitPointWorld(Vector3 value) {
-    CollisionJNI.ClosestRayResultCallback_setHitPointWorld(swigCPtr, this, value);
-  }
+	public void setHitPointWorld (Vector3 value) {
+		CollisionJNI.ClosestRayResultCallback_setHitPointWorld(swigCPtr, this, value);
+	}
 
 }

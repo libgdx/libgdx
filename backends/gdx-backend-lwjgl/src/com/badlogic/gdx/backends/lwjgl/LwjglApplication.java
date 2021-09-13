@@ -273,18 +273,18 @@ public class LwjglApplication implements LwjglApplicationBase {
 		return listener;
 	}
 
-	protected Files createFiles() {
+	protected Files createFiles () {
 		return new LwjglFiles();
 	}
 
 	@Override
-	public LwjglAudio createAudio(LwjglApplicationConfiguration config) {
+	public LwjglAudio createAudio (LwjglApplicationConfiguration config) {
 		return new OpenALLwjglAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
 			config.audioDeviceBufferSize);
 	}
 
 	@Override
-	public LwjglInput createInput(LwjglApplicationConfiguration config) {
+	public LwjglInput createInput (LwjglApplicationConfiguration config) {
 		return new DefaultLwjglInput();
 	}
 

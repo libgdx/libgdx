@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
@@ -37,7 +38,7 @@ public class TextureRegion3DTest extends GdxTest {
 	@Override
 	public void create () {
 		Gdx.gl.glClearColor(0.2f, 0.3f, 1.0f, 0.f);
-		
+
 		atlas = new TextureAtlas(Gdx.files.internal("data/testpack"));
 		regions = atlas.getRegions();
 
@@ -55,14 +56,15 @@ public class TextureRegion3DTest extends GdxTest {
 		cam.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
-		final Material material = new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f), new TextureAttribute(TextureAttribute.Diffuse));
+		final Material material = new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f),
+			new TextureAttribute(TextureAttribute.Diffuse));
 		model = modelBuilder.createBox(5f, 5f, 5f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		instance = new ModelInstance(model);
 		attribute = instance.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
-	
+
 	@Override
 	public void render () {
 		inputController.update();
@@ -70,7 +72,7 @@ public class TextureRegion3DTest extends GdxTest {
 			time -= 1f;
 			index = (index + 1) % regions.size;
 			attribute.set(regions.get(index));
-			Gdx.app.log("TextureRegion3DTest", "Current region = "+regions.get(index).name);
+			Gdx.app.log("TextureRegion3DTest", "Current region = " + regions.get(index).name);
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());

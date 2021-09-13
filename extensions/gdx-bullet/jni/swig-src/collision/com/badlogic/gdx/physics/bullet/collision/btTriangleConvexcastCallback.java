@@ -8,46 +8,43 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleConvexcastCallback extends btTriangleCallback {
 	private long swigCPtr;
-	
-	protected btTriangleConvexcastCallback(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btTriangleConvexcastCallback (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btTriangleConvexcastCallback_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btTriangleConvexcastCallback, normally you should not need this constructor it's intended for low-level usage. */
-	public btTriangleConvexcastCallback(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btTriangleConvexcastCallback, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btTriangleConvexcastCallback (long cPtr, boolean cMemoryOwn) {
 		this("btTriangleConvexcastCallback", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btTriangleConvexcastCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btTriangleConvexcastCallback obj) {
+
+	public static long getCPtr (btTriangleConvexcastCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,92 +55,100 @@ public class btTriangleConvexcastCallback extends btTriangleCallback {
 		super.delete();
 	}
 
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
+	protected void swigDirectorDisconnect () {
+		swigCMemOwn = false;
+		delete();
+	}
 
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    CollisionJNI.btTriangleConvexcastCallback_change_ownership(this, swigCPtr, false);
-  }
+	public void swigReleaseOwnership () {
+		swigCMemOwn = false;
+		CollisionJNI.btTriangleConvexcastCallback_change_ownership(this, swigCPtr, false);
+	}
 
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    CollisionJNI.btTriangleConvexcastCallback_change_ownership(this, swigCPtr, true);
-  }
+	public void swigTakeOwnership () {
+		swigCMemOwn = true;
+		CollisionJNI.btTriangleConvexcastCallback_change_ownership(this, swigCPtr, true);
+	}
 
-  public void setConvexShape(btConvexShape value) {
-    CollisionJNI.btTriangleConvexcastCallback_convexShape_set(swigCPtr, this, btConvexShape.getCPtr(value), value);
-  }
+	public void setConvexShape (btConvexShape value) {
+		CollisionJNI.btTriangleConvexcastCallback_convexShape_set(swigCPtr, this, btConvexShape.getCPtr(value), value);
+	}
 
-  public btConvexShape getConvexShape() {
-    long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShape_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
-  }
+	public btConvexShape getConvexShape () {
+		long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShape_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
+	}
 
-  public void setConvexShapeFrom(btTransform value) {
-    CollisionJNI.btTriangleConvexcastCallback_convexShapeFrom_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
+	public void setConvexShapeFrom (btTransform value) {
+		CollisionJNI.btTriangleConvexcastCallback_convexShapeFrom_set(swigCPtr, this, btTransform.getCPtr(value), value);
+	}
 
-  public btTransform getConvexShapeFrom() {
-    long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShapeFrom_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTransform(cPtr, false);
-  }
+	public btTransform getConvexShapeFrom () {
+		long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShapeFrom_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTransform(cPtr, false);
+	}
 
-  public void setConvexShapeTo(btTransform value) {
-    CollisionJNI.btTriangleConvexcastCallback_convexShapeTo_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
+	public void setConvexShapeTo (btTransform value) {
+		CollisionJNI.btTriangleConvexcastCallback_convexShapeTo_set(swigCPtr, this, btTransform.getCPtr(value), value);
+	}
 
-  public btTransform getConvexShapeTo() {
-    long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShapeTo_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTransform(cPtr, false);
-  }
+	public btTransform getConvexShapeTo () {
+		long cPtr = CollisionJNI.btTriangleConvexcastCallback_convexShapeTo_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTransform(cPtr, false);
+	}
 
-  public void setTriangleToWorld(btTransform value) {
-    CollisionJNI.btTriangleConvexcastCallback_triangleToWorld_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
+	public void setTriangleToWorld (btTransform value) {
+		CollisionJNI.btTriangleConvexcastCallback_triangleToWorld_set(swigCPtr, this, btTransform.getCPtr(value), value);
+	}
 
-  public btTransform getTriangleToWorld() {
-    long cPtr = CollisionJNI.btTriangleConvexcastCallback_triangleToWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTransform(cPtr, false);
-  }
+	public btTransform getTriangleToWorld () {
+		long cPtr = CollisionJNI.btTriangleConvexcastCallback_triangleToWorld_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTransform(cPtr, false);
+	}
 
-  public void setHitFraction(float value) {
-    CollisionJNI.btTriangleConvexcastCallback_hitFraction_set(swigCPtr, this, value);
-  }
+	public void setHitFraction (float value) {
+		CollisionJNI.btTriangleConvexcastCallback_hitFraction_set(swigCPtr, this, value);
+	}
 
-  public float getHitFraction() {
-    return CollisionJNI.btTriangleConvexcastCallback_hitFraction_get(swigCPtr, this);
-  }
+	public float getHitFraction () {
+		return CollisionJNI.btTriangleConvexcastCallback_hitFraction_get(swigCPtr, this);
+	}
 
-  public void setTriangleCollisionMargin(float value) {
-    CollisionJNI.btTriangleConvexcastCallback_triangleCollisionMargin_set(swigCPtr, this, value);
-  }
+	public void setTriangleCollisionMargin (float value) {
+		CollisionJNI.btTriangleConvexcastCallback_triangleCollisionMargin_set(swigCPtr, this, value);
+	}
 
-  public float getTriangleCollisionMargin() {
-    return CollisionJNI.btTriangleConvexcastCallback_triangleCollisionMargin_get(swigCPtr, this);
-  }
+	public float getTriangleCollisionMargin () {
+		return CollisionJNI.btTriangleConvexcastCallback_triangleCollisionMargin_get(swigCPtr, this);
+	}
 
-  public void setAllowedPenetration(float value) {
-    CollisionJNI.btTriangleConvexcastCallback_allowedPenetration_set(swigCPtr, this, value);
-  }
+	public void setAllowedPenetration (float value) {
+		CollisionJNI.btTriangleConvexcastCallback_allowedPenetration_set(swigCPtr, this, value);
+	}
 
-  public float getAllowedPenetration() {
-    return CollisionJNI.btTriangleConvexcastCallback_allowedPenetration_get(swigCPtr, this);
-  }
+	public float getAllowedPenetration () {
+		return CollisionJNI.btTriangleConvexcastCallback_allowedPenetration_get(swigCPtr, this);
+	}
 
-  public btTriangleConvexcastCallback(btConvexShape convexShape, Matrix4 convexShapeFrom, Matrix4 convexShapeTo, Matrix4 triangleToWorld, float triangleCollisionMargin) {
-    this(CollisionJNI.new_btTriangleConvexcastCallback(btConvexShape.getCPtr(convexShape), convexShape, convexShapeFrom, convexShapeTo, triangleToWorld, triangleCollisionMargin), true);
-    CollisionJNI.btTriangleConvexcastCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
-  }
+	public btTriangleConvexcastCallback (btConvexShape convexShape, Matrix4 convexShapeFrom, Matrix4 convexShapeTo,
+		Matrix4 triangleToWorld, float triangleCollisionMargin) {
+		this(CollisionJNI.new_btTriangleConvexcastCallback(btConvexShape.getCPtr(convexShape), convexShape, convexShapeFrom,
+			convexShapeTo, triangleToWorld, triangleCollisionMargin), true);
+		CollisionJNI.btTriangleConvexcastCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+	}
 
-  public void processTriangle(btVector3 triangle, int partId, int triangleIndex) {
-    if (getClass() == btTriangleConvexcastCallback.class) CollisionJNI.btTriangleConvexcastCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex); else CollisionJNI.btTriangleConvexcastCallback_processTriangleSwigExplicitbtTriangleConvexcastCallback(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
-  }
+	public void processTriangle (btVector3 triangle, int partId, int triangleIndex) {
+		if (getClass() == btTriangleConvexcastCallback.class)
+			CollisionJNI.btTriangleConvexcastCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId,
+				triangleIndex);
+		else
+			CollisionJNI.btTriangleConvexcastCallback_processTriangleSwigExplicitbtTriangleConvexcastCallback(swigCPtr, this,
+				btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
+	}
 
-  public float reportHit(Vector3 hitNormalLocal, Vector3 hitPointLocal, float hitFraction, int partId, int triangleIndex) {
-    return CollisionJNI.btTriangleConvexcastCallback_reportHit(swigCPtr, this, hitNormalLocal, hitPointLocal, hitFraction, partId, triangleIndex);
-  }
+	public float reportHit (Vector3 hitNormalLocal, Vector3 hitPointLocal, float hitFraction, int partId, int triangleIndex) {
+		return CollisionJNI.btTriangleConvexcastCallback_reportHit(swigCPtr, this, hitNormalLocal, hitPointLocal, hitFraction,
+			partId, triangleIndex);
+	}
 
 }

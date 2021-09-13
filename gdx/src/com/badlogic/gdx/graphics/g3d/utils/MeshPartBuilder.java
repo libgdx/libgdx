@@ -74,8 +74,8 @@ public interface MeshPartBuilder {
 	 * @param numIndices The number of indices you are about to add */
 	public void ensureIndices (int numIndices);
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * indices. Useful before adding many vertices and indices to avoid multiple backing array resizes.
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices
+	 * and indices. Useful before adding many vertices and indices to avoid multiple backing array resizes.
 	 * @param numVertices The number of vertices you are about to add
 	 * @param numIndices The number of indices you are about to add */
 	public void ensureCapacity (int numVertices, int numIndices);
@@ -91,10 +91,12 @@ public interface MeshPartBuilder {
 	 * @param numRectangles The number of rectangles you are about to add */
 	public void ensureRectangleIndices (int numRectangles);
 
-	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
+	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex
+	 * size. */
 	public short vertex (final float... values);
 
-	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are available. */
+	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are
+	 * available. */
 	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 
 	/** Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available. */
@@ -159,8 +161,8 @@ public interface MeshPartBuilder {
 	public void rect (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal);
 
 	/** Add a rectangle Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
-		float x01, float y01, float z01, float normalX, float normalY, float normalZ);
+	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01,
+		float y01, float z01, float normalX, float normalY, float normalZ);
 
 	/** Copies a mesh to the mesh (part) currently being build.
 	 * @param mesh The mesh to copy, must have the same vertex attributes and must be indexed. */
@@ -176,8 +178,8 @@ public interface MeshPartBuilder {
 	 * @param numIndices The number of indices of the part of the mesh to copy. */
 	public void addMesh (Mesh mesh, int indexOffset, int numIndices);
 
-	/** Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the vertices are
-	 * not indexed by the indices array. If you want to add only the vertices that are actually indexed, then use the
+	/** Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the vertices
+	 * are not indexed by the indices array. If you want to add only the vertices that are actually indexed, then use the
 	 * {@link #addMesh(float[], short[], int, int)} method instead.
 	 * @param vertices The vertices to copy, must be in the same vertex layout as the mesh being build.
 	 * @param indices Array containing the indices to copy, each index should be valid in the vertices array. */
@@ -294,7 +296,6 @@ public interface MeshPartBuilder {
 	}
 
 	// TODO: The following methods are deprecated and will be removed in a future release
-
 
 	/** @deprecated use PatchShapeBuilder.build instead. */
 	@Deprecated
@@ -433,7 +434,7 @@ public interface MeshPartBuilder {
 	@Deprecated
 	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
 		Vector3 normal);
-	
+
 	/** @deprecated Use CylinderShapeBuilder.build instead. */
 	@Deprecated
 	public void cylinder (float width, float height, float depth, int divisions);
@@ -475,7 +476,7 @@ public interface MeshPartBuilder {
 	/** @deprecated Use CapsuleShapeBuilder.build instead. */
 	@Deprecated
 	public void capsule (float radius, float height, int divisions);
-	
+
 	/** @deprecated Use ArrowShapeBuilder.build instead. */
 	@Deprecated
 	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,

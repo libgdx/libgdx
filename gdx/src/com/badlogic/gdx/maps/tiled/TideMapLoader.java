@@ -261,12 +261,12 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					}
 				}
 			}
-			
+
 			Element properties = element.getChildByName("Properties");
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-			
+
 			map.getLayers().add(layer);
 		}
 	}

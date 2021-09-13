@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
-/** A Batch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and optimize
- * them for processing by the GPU.
+/** A Batch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and
+ * optimize them for processing by the GPU.
  * <p>
  * To draw something with a Batch one has to first call the {@link Batch#begin()} method which will setup appropriate render
  * states. When you are done with drawing you have to call {@link Batch#end()} which will actually draw the things you specified.
@@ -39,8 +39,8 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * A Batch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided
- * sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
+ * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided sprites. You can set your own custom
+ * shader via {@link #setShader(ShaderProgram)}.
  * <p>
  * A Batch has to be disposed if it is no longer used.
  * @author mzechner
@@ -75,11 +75,11 @@ public interface Batch extends Disposable {
 	 * @see Color#toFloatBits() */
 	public float getPackedColor ();
 
-	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
-	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
-	 * originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around originX, originY. The
-	 * portion of the {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in
-	 * texels. FlipX and flipY specify whether the texture portion should be flipped horizontally or vertically.
+	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset
+	 * by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled
+	 * around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around originX,
+	 * originY. The portion of the {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes
+	 * are given in texels. FlipX and flipY specify whether the texture portion should be flipped horizontally or vertically.
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
 	 * @param originX the x-coordinate of the scaling and rotation origin relative to the screen space coordinates
@@ -141,8 +141,8 @@ public interface Batch extends Disposable {
 	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (Texture texture, float x, float y, float width, float height);
 
-	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
-	 * u, v. The {@link #getColor()} from the Batch is not applied. */
+	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y,
+	 * color, u, v. The {@link #getColor()} from the Batch is not applied. */
 	public void draw (Texture texture, float[] spriteVertices, int offset, int count);
 
 	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the region. */
@@ -185,11 +185,11 @@ public interface Batch extends Disposable {
 	public void setBlendFunction (int srcFunc, int dstFunc);
 
 	/** Sets separate (color/alpha) blending function to be used when rendering sprites.
-	 * @param srcFuncColor the source color function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param srcFuncColor the source color function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending
+	 *           function.
 	 * @param dstFuncColor the destination color function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
 	 * @param srcFuncAlpha the source alpha function, e.g. GL20.GL_SRC_ALPHA.
-	 * @param dstFuncAlpha the destination alpha function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
-	 * */
+	 * @param dstFuncAlpha the destination alpha function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA. */
 	public void setBlendFunctionSeparate (int srcFuncColor, int dstFuncColor, int srcFuncAlpha, int dstFuncAlpha);
 
 	public int getBlendSrcFunc ();
@@ -200,10 +200,12 @@ public interface Batch extends Disposable {
 
 	public int getBlendDstFuncAlpha ();
 
-	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
+	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined
+	 * behaviour. */
 	public Matrix4 getProjectionMatrix ();
 
-	/** Returns the current transform matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
+	/** Returns the current transform matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined
+	 * behaviour. */
 	public Matrix4 getTransformMatrix ();
 
 	/** Sets the projection matrix to be used by this Batch. If this is called inside a {@link #begin()}/{@link #end()} block, the

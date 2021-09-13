@@ -21,6 +21,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.dynamics.joints;
 
 import org.jbox2d.common.Vec2;

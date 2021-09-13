@@ -8,2922 +8,7377 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.Pool;
 
 public class DynamicsJNI {
-  public final static native void gDeactivationTime_set(float jarg1);
-  public final static native float gDeactivationTime_get();
-  public final static native void gDisableDeactivation_set(boolean jarg1);
-  public final static native boolean gDisableDeactivation_get();
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_mass_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_mass_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_i_motionState_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btMotionState jarg2_);
-  public final static native long btRigidBody_btRigidBodyConstructionInfo_i_motionState_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_startWorldTransform_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btRigidBody_btRigidBodyConstructionInfo_startWorldTransform_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_i_collisionShape_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btCollisionShape jarg2_);
-  public final static native long btRigidBody_btRigidBodyConstructionInfo_i_collisionShape_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_localInertia_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btRigidBody_btRigidBodyConstructionInfo_localInertia_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_linearDamping_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_linearDamping_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_angularDamping_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_angularDamping_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_friction_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_friction_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_rollingFriction_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_rollingFriction_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_spinningFriction_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_spinningFriction_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_restitution_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_restitution_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_linearSleepingThreshold_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_linearSleepingThreshold_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_angularSleepingThreshold_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_angularSleepingThreshold_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalDamping_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, boolean jarg2);
-  public final static native boolean btRigidBody_btRigidBodyConstructionInfo_additionalDamping_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalDampingFactor_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalDampingFactor_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingFactor_set(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
-  public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingFactor_get(long jarg1, btRigidBody.btRigidBodyConstructionInfo jarg1_);
-  public final static native long new_btRigidBody_btRigidBodyConstructionInfo__SWIG_0(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_, Vector3 jarg5);
-  public final static native long new_btRigidBody_btRigidBodyConstructionInfo__SWIG_1(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_);
-  public final static native void delete_btRigidBody_btRigidBodyConstructionInfo(long jarg1);
-  public final static native void delete_btRigidBody(long jarg1);
-  public final static native void btRigidBody_proceedToTransform(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native void btRigidBody_predictIntegratedTransform(long jarg1, btRigidBody jarg1_, float jarg2, Matrix4 jarg3);
-  public final static native void btRigidBody_saveKinematicState(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native void btRigidBody_applyGravity(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setGravity(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native Vector3 btRigidBody_getGravity(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setDamping(long jarg1, btRigidBody jarg1_, float jarg2, float jarg3);
-  public final static native float btRigidBody_getLinearDamping(long jarg1, btRigidBody jarg1_);
-  public final static native float btRigidBody_getAngularDamping(long jarg1, btRigidBody jarg1_);
-  public final static native float btRigidBody_getLinearSleepingThreshold(long jarg1, btRigidBody jarg1_);
-  public final static native float btRigidBody_getAngularSleepingThreshold(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_applyDamping(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native void btRigidBody_setMassProps(long jarg1, btRigidBody jarg1_, float jarg2, Vector3 jarg3);
-  public final static native Vector3 btRigidBody_getLinearFactor(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setLinearFactor(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native float btRigidBody_getInvMass(long jarg1, btRigidBody jarg1_);
-  public final static native Matrix3 btRigidBody_getInvInertiaTensorWorld(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_integrateVelocities(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native void btRigidBody_setCenterOfMassTransform(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native void btRigidBody_applyCentralForce(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native Vector3 btRigidBody_getTotalForce(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_getTotalTorque(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_getInvInertiaDiagLocal(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setInvInertiaDiagLocal(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_setSleepingThresholds(long jarg1, btRigidBody jarg1_, float jarg2, float jarg3);
-  public final static native void btRigidBody_applyTorque(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_applyForce(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btRigidBody_applyCentralImpulse(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_applyTorqueImpulse(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_applyImpulse(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btRigidBody_clearForces(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_updateInertiaTensor(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_getCenterOfMassPosition(long jarg1, btRigidBody jarg1_);
-  public final static native Quaternion btRigidBody_getOrientation(long jarg1, btRigidBody jarg1_);
-  public final static native Matrix4 btRigidBody_getCenterOfMassTransform(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_getLinearVelocity(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_getAngularVelocity(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setLinearVelocity(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_setAngularVelocity(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native Vector3 btRigidBody_getVelocityInLocalPoint(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_translate(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_getAabb(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native float btRigidBody_computeImpulseDenominator(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native float btRigidBody_computeAngularImpulseDenominator(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_updateDeactivation(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native boolean btRigidBody_wantsSleeping(long jarg1, btRigidBody jarg1_);
-  public final static native long btRigidBody_getBroadphaseProxyConst(long jarg1, btRigidBody jarg1_);
-  public final static native long btRigidBody_getBroadphaseProxy(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setNewBroadphaseProxy(long jarg1, btRigidBody jarg1_, long jarg2, btBroadphaseProxy jarg2_);
-  public final static native long btRigidBody_internalGetMotionState(long jarg1, btRigidBody jarg1_);
-  public final static native long btRigidBody_getMotionStateConst(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_internalSetMotionState(long jarg1, btRigidBody jarg1_, long jarg2, btMotionState jarg2_);
-  public final static native void btRigidBody_contactSolverType_set(long jarg1, btRigidBody jarg1_, int jarg2);
-  public final static native int btRigidBody_contactSolverType_get(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_frictionSolverType_set(long jarg1, btRigidBody jarg1_, int jarg2);
-  public final static native int btRigidBody_frictionSolverType_get(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setAngularFactor__SWIG_0(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btRigidBody_setAngularFactor__SWIG_1(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native Vector3 btRigidBody_getAngularFactor(long jarg1, btRigidBody jarg1_);
-  public final static native boolean btRigidBody_isInWorld(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_addConstraintRef(long jarg1, btRigidBody jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native void btRigidBody_removeConstraintRef(long jarg1, btRigidBody jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native long btRigidBody_getConstraintRef(long jarg1, btRigidBody jarg1_, int jarg2);
-  public final static native int btRigidBody_getNumConstraintRefs(long jarg1, btRigidBody jarg1_);
-  public final static native void btRigidBody_setFlags(long jarg1, btRigidBody jarg1_, int jarg2);
-  public final static native int btRigidBody_getFlags(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_World(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_Body(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native Vector3 btRigidBody_computeGyroscopicForceExplicit(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native Vector3 btRigidBody_getLocalInertia(long jarg1, btRigidBody jarg1_);
-  public final static native long new_btRigidBody__SWIG_0(boolean jarg1, long jarg2, btRigidBody.btRigidBodyConstructionInfo jarg2_);
-  public final static native long new_btRigidBody__SWIG_1(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_, Vector3 jarg5);
-  public final static native long new_btRigidBody__SWIG_2(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_);
-  public final static native void btRigidBodyFloatData_collisionObjectData_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btCollisionObjectFloatData jarg2_);
-  public final static native long btRigidBodyFloatData_collisionObjectData_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_invInertiaTensorWorld_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_invInertiaTensorWorld_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_linearVelocity_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_linearVelocity_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_angularVelocity_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_angularVelocity_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_angularFactor_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_angularFactor_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_linearFactor_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_linearFactor_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_gravity_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_gravity_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_gravity_acceleration_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_gravity_acceleration_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_invInertiaLocal_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_invInertiaLocal_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_totalForce_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_totalForce_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_totalTorque_set(long jarg1, btRigidBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btRigidBodyFloatData_totalTorque_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_inverseMass_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_inverseMass_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_linearDamping_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_linearDamping_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_angularDamping_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_angularDamping_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_additionalDampingFactor_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_additionalDampingFactor_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_additionalLinearDampingThresholdSqr_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_additionalLinearDampingThresholdSqr_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_additionalAngularDampingThresholdSqr_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_additionalAngularDampingThresholdSqr_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_additionalAngularDampingFactor_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_additionalAngularDampingFactor_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_linearSleepingThreshold_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_linearSleepingThreshold_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_angularSleepingThreshold_set(long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
-  public final static native float btRigidBodyFloatData_angularSleepingThreshold_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native void btRigidBodyFloatData_additionalDamping_set(long jarg1, btRigidBodyFloatData jarg1_, int jarg2);
-  public final static native int btRigidBodyFloatData_additionalDamping_get(long jarg1, btRigidBodyFloatData jarg1_);
-  public final static native long new_btRigidBodyFloatData();
-  public final static native void delete_btRigidBodyFloatData(long jarg1);
-  public final static native void btRigidBodyDoubleData_collisionObjectData_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btCollisionObjectDoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_collisionObjectData_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_invInertiaTensorWorld_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btMatrix3x3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_invInertiaTensorWorld_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_linearVelocity_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_linearVelocity_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_angularVelocity_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_angularVelocity_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_angularFactor_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_angularFactor_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_linearFactor_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_linearFactor_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_gravity_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_gravity_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_gravity_acceleration_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_gravity_acceleration_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_invInertiaLocal_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_invInertiaLocal_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_totalForce_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_totalForce_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_totalTorque_set(long jarg1, btRigidBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btRigidBodyDoubleData_totalTorque_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_inverseMass_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_inverseMass_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_linearDamping_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_linearDamping_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_angularDamping_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_angularDamping_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_additionalDampingFactor_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_additionalDampingFactor_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_additionalLinearDampingThresholdSqr_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_additionalLinearDampingThresholdSqr_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_additionalAngularDampingThresholdSqr_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_additionalAngularDampingThresholdSqr_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_additionalAngularDampingFactor_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_additionalAngularDampingFactor_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_linearSleepingThreshold_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_linearSleepingThreshold_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_angularSleepingThreshold_set(long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
-  public final static native double btRigidBodyDoubleData_angularSleepingThreshold_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_additionalDamping_set(long jarg1, btRigidBodyDoubleData jarg1_, int jarg2);
-  public final static native int btRigidBodyDoubleData_additionalDamping_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native void btRigidBodyDoubleData_padding_set(long jarg1, btRigidBodyDoubleData jarg1_, String jarg2);
-  public final static native String btRigidBodyDoubleData_padding_get(long jarg1, btRigidBodyDoubleData jarg1_);
-  public final static native long new_btRigidBodyDoubleData();
-  public final static native void delete_btRigidBodyDoubleData(long jarg1);
-  public final static native long btJointFeedback_operatorNew__SWIG_0(long jarg1, btJointFeedback jarg1_, long jarg2);
-  public final static native void btJointFeedback_operatorDelete__SWIG_0(long jarg1, btJointFeedback jarg1_, long jarg2);
-  public final static native long btJointFeedback_operatorNew__SWIG_1(long jarg1, btJointFeedback jarg1_, long jarg2, long jarg3);
-  public final static native void btJointFeedback_operatorDelete__SWIG_1(long jarg1, btJointFeedback jarg1_, long jarg2, long jarg3);
-  public final static native long btJointFeedback_operatorNewArray__SWIG_0(long jarg1, btJointFeedback jarg1_, long jarg2);
-  public final static native void btJointFeedback_operatorDeleteArray__SWIG_0(long jarg1, btJointFeedback jarg1_, long jarg2);
-  public final static native long btJointFeedback_operatorNewArray__SWIG_1(long jarg1, btJointFeedback jarg1_, long jarg2, long jarg3);
-  public final static native void btJointFeedback_operatorDeleteArray__SWIG_1(long jarg1, btJointFeedback jarg1_, long jarg2, long jarg3);
-  public final static native void btJointFeedback_appliedForceBodyA_set(long jarg1, btJointFeedback jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJointFeedback_appliedForceBodyA_get(long jarg1, btJointFeedback jarg1_);
-  public final static native void btJointFeedback_appliedTorqueBodyA_set(long jarg1, btJointFeedback jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJointFeedback_appliedTorqueBodyA_get(long jarg1, btJointFeedback jarg1_);
-  public final static native void btJointFeedback_appliedForceBodyB_set(long jarg1, btJointFeedback jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJointFeedback_appliedForceBodyB_get(long jarg1, btJointFeedback jarg1_);
-  public final static native void btJointFeedback_appliedTorqueBodyB_set(long jarg1, btJointFeedback jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJointFeedback_appliedTorqueBodyB_get(long jarg1, btJointFeedback jarg1_);
-  public final static native long new_btJointFeedback();
-  public final static native void delete_btJointFeedback(long jarg1);
-  public final static native long btTypedConstraint_operatorNew__SWIG_0(long jarg1, btTypedConstraint jarg1_, long jarg2);
-  public final static native void btTypedConstraint_operatorDelete__SWIG_0(long jarg1, btTypedConstraint jarg1_, long jarg2);
-  public final static native long btTypedConstraint_operatorNew__SWIG_1(long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btTypedConstraint_operatorDelete__SWIG_1(long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btTypedConstraint_operatorNewArray__SWIG_0(long jarg1, btTypedConstraint jarg1_, long jarg2);
-  public final static native void btTypedConstraint_operatorDeleteArray__SWIG_0(long jarg1, btTypedConstraint jarg1_, long jarg2);
-  public final static native long btTypedConstraint_operatorNewArray__SWIG_1(long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btTypedConstraint_operatorDeleteArray__SWIG_1(long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void delete_btTypedConstraint(long jarg1);
-  public final static native void btTypedConstraint_btConstraintInfo1_numConstraintRows_set(long jarg1, btTypedConstraint.btConstraintInfo1 jarg1_, int jarg2);
-  public final static native int btTypedConstraint_btConstraintInfo1_numConstraintRows_get(long jarg1, btTypedConstraint.btConstraintInfo1 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo1_nub_set(long jarg1, btTypedConstraint.btConstraintInfo1 jarg1_, int jarg2);
-  public final static native int btTypedConstraint_btConstraintInfo1_nub_get(long jarg1, btTypedConstraint.btConstraintInfo1 jarg1_);
-  public final static native long new_btTypedConstraint_btConstraintInfo1();
-  public final static native void delete_btTypedConstraint_btConstraintInfo1(long jarg1);
-  public final static native long btTypedConstraint_getFixedBody();
-  public final static native void btTypedConstraint_btConstraintInfo2_fps_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
-  public final static native float btTypedConstraint_btConstraintInfo2_fps_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_erp_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
-  public final static native float btTypedConstraint_btConstraintInfo2_erp_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_J1linearAxis_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_J1linearAxis_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_J1angularAxis_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_J1angularAxis_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_J2linearAxis_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_J2linearAxis_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_J2angularAxis_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_J2angularAxis_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_rowskip_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, int jarg2);
-  public final static native int btTypedConstraint_btConstraintInfo2_rowskip_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_constraintError_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_constraintError_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_cfm_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_cfm_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_lowerLimit_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_lowerLimit_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_upperLimit_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
-  public final static native long btTypedConstraint_btConstraintInfo2_upperLimit_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_numIterations_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, int jarg2);
-  public final static native int btTypedConstraint_btConstraintInfo2_numIterations_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native void btTypedConstraint_btConstraintInfo2_damping_set(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
-  public final static native float btTypedConstraint_btConstraintInfo2_damping_get(long jarg1, btTypedConstraint.btConstraintInfo2 jarg1_);
-  public final static native long new_btTypedConstraint_btConstraintInfo2();
-  public final static native void delete_btTypedConstraint_btConstraintInfo2(long jarg1);
-  public final static native int btTypedConstraint_getOverrideNumSolverIterations(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setOverrideNumSolverIterations(long jarg1, btTypedConstraint jarg1_, int jarg2);
-  public final static native void btTypedConstraint_buildJacobian(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setupSolverConstraint(long jarg1, btTypedConstraint jarg1_, long jarg2, int jarg3, int jarg4, float jarg5);
-  public final static native void btTypedConstraint_getInfo1(long jarg1, btTypedConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btTypedConstraint_getInfo2(long jarg1, btTypedConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_);
-  public final static native void btTypedConstraint_internalSetAppliedImpulse(long jarg1, btTypedConstraint jarg1_, float jarg2);
-  public final static native float btTypedConstraint_internalGetAppliedImpulse(long jarg1, btTypedConstraint jarg1_);
-  public final static native float btTypedConstraint_getBreakingImpulseThreshold(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setBreakingImpulseThreshold(long jarg1, btTypedConstraint jarg1_, float jarg2);
-  public final static native boolean btTypedConstraint_isEnabled(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setEnabled(long jarg1, btTypedConstraint jarg1_, boolean jarg2);
-  public final static native void btTypedConstraint_solveConstraintObsolete(long jarg1, btTypedConstraint jarg1_, long jarg2, btSolverBody jarg2_, long jarg3, btSolverBody jarg3_, float jarg4);
-  public final static native long btTypedConstraint_getRigidBodyAConst(long jarg1, btTypedConstraint jarg1_);
-  public final static native long btTypedConstraint_getRigidBodyBConst(long jarg1, btTypedConstraint jarg1_);
-  public final static native long btTypedConstraint_getRigidBodyA(long jarg1, btTypedConstraint jarg1_);
-  public final static native long btTypedConstraint_getRigidBodyB(long jarg1, btTypedConstraint jarg1_);
-  public final static native int btTypedConstraint_getUserConstraintType(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setUserConstraintType(long jarg1, btTypedConstraint jarg1_, int jarg2);
-  public final static native void btTypedConstraint_setUserConstraintId(long jarg1, btTypedConstraint jarg1_, int jarg2);
-  public final static native int btTypedConstraint_getUserConstraintId(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setUserConstraintPtr(long jarg1, btTypedConstraint jarg1_, long jarg2);
-  public final static native long btTypedConstraint_getUserConstraintPtr(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setJointFeedback(long jarg1, btTypedConstraint jarg1_, long jarg2, btJointFeedback jarg2_);
-  public final static native long btTypedConstraint_getJointFeedbackConst(long jarg1, btTypedConstraint jarg1_);
-  public final static native long btTypedConstraint_getJointFeedback(long jarg1, btTypedConstraint jarg1_);
-  public final static native int btTypedConstraint_getUid(long jarg1, btTypedConstraint jarg1_);
-  public final static native boolean btTypedConstraint_needsFeedback(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_enableFeedback(long jarg1, btTypedConstraint jarg1_, boolean jarg2);
-  public final static native float btTypedConstraint_getAppliedImpulse(long jarg1, btTypedConstraint jarg1_);
-  public final static native int btTypedConstraint_getConstraintType(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setDbgDrawSize(long jarg1, btTypedConstraint jarg1_, float jarg2);
-  public final static native float btTypedConstraint_getDbgDrawSize(long jarg1, btTypedConstraint jarg1_);
-  public final static native void btTypedConstraint_setParam__SWIG_0(long jarg1, btTypedConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btTypedConstraint_setParam__SWIG_1(long jarg1, btTypedConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btTypedConstraint_getParam__SWIG_0(long jarg1, btTypedConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btTypedConstraint_getParam__SWIG_1(long jarg1, btTypedConstraint jarg1_, int jarg2);
-  public final static native int btTypedConstraint_calculateSerializeBufferSize(long jarg1, btTypedConstraint jarg1_);
-  public final static native String btTypedConstraint_serialize(long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3, btSerializer jarg3_);
-  public final static native float btAdjustAngleToLimits(float jarg1, float jarg2, float jarg3);
-  public final static native void btTypedConstraintFloatData_rbA_set(long jarg1, btTypedConstraintFloatData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
-  public final static native long btTypedConstraintFloatData_rbA_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_rbB_set(long jarg1, btTypedConstraintFloatData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
-  public final static native long btTypedConstraintFloatData_rbB_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_name_set(long jarg1, btTypedConstraintFloatData jarg1_, String jarg2);
-  public final static native String btTypedConstraintFloatData_name_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_objectType_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_objectType_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_userConstraintType_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_userConstraintType_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_userConstraintId_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_userConstraintId_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_needsFeedback_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_needsFeedback_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_appliedImpulse_set(long jarg1, btTypedConstraintFloatData jarg1_, float jarg2);
-  public final static native float btTypedConstraintFloatData_appliedImpulse_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_dbgDrawSize_set(long jarg1, btTypedConstraintFloatData jarg1_, float jarg2);
-  public final static native float btTypedConstraintFloatData_dbgDrawSize_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_disableCollisionsBetweenLinkedBodies_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_disableCollisionsBetweenLinkedBodies_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_overrideNumSolverIterations_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_overrideNumSolverIterations_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_breakingImpulseThreshold_set(long jarg1, btTypedConstraintFloatData jarg1_, float jarg2);
-  public final static native float btTypedConstraintFloatData_breakingImpulseThreshold_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native void btTypedConstraintFloatData_isEnabled_set(long jarg1, btTypedConstraintFloatData jarg1_, int jarg2);
-  public final static native int btTypedConstraintFloatData_isEnabled_get(long jarg1, btTypedConstraintFloatData jarg1_);
-  public final static native long new_btTypedConstraintFloatData();
-  public final static native void delete_btTypedConstraintFloatData(long jarg1);
-  public final static native void btTypedConstraintData_rbA_set(long jarg1, btTypedConstraintData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
-  public final static native long btTypedConstraintData_rbA_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_rbB_set(long jarg1, btTypedConstraintData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
-  public final static native long btTypedConstraintData_rbB_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_name_set(long jarg1, btTypedConstraintData jarg1_, String jarg2);
-  public final static native String btTypedConstraintData_name_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_objectType_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_objectType_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_userConstraintType_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_userConstraintType_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_userConstraintId_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_userConstraintId_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_needsFeedback_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_needsFeedback_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_appliedImpulse_set(long jarg1, btTypedConstraintData jarg1_, float jarg2);
-  public final static native float btTypedConstraintData_appliedImpulse_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_dbgDrawSize_set(long jarg1, btTypedConstraintData jarg1_, float jarg2);
-  public final static native float btTypedConstraintData_dbgDrawSize_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_disableCollisionsBetweenLinkedBodies_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_disableCollisionsBetweenLinkedBodies_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_overrideNumSolverIterations_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_overrideNumSolverIterations_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_breakingImpulseThreshold_set(long jarg1, btTypedConstraintData jarg1_, float jarg2);
-  public final static native float btTypedConstraintData_breakingImpulseThreshold_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_isEnabled_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
-  public final static native int btTypedConstraintData_isEnabled_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native long new_btTypedConstraintData();
-  public final static native void delete_btTypedConstraintData(long jarg1);
-  public final static native void btTypedConstraintDoubleData_rbA_set(long jarg1, btTypedConstraintDoubleData jarg1_, long jarg2, btRigidBodyDoubleData jarg2_);
-  public final static native long btTypedConstraintDoubleData_rbA_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_rbB_set(long jarg1, btTypedConstraintDoubleData jarg1_, long jarg2, btRigidBodyDoubleData jarg2_);
-  public final static native long btTypedConstraintDoubleData_rbB_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_name_set(long jarg1, btTypedConstraintDoubleData jarg1_, String jarg2);
-  public final static native String btTypedConstraintDoubleData_name_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_objectType_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_objectType_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_userConstraintType_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_userConstraintType_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_userConstraintId_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_userConstraintId_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_needsFeedback_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_needsFeedback_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_appliedImpulse_set(long jarg1, btTypedConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btTypedConstraintDoubleData_appliedImpulse_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_dbgDrawSize_set(long jarg1, btTypedConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btTypedConstraintDoubleData_dbgDrawSize_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_disableCollisionsBetweenLinkedBodies_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_disableCollisionsBetweenLinkedBodies_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_overrideNumSolverIterations_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_overrideNumSolverIterations_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_breakingImpulseThreshold_set(long jarg1, btTypedConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btTypedConstraintDoubleData_breakingImpulseThreshold_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_isEnabled_set(long jarg1, btTypedConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btTypedConstraintDoubleData_isEnabled_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native void btTypedConstraintDoubleData_padding_set(long jarg1, btTypedConstraintDoubleData jarg1_, String jarg2);
-  public final static native String btTypedConstraintDoubleData_padding_get(long jarg1, btTypedConstraintDoubleData jarg1_);
-  public final static native long new_btTypedConstraintDoubleData();
-  public final static native void delete_btTypedConstraintDoubleData(long jarg1);
-  public final static native long new_btAngularLimit();
-  public final static native void btAngularLimit_set__SWIG_0(long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
-  public final static native void btAngularLimit_set__SWIG_1(long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native void btAngularLimit_set__SWIG_2(long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btAngularLimit_set__SWIG_3(long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3);
-  public final static native void btAngularLimit_test(long jarg1, btAngularLimit jarg1_, float jarg2);
-  public final static native float btAngularLimit_getSoftness(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getBiasFactor(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getRelaxationFactor(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getCorrection(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getSign(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getHalfRange(long jarg1, btAngularLimit jarg1_);
-  public final static native boolean btAngularLimit_isLimit(long jarg1, btAngularLimit jarg1_);
-  public final static native void btAngularLimit_fit(long jarg1, btAngularLimit jarg1_, long jarg2);
-  public final static native float btAngularLimit_getError(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getLow(long jarg1, btAngularLimit jarg1_);
-  public final static native float btAngularLimit_getHigh(long jarg1, btAngularLimit jarg1_);
-  public final static native void delete_btAngularLimit(long jarg1);
-  public final static native void delete_btDynamicsWorld(long jarg1);
-  public final static native int btDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
-  public final static native int btDynamicsWorld_stepSimulation__SWIG_1(long jarg1, btDynamicsWorld jarg1_, float jarg2, int jarg3);
-  public final static native int btDynamicsWorld_stepSimulation__SWIG_2(long jarg1, btDynamicsWorld jarg1_, float jarg2);
-  public final static native void btDynamicsWorld_addConstraint__SWIG_0(long jarg1, btDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_, boolean jarg3);
-  public final static native void btDynamicsWorld_addConstraint__SWIG_1(long jarg1, btDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native void btDynamicsWorld_removeConstraint(long jarg1, btDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native void btDynamicsWorld_addAction(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorld_removeAction(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorld_setGravity(long jarg1, btDynamicsWorld jarg1_, Vector3 jarg2);
-  public final static native Vector3 btDynamicsWorld_getGravity(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void btDynamicsWorld_synchronizeMotionStates(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void btDynamicsWorld_addRigidBody__SWIG_0(long jarg1, btDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native void btDynamicsWorld_addRigidBody__SWIG_1(long jarg1, btDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_, int jarg3, int jarg4);
-  public final static native void btDynamicsWorld_removeRigidBody(long jarg1, btDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native void btDynamicsWorld_setConstraintSolver(long jarg1, btDynamicsWorld jarg1_, long jarg2, btConstraintSolver jarg2_);
-  public final static native long btDynamicsWorld_getConstraintSolver(long jarg1, btDynamicsWorld jarg1_);
-  public final static native int btDynamicsWorld_getNumConstraints(long jarg1, btDynamicsWorld jarg1_);
-  public final static native long btDynamicsWorld_getConstraint(long jarg1, btDynamicsWorld jarg1_, int jarg2);
-  public final static native long btDynamicsWorld_getConstraintConst(long jarg1, btDynamicsWorld jarg1_, int jarg2);
-  public final static native int btDynamicsWorld_getWorldType(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void btDynamicsWorld_clearForces(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_0(long jarg1, btDynamicsWorld jarg1_, long jarg2, long jarg3, boolean jarg4);
-  public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_1(long jarg1, btDynamicsWorld jarg1_, long jarg2, long jarg3);
-  public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_2(long jarg1, btDynamicsWorld jarg1_, long jarg2);
-  public final static native void btDynamicsWorld_setWorldUserInfo(long jarg1, btDynamicsWorld jarg1_, long jarg2);
-  public final static native long btDynamicsWorld_getWorldUserInfo(long jarg1, btDynamicsWorld jarg1_);
-  public final static native long btDynamicsWorld_getSolverInfo(long jarg1, btDynamicsWorld jarg1_);
-  public final static native long btDynamicsWorld_getSolverInfoConst(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void btDynamicsWorld_addVehicle(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorld_removeVehicle(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorld_addCharacter(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorld_removeCharacter(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
-  public final static native void btDynamicsWorldDoubleData_solverInfo_set(long jarg1, btDynamicsWorldDoubleData jarg1_, long jarg2, btContactSolverInfoDoubleData jarg2_);
-  public final static native long btDynamicsWorldDoubleData_solverInfo_get(long jarg1, btDynamicsWorldDoubleData jarg1_);
-  public final static native void btDynamicsWorldDoubleData_gravity_set(long jarg1, btDynamicsWorldDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btDynamicsWorldDoubleData_gravity_get(long jarg1, btDynamicsWorldDoubleData jarg1_);
-  public final static native long new_btDynamicsWorldDoubleData();
-  public final static native void delete_btDynamicsWorldDoubleData(long jarg1);
-  public final static native void btDynamicsWorldFloatData_solverInfo_set(long jarg1, btDynamicsWorldFloatData jarg1_, long jarg2, btContactSolverInfoFloatData jarg2_);
-  public final static native long btDynamicsWorldFloatData_solverInfo_get(long jarg1, btDynamicsWorldFloatData jarg1_);
-  public final static native void btDynamicsWorldFloatData_gravity_set(long jarg1, btDynamicsWorldFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btDynamicsWorldFloatData_gravity_get(long jarg1, btDynamicsWorldFloatData jarg1_);
-  public final static native long new_btDynamicsWorldFloatData();
-  public final static native void delete_btDynamicsWorldFloatData(long jarg1);
-  public final static native void InternalTickCallback_CB(long jarg1, btDynamicsWorld jarg1_, float jarg2);
-  public final static native long new_InternalTickCallback__SWIG_0(long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
-  public final static native long new_InternalTickCallback__SWIG_1(long jarg1, btDynamicsWorld jarg1_);
-  public final static native long new_InternalTickCallback__SWIG_2();
-  public final static native void InternalTickCallback_onInternalTick(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, float jarg3);
-  public final static native void InternalTickCallback_onInternalTickSwigExplicitInternalTickCallback(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, float jarg3);
-  public final static native void InternalTickCallback_detach__SWIG_0(long jarg1, InternalTickCallback jarg1_);
-  public final static native void InternalTickCallback_attach__SWIG_0(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, boolean jarg3);
-  public final static native void InternalTickCallback_attach__SWIG_1(long jarg1, InternalTickCallback jarg1_);
-  public final static native void InternalTickCallback_detach__SWIG_1(long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
-  public final static native void delete_InternalTickCallback(long jarg1);
-  public final static native void InternalTickCallback_director_connect(InternalTickCallback obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void InternalTickCallback_change_ownership(InternalTickCallback obj, long cptr, boolean take_or_release);
-  public final static native long new_btSimpleDynamicsWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btSimpleDynamicsWorld(long jarg1);
-  public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btSimpleDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
-  public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_1(long jarg1, btSimpleDynamicsWorld jarg1_, float jarg2, int jarg3);
-  public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_2(long jarg1, btSimpleDynamicsWorld jarg1_, float jarg2);
-  public final static native void btSimpleDynamicsWorld_addRigidBody__SWIG_0(long jarg1, btSimpleDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native void btSimpleDynamicsWorld_addRigidBody__SWIG_1(long jarg1, btSimpleDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_, int jarg3, int jarg4);
-  public final static native void delete_btActionInterface(long jarg1);
-  public final static native void btActionInterface_updateAction(long jarg1, btActionInterface jarg1_, long jarg2, btCollisionWorld jarg2_, float jarg3);
-  public final static native void btActionInterface_debugDraw(long jarg1, btActionInterface jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void CustomActionInterface_updateAction(long jarg1, CustomActionInterface jarg1_, float jarg2);
-  public final static native void CustomActionInterface_debugDraw(long jarg1, CustomActionInterface jarg1_);
-  public final static native long new_CustomActionInterface();
-  public final static native void delete_CustomActionInterface(long jarg1);
-  public final static native void CustomActionInterface_director_connect(CustomActionInterface obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void CustomActionInterface_change_ownership(CustomActionInterface obj, long cptr, boolean take_or_release);
-  public final static native long btDiscreteDynamicsWorld_operatorNew__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2);
-  public final static native void btDiscreteDynamicsWorld_operatorDelete__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2);
-  public final static native long btDiscreteDynamicsWorld_operatorNew__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, long jarg3);
-  public final static native void btDiscreteDynamicsWorld_operatorDelete__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, long jarg3);
-  public final static native long btDiscreteDynamicsWorld_operatorNewArray__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2);
-  public final static native void btDiscreteDynamicsWorld_operatorDeleteArray__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2);
-  public final static native long btDiscreteDynamicsWorld_operatorNewArray__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, long jarg3);
-  public final static native void btDiscreteDynamicsWorld_operatorDeleteArray__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, long jarg3);
-  public final static native long new_btDiscreteDynamicsWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btDiscreteDynamicsWorld(long jarg1);
-  public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
-  public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, float jarg2, int jarg3);
-  public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_2(long jarg1, btDiscreteDynamicsWorld jarg1_, float jarg2);
-  public final static native void btDiscreteDynamicsWorld_synchronizeSingleMotionState(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native void btDiscreteDynamicsWorld_addConstraint__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_, boolean jarg3);
-  public final static native void btDiscreteDynamicsWorld_addConstraint__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native long btDiscreteDynamicsWorld_getSimulationIslandManager(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native long btDiscreteDynamicsWorld_getSimulationIslandManagerConst(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native long btDiscreteDynamicsWorld_getCollisionWorld(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btCollisionObject jarg2_, int jarg3, int jarg4);
-  public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btCollisionObject jarg2_, int jarg3);
-  public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_2(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btCollisionObject jarg2_);
-  public final static native void btDiscreteDynamicsWorld_addRigidBody__SWIG_0(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native void btDiscreteDynamicsWorld_addRigidBody__SWIG_1(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_, int jarg3, int jarg4);
-  public final static native void btDiscreteDynamicsWorld_debugDrawConstraint(long jarg1, btDiscreteDynamicsWorld jarg1_, long jarg2, btTypedConstraint jarg2_);
-  public final static native void btDiscreteDynamicsWorld_applyGravity(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native void btDiscreteDynamicsWorld_setNumTasks(long jarg1, btDiscreteDynamicsWorld jarg1_, int jarg2);
-  public final static native void btDiscreteDynamicsWorld_updateVehicles(long jarg1, btDiscreteDynamicsWorld jarg1_, float jarg2);
-  public final static native void btDiscreteDynamicsWorld_setSynchronizeAllMotionStates(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
-  public final static native boolean btDiscreteDynamicsWorld_getSynchronizeAllMotionStates(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native void btDiscreteDynamicsWorld_setApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
-  public final static native boolean btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native void btDiscreteDynamicsWorld_setLatencyMotionStateInterpolation(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
-  public final static native boolean btDiscreteDynamicsWorld_getLatencyMotionStateInterpolation(long jarg1, btDiscreteDynamicsWorld jarg1_);
-  public final static native void delete_btCharacterControllerInterface(long jarg1);
-  public final static native void btCharacterControllerInterface_setWalkDirection(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2);
-  public final static native void btCharacterControllerInterface_setVelocityForTimeInterval(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2, float jarg3);
-  public final static native void btCharacterControllerInterface_reset(long jarg1, btCharacterControllerInterface jarg1_, long jarg2, btCollisionWorld jarg2_);
-  public final static native void btCharacterControllerInterface_warp(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2);
-  public final static native void btCharacterControllerInterface_preStep(long jarg1, btCharacterControllerInterface jarg1_, long jarg2, btCollisionWorld jarg2_);
-  public final static native void btCharacterControllerInterface_playerStep(long jarg1, btCharacterControllerInterface jarg1_, long jarg2, btCollisionWorld jarg2_, float jarg3);
-  public final static native boolean btCharacterControllerInterface_canJump(long jarg1, btCharacterControllerInterface jarg1_);
-  public final static native void btCharacterControllerInterface_jump__SWIG_0(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2);
-  public final static native void btCharacterControllerInterface_jump__SWIG_1(long jarg1, btCharacterControllerInterface jarg1_);
-  public final static native boolean btCharacterControllerInterface_onGround(long jarg1, btCharacterControllerInterface jarg1_);
-  public final static native void btCharacterControllerInterface_setUpInterpolate(long jarg1, btCharacterControllerInterface jarg1_, boolean jarg2);
-  public final static native long btKinematicCharacterController_operatorNew__SWIG_0(long jarg1, btKinematicCharacterController jarg1_, long jarg2);
-  public final static native void btKinematicCharacterController_operatorDelete__SWIG_0(long jarg1, btKinematicCharacterController jarg1_, long jarg2);
-  public final static native long btKinematicCharacterController_operatorNew__SWIG_1(long jarg1, btKinematicCharacterController jarg1_, long jarg2, long jarg3);
-  public final static native void btKinematicCharacterController_operatorDelete__SWIG_1(long jarg1, btKinematicCharacterController jarg1_, long jarg2, long jarg3);
-  public final static native long btKinematicCharacterController_operatorNewArray__SWIG_0(long jarg1, btKinematicCharacterController jarg1_, long jarg2);
-  public final static native void btKinematicCharacterController_operatorDeleteArray__SWIG_0(long jarg1, btKinematicCharacterController jarg1_, long jarg2);
-  public final static native long btKinematicCharacterController_operatorNewArray__SWIG_1(long jarg1, btKinematicCharacterController jarg1_, long jarg2, long jarg3);
-  public final static native void btKinematicCharacterController_operatorDeleteArray__SWIG_1(long jarg1, btKinematicCharacterController jarg1_, long jarg2, long jarg3);
-  public final static native long new_btKinematicCharacterController__SWIG_0(long jarg1, btPairCachingGhostObject jarg1_, long jarg2, btConvexShape jarg2_, float jarg3, Vector3 jarg4);
-  public final static native long new_btKinematicCharacterController__SWIG_1(long jarg1, btPairCachingGhostObject jarg1_, long jarg2, btConvexShape jarg2_, float jarg3);
-  public final static native void delete_btKinematicCharacterController(long jarg1);
-  public final static native void btKinematicCharacterController_setUp(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native Vector3 btKinematicCharacterController_getUp(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setAngularVelocity(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native Vector3 btKinematicCharacterController_getAngularVelocity(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setLinearVelocity(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native Vector3 btKinematicCharacterController_getLinearVelocity(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setLinearDamping(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getLinearDamping(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setAngularDamping(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getAngularDamping(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setStepHeight(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getStepHeight(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setFallSpeed(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getFallSpeed(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setJumpSpeed(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getJumpSpeed(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setMaxJumpHeight(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native void btKinematicCharacterController_jump__SWIG_0(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native void btKinematicCharacterController_jump__SWIG_1(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_applyImpulse(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native void btKinematicCharacterController_setGravity(long jarg1, btKinematicCharacterController jarg1_, Vector3 jarg2);
-  public final static native Vector3 btKinematicCharacterController_getGravity(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setMaxSlope(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getMaxSlope(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setMaxPenetrationDepth(long jarg1, btKinematicCharacterController jarg1_, float jarg2);
-  public final static native float btKinematicCharacterController_getMaxPenetrationDepth(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native long btKinematicCharacterController_getGhostObject(long jarg1, btKinematicCharacterController jarg1_);
-  public final static native void btKinematicCharacterController_setUseGhostSweepTest(long jarg1, btKinematicCharacterController jarg1_, boolean jarg2);
-  public final static native void btContactSolverInfoData_tau_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_tau_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_damping_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_damping_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_friction_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_friction_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_timeStep_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_timeStep_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_restitution_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_restitution_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_numIterations_set(long jarg1, btContactSolverInfoData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoData_numIterations_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_maxErrorReduction_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_maxErrorReduction_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_sor_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_sor_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_erp_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_erp_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_erp2_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_erp2_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_globalCfm_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_globalCfm_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_frictionERP_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_frictionERP_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_frictionCFM_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_frictionCFM_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_splitImpulse_set(long jarg1, btContactSolverInfoData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoData_splitImpulse_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_splitImpulsePenetrationThreshold_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_splitImpulsePenetrationThreshold_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_splitImpulseTurnErp_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_splitImpulseTurnErp_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_linearSlop_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_linearSlop_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_warmstartingFactor_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_warmstartingFactor_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_solverMode_set(long jarg1, btContactSolverInfoData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoData_solverMode_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_restingContactRestitutionThreshold_set(long jarg1, btContactSolverInfoData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoData_restingContactRestitutionThreshold_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_minimumSolverBatchSize_set(long jarg1, btContactSolverInfoData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoData_minimumSolverBatchSize_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_maxGyroscopicForce_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_maxGyroscopicForce_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_singleAxisRollingFrictionThreshold_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_singleAxisRollingFrictionThreshold_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_leastSquaresResidualThreshold_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_leastSquaresResidualThreshold_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native void btContactSolverInfoData_restitutionVelocityThreshold_set(long jarg1, btContactSolverInfoData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoData_restitutionVelocityThreshold_get(long jarg1, btContactSolverInfoData jarg1_);
-  public final static native long new_btContactSolverInfoData();
-  public final static native void delete_btContactSolverInfoData(long jarg1);
-  public final static native long new_btContactSolverInfo();
-  public final static native void delete_btContactSolverInfo(long jarg1);
-  public final static native void btContactSolverInfoDoubleData_tau_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_tau_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_damping_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_damping_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_friction_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_friction_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_timeStep_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_timeStep_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_restitution_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_restitution_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_maxErrorReduction_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_maxErrorReduction_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_sor_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_sor_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_erp_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_erp_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_erp2_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_erp2_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_globalCfm_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_globalCfm_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_splitImpulsePenetrationThreshold_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_splitImpulsePenetrationThreshold_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_splitImpulseTurnErp_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_splitImpulseTurnErp_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_linearSlop_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_linearSlop_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_warmstartingFactor_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_warmstartingFactor_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_maxGyroscopicForce_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_maxGyroscopicForce_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_singleAxisRollingFrictionThreshold_set(long jarg1, btContactSolverInfoDoubleData jarg1_, double jarg2);
-  public final static native double btContactSolverInfoDoubleData_singleAxisRollingFrictionThreshold_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_numIterations_set(long jarg1, btContactSolverInfoDoubleData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoDoubleData_numIterations_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_solverMode_set(long jarg1, btContactSolverInfoDoubleData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoDoubleData_solverMode_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_restingContactRestitutionThreshold_set(long jarg1, btContactSolverInfoDoubleData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoDoubleData_restingContactRestitutionThreshold_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_minimumSolverBatchSize_set(long jarg1, btContactSolverInfoDoubleData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoDoubleData_minimumSolverBatchSize_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_splitImpulse_set(long jarg1, btContactSolverInfoDoubleData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoDoubleData_splitImpulse_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native void btContactSolverInfoDoubleData_padding_set(long jarg1, btContactSolverInfoDoubleData jarg1_, String jarg2);
-  public final static native String btContactSolverInfoDoubleData_padding_get(long jarg1, btContactSolverInfoDoubleData jarg1_);
-  public final static native long new_btContactSolverInfoDoubleData();
-  public final static native void delete_btContactSolverInfoDoubleData(long jarg1);
-  public final static native void btContactSolverInfoFloatData_tau_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_tau_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_damping_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_damping_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_friction_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_friction_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_timeStep_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_timeStep_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_restitution_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_restitution_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_maxErrorReduction_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_maxErrorReduction_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_sor_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_sor_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_erp_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_erp_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_erp2_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_erp2_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_globalCfm_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_globalCfm_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_splitImpulseTurnErp_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_splitImpulseTurnErp_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_linearSlop_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_linearSlop_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_warmstartingFactor_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_warmstartingFactor_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_maxGyroscopicForce_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_maxGyroscopicForce_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_set(long jarg1, btContactSolverInfoFloatData jarg1_, float jarg2);
-  public final static native float btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_numIterations_set(long jarg1, btContactSolverInfoFloatData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoFloatData_numIterations_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_solverMode_set(long jarg1, btContactSolverInfoFloatData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoFloatData_solverMode_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_restingContactRestitutionThreshold_set(long jarg1, btContactSolverInfoFloatData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoFloatData_restingContactRestitutionThreshold_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_minimumSolverBatchSize_set(long jarg1, btContactSolverInfoFloatData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoFloatData_minimumSolverBatchSize_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_splitImpulse_set(long jarg1, btContactSolverInfoFloatData jarg1_, int jarg2);
-  public final static native int btContactSolverInfoFloatData_splitImpulse_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native void btContactSolverInfoFloatData_padding_set(long jarg1, btContactSolverInfoFloatData jarg1_, String jarg2);
-  public final static native String btContactSolverInfoFloatData_padding_get(long jarg1, btContactSolverInfoFloatData jarg1_);
-  public final static native long new_btContactSolverInfoFloatData();
-  public final static native void delete_btContactSolverInfoFloatData(long jarg1);
-  public final static native void delete_btConstraintSolver(long jarg1);
-  public final static native void btConstraintSolver_prepareSolve(long jarg1, btConstraintSolver jarg1_, int jarg2, int jarg3);
-  public final static native float btConstraintSolver_solveGroup(long jarg1, btConstraintSolver jarg1_, long jarg2, int jarg3, long jarg4, int jarg5, long jarg6, int jarg7, long jarg8, btContactSolverInfo jarg8_, long jarg9, btIDebugDraw jarg9_, long jarg10, btDispatcher jarg10_);
-  public final static native void btConstraintSolver_allSolved(long jarg1, btConstraintSolver jarg1_, long jarg2, btContactSolverInfo jarg2_, long jarg3, btIDebugDraw jarg3_);
-  public final static native void btConstraintSolver_reset(long jarg1, btConstraintSolver jarg1_);
-  public final static native int btConstraintSolver_getSolverType(long jarg1, btConstraintSolver jarg1_);
-  public final static native long btSequentialImpulseConstraintSolver_operatorNew__SWIG_0(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native void btSequentialImpulseConstraintSolver_operatorDelete__SWIG_0(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native long btSequentialImpulseConstraintSolver_operatorNew__SWIG_1(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btSequentialImpulseConstraintSolver_operatorDelete__SWIG_1(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native long btSequentialImpulseConstraintSolver_operatorNewArray__SWIG_0(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native void btSequentialImpulseConstraintSolver_operatorDeleteArray__SWIG_0(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native long btSequentialImpulseConstraintSolver_operatorNewArray__SWIG_1(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btSequentialImpulseConstraintSolver_operatorDeleteArray__SWIG_1(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native long new_btSequentialImpulseConstraintSolver();
-  public final static native void delete_btSequentialImpulseConstraintSolver(long jarg1);
-  public final static native long btSequentialImpulseConstraintSolver_btRand2(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native int btSequentialImpulseConstraintSolver_btRandInt2(long jarg1, btSequentialImpulseConstraintSolver jarg1_, int jarg2);
-  public final static native void btSequentialImpulseConstraintSolver_setRandSeed(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native long btSequentialImpulseConstraintSolver_getRandSeed(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
-  public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
-  public final static native long btSolverBody_operatorNew__SWIG_0(long jarg1, btSolverBody jarg1_, long jarg2);
-  public final static native void btSolverBody_operatorDelete__SWIG_0(long jarg1, btSolverBody jarg1_, long jarg2);
-  public final static native long btSolverBody_operatorNew__SWIG_1(long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverBody_operatorDelete__SWIG_1(long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
-  public final static native long btSolverBody_operatorNewArray__SWIG_0(long jarg1, btSolverBody jarg1_, long jarg2);
-  public final static native void btSolverBody_operatorDeleteArray__SWIG_0(long jarg1, btSolverBody jarg1_, long jarg2);
-  public final static native long btSolverBody_operatorNewArray__SWIG_1(long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverBody_operatorDeleteArray__SWIG_1(long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverBody_worldTransform_set(long jarg1, btSolverBody jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btSolverBody_worldTransform_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_deltaLinearVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_deltaLinearVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_deltaAngularVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_deltaAngularVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_angularFactor_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_angularFactor_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_linearFactor_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_linearFactor_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_invMass_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_invMass_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_pushVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_pushVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_turnVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_turnVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_linearVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_linearVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_angularVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_angularVelocity_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_externalForceImpulse_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_externalForceImpulse_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_externalTorqueImpulse_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverBody_externalTorqueImpulse_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_originalBody_set(long jarg1, btSolverBody jarg1_, long jarg2, btRigidBody jarg2_);
-  public final static native long btSolverBody_originalBody_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_getVelocityInLocalPointNoDelta(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSolverBody_getVelocityInLocalPointObsolete(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSolverBody_getAngularVelocity(long jarg1, btSolverBody jarg1_, Vector3 jarg2);
-  public final static native void btSolverBody_applyImpulse(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native void btSolverBody_internalApplyPushImpulse(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native Vector3 btSolverBody_internalGetDeltaLinearVelocity(long jarg1, btSolverBody jarg1_);
-  public final static native Vector3 btSolverBody_internalGetDeltaAngularVelocity(long jarg1, btSolverBody jarg1_);
-  public final static native Vector3 btSolverBody_internalGetAngularFactor(long jarg1, btSolverBody jarg1_);
-  public final static native Vector3 btSolverBody_internalGetInvMass(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_internalSetInvMass(long jarg1, btSolverBody jarg1_, Vector3 jarg2);
-  public final static native Vector3 btSolverBody_internalGetPushVelocity(long jarg1, btSolverBody jarg1_);
-  public final static native Vector3 btSolverBody_internalGetTurnVelocity(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_internalGetVelocityInLocalPointObsolete(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSolverBody_internalGetAngularVelocity(long jarg1, btSolverBody jarg1_, Vector3 jarg2);
-  public final static native void btSolverBody_internalApplyImpulse(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native void btSolverBody_writebackVelocity(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_writebackVelocityAndTransform(long jarg1, btSolverBody jarg1_, float jarg2, float jarg3);
-  public final static native long new_btSolverBody();
-  public final static native void delete_btSolverBody(long jarg1);
-  public final static native long btSliderConstraint_operatorNew__SWIG_0(long jarg1, btSliderConstraint jarg1_, long jarg2);
-  public final static native void btSliderConstraint_operatorDelete__SWIG_0(long jarg1, btSliderConstraint jarg1_, long jarg2);
-  public final static native long btSliderConstraint_operatorNew__SWIG_1(long jarg1, btSliderConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btSliderConstraint_operatorDelete__SWIG_1(long jarg1, btSliderConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btSliderConstraint_operatorNewArray__SWIG_0(long jarg1, btSliderConstraint jarg1_, long jarg2);
-  public final static native void btSliderConstraint_operatorDeleteArray__SWIG_0(long jarg1, btSliderConstraint jarg1_, long jarg2);
-  public final static native long btSliderConstraint_operatorNewArray__SWIG_1(long jarg1, btSliderConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btSliderConstraint_operatorDeleteArray__SWIG_1(long jarg1, btSliderConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btSliderConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
-  public final static native long new_btSliderConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
-  public final static native void btSliderConstraint_getInfo1NonVirtual(long jarg1, btSliderConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btSliderConstraint_getInfo2NonVirtual(long jarg1, btSliderConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7, float jarg8);
-  public final static native long btSliderConstraint_getRigidBodyAConst(long jarg1, btSliderConstraint jarg1_);
-  public final static native long btSliderConstraint_getRigidBodyBConst(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getCalculatedTransformA(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getCalculatedTransformB(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getFrameOffsetAConst(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getFrameOffsetBConst(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getFrameOffsetA(long jarg1, btSliderConstraint jarg1_);
-  public final static native Matrix4 btSliderConstraint_getFrameOffsetB(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getLowerLinLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setLowerLinLimit(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getUpperLinLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setUpperLinLimit(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getLowerAngLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setLowerAngLimit(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getUpperAngLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setUpperAngLimit(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native boolean btSliderConstraint_getUseLinearReferenceFrameA(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessDirLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionDirLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingDirLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessDirAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionDirAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingDirAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessLimLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionLimLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingLimLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessLimAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionLimAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingLimAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessOrthoLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionOrthoLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingOrthoLin(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getSoftnessOrthoAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getRestitutionOrthoAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getDampingOrthoAng(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setSoftnessDirLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionDirLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingDirLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setSoftnessDirAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionDirAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingDirAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setSoftnessLimLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionLimLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingLimLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setSoftnessLimAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionLimAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingLimAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setSoftnessOrthoLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionOrthoLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingOrthoLin(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setSoftnessOrthoAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setRestitutionOrthoAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setDampingOrthoAng(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native void btSliderConstraint_setPoweredLinMotor(long jarg1, btSliderConstraint jarg1_, boolean jarg2);
-  public final static native boolean btSliderConstraint_getPoweredLinMotor(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setTargetLinMotorVelocity(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getTargetLinMotorVelocity(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setMaxLinMotorForce(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getMaxLinMotorForce(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setPoweredAngMotor(long jarg1, btSliderConstraint jarg1_, boolean jarg2);
-  public final static native boolean btSliderConstraint_getPoweredAngMotor(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setTargetAngMotorVelocity(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getTargetAngMotorVelocity(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setMaxAngMotorForce(long jarg1, btSliderConstraint jarg1_, float jarg2);
-  public final static native float btSliderConstraint_getMaxAngMotorForce(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getLinearPos(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getAngularPos(long jarg1, btSliderConstraint jarg1_);
-  public final static native boolean btSliderConstraint_getSolveLinLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getLinDepth(long jarg1, btSliderConstraint jarg1_);
-  public final static native boolean btSliderConstraint_getSolveAngLimit(long jarg1, btSliderConstraint jarg1_);
-  public final static native float btSliderConstraint_getAngDepth(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_calculateTransforms(long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btSliderConstraint_testLinLimits(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_testAngLimits(long jarg1, btSliderConstraint jarg1_);
-  public final static native Vector3 btSliderConstraint_getAncorInA(long jarg1, btSliderConstraint jarg1_);
-  public final static native Vector3 btSliderConstraint_getAncorInB(long jarg1, btSliderConstraint jarg1_);
-  public final static native boolean btSliderConstraint_getUseFrameOffset(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_setUseFrameOffset(long jarg1, btSliderConstraint jarg1_, boolean jarg2);
-  public final static native void btSliderConstraint_setFrames(long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btSliderConstraint_setParam__SWIG_0(long jarg1, btSliderConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btSliderConstraint_setParam__SWIG_1(long jarg1, btSliderConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btSliderConstraint_getParam__SWIG_0(long jarg1, btSliderConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btSliderConstraint_getParam__SWIG_1(long jarg1, btSliderConstraint jarg1_, int jarg2);
-  public final static native int btSliderConstraint_getFlags(long jarg1, btSliderConstraint jarg1_);
-  public final static native void delete_btSliderConstraint(long jarg1);
-  public final static native void btSliderConstraintData_typeConstraintData_set(long jarg1, btSliderConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btSliderConstraintData_typeConstraintData_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_rbAFrame_set(long jarg1, btSliderConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btSliderConstraintData_rbAFrame_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_rbBFrame_set(long jarg1, btSliderConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btSliderConstraintData_rbBFrame_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_linearUpperLimit_set(long jarg1, btSliderConstraintData jarg1_, float jarg2);
-  public final static native float btSliderConstraintData_linearUpperLimit_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_linearLowerLimit_set(long jarg1, btSliderConstraintData jarg1_, float jarg2);
-  public final static native float btSliderConstraintData_linearLowerLimit_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_angularUpperLimit_set(long jarg1, btSliderConstraintData jarg1_, float jarg2);
-  public final static native float btSliderConstraintData_angularUpperLimit_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_angularLowerLimit_set(long jarg1, btSliderConstraintData jarg1_, float jarg2);
-  public final static native float btSliderConstraintData_angularLowerLimit_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_useLinearReferenceFrameA_set(long jarg1, btSliderConstraintData jarg1_, int jarg2);
-  public final static native int btSliderConstraintData_useLinearReferenceFrameA_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native void btSliderConstraintData_useOffsetForConstraintFrame_set(long jarg1, btSliderConstraintData jarg1_, int jarg2);
-  public final static native int btSliderConstraintData_useOffsetForConstraintFrame_get(long jarg1, btSliderConstraintData jarg1_);
-  public final static native long new_btSliderConstraintData();
-  public final static native void delete_btSliderConstraintData(long jarg1);
-  public final static native void btSliderConstraintDoubleData_typeConstraintData_set(long jarg1, btSliderConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btSliderConstraintDoubleData_typeConstraintData_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_rbAFrame_set(long jarg1, btSliderConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btSliderConstraintDoubleData_rbAFrame_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_rbBFrame_set(long jarg1, btSliderConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btSliderConstraintDoubleData_rbBFrame_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_linearUpperLimit_set(long jarg1, btSliderConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btSliderConstraintDoubleData_linearUpperLimit_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_linearLowerLimit_set(long jarg1, btSliderConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btSliderConstraintDoubleData_linearLowerLimit_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_angularUpperLimit_set(long jarg1, btSliderConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btSliderConstraintDoubleData_angularUpperLimit_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_angularLowerLimit_set(long jarg1, btSliderConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btSliderConstraintDoubleData_angularLowerLimit_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_useLinearReferenceFrameA_set(long jarg1, btSliderConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btSliderConstraintDoubleData_useLinearReferenceFrameA_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native void btSliderConstraintDoubleData_useOffsetForConstraintFrame_set(long jarg1, btSliderConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btSliderConstraintDoubleData_useOffsetForConstraintFrame_get(long jarg1, btSliderConstraintDoubleData jarg1_);
-  public final static native long new_btSliderConstraintDoubleData();
-  public final static native void delete_btSliderConstraintDoubleData(long jarg1);
-  public final static native long new_btConstraintSetting();
-  public final static native void btConstraintSetting_tau_set(long jarg1, btConstraintSetting jarg1_, float jarg2);
-  public final static native float btConstraintSetting_tau_get(long jarg1, btConstraintSetting jarg1_);
-  public final static native void btConstraintSetting_damping_set(long jarg1, btConstraintSetting jarg1_, float jarg2);
-  public final static native float btConstraintSetting_damping_get(long jarg1, btConstraintSetting jarg1_);
-  public final static native void btConstraintSetting_impulseClamp_set(long jarg1, btConstraintSetting jarg1_, float jarg2);
-  public final static native float btConstraintSetting_impulseClamp_get(long jarg1, btConstraintSetting jarg1_);
-  public final static native void delete_btConstraintSetting(long jarg1);
-  public final static native long btPoint2PointConstraint_operatorNew__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, long jarg2);
-  public final static native void btPoint2PointConstraint_operatorDelete__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, long jarg2);
-  public final static native long btPoint2PointConstraint_operatorNew__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btPoint2PointConstraint_operatorDelete__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btPoint2PointConstraint_operatorNewArray__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, long jarg2);
-  public final static native void btPoint2PointConstraint_operatorDeleteArray__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, long jarg2);
-  public final static native long btPoint2PointConstraint_operatorNewArray__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btPoint2PointConstraint_operatorDeleteArray__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btPoint2PointConstraint_useSolveConstraintObsolete_set(long jarg1, btPoint2PointConstraint jarg1_, boolean jarg2);
-  public final static native boolean btPoint2PointConstraint_useSolveConstraintObsolete_get(long jarg1, btPoint2PointConstraint jarg1_);
-  public final static native void btPoint2PointConstraint_setting_set(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, btConstraintSetting jarg2_);
-  public final static native long btPoint2PointConstraint_setting_get(long jarg1, btPoint2PointConstraint jarg1_);
-  public final static native long new_btPoint2PointConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4);
-  public final static native long new_btPoint2PointConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
-  public final static native void btPoint2PointConstraint_getInfo1NonVirtual(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btPoint2PointConstraint_getInfo2NonVirtual(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native void btPoint2PointConstraint_updateRHS(long jarg1, btPoint2PointConstraint jarg1_, float jarg2);
-  public final static native void btPoint2PointConstraint_setPivotA(long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
-  public final static native void btPoint2PointConstraint_setPivotB(long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
-  public final static native Vector3 btPoint2PointConstraint_getPivotInA(long jarg1, btPoint2PointConstraint jarg1_);
-  public final static native Vector3 btPoint2PointConstraint_getPivotInB(long jarg1, btPoint2PointConstraint jarg1_);
-  public final static native void btPoint2PointConstraint_setParam__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btPoint2PointConstraint_setParam__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btPoint2PointConstraint_getParam__SWIG_0(long jarg1, btPoint2PointConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btPoint2PointConstraint_getParam__SWIG_1(long jarg1, btPoint2PointConstraint jarg1_, int jarg2);
-  public final static native int btPoint2PointConstraint_getFlags(long jarg1, btPoint2PointConstraint jarg1_);
-  public final static native void delete_btPoint2PointConstraint(long jarg1);
-  public final static native void btPoint2PointConstraintFloatData_typeConstraintData_set(long jarg1, btPoint2PointConstraintFloatData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btPoint2PointConstraintFloatData_typeConstraintData_get(long jarg1, btPoint2PointConstraintFloatData jarg1_);
-  public final static native void btPoint2PointConstraintFloatData_pivotInA_set(long jarg1, btPoint2PointConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btPoint2PointConstraintFloatData_pivotInA_get(long jarg1, btPoint2PointConstraintFloatData jarg1_);
-  public final static native void btPoint2PointConstraintFloatData_pivotInB_set(long jarg1, btPoint2PointConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btPoint2PointConstraintFloatData_pivotInB_get(long jarg1, btPoint2PointConstraintFloatData jarg1_);
-  public final static native long new_btPoint2PointConstraintFloatData();
-  public final static native void delete_btPoint2PointConstraintFloatData(long jarg1);
-  public final static native void btPoint2PointConstraintDoubleData2_typeConstraintData_set(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData2_typeConstraintData_get(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_);
-  public final static native void btPoint2PointConstraintDoubleData2_pivotInA_set(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData2_pivotInA_get(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_);
-  public final static native void btPoint2PointConstraintDoubleData2_pivotInB_set(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData2_pivotInB_get(long jarg1, btPoint2PointConstraintDoubleData2 jarg1_);
-  public final static native long new_btPoint2PointConstraintDoubleData2();
-  public final static native void delete_btPoint2PointConstraintDoubleData2(long jarg1);
-  public final static native void btPoint2PointConstraintDoubleData_typeConstraintData_set(long jarg1, btPoint2PointConstraintDoubleData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData_typeConstraintData_get(long jarg1, btPoint2PointConstraintDoubleData jarg1_);
-  public final static native void btPoint2PointConstraintDoubleData_pivotInA_set(long jarg1, btPoint2PointConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData_pivotInA_get(long jarg1, btPoint2PointConstraintDoubleData jarg1_);
-  public final static native void btPoint2PointConstraintDoubleData_pivotInB_set(long jarg1, btPoint2PointConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btPoint2PointConstraintDoubleData_pivotInB_get(long jarg1, btPoint2PointConstraintDoubleData jarg1_);
-  public final static native long new_btPoint2PointConstraintDoubleData();
-  public final static native void delete_btPoint2PointConstraintDoubleData(long jarg1);
-  public final static native long new_btJacobianEntry__SWIG_0();
-  public final static native long new_btJacobianEntry__SWIG_1(Matrix3 jarg1, Matrix3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, float jarg9);
-  public final static native long new_btJacobianEntry__SWIG_2(Vector3 jarg1, Matrix3 jarg2, Matrix3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native long new_btJacobianEntry__SWIG_3(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native long new_btJacobianEntry__SWIG_4(Matrix3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
-  public final static native float btJacobianEntry_getDiagonal(long jarg1, btJacobianEntry jarg1_);
-  public final static native float btJacobianEntry_getNonDiagonal__SWIG_0(long jarg1, btJacobianEntry jarg1_, long jarg2, btJacobianEntry jarg2_, float jarg3);
-  public final static native float btJacobianEntry_getNonDiagonal__SWIG_1(long jarg1, btJacobianEntry jarg1_, long jarg2, btJacobianEntry jarg2_, float jarg3, float jarg4);
-  public final static native float btJacobianEntry_getRelativeVelocity(long jarg1, btJacobianEntry jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btJacobianEntry_linearJointAxis_set(long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJacobianEntry_linearJointAxis_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void btJacobianEntry_aJ_set(long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJacobianEntry_aJ_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void btJacobianEntry_bJ_set(long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJacobianEntry_bJ_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void btJacobianEntry_0MinvJt_set(long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJacobianEntry_0MinvJt_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void btJacobianEntry_1MinvJt_set(long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btJacobianEntry_1MinvJt_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void btJacobianEntry_Adiag_set(long jarg1, btJacobianEntry jarg1_, float jarg2);
-  public final static native float btJacobianEntry_Adiag_get(long jarg1, btJacobianEntry jarg1_);
-  public final static native void delete_btJacobianEntry(long jarg1);
-  public final static native long new_btSolve2LinearConstraint(float jarg1, float jarg2);
-  public final static native void btSolve2LinearConstraint_resolveUnilateralPairConstraint(long jarg1, btSolve2LinearConstraint jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix3 jarg4, Matrix3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, Vector3 jarg10, Vector3 jarg11, float jarg12, Vector3 jarg13, Vector3 jarg14, Vector3 jarg15, float jarg16, Vector3 jarg17, Vector3 jarg18, Vector3 jarg19, float jarg20, Vector3 jarg21, long jarg22, long jarg23);
-  public final static native void btSolve2LinearConstraint_resolveBilateralPairConstraint(long jarg1, btSolve2LinearConstraint jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix3 jarg4, Matrix3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, Vector3 jarg10, Vector3 jarg11, float jarg12, Vector3 jarg13, Vector3 jarg14, Vector3 jarg15, float jarg16, Vector3 jarg17, Vector3 jarg18, Vector3 jarg19, float jarg20, Vector3 jarg21, long jarg22, long jarg23);
-  public final static native void delete_btSolve2LinearConstraint(long jarg1);
-  public final static native void btRotationalLimitMotor_loLimit_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_loLimit_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_hiLimit_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_hiLimit_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_targetVelocity_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_targetVelocity_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_maxMotorForce_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_maxMotorForce_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_maxLimitForce_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_maxLimitForce_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_damping_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_damping_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_limitSoftness_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_limitSoftness_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_normalCFM_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_normalCFM_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_stopERP_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_stopERP_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_stopCFM_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_stopCFM_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_bounce_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_bounce_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_enableMotor_set(long jarg1, btRotationalLimitMotor jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor_enableMotor_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_currentLimitError_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_currentLimitError_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_currentPosition_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_currentPosition_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_currentLimit_set(long jarg1, btRotationalLimitMotor jarg1_, int jarg2);
-  public final static native int btRotationalLimitMotor_currentLimit_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native void btRotationalLimitMotor_accumulatedImpulse_set(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_accumulatedImpulse_get(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native long new_btRotationalLimitMotor__SWIG_0();
-  public final static native long new_btRotationalLimitMotor__SWIG_1(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native boolean btRotationalLimitMotor_isLimited(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native boolean btRotationalLimitMotor_needApplyTorques(long jarg1, btRotationalLimitMotor jarg1_);
-  public final static native int btRotationalLimitMotor_testLimitValue(long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor_solveAngularLimits(long jarg1, btRotationalLimitMotor jarg1_, float jarg2, Vector3 jarg3, float jarg4, long jarg5, btRigidBody jarg5_, long jarg6, btRigidBody jarg6_);
-  public final static native void delete_btRotationalLimitMotor(long jarg1);
-  public final static native void btTranslationalLimitMotor_lowerLimit_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_lowerLimit_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_upperLimit_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_upperLimit_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_accumulatedImpulse_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_accumulatedImpulse_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_limitSoftness_set(long jarg1, btTranslationalLimitMotor jarg1_, float jarg2);
-  public final static native float btTranslationalLimitMotor_limitSoftness_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_damping_set(long jarg1, btTranslationalLimitMotor jarg1_, float jarg2);
-  public final static native float btTranslationalLimitMotor_damping_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_restitution_set(long jarg1, btTranslationalLimitMotor jarg1_, float jarg2);
-  public final static native float btTranslationalLimitMotor_restitution_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_normalCFM_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_normalCFM_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_stopERP_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_stopERP_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_stopCFM_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_stopCFM_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_enableMotor_set(long jarg1, btTranslationalLimitMotor jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor_enableMotor_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_targetVelocity_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_targetVelocity_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_maxMotorForce_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_maxMotorForce_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_currentLimitError_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_currentLimitError_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_currentLinearDiff_set(long jarg1, btTranslationalLimitMotor jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor_currentLinearDiff_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native void btTranslationalLimitMotor_currentLimit_set(long jarg1, btTranslationalLimitMotor jarg1_, int[] jarg2);
-  public final static native int[] btTranslationalLimitMotor_currentLimit_get(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native long new_btTranslationalLimitMotor__SWIG_0();
-  public final static native long new_btTranslationalLimitMotor__SWIG_1(long jarg1, btTranslationalLimitMotor jarg1_);
-  public final static native boolean btTranslationalLimitMotor_isLimited(long jarg1, btTranslationalLimitMotor jarg1_, int jarg2);
-  public final static native boolean btTranslationalLimitMotor_needApplyForce(long jarg1, btTranslationalLimitMotor jarg1_, int jarg2);
-  public final static native int btTranslationalLimitMotor_testLimitValue(long jarg1, btTranslationalLimitMotor jarg1_, int jarg2, float jarg3);
-  public final static native float btTranslationalLimitMotor_solveLinearAxis(long jarg1, btTranslationalLimitMotor jarg1_, float jarg2, float jarg3, long jarg4, btRigidBody jarg4_, Vector3 jarg5, long jarg6, btRigidBody jarg6_, Vector3 jarg7, int jarg8, Vector3 jarg9, Vector3 jarg10);
-  public final static native void delete_btTranslationalLimitMotor(long jarg1);
-  public final static native long btGeneric6DofConstraint_operatorNew__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofConstraint_operatorDelete__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofConstraint_operatorNew__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofConstraint_operatorDelete__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btGeneric6DofConstraint_operatorNewArray__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofConstraint_operatorDeleteArray__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofConstraint_operatorNewArray__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofConstraint_operatorDeleteArray__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofConstraint_useSolveConstraintObsolete_set(long jarg1, btGeneric6DofConstraint jarg1_, boolean jarg2);
-  public final static native boolean btGeneric6DofConstraint_useSolveConstraintObsolete_get(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long new_btGeneric6DofConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
-  public final static native long new_btGeneric6DofConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
-  public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformA(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformB(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetAConst(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetBConst(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetA(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetB(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native void btGeneric6DofConstraint_getInfo1NonVirtual(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btGeneric6DofConstraint_getInfo2NonVirtual(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8);
-  public final static native void btGeneric6DofConstraint_updateRHS(long jarg1, btGeneric6DofConstraint jarg1_, float jarg2);
-  public final static native Vector3 btGeneric6DofConstraint_getAxis(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofConstraint_getAngle(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofConstraint_getRelativePivotPosition(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofConstraint_setFrames(long jarg1, btGeneric6DofConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native boolean btGeneric6DofConstraint_testAngularLimitMotor(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofConstraint_setLinearLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_getLinearLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_setLinearUpperLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_getLinearUpperLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_setAngularLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_getAngularLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_setAngularUpperLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofConstraint_getAngularUpperLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
-  public final static native long btGeneric6DofConstraint_getRotationalLimitMotor(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native long btGeneric6DofConstraint_getTranslationalLimitMotor(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native void btGeneric6DofConstraint_setLimit(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, float jarg3, float jarg4);
-  public final static native boolean btGeneric6DofConstraint_isLimited(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofConstraint_calcAnchorPos(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btTypedConstraint.btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12, int jarg13);
-  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btTypedConstraint.btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12);
-  public final static native boolean btGeneric6DofConstraint_getUseFrameOffset(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native void btGeneric6DofConstraint_setUseFrameOffset(long jarg1, btGeneric6DofConstraint jarg1_, boolean jarg2);
-  public final static native boolean btGeneric6DofConstraint_getUseLinearReferenceFrameA(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native void btGeneric6DofConstraint_setUseLinearReferenceFrameA(long jarg1, btGeneric6DofConstraint jarg1_, boolean jarg2);
-  public final static native void btGeneric6DofConstraint_setParam__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btGeneric6DofConstraint_setParam__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btGeneric6DofConstraint_getParam__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btGeneric6DofConstraint_getParam__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofConstraint_setAxis(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native int btGeneric6DofConstraint_getFlags(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native void delete_btGeneric6DofConstraint(long jarg1);
-  public final static native void btGeneric6DofConstraintData_typeConstraintData_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btGeneric6DofConstraintData_typeConstraintData_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_rbAFrame_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_rbAFrame_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_rbBFrame_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_rbBFrame_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_linearUpperLimit_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_linearUpperLimit_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_linearLowerLimit_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_linearLowerLimit_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_angularUpperLimit_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_angularUpperLimit_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_angularLowerLimit_set(long jarg1, btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofConstraintData_angularLowerLimit_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_useLinearReferenceFrameA_set(long jarg1, btGeneric6DofConstraintData jarg1_, int jarg2);
-  public final static native int btGeneric6DofConstraintData_useLinearReferenceFrameA_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native void btGeneric6DofConstraintData_useOffsetForConstraintFrame_set(long jarg1, btGeneric6DofConstraintData jarg1_, int jarg2);
-  public final static native int btGeneric6DofConstraintData_useOffsetForConstraintFrame_get(long jarg1, btGeneric6DofConstraintData jarg1_);
-  public final static native long new_btGeneric6DofConstraintData();
-  public final static native void delete_btGeneric6DofConstraintData(long jarg1);
-  public final static native void btGeneric6DofConstraintDoubleData2_typeConstraintData_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_typeConstraintData_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_rbAFrame_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_rbAFrame_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_rbBFrame_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_rbBFrame_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_linearUpperLimit_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_linearUpperLimit_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_linearLowerLimit_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_linearLowerLimit_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_angularUpperLimit_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_angularUpperLimit_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_angularLowerLimit_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofConstraintDoubleData2_angularLowerLimit_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_useLinearReferenceFrameA_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btGeneric6DofConstraintDoubleData2_useLinearReferenceFrameA_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofConstraintDoubleData2_useOffsetForConstraintFrame_set(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btGeneric6DofConstraintDoubleData2_useOffsetForConstraintFrame_get(long jarg1, btGeneric6DofConstraintDoubleData2 jarg1_);
-  public final static native long new_btGeneric6DofConstraintDoubleData2();
-  public final static native void delete_btGeneric6DofConstraintDoubleData2(long jarg1);
-  public final static native long btUniversalConstraint_operatorNew__SWIG_0(long jarg1, btUniversalConstraint jarg1_, long jarg2);
-  public final static native void btUniversalConstraint_operatorDelete__SWIG_0(long jarg1, btUniversalConstraint jarg1_, long jarg2);
-  public final static native long btUniversalConstraint_operatorNew__SWIG_1(long jarg1, btUniversalConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btUniversalConstraint_operatorDelete__SWIG_1(long jarg1, btUniversalConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btUniversalConstraint_operatorNewArray__SWIG_0(long jarg1, btUniversalConstraint jarg1_, long jarg2);
-  public final static native void btUniversalConstraint_operatorDeleteArray__SWIG_0(long jarg1, btUniversalConstraint jarg1_, long jarg2);
-  public final static native long btUniversalConstraint_operatorNewArray__SWIG_1(long jarg1, btUniversalConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btUniversalConstraint_operatorDeleteArray__SWIG_1(long jarg1, btUniversalConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btUniversalConstraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native Vector3 btUniversalConstraint_getAnchor(long jarg1, btUniversalConstraint jarg1_);
-  public final static native Vector3 btUniversalConstraint_getAnchor2(long jarg1, btUniversalConstraint jarg1_);
-  public final static native Vector3 btUniversalConstraint_getAxis1(long jarg1, btUniversalConstraint jarg1_);
-  public final static native Vector3 btUniversalConstraint_getAxis2(long jarg1, btUniversalConstraint jarg1_);
-  public final static native float btUniversalConstraint_getAngle1(long jarg1, btUniversalConstraint jarg1_);
-  public final static native float btUniversalConstraint_getAngle2(long jarg1, btUniversalConstraint jarg1_);
-  public final static native void btUniversalConstraint_setUpperLimit(long jarg1, btUniversalConstraint jarg1_, float jarg2, float jarg3);
-  public final static native void btUniversalConstraint_setLowerLimit(long jarg1, btUniversalConstraint jarg1_, float jarg2, float jarg3);
-  public final static native void btUniversalConstraint_setAxis(long jarg1, btUniversalConstraint jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void delete_btUniversalConstraint(long jarg1);
-  public final static native void btContactConstraint_setContactManifold(long jarg1, btContactConstraint jarg1_, long jarg2, btPersistentManifold jarg2_);
-  public final static native long btContactConstraint_getContactManifold(long jarg1, btContactConstraint jarg1_);
-  public final static native long btContactConstraint_getContactManifoldConst(long jarg1, btContactConstraint jarg1_);
-  public final static native void delete_btContactConstraint(long jarg1);
-  public final static native float resolveSingleCollision(long jarg1, btRigidBody jarg1_, long jarg2, btCollisionObject jarg2_, Vector3 jarg3, Vector3 jarg4, long jarg5, btContactSolverInfo jarg5_, float jarg6);
-  public final static native void resolveSingleBilateral(long jarg1, btRigidBody jarg1_, Vector3 jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, float jarg5, Vector3 jarg6, long jarg7, float jarg8);
-  public final static native long btConeTwistConstraint_operatorNew__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, long jarg2);
-  public final static native void btConeTwistConstraint_operatorDelete__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, long jarg2);
-  public final static native long btConeTwistConstraint_operatorNew__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btConeTwistConstraint_operatorDelete__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btConeTwistConstraint_operatorNewArray__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, long jarg2);
-  public final static native void btConeTwistConstraint_operatorDeleteArray__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, long jarg2);
-  public final static native long btConeTwistConstraint_operatorNewArray__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btConeTwistConstraint_operatorDeleteArray__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btConeTwistConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native long new_btConeTwistConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native void btConeTwistConstraint_getInfo1NonVirtual(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btConeTwistConstraint_getInfo2NonVirtual(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Matrix3 jarg5, Matrix3 jarg6);
-  public final static native void btConeTwistConstraint_updateRHS(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
-  public final static native long btConeTwistConstraint_getRigidBodyAConst(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native long btConeTwistConstraint_getRigidBodyBConst(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setAngularOnly(long jarg1, btConeTwistConstraint jarg1_, boolean jarg2);
-  public final static native boolean btConeTwistConstraint_getAngularOnly(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setLimit__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btConeTwistConstraint_getLimit(long jarg1, btConeTwistConstraint jarg1_, int jarg2);
-  public final static native void btConeTwistConstraint_setLimit__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-  public final static native void btConeTwistConstraint_setLimit__SWIG_2(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
-  public final static native void btConeTwistConstraint_setLimit__SWIG_3(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native void btConeTwistConstraint_setLimit__SWIG_4(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native Matrix4 btConeTwistConstraint_getAFrame(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native Matrix4 btConeTwistConstraint_getBFrame(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native int btConeTwistConstraint_getSolveTwistLimit(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native int btConeTwistConstraint_getSolveSwingLimit(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getTwistLimitSign(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_calcAngleInfo(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_calcAngleInfo2(long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3, Matrix3 jarg4, Matrix3 jarg5);
-  public final static native float btConeTwistConstraint_getSwingSpan1(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getSwingSpan2(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getTwistSpan(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getLimitSoftness(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getBiasFactor(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getRelaxationFactor(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getTwistAngle(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native boolean btConeTwistConstraint_isPastSwingLimit(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getDamping(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setDamping(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
-  public final static native void btConeTwistConstraint_enableMotor(long jarg1, btConeTwistConstraint jarg1_, boolean jarg2);
-  public final static native boolean btConeTwistConstraint_isMotorEnabled(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getMaxMotorImpulse(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native boolean btConeTwistConstraint_isMaxMotorImpulseNormalized(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setMaxMotorImpulse(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
-  public final static native void btConeTwistConstraint_setMaxMotorImpulseNormalized(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
-  public final static native float btConeTwistConstraint_getFixThresh(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setFixThresh(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
-  public final static native void btConeTwistConstraint_setMotorTarget(long jarg1, btConeTwistConstraint jarg1_, Quaternion jarg2);
-  public final static native Quaternion btConeTwistConstraint_getMotorTarget(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_setMotorTargetInConstraintSpace(long jarg1, btConeTwistConstraint jarg1_, Quaternion jarg2);
-  public final static native Vector3 btConeTwistConstraint_GetPointForAngle(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3);
-  public final static native void btConeTwistConstraint_setParam__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btConeTwistConstraint_setParam__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, int jarg2, float jarg3);
-  public final static native void btConeTwistConstraint_setFrames(long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native Matrix4 btConeTwistConstraint_getFrameOffsetA(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native Matrix4 btConeTwistConstraint_getFrameOffsetB(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native float btConeTwistConstraint_getParam__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btConeTwistConstraint_getParam__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, int jarg2);
-  public final static native int btConeTwistConstraint_getFlags(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void delete_btConeTwistConstraint(long jarg1);
-  public final static native void btConeTwistConstraintDoubleData_typeConstraintData_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btConeTwistConstraintDoubleData_typeConstraintData_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_rbAFrame_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btConeTwistConstraintDoubleData_rbAFrame_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_rbBFrame_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btConeTwistConstraintDoubleData_rbBFrame_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_swingSpan1_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_swingSpan1_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_swingSpan2_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_swingSpan2_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_twistSpan_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_twistSpan_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_limitSoftness_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_limitSoftness_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_biasFactor_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_biasFactor_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_relaxationFactor_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_relaxationFactor_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native void btConeTwistConstraintDoubleData_damping_set(long jarg1, btConeTwistConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btConeTwistConstraintDoubleData_damping_get(long jarg1, btConeTwistConstraintDoubleData jarg1_);
-  public final static native long new_btConeTwistConstraintDoubleData();
-  public final static native void delete_btConeTwistConstraintDoubleData(long jarg1);
-  public final static native void btConeTwistConstraintData_typeConstraintData_set(long jarg1, btConeTwistConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btConeTwistConstraintData_typeConstraintData_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_rbAFrame_set(long jarg1, btConeTwistConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btConeTwistConstraintData_rbAFrame_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_rbBFrame_set(long jarg1, btConeTwistConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btConeTwistConstraintData_rbBFrame_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_swingSpan1_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_swingSpan1_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_swingSpan2_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_swingSpan2_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_twistSpan_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_twistSpan_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_limitSoftness_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_limitSoftness_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_biasFactor_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_biasFactor_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_relaxationFactor_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_relaxationFactor_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_damping_set(long jarg1, btConeTwistConstraintData jarg1_, float jarg2);
-  public final static native float btConeTwistConstraintData_damping_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native void btConeTwistConstraintData_pad_set(long jarg1, btConeTwistConstraintData jarg1_, String jarg2);
-  public final static native String btConeTwistConstraintData_pad_get(long jarg1, btConeTwistConstraintData jarg1_);
-  public final static native long new_btConeTwistConstraintData();
-  public final static native void delete_btConeTwistConstraintData(long jarg1);
-  public final static native long btGeneric6DofSpringConstraint_operatorNew__SWIG_0(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofSpringConstraint_operatorDelete__SWIG_0(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofSpringConstraint_operatorNew__SWIG_1(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofSpringConstraint_operatorDelete__SWIG_1(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btGeneric6DofSpringConstraint_operatorNewArray__SWIG_0(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofSpringConstraint_operatorDeleteArray__SWIG_0(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofSpringConstraint_operatorNewArray__SWIG_1(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofSpringConstraint_operatorDeleteArray__SWIG_1(long jarg1, btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btGeneric6DofSpringConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
-  public final static native long new_btGeneric6DofSpringConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
-  public final static native void btGeneric6DofSpringConstraint_enableSpring(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, boolean jarg3);
-  public final static native void btGeneric6DofSpringConstraint_setStiffness(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpringConstraint_setDamping(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_0(long jarg1, btGeneric6DofSpringConstraint jarg1_);
-  public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_1(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_2(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
-  public final static native boolean btGeneric6DofSpringConstraint_isSpringEnabled(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpringConstraint_getStiffness(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpringConstraint_getDamping(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpringConstraint_getEquilibriumPoint(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofSpringConstraint_setAxis(long jarg1, btGeneric6DofSpringConstraint jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void delete_btGeneric6DofSpringConstraint(long jarg1);
-  public final static native void btGeneric6DofSpringConstraintData_6dofData_set(long jarg1, btGeneric6DofSpringConstraintData jarg1_, long jarg2, btGeneric6DofConstraintData jarg2_);
-  public final static native long btGeneric6DofSpringConstraintData_6dofData_get(long jarg1, btGeneric6DofSpringConstraintData jarg1_);
-  public final static native void btGeneric6DofSpringConstraintData_springEnabled_set(long jarg1, btGeneric6DofSpringConstraintData jarg1_, int[] jarg2);
-  public final static native int[] btGeneric6DofSpringConstraintData_springEnabled_get(long jarg1, btGeneric6DofSpringConstraintData jarg1_);
-  public final static native void btGeneric6DofSpringConstraintData_equilibriumPoint_set(long jarg1, btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
-  public final static native float[] btGeneric6DofSpringConstraintData_equilibriumPoint_get(long jarg1, btGeneric6DofSpringConstraintData jarg1_);
-  public final static native void btGeneric6DofSpringConstraintData_springStiffness_set(long jarg1, btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
-  public final static native float[] btGeneric6DofSpringConstraintData_springStiffness_get(long jarg1, btGeneric6DofSpringConstraintData jarg1_);
-  public final static native void btGeneric6DofSpringConstraintData_springDamping_set(long jarg1, btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
-  public final static native float[] btGeneric6DofSpringConstraintData_springDamping_get(long jarg1, btGeneric6DofSpringConstraintData jarg1_);
-  public final static native long new_btGeneric6DofSpringConstraintData();
-  public final static native void delete_btGeneric6DofSpringConstraintData(long jarg1);
-  public final static native void btGeneric6DofSpringConstraintDoubleData2_6dofData_set(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_, long jarg2, btGeneric6DofConstraintDoubleData2 jarg2_);
-  public final static native long btGeneric6DofSpringConstraintDoubleData2_6dofData_get(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpringConstraintDoubleData2_springEnabled_set(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_, int[] jarg2);
-  public final static native int[] btGeneric6DofSpringConstraintDoubleData2_springEnabled_get(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpringConstraintDoubleData2_equilibriumPoint_set(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
-  public final static native double[] btGeneric6DofSpringConstraintDoubleData2_equilibriumPoint_get(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpringConstraintDoubleData2_springStiffness_set(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
-  public final static native double[] btGeneric6DofSpringConstraintDoubleData2_springStiffness_get(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpringConstraintDoubleData2_springDamping_set(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
-  public final static native double[] btGeneric6DofSpringConstraintDoubleData2_springDamping_get(long jarg1, btGeneric6DofSpringConstraintDoubleData2 jarg1_);
-  public final static native long new_btGeneric6DofSpringConstraintDoubleData2();
-  public final static native void delete_btGeneric6DofSpringConstraintDoubleData2(long jarg1);
-  public final static native void btRotationalLimitMotor2_loLimit_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_loLimit_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_hiLimit_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_hiLimit_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_bounce_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_bounce_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_stopERP_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_stopERP_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_stopCFM_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_stopCFM_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_motorERP_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_motorERP_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_motorCFM_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_motorCFM_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_enableMotor_set(long jarg1, btRotationalLimitMotor2 jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor2_enableMotor_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_targetVelocity_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_targetVelocity_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_maxMotorForce_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_maxMotorForce_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_servoMotor_set(long jarg1, btRotationalLimitMotor2 jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor2_servoMotor_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_servoTarget_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_servoTarget_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_enableSpring_set(long jarg1, btRotationalLimitMotor2 jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor2_enableSpring_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_springStiffness_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_springStiffness_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_springStiffnessLimited_set(long jarg1, btRotationalLimitMotor2 jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor2_springStiffnessLimited_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_springDamping_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_springDamping_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_springDampingLimited_set(long jarg1, btRotationalLimitMotor2 jarg1_, boolean jarg2);
-  public final static native boolean btRotationalLimitMotor2_springDampingLimited_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_equilibriumPoint_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_equilibriumPoint_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_currentLimitError_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_currentLimitError_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_currentLimitErrorHi_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_currentLimitErrorHi_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_currentPosition_set(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native float btRotationalLimitMotor2_currentPosition_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_currentLimit_set(long jarg1, btRotationalLimitMotor2 jarg1_, int jarg2);
-  public final static native int btRotationalLimitMotor2_currentLimit_get(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native long new_btRotationalLimitMotor2__SWIG_0();
-  public final static native long new_btRotationalLimitMotor2__SWIG_1(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native boolean btRotationalLimitMotor2_isLimited(long jarg1, btRotationalLimitMotor2 jarg1_);
-  public final static native void btRotationalLimitMotor2_testLimitValue(long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
-  public final static native void delete_btRotationalLimitMotor2(long jarg1);
-  public final static native void btTranslationalLimitMotor2_lowerLimit_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_lowerLimit_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_upperLimit_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_upperLimit_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_bounce_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_bounce_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_stopERP_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_stopERP_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_stopCFM_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_stopCFM_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_motorERP_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_motorERP_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_motorCFM_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_motorCFM_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_enableMotor_set(long jarg1, btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor2_enableMotor_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_servoMotor_set(long jarg1, btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor2_servoMotor_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_enableSpring_set(long jarg1, btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor2_enableSpring_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_servoTarget_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_servoTarget_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_springStiffness_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_springStiffness_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_springStiffnessLimited_set(long jarg1, btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor2_springStiffnessLimited_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_springDamping_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_springDamping_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_springDampingLimited_set(long jarg1, btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
-  public final static native boolean[] btTranslationalLimitMotor2_springDampingLimited_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_equilibriumPoint_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_equilibriumPoint_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_targetVelocity_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_targetVelocity_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_maxMotorForce_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_maxMotorForce_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_currentLimitError_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_currentLimitError_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_currentLimitErrorHi_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_currentLimitErrorHi_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_currentLinearDiff_set(long jarg1, btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btTranslationalLimitMotor2_currentLinearDiff_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native void btTranslationalLimitMotor2_currentLimit_set(long jarg1, btTranslationalLimitMotor2 jarg1_, int[] jarg2);
-  public final static native int[] btTranslationalLimitMotor2_currentLimit_get(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native long new_btTranslationalLimitMotor2__SWIG_0();
-  public final static native long new_btTranslationalLimitMotor2__SWIG_1(long jarg1, btTranslationalLimitMotor2 jarg1_);
-  public final static native boolean btTranslationalLimitMotor2_isLimited(long jarg1, btTranslationalLimitMotor2 jarg1_, int jarg2);
-  public final static native void btTranslationalLimitMotor2_testLimitValue(long jarg1, btTranslationalLimitMotor2 jarg1_, int jarg2, float jarg3);
-  public final static native void delete_btTranslationalLimitMotor2(long jarg1);
-  public final static native long btGeneric6DofSpring2Constraint_operatorNew__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_operatorDelete__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofSpring2Constraint_operatorNew__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_operatorDelete__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native long btGeneric6DofSpring2Constraint_operatorNewArray__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_operatorDeleteArray__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2);
-  public final static native long btGeneric6DofSpring2Constraint_operatorNewArray__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_operatorDeleteArray__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btGeneric6DofSpring2Constraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, int jarg5);
-  public final static native long new_btGeneric6DofSpring2Constraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native long new_btGeneric6DofSpring2Constraint__SWIG_2(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, int jarg3);
-  public final static native long new_btGeneric6DofSpring2Constraint__SWIG_3(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native long btGeneric6DofSpring2Constraint_getRotationalLimitMotor(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native long btGeneric6DofSpring2Constraint_getTranslationalLimitMotor(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native void btGeneric6DofSpring2Constraint_calculateTransforms__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_calculateTransforms__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getCalculatedTransformA(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getCalculatedTransformB(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetAConst(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetBConst(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetA(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetB(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native Vector3 btGeneric6DofSpring2Constraint_getAxis(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpring2Constraint_getAngle(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpring2Constraint_getRelativePivotPosition(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setFrames(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setLinearLowerLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getLinearLowerLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setLinearUpperLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getLinearUpperLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setAngularLowerLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setAngularLowerLimitReversed(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getAngularLowerLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getAngularLowerLimitReversed(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setAngularUpperLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setAngularUpperLimitReversed(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getAngularUpperLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_getAngularUpperLimitReversed(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setLimit(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, float jarg4);
-  public final static native void btGeneric6DofSpring2Constraint_setLimitReversed(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, float jarg4);
-  public final static native boolean btGeneric6DofSpring2Constraint_isLimited(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setRotationOrder(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native int btGeneric6DofSpring2Constraint_getRotationOrder(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native void btGeneric6DofSpring2Constraint_setAxis(long jarg1, btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setBounce(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_enableMotor(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, boolean jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setServo(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, boolean jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setTargetVelocity(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setServoTarget(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setMaxMotorForce(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_enableSpring(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, boolean jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setStiffness__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, boolean jarg4);
-  public final static native void btGeneric6DofSpring2Constraint_setStiffness__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setDamping__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, boolean jarg4);
-  public final static native void btGeneric6DofSpring2Constraint_setDamping__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_);
-  public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_2(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native void btGeneric6DofSpring2Constraint_setParam__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btGeneric6DofSpring2Constraint_setParam__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
-  public final static native float btGeneric6DofSpring2Constraint_getParam__SWIG_0(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2, int jarg3);
-  public final static native float btGeneric6DofSpring2Constraint_getParam__SWIG_1(long jarg1, btGeneric6DofSpring2Constraint jarg1_, int jarg2);
-  public final static native float btGeneric6DofSpring2Constraint_btGetMatrixElem(Matrix3 jarg1, int jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerXYZ(Matrix3 jarg1, Vector3 jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerXZY(Matrix3 jarg1, Vector3 jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerYXZ(Matrix3 jarg1, Vector3 jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerYZX(Matrix3 jarg1, Vector3 jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerZXY(Matrix3 jarg1, Vector3 jarg2);
-  public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerZYX(Matrix3 jarg1, Vector3 jarg2);
-  public final static native void delete_btGeneric6DofSpring2Constraint(long jarg1);
-  public final static native void btGeneric6DofSpring2ConstraintData_typeConstraintData_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_typeConstraintData_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_rbAFrame_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_rbAFrame_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_rbBFrame_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_rbBFrame_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearUpperLimit_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearUpperLimit_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearLowerLimit_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearLowerLimit_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearBounce_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearBounce_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearStopERP_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearStopERP_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearStopCFM_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearStopCFM_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearMotorERP_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearMotorERP_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearMotorCFM_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearMotorCFM_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearTargetVelocity_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearTargetVelocity_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearMaxMotorForce_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearMaxMotorForce_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearServoTarget_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearServoTarget_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearSpringStiffness_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearSpringStiffness_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearSpringDamping_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearSpringDamping_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearEquilibriumPoint_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_linearEquilibriumPoint_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearEnableMotor_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_linearEnableMotor_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearServoMotor_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_linearServoMotor_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearEnableSpring_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_linearEnableSpring_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearSpringStiffnessLimited_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_linearSpringStiffnessLimited_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_linearSpringDampingLimited_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_linearSpringDampingLimited_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_padding1_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_padding1_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularUpperLimit_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularUpperLimit_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularLowerLimit_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularLowerLimit_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularBounce_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularBounce_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularStopERP_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularStopERP_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularStopCFM_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularStopCFM_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularMotorERP_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularMotorERP_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularMotorCFM_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularMotorCFM_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularTargetVelocity_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularTargetVelocity_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularMaxMotorForce_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularMaxMotorForce_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularServoTarget_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularServoTarget_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularSpringStiffness_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularSpringStiffness_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularSpringDamping_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularSpringDamping_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularEquilibriumPoint_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintData_angularEquilibriumPoint_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularEnableMotor_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_angularEnableMotor_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularServoMotor_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_angularServoMotor_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularEnableSpring_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_angularEnableSpring_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularSpringStiffnessLimited_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_angularSpringStiffnessLimited_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_angularSpringDampingLimited_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintData_angularSpringDampingLimited_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintData_rotateOrder_set(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_, int jarg2);
-  public final static native int btGeneric6DofSpring2ConstraintData_rotateOrder_get(long jarg1, btGeneric6DofSpring2ConstraintData jarg1_);
-  public final static native long new_btGeneric6DofSpring2ConstraintData();
-  public final static native void delete_btGeneric6DofSpring2ConstraintData(long jarg1);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_typeConstraintData_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_typeConstraintData_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rbAFrame_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_rbAFrame_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rbBFrame_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_rbBFrame_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearUpperLimit_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearUpperLimit_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearLowerLimit_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearLowerLimit_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearBounce_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearBounce_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearStopERP_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearStopERP_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearStopCFM_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearStopCFM_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMotorERP_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMotorERP_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMotorCFM_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMotorCFM_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearTargetVelocity_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearTargetVelocity_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMaxMotorForce_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMaxMotorForce_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearServoTarget_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearServoTarget_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffness_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffness_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDamping_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDamping_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEquilibriumPoint_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearEquilibriumPoint_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEnableMotor_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearEnableMotor_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearServoMotor_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearServoMotor_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEnableSpring_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearEnableSpring_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffnessLimited_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffnessLimited_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDampingLimited_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDampingLimited_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_padding1_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_padding1_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularUpperLimit_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularUpperLimit_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularLowerLimit_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularLowerLimit_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularBounce_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularBounce_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularStopERP_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularStopERP_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularStopCFM_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularStopCFM_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMotorERP_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMotorERP_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMotorCFM_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMotorCFM_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularTargetVelocity_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularTargetVelocity_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMaxMotorForce_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMaxMotorForce_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularServoTarget_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularServoTarget_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffness_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffness_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDamping_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDamping_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEquilibriumPoint_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularEquilibriumPoint_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEnableMotor_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularEnableMotor_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularServoMotor_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularServoMotor_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEnableSpring_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularEnableSpring_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffnessLimited_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffnessLimited_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDampingLimited_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDampingLimited_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rotateOrder_set(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btGeneric6DofSpring2ConstraintDoubleData2_rotateOrder_get(long jarg1, btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
-  public final static native long new_btGeneric6DofSpring2ConstraintDoubleData2();
-  public final static native void delete_btGeneric6DofSpring2ConstraintDoubleData2(long jarg1);
-  public final static native long btHingeConstraint_operatorNew__SWIG_0(long jarg1, btHingeConstraint jarg1_, long jarg2);
-  public final static native void btHingeConstraint_operatorDelete__SWIG_0(long jarg1, btHingeConstraint jarg1_, long jarg2);
-  public final static native long btHingeConstraint_operatorNew__SWIG_1(long jarg1, btHingeConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHingeConstraint_operatorDelete__SWIG_1(long jarg1, btHingeConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btHingeConstraint_operatorNewArray__SWIG_0(long jarg1, btHingeConstraint jarg1_, long jarg2);
-  public final static native void btHingeConstraint_operatorDeleteArray__SWIG_0(long jarg1, btHingeConstraint jarg1_, long jarg2);
-  public final static native long btHingeConstraint_operatorNewArray__SWIG_1(long jarg1, btHingeConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHingeConstraint_operatorDeleteArray__SWIG_1(long jarg1, btHingeConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btHingeConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, boolean jarg7);
-  public final static native long new_btHingeConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native long new_btHingeConstraint__SWIG_2(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3, boolean jarg4);
-  public final static native long new_btHingeConstraint__SWIG_3(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native long new_btHingeConstraint__SWIG_4(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
-  public final static native long new_btHingeConstraint__SWIG_5(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native long new_btHingeConstraint__SWIG_6(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
-  public final static native long new_btHingeConstraint__SWIG_7(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native void btHingeConstraint_getInfo1NonVirtual(long jarg1, btHingeConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
-  public final static native void btHingeConstraint_getInfo2NonVirtual(long jarg1, btHingeConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btHingeConstraint_getInfo2Internal(long jarg1, btHingeConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btHingeConstraint_getInfo2InternalUsingFrameOffset(long jarg1, btHingeConstraint jarg1_, long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btHingeConstraint_updateRHS(long jarg1, btHingeConstraint jarg1_, float jarg2);
-  public final static native long btHingeConstraint_getRigidBodyAConst(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getRigidBodyBConst(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getRigidBodyA(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getRigidBodyB(long jarg1, btHingeConstraint jarg1_);
-  public final static native Matrix4 btHingeConstraint_getFrameOffsetA(long jarg1, btHingeConstraint jarg1_);
-  public final static native Matrix4 btHingeConstraint_getFrameOffsetB(long jarg1, btHingeConstraint jarg1_);
-  public final static native void btHingeConstraint_setFrames(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btHingeConstraint_setAngularOnly(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
-  public final static native void btHingeConstraint_enableAngularMotor(long jarg1, btHingeConstraint jarg1_, boolean jarg2, float jarg3, float jarg4);
-  public final static native void btHingeConstraint_enableMotor(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
-  public final static native void btHingeConstraint_setMaxMotorImpulse(long jarg1, btHingeConstraint jarg1_, float jarg2);
-  public final static native void btHingeConstraint_setMotorTargetVelocity(long jarg1, btHingeConstraint jarg1_, float jarg2);
-  public final static native void btHingeConstraint_setMotorTarget__SWIG_0(long jarg1, btHingeConstraint jarg1_, Quaternion jarg2, float jarg3);
-  public final static native void btHingeConstraint_setMotorTarget__SWIG_1(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3);
-  public final static native void btHingeConstraint_setLimit__SWIG_0(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
-  public final static native void btHingeConstraint_setLimit__SWIG_1(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native void btHingeConstraint_setLimit__SWIG_2(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btHingeConstraint_setLimit__SWIG_3(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3);
-  public final static native float btHingeConstraint_getLimitSoftness(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getLimitBiasFactor(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getLimitRelaxationFactor(long jarg1, btHingeConstraint jarg1_);
-  public final static native void btHingeConstraint_setAxis(long jarg1, btHingeConstraint jarg1_, Vector3 jarg2);
-  public final static native boolean btHingeConstraint_hasLimit(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getLowerLimit(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getUpperLimit(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getHingeAngle__SWIG_0(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getHingeAngle__SWIG_1(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btHingeConstraint_testLimit(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native Matrix4 btHingeConstraint_getAFrameConst(long jarg1, btHingeConstraint jarg1_);
-  public final static native Matrix4 btHingeConstraint_getBFrameConst(long jarg1, btHingeConstraint jarg1_);
-  public final static native Matrix4 btHingeConstraint_getAFrame(long jarg1, btHingeConstraint jarg1_);
-  public final static native Matrix4 btHingeConstraint_getBFrame(long jarg1, btHingeConstraint jarg1_);
-  public final static native int btHingeConstraint_getSolveLimit(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getLimitSign(long jarg1, btHingeConstraint jarg1_);
-  public final static native boolean btHingeConstraint_getAngularOnly(long jarg1, btHingeConstraint jarg1_);
-  public final static native boolean btHingeConstraint_getEnableAngularMotor(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getMotorTargetVelocity(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getMaxMotorImpulse(long jarg1, btHingeConstraint jarg1_);
-  public final static native boolean btHingeConstraint_getUseFrameOffset(long jarg1, btHingeConstraint jarg1_);
-  public final static native void btHingeConstraint_setUseFrameOffset(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
-  public final static native boolean btHingeConstraint_getUseReferenceFrameA(long jarg1, btHingeConstraint jarg1_);
-  public final static native void btHingeConstraint_setUseReferenceFrameA(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
-  public final static native void btHingeConstraint_setParam__SWIG_0(long jarg1, btHingeConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btHingeConstraint_setParam__SWIG_1(long jarg1, btHingeConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btHingeConstraint_getParam__SWIG_0(long jarg1, btHingeConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btHingeConstraint_getParam__SWIG_1(long jarg1, btHingeConstraint jarg1_, int jarg2);
-  public final static native int btHingeConstraint_getFlags(long jarg1, btHingeConstraint jarg1_);
-  public final static native void delete_btHingeConstraint(long jarg1);
-  public final static native void btHingeConstraintDoubleData_typeConstraintData_set(long jarg1, btHingeConstraintDoubleData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btHingeConstraintDoubleData_typeConstraintData_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_rbAFrame_set(long jarg1, btHingeConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btHingeConstraintDoubleData_rbAFrame_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_rbBFrame_set(long jarg1, btHingeConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btHingeConstraintDoubleData_rbBFrame_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_useReferenceFrameA_set(long jarg1, btHingeConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData_useReferenceFrameA_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_angularOnly_set(long jarg1, btHingeConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData_angularOnly_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_enableAngularMotor_set(long jarg1, btHingeConstraintDoubleData jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData_enableAngularMotor_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_motorTargetVelocity_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_motorTargetVelocity_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_maxMotorImpulse_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_maxMotorImpulse_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_lowerLimit_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_lowerLimit_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_upperLimit_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_upperLimit_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_limitSoftness_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_limitSoftness_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_biasFactor_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_biasFactor_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native void btHingeConstraintDoubleData_relaxationFactor_set(long jarg1, btHingeConstraintDoubleData jarg1_, float jarg2);
-  public final static native float btHingeConstraintDoubleData_relaxationFactor_get(long jarg1, btHingeConstraintDoubleData jarg1_);
-  public final static native long new_btHingeConstraintDoubleData();
-  public final static native void delete_btHingeConstraintDoubleData(long jarg1);
-  public final static native long btHingeAccumulatedAngleConstraint_operatorNew__SWIG_0(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
-  public final static native void btHingeAccumulatedAngleConstraint_operatorDelete__SWIG_0(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
-  public final static native long btHingeAccumulatedAngleConstraint_operatorNew__SWIG_1(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHingeAccumulatedAngleConstraint_operatorDelete__SWIG_1(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btHingeAccumulatedAngleConstraint_operatorNewArray__SWIG_0(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
-  public final static native void btHingeAccumulatedAngleConstraint_operatorDeleteArray__SWIG_0(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
-  public final static native long btHingeAccumulatedAngleConstraint_operatorNewArray__SWIG_1(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHingeAccumulatedAngleConstraint_operatorDeleteArray__SWIG_1(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, boolean jarg7);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_2(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3, boolean jarg4);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_3(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_4(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_5(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_6(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
-  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_7(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native float btHingeAccumulatedAngleConstraint_getAccumulatedHingeAngle(long jarg1, btHingeAccumulatedAngleConstraint jarg1_);
-  public final static native void btHingeAccumulatedAngleConstraint_setAccumulatedHingeAngle(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, float jarg2);
-  public final static native void delete_btHingeAccumulatedAngleConstraint(long jarg1);
-  public final static native void btHingeConstraintFloatData_typeConstraintData_set(long jarg1, btHingeConstraintFloatData jarg1_, long jarg2, btTypedConstraintData jarg2_);
-  public final static native long btHingeConstraintFloatData_typeConstraintData_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_rbAFrame_set(long jarg1, btHingeConstraintFloatData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btHingeConstraintFloatData_rbAFrame_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_rbBFrame_set(long jarg1, btHingeConstraintFloatData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btHingeConstraintFloatData_rbBFrame_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_useReferenceFrameA_set(long jarg1, btHingeConstraintFloatData jarg1_, int jarg2);
-  public final static native int btHingeConstraintFloatData_useReferenceFrameA_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_angularOnly_set(long jarg1, btHingeConstraintFloatData jarg1_, int jarg2);
-  public final static native int btHingeConstraintFloatData_angularOnly_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_enableAngularMotor_set(long jarg1, btHingeConstraintFloatData jarg1_, int jarg2);
-  public final static native int btHingeConstraintFloatData_enableAngularMotor_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_motorTargetVelocity_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_motorTargetVelocity_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_maxMotorImpulse_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_maxMotorImpulse_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_lowerLimit_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_lowerLimit_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_upperLimit_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_upperLimit_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_limitSoftness_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_limitSoftness_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_biasFactor_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_biasFactor_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native void btHingeConstraintFloatData_relaxationFactor_set(long jarg1, btHingeConstraintFloatData jarg1_, float jarg2);
-  public final static native float btHingeConstraintFloatData_relaxationFactor_get(long jarg1, btHingeConstraintFloatData jarg1_);
-  public final static native long new_btHingeConstraintFloatData();
-  public final static native void delete_btHingeConstraintFloatData(long jarg1);
-  public final static native void btHingeConstraintDoubleData2_typeConstraintData_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btHingeConstraintDoubleData2_typeConstraintData_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_rbAFrame_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btHingeConstraintDoubleData2_rbAFrame_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_rbBFrame_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btHingeConstraintDoubleData2_rbBFrame_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_useReferenceFrameA_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData2_useReferenceFrameA_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_angularOnly_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData2_angularOnly_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_enableAngularMotor_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, int jarg2);
-  public final static native int btHingeConstraintDoubleData2_enableAngularMotor_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_motorTargetVelocity_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_motorTargetVelocity_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_maxMotorImpulse_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_maxMotorImpulse_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_lowerLimit_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_lowerLimit_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_upperLimit_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_upperLimit_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_limitSoftness_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_limitSoftness_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_biasFactor_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_biasFactor_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_relaxationFactor_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, double jarg2);
-  public final static native double btHingeConstraintDoubleData2_relaxationFactor_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native void btHingeConstraintDoubleData2_padding1_set(long jarg1, btHingeConstraintDoubleData2 jarg1_, String jarg2);
-  public final static native String btHingeConstraintDoubleData2_padding1_get(long jarg1, btHingeConstraintDoubleData2 jarg1_);
-  public final static native long new_btHingeConstraintDoubleData2();
-  public final static native void delete_btHingeConstraintDoubleData2(long jarg1);
-  public final static native long btSolverConstraint_operatorNew__SWIG_0(long jarg1, btSolverConstraint jarg1_, long jarg2);
-  public final static native void btSolverConstraint_operatorDelete__SWIG_0(long jarg1, btSolverConstraint jarg1_, long jarg2);
-  public final static native long btSolverConstraint_operatorNew__SWIG_1(long jarg1, btSolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverConstraint_operatorDelete__SWIG_1(long jarg1, btSolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btSolverConstraint_operatorNewArray__SWIG_0(long jarg1, btSolverConstraint jarg1_, long jarg2);
-  public final static native void btSolverConstraint_operatorDeleteArray__SWIG_0(long jarg1, btSolverConstraint jarg1_, long jarg2);
-  public final static native long btSolverConstraint_operatorNewArray__SWIG_1(long jarg1, btSolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverConstraint_operatorDeleteArray__SWIG_1(long jarg1, btSolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btSolverConstraint_relpos1CrossNormal_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_relpos1CrossNormal_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_contactNormal1_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_contactNormal1_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_relpos2CrossNormal_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_relpos2CrossNormal_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_contactNormal2_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_contactNormal2_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_angularComponentA_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_angularComponentA_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_angularComponentB_set(long jarg1, btSolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSolverConstraint_angularComponentB_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_appliedPushImpulse_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_appliedPushImpulse_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_appliedImpulse_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_appliedImpulse_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_friction_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_friction_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_jacDiagABInv_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_jacDiagABInv_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_rhs_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_rhs_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_cfm_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_cfm_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_lowerLimit_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_lowerLimit_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_upperLimit_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_upperLimit_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_rhsPenetration_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_rhsPenetration_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_originalContactPoint_set(long jarg1, btSolverConstraint jarg1_, long jarg2);
-  public final static native long btSolverConstraint_originalContactPoint_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_unusedPadding4_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
-  public final static native float btSolverConstraint_unusedPadding4_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_numRowsForNonContactConstraint_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
-  public final static native int btSolverConstraint_numRowsForNonContactConstraint_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_overrideNumSolverIterations_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
-  public final static native int btSolverConstraint_overrideNumSolverIterations_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_frictionIndex_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
-  public final static native int btSolverConstraint_frictionIndex_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_solverBodyIdA_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
-  public final static native int btSolverConstraint_solverBodyIdA_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native void btSolverConstraint_solverBodyIdB_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
-  public final static native int btSolverConstraint_solverBodyIdB_get(long jarg1, btSolverConstraint jarg1_);
-  public final static native long new_btSolverConstraint();
-  public final static native void delete_btSolverConstraint(long jarg1);
-  public final static native long btHinge2Constraint_operatorNew__SWIG_0(long jarg1, btHinge2Constraint jarg1_, long jarg2);
-  public final static native void btHinge2Constraint_operatorDelete__SWIG_0(long jarg1, btHinge2Constraint jarg1_, long jarg2);
-  public final static native long btHinge2Constraint_operatorNew__SWIG_1(long jarg1, btHinge2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHinge2Constraint_operatorDelete__SWIG_1(long jarg1, btHinge2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native long btHinge2Constraint_operatorNewArray__SWIG_0(long jarg1, btHinge2Constraint jarg1_, long jarg2);
-  public final static native void btHinge2Constraint_operatorDeleteArray__SWIG_0(long jarg1, btHinge2Constraint jarg1_, long jarg2);
-  public final static native long btHinge2Constraint_operatorNewArray__SWIG_1(long jarg1, btHinge2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native void btHinge2Constraint_operatorDeleteArray__SWIG_1(long jarg1, btHinge2Constraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btHinge2Constraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native Vector3 btHinge2Constraint_getAnchor(long jarg1, btHinge2Constraint jarg1_);
-  public final static native Vector3 btHinge2Constraint_getAnchor2(long jarg1, btHinge2Constraint jarg1_);
-  public final static native Vector3 btHinge2Constraint_getAxis1(long jarg1, btHinge2Constraint jarg1_);
-  public final static native Vector3 btHinge2Constraint_getAxis2(long jarg1, btHinge2Constraint jarg1_);
-  public final static native float btHinge2Constraint_getAngle1(long jarg1, btHinge2Constraint jarg1_);
-  public final static native float btHinge2Constraint_getAngle2(long jarg1, btHinge2Constraint jarg1_);
-  public final static native void btHinge2Constraint_setUpperLimit(long jarg1, btHinge2Constraint jarg1_, float jarg2);
-  public final static native void btHinge2Constraint_setLowerLimit(long jarg1, btHinge2Constraint jarg1_, float jarg2);
-  public final static native void delete_btHinge2Constraint(long jarg1);
-  public final static native long new_btFixedConstraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
-  public final static native void delete_btFixedConstraint(long jarg1);
-  public final static native void delete_btVehicleRaycaster(long jarg1);
-  public final static native long new_btVehicleRaycaster_btVehicleRaycasterResult();
-  public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_get(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
-  public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_set(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_get(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
-  public final static native void btVehicleRaycaster_btVehicleRaycasterResult_distFraction_set(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_, float jarg2);
-  public final static native float btVehicleRaycaster_btVehicleRaycasterResult_distFraction_get(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
-  public final static native void delete_btVehicleRaycaster_btVehicleRaycasterResult(long jarg1);
-  public final static native long btVehicleRaycaster_castRay(long jarg1, btVehicleRaycaster jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btVehicleRaycaster.btVehicleRaycasterResult jarg4_);
-  public final static native void btWheelInfoConstructionInfo_chassisConnectionCS_set(long jarg1, btWheelInfoConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfoConstructionInfo_chassisConnectionCS_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_wheelDirectionCS_set(long jarg1, btWheelInfoConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfoConstructionInfo_wheelDirectionCS_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_wheelAxleCS_set(long jarg1, btWheelInfoConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfoConstructionInfo_wheelAxleCS_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_suspensionRestLength_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_suspensionRestLength_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_maxSuspensionTravelCm_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_maxSuspensionTravelCm_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_wheelRadius_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_wheelRadius_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_suspensionStiffness_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_suspensionStiffness_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_wheelsDampingCompression_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_wheelsDampingCompression_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_wheelsDampingRelaxation_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_wheelsDampingRelaxation_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_frictionSlip_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_frictionSlip_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_maxSuspensionForce_set(long jarg1, btWheelInfoConstructionInfo jarg1_, float jarg2);
-  public final static native float btWheelInfoConstructionInfo_maxSuspensionForce_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfoConstructionInfo_bIsFrontWheel_set(long jarg1, btWheelInfoConstructionInfo jarg1_, boolean jarg2);
-  public final static native boolean btWheelInfoConstructionInfo_bIsFrontWheel_get(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native long new_btWheelInfoConstructionInfo();
-  public final static native void delete_btWheelInfoConstructionInfo(long jarg1);
-  public final static native void btWheelInfo_RaycastInfo_contactNormalWS_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_RaycastInfo_contactNormalWS_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_contactPointWS_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_RaycastInfo_contactPointWS_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_suspensionLength_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_RaycastInfo_suspensionLength_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_hardPointWS_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_RaycastInfo_hardPointWS_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_wheelDirectionWS_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_RaycastInfo_wheelDirectionWS_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_wheelAxleWS_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_RaycastInfo_wheelAxleWS_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_isInContact_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, boolean jarg2);
-  public final static native boolean btWheelInfo_RaycastInfo_isInContact_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native void btWheelInfo_RaycastInfo_groundObject_set(long jarg1, btWheelInfo.RaycastInfo jarg1_, long jarg2);
-  public final static native long btWheelInfo_RaycastInfo_groundObject_get(long jarg1, btWheelInfo.RaycastInfo jarg1_);
-  public final static native long new_btWheelInfo_RaycastInfo();
-  public final static native void delete_btWheelInfo_RaycastInfo(long jarg1);
-  public final static native void btWheelInfo_raycastInfo_set(long jarg1, btWheelInfo jarg1_, long jarg2, btWheelInfo.RaycastInfo jarg2_);
-  public final static native long btWheelInfo_raycastInfo_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_worldTransform_set(long jarg1, btWheelInfo jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btWheelInfo_worldTransform_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_chassisConnectionPointCS_set(long jarg1, btWheelInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_chassisConnectionPointCS_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelDirectionCS_set(long jarg1, btWheelInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_wheelDirectionCS_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelAxleCS_set(long jarg1, btWheelInfo jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btWheelInfo_wheelAxleCS_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_suspensionRestLength1_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_suspensionRestLength1_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_maxSuspensionTravelCm_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_maxSuspensionTravelCm_get(long jarg1, btWheelInfo jarg1_);
-  public final static native float btWheelInfo_getSuspensionRestLength(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelsRadius_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_wheelsRadius_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_suspensionStiffness_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_suspensionStiffness_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelsDampingCompression_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_wheelsDampingCompression_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelsDampingRelaxation_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_wheelsDampingRelaxation_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_frictionSlip_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_frictionSlip_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_steering_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_steering_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_rotation_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_rotation_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_deltaRotation_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_deltaRotation_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_rollInfluence_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_rollInfluence_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_maxSuspensionForce_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_maxSuspensionForce_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_engineForce_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_engineForce_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_brake_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_brake_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_bIsFrontWheel_set(long jarg1, btWheelInfo jarg1_, boolean jarg2);
-  public final static native boolean btWheelInfo_bIsFrontWheel_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_clientInfo_set(long jarg1, btWheelInfo jarg1_, long jarg2);
-  public final static native long btWheelInfo_clientInfo_get(long jarg1, btWheelInfo jarg1_);
-  public final static native long new_btWheelInfo__SWIG_0();
-  public final static native long new_btWheelInfo__SWIG_1(long jarg1, btWheelInfoConstructionInfo jarg1_);
-  public final static native void btWheelInfo_updateWheel(long jarg1, btWheelInfo jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btWheelInfo.RaycastInfo jarg3_);
-  public final static native void btWheelInfo_clippedInvContactDotSuspension_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_clippedInvContactDotSuspension_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_suspensionRelativeVelocity_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_suspensionRelativeVelocity_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_wheelsSuspensionForce_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_wheelsSuspensionForce_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void btWheelInfo_skidInfo_set(long jarg1, btWheelInfo jarg1_, float jarg2);
-  public final static native float btWheelInfo_skidInfo_get(long jarg1, btWheelInfo jarg1_);
-  public final static native void delete_btWheelInfo(long jarg1);
-  public final static native long new_btRaycastVehicle_btVehicleTuning();
-  public final static native void btRaycastVehicle_btVehicleTuning_suspensionStiffness_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_suspensionStiffness_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void btRaycastVehicle_btVehicleTuning_suspensionCompression_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_suspensionCompression_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void btRaycastVehicle_btVehicleTuning_suspensionDamping_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_suspensionDamping_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void btRaycastVehicle_btVehicleTuning_maxSuspensionTravelCm_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_maxSuspensionTravelCm_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void btRaycastVehicle_btVehicleTuning_frictionSlip_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_frictionSlip_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void btRaycastVehicle_btVehicleTuning_maxSuspensionForce_set(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
-  public final static native float btRaycastVehicle_btVehicleTuning_maxSuspensionForce_get(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_);
-  public final static native void delete_btRaycastVehicle_btVehicleTuning(long jarg1);
-  public final static native long new_btRaycastVehicle(long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btVehicleRaycaster jarg3_);
-  public final static native void delete_btRaycastVehicle(long jarg1);
-  public final static native Matrix4 btRaycastVehicle_getChassisWorldTransform(long jarg1, btRaycastVehicle jarg1_);
-  public final static native float btRaycastVehicle_rayCast(long jarg1, btRaycastVehicle jarg1_, long jarg2, btWheelInfo jarg2_);
-  public final static native void btRaycastVehicle_updateVehicle(long jarg1, btRaycastVehicle jarg1_, float jarg2);
-  public final static native void btRaycastVehicle_resetSuspension(long jarg1, btRaycastVehicle jarg1_);
-  public final static native float btRaycastVehicle_getSteeringValue(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native void btRaycastVehicle_setSteeringValue(long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
-  public final static native void btRaycastVehicle_applyEngineForce(long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
-  public final static native Matrix4 btRaycastVehicle_getWheelTransformWS(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native void btRaycastVehicle_updateWheelTransform__SWIG_0(long jarg1, btRaycastVehicle jarg1_, int jarg2, boolean jarg3);
-  public final static native void btRaycastVehicle_updateWheelTransform__SWIG_1(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native long btRaycastVehicle_addWheel(long jarg1, btRaycastVehicle jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, long jarg7, btRaycastVehicle.btVehicleTuning jarg7_, boolean jarg8);
-  public final static native int btRaycastVehicle_getNumWheels(long jarg1, btRaycastVehicle jarg1_);
-  public final static native void btRaycastVehicle_wheelInfo_set(long jarg1, btRaycastVehicle jarg1_, long jarg2);
-  public final static native long btRaycastVehicle_wheelInfo_get(long jarg1, btRaycastVehicle jarg1_);
-  public final static native long btRaycastVehicle_getWheelInfo(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native long btRaycastVehicle_getWheelInfoConst(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native void btRaycastVehicle_updateWheelTransformsWS__SWIG_0(long jarg1, btRaycastVehicle jarg1_, long jarg2, btWheelInfo jarg2_, boolean jarg3);
-  public final static native void btRaycastVehicle_updateWheelTransformsWS__SWIG_1(long jarg1, btRaycastVehicle jarg1_, long jarg2, btWheelInfo jarg2_);
-  public final static native void btRaycastVehicle_setBrake(long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
-  public final static native void btRaycastVehicle_setPitchControl(long jarg1, btRaycastVehicle jarg1_, float jarg2);
-  public final static native void btRaycastVehicle_updateSuspension(long jarg1, btRaycastVehicle jarg1_, float jarg2);
-  public final static native void btRaycastVehicle_updateFriction(long jarg1, btRaycastVehicle jarg1_, float jarg2);
-  public final static native long btRaycastVehicle_getRigidBody(long jarg1, btRaycastVehicle jarg1_);
-  public final static native long btRaycastVehicle_getRigidBodyConst(long jarg1, btRaycastVehicle jarg1_);
-  public final static native int btRaycastVehicle_getRightAxis(long jarg1, btRaycastVehicle jarg1_);
-  public final static native int btRaycastVehicle_getUpAxis(long jarg1, btRaycastVehicle jarg1_);
-  public final static native int btRaycastVehicle_getForwardAxis(long jarg1, btRaycastVehicle jarg1_);
-  public final static native Vector3 btRaycastVehicle_getForwardVector(long jarg1, btRaycastVehicle jarg1_);
-  public final static native float btRaycastVehicle_getCurrentSpeedKmHour(long jarg1, btRaycastVehicle jarg1_);
-  public final static native void btRaycastVehicle_setCoordinateSystem(long jarg1, btRaycastVehicle jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int btRaycastVehicle_getUserConstraintType(long jarg1, btRaycastVehicle jarg1_);
-  public final static native void btRaycastVehicle_setUserConstraintType(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native void btRaycastVehicle_setUserConstraintId(long jarg1, btRaycastVehicle jarg1_, int jarg2);
-  public final static native int btRaycastVehicle_getUserConstraintId(long jarg1, btRaycastVehicle jarg1_);
-  public final static native long new_btDefaultVehicleRaycaster(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void delete_btDefaultVehicleRaycaster(long jarg1);
-  public final static native long new_FilterableVehicleRaycaster(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void FilterableVehicleRaycaster_setCollisionFilterMask(long jarg1, FilterableVehicleRaycaster jarg1_, short jarg2);
-  public final static native void FilterableVehicleRaycaster_setCollisionFilterGroup(long jarg1, FilterableVehicleRaycaster jarg1_, short jarg2);
-  public final static native void delete_FilterableVehicleRaycaster(long jarg1);
-  public final static native long new_btGearConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, float jarg5);
-  public final static native long new_btGearConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4);
-  public final static native void delete_btGearConstraint(long jarg1);
-  public final static native void btGearConstraint_setAxisA(long jarg1, btGearConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGearConstraint_setAxisB(long jarg1, btGearConstraint jarg1_, Vector3 jarg2);
-  public final static native void btGearConstraint_setRatio(long jarg1, btGearConstraint jarg1_, float jarg2);
-  public final static native Vector3 btGearConstraint_getAxisA(long jarg1, btGearConstraint jarg1_);
-  public final static native Vector3 btGearConstraint_getAxisB(long jarg1, btGearConstraint jarg1_);
-  public final static native float btGearConstraint_getRatio(long jarg1, btGearConstraint jarg1_);
-  public final static native void btGearConstraint_setParam__SWIG_0(long jarg1, btGearConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btGearConstraint_setParam__SWIG_1(long jarg1, btGearConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btGearConstraint_getParam__SWIG_0(long jarg1, btGearConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btGearConstraint_getParam__SWIG_1(long jarg1, btGearConstraint jarg1_, int jarg2);
-  public final static native void btGearConstraintFloatData_typeConstraintData_set(long jarg1, btGearConstraintFloatData jarg1_, long jarg2, btTypedConstraintFloatData jarg2_);
-  public final static native long btGearConstraintFloatData_typeConstraintData_get(long jarg1, btGearConstraintFloatData jarg1_);
-  public final static native void btGearConstraintFloatData_axisInA_set(long jarg1, btGearConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGearConstraintFloatData_axisInA_get(long jarg1, btGearConstraintFloatData jarg1_);
-  public final static native void btGearConstraintFloatData_axisInB_set(long jarg1, btGearConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btGearConstraintFloatData_axisInB_get(long jarg1, btGearConstraintFloatData jarg1_);
-  public final static native void btGearConstraintFloatData_ratio_set(long jarg1, btGearConstraintFloatData jarg1_, float jarg2);
-  public final static native float btGearConstraintFloatData_ratio_get(long jarg1, btGearConstraintFloatData jarg1_);
-  public final static native void btGearConstraintFloatData_padding_set(long jarg1, btGearConstraintFloatData jarg1_, String jarg2);
-  public final static native String btGearConstraintFloatData_padding_get(long jarg1, btGearConstraintFloatData jarg1_);
-  public final static native long new_btGearConstraintFloatData();
-  public final static native void delete_btGearConstraintFloatData(long jarg1);
-  public final static native void btGearConstraintDoubleData_typeConstraintData_set(long jarg1, btGearConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
-  public final static native long btGearConstraintDoubleData_typeConstraintData_get(long jarg1, btGearConstraintDoubleData jarg1_);
-  public final static native void btGearConstraintDoubleData_axisInA_set(long jarg1, btGearConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGearConstraintDoubleData_axisInA_get(long jarg1, btGearConstraintDoubleData jarg1_);
-  public final static native void btGearConstraintDoubleData_axisInB_set(long jarg1, btGearConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btGearConstraintDoubleData_axisInB_get(long jarg1, btGearConstraintDoubleData jarg1_);
-  public final static native void btGearConstraintDoubleData_ratio_set(long jarg1, btGearConstraintDoubleData jarg1_, double jarg2);
-  public final static native double btGearConstraintDoubleData_ratio_get(long jarg1, btGearConstraintDoubleData jarg1_);
-  public final static native long new_btGearConstraintDoubleData();
-  public final static native void delete_btGearConstraintDoubleData(long jarg1);
-  public final static native long btNNCGConstraintSolver_operatorNew__SWIG_0(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2);
-  public final static native void btNNCGConstraintSolver_operatorDelete__SWIG_0(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2);
-  public final static native long btNNCGConstraintSolver_operatorNew__SWIG_1(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btNNCGConstraintSolver_operatorDelete__SWIG_1(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native long btNNCGConstraintSolver_operatorNewArray__SWIG_0(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2);
-  public final static native void btNNCGConstraintSolver_operatorDeleteArray__SWIG_0(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2);
-  public final static native long btNNCGConstraintSolver_operatorNewArray__SWIG_1(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btNNCGConstraintSolver_operatorDeleteArray__SWIG_1(long jarg1, btNNCGConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native long new_btNNCGConstraintSolver();
-  public final static native void btNNCGConstraintSolver_onlyForNoneContact_set(long jarg1, btNNCGConstraintSolver jarg1_, boolean jarg2);
-  public final static native boolean btNNCGConstraintSolver_onlyForNoneContact_get(long jarg1, btNNCGConstraintSolver jarg1_);
-  public final static native void delete_btNNCGConstraintSolver(long jarg1);
-  public final static native long new_btConstraintSolverPoolMt__SWIG_0(int jarg1);
-  public final static native long new_btConstraintSolverPoolMt__SWIG_1(long jarg1, int jarg2);
-  public final static native void delete_btConstraintSolverPoolMt(long jarg1);
-  public final static native long btDiscreteDynamicsWorldMt_operatorNew__SWIG_0(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2);
-  public final static native void btDiscreteDynamicsWorldMt_operatorDelete__SWIG_0(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2);
-  public final static native long btDiscreteDynamicsWorldMt_operatorNew__SWIG_1(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
-  public final static native void btDiscreteDynamicsWorldMt_operatorDelete__SWIG_1(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
-  public final static native long btDiscreteDynamicsWorldMt_operatorNewArray__SWIG_0(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2);
-  public final static native void btDiscreteDynamicsWorldMt_operatorDeleteArray__SWIG_0(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2);
-  public final static native long btDiscreteDynamicsWorldMt_operatorNewArray__SWIG_1(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
-  public final static native void btDiscreteDynamicsWorldMt_operatorDeleteArray__SWIG_1(long jarg1, btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
-  public final static native long new_btDiscreteDynamicsWorldMt(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolverPoolMt jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btDiscreteDynamicsWorldMt(long jarg1);
-  public final static native void btSimulationIslandManagerMt_Island_bodyArray_set(long jarg1, btSimulationIslandManagerMt.Island jarg1_, long jarg2, btCollisionObjectArray jarg2_);
-  public final static native long btSimulationIslandManagerMt_Island_bodyArray_get(long jarg1, btSimulationIslandManagerMt.Island jarg1_);
-  public final static native void btSimulationIslandManagerMt_Island_manifoldArray_set(long jarg1, btSimulationIslandManagerMt.Island jarg1_, long jarg2, btPersistentManifoldArray jarg2_);
-  public final static native long btSimulationIslandManagerMt_Island_manifoldArray_get(long jarg1, btSimulationIslandManagerMt.Island jarg1_);
-  public final static native void btSimulationIslandManagerMt_Island_constraintArray_set(long jarg1, btSimulationIslandManagerMt.Island jarg1_, long jarg2);
-  public final static native long btSimulationIslandManagerMt_Island_constraintArray_get(long jarg1, btSimulationIslandManagerMt.Island jarg1_);
-  public final static native void btSimulationIslandManagerMt_Island_id_set(long jarg1, btSimulationIslandManagerMt.Island jarg1_, int jarg2);
-  public final static native int btSimulationIslandManagerMt_Island_id_get(long jarg1, btSimulationIslandManagerMt.Island jarg1_);
-  public final static native void btSimulationIslandManagerMt_Island_isSleeping_set(long jarg1, btSimulationIslandManagerMt.Island jarg1_, boolean jarg2);
-  public final static native boolean btSimulationIslandManagerMt_Island_isSleeping_get(long jarg1, btSimulationIslandManagerMt.Island jarg1_);
-  public final static native void btSimulationIslandManagerMt_Island_append(long jarg1, btSimulationIslandManagerMt.Island jarg1_, long jarg2, btSimulationIslandManagerMt.Island jarg2_);
-  public final static native long new_btSimulationIslandManagerMt_Island();
-  public final static native void delete_btSimulationIslandManagerMt_Island(long jarg1);
-  public final static native void delete_btSimulationIslandManagerMt_IslandCallback(long jarg1);
-  public final static native void btSimulationIslandManagerMt_IslandCallback_processIsland(long jarg1, btSimulationIslandManagerMt.IslandCallback jarg1_, long jarg2, int jarg3, long jarg4, int jarg5, long jarg6, int jarg7, int jarg8);
-  public final static native void btSimulationIslandManagerMt_serialIslandDispatch(long jarg1, long jarg2, btSimulationIslandManagerMt.IslandCallback jarg2_);
-  public final static native void btSimulationIslandManagerMt_parallelIslandDispatch(long jarg1, long jarg2, btSimulationIslandManagerMt.IslandCallback jarg2_);
-  public final static native long new_btSimulationIslandManagerMt();
-  public final static native void delete_btSimulationIslandManagerMt(long jarg1);
-  public final static native void btSimulationIslandManagerMt_buildAndProcessIslands(long jarg1, btSimulationIslandManagerMt jarg1_, long jarg2, btDispatcher jarg2_, long jarg3, btCollisionWorld jarg3_, long jarg4, long jarg5, btSimulationIslandManagerMt.IslandCallback jarg5_);
-  public final static native void btSimulationIslandManagerMt_buildIslands(long jarg1, btSimulationIslandManagerMt jarg1_, long jarg2, btDispatcher jarg2_, long jarg3, btCollisionWorld jarg3_);
-  public final static native int btSimulationIslandManagerMt_getMinimumSolverBatchSize(long jarg1, btSimulationIslandManagerMt jarg1_);
-  public final static native void btSimulationIslandManagerMt_setMinimumSolverBatchSize(long jarg1, btSimulationIslandManagerMt jarg1_, int jarg2);
-  public final static native long btSimulationIslandManagerMt_getIslandDispatchFunction(long jarg1, btSimulationIslandManagerMt jarg1_);
-  public final static native void btSimulationIslandManagerMt_setIslandDispatchFunction(long jarg1, btSimulationIslandManagerMt jarg1_, long jarg2);
-  public final static native long btMultiBody_operatorNew__SWIG_0(long jarg1, btMultiBody jarg1_, long jarg2);
-  public final static native void btMultiBody_operatorDelete__SWIG_0(long jarg1, btMultiBody jarg1_, long jarg2);
-  public final static native long btMultiBody_operatorNew__SWIG_1(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBody_operatorDelete__SWIG_1(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
-  public final static native long btMultiBody_operatorNewArray__SWIG_0(long jarg1, btMultiBody jarg1_, long jarg2);
-  public final static native void btMultiBody_operatorDeleteArray__SWIG_0(long jarg1, btMultiBody jarg1_, long jarg2);
-  public final static native long btMultiBody_operatorNewArray__SWIG_1(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBody_operatorDeleteArray__SWIG_1(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
-  public final static native long new_btMultiBody__SWIG_0(int jarg1, float jarg2, Vector3 jarg3, boolean jarg4, boolean jarg5, boolean jarg6);
-  public final static native long new_btMultiBody__SWIG_1(int jarg1, float jarg2, Vector3 jarg3, boolean jarg4, boolean jarg5);
-  public final static native void delete_btMultiBody(long jarg1);
-  public final static native void btMultiBody_setupFixed__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
-  public final static native void btMultiBody_setupFixed__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
-  public final static native void btMultiBody_setupPrismatic(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btMultiBody_setupRevolute__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btMultiBody_setupRevolute__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9);
-  public final static native void btMultiBody_setupSpherical__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
-  public final static native void btMultiBody_setupSpherical__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
-  public final static native void btMultiBody_setupPlanar__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
-  public final static native void btMultiBody_setupPlanar__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
-  public final static native long btMultiBody_getLinkConst(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native long btMultiBody_getLink(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_setBaseCollider(long jarg1, btMultiBody jarg1_, long jarg2, btMultiBodyLinkCollider jarg2_);
-  public final static native long btMultiBody_getBaseColliderConst(long jarg1, btMultiBody jarg1_);
-  public final static native long btMultiBody_getBaseCollider(long jarg1, btMultiBody jarg1_);
-  public final static native long btMultiBody_getLinkCollider(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native int btMultiBody_getParent(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native int btMultiBody_getNumLinks(long jarg1, btMultiBody jarg1_);
-  public final static native int btMultiBody_getNumDofs(long jarg1, btMultiBody jarg1_);
-  public final static native int btMultiBody_getNumPosVars(long jarg1, btMultiBody jarg1_);
-  public final static native float btMultiBody_getBaseMass(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getBaseInertia(long jarg1, btMultiBody jarg1_);
-  public final static native float btMultiBody_getLinkMass(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native Vector3 btMultiBody_getLinkInertia(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_setBaseMass(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native void btMultiBody_setBaseInertia(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native Vector3 btMultiBody_getBasePos(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getBaseVel(long jarg1, btMultiBody jarg1_);
-  public final static native Quaternion btMultiBody_getWorldToBaseRot(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getBaseOmega(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setBasePos(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_setBaseWorldTransform(long jarg1, btMultiBody jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btMultiBody_getBaseWorldTransform(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setBaseVel(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_setWorldToBaseRot(long jarg1, btMultiBody jarg1_, Quaternion jarg2);
-  public final static native void btMultiBody_setBaseOmega(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native float btMultiBody_getJointPos(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native float btMultiBody_getJointVel(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBody_getJointVelMultiDof(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBody_getJointPosMultiDof(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBody_getJointVelMultiDofConst(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBody_getJointPosMultiDofConst(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_setJointPos(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
-  public final static native void btMultiBody_setJointVel(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
-  public final static native void btMultiBody_setJointPosMultiDof(long jarg1, btMultiBody jarg1_, int jarg2, java.nio.FloatBuffer jarg3);
-  public final static native void btMultiBody_setJointVelMultiDof(long jarg1, btMultiBody jarg1_, int jarg2, java.nio.FloatBuffer jarg3);
-  public final static native java.nio.FloatBuffer btMultiBody_getVelocityVector(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getRVector(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native Quaternion btMultiBody_getParentToLocalRot(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native Vector3 btMultiBody_localPosToWorld(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native Vector3 btMultiBody_localDirToWorld(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native Vector3 btMultiBody_worldPosToLocal(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native Vector3 btMultiBody_worldDirToLocal(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native Matrix3 btMultiBody_localFrameToWorld(long jarg1, btMultiBody jarg1_, int jarg2, Matrix3 jarg3);
-  public final static native float btMultiBody_getKineticEnergy(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getAngularMomentum(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_clearForcesAndTorques(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_clearConstraintForces(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_clearVelocities(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_addBaseForce(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_addBaseTorque(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_addLinkForce(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultiBody_addLinkTorque(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultiBody_addBaseConstraintForce(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_addBaseConstraintTorque(long jarg1, btMultiBody jarg1_, Vector3 jarg2);
-  public final static native void btMultiBody_addLinkConstraintForce(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultiBody_addLinkConstraintTorque(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultiBody_addJointTorque(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
-  public final static native void btMultiBody_addJointTorqueMultiDof__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, int jarg3, float jarg4);
-  public final static native void btMultiBody_addJointTorqueMultiDof__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, java.nio.FloatBuffer jarg3);
-  public final static native Vector3 btMultiBody_getBaseForce(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getBaseTorque(long jarg1, btMultiBody jarg1_);
-  public final static native Vector3 btMultiBody_getLinkForce(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native Vector3 btMultiBody_getLinkTorque(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native float btMultiBody_getJointTorque(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBody_getJointTorqueMultiDof(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_computeAccelerationsArticulatedBodyAlgorithmMultiDof__SWIG_0(long jarg1, btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5, boolean jarg6);
-  public final static native void btMultiBody_computeAccelerationsArticulatedBodyAlgorithmMultiDof__SWIG_1(long jarg1, btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5);
-  public final static native void btMultiBody_stepVelocitiesMultiDof__SWIG_0(long jarg1, btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5, boolean jarg6);
-  public final static native void btMultiBody_stepVelocitiesMultiDof__SWIG_1(long jarg1, btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5);
-  public final static native void btMultiBody_calcAccelerationDeltasMultiDof(long jarg1, btMultiBody jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, long jarg4, btScalarArray jarg4_, long jarg5, btVector3Array jarg5_);
-  public final static native void btMultiBody_applyDeltaVeeMultiDof2(long jarg1, btMultiBody jarg1_, java.nio.FloatBuffer jarg2, float jarg3);
-  public final static native void btMultiBody_processDeltaVeeMultiDof2(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_applyDeltaVeeMultiDof(long jarg1, btMultiBody jarg1_, java.nio.FloatBuffer jarg2, float jarg3);
-  public final static native void btMultiBody_stepPositionsMultiDof__SWIG_0(long jarg1, btMultiBody jarg1_, float jarg2, java.nio.FloatBuffer jarg3, java.nio.FloatBuffer jarg4);
-  public final static native void btMultiBody_stepPositionsMultiDof__SWIG_1(long jarg1, btMultiBody jarg1_, float jarg2, java.nio.FloatBuffer jarg3);
-  public final static native void btMultiBody_stepPositionsMultiDof__SWIG_2(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native void btMultiBody_fillContactJacobianMultiDof(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3, Vector3 jarg4, java.nio.FloatBuffer jarg5, long jarg6, btScalarArray jarg6_, long jarg7, btVector3Array jarg7_, long jarg8);
-  public final static native void btMultiBody_fillConstraintJacobianMultiDof(long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, java.nio.FloatBuffer jarg6, long jarg7, btScalarArray jarg7_, long jarg8, btVector3Array jarg8_, long jarg9);
-  public final static native void btMultiBody_setCanSleep(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native boolean btMultiBody_getCanSleep(long jarg1, btMultiBody jarg1_);
-  public final static native boolean btMultiBody_isAwake(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_wakeUp(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_goToSleep(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_checkMotionAndSleepIfRequired(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native boolean btMultiBody_hasFixedBase(long jarg1, btMultiBody jarg1_);
-  public final static native int btMultiBody_getCompanionId(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setCompanionId(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_setNumLinks(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native float btMultiBody_getLinearDamping(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setLinearDamping(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native float btMultiBody_getAngularDamping(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setAngularDamping(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native boolean btMultiBody_getUseGyroTerm(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setUseGyroTerm(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native float btMultiBody_getMaxCoordinateVelocity(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setMaxCoordinateVelocity(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native float btMultiBody_getMaxAppliedImpulse(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setMaxAppliedImpulse(long jarg1, btMultiBody jarg1_, float jarg2);
-  public final static native void btMultiBody_setHasSelfCollision(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native boolean btMultiBody_hasSelfCollision(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_finalizeMultiDof(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_useRK4Integration(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native boolean btMultiBody_isUsingRK4Integration(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_useGlobalVelocities(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native boolean btMultiBody_isUsingGlobalVelocities(long jarg1, btMultiBody jarg1_);
-  public final static native boolean btMultiBody_isPosUpdated(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setPosUpdated(long jarg1, btMultiBody jarg1_, boolean jarg2);
-  public final static native boolean btMultiBody_internalNeedsJointFeedback(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_forwardKinematics(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3, btVector3Array jarg3_);
-  public final static native void btMultiBody_compTreeLinkVelocities(long jarg1, btMultiBody jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_);
-  public final static native void btMultiBody_updateCollisionObjectWorldTransforms(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3, btVector3Array jarg3_);
-  public final static native int btMultiBody_calculateSerializeBufferSize(long jarg1, btMultiBody jarg1_);
-  public final static native String btMultiBody_serialize(long jarg1, btMultiBody jarg1_, long jarg2, long jarg3, btSerializer jarg3_);
-  public final static native String btMultiBody_getBaseName(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setBaseName(long jarg1, btMultiBody jarg1_, String jarg2);
-  public final static native long btMultiBody_getUserPointer(long jarg1, btMultiBody jarg1_);
-  public final static native int btMultiBody_getUserIndex(long jarg1, btMultiBody jarg1_);
-  public final static native int btMultiBody_getUserIndex2(long jarg1, btMultiBody jarg1_);
-  public final static native void btMultiBody_setUserPointer(long jarg1, btMultiBody jarg1_, long jarg2);
-  public final static native void btMultiBody_setUserIndex(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBody_setUserIndex2(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native void btMultiBodyLinkDoubleData_zeroRotParentToThis_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btQuaternionDoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_zeroRotParentToThis_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_parentComToThisComOffset_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_parentComToThisComOffset_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_thisPivotToThisComOffset_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_thisPivotToThisComOffset_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointAxisTop_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_jointAxisTop_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointAxisBottom_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_jointAxisBottom_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_linkInertia_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_linkInertia_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_linkMass_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_linkMass_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_parentIndex_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkDoubleData_parentIndex_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointType_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkDoubleData_jointType_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_dofCount_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkDoubleData_dofCount_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_posVarCount_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkDoubleData_posVarCount_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointPos_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double[] jarg2);
-  public final static native double[] btMultiBodyLinkDoubleData_jointPos_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointVel_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double[] jarg2);
-  public final static native double[] btMultiBodyLinkDoubleData_jointVel_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointTorque_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double[] jarg2);
-  public final static native double[] btMultiBodyLinkDoubleData_jointTorque_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointDamping_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointDamping_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointFriction_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointFriction_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointLowerLimit_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointLowerLimit_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointUpperLimit_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointUpperLimit_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointMaxForce_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointMaxForce_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointMaxVelocity_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyLinkDoubleData_jointMaxVelocity_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_linkName_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkDoubleData_linkName_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_jointName_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkDoubleData_jointName_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_linkCollider_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, long jarg2, btCollisionObjectDoubleData jarg2_);
-  public final static native long btMultiBodyLinkDoubleData_linkCollider_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native void btMultiBodyLinkDoubleData_paddingPtr_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkDoubleData_paddingPtr_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
-  public final static native long new_btMultiBodyLinkDoubleData();
-  public final static native void delete_btMultiBodyLinkDoubleData(long jarg1);
-  public final static native void btMultiBodyLinkFloatData_zeroRotParentToThis_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btQuaternionFloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_zeroRotParentToThis_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_parentComToThisComOffset_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_parentComToThisComOffset_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_thisPivotToThisComOffset_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_thisPivotToThisComOffset_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointAxisTop_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_jointAxisTop_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointAxisBottom_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_jointAxisBottom_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_linkInertia_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_linkInertia_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_dofCount_set(long jarg1, btMultiBodyLinkFloatData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkFloatData_dofCount_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_linkMass_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_linkMass_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_parentIndex_set(long jarg1, btMultiBodyLinkFloatData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkFloatData_parentIndex_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointType_set(long jarg1, btMultiBodyLinkFloatData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkFloatData_jointType_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointPos_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float[] jarg2);
-  public final static native float[] btMultiBodyLinkFloatData_jointPos_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointVel_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float[] jarg2);
-  public final static native float[] btMultiBodyLinkFloatData_jointVel_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointTorque_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float[] jarg2);
-  public final static native float[] btMultiBodyLinkFloatData_jointTorque_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_posVarCount_set(long jarg1, btMultiBodyLinkFloatData jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkFloatData_posVarCount_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointDamping_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointDamping_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointFriction_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointFriction_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointLowerLimit_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointLowerLimit_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointUpperLimit_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointUpperLimit_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointMaxForce_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointMaxForce_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointMaxVelocity_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyLinkFloatData_jointMaxVelocity_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_linkName_set(long jarg1, btMultiBodyLinkFloatData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkFloatData_linkName_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_jointName_set(long jarg1, btMultiBodyLinkFloatData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkFloatData_jointName_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_linkCollider_set(long jarg1, btMultiBodyLinkFloatData jarg1_, long jarg2, btCollisionObjectFloatData jarg2_);
-  public final static native long btMultiBodyLinkFloatData_linkCollider_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native void btMultiBodyLinkFloatData_paddingPtr_set(long jarg1, btMultiBodyLinkFloatData jarg1_, String jarg2);
-  public final static native String btMultiBodyLinkFloatData_paddingPtr_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
-  public final static native long new_btMultiBodyLinkFloatData();
-  public final static native void delete_btMultiBodyLinkFloatData(long jarg1);
-  public final static native void btMultiBodyDoubleData_baseWorldTransform_set(long jarg1, btMultiBodyDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native long btMultiBodyDoubleData_baseWorldTransform_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_baseInertia_set(long jarg1, btMultiBodyDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMultiBodyDoubleData_baseInertia_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_baseMass_set(long jarg1, btMultiBodyDoubleData jarg1_, double jarg2);
-  public final static native double btMultiBodyDoubleData_baseMass_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_baseName_set(long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyDoubleData_baseName_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_links_set(long jarg1, btMultiBodyDoubleData jarg1_, long jarg2, btMultiBodyLinkDoubleData jarg2_);
-  public final static native long btMultiBodyDoubleData_links_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_baseCollider_set(long jarg1, btMultiBodyDoubleData jarg1_, long jarg2, btCollisionObjectDoubleData jarg2_);
-  public final static native long btMultiBodyDoubleData_baseCollider_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_paddingPtr_set(long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyDoubleData_paddingPtr_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_numLinks_set(long jarg1, btMultiBodyDoubleData jarg1_, int jarg2);
-  public final static native int btMultiBodyDoubleData_numLinks_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native void btMultiBodyDoubleData_padding_set(long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
-  public final static native String btMultiBodyDoubleData_padding_get(long jarg1, btMultiBodyDoubleData jarg1_);
-  public final static native long new_btMultiBodyDoubleData();
-  public final static native void delete_btMultiBodyDoubleData(long jarg1);
-  public final static native void btMultiBodyFloatData_baseName_set(long jarg1, btMultiBodyFloatData jarg1_, String jarg2);
-  public final static native String btMultiBodyFloatData_baseName_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_links_set(long jarg1, btMultiBodyFloatData jarg1_, long jarg2, btMultiBodyLinkFloatData jarg2_);
-  public final static native long btMultiBodyFloatData_links_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_baseCollider_set(long jarg1, btMultiBodyFloatData jarg1_, long jarg2, btCollisionObjectFloatData jarg2_);
-  public final static native long btMultiBodyFloatData_baseCollider_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_baseWorldTransform_set(long jarg1, btMultiBodyFloatData jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native long btMultiBodyFloatData_baseWorldTransform_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_baseInertia_set(long jarg1, btMultiBodyFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMultiBodyFloatData_baseInertia_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_baseMass_set(long jarg1, btMultiBodyFloatData jarg1_, float jarg2);
-  public final static native float btMultiBodyFloatData_baseMass_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native void btMultiBodyFloatData_numLinks_set(long jarg1, btMultiBodyFloatData jarg1_, int jarg2);
-  public final static native int btMultiBodyFloatData_numLinks_get(long jarg1, btMultiBodyFloatData jarg1_);
-  public final static native long new_btMultiBodyFloatData();
-  public final static native void delete_btMultiBodyFloatData(long jarg1);
-  public final static native void btMultiBodyJacobianData_jacobians_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btMultiBodyJacobianData_jacobians_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_deltaVelocitiesUnitImpulse_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btMultiBodyJacobianData_deltaVelocitiesUnitImpulse_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_deltaVelocities_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btMultiBodyJacobianData_deltaVelocities_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_scratch_r_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btMultiBodyJacobianData_scratch_r_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_scratch_v_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long btMultiBodyJacobianData_scratch_v_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_scratch_m_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2);
-  public final static native long btMultiBodyJacobianData_scratch_m_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_solverBodyPool_set(long jarg1, btMultiBodyJacobianData jarg1_, long jarg2);
-  public final static native long btMultiBodyJacobianData_solverBodyPool_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native void btMultiBodyJacobianData_fixedBodyId_set(long jarg1, btMultiBodyJacobianData jarg1_, int jarg2);
-  public final static native int btMultiBodyJacobianData_fixedBodyId_get(long jarg1, btMultiBodyJacobianData jarg1_);
-  public final static native long new_btMultiBodyJacobianData();
-  public final static native void delete_btMultiBodyJacobianData(long jarg1);
-  public final static native long btMultiBodyConstraint_operatorNew__SWIG_0(long jarg1, btMultiBodyConstraint jarg1_, long jarg2);
-  public final static native void btMultiBodyConstraint_operatorDelete__SWIG_0(long jarg1, btMultiBodyConstraint jarg1_, long jarg2);
-  public final static native long btMultiBodyConstraint_operatorNew__SWIG_1(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyConstraint_operatorDelete__SWIG_1(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btMultiBodyConstraint_operatorNewArray__SWIG_0(long jarg1, btMultiBodyConstraint jarg1_, long jarg2);
-  public final static native void btMultiBodyConstraint_operatorDeleteArray__SWIG_0(long jarg1, btMultiBodyConstraint jarg1_, long jarg2);
-  public final static native long btMultiBodyConstraint_operatorNewArray__SWIG_1(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyConstraint_operatorDeleteArray__SWIG_1(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void delete_btMultiBodyConstraint(long jarg1);
-  public final static native void btMultiBodyConstraint_updateJacobianSizes(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native void btMultiBodyConstraint_allocateJacobiansMultiDof(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native void btMultiBodyConstraint_setFrameInB(long jarg1, btMultiBodyConstraint jarg1_, Matrix3 jarg2);
-  public final static native void btMultiBodyConstraint_setPivotInB(long jarg1, btMultiBodyConstraint jarg1_, Vector3 jarg2);
-  public final static native void btMultiBodyConstraint_finalizeMultiDof(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native int btMultiBodyConstraint_getIslandIdA(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native int btMultiBodyConstraint_getIslandIdB(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native void btMultiBodyConstraint_createConstraintRows(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, long jarg3, btMultiBodyJacobianData jarg3_, long jarg4, btContactSolverInfo jarg4_);
-  public final static native int btMultiBodyConstraint_getNumRows(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native long btMultiBodyConstraint_getMultiBodyA(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native long btMultiBodyConstraint_getMultiBodyB(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native void btMultiBodyConstraint_internalSetAppliedImpulse(long jarg1, btMultiBodyConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btMultiBodyConstraint_getAppliedImpulse(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native float btMultiBodyConstraint_getPosition(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native void btMultiBodyConstraint_setPosition(long jarg1, btMultiBodyConstraint jarg1_, int jarg2, float jarg3);
-  public final static native boolean btMultiBodyConstraint_isUnilateral(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianA(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianAConst(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianB(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianBConst(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native float btMultiBodyConstraint_getMaxAppliedImpulse(long jarg1, btMultiBodyConstraint jarg1_);
-  public final static native void btMultiBodyConstraint_setMaxAppliedImpulse(long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
-  public final static native void btMultiBodyConstraint_debugDraw(long jarg1, btMultiBodyConstraint jarg1_, long jarg2, btIDebugDraw jarg2_);
-  public final static native void btMultiBodyConstraint_setGearRatio(long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
-  public final static native void btMultiBodyConstraint_setGearAuxLink(long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
-  public final static native void btMultiBodyConstraint_setRelativePositionTarget(long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
-  public final static native void btMultiBodyConstraint_setErp(long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
-  public final static native long new_btMultiBodyGearConstraint(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8);
-  public final static native void delete_btMultiBodyGearConstraint(long jarg1);
-  public final static native Vector3 btMultiBodyGearConstraint_getPivotInA(long jarg1, btMultiBodyGearConstraint jarg1_);
-  public final static native void btMultiBodyGearConstraint_setPivotInA(long jarg1, btMultiBodyGearConstraint jarg1_, Vector3 jarg2);
-  public final static native Vector3 btMultiBodyGearConstraint_getPivotInB(long jarg1, btMultiBodyGearConstraint jarg1_);
-  public final static native Matrix3 btMultiBodyGearConstraint_getFrameInA(long jarg1, btMultiBodyGearConstraint jarg1_);
-  public final static native void btMultiBodyGearConstraint_setFrameInA(long jarg1, btMultiBodyGearConstraint jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMultiBodyGearConstraint_getFrameInB(long jarg1, btMultiBodyGearConstraint jarg1_);
-  public final static native long btMultiBodyConstraintSolver_operatorNew__SWIG_0(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2);
-  public final static native void btMultiBodyConstraintSolver_operatorDelete__SWIG_0(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2);
-  public final static native long btMultiBodyConstraintSolver_operatorNew__SWIG_1(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyConstraintSolver_operatorDelete__SWIG_1(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native long btMultiBodyConstraintSolver_operatorNewArray__SWIG_0(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2);
-  public final static native void btMultiBodyConstraintSolver_operatorDeleteArray__SWIG_0(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2);
-  public final static native long btMultiBodyConstraintSolver_operatorNewArray__SWIG_1(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyConstraintSolver_operatorDeleteArray__SWIG_1(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
-  public final static native float btMultiBodyConstraintSolver_solveGroupCacheFriendlyFinish(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, int jarg3, long jarg4, btContactSolverInfo jarg4_);
-  public final static native void btMultiBodyConstraintSolver_solveMultiBodyGroup(long jarg1, btMultiBodyConstraintSolver jarg1_, long jarg2, int jarg3, long jarg4, int jarg5, long jarg6, int jarg7, long jarg8, int jarg9, long jarg10, btContactSolverInfo jarg10_, long jarg11, btIDebugDraw jarg11_, long jarg12, btDispatcher jarg12_);
-  public final static native long new_btMultiBodyConstraintSolver();
-  public final static native void delete_btMultiBodyConstraintSolver(long jarg1);
-  public final static native long new_btMultiBodyDynamicsWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
-  public final static native void delete_btMultiBodyDynamicsWorld(long jarg1);
-  public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_0(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBody jarg2_, int jarg3, int jarg4);
-  public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_1(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBody jarg2_, int jarg3);
-  public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_2(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBody jarg2_);
-  public final static native void btMultiBodyDynamicsWorld_removeMultiBody(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBody jarg2_);
-  public final static native int btMultiBodyDynamicsWorld_getNumMultibodies(long jarg1, btMultiBodyDynamicsWorld jarg1_);
-  public final static native long btMultiBodyDynamicsWorld_getMultiBody(long jarg1, btMultiBodyDynamicsWorld jarg1_, int jarg2);
-  public final static native long btMultiBodyDynamicsWorld_getMultiBodyConst(long jarg1, btMultiBodyDynamicsWorld jarg1_, int jarg2);
-  public final static native void btMultiBodyDynamicsWorld_addMultiBodyConstraint(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
-  public final static native int btMultiBodyDynamicsWorld_getNumMultiBodyConstraints(long jarg1, btMultiBodyDynamicsWorld jarg1_);
-  public final static native long btMultiBodyDynamicsWorld_getMultiBodyConstraint(long jarg1, btMultiBodyDynamicsWorld jarg1_, int jarg2);
-  public final static native long btMultiBodyDynamicsWorld_getMultiBodyConstraintConst(long jarg1, btMultiBodyDynamicsWorld jarg1_, int jarg2);
-  public final static native void btMultiBodyDynamicsWorld_removeMultiBodyConstraint(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
-  public final static native void btMultiBodyDynamicsWorld_integrateTransforms(long jarg1, btMultiBodyDynamicsWorld jarg1_, float jarg2);
-  public final static native void btMultiBodyDynamicsWorld_debugDrawMultiBodyConstraint(long jarg1, btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
-  public final static native void btMultiBodyDynamicsWorld_forwardKinematics(long jarg1, btMultiBodyDynamicsWorld jarg1_);
-  public final static native void btMultiBodyDynamicsWorld_clearMultiBodyConstraintForces(long jarg1, btMultiBodyDynamicsWorld jarg1_);
-  public final static native void btMultiBodyDynamicsWorld_clearMultiBodyForces(long jarg1, btMultiBodyDynamicsWorld jarg1_);
-  public final static native long new_btMultiBodyFixedConstraint__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5, Matrix3 jarg6, Matrix3 jarg7);
-  public final static native long new_btMultiBodyFixedConstraint__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8);
-  public final static native void delete_btMultiBodyFixedConstraint(long jarg1);
-  public final static native Vector3 btMultiBodyFixedConstraint_getPivotInA(long jarg1, btMultiBodyFixedConstraint jarg1_);
-  public final static native void btMultiBodyFixedConstraint_setPivotInA(long jarg1, btMultiBodyFixedConstraint jarg1_, Vector3 jarg2);
-  public final static native Vector3 btMultiBodyFixedConstraint_getPivotInB(long jarg1, btMultiBodyFixedConstraint jarg1_);
-  public final static native Matrix3 btMultiBodyFixedConstraint_getFrameInA(long jarg1, btMultiBodyFixedConstraint jarg1_);
-  public final static native void btMultiBodyFixedConstraint_setFrameInA(long jarg1, btMultiBodyFixedConstraint jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMultiBodyFixedConstraint_getFrameInB(long jarg1, btMultiBodyFixedConstraint jarg1_);
-  public final static native void btMultiBodyJointFeedback_reactionForces_set(long jarg1, btMultiBodyJointFeedback jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btMultiBodyJointFeedback_reactionForces_get(long jarg1, btMultiBodyJointFeedback jarg1_);
-  public final static native long new_btMultiBodyJointFeedback();
-  public final static native void delete_btMultiBodyJointFeedback(long jarg1);
-  public final static native long new_btMultiBodyJointLimitConstraint(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, float jarg4);
-  public final static native void delete_btMultiBodyJointLimitConstraint(long jarg1);
-  public final static native long new_btMultiBodyJointMotor__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, float jarg3, float jarg4);
-  public final static native long new_btMultiBodyJointMotor__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, int jarg3, float jarg4, float jarg5);
-  public final static native void delete_btMultiBodyJointMotor(long jarg1);
-  public final static native void btMultiBodyJointMotor_setVelocityTarget__SWIG_0(long jarg1, btMultiBodyJointMotor jarg1_, float jarg2, float jarg3);
-  public final static native void btMultiBodyJointMotor_setVelocityTarget__SWIG_1(long jarg1, btMultiBodyJointMotor jarg1_, float jarg2);
-  public final static native void btMultiBodyJointMotor_setPositionTarget__SWIG_0(long jarg1, btMultiBodyJointMotor jarg1_, float jarg2, float jarg3);
-  public final static native void btMultiBodyJointMotor_setPositionTarget__SWIG_1(long jarg1, btMultiBodyJointMotor jarg1_, float jarg2);
-  public final static native float btMultiBodyJointMotor_getErp(long jarg1, btMultiBodyJointMotor jarg1_);
-  public final static native void btMultiBodyJointMotor_setRhsClamp(long jarg1, btMultiBodyJointMotor jarg1_, float jarg2);
-  public final static native long btMultibodyLink_operatorNew__SWIG_0(long jarg1, btMultibodyLink jarg1_, long jarg2);
-  public final static native void btMultibodyLink_operatorDelete__SWIG_0(long jarg1, btMultibodyLink jarg1_, long jarg2);
-  public final static native long btMultibodyLink_operatorNew__SWIG_1(long jarg1, btMultibodyLink jarg1_, long jarg2, long jarg3);
-  public final static native void btMultibodyLink_operatorDelete__SWIG_1(long jarg1, btMultibodyLink jarg1_, long jarg2, long jarg3);
-  public final static native long btMultibodyLink_operatorNewArray__SWIG_0(long jarg1, btMultibodyLink jarg1_, long jarg2);
-  public final static native void btMultibodyLink_operatorDeleteArray__SWIG_0(long jarg1, btMultibodyLink jarg1_, long jarg2);
-  public final static native long btMultibodyLink_operatorNewArray__SWIG_1(long jarg1, btMultibodyLink jarg1_, long jarg2, long jarg3);
-  public final static native void btMultibodyLink_operatorDeleteArray__SWIG_1(long jarg1, btMultibodyLink jarg1_, long jarg2, long jarg3);
-  public final static native void btMultibodyLink_mass_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_mass_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_inertiaLocal_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_inertiaLocal_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_parent_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_parent_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_zeroRotParentToThis_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btQuaternion jarg2_);
-  public final static native long btMultibodyLink_zeroRotParentToThis_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_dVector_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_dVector_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_eVector_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_eVector_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_absFrameTotVelocity_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btMultibodyLink_absFrameTotVelocity_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_absFrameLocVelocity_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btMultibodyLink_absFrameLocVelocity_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_axes_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btMultibodyLink_axes_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_setAxisTop__SWIG_0(long jarg1, btMultibodyLink jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultibodyLink_setAxisBottom__SWIG_0(long jarg1, btMultibodyLink jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btMultibodyLink_setAxisTop__SWIG_1(long jarg1, btMultibodyLink jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native void btMultibodyLink_setAxisBottom__SWIG_1(long jarg1, btMultibodyLink jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native Vector3 btMultibodyLink_getAxisTop(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native Vector3 btMultibodyLink_getAxisBottom(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native void btMultibodyLink_dofOffset_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_dofOffset_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_cfgOffset_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_cfgOffset_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_cachedRotParentToThis_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btQuaternion jarg2_);
-  public final static native long btMultibodyLink_cachedRotParentToThis_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_cachedRVector_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_cachedRVector_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_appliedForce_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_appliedForce_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_appliedTorque_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_appliedTorque_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_appliedConstraintForce_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_appliedConstraintForce_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_appliedConstraintTorque_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultibodyLink_appliedConstraintTorque_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointPos_set(long jarg1, btMultibodyLink jarg1_, float[] jarg2);
-  public final static native float[] btMultibodyLink_jointPos_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointTorque_set(long jarg1, btMultibodyLink jarg1_, float[] jarg2);
-  public final static native float[] btMultibodyLink_jointTorque_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_collider_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btMultiBodyLinkCollider jarg2_);
-  public final static native long btMultibodyLink_collider_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_flags_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_flags_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_dofCount_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_dofCount_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_posVarCount_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_posVarCount_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointType_set(long jarg1, btMultibodyLink jarg1_, int jarg2);
-  public final static native int btMultibodyLink_jointType_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointFeedback_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btMultiBodyJointFeedback jarg2_);
-  public final static native long btMultibodyLink_jointFeedback_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_cachedWorldTransform_set(long jarg1, btMultibodyLink jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btMultibodyLink_cachedWorldTransform_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native String btMultibodyLink_linkName_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native String btMultibodyLink_jointName_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_userPtr_set(long jarg1, btMultibodyLink jarg1_, long jarg2);
-  public final static native long btMultibodyLink_userPtr_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointDamping_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointDamping_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointFriction_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointFriction_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointLowerLimit_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointLowerLimit_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointUpperLimit_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointUpperLimit_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointMaxForce_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointMaxForce_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native void btMultibodyLink_jointMaxVelocity_set(long jarg1, btMultibodyLink jarg1_, float jarg2);
-  public final static native float btMultibodyLink_jointMaxVelocity_get(long jarg1, btMultibodyLink jarg1_);
-  public final static native long new_btMultibodyLink();
-  public final static native void btMultibodyLink_updateCacheMultiDof__SWIG_0(long jarg1, btMultibodyLink jarg1_, java.nio.FloatBuffer jarg2);
-  public final static native void btMultibodyLink_updateCacheMultiDof__SWIG_1(long jarg1, btMultibodyLink jarg1_);
-  public final static native void delete_btMultibodyLink(long jarg1);
-  public final static native void btMultiBodyLinkCollider_multiBody_set(long jarg1, btMultiBodyLinkCollider jarg1_, long jarg2, btMultiBody jarg2_);
-  public final static native long btMultiBodyLinkCollider_multiBody_get(long jarg1, btMultiBodyLinkCollider jarg1_);
-  public final static native void btMultiBodyLinkCollider_link_set(long jarg1, btMultiBodyLinkCollider jarg1_, int jarg2);
-  public final static native int btMultiBodyLinkCollider_link_get(long jarg1, btMultiBodyLinkCollider jarg1_);
-  public final static native long new_btMultiBodyLinkCollider(long jarg1, btMultiBody jarg1_, int jarg2);
-  public final static native long btMultiBodyLinkCollider_upcast(long jarg1, btCollisionObject jarg1_);
-  public final static native long btMultiBodyLinkCollider_upcastConstBtCollisionObject(long jarg1, btCollisionObject jarg1_);
-  public final static native void delete_btMultiBodyLinkCollider(long jarg1);
-  public final static native long btMultiBodyPoint2Point_operatorNew__SWIG_0(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2);
-  public final static native void btMultiBodyPoint2Point_operatorDelete__SWIG_0(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2);
-  public final static native long btMultiBodyPoint2Point_operatorNew__SWIG_1(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyPoint2Point_operatorDelete__SWIG_1(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2, long jarg3);
-  public final static native long btMultiBodyPoint2Point_operatorNewArray__SWIG_0(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2);
-  public final static native void btMultiBodyPoint2Point_operatorDeleteArray__SWIG_0(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2);
-  public final static native long btMultiBodyPoint2Point_operatorNewArray__SWIG_1(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodyPoint2Point_operatorDeleteArray__SWIG_1(long jarg1, btMultiBodyPoint2Point jarg1_, long jarg2, long jarg3);
-  public final static native long new_btMultiBodyPoint2Point__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5);
-  public final static native long new_btMultiBodyPoint2Point__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void delete_btMultiBodyPoint2Point(long jarg1);
-  public final static native Vector3 btMultiBodyPoint2Point_getPivotInB(long jarg1, btMultiBodyPoint2Point jarg1_);
-  public final static native long new_btMultiBodySliderConstraint__SWIG_0(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5, Matrix3 jarg6, Matrix3 jarg7, Vector3 jarg8);
-  public final static native long new_btMultiBodySliderConstraint__SWIG_1(long jarg1, btMultiBody jarg1_, int jarg2, long jarg3, btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8, Vector3 jarg9);
-  public final static native void delete_btMultiBodySliderConstraint(long jarg1);
-  public final static native Vector3 btMultiBodySliderConstraint_getPivotInA(long jarg1, btMultiBodySliderConstraint jarg1_);
-  public final static native void btMultiBodySliderConstraint_setPivotInA(long jarg1, btMultiBodySliderConstraint jarg1_, Vector3 jarg2);
-  public final static native Vector3 btMultiBodySliderConstraint_getPivotInB(long jarg1, btMultiBodySliderConstraint jarg1_);
-  public final static native Matrix3 btMultiBodySliderConstraint_getFrameInA(long jarg1, btMultiBodySliderConstraint jarg1_);
-  public final static native void btMultiBodySliderConstraint_setFrameInA(long jarg1, btMultiBodySliderConstraint jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMultiBodySliderConstraint_getFrameInB(long jarg1, btMultiBodySliderConstraint jarg1_);
-  public final static native Vector3 btMultiBodySliderConstraint_getJointAxis(long jarg1, btMultiBodySliderConstraint jarg1_);
-  public final static native void btMultiBodySliderConstraint_setJointAxis(long jarg1, btMultiBodySliderConstraint jarg1_, Vector3 jarg2);
-  public final static native long btMultiBodySolverConstraint_operatorNew__SWIG_0(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2);
-  public final static native void btMultiBodySolverConstraint_operatorDelete__SWIG_0(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2);
-  public final static native long btMultiBodySolverConstraint_operatorNew__SWIG_1(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodySolverConstraint_operatorDelete__SWIG_1(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long btMultiBodySolverConstraint_operatorNewArray__SWIG_0(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2);
-  public final static native void btMultiBodySolverConstraint_operatorDeleteArray__SWIG_0(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2);
-  public final static native long btMultiBodySolverConstraint_operatorNewArray__SWIG_1(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native void btMultiBodySolverConstraint_operatorDeleteArray__SWIG_1(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
-  public final static native long new_btMultiBodySolverConstraint();
-  public final static native void btMultiBodySolverConstraint_deltaVelAindex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_deltaVelAindex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_jacAindex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_jacAindex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_deltaVelBindex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_deltaVelBindex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_jacBindex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_jacBindex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_relpos1CrossNormal_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_relpos1CrossNormal_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_contactNormal1_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_contactNormal1_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_relpos2CrossNormal_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_relpos2CrossNormal_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_contactNormal2_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_contactNormal2_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_angularComponentA_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_angularComponentA_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_angularComponentB_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btMultiBodySolverConstraint_angularComponentB_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_appliedPushImpulse_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_appliedPushImpulse_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_appliedImpulse_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_appliedImpulse_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_friction_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_friction_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_jacDiagABInv_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_jacDiagABInv_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_rhs_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_rhs_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_cfm_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_cfm_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_lowerLimit_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_lowerLimit_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_upperLimit_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_upperLimit_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_rhsPenetration_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_rhsPenetration_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_originalContactPoint_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2);
-  public final static native long btMultiBodySolverConstraint_originalContactPoint_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_unusedPadding4_set(long jarg1, btMultiBodySolverConstraint jarg1_, float jarg2);
-  public final static native float btMultiBodySolverConstraint_unusedPadding4_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_overrideNumSolverIterations_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_overrideNumSolverIterations_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_frictionIndex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_frictionIndex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_solverBodyIdA_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_solverBodyIdA_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_multiBodyA_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btMultiBody jarg2_);
-  public final static native long btMultiBodySolverConstraint_multiBodyA_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_linkA_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_linkA_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_solverBodyIdB_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_solverBodyIdB_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_multiBodyB_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btMultiBody jarg2_);
-  public final static native long btMultiBodySolverConstraint_multiBodyB_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_linkB_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_linkB_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_orgConstraint_set(long jarg1, btMultiBodySolverConstraint jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
-  public final static native long btMultiBodySolverConstraint_orgConstraint_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void btMultiBodySolverConstraint_orgDofIndex_set(long jarg1, btMultiBodySolverConstraint jarg1_, int jarg2);
-  public final static native int btMultiBodySolverConstraint_orgDofIndex_get(long jarg1, btMultiBodySolverConstraint jarg1_);
-  public final static native void delete_btMultiBodySolverConstraint(long jarg1);
-  public final static native void btDantzigScratchMemory_scratch_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_scratch_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_L_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_L_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_d_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_d_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_delta_w_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_delta_w_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_delta_x_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_delta_x_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_Dell_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_Dell_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_ell_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btDantzigScratchMemory_ell_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_Arows_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
-  public final static native long btDantzigScratchMemory_Arows_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_p_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
-  public final static native long btDantzigScratchMemory_p_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_C_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
-  public final static native long btDantzigScratchMemory_C_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native void btDantzigScratchMemory_state_set(long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
-  public final static native long btDantzigScratchMemory_state_get(long jarg1, btDantzigScratchMemory jarg1_);
-  public final static native long new_btDantzigScratchMemory();
-  public final static native void delete_btDantzigScratchMemory(long jarg1);
-  public final static native boolean btSolveDantzigLCP(int jarg1, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, java.nio.FloatBuffer jarg4, java.nio.FloatBuffer jarg5, int jarg6, java.nio.FloatBuffer jarg7, java.nio.FloatBuffer jarg8, java.nio.IntBuffer jarg9, long jarg10, btDantzigScratchMemory jarg10_);
-  public final static native void delete_btMLCPSolverInterface(long jarg1);
-  public final static native boolean btMLCPSolverInterface_solveMLCP__SWIG_0(long jarg1, btMLCPSolverInterface jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
-  public final static native boolean btMLCPSolverInterface_solveMLCP__SWIG_1(long jarg1, btMLCPSolverInterface jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
-  public final static native long new_btDantzigSolver();
-  public final static native boolean btDantzigSolver_solveMLCP__SWIG_0(long jarg1, btDantzigSolver jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
-  public final static native boolean btDantzigSolver_solveMLCP__SWIG_1(long jarg1, btDantzigSolver jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
-  public final static native void delete_btDantzigSolver(long jarg1);
-  public final static native long new_btLemkeAlgorithm__SWIG_0(long jarg1, long jarg2, int jarg3);
-  public final static native long new_btLemkeAlgorithm__SWIG_1(long jarg1, long jarg2);
-  public final static native int btLemkeAlgorithm_getInfo(long jarg1, btLemkeAlgorithm jarg1_);
-  public final static native int btLemkeAlgorithm_getSteps(long jarg1, btLemkeAlgorithm jarg1_);
-  public final static native void btLemkeAlgorithm_setSystem(long jarg1, btLemkeAlgorithm jarg1_, long jarg2, long jarg3);
-  public final static native long btLemkeAlgorithm_solve__SWIG_0(long jarg1, btLemkeAlgorithm jarg1_, long jarg2);
-  public final static native long btLemkeAlgorithm_solve__SWIG_1(long jarg1, btLemkeAlgorithm jarg1_);
-  public final static native void delete_btLemkeAlgorithm(long jarg1);
-  public final static native void btLemkeSolver_maxValue_set(long jarg1, btLemkeSolver jarg1_, float jarg2);
-  public final static native float btLemkeSolver_maxValue_get(long jarg1, btLemkeSolver jarg1_);
-  public final static native void btLemkeSolver_debugLevel_set(long jarg1, btLemkeSolver jarg1_, int jarg2);
-  public final static native int btLemkeSolver_debugLevel_get(long jarg1, btLemkeSolver jarg1_);
-  public final static native void btLemkeSolver_maxLoops_set(long jarg1, btLemkeSolver jarg1_, int jarg2);
-  public final static native int btLemkeSolver_maxLoops_get(long jarg1, btLemkeSolver jarg1_);
-  public final static native void btLemkeSolver_useLoHighBounds_set(long jarg1, btLemkeSolver jarg1_, boolean jarg2);
-  public final static native boolean btLemkeSolver_useLoHighBounds_get(long jarg1, btLemkeSolver jarg1_);
-  public final static native long new_btLemkeSolver();
-  public final static native boolean btLemkeSolver_solveMLCP__SWIG_0(long jarg1, btLemkeSolver jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
-  public final static native boolean btLemkeSolver_solveMLCP__SWIG_1(long jarg1, btLemkeSolver jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
-  public final static native void delete_btLemkeSolver(long jarg1);
-  public final static native long new_btMLCPSolver(long jarg1, btMLCPSolverInterface jarg1_);
-  public final static native void delete_btMLCPSolver(long jarg1);
-  public final static native void btMLCPSolver_setMLCPSolver(long jarg1, btMLCPSolver jarg1_, long jarg2, btMLCPSolverInterface jarg2_);
-  public final static native int btMLCPSolver_getNumFallbacks(long jarg1, btMLCPSolver jarg1_);
-  public final static native void btMLCPSolver_setNumFallbacks(long jarg1, btMLCPSolver jarg1_, int jarg2);
-  public final static native void btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_set(long jarg1, btSolveProjectedGaussSeidel jarg1_, float jarg2);
-  public final static native float btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_get(long jarg1, btSolveProjectedGaussSeidel jarg1_);
-  public final static native void btSolveProjectedGaussSeidel_leastSquaresResidual_set(long jarg1, btSolveProjectedGaussSeidel jarg1_, float jarg2);
-  public final static native float btSolveProjectedGaussSeidel_leastSquaresResidual_get(long jarg1, btSolveProjectedGaussSeidel jarg1_);
-  public final static native long new_btSolveProjectedGaussSeidel();
-  public final static native boolean btSolveProjectedGaussSeidel_solveMLCP__SWIG_0(long jarg1, btSolveProjectedGaussSeidel jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
-  public final static native boolean btSolveProjectedGaussSeidel_solveMLCP__SWIG_1(long jarg1, btSolveProjectedGaussSeidel jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
-  public final static native void delete_btSolveProjectedGaussSeidel(long jarg1);
-  public final static native long btRigidBody_SWIGUpcast(long jarg1);
-  public final static native long btTypedConstraint_SWIGUpcast(long jarg1);
-  public final static native long btDynamicsWorld_SWIGUpcast(long jarg1);
-  public final static native long btSimpleDynamicsWorld_SWIGUpcast(long jarg1);
-  public final static native long CustomActionInterface_SWIGUpcast(long jarg1);
-  public final static native long btDiscreteDynamicsWorld_SWIGUpcast(long jarg1);
-  public final static native long btCharacterControllerInterface_SWIGUpcast(long jarg1);
-  public final static native long btKinematicCharacterController_SWIGUpcast(long jarg1);
-  public final static native long btContactSolverInfo_SWIGUpcast(long jarg1);
-  public final static native long btSequentialImpulseConstraintSolver_SWIGUpcast(long jarg1);
-  public final static native long btSliderConstraint_SWIGUpcast(long jarg1);
-  public final static native long btPoint2PointConstraint_SWIGUpcast(long jarg1);
-  public final static native long btGeneric6DofConstraint_SWIGUpcast(long jarg1);
-  public final static native long btUniversalConstraint_SWIGUpcast(long jarg1);
-  public final static native long btContactConstraint_SWIGUpcast(long jarg1);
-  public final static native long btConeTwistConstraint_SWIGUpcast(long jarg1);
-  public final static native long btGeneric6DofSpringConstraint_SWIGUpcast(long jarg1);
-  public final static native long btGeneric6DofSpring2Constraint_SWIGUpcast(long jarg1);
-  public final static native long btHingeConstraint_SWIGUpcast(long jarg1);
-  public final static native long btHingeAccumulatedAngleConstraint_SWIGUpcast(long jarg1);
-  public final static native long btHinge2Constraint_SWIGUpcast(long jarg1);
-  public final static native long btFixedConstraint_SWIGUpcast(long jarg1);
-  public final static native long btRaycastVehicle_SWIGUpcast(long jarg1);
-  public final static native long btDefaultVehicleRaycaster_SWIGUpcast(long jarg1);
-  public final static native long FilterableVehicleRaycaster_SWIGUpcast(long jarg1);
-  public final static native long btGearConstraint_SWIGUpcast(long jarg1);
-  public final static native long btNNCGConstraintSolver_SWIGUpcast(long jarg1);
-  public final static native long btConstraintSolverPoolMt_SWIGUpcast(long jarg1);
-  public final static native long btDiscreteDynamicsWorldMt_SWIGUpcast(long jarg1);
-  public final static native long btSimulationIslandManagerMt_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyGearConstraint_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyConstraintSolver_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyDynamicsWorld_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyFixedConstraint_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyJointLimitConstraint_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyJointMotor_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyLinkCollider_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodyPoint2Point_SWIGUpcast(long jarg1);
-  public final static native long btMultiBodySliderConstraint_SWIGUpcast(long jarg1);
-  public final static native long btDantzigSolver_SWIGUpcast(long jarg1);
-  public final static native long btLemkeSolver_SWIGUpcast(long jarg1);
-  public final static native long btMLCPSolver_SWIGUpcast(long jarg1);
-  public final static native long btSolveProjectedGaussSeidel_SWIGUpcast(long jarg1);
+	public final static native void gDeactivationTime_set (float jarg1);
 
-  public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback jself, long dynamicsWorld, float timeStep) {
-    jself.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
-  }
-  public static void SwigDirector_CustomActionInterface_updateAction(CustomActionInterface jself, float timeStep) {
-    jself.updateAction(timeStep);
-  }
-  public static void SwigDirector_CustomActionInterface_debugDraw(CustomActionInterface jself) {
-    jself.debugDraw();
-  }
+	public final static native float gDeactivationTime_get ();
 
-  private final static native void swig_module_init();
-  static {
-    swig_module_init();
-  }
+	public final static native void gDisableDeactivation_set (boolean jarg1);
+
+	public final static native boolean gDisableDeactivation_get ();
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_mass_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_mass_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_i_motionState_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btMotionState jarg2_);
+
+	public final static native long btRigidBody_btRigidBodyConstructionInfo_i_motionState_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_startWorldTransform_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btTransform jarg2_);
+
+	public final static native long btRigidBody_btRigidBodyConstructionInfo_startWorldTransform_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_i_collisionShape_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btCollisionShape jarg2_);
+
+	public final static native long btRigidBody_btRigidBodyConstructionInfo_i_collisionShape_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_localInertia_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btRigidBody_btRigidBodyConstructionInfo_localInertia_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_linearDamping_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_linearDamping_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_angularDamping_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_angularDamping_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_friction_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_friction_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_rollingFriction_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_rollingFriction_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_spinningFriction_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_spinningFriction_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_restitution_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_restitution_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_linearSleepingThreshold_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_linearSleepingThreshold_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_angularSleepingThreshold_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_angularSleepingThreshold_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalDamping_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, boolean jarg2);
+
+	public final static native boolean btRigidBody_btRigidBodyConstructionInfo_additionalDamping_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalDampingFactor_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalDampingFactor_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native void btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingFactor_set (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btRigidBody_btRigidBodyConstructionInfo_additionalAngularDampingFactor_get (long jarg1,
+		btRigidBody.btRigidBodyConstructionInfo jarg1_);
+
+	public final static native long new_btRigidBody_btRigidBodyConstructionInfo__SWIG_0 (boolean jarg1, float jarg2, long jarg3,
+		btMotionState jarg3_, long jarg4, btCollisionShape jarg4_, Vector3 jarg5);
+
+	public final static native long new_btRigidBody_btRigidBodyConstructionInfo__SWIG_1 (boolean jarg1, float jarg2, long jarg3,
+		btMotionState jarg3_, long jarg4, btCollisionShape jarg4_);
+
+	public final static native void delete_btRigidBody_btRigidBodyConstructionInfo (long jarg1);
+
+	public final static native void delete_btRigidBody (long jarg1);
+
+	public final static native void btRigidBody_proceedToTransform (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native void btRigidBody_predictIntegratedTransform (long jarg1, btRigidBody jarg1_, float jarg2,
+		Matrix4 jarg3);
+
+	public final static native void btRigidBody_saveKinematicState (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native void btRigidBody_applyGravity (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setGravity (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btRigidBody_getGravity (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setDamping (long jarg1, btRigidBody jarg1_, float jarg2, float jarg3);
+
+	public final static native float btRigidBody_getLinearDamping (long jarg1, btRigidBody jarg1_);
+
+	public final static native float btRigidBody_getAngularDamping (long jarg1, btRigidBody jarg1_);
+
+	public final static native float btRigidBody_getLinearSleepingThreshold (long jarg1, btRigidBody jarg1_);
+
+	public final static native float btRigidBody_getAngularSleepingThreshold (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_applyDamping (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native void btRigidBody_setMassProps (long jarg1, btRigidBody jarg1_, float jarg2, Vector3 jarg3);
+
+	public final static native Vector3 btRigidBody_getLinearFactor (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setLinearFactor (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native float btRigidBody_getInvMass (long jarg1, btRigidBody jarg1_);
+
+	public final static native Matrix3 btRigidBody_getInvInertiaTensorWorld (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_integrateVelocities (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native void btRigidBody_setCenterOfMassTransform (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native void btRigidBody_applyCentralForce (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btRigidBody_getTotalForce (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_getTotalTorque (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_getInvInertiaDiagLocal (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setInvInertiaDiagLocal (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_setSleepingThresholds (long jarg1, btRigidBody jarg1_, float jarg2, float jarg3);
+
+	public final static native void btRigidBody_applyTorque (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_applyForce (long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void btRigidBody_applyCentralImpulse (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_applyTorqueImpulse (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_applyImpulse (long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void btRigidBody_clearForces (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_updateInertiaTensor (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_getCenterOfMassPosition (long jarg1, btRigidBody jarg1_);
+
+	public final static native Quaternion btRigidBody_getOrientation (long jarg1, btRigidBody jarg1_);
+
+	public final static native Matrix4 btRigidBody_getCenterOfMassTransform (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_getLinearVelocity (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_getAngularVelocity (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setLinearVelocity (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_setAngularVelocity (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btRigidBody_getVelocityInLocalPoint (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_translate (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getAabb (long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native float btRigidBody_computeImpulseDenominator (long jarg1, btRigidBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native float btRigidBody_computeAngularImpulseDenominator (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_updateDeactivation (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native boolean btRigidBody_wantsSleeping (long jarg1, btRigidBody jarg1_);
+
+	public final static native long btRigidBody_getBroadphaseProxyConst (long jarg1, btRigidBody jarg1_);
+
+	public final static native long btRigidBody_getBroadphaseProxy (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setNewBroadphaseProxy (long jarg1, btRigidBody jarg1_, long jarg2,
+		btBroadphaseProxy jarg2_);
+
+	public final static native long btRigidBody_internalGetMotionState (long jarg1, btRigidBody jarg1_);
+
+	public final static native long btRigidBody_getMotionStateConst (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_internalSetMotionState (long jarg1, btRigidBody jarg1_, long jarg2,
+		btMotionState jarg2_);
+
+	public final static native void btRigidBody_contactSolverType_set (long jarg1, btRigidBody jarg1_, int jarg2);
+
+	public final static native int btRigidBody_contactSolverType_get (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_frictionSolverType_set (long jarg1, btRigidBody jarg1_, int jarg2);
+
+	public final static native int btRigidBody_frictionSolverType_get (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setAngularFactor__SWIG_0 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_setAngularFactor__SWIG_1 (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native Vector3 btRigidBody_getAngularFactor (long jarg1, btRigidBody jarg1_);
+
+	public final static native boolean btRigidBody_isInWorld (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_addConstraintRef (long jarg1, btRigidBody jarg1_, long jarg2,
+		btTypedConstraint jarg2_);
+
+	public final static native void btRigidBody_removeConstraintRef (long jarg1, btRigidBody jarg1_, long jarg2,
+		btTypedConstraint jarg2_);
+
+	public final static native long btRigidBody_getConstraintRef (long jarg1, btRigidBody jarg1_, int jarg2);
+
+	public final static native int btRigidBody_getNumConstraintRefs (long jarg1, btRigidBody jarg1_);
+
+	public final static native void btRigidBody_setFlags (long jarg1, btRigidBody jarg1_, int jarg2);
+
+	public final static native int btRigidBody_getFlags (long jarg1, btRigidBody jarg1_);
+
+	public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_World (long jarg1, btRigidBody jarg1_,
+		float jarg2);
+
+	public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_Body (long jarg1, btRigidBody jarg1_,
+		float jarg2);
+
+	public final static native Vector3 btRigidBody_computeGyroscopicForceExplicit (long jarg1, btRigidBody jarg1_, float jarg2);
+
+	public final static native Vector3 btRigidBody_getLocalInertia (long jarg1, btRigidBody jarg1_);
+
+	public final static native long new_btRigidBody__SWIG_0 (boolean jarg1, long jarg2,
+		btRigidBody.btRigidBodyConstructionInfo jarg2_);
+
+	public final static native long new_btRigidBody__SWIG_1 (boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_,
+		long jarg4, btCollisionShape jarg4_, Vector3 jarg5);
+
+	public final static native long new_btRigidBody__SWIG_2 (boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_,
+		long jarg4, btCollisionShape jarg4_);
+
+	public final static native void btRigidBodyFloatData_collisionObjectData_set (long jarg1, btRigidBodyFloatData jarg1_,
+		long jarg2, btCollisionObjectFloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_collisionObjectData_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_invInertiaTensorWorld_set (long jarg1, btRigidBodyFloatData jarg1_,
+		long jarg2, btMatrix3x3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_invInertiaTensorWorld_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_linearVelocity_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_linearVelocity_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_angularVelocity_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_angularVelocity_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_angularFactor_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_angularFactor_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_linearFactor_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_linearFactor_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_gravity_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_gravity_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_gravity_acceleration_set (long jarg1, btRigidBodyFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_gravity_acceleration_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_invInertiaLocal_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_invInertiaLocal_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_totalForce_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_totalForce_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_totalTorque_set (long jarg1, btRigidBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btRigidBodyFloatData_totalTorque_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_inverseMass_set (long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_inverseMass_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_linearDamping_set (long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_linearDamping_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_angularDamping_set (long jarg1, btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_angularDamping_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_additionalDampingFactor_set (long jarg1, btRigidBodyFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btRigidBodyFloatData_additionalDampingFactor_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_additionalLinearDampingThresholdSqr_set (long jarg1,
+		btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_additionalLinearDampingThresholdSqr_get (long jarg1,
+		btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_additionalAngularDampingThresholdSqr_set (long jarg1,
+		btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_additionalAngularDampingThresholdSqr_get (long jarg1,
+		btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_additionalAngularDampingFactor_set (long jarg1,
+		btRigidBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btRigidBodyFloatData_additionalAngularDampingFactor_get (long jarg1,
+		btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_linearSleepingThreshold_set (long jarg1, btRigidBodyFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btRigidBodyFloatData_linearSleepingThreshold_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_angularSleepingThreshold_set (long jarg1, btRigidBodyFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btRigidBodyFloatData_angularSleepingThreshold_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native void btRigidBodyFloatData_additionalDamping_set (long jarg1, btRigidBodyFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btRigidBodyFloatData_additionalDamping_get (long jarg1, btRigidBodyFloatData jarg1_);
+
+	public final static native long new_btRigidBodyFloatData ();
+
+	public final static native void delete_btRigidBodyFloatData (long jarg1);
+
+	public final static native void btRigidBodyDoubleData_collisionObjectData_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		long jarg2, btCollisionObjectDoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_collisionObjectData_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_invInertiaTensorWorld_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		long jarg2, btMatrix3x3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_invInertiaTensorWorld_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_linearVelocity_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_linearVelocity_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_angularVelocity_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_angularVelocity_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_angularFactor_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_angularFactor_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_linearFactor_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_linearFactor_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_gravity_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_gravity_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_gravity_acceleration_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_gravity_acceleration_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_invInertiaLocal_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_invInertiaLocal_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_totalForce_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_totalForce_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_totalTorque_set (long jarg1, btRigidBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btRigidBodyDoubleData_totalTorque_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_inverseMass_set (long jarg1, btRigidBodyDoubleData jarg1_, double jarg2);
+
+	public final static native double btRigidBodyDoubleData_inverseMass_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_linearDamping_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btRigidBodyDoubleData_linearDamping_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_angularDamping_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btRigidBodyDoubleData_angularDamping_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_additionalDampingFactor_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btRigidBodyDoubleData_additionalDampingFactor_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_additionalLinearDampingThresholdSqr_set (long jarg1,
+		btRigidBodyDoubleData jarg1_, double jarg2);
+
+	public final static native double btRigidBodyDoubleData_additionalLinearDampingThresholdSqr_get (long jarg1,
+		btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_additionalAngularDampingThresholdSqr_set (long jarg1,
+		btRigidBodyDoubleData jarg1_, double jarg2);
+
+	public final static native double btRigidBodyDoubleData_additionalAngularDampingThresholdSqr_get (long jarg1,
+		btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_additionalAngularDampingFactor_set (long jarg1,
+		btRigidBodyDoubleData jarg1_, double jarg2);
+
+	public final static native double btRigidBodyDoubleData_additionalAngularDampingFactor_get (long jarg1,
+		btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_linearSleepingThreshold_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btRigidBodyDoubleData_linearSleepingThreshold_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_angularSleepingThreshold_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btRigidBodyDoubleData_angularSleepingThreshold_get (long jarg1,
+		btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_additionalDamping_set (long jarg1, btRigidBodyDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btRigidBodyDoubleData_additionalDamping_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native void btRigidBodyDoubleData_padding_set (long jarg1, btRigidBodyDoubleData jarg1_, String jarg2);
+
+	public final static native String btRigidBodyDoubleData_padding_get (long jarg1, btRigidBodyDoubleData jarg1_);
+
+	public final static native long new_btRigidBodyDoubleData ();
+
+	public final static native void delete_btRigidBodyDoubleData (long jarg1);
+
+	public final static native long btJointFeedback_operatorNew__SWIG_0 (long jarg1, btJointFeedback jarg1_, long jarg2);
+
+	public final static native void btJointFeedback_operatorDelete__SWIG_0 (long jarg1, btJointFeedback jarg1_, long jarg2);
+
+	public final static native long btJointFeedback_operatorNew__SWIG_1 (long jarg1, btJointFeedback jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btJointFeedback_operatorDelete__SWIG_1 (long jarg1, btJointFeedback jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btJointFeedback_operatorNewArray__SWIG_0 (long jarg1, btJointFeedback jarg1_, long jarg2);
+
+	public final static native void btJointFeedback_operatorDeleteArray__SWIG_0 (long jarg1, btJointFeedback jarg1_, long jarg2);
+
+	public final static native long btJointFeedback_operatorNewArray__SWIG_1 (long jarg1, btJointFeedback jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btJointFeedback_operatorDeleteArray__SWIG_1 (long jarg1, btJointFeedback jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btJointFeedback_appliedForceBodyA_set (long jarg1, btJointFeedback jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btJointFeedback_appliedForceBodyA_get (long jarg1, btJointFeedback jarg1_);
+
+	public final static native void btJointFeedback_appliedTorqueBodyA_set (long jarg1, btJointFeedback jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btJointFeedback_appliedTorqueBodyA_get (long jarg1, btJointFeedback jarg1_);
+
+	public final static native void btJointFeedback_appliedForceBodyB_set (long jarg1, btJointFeedback jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btJointFeedback_appliedForceBodyB_get (long jarg1, btJointFeedback jarg1_);
+
+	public final static native void btJointFeedback_appliedTorqueBodyB_set (long jarg1, btJointFeedback jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btJointFeedback_appliedTorqueBodyB_get (long jarg1, btJointFeedback jarg1_);
+
+	public final static native long new_btJointFeedback ();
+
+	public final static native void delete_btJointFeedback (long jarg1);
+
+	public final static native long btTypedConstraint_operatorNew__SWIG_0 (long jarg1, btTypedConstraint jarg1_, long jarg2);
+
+	public final static native void btTypedConstraint_operatorDelete__SWIG_0 (long jarg1, btTypedConstraint jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_operatorNew__SWIG_1 (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btTypedConstraint_operatorDelete__SWIG_1 (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btTypedConstraint_operatorNewArray__SWIG_0 (long jarg1, btTypedConstraint jarg1_, long jarg2);
+
+	public final static native void btTypedConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btTypedConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btTypedConstraint_operatorNewArray__SWIG_1 (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btTypedConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btTypedConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void delete_btTypedConstraint (long jarg1);
+
+	public final static native void btTypedConstraint_btConstraintInfo1_numConstraintRows_set (long jarg1,
+		btTypedConstraint.btConstraintInfo1 jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_btConstraintInfo1_numConstraintRows_get (long jarg1,
+		btTypedConstraint.btConstraintInfo1 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo1_nub_set (long jarg1,
+		btTypedConstraint.btConstraintInfo1 jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_btConstraintInfo1_nub_get (long jarg1,
+		btTypedConstraint.btConstraintInfo1 jarg1_);
+
+	public final static native long new_btTypedConstraint_btConstraintInfo1 ();
+
+	public final static native void delete_btTypedConstraint_btConstraintInfo1 (long jarg1);
+
+	public final static native long btTypedConstraint_getFixedBody ();
+
+	public final static native void btTypedConstraint_btConstraintInfo2_fps_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
+
+	public final static native float btTypedConstraint_btConstraintInfo2_fps_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_erp_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
+
+	public final static native float btTypedConstraint_btConstraintInfo2_erp_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_J1linearAxis_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_J1linearAxis_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_J1angularAxis_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_J1angularAxis_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_J2linearAxis_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_J2linearAxis_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_J2angularAxis_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_J2angularAxis_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_rowskip_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_btConstraintInfo2_rowskip_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_constraintError_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_constraintError_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_cfm_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_cfm_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_lowerLimit_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_lowerLimit_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_upperLimit_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_btConstraintInfo2_upperLimit_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_numIterations_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_btConstraintInfo2_numIterations_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native void btTypedConstraint_btConstraintInfo2_damping_set (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_, float jarg2);
+
+	public final static native float btTypedConstraint_btConstraintInfo2_damping_get (long jarg1,
+		btTypedConstraint.btConstraintInfo2 jarg1_);
+
+	public final static native long new_btTypedConstraint_btConstraintInfo2 ();
+
+	public final static native void delete_btTypedConstraint_btConstraintInfo2 (long jarg1);
+
+	public final static native int btTypedConstraint_getOverrideNumSolverIterations (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setOverrideNumSolverIterations (long jarg1, btTypedConstraint jarg1_,
+		int jarg2);
+
+	public final static native void btTypedConstraint_buildJacobian (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setupSolverConstraint (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		int jarg3, int jarg4, float jarg5);
+
+	public final static native void btTypedConstraint_getInfo1 (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btTypedConstraint_getInfo2 (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo2 jarg2_);
+
+	public final static native void btTypedConstraint_internalSetAppliedImpulse (long jarg1, btTypedConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btTypedConstraint_internalGetAppliedImpulse (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native float btTypedConstraint_getBreakingImpulseThreshold (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setBreakingImpulseThreshold (long jarg1, btTypedConstraint jarg1_,
+		float jarg2);
+
+	public final static native boolean btTypedConstraint_isEnabled (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setEnabled (long jarg1, btTypedConstraint jarg1_, boolean jarg2);
+
+	public final static native void btTypedConstraint_solveConstraintObsolete (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		btSolverBody jarg2_, long jarg3, btSolverBody jarg3_, float jarg4);
+
+	public final static native long btTypedConstraint_getRigidBodyAConst (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native long btTypedConstraint_getRigidBodyBConst (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native long btTypedConstraint_getRigidBodyA (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native long btTypedConstraint_getRigidBodyB (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native int btTypedConstraint_getUserConstraintType (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setUserConstraintType (long jarg1, btTypedConstraint jarg1_, int jarg2);
+
+	public final static native void btTypedConstraint_setUserConstraintId (long jarg1, btTypedConstraint jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_getUserConstraintId (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setUserConstraintPtr (long jarg1, btTypedConstraint jarg1_, long jarg2);
+
+	public final static native long btTypedConstraint_getUserConstraintPtr (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setJointFeedback (long jarg1, btTypedConstraint jarg1_, long jarg2,
+		btJointFeedback jarg2_);
+
+	public final static native long btTypedConstraint_getJointFeedbackConst (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native long btTypedConstraint_getJointFeedback (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native int btTypedConstraint_getUid (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native boolean btTypedConstraint_needsFeedback (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_enableFeedback (long jarg1, btTypedConstraint jarg1_, boolean jarg2);
+
+	public final static native float btTypedConstraint_getAppliedImpulse (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native int btTypedConstraint_getConstraintType (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setDbgDrawSize (long jarg1, btTypedConstraint jarg1_, float jarg2);
+
+	public final static native float btTypedConstraint_getDbgDrawSize (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native void btTypedConstraint_setParam__SWIG_0 (long jarg1, btTypedConstraint jarg1_, int jarg2,
+		float jarg3, int jarg4);
+
+	public final static native void btTypedConstraint_setParam__SWIG_1 (long jarg1, btTypedConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native float btTypedConstraint_getParam__SWIG_0 (long jarg1, btTypedConstraint jarg1_, int jarg2,
+		int jarg3);
+
+	public final static native float btTypedConstraint_getParam__SWIG_1 (long jarg1, btTypedConstraint jarg1_, int jarg2);
+
+	public final static native int btTypedConstraint_calculateSerializeBufferSize (long jarg1, btTypedConstraint jarg1_);
+
+	public final static native String btTypedConstraint_serialize (long jarg1, btTypedConstraint jarg1_, long jarg2, long jarg3,
+		btSerializer jarg3_);
+
+	public final static native float btAdjustAngleToLimits (float jarg1, float jarg2, float jarg3);
+
+	public final static native void btTypedConstraintFloatData_rbA_set (long jarg1, btTypedConstraintFloatData jarg1_, long jarg2,
+		btRigidBodyFloatData jarg2_);
+
+	public final static native long btTypedConstraintFloatData_rbA_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_rbB_set (long jarg1, btTypedConstraintFloatData jarg1_, long jarg2,
+		btRigidBodyFloatData jarg2_);
+
+	public final static native long btTypedConstraintFloatData_rbB_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_name_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btTypedConstraintFloatData_name_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_objectType_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintFloatData_objectType_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_userConstraintType_set (long jarg1,
+		btTypedConstraintFloatData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintFloatData_userConstraintType_get (long jarg1,
+		btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_userConstraintId_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintFloatData_userConstraintId_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_needsFeedback_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintFloatData_needsFeedback_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_appliedImpulse_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btTypedConstraintFloatData_appliedImpulse_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_dbgDrawSize_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btTypedConstraintFloatData_dbgDrawSize_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_disableCollisionsBetweenLinkedBodies_set (long jarg1,
+		btTypedConstraintFloatData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintFloatData_disableCollisionsBetweenLinkedBodies_get (long jarg1,
+		btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_overrideNumSolverIterations_set (long jarg1,
+		btTypedConstraintFloatData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintFloatData_overrideNumSolverIterations_get (long jarg1,
+		btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_breakingImpulseThreshold_set (long jarg1,
+		btTypedConstraintFloatData jarg1_, float jarg2);
+
+	public final static native float btTypedConstraintFloatData_breakingImpulseThreshold_get (long jarg1,
+		btTypedConstraintFloatData jarg1_);
+
+	public final static native void btTypedConstraintFloatData_isEnabled_set (long jarg1, btTypedConstraintFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintFloatData_isEnabled_get (long jarg1, btTypedConstraintFloatData jarg1_);
+
+	public final static native long new_btTypedConstraintFloatData ();
+
+	public final static native void delete_btTypedConstraintFloatData (long jarg1);
+
+	public final static native void btTypedConstraintData_rbA_set (long jarg1, btTypedConstraintData jarg1_, long jarg2,
+		btRigidBodyFloatData jarg2_);
+
+	public final static native long btTypedConstraintData_rbA_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_rbB_set (long jarg1, btTypedConstraintData jarg1_, long jarg2,
+		btRigidBodyFloatData jarg2_);
+
+	public final static native long btTypedConstraintData_rbB_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_name_set (long jarg1, btTypedConstraintData jarg1_, String jarg2);
+
+	public final static native String btTypedConstraintData_name_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_objectType_set (long jarg1, btTypedConstraintData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintData_objectType_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_userConstraintType_set (long jarg1, btTypedConstraintData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintData_userConstraintType_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_userConstraintId_set (long jarg1, btTypedConstraintData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintData_userConstraintId_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_needsFeedback_set (long jarg1, btTypedConstraintData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintData_needsFeedback_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_appliedImpulse_set (long jarg1, btTypedConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btTypedConstraintData_appliedImpulse_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_dbgDrawSize_set (long jarg1, btTypedConstraintData jarg1_, float jarg2);
+
+	public final static native float btTypedConstraintData_dbgDrawSize_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_disableCollisionsBetweenLinkedBodies_set (long jarg1,
+		btTypedConstraintData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintData_disableCollisionsBetweenLinkedBodies_get (long jarg1,
+		btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_overrideNumSolverIterations_set (long jarg1,
+		btTypedConstraintData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintData_overrideNumSolverIterations_get (long jarg1,
+		btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_breakingImpulseThreshold_set (long jarg1, btTypedConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btTypedConstraintData_breakingImpulseThreshold_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native void btTypedConstraintData_isEnabled_set (long jarg1, btTypedConstraintData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintData_isEnabled_get (long jarg1, btTypedConstraintData jarg1_);
+
+	public final static native long new_btTypedConstraintData ();
+
+	public final static native void delete_btTypedConstraintData (long jarg1);
+
+	public final static native void btTypedConstraintDoubleData_rbA_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		long jarg2, btRigidBodyDoubleData jarg2_);
+
+	public final static native long btTypedConstraintDoubleData_rbA_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_rbB_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		long jarg2, btRigidBodyDoubleData jarg2_);
+
+	public final static native long btTypedConstraintDoubleData_rbB_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_name_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btTypedConstraintDoubleData_name_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_objectType_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_objectType_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_userConstraintType_set (long jarg1,
+		btTypedConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_userConstraintType_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_userConstraintId_set (long jarg1,
+		btTypedConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_userConstraintId_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_needsFeedback_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_needsFeedback_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_appliedImpulse_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btTypedConstraintDoubleData_appliedImpulse_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_dbgDrawSize_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btTypedConstraintDoubleData_dbgDrawSize_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_disableCollisionsBetweenLinkedBodies_set (long jarg1,
+		btTypedConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_disableCollisionsBetweenLinkedBodies_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_overrideNumSolverIterations_set (long jarg1,
+		btTypedConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_overrideNumSolverIterations_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_breakingImpulseThreshold_set (long jarg1,
+		btTypedConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btTypedConstraintDoubleData_breakingImpulseThreshold_get (long jarg1,
+		btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_isEnabled_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btTypedConstraintDoubleData_isEnabled_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native void btTypedConstraintDoubleData_padding_set (long jarg1, btTypedConstraintDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btTypedConstraintDoubleData_padding_get (long jarg1, btTypedConstraintDoubleData jarg1_);
+
+	public final static native long new_btTypedConstraintDoubleData ();
+
+	public final static native void delete_btTypedConstraintDoubleData (long jarg1);
+
+	public final static native long new_btAngularLimit ();
+
+	public final static native void btAngularLimit_set__SWIG_0 (long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3,
+		float jarg4, float jarg5, float jarg6);
+
+	public final static native void btAngularLimit_set__SWIG_1 (long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3,
+		float jarg4, float jarg5);
+
+	public final static native void btAngularLimit_set__SWIG_2 (long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void btAngularLimit_set__SWIG_3 (long jarg1, btAngularLimit jarg1_, float jarg2, float jarg3);
+
+	public final static native void btAngularLimit_test (long jarg1, btAngularLimit jarg1_, float jarg2);
+
+	public final static native float btAngularLimit_getSoftness (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getBiasFactor (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getRelaxationFactor (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getCorrection (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getSign (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getHalfRange (long jarg1, btAngularLimit jarg1_);
+
+	public final static native boolean btAngularLimit_isLimit (long jarg1, btAngularLimit jarg1_);
+
+	public final static native void btAngularLimit_fit (long jarg1, btAngularLimit jarg1_, long jarg2);
+
+	public final static native float btAngularLimit_getError (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getLow (long jarg1, btAngularLimit jarg1_);
+
+	public final static native float btAngularLimit_getHigh (long jarg1, btAngularLimit jarg1_);
+
+	public final static native void delete_btAngularLimit (long jarg1);
+
+	public final static native void delete_btDynamicsWorld (long jarg1);
+
+	public final static native int btDynamicsWorld_stepSimulation__SWIG_0 (long jarg1, btDynamicsWorld jarg1_, float jarg2,
+		int jarg3, float jarg4);
+
+	public final static native int btDynamicsWorld_stepSimulation__SWIG_1 (long jarg1, btDynamicsWorld jarg1_, float jarg2,
+		int jarg3);
+
+	public final static native int btDynamicsWorld_stepSimulation__SWIG_2 (long jarg1, btDynamicsWorld jarg1_, float jarg2);
+
+	public final static native void btDynamicsWorld_addConstraint__SWIG_0 (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btTypedConstraint jarg2_, boolean jarg3);
+
+	public final static native void btDynamicsWorld_addConstraint__SWIG_1 (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btTypedConstraint jarg2_);
+
+	public final static native void btDynamicsWorld_removeConstraint (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btTypedConstraint jarg2_);
+
+	public final static native void btDynamicsWorld_addAction (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorld_removeAction (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorld_setGravity (long jarg1, btDynamicsWorld jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btDynamicsWorld_getGravity (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void btDynamicsWorld_synchronizeMotionStates (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void btDynamicsWorld_addRigidBody__SWIG_0 (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btRigidBody jarg2_);
+
+	public final static native void btDynamicsWorld_addRigidBody__SWIG_1 (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btRigidBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void btDynamicsWorld_removeRigidBody (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btRigidBody jarg2_);
+
+	public final static native void btDynamicsWorld_setConstraintSolver (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btConstraintSolver jarg2_);
+
+	public final static native long btDynamicsWorld_getConstraintSolver (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native int btDynamicsWorld_getNumConstraints (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native long btDynamicsWorld_getConstraint (long jarg1, btDynamicsWorld jarg1_, int jarg2);
+
+	public final static native long btDynamicsWorld_getConstraintConst (long jarg1, btDynamicsWorld jarg1_, int jarg2);
+
+	public final static native int btDynamicsWorld_getWorldType (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void btDynamicsWorld_clearForces (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_0 (long jarg1, btDynamicsWorld jarg1_,
+		long jarg2, long jarg3, boolean jarg4);
+
+	public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_1 (long jarg1, btDynamicsWorld jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btDynamicsWorld_setInternalTickCallback__SWIG_2 (long jarg1, btDynamicsWorld jarg1_,
+		long jarg2);
+
+	public final static native void btDynamicsWorld_setWorldUserInfo (long jarg1, btDynamicsWorld jarg1_, long jarg2);
+
+	public final static native long btDynamicsWorld_getWorldUserInfo (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native long btDynamicsWorld_getSolverInfo (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native long btDynamicsWorld_getSolverInfoConst (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void btDynamicsWorld_addVehicle (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorld_removeVehicle (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorld_addCharacter (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorld_removeCharacter (long jarg1, btDynamicsWorld jarg1_, long jarg2,
+		btActionInterface jarg2_);
+
+	public final static native void btDynamicsWorldDoubleData_solverInfo_set (long jarg1, btDynamicsWorldDoubleData jarg1_,
+		long jarg2, btContactSolverInfoDoubleData jarg2_);
+
+	public final static native long btDynamicsWorldDoubleData_solverInfo_get (long jarg1, btDynamicsWorldDoubleData jarg1_);
+
+	public final static native void btDynamicsWorldDoubleData_gravity_set (long jarg1, btDynamicsWorldDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btDynamicsWorldDoubleData_gravity_get (long jarg1, btDynamicsWorldDoubleData jarg1_);
+
+	public final static native long new_btDynamicsWorldDoubleData ();
+
+	public final static native void delete_btDynamicsWorldDoubleData (long jarg1);
+
+	public final static native void btDynamicsWorldFloatData_solverInfo_set (long jarg1, btDynamicsWorldFloatData jarg1_,
+		long jarg2, btContactSolverInfoFloatData jarg2_);
+
+	public final static native long btDynamicsWorldFloatData_solverInfo_get (long jarg1, btDynamicsWorldFloatData jarg1_);
+
+	public final static native void btDynamicsWorldFloatData_gravity_set (long jarg1, btDynamicsWorldFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btDynamicsWorldFloatData_gravity_get (long jarg1, btDynamicsWorldFloatData jarg1_);
+
+	public final static native long new_btDynamicsWorldFloatData ();
+
+	public final static native void delete_btDynamicsWorldFloatData (long jarg1);
+
+	public final static native void InternalTickCallback_CB (long jarg1, btDynamicsWorld jarg1_, float jarg2);
+
+	public final static native long new_InternalTickCallback__SWIG_0 (long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
+
+	public final static native long new_InternalTickCallback__SWIG_1 (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native long new_InternalTickCallback__SWIG_2 ();
+
+	public final static native void InternalTickCallback_onInternalTick (long jarg1, InternalTickCallback jarg1_, long jarg2,
+		btDynamicsWorld jarg2_, float jarg3);
+
+	public final static native void InternalTickCallback_onInternalTickSwigExplicitInternalTickCallback (long jarg1,
+		InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, float jarg3);
+
+	public final static native void InternalTickCallback_detach__SWIG_0 (long jarg1, InternalTickCallback jarg1_);
+
+	public final static native void InternalTickCallback_attach__SWIG_0 (long jarg1, InternalTickCallback jarg1_, long jarg2,
+		btDynamicsWorld jarg2_, boolean jarg3);
+
+	public final static native void InternalTickCallback_attach__SWIG_1 (long jarg1, InternalTickCallback jarg1_);
+
+	public final static native void InternalTickCallback_detach__SWIG_1 (long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
+
+	public final static native void delete_InternalTickCallback (long jarg1);
+
+	public final static native void InternalTickCallback_director_connect (InternalTickCallback obj, long cptr, boolean mem_own,
+		boolean weak_global);
+
+	public final static native void InternalTickCallback_change_ownership (InternalTickCallback obj, long cptr,
+		boolean take_or_release);
+
+	public final static native long new_btSimpleDynamicsWorld (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btSimpleDynamicsWorld (long jarg1);
+
+	public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_0 (long jarg1, btSimpleDynamicsWorld jarg1_,
+		float jarg2, int jarg3, float jarg4);
+
+	public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_1 (long jarg1, btSimpleDynamicsWorld jarg1_,
+		float jarg2, int jarg3);
+
+	public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_2 (long jarg1, btSimpleDynamicsWorld jarg1_,
+		float jarg2);
+
+	public final static native void btSimpleDynamicsWorld_addRigidBody__SWIG_0 (long jarg1, btSimpleDynamicsWorld jarg1_,
+		long jarg2, btRigidBody jarg2_);
+
+	public final static native void btSimpleDynamicsWorld_addRigidBody__SWIG_1 (long jarg1, btSimpleDynamicsWorld jarg1_,
+		long jarg2, btRigidBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void delete_btActionInterface (long jarg1);
+
+	public final static native void btActionInterface_updateAction (long jarg1, btActionInterface jarg1_, long jarg2,
+		btCollisionWorld jarg2_, float jarg3);
+
+	public final static native void btActionInterface_debugDraw (long jarg1, btActionInterface jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void CustomActionInterface_updateAction (long jarg1, CustomActionInterface jarg1_, float jarg2);
+
+	public final static native void CustomActionInterface_debugDraw (long jarg1, CustomActionInterface jarg1_);
+
+	public final static native long new_CustomActionInterface ();
+
+	public final static native void delete_CustomActionInterface (long jarg1);
+
+	public final static native void CustomActionInterface_director_connect (CustomActionInterface obj, long cptr, boolean mem_own,
+		boolean weak_global);
+
+	public final static native void CustomActionInterface_change_ownership (CustomActionInterface obj, long cptr,
+		boolean take_or_release);
+
+	public final static native long btDiscreteDynamicsWorld_operatorNew__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2);
+
+	public final static native void btDiscreteDynamicsWorld_operatorDelete__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2);
+
+	public final static native long btDiscreteDynamicsWorld_operatorNew__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btDiscreteDynamicsWorld_operatorDelete__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btDiscreteDynamicsWorld_operatorNewArray__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2);
+
+	public final static native void btDiscreteDynamicsWorld_operatorDeleteArray__SWIG_0 (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, long jarg2);
+
+	public final static native long btDiscreteDynamicsWorld_operatorNewArray__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btDiscreteDynamicsWorld_operatorDeleteArray__SWIG_1 (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btDiscreteDynamicsWorld (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btDiscreteDynamicsWorld (long jarg1);
+
+	public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		float jarg2, int jarg3, float jarg4);
+
+	public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		float jarg2, int jarg3);
+
+	public final static native int btDiscreteDynamicsWorld_stepSimulation__SWIG_2 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		float jarg2);
+
+	public final static native void btDiscreteDynamicsWorld_synchronizeSingleMotionState (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, long jarg2, btRigidBody jarg2_);
+
+	public final static native void btDiscreteDynamicsWorld_addConstraint__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btTypedConstraint jarg2_, boolean jarg3);
+
+	public final static native void btDiscreteDynamicsWorld_addConstraint__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btTypedConstraint jarg2_);
+
+	public final static native long btDiscreteDynamicsWorld_getSimulationIslandManager (long jarg1,
+		btDiscreteDynamicsWorld jarg1_);
+
+	public final static native long btDiscreteDynamicsWorld_getSimulationIslandManagerConst (long jarg1,
+		btDiscreteDynamicsWorld jarg1_);
+
+	public final static native long btDiscreteDynamicsWorld_getCollisionWorld (long jarg1, btDiscreteDynamicsWorld jarg1_);
+
+	public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btCollisionObject jarg2_, int jarg3, int jarg4);
+
+	public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btCollisionObject jarg2_, int jarg3);
+
+	public final static native void btDiscreteDynamicsWorld_addCollisionObject__SWIG_2 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btCollisionObject jarg2_);
+
+	public final static native void btDiscreteDynamicsWorld_addRigidBody__SWIG_0 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btRigidBody jarg2_);
+
+	public final static native void btDiscreteDynamicsWorld_addRigidBody__SWIG_1 (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btRigidBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void btDiscreteDynamicsWorld_debugDrawConstraint (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		long jarg2, btTypedConstraint jarg2_);
+
+	public final static native void btDiscreteDynamicsWorld_applyGravity (long jarg1, btDiscreteDynamicsWorld jarg1_);
+
+	public final static native void btDiscreteDynamicsWorld_setNumTasks (long jarg1, btDiscreteDynamicsWorld jarg1_, int jarg2);
+
+	public final static native void btDiscreteDynamicsWorld_updateVehicles (long jarg1, btDiscreteDynamicsWorld jarg1_,
+		float jarg2);
+
+	public final static native void btDiscreteDynamicsWorld_setSynchronizeAllMotionStates (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, boolean jarg2);
+
+	public final static native boolean btDiscreteDynamicsWorld_getSynchronizeAllMotionStates (long jarg1,
+		btDiscreteDynamicsWorld jarg1_);
+
+	public final static native void btDiscreteDynamicsWorld_setApplySpeculativeContactRestitution (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, boolean jarg2);
+
+	public final static native boolean btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution (long jarg1,
+		btDiscreteDynamicsWorld jarg1_);
+
+	public final static native void btDiscreteDynamicsWorld_setLatencyMotionStateInterpolation (long jarg1,
+		btDiscreteDynamicsWorld jarg1_, boolean jarg2);
+
+	public final static native boolean btDiscreteDynamicsWorld_getLatencyMotionStateInterpolation (long jarg1,
+		btDiscreteDynamicsWorld jarg1_);
+
+	public final static native void delete_btCharacterControllerInterface (long jarg1);
+
+	public final static native void btCharacterControllerInterface_setWalkDirection (long jarg1,
+		btCharacterControllerInterface jarg1_, Vector3 jarg2);
+
+	public final static native void btCharacterControllerInterface_setVelocityForTimeInterval (long jarg1,
+		btCharacterControllerInterface jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native void btCharacterControllerInterface_reset (long jarg1, btCharacterControllerInterface jarg1_,
+		long jarg2, btCollisionWorld jarg2_);
+
+	public final static native void btCharacterControllerInterface_warp (long jarg1, btCharacterControllerInterface jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btCharacterControllerInterface_preStep (long jarg1, btCharacterControllerInterface jarg1_,
+		long jarg2, btCollisionWorld jarg2_);
+
+	public final static native void btCharacterControllerInterface_playerStep (long jarg1, btCharacterControllerInterface jarg1_,
+		long jarg2, btCollisionWorld jarg2_, float jarg3);
+
+	public final static native boolean btCharacterControllerInterface_canJump (long jarg1, btCharacterControllerInterface jarg1_);
+
+	public final static native void btCharacterControllerInterface_jump__SWIG_0 (long jarg1, btCharacterControllerInterface jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btCharacterControllerInterface_jump__SWIG_1 (long jarg1,
+		btCharacterControllerInterface jarg1_);
+
+	public final static native boolean btCharacterControllerInterface_onGround (long jarg1, btCharacterControllerInterface jarg1_);
+
+	public final static native void btCharacterControllerInterface_setUpInterpolate (long jarg1,
+		btCharacterControllerInterface jarg1_, boolean jarg2);
+
+	public final static native long btKinematicCharacterController_operatorNew__SWIG_0 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2);
+
+	public final static native void btKinematicCharacterController_operatorDelete__SWIG_0 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2);
+
+	public final static native long btKinematicCharacterController_operatorNew__SWIG_1 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2, long jarg3);
+
+	public final static native void btKinematicCharacterController_operatorDelete__SWIG_1 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2, long jarg3);
+
+	public final static native long btKinematicCharacterController_operatorNewArray__SWIG_0 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2);
+
+	public final static native void btKinematicCharacterController_operatorDeleteArray__SWIG_0 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2);
+
+	public final static native long btKinematicCharacterController_operatorNewArray__SWIG_1 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2, long jarg3);
+
+	public final static native void btKinematicCharacterController_operatorDeleteArray__SWIG_1 (long jarg1,
+		btKinematicCharacterController jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btKinematicCharacterController__SWIG_0 (long jarg1, btPairCachingGhostObject jarg1_,
+		long jarg2, btConvexShape jarg2_, float jarg3, Vector3 jarg4);
+
+	public final static native long new_btKinematicCharacterController__SWIG_1 (long jarg1, btPairCachingGhostObject jarg1_,
+		long jarg2, btConvexShape jarg2_, float jarg3);
+
+	public final static native void delete_btKinematicCharacterController (long jarg1);
+
+	public final static native void btKinematicCharacterController_setUp (long jarg1, btKinematicCharacterController jarg1_,
+		Vector3 jarg2);
+
+	public final static native Vector3 btKinematicCharacterController_getUp (long jarg1, btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setAngularVelocity (long jarg1,
+		btKinematicCharacterController jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btKinematicCharacterController_getAngularVelocity (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setLinearVelocity (long jarg1,
+		btKinematicCharacterController jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btKinematicCharacterController_getLinearVelocity (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setLinearDamping (long jarg1,
+		btKinematicCharacterController jarg1_, float jarg2);
+
+	public final static native float btKinematicCharacterController_getLinearDamping (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setAngularDamping (long jarg1,
+		btKinematicCharacterController jarg1_, float jarg2);
+
+	public final static native float btKinematicCharacterController_getAngularDamping (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setStepHeight (long jarg1,
+		btKinematicCharacterController jarg1_, float jarg2);
+
+	public final static native float btKinematicCharacterController_getStepHeight (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setFallSpeed (long jarg1, btKinematicCharacterController jarg1_,
+		float jarg2);
+
+	public final static native float btKinematicCharacterController_getFallSpeed (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setJumpSpeed (long jarg1, btKinematicCharacterController jarg1_,
+		float jarg2);
+
+	public final static native float btKinematicCharacterController_getJumpSpeed (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setMaxJumpHeight (long jarg1,
+		btKinematicCharacterController jarg1_, float jarg2);
+
+	public final static native void btKinematicCharacterController_jump__SWIG_0 (long jarg1, btKinematicCharacterController jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btKinematicCharacterController_jump__SWIG_1 (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_applyImpulse (long jarg1, btKinematicCharacterController jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btKinematicCharacterController_setGravity (long jarg1, btKinematicCharacterController jarg1_,
+		Vector3 jarg2);
+
+	public final static native Vector3 btKinematicCharacterController_getGravity (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setMaxSlope (long jarg1, btKinematicCharacterController jarg1_,
+		float jarg2);
+
+	public final static native float btKinematicCharacterController_getMaxSlope (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setMaxPenetrationDepth (long jarg1,
+		btKinematicCharacterController jarg1_, float jarg2);
+
+	public final static native float btKinematicCharacterController_getMaxPenetrationDepth (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native long btKinematicCharacterController_getGhostObject (long jarg1,
+		btKinematicCharacterController jarg1_);
+
+	public final static native void btKinematicCharacterController_setUseGhostSweepTest (long jarg1,
+		btKinematicCharacterController jarg1_, boolean jarg2);
+
+	public final static native void btContactSolverInfoData_tau_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_tau_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_damping_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_damping_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_friction_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_friction_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_timeStep_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_timeStep_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_restitution_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_restitution_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_numIterations_set (long jarg1, btContactSolverInfoData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoData_numIterations_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_maxErrorReduction_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_maxErrorReduction_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_sor_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_sor_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_erp_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_erp_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_erp2_set (long jarg1, btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_erp2_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_globalCfm_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_globalCfm_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_frictionERP_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_frictionERP_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_frictionCFM_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_frictionCFM_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_splitImpulse_set (long jarg1, btContactSolverInfoData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoData_splitImpulse_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_splitImpulsePenetrationThreshold_set (long jarg1,
+		btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_splitImpulsePenetrationThreshold_get (long jarg1,
+		btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_splitImpulseTurnErp_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_splitImpulseTurnErp_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_linearSlop_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_linearSlop_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_warmstartingFactor_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_warmstartingFactor_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_solverMode_set (long jarg1, btContactSolverInfoData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoData_solverMode_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_restingContactRestitutionThreshold_set (long jarg1,
+		btContactSolverInfoData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoData_restingContactRestitutionThreshold_get (long jarg1,
+		btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_minimumSolverBatchSize_set (long jarg1, btContactSolverInfoData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoData_minimumSolverBatchSize_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_maxGyroscopicForce_set (long jarg1, btContactSolverInfoData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoData_maxGyroscopicForce_get (long jarg1, btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_singleAxisRollingFrictionThreshold_set (long jarg1,
+		btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_singleAxisRollingFrictionThreshold_get (long jarg1,
+		btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_leastSquaresResidualThreshold_set (long jarg1,
+		btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_leastSquaresResidualThreshold_get (long jarg1,
+		btContactSolverInfoData jarg1_);
+
+	public final static native void btContactSolverInfoData_restitutionVelocityThreshold_set (long jarg1,
+		btContactSolverInfoData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoData_restitutionVelocityThreshold_get (long jarg1,
+		btContactSolverInfoData jarg1_);
+
+	public final static native long new_btContactSolverInfoData ();
+
+	public final static native void delete_btContactSolverInfoData (long jarg1);
+
+	public final static native long new_btContactSolverInfo ();
+
+	public final static native void delete_btContactSolverInfo (long jarg1);
+
+	public final static native void btContactSolverInfoDoubleData_tau_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_tau_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_damping_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_damping_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_friction_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_friction_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_timeStep_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_timeStep_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_restitution_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_restitution_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_maxErrorReduction_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_maxErrorReduction_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_sor_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_sor_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_erp_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_erp_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_erp2_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_erp2_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_globalCfm_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_globalCfm_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_splitImpulsePenetrationThreshold_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_splitImpulsePenetrationThreshold_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_splitImpulseTurnErp_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_splitImpulseTurnErp_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_linearSlop_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_linearSlop_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_warmstartingFactor_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_warmstartingFactor_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_maxGyroscopicForce_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_maxGyroscopicForce_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_singleAxisRollingFrictionThreshold_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, double jarg2);
+
+	public final static native double btContactSolverInfoDoubleData_singleAxisRollingFrictionThreshold_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_numIterations_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoDoubleData_numIterations_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_solverMode_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoDoubleData_solverMode_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_restingContactRestitutionThreshold_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoDoubleData_restingContactRestitutionThreshold_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_minimumSolverBatchSize_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoDoubleData_minimumSolverBatchSize_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_splitImpulse_set (long jarg1,
+		btContactSolverInfoDoubleData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoDoubleData_splitImpulse_get (long jarg1,
+		btContactSolverInfoDoubleData jarg1_);
+
+	public final static native void btContactSolverInfoDoubleData_padding_set (long jarg1, btContactSolverInfoDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btContactSolverInfoDoubleData_padding_get (long jarg1, btContactSolverInfoDoubleData jarg1_);
+
+	public final static native long new_btContactSolverInfoDoubleData ();
+
+	public final static native void delete_btContactSolverInfoDoubleData (long jarg1);
+
+	public final static native void btContactSolverInfoFloatData_tau_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_tau_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_damping_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_damping_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_friction_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_friction_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_timeStep_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_timeStep_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_restitution_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_restitution_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_maxErrorReduction_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_maxErrorReduction_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_sor_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_sor_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_erp_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_erp_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_erp2_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_erp2_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_globalCfm_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_globalCfm_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_splitImpulseTurnErp_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_splitImpulseTurnErp_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_linearSlop_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_linearSlop_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_warmstartingFactor_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_warmstartingFactor_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_maxGyroscopicForce_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_maxGyroscopicForce_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, float jarg2);
+
+	public final static native float btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_numIterations_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoFloatData_numIterations_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_solverMode_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoFloatData_solverMode_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_restingContactRestitutionThreshold_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoFloatData_restingContactRestitutionThreshold_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_minimumSolverBatchSize_set (long jarg1,
+		btContactSolverInfoFloatData jarg1_, int jarg2);
+
+	public final static native int btContactSolverInfoFloatData_minimumSolverBatchSize_get (long jarg1,
+		btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_splitImpulse_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btContactSolverInfoFloatData_splitImpulse_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native void btContactSolverInfoFloatData_padding_set (long jarg1, btContactSolverInfoFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btContactSolverInfoFloatData_padding_get (long jarg1, btContactSolverInfoFloatData jarg1_);
+
+	public final static native long new_btContactSolverInfoFloatData ();
+
+	public final static native void delete_btContactSolverInfoFloatData (long jarg1);
+
+	public final static native void delete_btConstraintSolver (long jarg1);
+
+	public final static native void btConstraintSolver_prepareSolve (long jarg1, btConstraintSolver jarg1_, int jarg2, int jarg3);
+
+	public final static native float btConstraintSolver_solveGroup (long jarg1, btConstraintSolver jarg1_, long jarg2, int jarg3,
+		long jarg4, int jarg5, long jarg6, int jarg7, long jarg8, btContactSolverInfo jarg8_, long jarg9, btIDebugDraw jarg9_,
+		long jarg10, btDispatcher jarg10_);
+
+	public final static native void btConstraintSolver_allSolved (long jarg1, btConstraintSolver jarg1_, long jarg2,
+		btContactSolverInfo jarg2_, long jarg3, btIDebugDraw jarg3_);
+
+	public final static native void btConstraintSolver_reset (long jarg1, btConstraintSolver jarg1_);
+
+	public final static native int btConstraintSolver_getSolverType (long jarg1, btConstraintSolver jarg1_);
+
+	public final static native long btSequentialImpulseConstraintSolver_operatorNew__SWIG_0 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native void btSequentialImpulseConstraintSolver_operatorDelete__SWIG_0 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btSequentialImpulseConstraintSolver_operatorNew__SWIG_1 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native void btSequentialImpulseConstraintSolver_operatorDelete__SWIG_1 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native long btSequentialImpulseConstraintSolver_operatorNewArray__SWIG_0 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native void btSequentialImpulseConstraintSolver_operatorDeleteArray__SWIG_0 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btSequentialImpulseConstraintSolver_operatorNewArray__SWIG_1 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native void btSequentialImpulseConstraintSolver_operatorDeleteArray__SWIG_1 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btSequentialImpulseConstraintSolver ();
+
+	public final static native void delete_btSequentialImpulseConstraintSolver (long jarg1);
+
+	public final static native long btSequentialImpulseConstraintSolver_btRand2 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native int btSequentialImpulseConstraintSolver_btRandInt2 (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, int jarg2);
+
+	public final static native void btSequentialImpulseConstraintSolver_setRandSeed (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btSequentialImpulseConstraintSolver_getRandSeed (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverGeneric (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverGeneric (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverLowerLimit (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverLowerLimit (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverGeneric (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverLowerLimit (long jarg1,
+		btSequentialImpulseConstraintSolver jarg1_);
+
+	public final static native long btSolverBody_operatorNew__SWIG_0 (long jarg1, btSolverBody jarg1_, long jarg2);
+
+	public final static native void btSolverBody_operatorDelete__SWIG_0 (long jarg1, btSolverBody jarg1_, long jarg2);
+
+	public final static native long btSolverBody_operatorNew__SWIG_1 (long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
+
+	public final static native void btSolverBody_operatorDelete__SWIG_1 (long jarg1, btSolverBody jarg1_, long jarg2, long jarg3);
+
+	public final static native long btSolverBody_operatorNewArray__SWIG_0 (long jarg1, btSolverBody jarg1_, long jarg2);
+
+	public final static native void btSolverBody_operatorDeleteArray__SWIG_0 (long jarg1, btSolverBody jarg1_, long jarg2);
+
+	public final static native long btSolverBody_operatorNewArray__SWIG_1 (long jarg1, btSolverBody jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSolverBody_operatorDeleteArray__SWIG_1 (long jarg1, btSolverBody jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSolverBody_worldTransform_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btSolverBody_worldTransform_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_deltaLinearVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_deltaLinearVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_deltaAngularVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_deltaAngularVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_angularFactor_set (long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSolverBody_angularFactor_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_linearFactor_set (long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSolverBody_linearFactor_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_invMass_set (long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSolverBody_invMass_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_pushVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSolverBody_pushVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_turnVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btSolverBody_turnVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_linearVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_linearVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_angularVelocity_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_angularVelocity_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_externalForceImpulse_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_externalForceImpulse_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_externalTorqueImpulse_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverBody_externalTorqueImpulse_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_originalBody_set (long jarg1, btSolverBody jarg1_, long jarg2,
+		btRigidBody jarg2_);
+
+	public final static native long btSolverBody_originalBody_get (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_getVelocityInLocalPointNoDelta (long jarg1, btSolverBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSolverBody_getVelocityInLocalPointObsolete (long jarg1, btSolverBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSolverBody_getAngularVelocity (long jarg1, btSolverBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSolverBody_applyImpulse (long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3,
+		float jarg4);
+
+	public final static native void btSolverBody_internalApplyPushImpulse (long jarg1, btSolverBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3, float jarg4);
+
+	public final static native Vector3 btSolverBody_internalGetDeltaLinearVelocity (long jarg1, btSolverBody jarg1_);
+
+	public final static native Vector3 btSolverBody_internalGetDeltaAngularVelocity (long jarg1, btSolverBody jarg1_);
+
+	public final static native Vector3 btSolverBody_internalGetAngularFactor (long jarg1, btSolverBody jarg1_);
+
+	public final static native Vector3 btSolverBody_internalGetInvMass (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_internalSetInvMass (long jarg1, btSolverBody jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btSolverBody_internalGetPushVelocity (long jarg1, btSolverBody jarg1_);
+
+	public final static native Vector3 btSolverBody_internalGetTurnVelocity (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_internalGetVelocityInLocalPointObsolete (long jarg1, btSolverBody jarg1_,
+		Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void btSolverBody_internalGetAngularVelocity (long jarg1, btSolverBody jarg1_, Vector3 jarg2);
+
+	public final static native void btSolverBody_internalApplyImpulse (long jarg1, btSolverBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3, float jarg4);
+
+	public final static native void btSolverBody_writebackVelocity (long jarg1, btSolverBody jarg1_);
+
+	public final static native void btSolverBody_writebackVelocityAndTransform (long jarg1, btSolverBody jarg1_, float jarg2,
+		float jarg3);
+
+	public final static native long new_btSolverBody ();
+
+	public final static native void delete_btSolverBody (long jarg1);
+
+	public final static native long btSliderConstraint_operatorNew__SWIG_0 (long jarg1, btSliderConstraint jarg1_, long jarg2);
+
+	public final static native void btSliderConstraint_operatorDelete__SWIG_0 (long jarg1, btSliderConstraint jarg1_, long jarg2);
+
+	public final static native long btSliderConstraint_operatorNew__SWIG_1 (long jarg1, btSliderConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSliderConstraint_operatorDelete__SWIG_1 (long jarg1, btSliderConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btSliderConstraint_operatorNewArray__SWIG_0 (long jarg1, btSliderConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btSliderConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btSliderConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btSliderConstraint_operatorNewArray__SWIG_1 (long jarg1, btSliderConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSliderConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btSliderConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btSliderConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+
+	public final static native long new_btSliderConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
+
+	public final static native void btSliderConstraint_getInfo1NonVirtual (long jarg1, btSliderConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btSliderConstraint_getInfo2NonVirtual (long jarg1, btSliderConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7,
+		float jarg8);
+
+	public final static native long btSliderConstraint_getRigidBodyAConst (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native long btSliderConstraint_getRigidBodyBConst (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getCalculatedTransformA (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getCalculatedTransformB (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getFrameOffsetAConst (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getFrameOffsetBConst (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getFrameOffsetA (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Matrix4 btSliderConstraint_getFrameOffsetB (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getLowerLinLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setLowerLinLimit (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native float btSliderConstraint_getUpperLinLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setUpperLinLimit (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native float btSliderConstraint_getLowerAngLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setLowerAngLimit (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native float btSliderConstraint_getUpperAngLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setUpperAngLimit (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native boolean btSliderConstraint_getUseLinearReferenceFrameA (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessDirLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionDirLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingDirLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessDirAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionDirAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingDirAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessLimLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionLimLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingLimLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessLimAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionLimAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingLimAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessOrthoLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionOrthoLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingOrthoLin (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getSoftnessOrthoAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getRestitutionOrthoAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getDampingOrthoAng (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setSoftnessDirLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionDirLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingDirLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setSoftnessDirAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionDirAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingDirAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setSoftnessLimLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionLimLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingLimLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setSoftnessLimAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionLimAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingLimAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setSoftnessOrthoLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionOrthoLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingOrthoLin (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setSoftnessOrthoAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setRestitutionOrthoAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setDampingOrthoAng (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native void btSliderConstraint_setPoweredLinMotor (long jarg1, btSliderConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btSliderConstraint_getPoweredLinMotor (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setTargetLinMotorVelocity (long jarg1, btSliderConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraint_getTargetLinMotorVelocity (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setMaxLinMotorForce (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native float btSliderConstraint_getMaxLinMotorForce (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setPoweredAngMotor (long jarg1, btSliderConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btSliderConstraint_getPoweredAngMotor (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setTargetAngMotorVelocity (long jarg1, btSliderConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraint_getTargetAngMotorVelocity (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setMaxAngMotorForce (long jarg1, btSliderConstraint jarg1_, float jarg2);
+
+	public final static native float btSliderConstraint_getMaxAngMotorForce (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getLinearPos (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getAngularPos (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native boolean btSliderConstraint_getSolveLinLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getLinDepth (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native boolean btSliderConstraint_getSolveAngLimit (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native float btSliderConstraint_getAngDepth (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_calculateTransforms (long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native void btSliderConstraint_testLinLimits (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_testAngLimits (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Vector3 btSliderConstraint_getAncorInA (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native Vector3 btSliderConstraint_getAncorInB (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native boolean btSliderConstraint_getUseFrameOffset (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void btSliderConstraint_setUseFrameOffset (long jarg1, btSliderConstraint jarg1_, boolean jarg2);
+
+	public final static native void btSliderConstraint_setFrames (long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native void btSliderConstraint_setParam__SWIG_0 (long jarg1, btSliderConstraint jarg1_, int jarg2,
+		float jarg3, int jarg4);
+
+	public final static native void btSliderConstraint_setParam__SWIG_1 (long jarg1, btSliderConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native float btSliderConstraint_getParam__SWIG_0 (long jarg1, btSliderConstraint jarg1_, int jarg2,
+		int jarg3);
+
+	public final static native float btSliderConstraint_getParam__SWIG_1 (long jarg1, btSliderConstraint jarg1_, int jarg2);
+
+	public final static native int btSliderConstraint_getFlags (long jarg1, btSliderConstraint jarg1_);
+
+	public final static native void delete_btSliderConstraint (long jarg1);
+
+	public final static native void btSliderConstraintData_typeConstraintData_set (long jarg1, btSliderConstraintData jarg1_,
+		long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btSliderConstraintData_typeConstraintData_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_rbAFrame_set (long jarg1, btSliderConstraintData jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native long btSliderConstraintData_rbAFrame_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_rbBFrame_set (long jarg1, btSliderConstraintData jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native long btSliderConstraintData_rbBFrame_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_linearUpperLimit_set (long jarg1, btSliderConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraintData_linearUpperLimit_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_linearLowerLimit_set (long jarg1, btSliderConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraintData_linearLowerLimit_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_angularUpperLimit_set (long jarg1, btSliderConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraintData_angularUpperLimit_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_angularLowerLimit_set (long jarg1, btSliderConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btSliderConstraintData_angularLowerLimit_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_useLinearReferenceFrameA_set (long jarg1, btSliderConstraintData jarg1_,
+		int jarg2);
+
+	public final static native int btSliderConstraintData_useLinearReferenceFrameA_get (long jarg1, btSliderConstraintData jarg1_);
+
+	public final static native void btSliderConstraintData_useOffsetForConstraintFrame_set (long jarg1,
+		btSliderConstraintData jarg1_, int jarg2);
+
+	public final static native int btSliderConstraintData_useOffsetForConstraintFrame_get (long jarg1,
+		btSliderConstraintData jarg1_);
+
+	public final static native long new_btSliderConstraintData ();
+
+	public final static native void delete_btSliderConstraintData (long jarg1);
+
+	public final static native void btSliderConstraintDoubleData_typeConstraintData_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btSliderConstraintDoubleData_typeConstraintData_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_rbAFrame_set (long jarg1, btSliderConstraintDoubleData jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btSliderConstraintDoubleData_rbAFrame_get (long jarg1, btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_rbBFrame_set (long jarg1, btSliderConstraintDoubleData jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btSliderConstraintDoubleData_rbBFrame_get (long jarg1, btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_linearUpperLimit_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btSliderConstraintDoubleData_linearUpperLimit_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_linearLowerLimit_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btSliderConstraintDoubleData_linearLowerLimit_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_angularUpperLimit_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btSliderConstraintDoubleData_angularUpperLimit_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_angularLowerLimit_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btSliderConstraintDoubleData_angularLowerLimit_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_useLinearReferenceFrameA_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btSliderConstraintDoubleData_useLinearReferenceFrameA_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native void btSliderConstraintDoubleData_useOffsetForConstraintFrame_set (long jarg1,
+		btSliderConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btSliderConstraintDoubleData_useOffsetForConstraintFrame_get (long jarg1,
+		btSliderConstraintDoubleData jarg1_);
+
+	public final static native long new_btSliderConstraintDoubleData ();
+
+	public final static native void delete_btSliderConstraintDoubleData (long jarg1);
+
+	public final static native long new_btConstraintSetting ();
+
+	public final static native void btConstraintSetting_tau_set (long jarg1, btConstraintSetting jarg1_, float jarg2);
+
+	public final static native float btConstraintSetting_tau_get (long jarg1, btConstraintSetting jarg1_);
+
+	public final static native void btConstraintSetting_damping_set (long jarg1, btConstraintSetting jarg1_, float jarg2);
+
+	public final static native float btConstraintSetting_damping_get (long jarg1, btConstraintSetting jarg1_);
+
+	public final static native void btConstraintSetting_impulseClamp_set (long jarg1, btConstraintSetting jarg1_, float jarg2);
+
+	public final static native float btConstraintSetting_impulseClamp_get (long jarg1, btConstraintSetting jarg1_);
+
+	public final static native void delete_btConstraintSetting (long jarg1);
+
+	public final static native long btPoint2PointConstraint_operatorNew__SWIG_0 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btPoint2PointConstraint_operatorDelete__SWIG_0 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btPoint2PointConstraint_operatorNew__SWIG_1 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btPoint2PointConstraint_operatorDelete__SWIG_1 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btPoint2PointConstraint_operatorNewArray__SWIG_0 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btPoint2PointConstraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btPoint2PointConstraint jarg1_, long jarg2);
+
+	public final static native long btPoint2PointConstraint_operatorNewArray__SWIG_1 (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btPoint2PointConstraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btPoint2PointConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btPoint2PointConstraint_useSolveConstraintObsolete_set (long jarg1,
+		btPoint2PointConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btPoint2PointConstraint_useSolveConstraintObsolete_get (long jarg1,
+		btPoint2PointConstraint jarg1_);
+
+	public final static native void btPoint2PointConstraint_setting_set (long jarg1, btPoint2PointConstraint jarg1_, long jarg2,
+		btConstraintSetting jarg2_);
+
+	public final static native long btPoint2PointConstraint_setting_get (long jarg1, btPoint2PointConstraint jarg1_);
+
+	public final static native long new_btPoint2PointConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native long new_btPoint2PointConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btPoint2PointConstraint_getInfo1NonVirtual (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btPoint2PointConstraint_getInfo2NonVirtual (long jarg1, btPoint2PointConstraint jarg1_,
+		long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native void btPoint2PointConstraint_updateRHS (long jarg1, btPoint2PointConstraint jarg1_, float jarg2);
+
+	public final static native void btPoint2PointConstraint_setPivotA (long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
+
+	public final static native void btPoint2PointConstraint_setPivotB (long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btPoint2PointConstraint_getPivotInA (long jarg1, btPoint2PointConstraint jarg1_);
+
+	public final static native Vector3 btPoint2PointConstraint_getPivotInB (long jarg1, btPoint2PointConstraint jarg1_);
+
+	public final static native void btPoint2PointConstraint_setParam__SWIG_0 (long jarg1, btPoint2PointConstraint jarg1_,
+		int jarg2, float jarg3, int jarg4);
+
+	public final static native void btPoint2PointConstraint_setParam__SWIG_1 (long jarg1, btPoint2PointConstraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native float btPoint2PointConstraint_getParam__SWIG_0 (long jarg1, btPoint2PointConstraint jarg1_,
+		int jarg2, int jarg3);
+
+	public final static native float btPoint2PointConstraint_getParam__SWIG_1 (long jarg1, btPoint2PointConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btPoint2PointConstraint_getFlags (long jarg1, btPoint2PointConstraint jarg1_);
+
+	public final static native void delete_btPoint2PointConstraint (long jarg1);
+
+	public final static native void btPoint2PointConstraintFloatData_typeConstraintData_set (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btPoint2PointConstraintFloatData_typeConstraintData_get (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_);
+
+	public final static native void btPoint2PointConstraintFloatData_pivotInA_set (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btPoint2PointConstraintFloatData_pivotInA_get (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_);
+
+	public final static native void btPoint2PointConstraintFloatData_pivotInB_set (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btPoint2PointConstraintFloatData_pivotInB_get (long jarg1,
+		btPoint2PointConstraintFloatData jarg1_);
+
+	public final static native long new_btPoint2PointConstraintFloatData ();
+
+	public final static native void delete_btPoint2PointConstraintFloatData (long jarg1);
+
+	public final static native void btPoint2PointConstraintDoubleData2_typeConstraintData_set (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData2_typeConstraintData_get (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_);
+
+	public final static native void btPoint2PointConstraintDoubleData2_pivotInA_set (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData2_pivotInA_get (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_);
+
+	public final static native void btPoint2PointConstraintDoubleData2_pivotInB_set (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData2_pivotInB_get (long jarg1,
+		btPoint2PointConstraintDoubleData2 jarg1_);
+
+	public final static native long new_btPoint2PointConstraintDoubleData2 ();
+
+	public final static native void delete_btPoint2PointConstraintDoubleData2 (long jarg1);
+
+	public final static native void btPoint2PointConstraintDoubleData_typeConstraintData_set (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData_typeConstraintData_get (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_);
+
+	public final static native void btPoint2PointConstraintDoubleData_pivotInA_set (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData_pivotInA_get (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_);
+
+	public final static native void btPoint2PointConstraintDoubleData_pivotInB_set (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btPoint2PointConstraintDoubleData_pivotInB_get (long jarg1,
+		btPoint2PointConstraintDoubleData jarg1_);
+
+	public final static native long new_btPoint2PointConstraintDoubleData ();
+
+	public final static native void delete_btPoint2PointConstraintDoubleData (long jarg1);
+
+	public final static native long new_btJacobianEntry__SWIG_0 ();
+
+	public final static native long new_btJacobianEntry__SWIG_1 (Matrix3 jarg1, Matrix3 jarg2, Vector3 jarg3, Vector3 jarg4,
+		Vector3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, float jarg9);
+
+	public final static native long new_btJacobianEntry__SWIG_2 (Vector3 jarg1, Matrix3 jarg2, Matrix3 jarg3, Vector3 jarg4,
+		Vector3 jarg5);
+
+	public final static native long new_btJacobianEntry__SWIG_3 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native long new_btJacobianEntry__SWIG_4 (Matrix3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4,
+		Vector3 jarg5, float jarg6);
+
+	public final static native float btJacobianEntry_getDiagonal (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native float btJacobianEntry_getNonDiagonal__SWIG_0 (long jarg1, btJacobianEntry jarg1_, long jarg2,
+		btJacobianEntry jarg2_, float jarg3);
+
+	public final static native float btJacobianEntry_getNonDiagonal__SWIG_1 (long jarg1, btJacobianEntry jarg1_, long jarg2,
+		btJacobianEntry jarg2_, float jarg3, float jarg4);
+
+	public final static native float btJacobianEntry_getRelativeVelocity (long jarg1, btJacobianEntry jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+
+	public final static native void btJacobianEntry_linearJointAxis_set (long jarg1, btJacobianEntry jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btJacobianEntry_linearJointAxis_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void btJacobianEntry_aJ_set (long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btJacobianEntry_aJ_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void btJacobianEntry_bJ_set (long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btJacobianEntry_bJ_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void btJacobianEntry_0MinvJt_set (long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btJacobianEntry_0MinvJt_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void btJacobianEntry_1MinvJt_set (long jarg1, btJacobianEntry jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btJacobianEntry_1MinvJt_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void btJacobianEntry_Adiag_set (long jarg1, btJacobianEntry jarg1_, float jarg2);
+
+	public final static native float btJacobianEntry_Adiag_get (long jarg1, btJacobianEntry jarg1_);
+
+	public final static native void delete_btJacobianEntry (long jarg1);
+
+	public final static native long new_btSolve2LinearConstraint (float jarg1, float jarg2);
+
+	public final static native void btSolve2LinearConstraint_resolveUnilateralPairConstraint (long jarg1,
+		btSolve2LinearConstraint jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix3 jarg4,
+		Matrix3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, Vector3 jarg10, Vector3 jarg11, float jarg12,
+		Vector3 jarg13, Vector3 jarg14, Vector3 jarg15, float jarg16, Vector3 jarg17, Vector3 jarg18, Vector3 jarg19, float jarg20,
+		Vector3 jarg21, long jarg22, long jarg23);
+
+	public final static native void btSolve2LinearConstraint_resolveBilateralPairConstraint (long jarg1,
+		btSolve2LinearConstraint jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix3 jarg4,
+		Matrix3 jarg5, Vector3 jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, Vector3 jarg10, Vector3 jarg11, float jarg12,
+		Vector3 jarg13, Vector3 jarg14, Vector3 jarg15, float jarg16, Vector3 jarg17, Vector3 jarg18, Vector3 jarg19, float jarg20,
+		Vector3 jarg21, long jarg22, long jarg23);
+
+	public final static native void delete_btSolve2LinearConstraint (long jarg1);
+
+	public final static native void btRotationalLimitMotor_loLimit_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_loLimit_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_hiLimit_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_hiLimit_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_targetVelocity_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_targetVelocity_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_maxMotorForce_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_maxMotorForce_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_maxLimitForce_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_maxLimitForce_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_damping_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_damping_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_limitSoftness_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_limitSoftness_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_normalCFM_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_normalCFM_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_stopERP_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_stopERP_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_stopCFM_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_stopCFM_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_bounce_set (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_bounce_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_enableMotor_set (long jarg1, btRotationalLimitMotor jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor_enableMotor_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_currentLimitError_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_currentLimitError_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_currentPosition_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_currentPosition_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_currentLimit_set (long jarg1, btRotationalLimitMotor jarg1_, int jarg2);
+
+	public final static native int btRotationalLimitMotor_currentLimit_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native void btRotationalLimitMotor_accumulatedImpulse_set (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor_accumulatedImpulse_get (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native long new_btRotationalLimitMotor__SWIG_0 ();
+
+	public final static native long new_btRotationalLimitMotor__SWIG_1 (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native boolean btRotationalLimitMotor_isLimited (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native boolean btRotationalLimitMotor_needApplyTorques (long jarg1, btRotationalLimitMotor jarg1_);
+
+	public final static native int btRotationalLimitMotor_testLimitValue (long jarg1, btRotationalLimitMotor jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor_solveAngularLimits (long jarg1, btRotationalLimitMotor jarg1_,
+		float jarg2, Vector3 jarg3, float jarg4, long jarg5, btRigidBody jarg5_, long jarg6, btRigidBody jarg6_);
+
+	public final static native void delete_btRotationalLimitMotor (long jarg1);
+
+	public final static native void btTranslationalLimitMotor_lowerLimit_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_lowerLimit_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_upperLimit_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_upperLimit_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_accumulatedImpulse_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_accumulatedImpulse_get (long jarg1,
+		btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_limitSoftness_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btTranslationalLimitMotor_limitSoftness_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_damping_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btTranslationalLimitMotor_damping_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_restitution_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		float jarg2);
+
+	public final static native float btTranslationalLimitMotor_restitution_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_normalCFM_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_normalCFM_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_stopERP_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_stopERP_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_stopCFM_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_stopCFM_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_enableMotor_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor_enableMotor_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_targetVelocity_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_targetVelocity_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_maxMotorForce_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_maxMotorForce_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_currentLimitError_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_currentLimitError_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_currentLinearDiff_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor_currentLinearDiff_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native void btTranslationalLimitMotor_currentLimit_set (long jarg1, btTranslationalLimitMotor jarg1_,
+		int[] jarg2);
+
+	public final static native int[] btTranslationalLimitMotor_currentLimit_get (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native long new_btTranslationalLimitMotor__SWIG_0 ();
+
+	public final static native long new_btTranslationalLimitMotor__SWIG_1 (long jarg1, btTranslationalLimitMotor jarg1_);
+
+	public final static native boolean btTranslationalLimitMotor_isLimited (long jarg1, btTranslationalLimitMotor jarg1_,
+		int jarg2);
+
+	public final static native boolean btTranslationalLimitMotor_needApplyForce (long jarg1, btTranslationalLimitMotor jarg1_,
+		int jarg2);
+
+	public final static native int btTranslationalLimitMotor_testLimitValue (long jarg1, btTranslationalLimitMotor jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native float btTranslationalLimitMotor_solveLinearAxis (long jarg1, btTranslationalLimitMotor jarg1_,
+		float jarg2, float jarg3, long jarg4, btRigidBody jarg4_, Vector3 jarg5, long jarg6, btRigidBody jarg6_, Vector3 jarg7,
+		int jarg8, Vector3 jarg9, Vector3 jarg10);
+
+	public final static native void delete_btTranslationalLimitMotor (long jarg1);
+
+	public final static native long btGeneric6DofConstraint_operatorNew__SWIG_0 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btGeneric6DofConstraint_operatorDelete__SWIG_0 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btGeneric6DofConstraint_operatorNew__SWIG_1 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofConstraint_operatorDelete__SWIG_1 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btGeneric6DofConstraint_operatorNewArray__SWIG_0 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btGeneric6DofConstraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btGeneric6DofConstraint jarg1_, long jarg2);
+
+	public final static native long btGeneric6DofConstraint_operatorNewArray__SWIG_1 (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofConstraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btGeneric6DofConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofConstraint_useSolveConstraintObsolete_set (long jarg1,
+		btGeneric6DofConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btGeneric6DofConstraint_useSolveConstraintObsolete_get (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native long new_btGeneric6DofConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+
+	public final static native long new_btGeneric6DofConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2,
+		boolean jarg3);
+
+	public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_0 (long jarg1,
+		btGeneric6DofConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+
+	public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_1 (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformA (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformB (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetAConst (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetBConst (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetA (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetB (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native void btGeneric6DofConstraint_getInfo1NonVirtual (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2, btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btGeneric6DofConstraint_getInfo2NonVirtual (long jarg1, btGeneric6DofConstraint jarg1_,
+		long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6,
+		Vector3 jarg7, Vector3 jarg8);
+
+	public final static native void btGeneric6DofConstraint_updateRHS (long jarg1, btGeneric6DofConstraint jarg1_, float jarg2);
+
+	public final static native Vector3 btGeneric6DofConstraint_getAxis (long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
+
+	public final static native float btGeneric6DofConstraint_getAngle (long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
+
+	public final static native float btGeneric6DofConstraint_getRelativePivotPosition (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2);
+
+	public final static native void btGeneric6DofConstraint_setFrames (long jarg1, btGeneric6DofConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native boolean btGeneric6DofConstraint_testAngularLimitMotor (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2);
+
+	public final static native void btGeneric6DofConstraint_setLinearLowerLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_getLinearLowerLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_setLinearUpperLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_getLinearUpperLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_setAngularLowerLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_getAngularLowerLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_setAngularUpperLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native void btGeneric6DofConstraint_getAngularUpperLimit (long jarg1, btGeneric6DofConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native long btGeneric6DofConstraint_getRotationalLimitMotor (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2);
+
+	public final static native long btGeneric6DofConstraint_getTranslationalLimitMotor (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native void btGeneric6DofConstraint_setLimit (long jarg1, btGeneric6DofConstraint jarg1_, int jarg2,
+		float jarg3, float jarg4);
+
+	public final static native boolean btGeneric6DofConstraint_isLimited (long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
+
+	public final static native void btGeneric6DofConstraint_calcAnchorPos (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0 (long jarg1,
+		btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5,
+		Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btTypedConstraint.btConstraintInfo2 jarg9_, int jarg10,
+		Vector3 jarg11, int jarg12, int jarg13);
+
+	public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1 (long jarg1,
+		btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5,
+		Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btTypedConstraint.btConstraintInfo2 jarg9_, int jarg10,
+		Vector3 jarg11, int jarg12);
+
+	public final static native boolean btGeneric6DofConstraint_getUseFrameOffset (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native void btGeneric6DofConstraint_setUseFrameOffset (long jarg1, btGeneric6DofConstraint jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btGeneric6DofConstraint_getUseLinearReferenceFrameA (long jarg1,
+		btGeneric6DofConstraint jarg1_);
+
+	public final static native void btGeneric6DofConstraint_setUseLinearReferenceFrameA (long jarg1,
+		btGeneric6DofConstraint jarg1_, boolean jarg2);
+
+	public final static native void btGeneric6DofConstraint_setParam__SWIG_0 (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2, float jarg3, int jarg4);
+
+	public final static native void btGeneric6DofConstraint_setParam__SWIG_1 (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native float btGeneric6DofConstraint_getParam__SWIG_0 (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2, int jarg3);
+
+	public final static native float btGeneric6DofConstraint_getParam__SWIG_1 (long jarg1, btGeneric6DofConstraint jarg1_,
+		int jarg2);
+
+	public final static native void btGeneric6DofConstraint_setAxis (long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native int btGeneric6DofConstraint_getFlags (long jarg1, btGeneric6DofConstraint jarg1_);
+
+	public final static native void delete_btGeneric6DofConstraint (long jarg1);
+
+	public final static native void btGeneric6DofConstraintData_typeConstraintData_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_typeConstraintData_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_rbAFrame_set (long jarg1, btGeneric6DofConstraintData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_rbAFrame_get (long jarg1, btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_rbBFrame_set (long jarg1, btGeneric6DofConstraintData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_rbBFrame_get (long jarg1, btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_linearUpperLimit_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_linearUpperLimit_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_linearLowerLimit_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_linearLowerLimit_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_angularUpperLimit_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_angularUpperLimit_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_angularLowerLimit_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofConstraintData_angularLowerLimit_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_useLinearReferenceFrameA_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofConstraintData_useLinearReferenceFrameA_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native void btGeneric6DofConstraintData_useOffsetForConstraintFrame_set (long jarg1,
+		btGeneric6DofConstraintData jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofConstraintData_useOffsetForConstraintFrame_get (long jarg1,
+		btGeneric6DofConstraintData jarg1_);
+
+	public final static native long new_btGeneric6DofConstraintData ();
+
+	public final static native void delete_btGeneric6DofConstraintData (long jarg1);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_typeConstraintData_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_typeConstraintData_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_rbAFrame_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_rbAFrame_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_rbBFrame_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_rbBFrame_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_linearUpperLimit_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_linearUpperLimit_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_linearLowerLimit_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_linearLowerLimit_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_angularUpperLimit_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_angularUpperLimit_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_angularLowerLimit_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofConstraintDoubleData2_angularLowerLimit_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_useLinearReferenceFrameA_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofConstraintDoubleData2_useLinearReferenceFrameA_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofConstraintDoubleData2_useOffsetForConstraintFrame_set (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofConstraintDoubleData2_useOffsetForConstraintFrame_get (long jarg1,
+		btGeneric6DofConstraintDoubleData2 jarg1_);
+
+	public final static native long new_btGeneric6DofConstraintDoubleData2 ();
+
+	public final static native void delete_btGeneric6DofConstraintDoubleData2 (long jarg1);
+
+	public final static native long btUniversalConstraint_operatorNew__SWIG_0 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btUniversalConstraint_operatorDelete__SWIG_0 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btUniversalConstraint_operatorNew__SWIG_1 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btUniversalConstraint_operatorDelete__SWIG_1 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btUniversalConstraint_operatorNewArray__SWIG_0 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btUniversalConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btUniversalConstraint_operatorNewArray__SWIG_1 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btUniversalConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btUniversalConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btUniversalConstraint (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+
+	public final static native Vector3 btUniversalConstraint_getAnchor (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native Vector3 btUniversalConstraint_getAnchor2 (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native Vector3 btUniversalConstraint_getAxis1 (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native Vector3 btUniversalConstraint_getAxis2 (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native float btUniversalConstraint_getAngle1 (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native float btUniversalConstraint_getAngle2 (long jarg1, btUniversalConstraint jarg1_);
+
+	public final static native void btUniversalConstraint_setUpperLimit (long jarg1, btUniversalConstraint jarg1_, float jarg2,
+		float jarg3);
+
+	public final static native void btUniversalConstraint_setLowerLimit (long jarg1, btUniversalConstraint jarg1_, float jarg2,
+		float jarg3);
+
+	public final static native void btUniversalConstraint_setAxis (long jarg1, btUniversalConstraint jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void delete_btUniversalConstraint (long jarg1);
+
+	public final static native void btContactConstraint_setContactManifold (long jarg1, btContactConstraint jarg1_, long jarg2,
+		btPersistentManifold jarg2_);
+
+	public final static native long btContactConstraint_getContactManifold (long jarg1, btContactConstraint jarg1_);
+
+	public final static native long btContactConstraint_getContactManifoldConst (long jarg1, btContactConstraint jarg1_);
+
+	public final static native void delete_btContactConstraint (long jarg1);
+
+	public final static native float resolveSingleCollision (long jarg1, btRigidBody jarg1_, long jarg2, btCollisionObject jarg2_,
+		Vector3 jarg3, Vector3 jarg4, long jarg5, btContactSolverInfo jarg5_, float jarg6);
+
+	public final static native void resolveSingleBilateral (long jarg1, btRigidBody jarg1_, Vector3 jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, float jarg5, Vector3 jarg6, long jarg7, float jarg8);
+
+	public final static native long btConeTwistConstraint_operatorNew__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btConeTwistConstraint_operatorDelete__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btConeTwistConstraint_operatorNew__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btConeTwistConstraint_operatorDelete__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btConeTwistConstraint_operatorNewArray__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btConeTwistConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btConeTwistConstraint_operatorNewArray__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btConeTwistConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btConeTwistConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native long new_btConeTwistConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native void btConeTwistConstraint_getInfo1NonVirtual (long jarg1, btConeTwistConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btConeTwistConstraint_getInfo2NonVirtual (long jarg1, btConeTwistConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Matrix3 jarg5, Matrix3 jarg6);
+
+	public final static native void btConeTwistConstraint_updateRHS (long jarg1, btConeTwistConstraint jarg1_, float jarg2);
+
+	public final static native long btConeTwistConstraint_getRigidBodyAConst (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native long btConeTwistConstraint_getRigidBodyBConst (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setAngularOnly (long jarg1, btConeTwistConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btConeTwistConstraint_getAngularOnly (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setLimit__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native float btConeTwistConstraint_getLimit (long jarg1, btConeTwistConstraint jarg1_, int jarg2);
+
+	public final static native void btConeTwistConstraint_setLimit__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+	public final static native void btConeTwistConstraint_setLimit__SWIG_2 (long jarg1, btConeTwistConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6);
+
+	public final static native void btConeTwistConstraint_setLimit__SWIG_3 (long jarg1, btConeTwistConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5);
+
+	public final static native void btConeTwistConstraint_setLimit__SWIG_4 (long jarg1, btConeTwistConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4);
+
+	public final static native Matrix4 btConeTwistConstraint_getAFrame (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native Matrix4 btConeTwistConstraint_getBFrame (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native int btConeTwistConstraint_getSolveTwistLimit (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native int btConeTwistConstraint_getSolveSwingLimit (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getTwistLimitSign (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_calcAngleInfo (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_calcAngleInfo2 (long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3, Matrix3 jarg4, Matrix3 jarg5);
+
+	public final static native float btConeTwistConstraint_getSwingSpan1 (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getSwingSpan2 (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getTwistSpan (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getLimitSoftness (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getBiasFactor (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getRelaxationFactor (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getTwistAngle (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native boolean btConeTwistConstraint_isPastSwingLimit (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getDamping (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setDamping (long jarg1, btConeTwistConstraint jarg1_, float jarg2);
+
+	public final static native void btConeTwistConstraint_enableMotor (long jarg1, btConeTwistConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btConeTwistConstraint_isMotorEnabled (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getMaxMotorImpulse (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native boolean btConeTwistConstraint_isMaxMotorImpulseNormalized (long jarg1,
+		btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setMaxMotorImpulse (long jarg1, btConeTwistConstraint jarg1_,
+		float jarg2);
+
+	public final static native void btConeTwistConstraint_setMaxMotorImpulseNormalized (long jarg1, btConeTwistConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraint_getFixThresh (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setFixThresh (long jarg1, btConeTwistConstraint jarg1_, float jarg2);
+
+	public final static native void btConeTwistConstraint_setMotorTarget (long jarg1, btConeTwistConstraint jarg1_,
+		Quaternion jarg2);
+
+	public final static native Quaternion btConeTwistConstraint_getMotorTarget (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void btConeTwistConstraint_setMotorTargetInConstraintSpace (long jarg1,
+		btConeTwistConstraint jarg1_, Quaternion jarg2);
+
+	public final static native Vector3 btConeTwistConstraint_GetPointForAngle (long jarg1, btConeTwistConstraint jarg1_,
+		float jarg2, float jarg3);
+
+	public final static native void btConeTwistConstraint_setParam__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_, int jarg2,
+		float jarg3, int jarg4);
+
+	public final static native void btConeTwistConstraint_setParam__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native void btConeTwistConstraint_setFrames (long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native Matrix4 btConeTwistConstraint_getFrameOffsetA (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native Matrix4 btConeTwistConstraint_getFrameOffsetB (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native float btConeTwistConstraint_getParam__SWIG_0 (long jarg1, btConeTwistConstraint jarg1_, int jarg2,
+		int jarg3);
+
+	public final static native float btConeTwistConstraint_getParam__SWIG_1 (long jarg1, btConeTwistConstraint jarg1_, int jarg2);
+
+	public final static native int btConeTwistConstraint_getFlags (long jarg1, btConeTwistConstraint jarg1_);
+
+	public final static native void delete_btConeTwistConstraint (long jarg1);
+
+	public final static native void btConeTwistConstraintDoubleData_typeConstraintData_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btConeTwistConstraintDoubleData_typeConstraintData_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_rbAFrame_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btConeTwistConstraintDoubleData_rbAFrame_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_rbBFrame_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btConeTwistConstraintDoubleData_rbBFrame_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_swingSpan1_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_swingSpan1_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_swingSpan2_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_swingSpan2_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_twistSpan_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_twistSpan_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_limitSoftness_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_limitSoftness_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_biasFactor_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_biasFactor_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_relaxationFactor_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_relaxationFactor_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native void btConeTwistConstraintDoubleData_damping_set (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_, double jarg2);
+
+	public final static native double btConeTwistConstraintDoubleData_damping_get (long jarg1,
+		btConeTwistConstraintDoubleData jarg1_);
+
+	public final static native long new_btConeTwistConstraintDoubleData ();
+
+	public final static native void delete_btConeTwistConstraintDoubleData (long jarg1);
+
+	public final static native void btConeTwistConstraintData_typeConstraintData_set (long jarg1, btConeTwistConstraintData jarg1_,
+		long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btConeTwistConstraintData_typeConstraintData_get (long jarg1,
+		btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_rbAFrame_set (long jarg1, btConeTwistConstraintData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btConeTwistConstraintData_rbAFrame_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_rbBFrame_set (long jarg1, btConeTwistConstraintData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btConeTwistConstraintData_rbBFrame_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_swingSpan1_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_swingSpan1_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_swingSpan2_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_swingSpan2_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_twistSpan_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_twistSpan_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_limitSoftness_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_limitSoftness_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_biasFactor_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_biasFactor_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_relaxationFactor_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_relaxationFactor_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_damping_set (long jarg1, btConeTwistConstraintData jarg1_,
+		float jarg2);
+
+	public final static native float btConeTwistConstraintData_damping_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native void btConeTwistConstraintData_pad_set (long jarg1, btConeTwistConstraintData jarg1_, String jarg2);
+
+	public final static native String btConeTwistConstraintData_pad_get (long jarg1, btConeTwistConstraintData jarg1_);
+
+	public final static native long new_btConeTwistConstraintData ();
+
+	public final static native void delete_btConeTwistConstraintData (long jarg1);
+
+	public final static native long btGeneric6DofSpringConstraint_operatorNew__SWIG_0 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2);
+
+	public final static native void btGeneric6DofSpringConstraint_operatorDelete__SWIG_0 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2);
+
+	public final static native long btGeneric6DofSpringConstraint_operatorNew__SWIG_1 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_operatorDelete__SWIG_1 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long btGeneric6DofSpringConstraint_operatorNewArray__SWIG_0 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2);
+
+	public final static native void btGeneric6DofSpringConstraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2);
+
+	public final static native long btGeneric6DofSpringConstraint_operatorNewArray__SWIG_1 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btGeneric6DofSpringConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+
+	public final static native long new_btGeneric6DofSpringConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2,
+		boolean jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_enableSpring (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		int jarg2, boolean jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_setStiffness (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_setDamping (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_0 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_1 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, int jarg2);
+
+	public final static native void btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_2 (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
+
+	public final static native boolean btGeneric6DofSpringConstraint_isSpringEnabled (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, int jarg2);
+
+	public final static native float btGeneric6DofSpringConstraint_getStiffness (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		int jarg2);
+
+	public final static native float btGeneric6DofSpringConstraint_getDamping (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		int jarg2);
+
+	public final static native float btGeneric6DofSpringConstraint_getEquilibriumPoint (long jarg1,
+		btGeneric6DofSpringConstraint jarg1_, int jarg2);
+
+	public final static native void btGeneric6DofSpringConstraint_setAxis (long jarg1, btGeneric6DofSpringConstraint jarg1_,
+		Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void delete_btGeneric6DofSpringConstraint (long jarg1);
+
+	public final static native void btGeneric6DofSpringConstraintData_6dofData_set (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_, long jarg2, btGeneric6DofConstraintData jarg2_);
+
+	public final static native long btGeneric6DofSpringConstraintData_6dofData_get (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintData_springEnabled_set (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_, int[] jarg2);
+
+	public final static native int[] btGeneric6DofSpringConstraintData_springEnabled_get (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintData_equilibriumPoint_set (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
+
+	public final static native float[] btGeneric6DofSpringConstraintData_equilibriumPoint_get (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintData_springStiffness_set (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
+
+	public final static native float[] btGeneric6DofSpringConstraintData_springStiffness_get (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintData_springDamping_set (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_, float[] jarg2);
+
+	public final static native float[] btGeneric6DofSpringConstraintData_springDamping_get (long jarg1,
+		btGeneric6DofSpringConstraintData jarg1_);
+
+	public final static native long new_btGeneric6DofSpringConstraintData ();
+
+	public final static native void delete_btGeneric6DofSpringConstraintData (long jarg1);
+
+	public final static native void btGeneric6DofSpringConstraintDoubleData2_6dofData_set (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_, long jarg2, btGeneric6DofConstraintDoubleData2 jarg2_);
+
+	public final static native long btGeneric6DofSpringConstraintDoubleData2_6dofData_get (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintDoubleData2_springEnabled_set (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_, int[] jarg2);
+
+	public final static native int[] btGeneric6DofSpringConstraintDoubleData2_springEnabled_get (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintDoubleData2_equilibriumPoint_set (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
+
+	public final static native double[] btGeneric6DofSpringConstraintDoubleData2_equilibriumPoint_get (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintDoubleData2_springStiffness_set (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
+
+	public final static native double[] btGeneric6DofSpringConstraintDoubleData2_springStiffness_get (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpringConstraintDoubleData2_springDamping_set (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_, double[] jarg2);
+
+	public final static native double[] btGeneric6DofSpringConstraintDoubleData2_springDamping_get (long jarg1,
+		btGeneric6DofSpringConstraintDoubleData2 jarg1_);
+
+	public final static native long new_btGeneric6DofSpringConstraintDoubleData2 ();
+
+	public final static native void delete_btGeneric6DofSpringConstraintDoubleData2 (long jarg1);
+
+	public final static native void btRotationalLimitMotor2_loLimit_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_loLimit_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_hiLimit_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_hiLimit_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_bounce_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_bounce_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_stopERP_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_stopERP_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_stopCFM_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_stopCFM_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_motorERP_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_motorERP_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_motorCFM_set (long jarg1, btRotationalLimitMotor2 jarg1_, float jarg2);
+
+	public final static native float btRotationalLimitMotor2_motorCFM_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_enableMotor_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor2_enableMotor_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_targetVelocity_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_targetVelocity_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_maxMotorForce_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_maxMotorForce_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_servoMotor_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor2_servoMotor_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_servoTarget_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_servoTarget_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_enableSpring_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor2_enableSpring_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_springStiffness_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_springStiffness_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_springStiffnessLimited_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor2_springStiffnessLimited_get (long jarg1,
+		btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_springDamping_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_springDamping_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_springDampingLimited_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btRotationalLimitMotor2_springDampingLimited_get (long jarg1,
+		btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_equilibriumPoint_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_equilibriumPoint_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_currentLimitError_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_currentLimitError_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_currentLimitErrorHi_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_currentLimitErrorHi_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_currentPosition_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native float btRotationalLimitMotor2_currentPosition_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_currentLimit_set (long jarg1, btRotationalLimitMotor2 jarg1_,
+		int jarg2);
+
+	public final static native int btRotationalLimitMotor2_currentLimit_get (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native long new_btRotationalLimitMotor2__SWIG_0 ();
+
+	public final static native long new_btRotationalLimitMotor2__SWIG_1 (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native boolean btRotationalLimitMotor2_isLimited (long jarg1, btRotationalLimitMotor2 jarg1_);
+
+	public final static native void btRotationalLimitMotor2_testLimitValue (long jarg1, btRotationalLimitMotor2 jarg1_,
+		float jarg2);
+
+	public final static native void delete_btRotationalLimitMotor2 (long jarg1);
+
+	public final static native void btTranslationalLimitMotor2_lowerLimit_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_lowerLimit_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_upperLimit_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_upperLimit_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_bounce_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_bounce_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_stopERP_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_stopERP_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_stopCFM_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_stopCFM_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_motorERP_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_motorERP_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_motorCFM_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_motorCFM_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_enableMotor_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor2_enableMotor_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_servoMotor_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor2_servoMotor_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_enableSpring_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor2_enableSpring_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_servoTarget_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_servoTarget_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_springStiffness_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_springStiffness_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_springStiffnessLimited_set (long jarg1,
+		btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor2_springStiffnessLimited_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_springDamping_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_springDamping_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_springDampingLimited_set (long jarg1,
+		btTranslationalLimitMotor2 jarg1_, boolean[] jarg2);
+
+	public final static native boolean[] btTranslationalLimitMotor2_springDampingLimited_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_equilibriumPoint_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_equilibriumPoint_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_targetVelocity_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_targetVelocity_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_maxMotorForce_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_maxMotorForce_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_currentLimitError_set (long jarg1,
+		btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_currentLimitError_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_currentLimitErrorHi_set (long jarg1,
+		btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_currentLimitErrorHi_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_currentLinearDiff_set (long jarg1,
+		btTranslationalLimitMotor2 jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btTranslationalLimitMotor2_currentLinearDiff_get (long jarg1,
+		btTranslationalLimitMotor2 jarg1_);
+
+	public final static native void btTranslationalLimitMotor2_currentLimit_set (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		int[] jarg2);
+
+	public final static native int[] btTranslationalLimitMotor2_currentLimit_get (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native long new_btTranslationalLimitMotor2__SWIG_0 ();
+
+	public final static native long new_btTranslationalLimitMotor2__SWIG_1 (long jarg1, btTranslationalLimitMotor2 jarg1_);
+
+	public final static native boolean btTranslationalLimitMotor2_isLimited (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		int jarg2);
+
+	public final static native void btTranslationalLimitMotor2_testLimitValue (long jarg1, btTranslationalLimitMotor2 jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native void delete_btTranslationalLimitMotor2 (long jarg1);
+
+	public final static native long btGeneric6DofSpring2Constraint_operatorNew__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_operatorDelete__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2);
+
+	public final static native long btGeneric6DofSpring2Constraint_operatorNew__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_operatorDelete__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long btGeneric6DofSpring2Constraint_operatorNewArray__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2);
+
+	public final static native long btGeneric6DofSpring2Constraint_operatorNewArray__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btGeneric6DofSpring2Constraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, int jarg5);
+
+	public final static native long new_btGeneric6DofSpring2Constraint__SWIG_1 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native long new_btGeneric6DofSpring2Constraint__SWIG_2 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2,
+		int jarg3);
+
+	public final static native long new_btGeneric6DofSpring2Constraint__SWIG_3 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native long btGeneric6DofSpring2Constraint_getRotationalLimitMotor (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2);
+
+	public final static native long btGeneric6DofSpring2Constraint_getTranslationalLimitMotor (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native void btGeneric6DofSpring2Constraint_calculateTransforms__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_calculateTransforms__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getCalculatedTransformA (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getCalculatedTransformB (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetAConst (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetBConst (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetA (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Matrix4 btGeneric6DofSpring2Constraint_getFrameOffsetB (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native Vector3 btGeneric6DofSpring2Constraint_getAxis (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2);
+
+	public final static native float btGeneric6DofSpring2Constraint_getAngle (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2);
+
+	public final static native float btGeneric6DofSpring2Constraint_getRelativePivotPosition (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setFrames (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		Matrix4 jarg2, Matrix4 jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setLinearLowerLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getLinearLowerLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setLinearUpperLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getLinearUpperLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setAngularLowerLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setAngularLowerLimitReversed (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getAngularLowerLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getAngularLowerLimitReversed (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setAngularUpperLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setAngularUpperLimitReversed (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getAngularUpperLimit (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_getAngularUpperLimitReversed (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setLimit (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2, float jarg3, float jarg4);
+
+	public final static native void btGeneric6DofSpring2Constraint_setLimitReversed (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, float jarg4);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_isLimited (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setRotationOrder (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofSpring2Constraint_getRotationOrder (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native void btGeneric6DofSpring2Constraint_setAxis (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		Vector3 jarg2, Vector3 jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setBounce (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_enableMotor (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2, boolean jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setServo (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2, boolean jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setTargetVelocity (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setServoTarget (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setMaxMotorForce (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_enableSpring (long jarg1, btGeneric6DofSpring2Constraint jarg1_,
+		int jarg2, boolean jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setStiffness__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, boolean jarg4);
+
+	public final static native void btGeneric6DofSpring2Constraint_setStiffness__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setDamping__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, boolean jarg4);
+
+	public final static native void btGeneric6DofSpring2Constraint_setDamping__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_);
+
+	public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2);
+
+	public final static native void btGeneric6DofSpring2Constraint_setEquilibriumPoint__SWIG_2 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native void btGeneric6DofSpring2Constraint_setParam__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3, int jarg4);
+
+	public final static native void btGeneric6DofSpring2Constraint_setParam__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, float jarg3);
+
+	public final static native float btGeneric6DofSpring2Constraint_getParam__SWIG_0 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2, int jarg3);
+
+	public final static native float btGeneric6DofSpring2Constraint_getParam__SWIG_1 (long jarg1,
+		btGeneric6DofSpring2Constraint jarg1_, int jarg2);
+
+	public final static native float btGeneric6DofSpring2Constraint_btGetMatrixElem (Matrix3 jarg1, int jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerXYZ (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerXZY (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerYXZ (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerYZX (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerZXY (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btGeneric6DofSpring2Constraint_matrixToEulerZYX (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native void delete_btGeneric6DofSpring2Constraint (long jarg1);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_typeConstraintData_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_typeConstraintData_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_rbAFrame_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_rbAFrame_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_rbBFrame_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_rbBFrame_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearUpperLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearUpperLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearLowerLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearLowerLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearBounce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearBounce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearStopERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearStopERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearStopCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearStopCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearMotorERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearMotorERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearMotorCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearMotorCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearTargetVelocity_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearTargetVelocity_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearMaxMotorForce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearMaxMotorForce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearServoTarget_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearServoTarget_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearSpringStiffness_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearSpringStiffness_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearSpringDamping_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearSpringDamping_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearEquilibriumPoint_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_linearEquilibriumPoint_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearEnableMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_linearEnableMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearServoMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_linearServoMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearEnableSpring_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_linearEnableSpring_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearSpringStiffnessLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_linearSpringStiffnessLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_linearSpringDampingLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_linearSpringDampingLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_padding1_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_padding1_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularUpperLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularUpperLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularLowerLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularLowerLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularBounce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularBounce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularStopERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularStopERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularStopCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularStopCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularMotorERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularMotorERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularMotorCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularMotorCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularTargetVelocity_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularTargetVelocity_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularMaxMotorForce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularMaxMotorForce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularServoTarget_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularServoTarget_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularSpringStiffness_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularSpringStiffness_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularSpringDamping_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularSpringDamping_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularEquilibriumPoint_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintData_angularEquilibriumPoint_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularEnableMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_angularEnableMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularServoMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_angularServoMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularEnableSpring_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_angularEnableSpring_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularSpringStiffnessLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_angularSpringStiffnessLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_angularSpringDampingLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintData_angularSpringDampingLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintData_rotateOrder_set (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofSpring2ConstraintData_rotateOrder_get (long jarg1,
+		btGeneric6DofSpring2ConstraintData jarg1_);
+
+	public final static native long new_btGeneric6DofSpring2ConstraintData ();
+
+	public final static native void delete_btGeneric6DofSpring2ConstraintData (long jarg1);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_typeConstraintData_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_typeConstraintData_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rbAFrame_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_rbAFrame_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rbBFrame_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_rbBFrame_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearUpperLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearUpperLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearLowerLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearLowerLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearBounce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearBounce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearStopERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearStopERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearStopCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearStopCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMotorERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMotorERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMotorCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMotorCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearTargetVelocity_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearTargetVelocity_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearMaxMotorForce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearMaxMotorForce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearServoTarget_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearServoTarget_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffness_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffness_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDamping_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDamping_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEquilibriumPoint_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_linearEquilibriumPoint_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEnableMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearEnableMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearServoMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearServoMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearEnableSpring_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearEnableSpring_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffnessLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearSpringStiffnessLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDampingLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_linearSpringDampingLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_padding1_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_padding1_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularUpperLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularUpperLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularLowerLimit_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularLowerLimit_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularBounce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularBounce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularStopERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularStopERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularStopCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularStopCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMotorERP_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMotorERP_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMotorCFM_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMotorCFM_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularTargetVelocity_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularTargetVelocity_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularMaxMotorForce_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularMaxMotorForce_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularServoTarget_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularServoTarget_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffness_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffness_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDamping_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDamping_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEquilibriumPoint_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGeneric6DofSpring2ConstraintDoubleData2_angularEquilibriumPoint_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEnableMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularEnableMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularServoMotor_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularServoMotor_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularEnableSpring_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularEnableSpring_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffnessLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularSpringStiffnessLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDampingLimited_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, String jarg2);
+
+	public final static native String btGeneric6DofSpring2ConstraintDoubleData2_angularSpringDampingLimited_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native void btGeneric6DofSpring2ConstraintDoubleData2_rotateOrder_set (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_, int jarg2);
+
+	public final static native int btGeneric6DofSpring2ConstraintDoubleData2_rotateOrder_get (long jarg1,
+		btGeneric6DofSpring2ConstraintDoubleData2 jarg1_);
+
+	public final static native long new_btGeneric6DofSpring2ConstraintDoubleData2 ();
+
+	public final static native void delete_btGeneric6DofSpring2ConstraintDoubleData2 (long jarg1);
+
+	public final static native long btHingeConstraint_operatorNew__SWIG_0 (long jarg1, btHingeConstraint jarg1_, long jarg2);
+
+	public final static native void btHingeConstraint_operatorDelete__SWIG_0 (long jarg1, btHingeConstraint jarg1_, long jarg2);
+
+	public final static native long btHingeConstraint_operatorNew__SWIG_1 (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btHingeConstraint_operatorDelete__SWIG_1 (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btHingeConstraint_operatorNewArray__SWIG_0 (long jarg1, btHingeConstraint jarg1_, long jarg2);
+
+	public final static native void btHingeConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btHingeConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btHingeConstraint_operatorNewArray__SWIG_1 (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btHingeConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btHingeConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btHingeConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, boolean jarg7);
+
+	public final static native long new_btHingeConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native long new_btHingeConstraint__SWIG_2 (long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3,
+		boolean jarg4);
+
+	public final static native long new_btHingeConstraint__SWIG_3 (long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native long new_btHingeConstraint__SWIG_4 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+
+	public final static native long new_btHingeConstraint__SWIG_5 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native long new_btHingeConstraint__SWIG_6 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
+
+	public final static native long new_btHingeConstraint__SWIG_7 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native void btHingeConstraint_getInfo1NonVirtual (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo1 jarg2_);
+
+	public final static native void btHingeConstraint_getInfo2NonVirtual (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native void btHingeConstraint_getInfo2Internal (long jarg1, btHingeConstraint jarg1_, long jarg2,
+		btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native void btHingeConstraint_getInfo2InternalUsingFrameOffset (long jarg1, btHingeConstraint jarg1_,
+		long jarg2, btTypedConstraint.btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native void btHingeConstraint_updateRHS (long jarg1, btHingeConstraint jarg1_, float jarg2);
+
+	public final static native long btHingeConstraint_getRigidBodyAConst (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native long btHingeConstraint_getRigidBodyBConst (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native long btHingeConstraint_getRigidBodyA (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native long btHingeConstraint_getRigidBodyB (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native Matrix4 btHingeConstraint_getFrameOffsetA (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native Matrix4 btHingeConstraint_getFrameOffsetB (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native void btHingeConstraint_setFrames (long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native void btHingeConstraint_setAngularOnly (long jarg1, btHingeConstraint jarg1_, boolean jarg2);
+
+	public final static native void btHingeConstraint_enableAngularMotor (long jarg1, btHingeConstraint jarg1_, boolean jarg2,
+		float jarg3, float jarg4);
+
+	public final static native void btHingeConstraint_enableMotor (long jarg1, btHingeConstraint jarg1_, boolean jarg2);
+
+	public final static native void btHingeConstraint_setMaxMotorImpulse (long jarg1, btHingeConstraint jarg1_, float jarg2);
+
+	public final static native void btHingeConstraint_setMotorTargetVelocity (long jarg1, btHingeConstraint jarg1_, float jarg2);
+
+	public final static native void btHingeConstraint_setMotorTarget__SWIG_0 (long jarg1, btHingeConstraint jarg1_,
+		Quaternion jarg2, float jarg3);
+
+	public final static native void btHingeConstraint_setMotorTarget__SWIG_1 (long jarg1, btHingeConstraint jarg1_, float jarg2,
+		float jarg3);
+
+	public final static native void btHingeConstraint_setLimit__SWIG_0 (long jarg1, btHingeConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6);
+
+	public final static native void btHingeConstraint_setLimit__SWIG_1 (long jarg1, btHingeConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5);
+
+	public final static native void btHingeConstraint_setLimit__SWIG_2 (long jarg1, btHingeConstraint jarg1_, float jarg2,
+		float jarg3, float jarg4);
+
+	public final static native void btHingeConstraint_setLimit__SWIG_3 (long jarg1, btHingeConstraint jarg1_, float jarg2,
+		float jarg3);
+
+	public final static native float btHingeConstraint_getLimitSoftness (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getLimitBiasFactor (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getLimitRelaxationFactor (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native void btHingeConstraint_setAxis (long jarg1, btHingeConstraint jarg1_, Vector3 jarg2);
+
+	public final static native boolean btHingeConstraint_hasLimit (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getLowerLimit (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getUpperLimit (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getHingeAngle__SWIG_0 (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getHingeAngle__SWIG_1 (long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native void btHingeConstraint_testLimit (long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2,
+		Matrix4 jarg3);
+
+	public final static native Matrix4 btHingeConstraint_getAFrameConst (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native Matrix4 btHingeConstraint_getBFrameConst (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native Matrix4 btHingeConstraint_getAFrame (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native Matrix4 btHingeConstraint_getBFrame (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native int btHingeConstraint_getSolveLimit (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getLimitSign (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native boolean btHingeConstraint_getAngularOnly (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native boolean btHingeConstraint_getEnableAngularMotor (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getMotorTargetVelocity (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native float btHingeConstraint_getMaxMotorImpulse (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native boolean btHingeConstraint_getUseFrameOffset (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native void btHingeConstraint_setUseFrameOffset (long jarg1, btHingeConstraint jarg1_, boolean jarg2);
+
+	public final static native boolean btHingeConstraint_getUseReferenceFrameA (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native void btHingeConstraint_setUseReferenceFrameA (long jarg1, btHingeConstraint jarg1_, boolean jarg2);
+
+	public final static native void btHingeConstraint_setParam__SWIG_0 (long jarg1, btHingeConstraint jarg1_, int jarg2,
+		float jarg3, int jarg4);
+
+	public final static native void btHingeConstraint_setParam__SWIG_1 (long jarg1, btHingeConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native float btHingeConstraint_getParam__SWIG_0 (long jarg1, btHingeConstraint jarg1_, int jarg2,
+		int jarg3);
+
+	public final static native float btHingeConstraint_getParam__SWIG_1 (long jarg1, btHingeConstraint jarg1_, int jarg2);
+
+	public final static native int btHingeConstraint_getFlags (long jarg1, btHingeConstraint jarg1_);
+
+	public final static native void delete_btHingeConstraint (long jarg1);
+
+	public final static native void btHingeConstraintDoubleData_typeConstraintData_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData_typeConstraintData_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_rbAFrame_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData_rbAFrame_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_rbBFrame_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData_rbBFrame_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_useReferenceFrameA_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintDoubleData_useReferenceFrameA_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_angularOnly_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btHingeConstraintDoubleData_angularOnly_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_enableAngularMotor_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintDoubleData_enableAngularMotor_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_motorTargetVelocity_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_motorTargetVelocity_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_maxMotorImpulse_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_maxMotorImpulse_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_lowerLimit_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_lowerLimit_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_upperLimit_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_upperLimit_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_limitSoftness_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_limitSoftness_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_biasFactor_set (long jarg1, btHingeConstraintDoubleData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_biasFactor_get (long jarg1, btHingeConstraintDoubleData jarg1_);
+
+	public final static native void btHingeConstraintDoubleData_relaxationFactor_set (long jarg1,
+		btHingeConstraintDoubleData jarg1_, float jarg2);
+
+	public final static native float btHingeConstraintDoubleData_relaxationFactor_get (long jarg1,
+		btHingeConstraintDoubleData jarg1_);
+
+	public final static native long new_btHingeConstraintDoubleData ();
+
+	public final static native void delete_btHingeConstraintDoubleData (long jarg1);
+
+	public final static native long btHingeAccumulatedAngleConstraint_operatorNew__SWIG_0 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
+
+	public final static native void btHingeAccumulatedAngleConstraint_operatorDelete__SWIG_0 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
+
+	public final static native long btHingeAccumulatedAngleConstraint_operatorNew__SWIG_1 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btHingeAccumulatedAngleConstraint_operatorDelete__SWIG_1 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long btHingeAccumulatedAngleConstraint_operatorNewArray__SWIG_0 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
+
+	public final static native void btHingeAccumulatedAngleConstraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2);
+
+	public final static native long btHingeAccumulatedAngleConstraint_operatorNewArray__SWIG_1 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btHingeAccumulatedAngleConstraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, boolean jarg7);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_2 (long jarg1, btRigidBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3, boolean jarg4);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_3 (long jarg1, btRigidBody jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_4 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_5 (long jarg1, btRigidBody jarg1_, long jarg2,
+		btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_6 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2,
+		boolean jarg3);
+
+	public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_7 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+
+	public final static native float btHingeAccumulatedAngleConstraint_getAccumulatedHingeAngle (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_);
+
+	public final static native void btHingeAccumulatedAngleConstraint_setAccumulatedHingeAngle (long jarg1,
+		btHingeAccumulatedAngleConstraint jarg1_, float jarg2);
+
+	public final static native void delete_btHingeAccumulatedAngleConstraint (long jarg1);
+
+	public final static native void btHingeConstraintFloatData_typeConstraintData_set (long jarg1,
+		btHingeConstraintFloatData jarg1_, long jarg2, btTypedConstraintData jarg2_);
+
+	public final static native long btHingeConstraintFloatData_typeConstraintData_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_rbAFrame_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btHingeConstraintFloatData_rbAFrame_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_rbBFrame_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btHingeConstraintFloatData_rbBFrame_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_useReferenceFrameA_set (long jarg1,
+		btHingeConstraintFloatData jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintFloatData_useReferenceFrameA_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_angularOnly_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btHingeConstraintFloatData_angularOnly_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_enableAngularMotor_set (long jarg1,
+		btHingeConstraintFloatData jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintFloatData_enableAngularMotor_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_motorTargetVelocity_set (long jarg1,
+		btHingeConstraintFloatData jarg1_, float jarg2);
+
+	public final static native float btHingeConstraintFloatData_motorTargetVelocity_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_maxMotorImpulse_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_maxMotorImpulse_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_lowerLimit_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_lowerLimit_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_upperLimit_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_upperLimit_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_limitSoftness_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_limitSoftness_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_biasFactor_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_biasFactor_get (long jarg1, btHingeConstraintFloatData jarg1_);
+
+	public final static native void btHingeConstraintFloatData_relaxationFactor_set (long jarg1, btHingeConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btHingeConstraintFloatData_relaxationFactor_get (long jarg1,
+		btHingeConstraintFloatData jarg1_);
+
+	public final static native long new_btHingeConstraintFloatData ();
+
+	public final static native void delete_btHingeConstraintFloatData (long jarg1);
+
+	public final static native void btHingeConstraintDoubleData2_typeConstraintData_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData2_typeConstraintData_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_rbAFrame_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData2_rbAFrame_get (long jarg1, btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_rbBFrame_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btHingeConstraintDoubleData2_rbBFrame_get (long jarg1, btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_useReferenceFrameA_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintDoubleData2_useReferenceFrameA_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_angularOnly_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		int jarg2);
+
+	public final static native int btHingeConstraintDoubleData2_angularOnly_get (long jarg1, btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_enableAngularMotor_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, int jarg2);
+
+	public final static native int btHingeConstraintDoubleData2_enableAngularMotor_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_motorTargetVelocity_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_motorTargetVelocity_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_maxMotorImpulse_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_maxMotorImpulse_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_lowerLimit_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_lowerLimit_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_upperLimit_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_upperLimit_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_limitSoftness_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_limitSoftness_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_biasFactor_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_biasFactor_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_relaxationFactor_set (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_, double jarg2);
+
+	public final static native double btHingeConstraintDoubleData2_relaxationFactor_get (long jarg1,
+		btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native void btHingeConstraintDoubleData2_padding1_set (long jarg1, btHingeConstraintDoubleData2 jarg1_,
+		String jarg2);
+
+	public final static native String btHingeConstraintDoubleData2_padding1_get (long jarg1, btHingeConstraintDoubleData2 jarg1_);
+
+	public final static native long new_btHingeConstraintDoubleData2 ();
+
+	public final static native void delete_btHingeConstraintDoubleData2 (long jarg1);
+
+	public final static native long btSolverConstraint_operatorNew__SWIG_0 (long jarg1, btSolverConstraint jarg1_, long jarg2);
+
+	public final static native void btSolverConstraint_operatorDelete__SWIG_0 (long jarg1, btSolverConstraint jarg1_, long jarg2);
+
+	public final static native long btSolverConstraint_operatorNew__SWIG_1 (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSolverConstraint_operatorDelete__SWIG_1 (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btSolverConstraint_operatorNewArray__SWIG_0 (long jarg1, btSolverConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btSolverConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btSolverConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btSolverConstraint_operatorNewArray__SWIG_1 (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btSolverConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btSolverConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btSolverConstraint_relpos1CrossNormal_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_relpos1CrossNormal_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_contactNormal1_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_contactNormal1_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_relpos2CrossNormal_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_relpos2CrossNormal_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_contactNormal2_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_contactNormal2_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_angularComponentA_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_angularComponentA_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_angularComponentB_set (long jarg1, btSolverConstraint jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSolverConstraint_angularComponentB_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_appliedPushImpulse_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_appliedPushImpulse_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_appliedImpulse_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_appliedImpulse_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_friction_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_friction_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_jacDiagABInv_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_jacDiagABInv_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_rhs_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_rhs_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_cfm_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_cfm_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_lowerLimit_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_lowerLimit_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_upperLimit_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_upperLimit_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_rhsPenetration_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_rhsPenetration_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_originalContactPoint_set (long jarg1, btSolverConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btSolverConstraint_originalContactPoint_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_unusedPadding4_set (long jarg1, btSolverConstraint jarg1_, float jarg2);
+
+	public final static native float btSolverConstraint_unusedPadding4_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_numRowsForNonContactConstraint_set (long jarg1, btSolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btSolverConstraint_numRowsForNonContactConstraint_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_overrideNumSolverIterations_set (long jarg1, btSolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btSolverConstraint_overrideNumSolverIterations_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_frictionIndex_set (long jarg1, btSolverConstraint jarg1_, int jarg2);
+
+	public final static native int btSolverConstraint_frictionIndex_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_solverBodyIdA_set (long jarg1, btSolverConstraint jarg1_, int jarg2);
+
+	public final static native int btSolverConstraint_solverBodyIdA_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native void btSolverConstraint_solverBodyIdB_set (long jarg1, btSolverConstraint jarg1_, int jarg2);
+
+	public final static native int btSolverConstraint_solverBodyIdB_get (long jarg1, btSolverConstraint jarg1_);
+
+	public final static native long new_btSolverConstraint ();
+
+	public final static native void delete_btSolverConstraint (long jarg1);
+
+	public final static native long btHinge2Constraint_operatorNew__SWIG_0 (long jarg1, btHinge2Constraint jarg1_, long jarg2);
+
+	public final static native void btHinge2Constraint_operatorDelete__SWIG_0 (long jarg1, btHinge2Constraint jarg1_, long jarg2);
+
+	public final static native long btHinge2Constraint_operatorNew__SWIG_1 (long jarg1, btHinge2Constraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btHinge2Constraint_operatorDelete__SWIG_1 (long jarg1, btHinge2Constraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btHinge2Constraint_operatorNewArray__SWIG_0 (long jarg1, btHinge2Constraint jarg1_,
+		long jarg2);
+
+	public final static native void btHinge2Constraint_operatorDeleteArray__SWIG_0 (long jarg1, btHinge2Constraint jarg1_,
+		long jarg2);
+
+	public final static native long btHinge2Constraint_operatorNewArray__SWIG_1 (long jarg1, btHinge2Constraint jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btHinge2Constraint_operatorDeleteArray__SWIG_1 (long jarg1, btHinge2Constraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btHinge2Constraint (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+
+	public final static native Vector3 btHinge2Constraint_getAnchor (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native Vector3 btHinge2Constraint_getAnchor2 (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native Vector3 btHinge2Constraint_getAxis1 (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native Vector3 btHinge2Constraint_getAxis2 (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native float btHinge2Constraint_getAngle1 (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native float btHinge2Constraint_getAngle2 (long jarg1, btHinge2Constraint jarg1_);
+
+	public final static native void btHinge2Constraint_setUpperLimit (long jarg1, btHinge2Constraint jarg1_, float jarg2);
+
+	public final static native void btHinge2Constraint_setLowerLimit (long jarg1, btHinge2Constraint jarg1_, float jarg2);
+
+	public final static native void delete_btHinge2Constraint (long jarg1);
+
+	public final static native long new_btFixedConstraint (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Matrix4 jarg3, Matrix4 jarg4);
+
+	public final static native void delete_btFixedConstraint (long jarg1);
+
+	public final static native void delete_btVehicleRaycaster (long jarg1);
+
+	public final static native long new_btVehicleRaycaster_btVehicleRaycasterResult ();
+
+	public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_get (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
+
+	public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_set (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_get (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
+
+	public final static native void btVehicleRaycaster_btVehicleRaycasterResult_distFraction_set (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_, float jarg2);
+
+	public final static native float btVehicleRaycaster_btVehicleRaycasterResult_distFraction_get (long jarg1,
+		btVehicleRaycaster.btVehicleRaycasterResult jarg1_);
+
+	public final static native void delete_btVehicleRaycaster_btVehicleRaycasterResult (long jarg1);
+
+	public final static native long btVehicleRaycaster_castRay (long jarg1, btVehicleRaycaster jarg1_, Vector3 jarg2,
+		Vector3 jarg3, long jarg4, btVehicleRaycaster.btVehicleRaycasterResult jarg4_);
+
+	public final static native void btWheelInfoConstructionInfo_chassisConnectionCS_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfoConstructionInfo_chassisConnectionCS_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_wheelDirectionCS_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfoConstructionInfo_wheelDirectionCS_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_wheelAxleCS_set (long jarg1, btWheelInfoConstructionInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfoConstructionInfo_wheelAxleCS_get (long jarg1, btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_suspensionRestLength_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_suspensionRestLength_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_maxSuspensionTravelCm_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_maxSuspensionTravelCm_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_wheelRadius_set (long jarg1, btWheelInfoConstructionInfo jarg1_,
+		float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_wheelRadius_get (long jarg1, btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_suspensionStiffness_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_suspensionStiffness_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_wheelsDampingCompression_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_wheelsDampingCompression_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_wheelsDampingRelaxation_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_wheelsDampingRelaxation_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_frictionSlip_set (long jarg1, btWheelInfoConstructionInfo jarg1_,
+		float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_frictionSlip_get (long jarg1, btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_maxSuspensionForce_set (long jarg1,
+		btWheelInfoConstructionInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfoConstructionInfo_maxSuspensionForce_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfoConstructionInfo_bIsFrontWheel_set (long jarg1, btWheelInfoConstructionInfo jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btWheelInfoConstructionInfo_bIsFrontWheel_get (long jarg1,
+		btWheelInfoConstructionInfo jarg1_);
+
+	public final static native long new_btWheelInfoConstructionInfo ();
+
+	public final static native void delete_btWheelInfoConstructionInfo (long jarg1);
+
+	public final static native void btWheelInfo_RaycastInfo_contactNormalWS_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_RaycastInfo_contactNormalWS_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_contactPointWS_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_RaycastInfo_contactPointWS_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_suspensionLength_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		float jarg2);
+
+	public final static native float btWheelInfo_RaycastInfo_suspensionLength_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_hardPointWS_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_RaycastInfo_hardPointWS_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_wheelDirectionWS_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_RaycastInfo_wheelDirectionWS_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_wheelAxleWS_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_RaycastInfo_wheelAxleWS_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_isInContact_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btWheelInfo_RaycastInfo_isInContact_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native void btWheelInfo_RaycastInfo_groundObject_set (long jarg1, btWheelInfo.RaycastInfo jarg1_,
+		long jarg2);
+
+	public final static native long btWheelInfo_RaycastInfo_groundObject_get (long jarg1, btWheelInfo.RaycastInfo jarg1_);
+
+	public final static native long new_btWheelInfo_RaycastInfo ();
+
+	public final static native void delete_btWheelInfo_RaycastInfo (long jarg1);
+
+	public final static native void btWheelInfo_raycastInfo_set (long jarg1, btWheelInfo jarg1_, long jarg2,
+		btWheelInfo.RaycastInfo jarg2_);
+
+	public final static native long btWheelInfo_raycastInfo_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_worldTransform_set (long jarg1, btWheelInfo jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btWheelInfo_worldTransform_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_chassisConnectionPointCS_set (long jarg1, btWheelInfo jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btWheelInfo_chassisConnectionPointCS_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelDirectionCS_set (long jarg1, btWheelInfo jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btWheelInfo_wheelDirectionCS_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelAxleCS_set (long jarg1, btWheelInfo jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btWheelInfo_wheelAxleCS_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_suspensionRestLength1_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_suspensionRestLength1_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_maxSuspensionTravelCm_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_maxSuspensionTravelCm_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native float btWheelInfo_getSuspensionRestLength (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelsRadius_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_wheelsRadius_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_suspensionStiffness_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_suspensionStiffness_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelsDampingCompression_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_wheelsDampingCompression_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelsDampingRelaxation_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_wheelsDampingRelaxation_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_frictionSlip_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_frictionSlip_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_steering_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_steering_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_rotation_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_rotation_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_deltaRotation_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_deltaRotation_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_rollInfluence_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_rollInfluence_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_maxSuspensionForce_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_maxSuspensionForce_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_engineForce_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_engineForce_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_brake_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_brake_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_bIsFrontWheel_set (long jarg1, btWheelInfo jarg1_, boolean jarg2);
+
+	public final static native boolean btWheelInfo_bIsFrontWheel_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_clientInfo_set (long jarg1, btWheelInfo jarg1_, long jarg2);
+
+	public final static native long btWheelInfo_clientInfo_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native long new_btWheelInfo__SWIG_0 ();
+
+	public final static native long new_btWheelInfo__SWIG_1 (long jarg1, btWheelInfoConstructionInfo jarg1_);
+
+	public final static native void btWheelInfo_updateWheel (long jarg1, btWheelInfo jarg1_, long jarg2, btRigidBody jarg2_,
+		long jarg3, btWheelInfo.RaycastInfo jarg3_);
+
+	public final static native void btWheelInfo_clippedInvContactDotSuspension_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_clippedInvContactDotSuspension_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_suspensionRelativeVelocity_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_suspensionRelativeVelocity_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_wheelsSuspensionForce_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_wheelsSuspensionForce_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void btWheelInfo_skidInfo_set (long jarg1, btWheelInfo jarg1_, float jarg2);
+
+	public final static native float btWheelInfo_skidInfo_get (long jarg1, btWheelInfo jarg1_);
+
+	public final static native void delete_btWheelInfo (long jarg1);
+
+	public final static native long new_btRaycastVehicle_btVehicleTuning ();
+
+	public final static native void btRaycastVehicle_btVehicleTuning_suspensionStiffness_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_suspensionStiffness_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void btRaycastVehicle_btVehicleTuning_suspensionCompression_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_suspensionCompression_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void btRaycastVehicle_btVehicleTuning_suspensionDamping_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_suspensionDamping_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void btRaycastVehicle_btVehicleTuning_maxSuspensionTravelCm_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_maxSuspensionTravelCm_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void btRaycastVehicle_btVehicleTuning_frictionSlip_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_frictionSlip_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void btRaycastVehicle_btVehicleTuning_maxSuspensionForce_set (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_, float jarg2);
+
+	public final static native float btRaycastVehicle_btVehicleTuning_maxSuspensionForce_get (long jarg1,
+		btRaycastVehicle.btVehicleTuning jarg1_);
+
+	public final static native void delete_btRaycastVehicle_btVehicleTuning (long jarg1);
+
+	public final static native long new_btRaycastVehicle (long jarg1, btRaycastVehicle.btVehicleTuning jarg1_, long jarg2,
+		btRigidBody jarg2_, long jarg3, btVehicleRaycaster jarg3_);
+
+	public final static native void delete_btRaycastVehicle (long jarg1);
+
+	public final static native Matrix4 btRaycastVehicle_getChassisWorldTransform (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native float btRaycastVehicle_rayCast (long jarg1, btRaycastVehicle jarg1_, long jarg2,
+		btWheelInfo jarg2_);
+
+	public final static native void btRaycastVehicle_updateVehicle (long jarg1, btRaycastVehicle jarg1_, float jarg2);
+
+	public final static native void btRaycastVehicle_resetSuspension (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native float btRaycastVehicle_getSteeringValue (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native void btRaycastVehicle_setSteeringValue (long jarg1, btRaycastVehicle jarg1_, float jarg2,
+		int jarg3);
+
+	public final static native void btRaycastVehicle_applyEngineForce (long jarg1, btRaycastVehicle jarg1_, float jarg2,
+		int jarg3);
+
+	public final static native Matrix4 btRaycastVehicle_getWheelTransformWS (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native void btRaycastVehicle_updateWheelTransform__SWIG_0 (long jarg1, btRaycastVehicle jarg1_, int jarg2,
+		boolean jarg3);
+
+	public final static native void btRaycastVehicle_updateWheelTransform__SWIG_1 (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native long btRaycastVehicle_addWheel (long jarg1, btRaycastVehicle jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4, float jarg5, float jarg6, long jarg7, btRaycastVehicle.btVehicleTuning jarg7_, boolean jarg8);
+
+	public final static native int btRaycastVehicle_getNumWheels (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native void btRaycastVehicle_wheelInfo_set (long jarg1, btRaycastVehicle jarg1_, long jarg2);
+
+	public final static native long btRaycastVehicle_wheelInfo_get (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native long btRaycastVehicle_getWheelInfo (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native long btRaycastVehicle_getWheelInfoConst (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native void btRaycastVehicle_updateWheelTransformsWS__SWIG_0 (long jarg1, btRaycastVehicle jarg1_,
+		long jarg2, btWheelInfo jarg2_, boolean jarg3);
+
+	public final static native void btRaycastVehicle_updateWheelTransformsWS__SWIG_1 (long jarg1, btRaycastVehicle jarg1_,
+		long jarg2, btWheelInfo jarg2_);
+
+	public final static native void btRaycastVehicle_setBrake (long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
+
+	public final static native void btRaycastVehicle_setPitchControl (long jarg1, btRaycastVehicle jarg1_, float jarg2);
+
+	public final static native void btRaycastVehicle_updateSuspension (long jarg1, btRaycastVehicle jarg1_, float jarg2);
+
+	public final static native void btRaycastVehicle_updateFriction (long jarg1, btRaycastVehicle jarg1_, float jarg2);
+
+	public final static native long btRaycastVehicle_getRigidBody (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native long btRaycastVehicle_getRigidBodyConst (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native int btRaycastVehicle_getRightAxis (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native int btRaycastVehicle_getUpAxis (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native int btRaycastVehicle_getForwardAxis (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native Vector3 btRaycastVehicle_getForwardVector (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native float btRaycastVehicle_getCurrentSpeedKmHour (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native void btRaycastVehicle_setCoordinateSystem (long jarg1, btRaycastVehicle jarg1_, int jarg2,
+		int jarg3, int jarg4);
+
+	public final static native int btRaycastVehicle_getUserConstraintType (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native void btRaycastVehicle_setUserConstraintType (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native void btRaycastVehicle_setUserConstraintId (long jarg1, btRaycastVehicle jarg1_, int jarg2);
+
+	public final static native int btRaycastVehicle_getUserConstraintId (long jarg1, btRaycastVehicle jarg1_);
+
+	public final static native long new_btDefaultVehicleRaycaster (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void delete_btDefaultVehicleRaycaster (long jarg1);
+
+	public final static native long new_FilterableVehicleRaycaster (long jarg1, btDynamicsWorld jarg1_);
+
+	public final static native void FilterableVehicleRaycaster_setCollisionFilterMask (long jarg1,
+		FilterableVehicleRaycaster jarg1_, short jarg2);
+
+	public final static native void FilterableVehicleRaycaster_setCollisionFilterGroup (long jarg1,
+		FilterableVehicleRaycaster jarg1_, short jarg2);
+
+	public final static native void delete_FilterableVehicleRaycaster (long jarg1);
+
+	public final static native long new_btGearConstraint__SWIG_0 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4, float jarg5);
+
+	public final static native long new_btGearConstraint__SWIG_1 (long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_,
+		Vector3 jarg3, Vector3 jarg4);
+
+	public final static native void delete_btGearConstraint (long jarg1);
+
+	public final static native void btGearConstraint_setAxisA (long jarg1, btGearConstraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGearConstraint_setAxisB (long jarg1, btGearConstraint jarg1_, Vector3 jarg2);
+
+	public final static native void btGearConstraint_setRatio (long jarg1, btGearConstraint jarg1_, float jarg2);
+
+	public final static native Vector3 btGearConstraint_getAxisA (long jarg1, btGearConstraint jarg1_);
+
+	public final static native Vector3 btGearConstraint_getAxisB (long jarg1, btGearConstraint jarg1_);
+
+	public final static native float btGearConstraint_getRatio (long jarg1, btGearConstraint jarg1_);
+
+	public final static native void btGearConstraint_setParam__SWIG_0 (long jarg1, btGearConstraint jarg1_, int jarg2, float jarg3,
+		int jarg4);
+
+	public final static native void btGearConstraint_setParam__SWIG_1 (long jarg1, btGearConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native float btGearConstraint_getParam__SWIG_0 (long jarg1, btGearConstraint jarg1_, int jarg2, int jarg3);
+
+	public final static native float btGearConstraint_getParam__SWIG_1 (long jarg1, btGearConstraint jarg1_, int jarg2);
+
+	public final static native void btGearConstraintFloatData_typeConstraintData_set (long jarg1, btGearConstraintFloatData jarg1_,
+		long jarg2, btTypedConstraintFloatData jarg2_);
+
+	public final static native long btGearConstraintFloatData_typeConstraintData_get (long jarg1,
+		btGearConstraintFloatData jarg1_);
+
+	public final static native void btGearConstraintFloatData_axisInA_set (long jarg1, btGearConstraintFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGearConstraintFloatData_axisInA_get (long jarg1, btGearConstraintFloatData jarg1_);
+
+	public final static native void btGearConstraintFloatData_axisInB_set (long jarg1, btGearConstraintFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btGearConstraintFloatData_axisInB_get (long jarg1, btGearConstraintFloatData jarg1_);
+
+	public final static native void btGearConstraintFloatData_ratio_set (long jarg1, btGearConstraintFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btGearConstraintFloatData_ratio_get (long jarg1, btGearConstraintFloatData jarg1_);
+
+	public final static native void btGearConstraintFloatData_padding_set (long jarg1, btGearConstraintFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btGearConstraintFloatData_padding_get (long jarg1, btGearConstraintFloatData jarg1_);
+
+	public final static native long new_btGearConstraintFloatData ();
+
+	public final static native void delete_btGearConstraintFloatData (long jarg1);
+
+	public final static native void btGearConstraintDoubleData_typeConstraintData_set (long jarg1,
+		btGearConstraintDoubleData jarg1_, long jarg2, btTypedConstraintDoubleData jarg2_);
+
+	public final static native long btGearConstraintDoubleData_typeConstraintData_get (long jarg1,
+		btGearConstraintDoubleData jarg1_);
+
+	public final static native void btGearConstraintDoubleData_axisInA_set (long jarg1, btGearConstraintDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGearConstraintDoubleData_axisInA_get (long jarg1, btGearConstraintDoubleData jarg1_);
+
+	public final static native void btGearConstraintDoubleData_axisInB_set (long jarg1, btGearConstraintDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btGearConstraintDoubleData_axisInB_get (long jarg1, btGearConstraintDoubleData jarg1_);
+
+	public final static native void btGearConstraintDoubleData_ratio_set (long jarg1, btGearConstraintDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btGearConstraintDoubleData_ratio_get (long jarg1, btGearConstraintDoubleData jarg1_);
+
+	public final static native long new_btGearConstraintDoubleData ();
+
+	public final static native void delete_btGearConstraintDoubleData (long jarg1);
+
+	public final static native long btNNCGConstraintSolver_operatorNew__SWIG_0 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2);
+
+	public final static native void btNNCGConstraintSolver_operatorDelete__SWIG_0 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2);
+
+	public final static native long btNNCGConstraintSolver_operatorNew__SWIG_1 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btNNCGConstraintSolver_operatorDelete__SWIG_1 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btNNCGConstraintSolver_operatorNewArray__SWIG_0 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2);
+
+	public final static native void btNNCGConstraintSolver_operatorDeleteArray__SWIG_0 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2);
+
+	public final static native long btNNCGConstraintSolver_operatorNewArray__SWIG_1 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btNNCGConstraintSolver_operatorDeleteArray__SWIG_1 (long jarg1, btNNCGConstraintSolver jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btNNCGConstraintSolver ();
+
+	public final static native void btNNCGConstraintSolver_onlyForNoneContact_set (long jarg1, btNNCGConstraintSolver jarg1_,
+		boolean jarg2);
+
+	public final static native boolean btNNCGConstraintSolver_onlyForNoneContact_get (long jarg1, btNNCGConstraintSolver jarg1_);
+
+	public final static native void delete_btNNCGConstraintSolver (long jarg1);
+
+	public final static native long new_btConstraintSolverPoolMt__SWIG_0 (int jarg1);
+
+	public final static native long new_btConstraintSolverPoolMt__SWIG_1 (long jarg1, int jarg2);
+
+	public final static native void delete_btConstraintSolverPoolMt (long jarg1);
+
+	public final static native long btDiscreteDynamicsWorldMt_operatorNew__SWIG_0 (long jarg1, btDiscreteDynamicsWorldMt jarg1_,
+		long jarg2);
+
+	public final static native void btDiscreteDynamicsWorldMt_operatorDelete__SWIG_0 (long jarg1, btDiscreteDynamicsWorldMt jarg1_,
+		long jarg2);
+
+	public final static native long btDiscreteDynamicsWorldMt_operatorNew__SWIG_1 (long jarg1, btDiscreteDynamicsWorldMt jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btDiscreteDynamicsWorldMt_operatorDelete__SWIG_1 (long jarg1, btDiscreteDynamicsWorldMt jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btDiscreteDynamicsWorldMt_operatorNewArray__SWIG_0 (long jarg1,
+		btDiscreteDynamicsWorldMt jarg1_, long jarg2);
+
+	public final static native void btDiscreteDynamicsWorldMt_operatorDeleteArray__SWIG_0 (long jarg1,
+		btDiscreteDynamicsWorldMt jarg1_, long jarg2);
+
+	public final static native long btDiscreteDynamicsWorldMt_operatorNewArray__SWIG_1 (long jarg1,
+		btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
+
+	public final static native void btDiscreteDynamicsWorldMt_operatorDeleteArray__SWIG_1 (long jarg1,
+		btDiscreteDynamicsWorldMt jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btDiscreteDynamicsWorldMt (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btConstraintSolverPoolMt jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btDiscreteDynamicsWorldMt (long jarg1);
+
+	public final static native void btSimulationIslandManagerMt_Island_bodyArray_set (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, long jarg2, btCollisionObjectArray jarg2_);
+
+	public final static native long btSimulationIslandManagerMt_Island_bodyArray_get (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_Island_manifoldArray_set (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, long jarg2, btPersistentManifoldArray jarg2_);
+
+	public final static native long btSimulationIslandManagerMt_Island_manifoldArray_get (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_Island_constraintArray_set (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, long jarg2);
+
+	public final static native long btSimulationIslandManagerMt_Island_constraintArray_get (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_Island_id_set (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, int jarg2);
+
+	public final static native int btSimulationIslandManagerMt_Island_id_get (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_Island_isSleeping_set (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, boolean jarg2);
+
+	public final static native boolean btSimulationIslandManagerMt_Island_isSleeping_get (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_Island_append (long jarg1,
+		btSimulationIslandManagerMt.Island jarg1_, long jarg2, btSimulationIslandManagerMt.Island jarg2_);
+
+	public final static native long new_btSimulationIslandManagerMt_Island ();
+
+	public final static native void delete_btSimulationIslandManagerMt_Island (long jarg1);
+
+	public final static native void delete_btSimulationIslandManagerMt_IslandCallback (long jarg1);
+
+	public final static native void btSimulationIslandManagerMt_IslandCallback_processIsland (long jarg1,
+		btSimulationIslandManagerMt.IslandCallback jarg1_, long jarg2, int jarg3, long jarg4, int jarg5, long jarg6, int jarg7,
+		int jarg8);
+
+	public final static native void btSimulationIslandManagerMt_serialIslandDispatch (long jarg1, long jarg2,
+		btSimulationIslandManagerMt.IslandCallback jarg2_);
+
+	public final static native void btSimulationIslandManagerMt_parallelIslandDispatch (long jarg1, long jarg2,
+		btSimulationIslandManagerMt.IslandCallback jarg2_);
+
+	public final static native long new_btSimulationIslandManagerMt ();
+
+	public final static native void delete_btSimulationIslandManagerMt (long jarg1);
+
+	public final static native void btSimulationIslandManagerMt_buildAndProcessIslands (long jarg1,
+		btSimulationIslandManagerMt jarg1_, long jarg2, btDispatcher jarg2_, long jarg3, btCollisionWorld jarg3_, long jarg4,
+		long jarg5, btSimulationIslandManagerMt.IslandCallback jarg5_);
+
+	public final static native void btSimulationIslandManagerMt_buildIslands (long jarg1, btSimulationIslandManagerMt jarg1_,
+		long jarg2, btDispatcher jarg2_, long jarg3, btCollisionWorld jarg3_);
+
+	public final static native int btSimulationIslandManagerMt_getMinimumSolverBatchSize (long jarg1,
+		btSimulationIslandManagerMt jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_setMinimumSolverBatchSize (long jarg1,
+		btSimulationIslandManagerMt jarg1_, int jarg2);
+
+	public final static native long btSimulationIslandManagerMt_getIslandDispatchFunction (long jarg1,
+		btSimulationIslandManagerMt jarg1_);
+
+	public final static native void btSimulationIslandManagerMt_setIslandDispatchFunction (long jarg1,
+		btSimulationIslandManagerMt jarg1_, long jarg2);
+
+	public final static native long btMultiBody_operatorNew__SWIG_0 (long jarg1, btMultiBody jarg1_, long jarg2);
+
+	public final static native void btMultiBody_operatorDelete__SWIG_0 (long jarg1, btMultiBody jarg1_, long jarg2);
+
+	public final static native long btMultiBody_operatorNew__SWIG_1 (long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBody_operatorDelete__SWIG_1 (long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
+
+	public final static native long btMultiBody_operatorNewArray__SWIG_0 (long jarg1, btMultiBody jarg1_, long jarg2);
+
+	public final static native void btMultiBody_operatorDeleteArray__SWIG_0 (long jarg1, btMultiBody jarg1_, long jarg2);
+
+	public final static native long btMultiBody_operatorNewArray__SWIG_1 (long jarg1, btMultiBody jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBody_operatorDeleteArray__SWIG_1 (long jarg1, btMultiBody jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long new_btMultiBody__SWIG_0 (int jarg1, float jarg2, Vector3 jarg3, boolean jarg4, boolean jarg5,
+		boolean jarg6);
+
+	public final static native long new_btMultiBody__SWIG_1 (int jarg1, float jarg2, Vector3 jarg3, boolean jarg4, boolean jarg5);
+
+	public final static native void delete_btMultiBody (long jarg1);
+
+	public final static native void btMultiBody_setupFixed__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
+
+	public final static native void btMultiBody_setupFixed__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
+
+	public final static native void btMultiBody_setupPrismatic (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, boolean jarg10);
+
+	public final static native void btMultiBody_setupRevolute__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, boolean jarg10);
+
+	public final static native void btMultiBody_setupRevolute__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9);
+
+	public final static native void btMultiBody_setupSpherical__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
+
+	public final static native void btMultiBody_setupSpherical__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
+
+	public final static native void btMultiBody_setupPlanar__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8, boolean jarg9);
+
+	public final static native void btMultiBody_setupPlanar__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		Vector3 jarg4, int jarg5, Quaternion jarg6, Vector3 jarg7, Vector3 jarg8);
+
+	public final static native long btMultiBody_getLinkConst (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native long btMultiBody_getLink (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBody_setBaseCollider (long jarg1, btMultiBody jarg1_, long jarg2,
+		btMultiBodyLinkCollider jarg2_);
+
+	public final static native long btMultiBody_getBaseColliderConst (long jarg1, btMultiBody jarg1_);
+
+	public final static native long btMultiBody_getBaseCollider (long jarg1, btMultiBody jarg1_);
+
+	public final static native long btMultiBody_getLinkCollider (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native int btMultiBody_getParent (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native int btMultiBody_getNumLinks (long jarg1, btMultiBody jarg1_);
+
+	public final static native int btMultiBody_getNumDofs (long jarg1, btMultiBody jarg1_);
+
+	public final static native int btMultiBody_getNumPosVars (long jarg1, btMultiBody jarg1_);
+
+	public final static native float btMultiBody_getBaseMass (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getBaseInertia (long jarg1, btMultiBody jarg1_);
+
+	public final static native float btMultiBody_getLinkMass (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native Vector3 btMultiBody_getLinkInertia (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBody_setBaseMass (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native void btMultiBody_setBaseInertia (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btMultiBody_getBasePos (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getBaseVel (long jarg1, btMultiBody jarg1_);
+
+	public final static native Quaternion btMultiBody_getWorldToBaseRot (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getBaseOmega (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setBasePos (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_setBaseWorldTransform (long jarg1, btMultiBody jarg1_, Matrix4 jarg2);
+
+	public final static native Matrix4 btMultiBody_getBaseWorldTransform (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setBaseVel (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_setWorldToBaseRot (long jarg1, btMultiBody jarg1_, Quaternion jarg2);
+
+	public final static native void btMultiBody_setBaseOmega (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native float btMultiBody_getJointPos (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native float btMultiBody_getJointVel (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getJointVelMultiDof (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getJointPosMultiDof (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getJointVelMultiDofConst (long jarg1, btMultiBody jarg1_,
+		int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getJointPosMultiDofConst (long jarg1, btMultiBody jarg1_,
+		int jarg2);
+
+	public final static native void btMultiBody_setJointPos (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
+
+	public final static native void btMultiBody_setJointVel (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
+
+	public final static native void btMultiBody_setJointPosMultiDof (long jarg1, btMultiBody jarg1_, int jarg2,
+		java.nio.FloatBuffer jarg3);
+
+	public final static native void btMultiBody_setJointVelMultiDof (long jarg1, btMultiBody jarg1_, int jarg2,
+		java.nio.FloatBuffer jarg3);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getVelocityVector (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getRVector (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native Quaternion btMultiBody_getParentToLocalRot (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native Vector3 btMultiBody_localPosToWorld (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native Vector3 btMultiBody_localDirToWorld (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native Vector3 btMultiBody_worldPosToLocal (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native Vector3 btMultiBody_worldDirToLocal (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native Matrix3 btMultiBody_localFrameToWorld (long jarg1, btMultiBody jarg1_, int jarg2, Matrix3 jarg3);
+
+	public final static native float btMultiBody_getKineticEnergy (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getAngularMomentum (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_clearForcesAndTorques (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_clearConstraintForces (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_clearVelocities (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_addBaseForce (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_addBaseTorque (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_addLinkForce (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native void btMultiBody_addLinkTorque (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native void btMultiBody_addBaseConstraintForce (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_addBaseConstraintTorque (long jarg1, btMultiBody jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBody_addLinkConstraintForce (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native void btMultiBody_addLinkConstraintTorque (long jarg1, btMultiBody jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native void btMultiBody_addJointTorque (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3);
+
+	public final static native void btMultiBody_addJointTorqueMultiDof__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2,
+		int jarg3, float jarg4);
+
+	public final static native void btMultiBody_addJointTorqueMultiDof__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2,
+		java.nio.FloatBuffer jarg3);
+
+	public final static native Vector3 btMultiBody_getBaseForce (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getBaseTorque (long jarg1, btMultiBody jarg1_);
+
+	public final static native Vector3 btMultiBody_getLinkForce (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native Vector3 btMultiBody_getLinkTorque (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native float btMultiBody_getJointTorque (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBody_getJointTorqueMultiDof (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBody_computeAccelerationsArticulatedBodyAlgorithmMultiDof__SWIG_0 (long jarg1,
+		btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5,
+		boolean jarg6);
+
+	public final static native void btMultiBody_computeAccelerationsArticulatedBodyAlgorithmMultiDof__SWIG_1 (long jarg1,
+		btMultiBody jarg1_, float jarg2, long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5);
+
+	public final static native void btMultiBody_stepVelocitiesMultiDof__SWIG_0 (long jarg1, btMultiBody jarg1_, float jarg2,
+		long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5, boolean jarg6);
+
+	public final static native void btMultiBody_stepVelocitiesMultiDof__SWIG_1 (long jarg1, btMultiBody jarg1_, float jarg2,
+		long jarg3, btScalarArray jarg3_, long jarg4, btVector3Array jarg4_, long jarg5);
+
+	public final static native void btMultiBody_calcAccelerationDeltasMultiDof (long jarg1, btMultiBody jarg1_,
+		java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, long jarg4, btScalarArray jarg4_, long jarg5,
+		btVector3Array jarg5_);
+
+	public final static native void btMultiBody_applyDeltaVeeMultiDof2 (long jarg1, btMultiBody jarg1_, java.nio.FloatBuffer jarg2,
+		float jarg3);
+
+	public final static native void btMultiBody_processDeltaVeeMultiDof2 (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_applyDeltaVeeMultiDof (long jarg1, btMultiBody jarg1_, java.nio.FloatBuffer jarg2,
+		float jarg3);
+
+	public final static native void btMultiBody_stepPositionsMultiDof__SWIG_0 (long jarg1, btMultiBody jarg1_, float jarg2,
+		java.nio.FloatBuffer jarg3, java.nio.FloatBuffer jarg4);
+
+	public final static native void btMultiBody_stepPositionsMultiDof__SWIG_1 (long jarg1, btMultiBody jarg1_, float jarg2,
+		java.nio.FloatBuffer jarg3);
+
+	public final static native void btMultiBody_stepPositionsMultiDof__SWIG_2 (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native void btMultiBody_fillContactJacobianMultiDof (long jarg1, btMultiBody jarg1_, int jarg2,
+		Vector3 jarg3, Vector3 jarg4, java.nio.FloatBuffer jarg5, long jarg6, btScalarArray jarg6_, long jarg7,
+		btVector3Array jarg7_, long jarg8);
+
+	public final static native void btMultiBody_fillConstraintJacobianMultiDof (long jarg1, btMultiBody jarg1_, int jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, java.nio.FloatBuffer jarg6, long jarg7, btScalarArray jarg7_, long jarg8,
+		btVector3Array jarg8_, long jarg9);
+
+	public final static native void btMultiBody_setCanSleep (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native boolean btMultiBody_getCanSleep (long jarg1, btMultiBody jarg1_);
+
+	public final static native boolean btMultiBody_isAwake (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_wakeUp (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_goToSleep (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_checkMotionAndSleepIfRequired (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native boolean btMultiBody_hasFixedBase (long jarg1, btMultiBody jarg1_);
+
+	public final static native int btMultiBody_getCompanionId (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setCompanionId (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBody_setNumLinks (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native float btMultiBody_getLinearDamping (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setLinearDamping (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native float btMultiBody_getAngularDamping (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setAngularDamping (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native boolean btMultiBody_getUseGyroTerm (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setUseGyroTerm (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native float btMultiBody_getMaxCoordinateVelocity (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setMaxCoordinateVelocity (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native float btMultiBody_getMaxAppliedImpulse (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setMaxAppliedImpulse (long jarg1, btMultiBody jarg1_, float jarg2);
+
+	public final static native void btMultiBody_setHasSelfCollision (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native boolean btMultiBody_hasSelfCollision (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_finalizeMultiDof (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_useRK4Integration (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native boolean btMultiBody_isUsingRK4Integration (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_useGlobalVelocities (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native boolean btMultiBody_isUsingGlobalVelocities (long jarg1, btMultiBody jarg1_);
+
+	public final static native boolean btMultiBody_isPosUpdated (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setPosUpdated (long jarg1, btMultiBody jarg1_, boolean jarg2);
+
+	public final static native boolean btMultiBody_internalNeedsJointFeedback (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_forwardKinematics (long jarg1, btMultiBody jarg1_, long jarg2, long jarg3,
+		btVector3Array jarg3_);
+
+	public final static native void btMultiBody_compTreeLinkVelocities (long jarg1, btMultiBody jarg1_, long jarg2,
+		btVector3 jarg2_, long jarg3, btVector3 jarg3_);
+
+	public final static native void btMultiBody_updateCollisionObjectWorldTransforms (long jarg1, btMultiBody jarg1_, long jarg2,
+		long jarg3, btVector3Array jarg3_);
+
+	public final static native int btMultiBody_calculateSerializeBufferSize (long jarg1, btMultiBody jarg1_);
+
+	public final static native String btMultiBody_serialize (long jarg1, btMultiBody jarg1_, long jarg2, long jarg3,
+		btSerializer jarg3_);
+
+	public final static native String btMultiBody_getBaseName (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setBaseName (long jarg1, btMultiBody jarg1_, String jarg2);
+
+	public final static native long btMultiBody_getUserPointer (long jarg1, btMultiBody jarg1_);
+
+	public final static native int btMultiBody_getUserIndex (long jarg1, btMultiBody jarg1_);
+
+	public final static native int btMultiBody_getUserIndex2 (long jarg1, btMultiBody jarg1_);
+
+	public final static native void btMultiBody_setUserPointer (long jarg1, btMultiBody jarg1_, long jarg2);
+
+	public final static native void btMultiBody_setUserIndex (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBody_setUserIndex2 (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native void btMultiBodyLinkDoubleData_zeroRotParentToThis_set (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_, long jarg2, btQuaternionDoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_zeroRotParentToThis_get (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_parentComToThisComOffset_set (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_parentComToThisComOffset_get (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_thisPivotToThisComOffset_set (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_thisPivotToThisComOffset_get (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointAxisTop_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_jointAxisTop_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointAxisBottom_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_jointAxisBottom_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_linkInertia_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		long jarg2, btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_linkInertia_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_linkMass_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_linkMass_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_parentIndex_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkDoubleData_parentIndex_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointType_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkDoubleData_jointType_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_dofCount_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkDoubleData_dofCount_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_posVarCount_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkDoubleData_posVarCount_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointPos_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double[] jarg2);
+
+	public final static native double[] btMultiBodyLinkDoubleData_jointPos_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointVel_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double[] jarg2);
+
+	public final static native double[] btMultiBodyLinkDoubleData_jointVel_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointTorque_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double[] jarg2);
+
+	public final static native double[] btMultiBodyLinkDoubleData_jointTorque_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointDamping_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointDamping_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointFriction_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointFriction_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointLowerLimit_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointLowerLimit_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointUpperLimit_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointUpperLimit_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointMaxForce_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointMaxForce_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointMaxVelocity_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		double jarg2);
+
+	public final static native double btMultiBodyLinkDoubleData_jointMaxVelocity_get (long jarg1,
+		btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_linkName_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkDoubleData_linkName_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_jointName_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkDoubleData_jointName_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_linkCollider_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		long jarg2, btCollisionObjectDoubleData jarg2_);
+
+	public final static native long btMultiBodyLinkDoubleData_linkCollider_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native void btMultiBodyLinkDoubleData_paddingPtr_set (long jarg1, btMultiBodyLinkDoubleData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkDoubleData_paddingPtr_get (long jarg1, btMultiBodyLinkDoubleData jarg1_);
+
+	public final static native long new_btMultiBodyLinkDoubleData ();
+
+	public final static native void delete_btMultiBodyLinkDoubleData (long jarg1);
+
+	public final static native void btMultiBodyLinkFloatData_zeroRotParentToThis_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		long jarg2, btQuaternionFloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_zeroRotParentToThis_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_parentComToThisComOffset_set (long jarg1,
+		btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_parentComToThisComOffset_get (long jarg1,
+		btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_thisPivotToThisComOffset_set (long jarg1,
+		btMultiBodyLinkFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_thisPivotToThisComOffset_get (long jarg1,
+		btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointAxisTop_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_jointAxisTop_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointAxisBottom_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_jointAxisBottom_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_linkInertia_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		long jarg2, btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_linkInertia_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_dofCount_set (long jarg1, btMultiBodyLinkFloatData jarg1_, int jarg2);
+
+	public final static native int btMultiBodyLinkFloatData_dofCount_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_linkMass_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_linkMass_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_parentIndex_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkFloatData_parentIndex_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointType_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkFloatData_jointType_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointPos_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float[] jarg2);
+
+	public final static native float[] btMultiBodyLinkFloatData_jointPos_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointVel_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float[] jarg2);
+
+	public final static native float[] btMultiBodyLinkFloatData_jointVel_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointTorque_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float[] jarg2);
+
+	public final static native float[] btMultiBodyLinkFloatData_jointTorque_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_posVarCount_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyLinkFloatData_posVarCount_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointDamping_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointDamping_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointFriction_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointFriction_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointLowerLimit_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointLowerLimit_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointUpperLimit_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointUpperLimit_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointMaxForce_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointMaxForce_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointMaxVelocity_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyLinkFloatData_jointMaxVelocity_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_linkName_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkFloatData_linkName_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_jointName_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkFloatData_jointName_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_linkCollider_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		long jarg2, btCollisionObjectFloatData jarg2_);
+
+	public final static native long btMultiBodyLinkFloatData_linkCollider_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native void btMultiBodyLinkFloatData_paddingPtr_set (long jarg1, btMultiBodyLinkFloatData jarg1_,
+		String jarg2);
+
+	public final static native String btMultiBodyLinkFloatData_paddingPtr_get (long jarg1, btMultiBodyLinkFloatData jarg1_);
+
+	public final static native long new_btMultiBodyLinkFloatData ();
+
+	public final static native void delete_btMultiBodyLinkFloatData (long jarg1);
+
+	public final static native void btMultiBodyDoubleData_baseWorldTransform_set (long jarg1, btMultiBodyDoubleData jarg1_,
+		long jarg2, btTransformDoubleData jarg2_);
+
+	public final static native long btMultiBodyDoubleData_baseWorldTransform_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_baseInertia_set (long jarg1, btMultiBodyDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btMultiBodyDoubleData_baseInertia_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_baseMass_set (long jarg1, btMultiBodyDoubleData jarg1_, double jarg2);
+
+	public final static native double btMultiBodyDoubleData_baseMass_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_baseName_set (long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
+
+	public final static native String btMultiBodyDoubleData_baseName_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_links_set (long jarg1, btMultiBodyDoubleData jarg1_, long jarg2,
+		btMultiBodyLinkDoubleData jarg2_);
+
+	public final static native long btMultiBodyDoubleData_links_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_baseCollider_set (long jarg1, btMultiBodyDoubleData jarg1_, long jarg2,
+		btCollisionObjectDoubleData jarg2_);
+
+	public final static native long btMultiBodyDoubleData_baseCollider_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_paddingPtr_set (long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
+
+	public final static native String btMultiBodyDoubleData_paddingPtr_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_numLinks_set (long jarg1, btMultiBodyDoubleData jarg1_, int jarg2);
+
+	public final static native int btMultiBodyDoubleData_numLinks_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native void btMultiBodyDoubleData_padding_set (long jarg1, btMultiBodyDoubleData jarg1_, String jarg2);
+
+	public final static native String btMultiBodyDoubleData_padding_get (long jarg1, btMultiBodyDoubleData jarg1_);
+
+	public final static native long new_btMultiBodyDoubleData ();
+
+	public final static native void delete_btMultiBodyDoubleData (long jarg1);
+
+	public final static native void btMultiBodyFloatData_baseName_set (long jarg1, btMultiBodyFloatData jarg1_, String jarg2);
+
+	public final static native String btMultiBodyFloatData_baseName_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_links_set (long jarg1, btMultiBodyFloatData jarg1_, long jarg2,
+		btMultiBodyLinkFloatData jarg2_);
+
+	public final static native long btMultiBodyFloatData_links_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_baseCollider_set (long jarg1, btMultiBodyFloatData jarg1_, long jarg2,
+		btCollisionObjectFloatData jarg2_);
+
+	public final static native long btMultiBodyFloatData_baseCollider_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_baseWorldTransform_set (long jarg1, btMultiBodyFloatData jarg1_,
+		long jarg2, btTransformFloatData jarg2_);
+
+	public final static native long btMultiBodyFloatData_baseWorldTransform_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_baseInertia_set (long jarg1, btMultiBodyFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btMultiBodyFloatData_baseInertia_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_baseMass_set (long jarg1, btMultiBodyFloatData jarg1_, float jarg2);
+
+	public final static native float btMultiBodyFloatData_baseMass_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native void btMultiBodyFloatData_numLinks_set (long jarg1, btMultiBodyFloatData jarg1_, int jarg2);
+
+	public final static native int btMultiBodyFloatData_numLinks_get (long jarg1, btMultiBodyFloatData jarg1_);
+
+	public final static native long new_btMultiBodyFloatData ();
+
+	public final static native void delete_btMultiBodyFloatData (long jarg1);
+
+	public final static native void btMultiBodyJacobianData_jacobians_set (long jarg1, btMultiBodyJacobianData jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btMultiBodyJacobianData_jacobians_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_deltaVelocitiesUnitImpulse_set (long jarg1,
+		btMultiBodyJacobianData jarg1_, long jarg2, btScalarArray jarg2_);
+
+	public final static native long btMultiBodyJacobianData_deltaVelocitiesUnitImpulse_get (long jarg1,
+		btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_deltaVelocities_set (long jarg1, btMultiBodyJacobianData jarg1_,
+		long jarg2, btScalarArray jarg2_);
+
+	public final static native long btMultiBodyJacobianData_deltaVelocities_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_scratch_r_set (long jarg1, btMultiBodyJacobianData jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btMultiBodyJacobianData_scratch_r_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_scratch_v_set (long jarg1, btMultiBodyJacobianData jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long btMultiBodyJacobianData_scratch_v_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_scratch_m_set (long jarg1, btMultiBodyJacobianData jarg1_, long jarg2);
+
+	public final static native long btMultiBodyJacobianData_scratch_m_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_solverBodyPool_set (long jarg1, btMultiBodyJacobianData jarg1_,
+		long jarg2);
+
+	public final static native long btMultiBodyJacobianData_solverBodyPool_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native void btMultiBodyJacobianData_fixedBodyId_set (long jarg1, btMultiBodyJacobianData jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodyJacobianData_fixedBodyId_get (long jarg1, btMultiBodyJacobianData jarg1_);
+
+	public final static native long new_btMultiBodyJacobianData ();
+
+	public final static native void delete_btMultiBodyJacobianData (long jarg1);
+
+	public final static native long btMultiBodyConstraint_operatorNew__SWIG_0 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btMultiBodyConstraint_operatorDelete__SWIG_0 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btMultiBodyConstraint_operatorNew__SWIG_1 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btMultiBodyConstraint_operatorDelete__SWIG_1 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btMultiBodyConstraint_operatorNewArray__SWIG_0 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2);
+
+	public final static native void btMultiBodyConstraint_operatorDeleteArray__SWIG_0 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2);
+
+	public final static native long btMultiBodyConstraint_operatorNewArray__SWIG_1 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btMultiBodyConstraint_operatorDeleteArray__SWIG_1 (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void delete_btMultiBodyConstraint (long jarg1);
+
+	public final static native void btMultiBodyConstraint_updateJacobianSizes (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native void btMultiBodyConstraint_allocateJacobiansMultiDof (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native void btMultiBodyConstraint_setFrameInB (long jarg1, btMultiBodyConstraint jarg1_, Matrix3 jarg2);
+
+	public final static native void btMultiBodyConstraint_setPivotInB (long jarg1, btMultiBodyConstraint jarg1_, Vector3 jarg2);
+
+	public final static native void btMultiBodyConstraint_finalizeMultiDof (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native int btMultiBodyConstraint_getIslandIdA (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native int btMultiBodyConstraint_getIslandIdB (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native void btMultiBodyConstraint_createConstraintRows (long jarg1, btMultiBodyConstraint jarg1_,
+		long jarg2, long jarg3, btMultiBodyJacobianData jarg3_, long jarg4, btContactSolverInfo jarg4_);
+
+	public final static native int btMultiBodyConstraint_getNumRows (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native long btMultiBodyConstraint_getMultiBodyA (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native long btMultiBodyConstraint_getMultiBodyB (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native void btMultiBodyConstraint_internalSetAppliedImpulse (long jarg1, btMultiBodyConstraint jarg1_,
+		int jarg2, float jarg3);
+
+	public final static native float btMultiBodyConstraint_getAppliedImpulse (long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
+
+	public final static native float btMultiBodyConstraint_getPosition (long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
+
+	public final static native void btMultiBodyConstraint_setPosition (long jarg1, btMultiBodyConstraint jarg1_, int jarg2,
+		float jarg3);
+
+	public final static native boolean btMultiBodyConstraint_isUnilateral (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianA (long jarg1, btMultiBodyConstraint jarg1_,
+		int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianAConst (long jarg1, btMultiBodyConstraint jarg1_,
+		int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianB (long jarg1, btMultiBodyConstraint jarg1_,
+		int jarg2);
+
+	public final static native java.nio.FloatBuffer btMultiBodyConstraint_jacobianBConst (long jarg1, btMultiBodyConstraint jarg1_,
+		int jarg2);
+
+	public final static native float btMultiBodyConstraint_getMaxAppliedImpulse (long jarg1, btMultiBodyConstraint jarg1_);
+
+	public final static native void btMultiBodyConstraint_setMaxAppliedImpulse (long jarg1, btMultiBodyConstraint jarg1_,
+		float jarg2);
+
+	public final static native void btMultiBodyConstraint_debugDraw (long jarg1, btMultiBodyConstraint jarg1_, long jarg2,
+		btIDebugDraw jarg2_);
+
+	public final static native void btMultiBodyConstraint_setGearRatio (long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
+
+	public final static native void btMultiBodyConstraint_setGearAuxLink (long jarg1, btMultiBodyConstraint jarg1_, int jarg2);
+
+	public final static native void btMultiBodyConstraint_setRelativePositionTarget (long jarg1, btMultiBodyConstraint jarg1_,
+		float jarg2);
+
+	public final static native void btMultiBodyConstraint_setErp (long jarg1, btMultiBodyConstraint jarg1_, float jarg2);
+
+	public final static native long new_btMultiBodyGearConstraint (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8);
+
+	public final static native void delete_btMultiBodyGearConstraint (long jarg1);
+
+	public final static native Vector3 btMultiBodyGearConstraint_getPivotInA (long jarg1, btMultiBodyGearConstraint jarg1_);
+
+	public final static native void btMultiBodyGearConstraint_setPivotInA (long jarg1, btMultiBodyGearConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native Vector3 btMultiBodyGearConstraint_getPivotInB (long jarg1, btMultiBodyGearConstraint jarg1_);
+
+	public final static native Matrix3 btMultiBodyGearConstraint_getFrameInA (long jarg1, btMultiBodyGearConstraint jarg1_);
+
+	public final static native void btMultiBodyGearConstraint_setFrameInA (long jarg1, btMultiBodyGearConstraint jarg1_,
+		Matrix3 jarg2);
+
+	public final static native Matrix3 btMultiBodyGearConstraint_getFrameInB (long jarg1, btMultiBodyGearConstraint jarg1_);
+
+	public final static native long btMultiBodyConstraintSolver_operatorNew__SWIG_0 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2);
+
+	public final static native void btMultiBodyConstraintSolver_operatorDelete__SWIG_0 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btMultiBodyConstraintSolver_operatorNew__SWIG_1 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBodyConstraintSolver_operatorDelete__SWIG_1 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native long btMultiBodyConstraintSolver_operatorNewArray__SWIG_0 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2);
+
+	public final static native void btMultiBodyConstraintSolver_operatorDeleteArray__SWIG_0 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2);
+
+	public final static native long btMultiBodyConstraintSolver_operatorNewArray__SWIG_1 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBodyConstraintSolver_operatorDeleteArray__SWIG_1 (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, long jarg3);
+
+	public final static native float btMultiBodyConstraintSolver_solveGroupCacheFriendlyFinish (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, int jarg3, long jarg4, btContactSolverInfo jarg4_);
+
+	public final static native void btMultiBodyConstraintSolver_solveMultiBodyGroup (long jarg1,
+		btMultiBodyConstraintSolver jarg1_, long jarg2, int jarg3, long jarg4, int jarg5, long jarg6, int jarg7, long jarg8,
+		int jarg9, long jarg10, btContactSolverInfo jarg10_, long jarg11, btIDebugDraw jarg11_, long jarg12, btDispatcher jarg12_);
+
+	public final static native long new_btMultiBodyConstraintSolver ();
+
+	public final static native void delete_btMultiBodyConstraintSolver (long jarg1);
+
+	public final static native long new_btMultiBodyDynamicsWorld (long jarg1, btDispatcher jarg1_, long jarg2,
+		btBroadphaseInterface jarg2_, long jarg3, btMultiBodyConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
+
+	public final static native void delete_btMultiBodyDynamicsWorld (long jarg1);
+
+	public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_0 (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btMultiBody jarg2_, int jarg3, int jarg4);
+
+	public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_1 (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btMultiBody jarg2_, int jarg3);
+
+	public final static native void btMultiBodyDynamicsWorld_addMultiBody__SWIG_2 (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btMultiBody jarg2_);
+
+	public final static native void btMultiBodyDynamicsWorld_removeMultiBody (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btMultiBody jarg2_);
+
+	public final static native int btMultiBodyDynamicsWorld_getNumMultibodies (long jarg1, btMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long btMultiBodyDynamicsWorld_getMultiBody (long jarg1, btMultiBodyDynamicsWorld jarg1_, int jarg2);
+
+	public final static native long btMultiBodyDynamicsWorld_getMultiBodyConst (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		int jarg2);
+
+	public final static native void btMultiBodyDynamicsWorld_addMultiBodyConstraint (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		long jarg2, btMultiBodyConstraint jarg2_);
+
+	public final static native int btMultiBodyDynamicsWorld_getNumMultiBodyConstraints (long jarg1,
+		btMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long btMultiBodyDynamicsWorld_getMultiBodyConstraint (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		int jarg2);
+
+	public final static native long btMultiBodyDynamicsWorld_getMultiBodyConstraintConst (long jarg1,
+		btMultiBodyDynamicsWorld jarg1_, int jarg2);
+
+	public final static native void btMultiBodyDynamicsWorld_removeMultiBodyConstraint (long jarg1,
+		btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
+
+	public final static native void btMultiBodyDynamicsWorld_integrateTransforms (long jarg1, btMultiBodyDynamicsWorld jarg1_,
+		float jarg2);
+
+	public final static native void btMultiBodyDynamicsWorld_debugDrawMultiBodyConstraint (long jarg1,
+		btMultiBodyDynamicsWorld jarg1_, long jarg2, btMultiBodyConstraint jarg2_);
+
+	public final static native void btMultiBodyDynamicsWorld_forwardKinematics (long jarg1, btMultiBodyDynamicsWorld jarg1_);
+
+	public final static native void btMultiBodyDynamicsWorld_clearMultiBodyConstraintForces (long jarg1,
+		btMultiBodyDynamicsWorld jarg1_);
+
+	public final static native void btMultiBodyDynamicsWorld_clearMultiBodyForces (long jarg1, btMultiBodyDynamicsWorld jarg1_);
+
+	public final static native long new_btMultiBodyFixedConstraint__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5, Matrix3 jarg6, Matrix3 jarg7);
+
+	public final static native long new_btMultiBodyFixedConstraint__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8);
+
+	public final static native void delete_btMultiBodyFixedConstraint (long jarg1);
+
+	public final static native Vector3 btMultiBodyFixedConstraint_getPivotInA (long jarg1, btMultiBodyFixedConstraint jarg1_);
+
+	public final static native void btMultiBodyFixedConstraint_setPivotInA (long jarg1, btMultiBodyFixedConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native Vector3 btMultiBodyFixedConstraint_getPivotInB (long jarg1, btMultiBodyFixedConstraint jarg1_);
+
+	public final static native Matrix3 btMultiBodyFixedConstraint_getFrameInA (long jarg1, btMultiBodyFixedConstraint jarg1_);
+
+	public final static native void btMultiBodyFixedConstraint_setFrameInA (long jarg1, btMultiBodyFixedConstraint jarg1_,
+		Matrix3 jarg2);
+
+	public final static native Matrix3 btMultiBodyFixedConstraint_getFrameInB (long jarg1, btMultiBodyFixedConstraint jarg1_);
+
+	public final static native void btMultiBodyJointFeedback_reactionForces_set (long jarg1, btMultiBodyJointFeedback jarg1_,
+		long jarg2, btSpatialForceVector jarg2_);
+
+	public final static native long btMultiBodyJointFeedback_reactionForces_get (long jarg1, btMultiBodyJointFeedback jarg1_);
+
+	public final static native long new_btMultiBodyJointFeedback ();
+
+	public final static native void delete_btMultiBodyJointFeedback (long jarg1);
+
+	public final static native long new_btMultiBodyJointLimitConstraint (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void delete_btMultiBodyJointLimitConstraint (long jarg1);
+
+	public final static native long new_btMultiBodyJointMotor__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, float jarg3,
+		float jarg4);
+
+	public final static native long new_btMultiBodyJointMotor__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, int jarg3,
+		float jarg4, float jarg5);
+
+	public final static native void delete_btMultiBodyJointMotor (long jarg1);
+
+	public final static native void btMultiBodyJointMotor_setVelocityTarget__SWIG_0 (long jarg1, btMultiBodyJointMotor jarg1_,
+		float jarg2, float jarg3);
+
+	public final static native void btMultiBodyJointMotor_setVelocityTarget__SWIG_1 (long jarg1, btMultiBodyJointMotor jarg1_,
+		float jarg2);
+
+	public final static native void btMultiBodyJointMotor_setPositionTarget__SWIG_0 (long jarg1, btMultiBodyJointMotor jarg1_,
+		float jarg2, float jarg3);
+
+	public final static native void btMultiBodyJointMotor_setPositionTarget__SWIG_1 (long jarg1, btMultiBodyJointMotor jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodyJointMotor_getErp (long jarg1, btMultiBodyJointMotor jarg1_);
+
+	public final static native void btMultiBodyJointMotor_setRhsClamp (long jarg1, btMultiBodyJointMotor jarg1_, float jarg2);
+
+	public final static native long btMultibodyLink_operatorNew__SWIG_0 (long jarg1, btMultibodyLink jarg1_, long jarg2);
+
+	public final static native void btMultibodyLink_operatorDelete__SWIG_0 (long jarg1, btMultibodyLink jarg1_, long jarg2);
+
+	public final static native long btMultibodyLink_operatorNew__SWIG_1 (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btMultibodyLink_operatorDelete__SWIG_1 (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native long btMultibodyLink_operatorNewArray__SWIG_0 (long jarg1, btMultibodyLink jarg1_, long jarg2);
+
+	public final static native void btMultibodyLink_operatorDeleteArray__SWIG_0 (long jarg1, btMultibodyLink jarg1_, long jarg2);
+
+	public final static native long btMultibodyLink_operatorNewArray__SWIG_1 (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btMultibodyLink_operatorDeleteArray__SWIG_1 (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btMultibodyLink_mass_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_mass_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_inertiaLocal_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_inertiaLocal_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_parent_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_parent_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_zeroRotParentToThis_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btQuaternion jarg2_);
+
+	public final static native long btMultibodyLink_zeroRotParentToThis_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_dVector_set (long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_dVector_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_eVector_set (long jarg1, btMultibodyLink jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_eVector_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_absFrameTotVelocity_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btSpatialMotionVector jarg2_);
+
+	public final static native long btMultibodyLink_absFrameTotVelocity_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_absFrameLocVelocity_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btSpatialMotionVector jarg2_);
+
+	public final static native long btMultibodyLink_absFrameLocVelocity_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_axes_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btSpatialMotionVector jarg2_);
+
+	public final static native long btMultibodyLink_axes_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_setAxisTop__SWIG_0 (long jarg1, btMultibodyLink jarg1_, int jarg2,
+		Vector3 jarg3);
+
+	public final static native void btMultibodyLink_setAxisBottom__SWIG_0 (long jarg1, btMultibodyLink jarg1_, int jarg2,
+		Vector3 jarg3);
+
+	public final static native void btMultibodyLink_setAxisTop__SWIG_1 (long jarg1, btMultibodyLink jarg1_, int jarg2, float jarg3,
+		float jarg4, float jarg5);
+
+	public final static native void btMultibodyLink_setAxisBottom__SWIG_1 (long jarg1, btMultibodyLink jarg1_, int jarg2,
+		float jarg3, float jarg4, float jarg5);
+
+	public final static native Vector3 btMultibodyLink_getAxisTop (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native Vector3 btMultibodyLink_getAxisBottom (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native void btMultibodyLink_dofOffset_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_dofOffset_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_cfgOffset_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_cfgOffset_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_cachedRotParentToThis_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btQuaternion jarg2_);
+
+	public final static native long btMultibodyLink_cachedRotParentToThis_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_cachedRVector_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_cachedRVector_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_appliedForce_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_appliedForce_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_appliedTorque_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_appliedTorque_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_appliedConstraintForce_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_appliedConstraintForce_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_appliedConstraintTorque_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btMultibodyLink_appliedConstraintTorque_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointPos_set (long jarg1, btMultibodyLink jarg1_, float[] jarg2);
+
+	public final static native float[] btMultibodyLink_jointPos_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointTorque_set (long jarg1, btMultibodyLink jarg1_, float[] jarg2);
+
+	public final static native float[] btMultibodyLink_jointTorque_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_collider_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btMultiBodyLinkCollider jarg2_);
+
+	public final static native long btMultibodyLink_collider_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_flags_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_flags_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_dofCount_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_dofCount_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_posVarCount_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_posVarCount_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointType_set (long jarg1, btMultibodyLink jarg1_, int jarg2);
+
+	public final static native int btMultibodyLink_jointType_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointFeedback_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btMultiBodyJointFeedback jarg2_);
+
+	public final static native long btMultibodyLink_jointFeedback_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_cachedWorldTransform_set (long jarg1, btMultibodyLink jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btMultibodyLink_cachedWorldTransform_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native String btMultibodyLink_linkName_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native String btMultibodyLink_jointName_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_userPtr_set (long jarg1, btMultibodyLink jarg1_, long jarg2);
+
+	public final static native long btMultibodyLink_userPtr_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointDamping_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointDamping_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointFriction_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointFriction_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointLowerLimit_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointLowerLimit_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointUpperLimit_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointUpperLimit_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointMaxForce_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointMaxForce_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void btMultibodyLink_jointMaxVelocity_set (long jarg1, btMultibodyLink jarg1_, float jarg2);
+
+	public final static native float btMultibodyLink_jointMaxVelocity_get (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native long new_btMultibodyLink ();
+
+	public final static native void btMultibodyLink_updateCacheMultiDof__SWIG_0 (long jarg1, btMultibodyLink jarg1_,
+		java.nio.FloatBuffer jarg2);
+
+	public final static native void btMultibodyLink_updateCacheMultiDof__SWIG_1 (long jarg1, btMultibodyLink jarg1_);
+
+	public final static native void delete_btMultibodyLink (long jarg1);
+
+	public final static native void btMultiBodyLinkCollider_multiBody_set (long jarg1, btMultiBodyLinkCollider jarg1_, long jarg2,
+		btMultiBody jarg2_);
+
+	public final static native long btMultiBodyLinkCollider_multiBody_get (long jarg1, btMultiBodyLinkCollider jarg1_);
+
+	public final static native void btMultiBodyLinkCollider_link_set (long jarg1, btMultiBodyLinkCollider jarg1_, int jarg2);
+
+	public final static native int btMultiBodyLinkCollider_link_get (long jarg1, btMultiBodyLinkCollider jarg1_);
+
+	public final static native long new_btMultiBodyLinkCollider (long jarg1, btMultiBody jarg1_, int jarg2);
+
+	public final static native long btMultiBodyLinkCollider_upcast (long jarg1, btCollisionObject jarg1_);
+
+	public final static native long btMultiBodyLinkCollider_upcastConstBtCollisionObject (long jarg1, btCollisionObject jarg1_);
+
+	public final static native void delete_btMultiBodyLinkCollider (long jarg1);
+
+	public final static native long btMultiBodyPoint2Point_operatorNew__SWIG_0 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2);
+
+	public final static native void btMultiBodyPoint2Point_operatorDelete__SWIG_0 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2);
+
+	public final static native long btMultiBodyPoint2Point_operatorNew__SWIG_1 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btMultiBodyPoint2Point_operatorDelete__SWIG_1 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btMultiBodyPoint2Point_operatorNewArray__SWIG_0 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2);
+
+	public final static native void btMultiBodyPoint2Point_operatorDeleteArray__SWIG_0 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2);
+
+	public final static native long btMultiBodyPoint2Point_operatorNewArray__SWIG_1 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btMultiBodyPoint2Point_operatorDeleteArray__SWIG_1 (long jarg1, btMultiBodyPoint2Point jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btMultiBodyPoint2Point__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5);
+
+	public final static native long new_btMultiBodyPoint2Point__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6);
+
+	public final static native void delete_btMultiBodyPoint2Point (long jarg1);
+
+	public final static native Vector3 btMultiBodyPoint2Point_getPivotInB (long jarg1, btMultiBodyPoint2Point jarg1_);
+
+	public final static native long new_btMultiBodySliderConstraint__SWIG_0 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btRigidBody jarg3_, Vector3 jarg4, Vector3 jarg5, Matrix3 jarg6, Matrix3 jarg7, Vector3 jarg8);
+
+	public final static native long new_btMultiBodySliderConstraint__SWIG_1 (long jarg1, btMultiBody jarg1_, int jarg2, long jarg3,
+		btMultiBody jarg3_, int jarg4, Vector3 jarg5, Vector3 jarg6, Matrix3 jarg7, Matrix3 jarg8, Vector3 jarg9);
+
+	public final static native void delete_btMultiBodySliderConstraint (long jarg1);
+
+	public final static native Vector3 btMultiBodySliderConstraint_getPivotInA (long jarg1, btMultiBodySliderConstraint jarg1_);
+
+	public final static native void btMultiBodySliderConstraint_setPivotInA (long jarg1, btMultiBodySliderConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native Vector3 btMultiBodySliderConstraint_getPivotInB (long jarg1, btMultiBodySliderConstraint jarg1_);
+
+	public final static native Matrix3 btMultiBodySliderConstraint_getFrameInA (long jarg1, btMultiBodySliderConstraint jarg1_);
+
+	public final static native void btMultiBodySliderConstraint_setFrameInA (long jarg1, btMultiBodySliderConstraint jarg1_,
+		Matrix3 jarg2);
+
+	public final static native Matrix3 btMultiBodySliderConstraint_getFrameInB (long jarg1, btMultiBodySliderConstraint jarg1_);
+
+	public final static native Vector3 btMultiBodySliderConstraint_getJointAxis (long jarg1, btMultiBodySliderConstraint jarg1_);
+
+	public final static native void btMultiBodySliderConstraint_setJointAxis (long jarg1, btMultiBodySliderConstraint jarg1_,
+		Vector3 jarg2);
+
+	public final static native long btMultiBodySolverConstraint_operatorNew__SWIG_0 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2);
+
+	public final static native void btMultiBodySolverConstraint_operatorDelete__SWIG_0 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2);
+
+	public final static native long btMultiBodySolverConstraint_operatorNew__SWIG_1 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBodySolverConstraint_operatorDelete__SWIG_1 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long btMultiBodySolverConstraint_operatorNewArray__SWIG_0 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2);
+
+	public final static native void btMultiBodySolverConstraint_operatorDeleteArray__SWIG_0 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2);
+
+	public final static native long btMultiBodySolverConstraint_operatorNewArray__SWIG_1 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native void btMultiBodySolverConstraint_operatorDeleteArray__SWIG_1 (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, long jarg3);
+
+	public final static native long new_btMultiBodySolverConstraint ();
+
+	public final static native void btMultiBodySolverConstraint_deltaVelAindex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_deltaVelAindex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_jacAindex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_jacAindex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_deltaVelBindex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_deltaVelBindex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_jacBindex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_jacBindex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_relpos1CrossNormal_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_relpos1CrossNormal_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_contactNormal1_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_contactNormal1_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_relpos2CrossNormal_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_relpos2CrossNormal_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_contactNormal2_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_contactNormal2_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_angularComponentA_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_angularComponentA_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_angularComponentB_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_angularComponentB_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_appliedPushImpulse_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_appliedPushImpulse_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_appliedImpulse_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_appliedImpulse_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_friction_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_friction_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_jacDiagABInv_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_jacDiagABInv_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_rhs_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_rhs_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_cfm_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_cfm_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_lowerLimit_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_lowerLimit_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_upperLimit_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_upperLimit_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_rhsPenetration_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_rhsPenetration_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_originalContactPoint_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, long jarg2);
+
+	public final static native long btMultiBodySolverConstraint_originalContactPoint_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_unusedPadding4_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		float jarg2);
+
+	public final static native float btMultiBodySolverConstraint_unusedPadding4_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_overrideNumSolverIterations_set (long jarg1,
+		btMultiBodySolverConstraint jarg1_, int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_overrideNumSolverIterations_get (long jarg1,
+		btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_frictionIndex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_frictionIndex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_solverBodyIdA_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_solverBodyIdA_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_multiBodyA_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		long jarg2, btMultiBody jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_multiBodyA_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_linkA_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_linkA_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_solverBodyIdB_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_solverBodyIdB_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_multiBodyB_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		long jarg2, btMultiBody jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_multiBodyB_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_linkB_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_linkB_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_orgConstraint_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		long jarg2, btMultiBodyConstraint jarg2_);
+
+	public final static native long btMultiBodySolverConstraint_orgConstraint_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void btMultiBodySolverConstraint_orgDofIndex_set (long jarg1, btMultiBodySolverConstraint jarg1_,
+		int jarg2);
+
+	public final static native int btMultiBodySolverConstraint_orgDofIndex_get (long jarg1, btMultiBodySolverConstraint jarg1_);
+
+	public final static native void delete_btMultiBodySolverConstraint (long jarg1);
+
+	public final static native void btDantzigScratchMemory_scratch_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_scratch_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_L_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_L_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_d_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_d_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_delta_w_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_delta_w_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_delta_x_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_delta_x_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_Dell_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_Dell_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_ell_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btDantzigScratchMemory_ell_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_Arows_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
+
+	public final static native long btDantzigScratchMemory_Arows_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_p_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
+
+	public final static native long btDantzigScratchMemory_p_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_C_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
+
+	public final static native long btDantzigScratchMemory_C_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native void btDantzigScratchMemory_state_set (long jarg1, btDantzigScratchMemory jarg1_, long jarg2);
+
+	public final static native long btDantzigScratchMemory_state_get (long jarg1, btDantzigScratchMemory jarg1_);
+
+	public final static native long new_btDantzigScratchMemory ();
+
+	public final static native void delete_btDantzigScratchMemory (long jarg1);
+
+	public final static native boolean btSolveDantzigLCP (int jarg1, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3,
+		java.nio.FloatBuffer jarg4, java.nio.FloatBuffer jarg5, int jarg6, java.nio.FloatBuffer jarg7, java.nio.FloatBuffer jarg8,
+		java.nio.IntBuffer jarg9, long jarg10, btDantzigScratchMemory jarg10_);
+
+	public final static native void delete_btMLCPSolverInterface (long jarg1);
+
+	public final static native boolean btMLCPSolverInterface_solveMLCP__SWIG_0 (long jarg1, btMLCPSolverInterface jarg1_,
+		long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
+
+	public final static native boolean btMLCPSolverInterface_solveMLCP__SWIG_1 (long jarg1, btMLCPSolverInterface jarg1_,
+		long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
+
+	public final static native long new_btDantzigSolver ();
+
+	public final static native boolean btDantzigSolver_solveMLCP__SWIG_0 (long jarg1, btDantzigSolver jarg1_, long jarg2,
+		long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
+
+	public final static native boolean btDantzigSolver_solveMLCP__SWIG_1 (long jarg1, btDantzigSolver jarg1_, long jarg2,
+		long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
+
+	public final static native void delete_btDantzigSolver (long jarg1);
+
+	public final static native long new_btLemkeAlgorithm__SWIG_0 (long jarg1, long jarg2, int jarg3);
+
+	public final static native long new_btLemkeAlgorithm__SWIG_1 (long jarg1, long jarg2);
+
+	public final static native int btLemkeAlgorithm_getInfo (long jarg1, btLemkeAlgorithm jarg1_);
+
+	public final static native int btLemkeAlgorithm_getSteps (long jarg1, btLemkeAlgorithm jarg1_);
+
+	public final static native void btLemkeAlgorithm_setSystem (long jarg1, btLemkeAlgorithm jarg1_, long jarg2, long jarg3);
+
+	public final static native long btLemkeAlgorithm_solve__SWIG_0 (long jarg1, btLemkeAlgorithm jarg1_, long jarg2);
+
+	public final static native long btLemkeAlgorithm_solve__SWIG_1 (long jarg1, btLemkeAlgorithm jarg1_);
+
+	public final static native void delete_btLemkeAlgorithm (long jarg1);
+
+	public final static native void btLemkeSolver_maxValue_set (long jarg1, btLemkeSolver jarg1_, float jarg2);
+
+	public final static native float btLemkeSolver_maxValue_get (long jarg1, btLemkeSolver jarg1_);
+
+	public final static native void btLemkeSolver_debugLevel_set (long jarg1, btLemkeSolver jarg1_, int jarg2);
+
+	public final static native int btLemkeSolver_debugLevel_get (long jarg1, btLemkeSolver jarg1_);
+
+	public final static native void btLemkeSolver_maxLoops_set (long jarg1, btLemkeSolver jarg1_, int jarg2);
+
+	public final static native int btLemkeSolver_maxLoops_get (long jarg1, btLemkeSolver jarg1_);
+
+	public final static native void btLemkeSolver_useLoHighBounds_set (long jarg1, btLemkeSolver jarg1_, boolean jarg2);
+
+	public final static native boolean btLemkeSolver_useLoHighBounds_get (long jarg1, btLemkeSolver jarg1_);
+
+	public final static native long new_btLemkeSolver ();
+
+	public final static native boolean btLemkeSolver_solveMLCP__SWIG_0 (long jarg1, btLemkeSolver jarg1_, long jarg2, long jarg3,
+		long jarg4, long jarg5, long jarg6, long jarg7, int jarg8, boolean jarg9);
+
+	public final static native boolean btLemkeSolver_solveMLCP__SWIG_1 (long jarg1, btLemkeSolver jarg1_, long jarg2, long jarg3,
+		long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
+
+	public final static native void delete_btLemkeSolver (long jarg1);
+
+	public final static native long new_btMLCPSolver (long jarg1, btMLCPSolverInterface jarg1_);
+
+	public final static native void delete_btMLCPSolver (long jarg1);
+
+	public final static native void btMLCPSolver_setMLCPSolver (long jarg1, btMLCPSolver jarg1_, long jarg2,
+		btMLCPSolverInterface jarg2_);
+
+	public final static native int btMLCPSolver_getNumFallbacks (long jarg1, btMLCPSolver jarg1_);
+
+	public final static native void btMLCPSolver_setNumFallbacks (long jarg1, btMLCPSolver jarg1_, int jarg2);
+
+	public final static native void btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_set (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_, float jarg2);
+
+	public final static native float btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_get (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_);
+
+	public final static native void btSolveProjectedGaussSeidel_leastSquaresResidual_set (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_, float jarg2);
+
+	public final static native float btSolveProjectedGaussSeidel_leastSquaresResidual_get (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_);
+
+	public final static native long new_btSolveProjectedGaussSeidel ();
+
+	public final static native boolean btSolveProjectedGaussSeidel_solveMLCP__SWIG_0 (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8,
+		boolean jarg9);
+
+	public final static native boolean btSolveProjectedGaussSeidel_solveMLCP__SWIG_1 (long jarg1,
+		btSolveProjectedGaussSeidel jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, int jarg8);
+
+	public final static native void delete_btSolveProjectedGaussSeidel (long jarg1);
+
+	public final static native long btRigidBody_SWIGUpcast (long jarg1);
+
+	public final static native long btTypedConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btDynamicsWorld_SWIGUpcast (long jarg1);
+
+	public final static native long btSimpleDynamicsWorld_SWIGUpcast (long jarg1);
+
+	public final static native long CustomActionInterface_SWIGUpcast (long jarg1);
+
+	public final static native long btDiscreteDynamicsWorld_SWIGUpcast (long jarg1);
+
+	public final static native long btCharacterControllerInterface_SWIGUpcast (long jarg1);
+
+	public final static native long btKinematicCharacterController_SWIGUpcast (long jarg1);
+
+	public final static native long btContactSolverInfo_SWIGUpcast (long jarg1);
+
+	public final static native long btSequentialImpulseConstraintSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btSliderConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btPoint2PointConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btGeneric6DofConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btUniversalConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btContactConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btConeTwistConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btGeneric6DofSpringConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btGeneric6DofSpring2Constraint_SWIGUpcast (long jarg1);
+
+	public final static native long btHingeConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btHingeAccumulatedAngleConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btHinge2Constraint_SWIGUpcast (long jarg1);
+
+	public final static native long btFixedConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btRaycastVehicle_SWIGUpcast (long jarg1);
+
+	public final static native long btDefaultVehicleRaycaster_SWIGUpcast (long jarg1);
+
+	public final static native long FilterableVehicleRaycaster_SWIGUpcast (long jarg1);
+
+	public final static native long btGearConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btNNCGConstraintSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btConstraintSolverPoolMt_SWIGUpcast (long jarg1);
+
+	public final static native long btDiscreteDynamicsWorldMt_SWIGUpcast (long jarg1);
+
+	public final static native long btSimulationIslandManagerMt_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyGearConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyConstraintSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyDynamicsWorld_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyFixedConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyJointLimitConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyJointMotor_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyLinkCollider_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodyPoint2Point_SWIGUpcast (long jarg1);
+
+	public final static native long btMultiBodySliderConstraint_SWIGUpcast (long jarg1);
+
+	public final static native long btDantzigSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btLemkeSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btMLCPSolver_SWIGUpcast (long jarg1);
+
+	public final static native long btSolveProjectedGaussSeidel_SWIGUpcast (long jarg1);
+
+	public static void SwigDirector_InternalTickCallback_onInternalTick (InternalTickCallback jself, long dynamicsWorld,
+		float timeStep) {
+		jself.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
+	}
+
+	public static void SwigDirector_CustomActionInterface_updateAction (CustomActionInterface jself, float timeStep) {
+		jself.updateAction(timeStep);
+	}
+
+	public static void SwigDirector_CustomActionInterface_debugDraw (CustomActionInterface jself) {
+		jself.debugDraw();
+	}
+
+	private final static native void swig_module_init ();
+
+	static {
+		swig_module_init();
+	}
 }

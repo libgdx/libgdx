@@ -47,7 +47,7 @@ public class IOSNet implements Net {
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);

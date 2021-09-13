@@ -27,7 +27,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** <p>
+/**
+ * <p>
  * An {@link Input} implementation that receives touch, key, accelerometer and compass events from a remote Android device. Just
  * instantiate it and specify the port it should listen on for incoming connections (default 8190). Then store the new RemoteInput
  * instance in Gdx.input. That's it.
@@ -143,7 +144,7 @@ public class RemoteInput implements Runnable, Input {
 				}
 			} else {
 				if (touchEvent != null) {
-					switch(touchEvent.type) {
+					switch (touchEvent.type) {
 					case TouchEvent.TOUCH_DOWN:
 						deltaX[touchEvent.pointer] = 0;
 						deltaY[touchEvent.pointer] = 0;
@@ -275,7 +276,7 @@ public class RemoteInput implements Runnable, Input {
 					case RemoteSender.SIZE:
 						remoteWidth = in.readFloat();
 						remoteHeight = in.readFloat();
-						break;	
+						break;
 					case RemoteSender.GYRO:
 						gyrate[0] = in.readFloat();
 						gyrate[1] = in.readFloat();
@@ -345,7 +346,7 @@ public class RemoteInput implements Runnable, Input {
 	public float getAccelerometerZ () {
 		return accel[2];
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		return gyrate[0];
@@ -420,7 +421,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
+	public boolean isButtonJustPressed (int button) {
 		return button == Buttons.LEFT && justTouched;
 	}
 
@@ -452,7 +453,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		Gdx.app.getInput().getTextInput(listener, title, text, hint, type);
 	}
 
@@ -461,7 +462,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override
@@ -500,15 +501,15 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public boolean isCatchBackKey() {
+	public boolean isCatchBackKey () {
 		return false;
 	}
-	
+
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
-		
+
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey () {
 		return false;
@@ -534,7 +535,8 @@ public class RemoteInput implements Runnable, Input {
 		return this.processor;
 	}
 
-	/** @return the IP addresses {@link RemoteSender} or gdx-remote should connect to. Most likely the LAN addresses if behind a NAT. */
+	/** @return the IP addresses {@link RemoteSender} or gdx-remote should connect to. Most likely the LAN addresses if behind a
+	 *         NAT. */
 	public String[] getIPs () {
 		return ips;
 	}

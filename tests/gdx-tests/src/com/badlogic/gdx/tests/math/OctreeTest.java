@@ -87,18 +87,19 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		Vector3 max = new Vector3(AREA_SIZE / 2, AREA_SIZE / 2, AREA_SIZE / 2);
 		octree = new Octree<GameObject>(min, max, MAX_DEPTH, MAX_ITEMS_PER_NODE, new Octree.Collider<GameObject>() {
 			@Override
-			public boolean intersects(BoundingBox nodeBounds, GameObject geometry) {
+			public boolean intersects (BoundingBox nodeBounds, GameObject geometry) {
 				return nodeBounds.intersects(geometry.box);
 			}
 
 			@Override
-			public boolean intersects(Frustum frustum, GameObject geometry) {
+			public boolean intersects (Frustum frustum, GameObject geometry) {
 				return frustum.boundsInFrustum(geometry.box);
 			}
 
 			final Vector3 tmp = new Vector3();
+
 			@Override
-			public float intersects(Ray ray, GameObject geometry) {
+			public float intersects (Ray ray, GameObject geometry) {
 				if (Intersector.intersectRayBounds(ray, geometry.box, tmp)) {
 					return tmp.dst2(ray.origin);
 				}
@@ -141,7 +142,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
+	public boolean keyDown (int keycode) {
 		camController.keyDown(keycode);
 		// Space toggle octree render
 		if (keycode == Input.Keys.SPACE) {
@@ -151,19 +152,19 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 	}
 
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp (int keycode) {
 		camController.keyUp(keycode);
 		return super.keyUp(keycode);
 	}
 
 	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
+	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		camController.touchDragged(screenX, screenY, pointer);
 		return super.touchDragged(screenX, screenY, pointer);
 	}
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		if (lastSelected != null) {
 			lastSelected.deselect();
 			lastSelected = null;
@@ -172,7 +173,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
 
-	private void selectGameObject(Ray ray) {
+	private void selectGameObject (Ray ray) {
 		GameObject selected = octree.rayCast(ray, new Octree.RayCastResult<GameObject>());
 		if (selected != null) {
 			selected.select();
@@ -180,7 +181,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		}
 	}
 
-	private void generateGameObjects() {
+	private void generateGameObjects () {
 		Random random = new Random();
 		ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -195,13 +196,12 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 			float height = random.nextFloat() * 3;
 			float depth = random.nextFloat() * 3;
 
-			Vector3 center = new Vector3(-AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE,
-										 random.nextFloat() * AREA_SIZE / 2,
-										 -AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE);
+			Vector3 center = new Vector3(-AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE, random.nextFloat() * AREA_SIZE / 2,
+				-AREA_SIZE / 2 + random.nextFloat() * AREA_SIZE);
 
 			GameObject gameObject = new GameObject();
-			Model modelBox = modelBuilder
-					.createBox(width, height, depth, GL20.GL_TRIANGLES, objectMaterial, VertexAttributes.Usage.Position);
+			Model modelBox = modelBuilder.createBox(width, height, depth, GL20.GL_TRIANGLES, objectMaterial,
+				VertexAttributes.Usage.Position);
 			gameObject.instance = new ModelInstance(modelBox);
 			gameObject.instance.transform.translate(center);
 
@@ -210,7 +210,8 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 
 			gameObject.box = new BoundingBox(min, max);
 
-			modelBox = modelBuilder.createBox(width, height, depth, GL20.GL_LINES, wireframeMaterial, VertexAttributes.Usage.Position);
+			modelBox = modelBuilder.createBox(width, height, depth, GL20.GL_LINES, wireframeMaterial,
+				VertexAttributes.Usage.Position);
 			gameObject.boxEdges = new ModelInstance(modelBox);
 			gameObject.boxEdges.transform.translate(center);
 
@@ -219,7 +220,7 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		}
 	}
 
-	private void generateOctreeInstances() {
+	private void generateOctreeInstances () {
 		ObjectSet<BoundingBox> boxes = new ObjectSet<>();
 		octree.getNodesBoxes(boxes);
 
@@ -232,7 +233,8 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		while (iterator.hasNext()) {
 			BoundingBox box = iterator.next();
 
-			Model model = modelBuilder.createBox(box.getWidth(), box.getHeight(), box.getDepth(), GL20.GL_LINES, material, VertexAttributes.Usage.Position);
+			Model model = modelBuilder.createBox(box.getWidth(), box.getHeight(), box.getDepth(), GL20.GL_LINES, material,
+				VertexAttributes.Usage.Position);
 			ModelInstance instance = new ModelInstance(model);
 			instance.transform.translate(box.getCenterX(), box.getCenterY(), box.getCenterZ());
 
@@ -251,11 +253,11 @@ public class OctreeTest extends GdxTest implements ApplicationListener {
 		ModelInstance boxEdges;
 		BoundingBox box;
 
-		public void select() {
+		public void select () {
 			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLUE));
 		}
 
-		public void deselect() {
+		public void deselect () {
 			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
 		}
 	}

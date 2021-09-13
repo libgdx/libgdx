@@ -9,8 +9,7 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class btConstraintSolverType {
-  public final static int BT_SEQUENTIAL_IMPULSE_SOLVER = 1;
-  public final static int BT_MLCP_SOLVER = 2;
-  public final static int BT_NNCG_SOLVER = 4;
+	public final static int BT_SEQUENTIAL_IMPULSE_SOLVER = 1;
+	public final static int BT_MLCP_SOLVER = 2;
+	public final static int BT_NNCG_SOLVER = 4;
 }
-

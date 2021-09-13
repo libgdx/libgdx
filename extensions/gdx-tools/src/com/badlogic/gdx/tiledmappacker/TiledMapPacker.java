@@ -60,9 +60,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** Given one or more TMX tilemaps, packs all tileset resources used across the maps, or the resources used per map, into a single,
- * or multiple (one per map), {@link TextureAtlas} and produces a new TMX file to be loaded with an AtlasTiledMapLoader loader.
- * Optionally, it can keep track of unused tiles and omit them from the generated atlas, reducing the resource size.
+/** Given one or more TMX tilemaps, packs all tileset resources used across the maps, or the resources used per map, into a
+ * single, or multiple (one per map), {@link TextureAtlas} and produces a new TMX file to be loaded with an AtlasTiledMapLoader
+ * loader. Optionally, it can keep track of unused tiles and omit them from the generated atlas, reducing the resource size.
  * 
  * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
  * <b>required</b>, that's why an LwjglApplication is created by this preprocessor.
@@ -329,12 +329,12 @@ public class TiledMapPacker {
 				tile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
 
 				g = tile.createGraphics();
-				g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x
-					+ tileWidth, (int)tileLocation.y + tileHeight, null);
+				g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y,
+					(int)tileLocation.x + tileWidth, (int)tileLocation.y + tileHeight, null);
 
 				if (verbose) {
-					System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", "
-						+ (int)tileLocation.y + ")");
+					System.out.println(
+						"Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y + ")");
 				}
 				// AtlasTmxMapLoader expects every tileset's index to begin at zero for the first tile in every tileset.
 				// so the region's adjusted gid is (gid - layout.firstgid). firstgid will be added back in AtlasTmxMapLoader on load

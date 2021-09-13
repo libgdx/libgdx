@@ -68,12 +68,12 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 	 * @return tile with matching id, null if it doesn't exist */
 	public TiledMapTile getTile (int id) {
 		// The purpose of backward iteration here is to maintain backwards compatibility
-		// with maps created with earlier versions of a shared tileset.  The assumption
+		// with maps created with earlier versions of a shared tileset. The assumption
 		// is that the tilesets are in order of ascending firstgid, and by backward
-		// iterating precedence for conflicts is given to later tilesets in the list, 
-		// which are likely to be the earlier version of any given gid.  
+		// iterating precedence for conflicts is given to later tilesets in the list,
+		// which are likely to be the earlier version of any given gid.
 		// See TiledMapModifiedExternalTilesetTest for example of this issue.
-		for (int i = tilesets.size-1; i >= 0; i--) {
+		for (int i = tilesets.size - 1; i >= 0; i--) {
 			TiledMapTileSet tileset = tilesets.get(i);
 			TiledMapTile tile = tileset.getTile(id);
 			if (tile != null) {

@@ -57,24 +57,21 @@ public class MeshShaderTest extends GdxTest {
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 1, 0.5f, -0.5f, 0, 1, 1, 1, 1, 1, 1, 0.5f, 0.5f, 0, 1, 1, 1,
 			1, 1, 0, -0.5f, 0.5f, 0, 1, 1, 1, 1, 0, 0});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
-		
-		//Mesh with texCoords wearing a pair of shorts. :)
-		meshCustomVA = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorPacked(), 
-			new VertexAttribute(Usage.TextureCoordinates, 2, GL20.GL_UNSIGNED_SHORT, true, ShaderProgram.TEXCOORD_ATTRIBUTE + "0", 0));
-		meshCustomVA.setVertices(new float[] {
-			-0.5f, -0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(0, 1),
-			0.5f, -0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(1, 1),
-			0.5f, 0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(1, 0),
-			-0.5f, 0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(0, 0)
-			});
+
+		// Mesh with texCoords wearing a pair of shorts. :)
+		meshCustomVA = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorPacked(), new VertexAttribute(
+			Usage.TextureCoordinates, 2, GL20.GL_UNSIGNED_SHORT, true, ShaderProgram.TEXCOORD_ATTRIBUTE + "0", 0));
+		meshCustomVA.setVertices(new float[] {-0.5f, -0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(0, 1), 0.5f, -0.5f, 0,
+			Color.WHITE_FLOAT_BITS, toSingleFloat(1, 1), 0.5f, 0.5f, 0, Color.WHITE_FLOAT_BITS, toSingleFloat(1, 0), -0.5f, 0.5f, 0,
+			Color.WHITE_FLOAT_BITS, toSingleFloat(0, 0)});
 		meshCustomVA.setIndices(new short[] {0, 1, 2, 2, 3, 0});
-		
+
 		texture = new Texture(Gdx.files.internal("data/bobrgb888-32x32.png"));
 	}
-	
-	private static float toSingleFloat (float u, float v){
+
+	private static float toSingleFloat (float u, float v) {
 		int vu = ((int)(v * 0xffff) << 16) | (int)(u * 0xffff);
-		return NumberUtils.intToFloatColor(vu); //v will lose some precision due to masking
+		return NumberUtils.intToFloatColor(vu); // v will lose some precision due to masking
 	}
 
 	Vector3 axis = new Vector3(0, 0, 1);
@@ -84,7 +81,7 @@ public class MeshShaderTest extends GdxTest {
 	public void render () {
 		angle += Gdx.graphics.getDeltaTime() * 45;
 		matrix.setToRotation(axis, angle);
-		
+
 		Mesh meshToDraw = Gdx.input.isButtonPressed(0) ? meshCustomVA : mesh;
 
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());

@@ -32,7 +32,8 @@ import com.badlogic.gdx.utils.Pool;
 /** An instance of a {@link Model}, allows to specify global transform and modify the materials, as it has a copy of the model's
  * materials. Multiple instances can be created from the same Model, all sharing the meshes and textures of the Model. The Model
  * owns the meshes and textures, to dispose of these, the Model has to be disposed. Therefor, the Model must outlive all its
- * ModelInstances</p>
+ * ModelInstances
+ * </p>
  * 
  * The ModelInstance creates a full copy of all materials, nodes and animations.
  * @author badlogic, xoppa */
@@ -284,7 +285,7 @@ public class ModelInstance implements RenderableProvider {
 	}
 
 	/** Copy source animations to this ModelInstance
-	 * @param source Iterable collection of source animations {@link Animation}*/
+	 * @param source Iterable collection of source animations {@link Animation} */
 	public void copyAnimations (final Iterable<Animation> source) {
 		for (final Animation anim : source) {
 			copyAnimation(anim, defaultShareKeyframes);
@@ -293,7 +294,7 @@ public class ModelInstance implements RenderableProvider {
 
 	/** Copy source animations to this ModelInstance
 	 * @param source Iterable collection of source animations {@link Animation}
-	 * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy.*/
+	 * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy. */
 	public void copyAnimations (final Iterable<Animation> source, boolean shareKeyframes) {
 		for (final Animation anim : source) {
 			copyAnimation(anim, shareKeyframes);
@@ -301,15 +302,15 @@ public class ModelInstance implements RenderableProvider {
 	}
 
 	/** Copy the source animation to this ModelInstance
-	 * @param sourceAnim The source animation {@link Animation}*/
-	public void copyAnimation(Animation sourceAnim){
+	 * @param sourceAnim The source animation {@link Animation} */
+	public void copyAnimation (Animation sourceAnim) {
 		copyAnimation(sourceAnim, defaultShareKeyframes);
 	}
 
 	/** Copy the source animation to this ModelInstance
 	 * @param sourceAnim The source animation {@link Animation}
-	 * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy.*/
-	public void copyAnimation(Animation sourceAnim, boolean shareKeyframes){
+	 * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy. */
+	public void copyAnimation (Animation sourceAnim, boolean shareKeyframes) {
 		Animation animation = new Animation();
 		animation.id = sourceAnim.id;
 		animation.duration = sourceAnim.duration;
@@ -393,7 +394,8 @@ public class ModelInstance implements RenderableProvider {
 	/** Calculates the local and world transform of all {@link Node} instances in this model, recursively. First each
 	 * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node. Then each
 	 * {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the local transform of each
-	 * Node. Finally, the animation bone matrices are updated accordingly.</p>
+	 * Node. Finally, the animation bone matrices are updated accordingly.
+	 * </p>
 	 * 
 	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
 	 * was modified. */

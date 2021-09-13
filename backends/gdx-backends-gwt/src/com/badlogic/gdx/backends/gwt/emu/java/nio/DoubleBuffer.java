@@ -24,8 +24,8 @@ package java.nio;
  * <ul>
  * <li>{@link #allocate(int) Allocate} a new double array and create a buffer based on it;</li>
  * <li>{@link #wrap(double[]) Wrap} an existing double array to create a new buffer;</li>
- * <li>Use {@link java.nio.ByteBuffer#asDoubleBuffer() ByteBuffer.asDoubleBuffer} to create a double buffer based on a byte buffer.
- * </li>
+ * <li>Use {@link java.nio.ByteBuffer#asDoubleBuffer() ByteBuffer.asDoubleBuffer} to create a double buffer based on a byte
+ * buffer.</li>
  * </ul>
  * 
  * @since Android 1.0 */
@@ -58,7 +58,8 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 
 	/** Creates a new double buffer by wrapping the given double array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
+	 * array.
 	 * </p>
 	 * 
 	 * @param array the double array which the new buffer will be based on.
@@ -428,7 +429,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 		sb.append(capacity());
 		sb.append(" position="); //$NON-NLS-1$
 		sb.append(position());
-		sb.append(" limit="); //$NON-NLS-1$    
+		sb.append(" limit="); //$NON-NLS-1$
 		sb.append(limit());
 		return sb.toString();
 	}

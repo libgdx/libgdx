@@ -8,47 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSolveProjectedGaussSeidel extends btMLCPSolverInterface {
 	private long swigCPtr;
-	
-	protected btSolveProjectedGaussSeidel(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSolveProjectedGaussSeidel (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.btSolveProjectedGaussSeidel_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSolveProjectedGaussSeidel, normally you should not need this constructor it's intended for low-level usage. */
-	public btSolveProjectedGaussSeidel(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSolveProjectedGaussSeidel, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btSolveProjectedGaussSeidel (long cPtr, boolean cMemoryOwn) {
 		this("btSolveProjectedGaussSeidel", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.btSolveProjectedGaussSeidel_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSolveProjectedGaussSeidel obj) {
+
+	public static long getCPtr (btSolveProjectedGaussSeidel obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,32 +54,42 @@ public class btSolveProjectedGaussSeidel extends btMLCPSolverInterface {
 		super.delete();
 	}
 
-  public void setLeastSquaresResidualThreshold(float value) {
-    DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_set(swigCPtr, this, value);
-  }
+	public void setLeastSquaresResidualThreshold (float value) {
+		DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_set(swigCPtr, this, value);
+	}
 
-  public float getLeastSquaresResidualThreshold() {
-    return DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_get(swigCPtr, this);
-  }
+	public float getLeastSquaresResidualThreshold () {
+		return DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidualThreshold_get(swigCPtr, this);
+	}
 
-  public void setLeastSquaresResidual(float value) {
-    DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidual_set(swigCPtr, this, value);
-  }
+	public void setLeastSquaresResidual (float value) {
+		DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidual_set(swigCPtr, this, value);
+	}
 
-  public float getLeastSquaresResidual() {
-    return DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidual_get(swigCPtr, this);
-  }
+	public float getLeastSquaresResidual () {
+		return DynamicsJNI.btSolveProjectedGaussSeidel_leastSquaresResidual_get(swigCPtr, this);
+	}
 
-  public btSolveProjectedGaussSeidel() {
-    this(DynamicsJNI.new_btSolveProjectedGaussSeidel(), true);
-  }
+	public btSolveProjectedGaussSeidel () {
+		this(DynamicsJNI.new_btSolveProjectedGaussSeidel(), true);
+	}
 
-  public boolean solveMLCP(SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x, SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency, int numIterations, boolean useSparsity) {
-    return DynamicsJNI.btSolveProjectedGaussSeidel_solveMLCP__SWIG_0(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A), SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x), SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi), SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations, useSparsity);
-  }
+	public boolean solveMLCP (SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x,
+		SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency,
+		int numIterations, boolean useSparsity) {
+		return DynamicsJNI.btSolveProjectedGaussSeidel_solveMLCP__SWIG_0(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi),
+			SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations, useSparsity);
+	}
 
-  public boolean solveMLCP(SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x, SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency, int numIterations) {
-    return DynamicsJNI.btSolveProjectedGaussSeidel_solveMLCP__SWIG_1(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A), SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x), SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi), SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations);
-  }
+	public boolean solveMLCP (SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x,
+		SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency,
+		int numIterations) {
+		return DynamicsJNI.btSolveProjectedGaussSeidel_solveMLCP__SWIG_1(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi),
+			SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations);
+	}
 
 }

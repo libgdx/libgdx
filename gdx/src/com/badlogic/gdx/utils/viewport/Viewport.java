@@ -58,8 +58,8 @@ public abstract class Viewport {
 		update(screenWidth, screenHeight, false);
 	}
 
-	/** Configures this viewport's screen bounds using the specified screen size and calls {@link #apply(boolean)}. Typically called
-	 * from {@link ApplicationListener#resize(int, int)} or {@link Screen#resize(int, int)}.
+	/** Configures this viewport's screen bounds using the specified screen size and calls {@link #apply(boolean)}. Typically
+	 * called from {@link ApplicationListener#resize(int, int)} or {@link Screen#resize(int, int)}.
 	 * <p>
 	 * The default implementation only calls {@link #apply(boolean)}. */
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
@@ -124,7 +124,6 @@ public abstract class Viewport {
 		return worldCoords;
 	}
 
-
 	public Camera getCamera () {
 		return camera;
 	}
@@ -160,7 +159,8 @@ public abstract class Viewport {
 		return screenX;
 	}
 
-	/** Sets the viewport's offset from the left edge of the screen. This is typically set by {@link #update(int, int, boolean)}. */
+	/** Sets the viewport's offset from the left edge of the screen. This is typically set by
+	 * {@link #update(int, int, boolean)}. */
 	public void setScreenX (int screenX) {
 		this.screenX = screenX;
 	}
@@ -169,7 +169,8 @@ public abstract class Viewport {
 		return screenY;
 	}
 
-	/** Sets the viewport's offset from the bottom edge of the screen. This is typically set by {@link #update(int, int, boolean)}. */
+	/** Sets the viewport's offset from the bottom edge of the screen. This is typically set by
+	 * {@link #update(int, int, boolean)}. */
 	public void setScreenY (int screenY) {
 		this.screenY = screenY;
 	}

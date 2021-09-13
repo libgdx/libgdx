@@ -60,8 +60,8 @@ public class MipMapGenerator {
 	}
 
 	private static void generateMipMapGLES20 (int target, Pixmap pixmap) {
-		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
-			pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(),
+			pixmap.getGLType(), pixmap.getPixels());
 		Gdx.gl20.glGenerateMipmap(target);
 	}
 
@@ -77,8 +77,8 @@ public class MipMapGenerator {
 	}
 
 	private static void generateMipMapCPU (int target, Pixmap pixmap, int textureWidth, int textureHeight) {
-		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
-			pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(),
+			pixmap.getGLType(), pixmap.getPixels());
 		if ((Gdx.gl20 == null) && textureWidth != textureHeight)
 			throw new GdxRuntimeException("texture width and height must be square when using mipmapping.");
 		int width = pixmap.getWidth() / 2;

@@ -65,7 +65,7 @@ public class ShaderTest extends GdxTest {
 		protected boolean equals (Attribute other) {
 			return ((TestAttribute)other).value == value;
 		}
-		
+
 		@Override
 		public int compareTo (Attribute o) {
 			if (type != o.type) return type < o.type ? -1 : 1;

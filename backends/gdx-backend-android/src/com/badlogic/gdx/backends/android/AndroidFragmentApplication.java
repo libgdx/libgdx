@@ -44,7 +44,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
@@ -130,8 +131,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
+		graphics = new AndroidGraphics(this, config,
+			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 		input = createInput(this, getActivity(), graphics.view, config);
 		audio = createAudio(getActivity(), config);
 		files = createFiles();
@@ -173,8 +174,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 
 		// detect an already connected bluetooth keyboardAvailable
-		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
-			input.setKeyboardAvailable(true);
+		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS) input.setKeyboardAvailable(true);
 		return graphics.getView();
 	}
 
@@ -193,7 +193,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		input.onPause();
 
 		// davebaol & mobidevelop:
-		// This fragment (or one of the parent)  is currently being removed from its activity or the activity is in the process of finishing
+		// This fragment (or one of the parent) is currently being removed from its activity or the activity is in the process of
+		// finishing
 		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
@@ -454,7 +455,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return new DefaultAndroidInput(this, getActivity(), graphics.view, config);
 	}
 
-	protected AndroidFiles createFiles() {
+	protected AndroidFiles createFiles () {
 		return new DefaultAndroidFiles(getResources().getAssets(), getActivity(), true);
 	}
 
@@ -463,17 +464,14 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 	}
 
-	/**
-	* Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
-	*
-	* @return true - one of the parent fragments is being removed
-	*/
-	private boolean isAnyParentFragmentRemoving() {
+	/** Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
+	 *
+	 * @return true - one of the parent fragments is being removed */
+	private boolean isAnyParentFragmentRemoving () {
 		Fragment fragment = getParentFragment();
 
-		 while (fragment != null) {
-			if (fragment.isRemoving())
-				return true;
+		while (fragment != null) {
+			if (fragment.isRemoving()) return true;
 
 			fragment = fragment.getParentFragment();
 		}

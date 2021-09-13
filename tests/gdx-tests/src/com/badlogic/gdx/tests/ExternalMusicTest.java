@@ -25,6 +25,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
  * @author mzechner */
 public class ExternalMusicTest extends GdxTest {
 	Music music;
+
 	@Override
 	public void create () {
 		// copy an internal mp3 to the external storage

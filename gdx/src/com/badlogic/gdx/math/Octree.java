@@ -22,8 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * A static Octree implementation.
+/** A static Octree implementation.
  *
  * Example of usage:
  *
@@ -31,23 +30,23 @@ import com.badlogic.gdx.utils.Pool;
  * Vector3 min = new Vector3(-10, -10, -10);
  * Vector3 max = new Vector3(10, 10, 10);
  * octree = new Octree<GameObject>(min, max, MAX_DEPTH, MAX_ITEMS_PER_NODE, new Octree.Collider<GameObject>() {
- * 	 @Override
- *   public boolean intersects(BoundingBox nodeBounds, GameObject geometry) {
- *     return nodeBounds.intersects(geometry.box);
- *   }
+ * 	&#64;Override
+ * 	public boolean intersects (BoundingBox nodeBounds, GameObject geometry) {
+ * 		return nodeBounds.intersects(geometry.box);
+ * 	}
  *
- *   @Override
- *   public boolean intersects(Frustum frustum, GameObject geometry) {
- *     return frustum.boundsInFrustum(geometry.box);
- *   }
+ * 	&#64;Override
+ * 	public boolean intersects (Frustum frustum, GameObject geometry) {
+ * 		return frustum.boundsInFrustum(geometry.box);
+ * 	}
  *
- *   @Override
- *   public float intersects(Ray ray, GameObject geometry) {
- *     if (Intersector.intersectRayBounds(ray, geometry.box, new Vector3())) {
- *       return tmp.dst2(ray.origin);
- *     }
- *     return Float.MAX_VALUE;
- *   }
+ * 	&#64;Override
+ * 	public float intersects (Ray ray, GameObject geometry) {
+ * 		if (Intersector.intersectRayBounds(ray, geometry.box, new Vector3())) {
+ * 			return tmp.dst2(ray.origin);
+ * 		}
+ * 		return Float.MAX_VALUE;
+ * 	}
  * });
  *
  * // Adding game objects to the octree
@@ -60,7 +59,7 @@ import com.badlogic.gdx.utils.Pool;
  *
  * // Rendering the result
  * for (GameObject gameObject : result) {
- *   modelBatch.render(gameObject);
+ * 	modelBatch.render(gameObject);
  * }
  * </pre>
  */
@@ -70,7 +69,7 @@ public class Octree<T> {
 
 	final Pool<OctreeNode> nodePool = new Pool<OctreeNode>() {
 		@Override
-		protected OctreeNode newObject() {
+		protected OctreeNode newObject () {
 			return new OctreeNode();
 		}
 	};
@@ -82,8 +81,10 @@ public class Octree<T> {
 
 	public Octree (Vector3 minimum, Vector3 maximum, int maxDepth, int maxItemsPerNode, Collider<T> collider) {
 		super();
-		Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y), Math.min(minimum.z, maximum.z));
-		Vector3 realMax = new Vector3(Math.max(minimum.x, maximum.x), Math.max(minimum.y, maximum.y), Math.max(minimum.z, maximum.z));
+		Vector3 realMin = new Vector3(Math.min(minimum.x, maximum.x), Math.min(minimum.y, maximum.y),
+			Math.min(minimum.z, maximum.z));
+		Vector3 realMax = new Vector3(Math.max(minimum.x, maximum.x), Math.max(minimum.y, maximum.y),
+			Math.max(minimum.z, maximum.z));
 
 		this.root = createNode(realMin, realMax, maxDepth);
 		this.collider = collider;
@@ -113,28 +114,23 @@ public class Octree<T> {
 
 	/** Method to retrieve all the geometries.
 	 * @param resultSet
-	 * @return the result set
-	 */
+	 * @return the result set */
 	public ObjectSet<T> getAll (ObjectSet<T> resultSet) {
 		root.getAll(resultSet);
 		return resultSet;
 	}
 
-	/** Method to query geometries inside nodes that the aabb intersects.
-	 * Can be used as broad phase.
+	/** Method to query geometries inside nodes that the aabb intersects. Can be used as broad phase.
 	 * @param aabb - The bounding box to query
-	 * @param result - Set to be populated with objects inside the BoundingBoxes
-	 */
+	 * @param result - Set to be populated with objects inside the BoundingBoxes */
 	public ObjectSet<T> query (BoundingBox aabb, ObjectSet<T> result) {
 		root.query(aabb, result);
 		return result;
 	}
 
-	/** Method to query geometries inside nodes that the frustum intersects.
-	 * Can be used as broad phase.
+	/** Method to query geometries inside nodes that the frustum intersects. Can be used as broad phase.
 	 * @param frustum - The frustum to query
-	 * @param result set populated with objects near from the frustum
-	 */
+	 * @param result set populated with objects near from the frustum */
 	public ObjectSet<T> query (Frustum frustum, ObjectSet<T> result) {
 		root.query(frustum, result);
 		return result;
@@ -148,8 +144,7 @@ public class Octree<T> {
 
 	/** Method to get nodes as bounding boxes. Useful for debug purpose.
 	 *
-	 * @param boxes
-	 */
+	 * @param boxes */
 	public ObjectSet<BoundingBox> getNodesBoxes (ObjectSet<BoundingBox> boxes) {
 		root.getBoundingBox(boxes);
 		return boxes;
@@ -172,14 +167,22 @@ public class Octree<T> {
 
 			leaf = false;
 			if (children == null) children = new Octree.OctreeNode[8];
-			children[0] = createNode(new Vector3(bounds.min.x, midy, midz), new Vector3(midx, bounds.max.y, bounds.max.z), deeperLevel);
-			children[1] = createNode(new Vector3(midx, midy, midz), new Vector3(bounds.max.x, bounds.max.y, bounds.max.z), deeperLevel);
-			children[2] = createNode(new Vector3(midx, midy, bounds.min.z), new Vector3(bounds.max.x, bounds.max.y, midz), deeperLevel);
-			children[3] = createNode(new Vector3(bounds.min.x, midy, bounds.min.z), new Vector3(midx, bounds.max.y, midz), deeperLevel);
-			children[4] = createNode(new Vector3(bounds.min.x, bounds.min.y, midz), new Vector3(midx, midy, bounds.max.z), deeperLevel);
-			children[5] = createNode(new Vector3(midx, bounds.min.y, midz), new Vector3(bounds.max.x, midy, bounds.max.z), deeperLevel);
-			children[6] = createNode(new Vector3(midx, bounds.min.y, bounds.min.z), new Vector3(bounds.max.x, midy, midz), deeperLevel);
-			children[7] = createNode(new Vector3(bounds.min.x, bounds.min.y, bounds.min.z), new Vector3(midx, midy, midz), deeperLevel);
+			children[0] = createNode(new Vector3(bounds.min.x, midy, midz), new Vector3(midx, bounds.max.y, bounds.max.z),
+				deeperLevel);
+			children[1] = createNode(new Vector3(midx, midy, midz), new Vector3(bounds.max.x, bounds.max.y, bounds.max.z),
+				deeperLevel);
+			children[2] = createNode(new Vector3(midx, midy, bounds.min.z), new Vector3(bounds.max.x, bounds.max.y, midz),
+				deeperLevel);
+			children[3] = createNode(new Vector3(bounds.min.x, midy, bounds.min.z), new Vector3(midx, bounds.max.y, midz),
+				deeperLevel);
+			children[4] = createNode(new Vector3(bounds.min.x, bounds.min.y, midz), new Vector3(midx, midy, bounds.max.z),
+				deeperLevel);
+			children[5] = createNode(new Vector3(midx, bounds.min.y, midz), new Vector3(bounds.max.x, midy, bounds.max.z),
+				deeperLevel);
+			children[6] = createNode(new Vector3(midx, bounds.min.y, bounds.min.z), new Vector3(bounds.max.x, midy, midz),
+				deeperLevel);
+			children[7] = createNode(new Vector3(bounds.min.x, bounds.min.y, bounds.min.z), new Vector3(midx, midy, midz),
+				deeperLevel);
 
 			// Move geometries from parent to children
 			for (Octree.OctreeNode child : children) {
@@ -314,7 +317,7 @@ public class Octree<T> {
 					child.rayCast(ray, result);
 				}
 			} else {
-				for (T geometry: geometries) {
+				for (T geometry : geometries) {
 					// Check intersection with geometries
 					float distance = collider.intersects(ray, geometry);
 					if (result.geometry == null || distance < result.distance) {
@@ -326,8 +329,7 @@ public class Octree<T> {
 		}
 
 		/** Get all geometries using Depth-First Search recursion.
-		 * @param resultSet
-		 */
+		 * @param resultSet */
 		protected void getAll (ObjectSet<T> resultSet) {
 			if (!leaf) {
 				for (Octree.OctreeNode child : children) {
@@ -338,9 +340,8 @@ public class Octree<T> {
 		}
 
 		/** Get bounding boxes using Depth-First Search recursion.
-		 * @param bounds
-		 */
-		protected void getBoundingBox(ObjectSet<BoundingBox> bounds) {
+		 * @param bounds */
+		protected void getBoundingBox (ObjectSet<BoundingBox> bounds) {
 			if (!leaf) {
 				for (Octree.OctreeNode node : children) {
 					node.getBoundingBox(bounds);
@@ -350,31 +351,26 @@ public class Octree<T> {
 		}
 	}
 
-	/** Interface used by octree to handle geometries' collisions
-	 * against BoundingBox, Frustum and Ray.
-	 * @param <T>
-	 */
+	/** Interface used by octree to handle geometries' collisions against BoundingBox, Frustum and Ray.
+	 * @param <T> */
 	public interface Collider<T> {
 
 		/** Method to calculate intersection between aabb and the geometry.
 		 * @param nodeBounds
 		 * @param geometry
-		 * @return if they are intersecting
-		 */
+		 * @return if they are intersecting */
 		boolean intersects (BoundingBox nodeBounds, T geometry);
 
 		/** Method to calculate intersection between frustum and the geometry.
 		 * @param frustum
 		 * @param geometry
-		 * @return if they are intersecting
-		 */
+		 * @return if they are intersecting */
 		boolean intersects (Frustum frustum, T geometry);
 
 		/** Method to calculate intersection between ray and the geometry.
 		 * @param ray
 		 * @param geometry
-		 * @return distance between ray and geometry
-		 */
+		 * @return distance between ray and geometry */
 		float intersects (Ray ray, T geometry);
 	}
 

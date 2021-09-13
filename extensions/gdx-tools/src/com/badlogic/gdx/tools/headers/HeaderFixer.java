@@ -27,6 +27,7 @@ import com.badlogic.gdx.tools.FileProcessor;
 public class HeaderFixer {
 	static int filesScanned;
 	static int filesChanged;
+
 	static class HeaderFileProcessor extends FileProcessor {
 		final String header;
 

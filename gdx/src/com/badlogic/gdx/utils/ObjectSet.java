@@ -127,8 +127,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 	}
 
-	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
-	 * and returns false. */
+	/** Returns true if the key was added to the set or false if it was already in the set. If this set already contains the key,
+	 * the call leaves the set unchanged and returns false. */
 	public boolean add (T key) {
 		int i = locateKey(key);
 		if (i >= 0) return false; // Existing key was found.

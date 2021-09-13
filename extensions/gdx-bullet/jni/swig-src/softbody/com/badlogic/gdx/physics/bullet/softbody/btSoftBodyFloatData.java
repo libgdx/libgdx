@@ -12,44 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftBodyFloatData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btSoftBodyFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSoftBodyFloatData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSoftBodyFloatData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btSoftBodyFloatData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSoftBodyFloatData, normally you should not need this constructor it's intended for low-level usage. */
+	public btSoftBodyFloatData (long cPtr, boolean cMemoryOwn) {
 		this("btSoftBodyFloatData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSoftBodyFloatData obj) {
+
+	public static long getCPtr (btSoftBodyFloatData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,171 +55,171 @@ public class btSoftBodyFloatData extends BulletBase {
 		super.delete();
 	}
 
-  public void setCollisionObjectData(btCollisionObjectFloatData value) {
-    SoftbodyJNI.btSoftBodyFloatData_collisionObjectData_set(swigCPtr, this, btCollisionObjectFloatData.getCPtr(value), value);
-  }
+	public void setCollisionObjectData (btCollisionObjectFloatData value) {
+		SoftbodyJNI.btSoftBodyFloatData_collisionObjectData_set(swigCPtr, this, btCollisionObjectFloatData.getCPtr(value), value);
+	}
 
-  public btCollisionObjectFloatData getCollisionObjectData() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_collisionObjectData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectFloatData(cPtr, false);
-  }
+	public btCollisionObjectFloatData getCollisionObjectData () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_collisionObjectData_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCollisionObjectFloatData(cPtr, false);
+	}
 
-  public void setPose(SoftBodyPoseData value) {
-    SoftbodyJNI.btSoftBodyFloatData_pose_set(swigCPtr, this, SoftBodyPoseData.getCPtr(value), value);
-  }
+	public void setPose (SoftBodyPoseData value) {
+		SoftbodyJNI.btSoftBodyFloatData_pose_set(swigCPtr, this, SoftBodyPoseData.getCPtr(value), value);
+	}
 
-  public SoftBodyPoseData getPose() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_pose_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyPoseData(cPtr, false);
-  }
+	public SoftBodyPoseData getPose () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_pose_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyPoseData(cPtr, false);
+	}
 
-  public void setMaterials(SWIGTYPE_p_p_SoftBodyMaterialData value) {
-    SoftbodyJNI.btSoftBodyFloatData_materials_set(swigCPtr, this, SWIGTYPE_p_p_SoftBodyMaterialData.getCPtr(value));
-  }
+	public void setMaterials (SWIGTYPE_p_p_SoftBodyMaterialData value) {
+		SoftbodyJNI.btSoftBodyFloatData_materials_set(swigCPtr, this, SWIGTYPE_p_p_SoftBodyMaterialData.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_p_SoftBodyMaterialData getMaterials() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_materials_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_SoftBodyMaterialData(cPtr, false);
-  }
+	public SWIGTYPE_p_p_SoftBodyMaterialData getMaterials () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_materials_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_p_SoftBodyMaterialData(cPtr, false);
+	}
 
-  public void setNodes(SoftBodyNodeData value) {
-    SoftbodyJNI.btSoftBodyFloatData_nodes_set(swigCPtr, this, SoftBodyNodeData.getCPtr(value), value);
-  }
+	public void setNodes (SoftBodyNodeData value) {
+		SoftbodyJNI.btSoftBodyFloatData_nodes_set(swigCPtr, this, SoftBodyNodeData.getCPtr(value), value);
+	}
 
-  public SoftBodyNodeData getNodes() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_nodes_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyNodeData(cPtr, false);
-  }
+	public SoftBodyNodeData getNodes () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_nodes_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyNodeData(cPtr, false);
+	}
 
-  public void setLinks(SoftBodyLinkData value) {
-    SoftbodyJNI.btSoftBodyFloatData_links_set(swigCPtr, this, SoftBodyLinkData.getCPtr(value), value);
-  }
+	public void setLinks (SoftBodyLinkData value) {
+		SoftbodyJNI.btSoftBodyFloatData_links_set(swigCPtr, this, SoftBodyLinkData.getCPtr(value), value);
+	}
 
-  public SoftBodyLinkData getLinks() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_links_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyLinkData(cPtr, false);
-  }
+	public SoftBodyLinkData getLinks () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_links_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyLinkData(cPtr, false);
+	}
 
-  public void setFaces(SoftBodyFaceData value) {
-    SoftbodyJNI.btSoftBodyFloatData_faces_set(swigCPtr, this, SoftBodyFaceData.getCPtr(value), value);
-  }
+	public void setFaces (SoftBodyFaceData value) {
+		SoftbodyJNI.btSoftBodyFloatData_faces_set(swigCPtr, this, SoftBodyFaceData.getCPtr(value), value);
+	}
 
-  public SoftBodyFaceData getFaces() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_faces_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyFaceData(cPtr, false);
-  }
+	public SoftBodyFaceData getFaces () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_faces_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyFaceData(cPtr, false);
+	}
 
-  public void setTetrahedra(SoftBodyTetraData value) {
-    SoftbodyJNI.btSoftBodyFloatData_tetrahedra_set(swigCPtr, this, SoftBodyTetraData.getCPtr(value), value);
-  }
+	public void setTetrahedra (SoftBodyTetraData value) {
+		SoftbodyJNI.btSoftBodyFloatData_tetrahedra_set(swigCPtr, this, SoftBodyTetraData.getCPtr(value), value);
+	}
 
-  public SoftBodyTetraData getTetrahedra() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_tetrahedra_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyTetraData(cPtr, false);
-  }
+	public SoftBodyTetraData getTetrahedra () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_tetrahedra_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyTetraData(cPtr, false);
+	}
 
-  public void setAnchors(SoftRigidAnchorData value) {
-    SoftbodyJNI.btSoftBodyFloatData_anchors_set(swigCPtr, this, SoftRigidAnchorData.getCPtr(value), value);
-  }
+	public void setAnchors (SoftRigidAnchorData value) {
+		SoftbodyJNI.btSoftBodyFloatData_anchors_set(swigCPtr, this, SoftRigidAnchorData.getCPtr(value), value);
+	}
 
-  public SoftRigidAnchorData getAnchors() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_anchors_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftRigidAnchorData(cPtr, false);
-  }
+	public SoftRigidAnchorData getAnchors () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_anchors_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftRigidAnchorData(cPtr, false);
+	}
 
-  public void setClusters(SoftBodyClusterData value) {
-    SoftbodyJNI.btSoftBodyFloatData_clusters_set(swigCPtr, this, SoftBodyClusterData.getCPtr(value), value);
-  }
+	public void setClusters (SoftBodyClusterData value) {
+		SoftbodyJNI.btSoftBodyFloatData_clusters_set(swigCPtr, this, SoftBodyClusterData.getCPtr(value), value);
+	}
 
-  public SoftBodyClusterData getClusters() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_clusters_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyClusterData(cPtr, false);
-  }
+	public SoftBodyClusterData getClusters () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_clusters_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyClusterData(cPtr, false);
+	}
 
-  public void setJoints(btSoftBodyJointData value) {
-    SoftbodyJNI.btSoftBodyFloatData_joints_set(swigCPtr, this, btSoftBodyJointData.getCPtr(value), value);
-  }
+	public void setJoints (btSoftBodyJointData value) {
+		SoftbodyJNI.btSoftBodyFloatData_joints_set(swigCPtr, this, btSoftBodyJointData.getCPtr(value), value);
+	}
 
-  public btSoftBodyJointData getJoints() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_joints_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btSoftBodyJointData(cPtr, false);
-  }
+	public btSoftBodyJointData getJoints () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_joints_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btSoftBodyJointData(cPtr, false);
+	}
 
-  public void setNumMaterials(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numMaterials_set(swigCPtr, this, value);
-  }
+	public void setNumMaterials (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numMaterials_set(swigCPtr, this, value);
+	}
 
-  public int getNumMaterials() {
-    return SoftbodyJNI.btSoftBodyFloatData_numMaterials_get(swigCPtr, this);
-  }
+	public int getNumMaterials () {
+		return SoftbodyJNI.btSoftBodyFloatData_numMaterials_get(swigCPtr, this);
+	}
 
-  public void setNumNodes(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numNodes_set(swigCPtr, this, value);
-  }
+	public void setNumNodes (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numNodes_set(swigCPtr, this, value);
+	}
 
-  public int getNumNodes() {
-    return SoftbodyJNI.btSoftBodyFloatData_numNodes_get(swigCPtr, this);
-  }
+	public int getNumNodes () {
+		return SoftbodyJNI.btSoftBodyFloatData_numNodes_get(swigCPtr, this);
+	}
 
-  public void setNumLinks(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numLinks_set(swigCPtr, this, value);
-  }
+	public void setNumLinks (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numLinks_set(swigCPtr, this, value);
+	}
 
-  public int getNumLinks() {
-    return SoftbodyJNI.btSoftBodyFloatData_numLinks_get(swigCPtr, this);
-  }
+	public int getNumLinks () {
+		return SoftbodyJNI.btSoftBodyFloatData_numLinks_get(swigCPtr, this);
+	}
 
-  public void setNumFaces(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numFaces_set(swigCPtr, this, value);
-  }
+	public void setNumFaces (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numFaces_set(swigCPtr, this, value);
+	}
 
-  public int getNumFaces() {
-    return SoftbodyJNI.btSoftBodyFloatData_numFaces_get(swigCPtr, this);
-  }
+	public int getNumFaces () {
+		return SoftbodyJNI.btSoftBodyFloatData_numFaces_get(swigCPtr, this);
+	}
 
-  public void setNumTetrahedra(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numTetrahedra_set(swigCPtr, this, value);
-  }
+	public void setNumTetrahedra (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numTetrahedra_set(swigCPtr, this, value);
+	}
 
-  public int getNumTetrahedra() {
-    return SoftbodyJNI.btSoftBodyFloatData_numTetrahedra_get(swigCPtr, this);
-  }
+	public int getNumTetrahedra () {
+		return SoftbodyJNI.btSoftBodyFloatData_numTetrahedra_get(swigCPtr, this);
+	}
 
-  public void setNumAnchors(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numAnchors_set(swigCPtr, this, value);
-  }
+	public void setNumAnchors (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numAnchors_set(swigCPtr, this, value);
+	}
 
-  public int getNumAnchors() {
-    return SoftbodyJNI.btSoftBodyFloatData_numAnchors_get(swigCPtr, this);
-  }
+	public int getNumAnchors () {
+		return SoftbodyJNI.btSoftBodyFloatData_numAnchors_get(swigCPtr, this);
+	}
 
-  public void setNumClusters(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numClusters_set(swigCPtr, this, value);
-  }
+	public void setNumClusters (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numClusters_set(swigCPtr, this, value);
+	}
 
-  public int getNumClusters() {
-    return SoftbodyJNI.btSoftBodyFloatData_numClusters_get(swigCPtr, this);
-  }
+	public int getNumClusters () {
+		return SoftbodyJNI.btSoftBodyFloatData_numClusters_get(swigCPtr, this);
+	}
 
-  public void setNumJoints(int value) {
-    SoftbodyJNI.btSoftBodyFloatData_numJoints_set(swigCPtr, this, value);
-  }
+	public void setNumJoints (int value) {
+		SoftbodyJNI.btSoftBodyFloatData_numJoints_set(swigCPtr, this, value);
+	}
 
-  public int getNumJoints() {
-    return SoftbodyJNI.btSoftBodyFloatData_numJoints_get(swigCPtr, this);
-  }
+	public int getNumJoints () {
+		return SoftbodyJNI.btSoftBodyFloatData_numJoints_get(swigCPtr, this);
+	}
 
-  public void setConfig(SoftBodyConfigData value) {
-    SoftbodyJNI.btSoftBodyFloatData_config_set(swigCPtr, this, SoftBodyConfigData.getCPtr(value), value);
-  }
+	public void setConfig (SoftBodyConfigData value) {
+		SoftbodyJNI.btSoftBodyFloatData_config_set(swigCPtr, this, SoftBodyConfigData.getCPtr(value), value);
+	}
 
-  public SoftBodyConfigData getConfig() {
-    long cPtr = SoftbodyJNI.btSoftBodyFloatData_config_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SoftBodyConfigData(cPtr, false);
-  }
+	public SoftBodyConfigData getConfig () {
+		long cPtr = SoftbodyJNI.btSoftBodyFloatData_config_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SoftBodyConfigData(cPtr, false);
+	}
 
-  public btSoftBodyFloatData() {
-    this(SoftbodyJNI.new_btSoftBodyFloatData(), true);
-  }
+	public btSoftBodyFloatData () {
+		this(SoftbodyJNI.new_btSoftBodyFloatData(), true);
+	}
 
 }

@@ -9,18 +9,17 @@
 package com.badlogic.gdx.physics.bullet.collision;
 
 public class SWIGTYPE_p_p_btDbvtProxy {
-  private transient long swigCPtr;
+	private transient long swigCPtr;
 
-  protected SWIGTYPE_p_p_btDbvtProxy(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_p_btDbvtProxy (long cPtr, @SuppressWarnings("unused") boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_p_btDbvtProxy() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_p_btDbvtProxy () {
+		swigCPtr = 0;
+	}
 
-  protected static long getCPtr(SWIGTYPE_p_p_btDbvtProxy obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	protected static long getCPtr (SWIGTYPE_p_p_btDbvtProxy obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

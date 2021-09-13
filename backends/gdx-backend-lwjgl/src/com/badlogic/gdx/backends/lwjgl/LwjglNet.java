@@ -33,7 +33,7 @@ public class LwjglNet implements Net {
 
 	NetJavaImpl netJavaImpl;
 
-	public LwjglNet(LwjglApplicationConfiguration configuration) {
+	public LwjglNet (LwjglApplicationConfiguration configuration) {
 		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
 	}
 
@@ -41,12 +41,12 @@ public class LwjglNet implements Net {
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
-	
+
 	@Override
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String ipAddress, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);

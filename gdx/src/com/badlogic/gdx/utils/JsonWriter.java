@@ -175,7 +175,8 @@ public class JsonWriter extends Writer {
 		 * <code>false</code> , or <code>null</code>.
 		 * <li>Newlines are treated as commas, making commas optional in many cases.
 		 * <li>C style comments may be used: <code>//...</code> or <code>/*...*<b></b>/</code>
-		 * </ul> */
+		 * </ul>
+		 */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");

@@ -94,7 +94,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	}
 
 	@Override
-	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,	TextureLoader.TextureParameter textureParameter) {
+	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
+		TextureLoader.TextureParameter textureParameter) {
 		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 
 		final Array<FileHandle> fileHandles = getDependencyFileHandles(tmxFile);
@@ -157,7 +158,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	}
 
 	@Override
-	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet,	Element element,
+	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
 		Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
 		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
