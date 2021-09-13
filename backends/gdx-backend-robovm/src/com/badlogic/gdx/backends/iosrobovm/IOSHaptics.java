@@ -112,7 +112,7 @@ public class IOSHaptics {
 	private CHHapticPatternDict getChHapticPatternDict (int milliseconds, float intensity) {
 		return new CHHapticPatternDict()
 			.setPattern(new NSArray<NSObject>(new CHHapticPatternDict()
-				.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticTransient).setTime(0.0)
+				.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticContinuous).setTime(0.0)
 					.setEventDuration(milliseconds / 1000f)
 					// TODO There should be a better/safer way to provide the event parameters using CHHapticEventParameterID
 					.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"),
