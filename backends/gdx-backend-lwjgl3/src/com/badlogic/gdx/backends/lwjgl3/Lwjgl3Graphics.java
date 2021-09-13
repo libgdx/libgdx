@@ -394,13 +394,19 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	public boolean setWindowedMode (int width, int height) {
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
-			if (width != logicalWidth || height != logicalHeight) { // Center window
+			int newX = 0, newY = 0;
+			boolean centerWindow = false;
+			if (width != logicalWidth || height != logicalHeight) {
+				centerWindow = true;
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				window.setPosition(Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
-					Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2));
+				newX = Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2);
+				newY = Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
 			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
+			if (centerWindow) {
+				window.setPosition(newX, newY); // on macOS the centering has to happen _after_ the new window size was set
+			}
 		} else {
 			if (displayModeBeforeFullscreen == null) {
 				storeCurrentWindowPositionAndDisplayMode();
