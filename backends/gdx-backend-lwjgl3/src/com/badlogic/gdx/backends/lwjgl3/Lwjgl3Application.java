@@ -488,8 +488,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
 				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
 
-				GLFW.glfwSetWindowPos(windowHandle, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2,
-					areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2);
+				GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
+					Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
