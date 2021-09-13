@@ -120,7 +120,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		view.setPreserveEGLContextOnPause(true);
 	}
 
-	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
+	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application,
+		final ResolutionStrategy resolutionStrategy) {
 		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
@@ -243,8 +244,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return height;
 	}
 
-	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
-	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
+	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11
+	 * but fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
 	 * Motorola CLIQ and the Samsung Behold II.
 	 *
 	 * @param gl */
@@ -362,7 +363,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 			view.queueEvent(new Runnable() {
 				@Override
-				public void run() {
+				public void run () {
 					if (!pause) {
 						// pause event already picked up by onDrawFrame
 						return;
@@ -414,7 +415,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			updateSafeAreaInsets();
 			app.getApplicationListener().resize(width, height);
 		}
-		
+
 		long time = System.nanoTime();
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
@@ -423,7 +424,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			deltaTime = 0;
 		}
 		lastFrameTime = time;
-
 
 		boolean lrunning = false;
 		boolean lpause = false;
@@ -614,7 +614,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public Monitor[] getMonitors () {
-		return new Monitor[] { getPrimaryMonitor() };
+		return new Monitor[] {getPrimaryMonitor()};
 	}
 
 	@Override
@@ -632,7 +632,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return new DisplayMode[] {getDisplayMode()};
 	}
 
-	protected void updateSafeAreaInsets() {
+	protected void updateSafeAreaInsets () {
 		safeInsetLeft = 0;
 		safeInsetTop = 0;
 		safeInsetRight = 0;
@@ -655,22 +655,22 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	@Override
-	public int getSafeInsetLeft() {
+	public int getSafeInsetLeft () {
 		return safeInsetLeft;
 	}
 
 	@Override
-	public int getSafeInsetTop() {
+	public int getSafeInsetTop () {
 		return safeInsetTop;
 	}
 
 	@Override
-	public int getSafeInsetBottom() {
+	public int getSafeInsetBottom () {
 		return safeInsetBottom;
 	}
 
 	@Override
-	public int getSafeInsetRight() {
+	public int getSafeInsetRight () {
 		return safeInsetRight;
 	}
 
@@ -747,7 +747,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	public boolean isFullscreen () {
 		return true;
 	}
-
 
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {

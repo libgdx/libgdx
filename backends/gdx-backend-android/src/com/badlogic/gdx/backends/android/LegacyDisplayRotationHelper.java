@@ -3,7 +3,7 @@ package com.badlogic.gdx.backends.android;
 public class LegacyDisplayRotationHelper implements DisplayRotationHelper {
 
 	private boolean refreshNeeded;
-	
+
 	@Override
 	public boolean getAndResetRefreshNeeded () {
 		boolean isRefreshNeeded = refreshNeeded;
