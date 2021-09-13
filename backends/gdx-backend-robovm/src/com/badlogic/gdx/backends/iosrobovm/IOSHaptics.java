@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Gdx;
@@ -24,7 +40,7 @@ public class IOSHaptics {
 
 	private CHHapticEngine hapticEngine;
 	private boolean hapticsSupport;
-	
+
 	public IOSHaptics (boolean useHaptics) {
 		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
 			hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
@@ -54,8 +70,8 @@ public class IOSHaptics {
 			}
 		}
 	}
-	
-	public void vibrate(int milliseconds, boolean fallback) {
+
+	public void vibrate (int milliseconds, boolean fallback) {
 		if (hapticsSupport) {
 			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, 0.5f);
 			System.out.println(hapticDict);
@@ -74,7 +90,7 @@ public class IOSHaptics {
 		}
 	}
 
-	public void vibrate(int milliseconds, int amplitude, boolean fallback) {
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 		if (hapticsSupport) {
 			float intensity = MathUtils.clamp(amplitude / 255f, 0, 1);
 			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, intensity);
@@ -93,24 +109,16 @@ public class IOSHaptics {
 		}
 	}
 
-	private CHHapticPatternDict getChHapticPatternDict(int milliseconds, float intensity) {
+	private CHHapticPatternDict getChHapticPatternDict (int milliseconds, float intensity) {
 		return new CHHapticPatternDict()
-			.setPattern(
-				new NSArray<NSObject>(
-					new CHHapticPatternDict()
-						.setEvent(
-							new CHHapticPatternDict()
-								.setEventType(CHHapticEventType.HapticTransient)
-								.setTime(0.0)
-								.setEventDuration(milliseconds / 1000f)
-									// TODO There should be a better/safer way to provide the event parameters using CHHapticEventParameterID
-								.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"), new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity))))
-						)
-					.getDictionary()
-				)
-			);
+			.setPattern(new NSArray<NSObject>(new CHHapticPatternDict()
+				.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticTransient).setTime(0.0)
+					.setEventDuration(milliseconds / 1000f)
+					// TODO There should be a better/safer way to provide the event parameters using CHHapticEventParameterID
+					.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"),
+						new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity)))))
+				.getDictionary()));
 	}
-
 
 	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
 		final int DEFAULT_LENGTH = 50;
@@ -135,10 +143,9 @@ public class IOSHaptics {
 			vibrate(DEFAULT_LENGTH, fallback);
 		}
 	}
-	
-	public boolean isHapticsSupported() {
+
+	public boolean isHapticsSupported () {
 		return hapticsSupport;
 	}
-	
-	
+
 }

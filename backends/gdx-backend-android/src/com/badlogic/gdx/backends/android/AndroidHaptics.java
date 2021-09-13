@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
@@ -25,7 +41,8 @@ public class AndroidHaptics {
 				if (vibrator.hasAmplitudeControl()) {
 					amplitudeSupport = true;
 				}
-				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_GAME).build();
+				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+					.setUsage(AudioAttributes.USAGE_GAME).build();
 			}
 		}
 	}
@@ -76,7 +93,7 @@ public class AndroidHaptics {
 				vibrator.vibrate(VibrationEffect.createOneShot(DEFAULT_LENGTH, amplitude));
 			}
 		} else if (fallback) {
-			vibrate((int) DEFAULT_LENGTH);
+			vibrate((int)DEFAULT_LENGTH);
 		}
 	}
 
@@ -85,10 +102,9 @@ public class AndroidHaptics {
 			intensity = MathUtils.clamp(intensity, 0, 255);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 				vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, intensity));
-		} else if (fallback)
-			vibrate(milliseconds);
+		} else if (fallback) vibrate(milliseconds);
 	}
-	
+
 	public boolean hasVibratorAvailable () {
 		return vibratorSupport;
 	}

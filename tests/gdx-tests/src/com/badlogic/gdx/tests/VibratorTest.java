@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ public class VibratorTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	Skin skin;
-	
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -71,12 +71,13 @@ public class VibratorTest extends GdxTest {
 		buttonVibrateType.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0, Input.VibrationType.values().length - 1)];
+				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0,
+					Input.VibrationType.values().length - 1)];
 				Gdx.input.vibrate(vibrationType, fallbackCheckbox.isChecked());
 				Gdx.app.log("VibratorTest", "VibrationType: " + vibrationType.name());
 			}
 		});
-		
+
 		table.defaults().pad(20f);
 		table.add(button).size(120f);
 		table.add(buttonVibrateAmplitude).size(120f);

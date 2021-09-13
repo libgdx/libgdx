@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -87,8 +87,8 @@ public abstract class AbstractTestWrapper extends GdxTest {
 			table.add(button).expandX().fillX();
 		}
 		container.row();
-		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.", new LabelStyle(font, Color.WHITE))).pad(5, 5,
-			5, 5);
+		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.",
+			new LabelStyle(font, Color.WHITE))).pad(5, 5, 5, 5);
 
 		Gdx.input = new InputWrapper(Gdx.input) {
 			@Override
@@ -305,17 +305,17 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void vibrate(int milliseconds, boolean fallback) {
+		public void vibrate (int milliseconds, boolean fallback) {
 			input.vibrate(milliseconds, fallback);
 		}
 
 		@Override
-		public void vibrate(int milliseconds, int amplitude, boolean fallback) {
+		public void vibrate (int milliseconds, int amplitude, boolean fallback) {
 			input.vibrate(milliseconds, amplitude, fallback);
 		}
 
 		@Override
-		public void vibrate(VibrationType vibrationType, boolean fallback) {
+		public void vibrate (VibrationType vibrationType, boolean fallback) {
 			input.vibrate(vibrationType, fallback);
 		}
 
@@ -419,8 +419,9 @@ public abstract class AbstractTestWrapper extends GdxTest {
 
 	protected interface Instancer {
 		GdxTest instance ();
-		String getSimpleName();
+
+		String getSimpleName ();
 	}
 
-	protected abstract Instancer[] getTestList();
+	protected abstract Instancer[] getTestList ();
 }
