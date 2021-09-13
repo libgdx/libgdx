@@ -20,8 +20,8 @@ package java.io;
 import java.nio.CharBuffer;
 import java.nio.ReadOnlyBufferException;
 
-/*** The base class for all readers. A reader is a means of reading data from a source in a character-wise manner. Some readers also
- * support marking a position in the input and returning to this position later.
+/*** The base class for all readers. A reader is a means of reading data from a source in a character-wise manner. Some readers
+ * also support marking a position in the input and returning to this position later.
  * <p>
  * This abstract class does not provide a fully working implementation, so it needs to be subclassed, and at least the
  * {@link #read(char[], int, int)} and {@link #close()} methods needs to be overridden. Overriding some of the non-abstract
@@ -79,8 +79,8 @@ public abstract class Reader implements Readable, Closeable {
 		return false;
 	}
 
-	/*** Reads a single character from this reader and returns it as an integer with the two higher-order bytes set to 0. Returns -1
-	 * if the end of the reader has been reached.
+	/*** Reads a single character from this reader and returns it as an integer with the two higher-order bytes set to 0. Returns
+	 * -1 if the end of the reader has been reached.
 	 * 
 	 * @return the character read or -1 if the end of the reader has been reached.
 	 * @throws IOException if this reader is closed or some other I/O error occurs. */
@@ -104,8 +104,8 @@ public abstract class Reader implements Readable, Closeable {
 		return read(buf, 0, buf.length);
 	}
 
-	/*** Reads at most {@code count} characters from this reader and stores them at {@code offset} in the character array {@code buf}
-	 * . Returns the number of characters actually read or -1 if the end of the reader has been reached.
+	/*** Reads at most {@code count} characters from this reader and stores them at {@code offset} in the character array
+	 * {@code buf} . Returns the number of characters actually read or -1 if the end of the reader has been reached.
 	 * 
 	 * @param buf the character array to store the characters read.
 	 * @param offset the initial position in {@code buffer} to store the characters read from this reader.
@@ -114,8 +114,8 @@ public abstract class Reader implements Readable, Closeable {
 	 * @throws IOException if this reader is closed or some other I/O error occurs. */
 	public abstract int read (char buf[], int offset, int count) throws IOException;
 
-	/*** Indicates whether this reader is ready to be read without blocking. Returns {@code true} if this reader will not block when
-	 * {@code read} is called, {@code false} if unknown or blocking will occur. This default implementation always returns
+	/*** Indicates whether this reader is ready to be read without blocking. Returns {@code true} if this reader will not block
+	 * when {@code read} is called, {@code false} if unknown or blocking will occur. This default implementation always returns
 	 * {@code false}.
 	 * 
 	 * @return always {@code false}.

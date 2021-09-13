@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btPrimitiveManagerBase extends BulletBase {
 	private long swigCPtr;
-	
-	protected btPrimitiveManagerBase(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPrimitiveManagerBase (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btPrimitiveManagerBase, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btPrimitiveManagerBase(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btPrimitiveManagerBase, normally you should not need this constructor it's intended for low-level usage. */
+	public btPrimitiveManagerBase (long cPtr, boolean cMemoryOwn) {
 		this("btPrimitiveManagerBase", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPrimitiveManagerBase obj) {
+
+	public static long getCPtr (btPrimitiveManagerBase obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,20 +53,21 @@ public class btPrimitiveManagerBase extends BulletBase {
 		super.delete();
 	}
 
-  public boolean is_trimesh() {
-    return CollisionJNI.btPrimitiveManagerBase_is_trimesh(swigCPtr, this);
-  }
+	public boolean is_trimesh () {
+		return CollisionJNI.btPrimitiveManagerBase_is_trimesh(swigCPtr, this);
+	}
 
-  public int get_primitive_count() {
-    return CollisionJNI.btPrimitiveManagerBase_get_primitive_count(swigCPtr, this);
-  }
+	public int get_primitive_count () {
+		return CollisionJNI.btPrimitiveManagerBase_get_primitive_count(swigCPtr, this);
+	}
 
-  public void get_primitive_box(int prim_index, btAABB primbox) {
-    CollisionJNI.btPrimitiveManagerBase_get_primitive_box(swigCPtr, this, prim_index, btAABB.getCPtr(primbox), primbox);
-  }
+	public void get_primitive_box (int prim_index, btAABB primbox) {
+		CollisionJNI.btPrimitiveManagerBase_get_primitive_box(swigCPtr, this, prim_index, btAABB.getCPtr(primbox), primbox);
+	}
 
-  public void get_primitive_triangle(int prim_index, btPrimitiveTriangle triangle) {
-    CollisionJNI.btPrimitiveManagerBase_get_primitive_triangle(swigCPtr, this, prim_index, btPrimitiveTriangle.getCPtr(triangle), triangle);
-  }
+	public void get_primitive_triangle (int prim_index, btPrimitiveTriangle triangle) {
+		CollisionJNI.btPrimitiveManagerBase_get_primitive_triangle(swigCPtr, this, prim_index,
+			btPrimitiveTriangle.getCPtr(triangle), triangle);
+	}
 
 }

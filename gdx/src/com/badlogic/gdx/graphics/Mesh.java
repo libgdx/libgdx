@@ -46,7 +46,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** <p>
+/**
+ * <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
  * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is
  * preferred over vertex arrays if hardware supports it.
@@ -362,7 +363,8 @@ public class Mesh implements Disposable {
 		return getVertices(srcOffset, -1, vertices);
 	}
 
-	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count vertices.
+	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count
+	 * vertices.
 	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
 	 * @param count the amount of floats to copy
 	 * @param vertices the array to copy the vertices to */
@@ -385,13 +387,12 @@ public class Mesh implements Disposable {
 		}
 		if (srcOffset < 0 || count <= 0 || (srcOffset + count) > max || destOffset < 0 || destOffset >= vertices.length)
 			throw new IndexOutOfBoundsException();
-		if ((vertices.length - destOffset) < count)
-			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs "
-				+ count);
+		if ((vertices.length - destOffset) < count) throw new IllegalArgumentException(
+			"not enough room in vertices array, has " + vertices.length + " floats, needs " + count);
 		int pos = getVerticesBuffer().position();
-		((Buffer) getVerticesBuffer()).position(srcOffset);
+		((Buffer)getVerticesBuffer()).position(srcOffset);
 		getVerticesBuffer().get(vertices, destOffset, count);
-		((Buffer) getVerticesBuffer()).position(pos);
+		((Buffer)getVerticesBuffer()).position(pos);
 		return vertices;
 	}
 
@@ -431,8 +432,8 @@ public class Mesh implements Disposable {
 		getIndices(0, indices, destOffset);
 	}
 
-	/** Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold destOffset + all
-	 * the remaining indices.
+	/** Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold destOffset +
+	 * all the remaining indices.
 	 * @param srcOffset the zero-based offset of the first index to fetch
 	 * @param indices the array to copy the indices to
 	 * @param destOffset the offset in the indices array to start copying */
@@ -449,15 +450,14 @@ public class Mesh implements Disposable {
 	public void getIndices (int srcOffset, int count, short[] indices, int destOffset) {
 		int max = getNumIndices();
 		if (count < 0) count = max - srcOffset;
-		if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max)
-			throw new IllegalArgumentException("Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: "
-				+ max);
-		if ((indices.length - destOffset) < count)
-			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " shorts, needs " + count);
+		if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max) throw new IllegalArgumentException(
+			"Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: " + max);
+		if ((indices.length - destOffset) < count) throw new IllegalArgumentException(
+			"not enough room in indices array, has " + indices.length + " shorts, needs " + count);
 		int pos = getIndicesBuffer().position();
-		((Buffer) getIndicesBuffer()).position(srcOffset);
+		((Buffer)getIndicesBuffer()).position(srcOffset);
 		getIndicesBuffer().get(indices, destOffset, count);
-		((Buffer) getIndicesBuffer()).position(pos);
+		((Buffer)getIndicesBuffer()).position(pos);
 	}
 
 	/** @return the number of defined indices */
@@ -533,7 +533,8 @@ public class Mesh implements Disposable {
 		if (indices.getNumIndices() > 0) indices.unbind();
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
 	 * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
 	 * </p>
@@ -556,7 +557,8 @@ public class Mesh implements Disposable {
 		render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
 	 * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
 	 * #vertices per primitive primitives are rendered.
@@ -583,7 +585,8 @@ public class Mesh implements Disposable {
 		render(shader, primitiveType, offset, count, autoBind);
 	}
 
-	/** <p>
+	/**
+	 * <p>
 	 * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
 	 * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
 	 * #vertices per primitive primitives are rendered.
@@ -617,11 +620,11 @@ public class Mesh implements Disposable {
 				ShortBuffer buffer = indices.getBuffer();
 				int oldPosition = buffer.position();
 				int oldLimit = buffer.limit();
-				((Buffer) buffer).position(offset);
-				((Buffer) buffer).limit(offset + count);
+				((Buffer)buffer).position(offset);
+				((Buffer)buffer).limit(offset + count);
 				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
-				((Buffer) buffer).position(oldPosition);
-				((Buffer) buffer).limit(oldLimit);
+				((Buffer)buffer).position(oldPosition);
+				((Buffer)buffer).limit(oldLimit);
 			} else {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 			}
@@ -631,17 +634,17 @@ public class Mesh implements Disposable {
 
 			if (indices.getNumIndices() > 0) {
 				if (count + offset > indices.getNumMaxIndices()) {
-					throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
-						+ count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+					throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: " + count
+						+ ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
 				}
 
-				if (isInstanced && numInstances > 0){
+				if (isInstanced && numInstances > 0) {
 					Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2, numInstances);
 				} else {
 					Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
 				}
 			} else {
-				if (isInstanced && numInstances > 0){
+				if (isInstanced && numInstances > 0) {
 					Gdx.gl30.glDrawArraysInstanced(primitiveType, offset, count, numInstances);
 				} else {
 					Gdx.gl20.glDrawArrays(primitiveType, offset, count);
@@ -1064,9 +1067,8 @@ public class Mesh implements Disposable {
 	public static void transform (final Matrix4 matrix, final float[] vertices, int vertexSize, int offset, int dimensions,
 		int start, int count) {
 		if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize) throw new IndexOutOfBoundsException();
-		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
-			throw new IndexOutOfBoundsException("start = " + start + ", count = " + count + ", vertexSize = " + vertexSize
-				+ ", length = " + vertices.length);
+		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length) throw new IndexOutOfBoundsException(
+			"start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " + vertices.length);
 
 		final Vector3 tmp = new Vector3();
 
@@ -1129,10 +1131,10 @@ public class Mesh implements Disposable {
 	 * @param offset the offset within a vertex to the texture location
 	 * @param start the vertex to start with
 	 * @param count the amount of vertices to transform */
-	public static void transformUV (final Matrix3 matrix, final float[] vertices, int vertexSize, int offset, int start, int count) {
-		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
-			throw new IndexOutOfBoundsException("start = " + start + ", count = " + count + ", vertexSize = " + vertexSize
-				+ ", length = " + vertices.length);
+	public static void transformUV (final Matrix3 matrix, final float[] vertices, int vertexSize, int offset, int start,
+		int count) {
+		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length) throw new IndexOutOfBoundsException(
+			"start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " + vertices.length);
 
 		final Vector2 tmp = new Vector2();
 

@@ -46,52 +46,52 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		meshBuilder.box(1f, 1f, 1f);
 		Mesh mesh = new Mesh(true, meshBuilder.getNumVertices(), meshBuilder.getNumIndices(), meshBuilder.getAttributes());
 		mesh = meshBuilder.end(mesh);
-		
+
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		modelBuilder.manage(texture);
-	
+
 		modelBuilder.node().id = "box";
-		MeshPartBuilder mpb = modelBuilder.part("box", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
-			| Usage.ColorPacked, material);
+		MeshPartBuilder mpb = modelBuilder.part("box", GL20.GL_TRIANGLES,
+			Usage.Position | Usage.Normal | Usage.TextureCoordinates | Usage.ColorPacked, material);
 		mpb.setColor(Color.RED);
 		mpb.box(1f, 1f, 1f);
 
 		modelBuilder.node().id = "sphere";
-		mpb = modelBuilder.part("sphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
-			| Usage.ColorPacked, material);
+		mpb = modelBuilder.part("sphere", GL20.GL_TRIANGLES,
+			Usage.Position | Usage.Normal | Usage.TextureCoordinates | Usage.ColorPacked, material);
 		mpb.sphere(2f, 2f, 2f, 10, 5);
 
 		modelBuilder.node().id = "cone";
-		mpb = modelBuilder.part("cone", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
-			| Usage.ColorPacked, material);
+		mpb = modelBuilder.part("cone", GL20.GL_TRIANGLES,
+			Usage.Position | Usage.Normal | Usage.TextureCoordinates | Usage.ColorPacked, material);
 		mpb.setVertexTransform(new Matrix4().rotate(Vector3.X, -45f));
 		mpb.cone(2f, 3f, 1f, 8);
 
 		modelBuilder.node().id = "cylinder";
-		mpb = modelBuilder.part("cylinder", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
-			| Usage.ColorPacked, material);
+		mpb = modelBuilder.part("cylinder", GL20.GL_TRIANGLES,
+			Usage.Position | Usage.Normal | Usage.TextureCoordinates | Usage.ColorPacked, material);
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.cylinder(2f, 4f, 3f, 15);
-		
+
 		modelBuilder.node().id = "capsule";
-		mpb = modelBuilder.part("capsule", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
-			| Usage.ColorPacked, material);
+		mpb = modelBuilder.part("capsule", GL20.GL_TRIANGLES,
+			Usage.Position | Usage.Normal | Usage.TextureCoordinates | Usage.ColorPacked, material);
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.capsule(1.5f, 5f, 15);
-		
+
 		modelBuilder.node().id = "capsuleNoTexture";
-		mpb = modelBuilder.part("capsuleNoTexture", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal
-			| Usage.ColorPacked, solidMaterial);
+		mpb = modelBuilder.part("capsuleNoTexture", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.ColorPacked,
+			solidMaterial);
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.capsule(1.5f, 5f, 15);
-		
+
 		modelBuilder.node().id = "transformedSphere";
-		mpb = modelBuilder.part("transformedSphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal
-			| Usage.ColorPacked, solidMaterial);
+		mpb = modelBuilder.part("transformedSphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.ColorPacked,
+			solidMaterial);
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.sphere(new Matrix4().translate(5, 0, 10).rotate(Vector3.Z, 45).scale(1, 2, 1), 1f, 1f, 1f, 12, 16);
-		
+
 		modelBuilder.node().id = "mesh";
 		mpb = modelBuilder.part("mesh", GL20.GL_TRIANGLES, mesh.getVertexAttributes(), material);
 		Matrix4 transform = new Matrix4();

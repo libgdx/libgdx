@@ -43,7 +43,7 @@ public class Chart extends JPanel {
 	int movingIndex = -1;
 	boolean isExpanded;
 	String title;
-	
+
 	boolean moveAll = false;
 	boolean moveAllProportionally = false;
 	int moveAllPrevY;
@@ -107,10 +107,10 @@ public class Chart extends JPanel {
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged (MouseEvent event) {
 				if (movingIndex == -1 || movingIndex >= points.size()) return;
-				if (moveAll){
+				if (moveAll) {
 					int newY = event.getY();
 					float deltaY = (moveAllPrevY - newY) / (float)chartHeight * maxY;
-					for (Point point : points){
+					for (Point point : points) {
 						point.y = Math.min(maxY, Math.max(0, point.y + (moveAllProportionally ? deltaY * point.y : deltaY)));
 					}
 					moveAllPrevY = newY;
@@ -358,8 +358,8 @@ public class Chart extends JPanel {
 	public void setExpanded (boolean isExpanded) {
 		this.isExpanded = isExpanded;
 	}
-	
-	public void setTitle(String title){
+
+	public void setTitle (String title) {
 		this.title = title;
 	}
 }

@@ -95,6 +95,5 @@ public interface AndroidApplicationBase extends Application {
 
 	/** Returns the AndroidInput to be used by the application
 	 * @return the created {@link AndroidInput} */
-	AndroidInput createInput (Application activity, Context context, Object view,
-		AndroidApplicationConfiguration config);
+	AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config);
 }

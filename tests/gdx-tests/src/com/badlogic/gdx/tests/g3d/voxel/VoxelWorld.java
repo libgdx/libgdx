@@ -82,8 +82,8 @@ public class VoxelWorld implements RenderableProvider {
 		}
 		this.meshes = new Mesh[chunksX * chunksY * chunksZ];
 		for (i = 0; i < meshes.length; i++) {
-			meshes[i] = new Mesh(true, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 6 * 4, CHUNK_SIZE_X * CHUNK_SIZE_Y
-				* CHUNK_SIZE_Z * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal());
+			meshes[i] = new Mesh(true, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 6 * 4,
+				CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal());
 			meshes[i].setIndices(indices);
 		}
 		this.dirty = new boolean[chunksX * chunksY * chunksZ];
@@ -97,8 +97,8 @@ public class VoxelWorld implements RenderableProvider {
 		this.vertices = new float[VoxelChunk.VERTEX_SIZE * 6 * CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z];
 		this.materials = new Material[chunksX * chunksY * chunksZ];
 		for (i = 0; i < materials.length; i++) {
-			materials[i] = new Material(new ColorAttribute(ColorAttribute.Diffuse, MathUtils.random(0.5f, 1f), MathUtils.random(
-				0.5f, 1f), MathUtils.random(0.5f, 1f), 1));
+			materials[i] = new Material(new ColorAttribute(ColorAttribute.Diffuse, MathUtils.random(0.5f, 1f),
+				MathUtils.random(0.5f, 1f), MathUtils.random(0.5f, 1f), 1));
 		}
 	}
 
@@ -126,8 +126,8 @@ public class VoxelWorld implements RenderableProvider {
 		if (chunkY < 0 || chunkY >= chunksY) return 0;
 		int chunkZ = iz / CHUNK_SIZE_Z;
 		if (chunkZ < 0 || chunkZ >= chunksZ) return 0;
-		return chunks[chunkX + chunkZ * chunksX + chunkY * chunksX * chunksZ].get(ix % CHUNK_SIZE_X, iy % CHUNK_SIZE_Y, iz
-			% CHUNK_SIZE_Z);
+		return chunks[chunkX + chunkZ * chunksX + chunkY * chunksX * chunksZ].get(ix % CHUNK_SIZE_X, iy % CHUNK_SIZE_Y,
+			iz % CHUNK_SIZE_Z);
 	}
 
 	public float getHighest (float x, float z) {

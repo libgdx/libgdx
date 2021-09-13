@@ -31,11 +31,11 @@ public final class MathUtils {
 
 	// ---
 	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-	static public final float PI = (float) Math.PI;
+	static public final float PI = (float)Math.PI;
 	static public final float PI2 = PI * 2;
 	static public final float HALF_PI = PI / 2;
 
-	static public final float E = (float) Math.E;
+	static public final float E = (float)Math.E;
 
 	static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
@@ -112,39 +112,36 @@ public final class MathUtils {
 		return y < 0f ? atan - PI : atan;
 	}
 
-	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians
-	 * (0.0016300649 degrees), largest error of 0.000067548 radians (0.0038702153 degrees). This implementation does not
-	 * return NaN if given an out-of-range input (Math.acos does return NaN), unless the input is NaN.
+	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians (0.0016300649
+	 * degrees), largest error of 0.000067548 radians (0.0038702153 degrees). This implementation does not return NaN if given an
+	 * out-of-range input (Math.acos does return NaN), unless the input is NaN.
 	 * @param a acos is defined only when a is between -1f and 1f, inclusive
 	 * @return between {@code 0} and {@code PI} when a is in the defined range */
-	static public float acos(float a) {
-		float a2 = a * a;  // a squared
+	static public float acos (float a) {
+		float a2 = a * a; // a squared
 		float a3 = a * a2; // a cubed
 		if (a >= 0f) {
-			return (float) Math.sqrt(1f - a) *
-					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
-		}
-		else {
-			return 3.14159265358979323846f - (float) Math.sqrt(1f + a) *
-					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+			return (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		} else {
+			return 3.14159265358979323846f
+				- (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 		}
 	}
 
-	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians
-	 * (0.0016298931 degrees), largest error of 0.000067592 radians (0.0038727364 degrees). This implementation does not
-	 * return NaN if given an out-of-range input (Math.asin does return NaN), unless the input is NaN.
+	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians (0.0016298931
+	 * degrees), largest error of 0.000067592 radians (0.0038727364 degrees). This implementation does not return NaN if given an
+	 * out-of-range input (Math.asin does return NaN), unless the input is NaN.
 	 * @param a asin is defined only when a is between -1f and 1f, inclusive
 	 * @return between {@code -HALF_PI} and {@code HALF_PI} when a is in the defined range */
-	static public float asin(float a) {
-		float a2 = a * a;  // a squared
+	static public float asin (float a) {
+		float a2 = a * a; // a squared
 		float a3 = a * a2; // a cubed
 		if (a >= 0f) {
-			return 1.5707963267948966f - (float) Math.sqrt(1f - a) *
-					(1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
-		}
-		else {
-			return -1.5707963267948966f + (float) Math.sqrt(1f + a) *
-					(1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+			return 1.5707963267948966f
+				- (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
+		} else {
+			return -1.5707963267948966f
+				+ (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 		}
 	}
 
@@ -173,7 +170,7 @@ public final class MathUtils {
 		final long rand = random.nextLong();
 		// In order to get the range to go from start to end, instead of overflowing after end and going
 		// back around to start, start must be less than end.
-		if(end < start) {
+		if (end < start) {
 			long t = end;
 			end = start;
 			start = t;

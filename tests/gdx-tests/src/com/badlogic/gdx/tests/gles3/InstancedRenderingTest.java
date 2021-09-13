@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
-@GdxTestConfig(requireGL30=true)
+@GdxTestConfig(requireGL30 = true)
 public class InstancedRenderingTest extends GdxTest {
 
 	ShaderProgram shader;
@@ -47,40 +47,35 @@ public class InstancedRenderingTest extends GdxTest {
 		}
 		ShaderProgram.prependVertexCode = "#version 300 es\n";
 		ShaderProgram.prependFragmentCode = "#version 300 es\n";
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"), Gdx.files.internal("data/shaders/instanced-rendering.frag"));
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"),
+			Gdx.files.internal("data/shaders/instanced-rendering.frag"));
 		if (!shader.isCompiled()) {
 			throw new GdxRuntimeException("Shader compile error: " + shader.getLog());
 		}
 
 		mesh = new Mesh(true, 6, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
 
-		float size = 2f/(float)Math.sqrt(INSTANCE_COUNT) * 0.5f;
+		float size = 2f / (float)Math.sqrt(INSTANCE_COUNT) * 0.5f;
 
-		float[] vertices = new float[] {
-			0.0f, 0.0f,
-			size, 0.0f,
-			0.0f, size,
+		float[] vertices = new float[] {0.0f, 0.0f, size, 0.0f, 0.0f, size,
 
-			size, 0.0f,
-			size, size,
-			0.0f, size
-		};
+			size, 0.0f, size, size, 0.0f, size};
 
 		mesh.setVertices(vertices);
 
-		mesh.enableInstancedRendering(true, INSTANCE_COUNT, new VertexAttribute(Usage.Position, 2, "i_offset"), new VertexAttribute(Usage.ColorUnpacked, 4, "i_color"));
+		mesh.enableInstancedRendering(true, INSTANCE_COUNT, new VertexAttribute(Usage.Position, 2, "i_offset"),
+			new VertexAttribute(Usage.ColorUnpacked, 4, "i_color"));
 
 		FloatBuffer offsets = BufferUtils.newFloatBuffer(INSTANCE_COUNT * 6);
 		for (int x = 1; x <= INSTANCE_COUNT_SQRT; x++) {
 			for (int y = 1; y <= INSTANCE_COUNT_SQRT; y++) {
-				offsets.put(new float[] {
-					x/(INSTANCE_COUNT_SQRT*0.5f) - 1f, y/(INSTANCE_COUNT_SQRT*0.5f) - 1f,
-					x/(float)INSTANCE_COUNT_SQRT, y/(float)INSTANCE_COUNT_SQRT, 1f, 1f});
+				offsets.put(new float[] {x / (INSTANCE_COUNT_SQRT * 0.5f) - 1f, y / (INSTANCE_COUNT_SQRT * 0.5f) - 1f,
+					x / (float)INSTANCE_COUNT_SQRT, y / (float)INSTANCE_COUNT_SQRT, 1f, 1f});
 			}
 		}
-		((Buffer) offsets).position(0);
+		((Buffer)offsets).position(0);
 		mesh.setInstanceData(offsets);
-//		mesh.disableInstancedRendering();
+// mesh.disableInstancedRendering();
 	}
 
 	@Override

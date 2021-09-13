@@ -124,8 +124,8 @@ public interface HttpResponseHeader {
 	 * browsers have never fully implemented it, a lot of websites set this field with fake policy text, that was enough to fool
 	 * browsers the existence of P3P policy and grant permissions for third party cookies.
 	 * <p>
-	 * Example: P3P: CP=
-	 * "This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info." */
+	 * Example: P3P: CP= "This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657
+	 * for more info." */
 	public static final String P3P = "P3P";
 
 	/** Implementation-specific fields that may have various effects anywhere along the request-response chain.
@@ -170,8 +170,8 @@ public interface HttpResponseHeader {
 	 * Example: Strict-Transport-Security: max-age=16070400; includeSubDomains */
 	public static final String StrictTransportSecurity = "Strict-Transport-Security";
 
-	/** The Trailer general field value indicates that the given set of header fields is present in the trailer of a message encoded
-	 * with chunked transfer coding.
+	/** The Trailer general field value indicates that the given set of header fields is present in the trailer of a message
+	 * encoded with chunked transfer coding.
 	 * <p>
 	 * Example: Trailer: Max-Forwards */
 	public static final String Trailer = "Trailer";

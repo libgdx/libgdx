@@ -11,9 +11,8 @@ public class UIUtils {
 	static public boolean isMac = Navigator.getPlatform().contains("Mac");
 	static public boolean isWindows = Navigator.getPlatform().contains("Win");
 	static public boolean isLinux = Navigator.getPlatform().contains("Linux");
-	static public boolean isIos = Navigator.getPlatform().contains("iPhone")
-			|| Navigator.getPlatform().contains("iPod")
-			|| Navigator.getPlatform().contains("iPad");
+	static public boolean isIos = Navigator.getPlatform().contains("iPhone") || Navigator.getPlatform().contains("iPod")
+		|| Navigator.getPlatform().contains("iPad");
 
 	static public boolean left () {
 		return Gdx.input.isButtonPressed(Buttons.LEFT);

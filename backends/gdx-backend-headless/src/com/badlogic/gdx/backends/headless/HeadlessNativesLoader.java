@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class HeadlessNativesLoader {
 
-	public static void load() {
+	public static void load () {
 		GdxNativesLoader.load();
 	}
 }

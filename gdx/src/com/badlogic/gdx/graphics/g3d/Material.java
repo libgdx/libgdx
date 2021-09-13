@@ -73,12 +73,12 @@ public class Material extends Attributes {
 	public Material copy () {
 		return new Material(this);
 	}
-	
+
 	@Override
 	public int hashCode () {
 		return super.hashCode() + 3 * id.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals (Object other) {
 		return (other instanceof Material) && ((other == this) || ((((Material)other).id.equals(id)) && super.equals(other)));

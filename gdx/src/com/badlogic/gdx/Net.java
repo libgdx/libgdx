@@ -35,16 +35,19 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
- * communication.</p>
+ * communication.
+ * </p>
  * 
  * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethods} for common methods) and
  * invoke {@link #sendHttpRequest(HttpRequest, HttpResponseListener)} with it and a {@link HttpResponseListener}. After the HTTP
  * request was processed, the {@link HttpResponseListener} is called with a {@link HttpResponse} with the HTTP response values and
- * an status code to determine if the request was successful or not.</p>
+ * an status code to determine if the request was successful or not.
+ * </p>
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
- * and {@link OutputStream} to communicate with the end point.</p>
+ * and {@link OutputStream} to communicate with the end point.
+ * </p>
  * 
  * To create a TCP server socket that waits for incoming connections, invoke the
  * {@link #newServerSocket(Protocol, int, ServerSocketHints)} method. The returned {@link ServerSocket} offers an
@@ -94,61 +97,33 @@ public interface Net {
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
 	 * <ul>
-	 * <li>
-	 * <b>HEAD</b> Asks for a response identical to that of a GET request but without the response body.
-	 * </li>
-	 * <li>
-	 * <b>GET</b> requests a representation of the specified resource.
-	 * Requests using GET should only retrieve data.
-	 * </li>
-	 * <li>
-	 * <b>POST</b> is used to submit an entity to the specified resource,
-	 * often causing a change in state or side effects on the server.
-	 * </li>
-	 * <li>
-	 * <b>PUT</b> replaces all current representations of the target resource with the request payload.
-	 * </li>
-	 * <li>
-	 * <b>PATCH</b> method is used to apply partial modifications to a resource.
-	 * </li>
-	 * <li>
-	 * <b>DELETE</b> deletes the specified resource.
-	 * </li>
+	 * <li><b>HEAD</b> Asks for a response identical to that of a GET request but without the response body.</li>
+	 * <li><b>GET</b> requests a representation of the specified resource. Requests using GET should only retrieve data.</li>
+	 * <li><b>POST</b> is used to submit an entity to the specified resource, often causing a change in state or side effects on
+	 * the server.</li>
+	 * <li><b>PUT</b> replaces all current representations of the target resource with the request payload.</li>
+	 * <li><b>PATCH</b> method is used to apply partial modifications to a resource.</li>
+	 * <li><b>DELETE</b> deletes the specified resource.</li>
 	 * </ul>
-	 * */
+	 */
 	public static interface HttpMethods {
-		/**
-		 * The HEAD method asks for a response identical to that of a GET request,
-		 * but without the response body.
-		 **/
+		/** The HEAD method asks for a response identical to that of a GET request, but without the response body. **/
 		public static final String HEAD = "HEAD";
 
-		/**
-		 * The GET method requests a representation of the specified resource.
-		 * Requests using GET should only retrieve data.
-		 **/
+		/** The GET method requests a representation of the specified resource. Requests using GET should only retrieve data. **/
 		public static final String GET = "GET";
 
-		/**
-		 * The POST method is used to submit an entity to the specified resource,
-		 * often causing a change in state or side effects on the server.
-		 **/
+		/** The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects
+		 * on the server. **/
 		public static final String POST = "POST";
 
-		/**
-		 * The PUT method replaces all current representations of the target
-		 * resource with the request payload.
-		 **/
+		/** The PUT method replaces all current representations of the target resource with the request payload. **/
 		public static final String PUT = "PUT";
 
-		/**
-		 * The PATCH method is used to apply partial modifications to a resource.
-		 **/
+		/** The PATCH method is used to apply partial modifications to a resource. **/
 		public static final String PATCH = "PATCH";
 
-		/**
-		 * The DELETE method deletes the specified resource.
-		 **/
+		/** The DELETE method deletes the specified resource. **/
 		public static final String DELETE = "DELETE";
 	}
 
@@ -183,7 +158,8 @@ public interface Net {
 	 * 		//do stuff here based on the failed attempt
 	 * 	}
 	 * });
-	 * </pre> */
+	 * </pre>
+	 */
 	public static class HttpRequest implements Poolable {
 
 		private String httpMethod;
@@ -198,7 +174,7 @@ public interface Net {
 		private boolean followRedirects = true;
 
 		private boolean includeCredentials = false;
-		
+
 		public HttpRequest () {
 			this.headers = new HashMap<String, String>();
 		}
@@ -257,12 +233,12 @@ public interface Net {
 			}
 		}
 
-		/** Sets whether a cross-origin request will include credentials. Only used on GWT backend to allow cross-origin requests
-		 * to include credentials such as cookies, authorization headers, etc... */
+		/** Sets whether a cross-origin request will include credentials. Only used on GWT backend to allow cross-origin requests to
+		 * include credentials such as cookies, authorization headers, etc... */
 		public void setIncludeCredentials (boolean includeCredentials) {
 			this.includeCredentials = includeCredentials;
 		}
-		
+
 		/** Sets the HTTP method of the HttpRequest. */
 		public void setMethod (String httpMethod) {
 			this.httpMethod = httpMethod;
@@ -308,7 +284,7 @@ public interface Net {
 		public boolean getFollowRedirects () {
 			return followRedirects;
 		}
-		
+
 		/** Returns whether a cross-origin request will include credentials. By default false. */
 		public boolean getIncludeCredentials () {
 			return includeCredentials;
@@ -378,8 +354,9 @@ public interface Net {
 	public enum Protocol {
 		TCP
 	}
-	
-	/** Creates a new server socket on the given address and port, using the given {@link Protocol}, waiting for incoming connections.
+
+	/** Creates a new server socket on the given address and port, using the given {@link Protocol}, waiting for incoming
+	 * connections.
 	 * 
 	 * @param hostname the hostname or ip address to bind the socket to
 	 * @param port the port to listen on
@@ -409,9 +386,9 @@ public interface Net {
 
 	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the
 	 * application registered for handling URIs of the specified type is invoked. The application is determined from the protocol
-	 * and path of the URI. A best effort is made to open the given URI; however, since external applications are involved, no guarantee
-	 * can be made as to whether the URI was actually opened. If it is known that the URI was not opened, false will be returned; 
-	 * otherwise, true will be returned.
+	 * and path of the URI. A best effort is made to open the given URI; however, since external applications are involved, no
+	 * guarantee can be made as to whether the URI was actually opened. If it is known that the URI was not opened, false will be
+	 * returned; otherwise, true will be returned.
 	 * 
 	 * @param URI the URI to be opened.
 	 * @return false if it is known the uri was not opened, true otherwise. */

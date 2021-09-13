@@ -21,6 +21,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 /*
  * JBox2D - A Java Port of Erin Catto's Box2D
  * 
@@ -45,62 +46,59 @@
  */
 package org.jbox2d.collision;
 
-/**
- * Contact ids to facilitate warm starting. Note: the ContactFeatures class is just embedded in here
- */
+/** Contact ids to facilitate warm starting. Note: the ContactFeatures class is just embedded in here */
 public class ContactID implements Comparable<ContactID> {
 
-  public static enum Type {
-    VERTEX, FACE
-  }
+	public static enum Type {
+		VERTEX, FACE
+	}
 
-  public byte indexA;
-  public byte indexB;
-  public byte typeA;
-  public byte typeB;
+	public byte indexA;
+	public byte indexB;
+	public byte typeA;
+	public byte typeB;
 
-  public int getKey() {
-    return ((int) indexA) << 24 | ((int) indexB) << 16 | ((int) typeA) << 8 | ((int) typeB);
-  }
+	public int getKey () {
+		return ((int)indexA) << 24 | ((int)indexB) << 16 | ((int)typeA) << 8 | ((int)typeB);
+	}
 
-  public boolean isEqual(final ContactID cid) {
-    return getKey() == cid.getKey();
-  }
+	public boolean isEqual (final ContactID cid) {
+		return getKey() == cid.getKey();
+	}
 
-  public ContactID() {}
+	public ContactID () {
+	}
 
-  public ContactID(final ContactID c) {
-    set(c);
-  }
+	public ContactID (final ContactID c) {
+		set(c);
+	}
 
-  public void set(final ContactID c) {
-    indexA = c.indexA;
-    indexB = c.indexB;
-    typeA = c.typeA;
-    typeB = c.typeB;
-  }
+	public void set (final ContactID c) {
+		indexA = c.indexA;
+		indexB = c.indexB;
+		typeA = c.typeA;
+		typeB = c.typeB;
+	}
 
-  public void flip() {
-    byte tempA = indexA;
-    indexA = indexB;
-    indexB = tempA;
-    tempA = typeA;
-    typeA = typeB;
-    typeB = tempA;
-  }
+	public void flip () {
+		byte tempA = indexA;
+		indexA = indexB;
+		indexB = tempA;
+		tempA = typeA;
+		typeA = typeB;
+		typeB = tempA;
+	}
 
-  /**
-   * zeros out the data
-   */
-  public void zero() {
-    indexA = 0;
-    indexB = 0;
-    typeA = 0;
-    typeB = 0;
-  }
+	/** zeros out the data */
+	public void zero () {
+		indexA = 0;
+		indexB = 0;
+		typeA = 0;
+		typeB = 0;
+	}
 
-  @Override
-  public int compareTo(ContactID o) {
-    return getKey() - o.getKey();
-  }
+	@Override
+	public int compareTo (ContactID o) {
+		return getKey() - o.getKey();
+	}
 }

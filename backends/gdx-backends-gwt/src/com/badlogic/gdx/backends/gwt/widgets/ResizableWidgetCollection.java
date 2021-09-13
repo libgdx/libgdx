@@ -261,9 +261,7 @@ public class ResizableWidgetCollection implements ResizeHandler, Iterable<Resiza
 		}
 	}
 
-	/** Called when the browser window is resized.
-	 *
-	 */
+	/** Called when the browser window is resized. */
 	@Override
 	public void onResize (ResizeEvent event) {
 		checkWidgetSize();

@@ -155,7 +155,7 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
-	protected Files createFiles() {
+	protected Files createFiles () {
 		return new IOSFiles();
 	}
 
@@ -163,25 +163,25 @@ public class IOSApplication implements Application {
 		return new OALIOSAudio(config);
 	}
 
-	protected IOSGraphics createGraphics() {
-		 return new IOSGraphics(this, config, input, config.useGL30);
+	protected IOSGraphics createGraphics () {
+		return new IOSGraphics(this, config, input, config.useGL30);
 	}
 
 	protected IOSUIViewController createUIViewController (IOSGraphics graphics) {
 		return new IOSUIViewController(this, graphics);
 	}
 
-	protected IOSInput createInput() {
-		 return new DefaultIOSInput(this);
+	protected IOSInput createInput () {
+		return new DefaultIOSInput(this);
 	}
 
 	/** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
-	protected int guessUnknownPpi() {
+	protected int guessUnknownPpi () {
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad)
-			ppi = 132 * (int) pixelsPerPoint;
+			ppi = 132 * (int)pixelsPerPoint;
 		else
-			ppi = 164 * (int) pixelsPerPoint;
+			ppi = 164 * (int)pixelsPerPoint;
 		error("IOSApplication", "Device PPI unknown. PPI value has been guessed to " + ppi + " but may be wrong");
 		return ppi;
 	}
@@ -224,7 +224,7 @@ public class IOSApplication implements Application {
 		final int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
 
 		debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
-					+ backBufferWidth + " bbH= " + backBufferHeight);
+			+ backBufferWidth + " bbH= " + backBufferHeight);
 
 		return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
 	}
@@ -371,7 +371,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public int getVersion () {
-		return (int) NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
+		return (int)NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
 	}
 
 	@Override

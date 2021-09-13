@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleInfo extends BulletBase {
 	private long swigCPtr;
-	
-	protected btTriangleInfo(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btTriangleInfo (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btTriangleInfo, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btTriangleInfo(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btTriangleInfo, normally you should not need this constructor it's intended for low-level usage. */
+	public btTriangleInfo (long cPtr, boolean cMemoryOwn) {
 		this("btTriangleInfo", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btTriangleInfo obj) {
+
+	public static long getCPtr (btTriangleInfo obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,40 +53,40 @@ public class btTriangleInfo extends BulletBase {
 		super.delete();
 	}
 
-  public btTriangleInfo() {
-    this(CollisionJNI.new_btTriangleInfo(), true);
-  }
+	public btTriangleInfo () {
+		this(CollisionJNI.new_btTriangleInfo(), true);
+	}
 
-  public void setFlags(int value) {
-    CollisionJNI.btTriangleInfo_flags_set(swigCPtr, this, value);
-  }
+	public void setFlags (int value) {
+		CollisionJNI.btTriangleInfo_flags_set(swigCPtr, this, value);
+	}
 
-  public int getFlags() {
-    return CollisionJNI.btTriangleInfo_flags_get(swigCPtr, this);
-  }
+	public int getFlags () {
+		return CollisionJNI.btTriangleInfo_flags_get(swigCPtr, this);
+	}
 
-  public void setEdgeV0V1Angle(float value) {
-    CollisionJNI.btTriangleInfo_edgeV0V1Angle_set(swigCPtr, this, value);
-  }
+	public void setEdgeV0V1Angle (float value) {
+		CollisionJNI.btTriangleInfo_edgeV0V1Angle_set(swigCPtr, this, value);
+	}
 
-  public float getEdgeV0V1Angle() {
-    return CollisionJNI.btTriangleInfo_edgeV0V1Angle_get(swigCPtr, this);
-  }
+	public float getEdgeV0V1Angle () {
+		return CollisionJNI.btTriangleInfo_edgeV0V1Angle_get(swigCPtr, this);
+	}
 
-  public void setEdgeV1V2Angle(float value) {
-    CollisionJNI.btTriangleInfo_edgeV1V2Angle_set(swigCPtr, this, value);
-  }
+	public void setEdgeV1V2Angle (float value) {
+		CollisionJNI.btTriangleInfo_edgeV1V2Angle_set(swigCPtr, this, value);
+	}
 
-  public float getEdgeV1V2Angle() {
-    return CollisionJNI.btTriangleInfo_edgeV1V2Angle_get(swigCPtr, this);
-  }
+	public float getEdgeV1V2Angle () {
+		return CollisionJNI.btTriangleInfo_edgeV1V2Angle_get(swigCPtr, this);
+	}
 
-  public void setEdgeV2V0Angle(float value) {
-    CollisionJNI.btTriangleInfo_edgeV2V0Angle_set(swigCPtr, this, value);
-  }
+	public void setEdgeV2V0Angle (float value) {
+		CollisionJNI.btTriangleInfo_edgeV2V0Angle_set(swigCPtr, this, value);
+	}
 
-  public float getEdgeV2V0Angle() {
-    return CollisionJNI.btTriangleInfo_edgeV2V0Angle_get(swigCPtr, this);
-  }
+	public float getEdgeV2V0Angle () {
+		return CollisionJNI.btTriangleInfo_edgeV2V0Angle_get(swigCPtr, this);
+	}
 
 }

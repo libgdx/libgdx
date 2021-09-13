@@ -27,12 +27,13 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions) {
 		build(builder, width, height, depth, divisions, 0, 360);
 	}
-	
+
 	/** Build a cylinder */
-	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
+	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions, float angleFrom,
+		float angleTo) {
 		build(builder, width, height, depth, divisions, angleFrom, angleTo, true);
 	}
-	
+
 	/** Build a cylinder */
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions, float angleFrom,
 		float angleTo, boolean close) {
@@ -73,8 +74,8 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 		if (close) {
 			EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, angleFrom,
 				angleTo);
-			EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1,
-				180f - angleTo, 180f - angleFrom);
+			EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, 180f - angleTo,
+				180f - angleFrom);
 		}
 	}
 }

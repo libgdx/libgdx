@@ -12,43 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btRotationalLimitMotor extends BulletBase {
 	private long swigCPtr;
-	
-	protected btRotationalLimitMotor(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btRotationalLimitMotor (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btRotationalLimitMotor, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btRotationalLimitMotor(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btRotationalLimitMotor, normally you should not need this constructor it's intended for low-level usage. */
+	public btRotationalLimitMotor (long cPtr, boolean cMemoryOwn) {
 		this("btRotationalLimitMotor", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btRotationalLimitMotor obj) {
+
+	public static long getCPtr (btRotationalLimitMotor obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,156 +55,157 @@ public class btRotationalLimitMotor extends BulletBase {
 		super.delete();
 	}
 
-  public void setLoLimit(float value) {
-    DynamicsJNI.btRotationalLimitMotor_loLimit_set(swigCPtr, this, value);
-  }
+	public void setLoLimit (float value) {
+		DynamicsJNI.btRotationalLimitMotor_loLimit_set(swigCPtr, this, value);
+	}
 
-  public float getLoLimit() {
-    return DynamicsJNI.btRotationalLimitMotor_loLimit_get(swigCPtr, this);
-  }
+	public float getLoLimit () {
+		return DynamicsJNI.btRotationalLimitMotor_loLimit_get(swigCPtr, this);
+	}
 
-  public void setHiLimit(float value) {
-    DynamicsJNI.btRotationalLimitMotor_hiLimit_set(swigCPtr, this, value);
-  }
+	public void setHiLimit (float value) {
+		DynamicsJNI.btRotationalLimitMotor_hiLimit_set(swigCPtr, this, value);
+	}
 
-  public float getHiLimit() {
-    return DynamicsJNI.btRotationalLimitMotor_hiLimit_get(swigCPtr, this);
-  }
+	public float getHiLimit () {
+		return DynamicsJNI.btRotationalLimitMotor_hiLimit_get(swigCPtr, this);
+	}
 
-  public void setTargetVelocity(float value) {
-    DynamicsJNI.btRotationalLimitMotor_targetVelocity_set(swigCPtr, this, value);
-  }
+	public void setTargetVelocity (float value) {
+		DynamicsJNI.btRotationalLimitMotor_targetVelocity_set(swigCPtr, this, value);
+	}
 
-  public float getTargetVelocity() {
-    return DynamicsJNI.btRotationalLimitMotor_targetVelocity_get(swigCPtr, this);
-  }
+	public float getTargetVelocity () {
+		return DynamicsJNI.btRotationalLimitMotor_targetVelocity_get(swigCPtr, this);
+	}
 
-  public void setMaxMotorForce(float value) {
-    DynamicsJNI.btRotationalLimitMotor_maxMotorForce_set(swigCPtr, this, value);
-  }
+	public void setMaxMotorForce (float value) {
+		DynamicsJNI.btRotationalLimitMotor_maxMotorForce_set(swigCPtr, this, value);
+	}
 
-  public float getMaxMotorForce() {
-    return DynamicsJNI.btRotationalLimitMotor_maxMotorForce_get(swigCPtr, this);
-  }
+	public float getMaxMotorForce () {
+		return DynamicsJNI.btRotationalLimitMotor_maxMotorForce_get(swigCPtr, this);
+	}
 
-  public void setMaxLimitForce(float value) {
-    DynamicsJNI.btRotationalLimitMotor_maxLimitForce_set(swigCPtr, this, value);
-  }
+	public void setMaxLimitForce (float value) {
+		DynamicsJNI.btRotationalLimitMotor_maxLimitForce_set(swigCPtr, this, value);
+	}
 
-  public float getMaxLimitForce() {
-    return DynamicsJNI.btRotationalLimitMotor_maxLimitForce_get(swigCPtr, this);
-  }
+	public float getMaxLimitForce () {
+		return DynamicsJNI.btRotationalLimitMotor_maxLimitForce_get(swigCPtr, this);
+	}
 
-  public void setDamping(float value) {
-    DynamicsJNI.btRotationalLimitMotor_damping_set(swigCPtr, this, value);
-  }
+	public void setDamping (float value) {
+		DynamicsJNI.btRotationalLimitMotor_damping_set(swigCPtr, this, value);
+	}
 
-  public float getDamping() {
-    return DynamicsJNI.btRotationalLimitMotor_damping_get(swigCPtr, this);
-  }
+	public float getDamping () {
+		return DynamicsJNI.btRotationalLimitMotor_damping_get(swigCPtr, this);
+	}
 
-  public void setLimitSoftness(float value) {
-    DynamicsJNI.btRotationalLimitMotor_limitSoftness_set(swigCPtr, this, value);
-  }
+	public void setLimitSoftness (float value) {
+		DynamicsJNI.btRotationalLimitMotor_limitSoftness_set(swigCPtr, this, value);
+	}
 
-  public float getLimitSoftness() {
-    return DynamicsJNI.btRotationalLimitMotor_limitSoftness_get(swigCPtr, this);
-  }
+	public float getLimitSoftness () {
+		return DynamicsJNI.btRotationalLimitMotor_limitSoftness_get(swigCPtr, this);
+	}
 
-  public void setNormalCFM(float value) {
-    DynamicsJNI.btRotationalLimitMotor_normalCFM_set(swigCPtr, this, value);
-  }
+	public void setNormalCFM (float value) {
+		DynamicsJNI.btRotationalLimitMotor_normalCFM_set(swigCPtr, this, value);
+	}
 
-  public float getNormalCFM() {
-    return DynamicsJNI.btRotationalLimitMotor_normalCFM_get(swigCPtr, this);
-  }
+	public float getNormalCFM () {
+		return DynamicsJNI.btRotationalLimitMotor_normalCFM_get(swigCPtr, this);
+	}
 
-  public void setStopERP(float value) {
-    DynamicsJNI.btRotationalLimitMotor_stopERP_set(swigCPtr, this, value);
-  }
+	public void setStopERP (float value) {
+		DynamicsJNI.btRotationalLimitMotor_stopERP_set(swigCPtr, this, value);
+	}
 
-  public float getStopERP() {
-    return DynamicsJNI.btRotationalLimitMotor_stopERP_get(swigCPtr, this);
-  }
+	public float getStopERP () {
+		return DynamicsJNI.btRotationalLimitMotor_stopERP_get(swigCPtr, this);
+	}
 
-  public void setStopCFM(float value) {
-    DynamicsJNI.btRotationalLimitMotor_stopCFM_set(swigCPtr, this, value);
-  }
+	public void setStopCFM (float value) {
+		DynamicsJNI.btRotationalLimitMotor_stopCFM_set(swigCPtr, this, value);
+	}
 
-  public float getStopCFM() {
-    return DynamicsJNI.btRotationalLimitMotor_stopCFM_get(swigCPtr, this);
-  }
+	public float getStopCFM () {
+		return DynamicsJNI.btRotationalLimitMotor_stopCFM_get(swigCPtr, this);
+	}
 
-  public void setBounce(float value) {
-    DynamicsJNI.btRotationalLimitMotor_bounce_set(swigCPtr, this, value);
-  }
+	public void setBounce (float value) {
+		DynamicsJNI.btRotationalLimitMotor_bounce_set(swigCPtr, this, value);
+	}
 
-  public float getBounce() {
-    return DynamicsJNI.btRotationalLimitMotor_bounce_get(swigCPtr, this);
-  }
+	public float getBounce () {
+		return DynamicsJNI.btRotationalLimitMotor_bounce_get(swigCPtr, this);
+	}
 
-  public void setEnableMotor(boolean value) {
-    DynamicsJNI.btRotationalLimitMotor_enableMotor_set(swigCPtr, this, value);
-  }
+	public void setEnableMotor (boolean value) {
+		DynamicsJNI.btRotationalLimitMotor_enableMotor_set(swigCPtr, this, value);
+	}
 
-  public boolean getEnableMotor() {
-    return DynamicsJNI.btRotationalLimitMotor_enableMotor_get(swigCPtr, this);
-  }
+	public boolean getEnableMotor () {
+		return DynamicsJNI.btRotationalLimitMotor_enableMotor_get(swigCPtr, this);
+	}
 
-  public void setCurrentLimitError(float value) {
-    DynamicsJNI.btRotationalLimitMotor_currentLimitError_set(swigCPtr, this, value);
-  }
+	public void setCurrentLimitError (float value) {
+		DynamicsJNI.btRotationalLimitMotor_currentLimitError_set(swigCPtr, this, value);
+	}
 
-  public float getCurrentLimitError() {
-    return DynamicsJNI.btRotationalLimitMotor_currentLimitError_get(swigCPtr, this);
-  }
+	public float getCurrentLimitError () {
+		return DynamicsJNI.btRotationalLimitMotor_currentLimitError_get(swigCPtr, this);
+	}
 
-  public void setCurrentPosition(float value) {
-    DynamicsJNI.btRotationalLimitMotor_currentPosition_set(swigCPtr, this, value);
-  }
+	public void setCurrentPosition (float value) {
+		DynamicsJNI.btRotationalLimitMotor_currentPosition_set(swigCPtr, this, value);
+	}
 
-  public float getCurrentPosition() {
-    return DynamicsJNI.btRotationalLimitMotor_currentPosition_get(swigCPtr, this);
-  }
+	public float getCurrentPosition () {
+		return DynamicsJNI.btRotationalLimitMotor_currentPosition_get(swigCPtr, this);
+	}
 
-  public void setCurrentLimit(int value) {
-    DynamicsJNI.btRotationalLimitMotor_currentLimit_set(swigCPtr, this, value);
-  }
+	public void setCurrentLimit (int value) {
+		DynamicsJNI.btRotationalLimitMotor_currentLimit_set(swigCPtr, this, value);
+	}
 
-  public int getCurrentLimit() {
-    return DynamicsJNI.btRotationalLimitMotor_currentLimit_get(swigCPtr, this);
-  }
+	public int getCurrentLimit () {
+		return DynamicsJNI.btRotationalLimitMotor_currentLimit_get(swigCPtr, this);
+	}
 
-  public void setAccumulatedImpulse(float value) {
-    DynamicsJNI.btRotationalLimitMotor_accumulatedImpulse_set(swigCPtr, this, value);
-  }
+	public void setAccumulatedImpulse (float value) {
+		DynamicsJNI.btRotationalLimitMotor_accumulatedImpulse_set(swigCPtr, this, value);
+	}
 
-  public float getAccumulatedImpulse() {
-    return DynamicsJNI.btRotationalLimitMotor_accumulatedImpulse_get(swigCPtr, this);
-  }
+	public float getAccumulatedImpulse () {
+		return DynamicsJNI.btRotationalLimitMotor_accumulatedImpulse_get(swigCPtr, this);
+	}
 
-  public btRotationalLimitMotor() {
-    this(DynamicsJNI.new_btRotationalLimitMotor__SWIG_0(), true);
-  }
+	public btRotationalLimitMotor () {
+		this(DynamicsJNI.new_btRotationalLimitMotor__SWIG_0(), true);
+	}
 
-  public btRotationalLimitMotor(btRotationalLimitMotor limot) {
-    this(DynamicsJNI.new_btRotationalLimitMotor__SWIG_1(btRotationalLimitMotor.getCPtr(limot), limot), true);
-  }
+	public btRotationalLimitMotor (btRotationalLimitMotor limot) {
+		this(DynamicsJNI.new_btRotationalLimitMotor__SWIG_1(btRotationalLimitMotor.getCPtr(limot), limot), true);
+	}
 
-  public boolean isLimited() {
-    return DynamicsJNI.btRotationalLimitMotor_isLimited(swigCPtr, this);
-  }
+	public boolean isLimited () {
+		return DynamicsJNI.btRotationalLimitMotor_isLimited(swigCPtr, this);
+	}
 
-  public boolean needApplyTorques() {
-    return DynamicsJNI.btRotationalLimitMotor_needApplyTorques(swigCPtr, this);
-  }
+	public boolean needApplyTorques () {
+		return DynamicsJNI.btRotationalLimitMotor_needApplyTorques(swigCPtr, this);
+	}
 
-  public int testLimitValue(float test_value) {
-    return DynamicsJNI.btRotationalLimitMotor_testLimitValue(swigCPtr, this, test_value);
-  }
+	public int testLimitValue (float test_value) {
+		return DynamicsJNI.btRotationalLimitMotor_testLimitValue(swigCPtr, this, test_value);
+	}
 
-  public float solveAngularLimits(float timeStep, Vector3 axis, float jacDiagABInv, btRigidBody body0, btRigidBody body1) {
-    return DynamicsJNI.btRotationalLimitMotor_solveAngularLimits(swigCPtr, this, timeStep, axis, jacDiagABInv, btRigidBody.getCPtr(body0), body0, btRigidBody.getCPtr(body1), body1);
-  }
+	public float solveAngularLimits (float timeStep, Vector3 axis, float jacDiagABInv, btRigidBody body0, btRigidBody body1) {
+		return DynamicsJNI.btRotationalLimitMotor_solveAngularLimits(swigCPtr, this, timeStep, axis, jacDiagABInv,
+			btRigidBody.getCPtr(body0), body0, btRigidBody.getCPtr(body1), body1);
+	}
 
 }

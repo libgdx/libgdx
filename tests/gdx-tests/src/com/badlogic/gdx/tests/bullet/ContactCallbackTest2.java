@@ -75,8 +75,8 @@ public class ContactCallbackTest2 extends BaseBulletTest {
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					final BulletEntity e = (BulletEntity)world.add("box", BOXOFFSET_X + x * 2f, BOXOFFSET_Y + y * 2f, BOXOFFSET_Z + z
-						* 2f);
+					final BulletEntity e = (BulletEntity)world.add("box", BOXOFFSET_X + x * 2f, BOXOFFSET_Y + y * 2f,
+						BOXOFFSET_Z + z * 2f);
 					e.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(),
 						0.5f + 0.5f * (float)Math.random(), 1f);
 

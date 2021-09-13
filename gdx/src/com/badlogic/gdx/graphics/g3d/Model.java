@@ -59,12 +59,14 @@ import java.nio.Buffer;
 
 /** A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical part in form
  * of a {@link MeshPart} and {@link Material}. Mesh parts reference subsets of vertices in one of the meshes of the model.
- * Animations can be applied to nodes, to modify their transform (translation, rotation, scale) over time.</p>
+ * Animations can be applied to nodes, to modify their transform (translation, rotation, scale) over time.
+ * </p>
  *
  * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional transform to position the
  * model in the world, and allows modification of materials and nodes without destroying the original model. The original model is
  * the owner of any meshes and textures, all instances created from the model share these resources. Disposing the model will
- * automatically make all instances invalid!</p>
+ * automatically make all instances invalid!
+ * </p>
  *
  * A model is created from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *
@@ -127,8 +129,8 @@ public class Model implements Disposable {
 					nodeAnim.translation.ensureCapacity(nanim.translation.size);
 					for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
 						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-						nodeAnim.translation.add(new NodeKeyframe<Vector3>(kf.keytime, new Vector3(kf.value == null ? node.translation
-							: kf.value)));
+						nodeAnim.translation
+							.add(new NodeKeyframe<Vector3>(kf.keytime, new Vector3(kf.value == null ? node.translation : kf.value)));
 					}
 				}
 
@@ -137,8 +139,8 @@ public class Model implements Disposable {
 					nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
 					for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
 						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-						nodeAnim.rotation.add(new NodeKeyframe<Quaternion>(kf.keytime, new Quaternion(kf.value == null ? node.rotation
-							: kf.value)));
+						nodeAnim.rotation
+							.add(new NodeKeyframe<Quaternion>(kf.keytime, new Quaternion(kf.value == null ? node.rotation : kf.value)));
 					}
 				}
 
@@ -147,8 +149,8 @@ public class Model implements Disposable {
 					nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
 					for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
 						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-						nodeAnim.scaling.add(new NodeKeyframe<Vector3>(kf.keytime,
-							new Vector3(kf.value == null ? node.scale : kf.value)));
+						nodeAnim.scaling
+							.add(new NodeKeyframe<Vector3>(kf.keytime, new Vector3(kf.value == null ? node.scale : kf.value)));
 					}
 				}
 
@@ -247,7 +249,7 @@ public class Model implements Disposable {
 
 		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
 		int offset = 0;
-		((Buffer) mesh.getIndicesBuffer()).clear();
+		((Buffer)mesh.getIndicesBuffer()).clear();
 		for (ModelMeshPart part : modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
@@ -261,7 +263,7 @@ public class Model implements Disposable {
 			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
-		((Buffer) mesh.getIndicesBuffer()).position(0);
+		((Buffer)mesh.getIndicesBuffer()).position(0);
 		for (MeshPart part : meshParts)
 			part.update();
 	}
@@ -359,7 +361,8 @@ public class Model implements Disposable {
 	/** Calculates the local and world transform of all {@link Node} instances in this model, recursively. First each
 	 * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node. Then each
 	 * {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the local transform of each
-	 * Node. Finally, the animation bone matrices are updated accordingly.</p>
+	 * Node. Finally, the animation bone matrices are updated accordingly.
+	 * </p>
 	 *
 	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
 	 * was modified. */

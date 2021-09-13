@@ -70,7 +70,7 @@ public class PairCacheTest extends BaseBulletTest {
 		final float dZ = BOX_Z_MAX - BOX_Z_MIN;
 		for (int i = 0; i < BOXCOUNT; i++)
 			world.add("collisionBox", BOX_X_MIN + dX * (float)Math.random(), BOX_Y_MIN + dY * (float)Math.random(),
-					BOX_Z_MIN + dZ * (float)Math.random()).setColor(0.25f + 0.5f * (float)Math.random(),
+				BOX_Z_MIN + dZ * (float)Math.random()).setColor(0.25f + 0.5f * (float)Math.random(),
 					0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		manifoldArray = new btPersistentManifoldArray();

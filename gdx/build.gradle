@@ -24,47 +24,47 @@ sourceSets.main.resources.srcDirs = ["res"]
 sourceSets.test.java.srcDirs = ["test"]
 
 compileJava {
-    options.fork = true
-    options.incremental = true
+	options.fork = true
+	options.incremental = true
 }
 
 dependencies {
-    testCompile libraries.junit
-    compile "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
+	testCompile libraries.junit
+	compile "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
 }
 
 test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
+	testLogging {
+		events "passed", "skipped", "failed", "standardOut", "standardError"
+	}
 }
 
 // Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
 task copyIdeaResources(type: Copy) {
-    from "${projectDir}/res"
-    into "${buildDir}/classes/java/main/"
+	from "${projectDir}/res"
+	into "${buildDir}/classes/java/main/"
 }
 processResources.dependsOn copyIdeaResources
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
-    sharedLibName = "gdx"
-    temporaryDir = "../target/native"
-    all {
-        cppExcludes = ["iosgl/**"]
-    }
-    add(Windows, x32)
-    add(Windows, x64)
-    add(Linux, x64)
-    add(Linux, x32, ARM)
-    add(Linux, x64, ARM)
-    add(Android) {
-        linkerFlags += " -llog"
-    }
-    add(MacOsX, x64)
-    add(MacOsX, x64, ARM)
-    add(IOS) {
-        headerDirs = ["iosgl"]
-        cppExcludes = []
-    }
+	sharedLibName = "gdx"
+	temporaryDir = "../target/native"
+	all {
+		cppExcludes = ["iosgl/**"]
+	}
+	add(Windows, x32)
+	add(Windows, x64)
+	add(Linux, x64)
+	add(Linux, x32, ARM)
+	add(Linux, x64, ARM)
+	add(Android) {
+		linkerFlags += " -llog"
+	}
+	add(MacOsX, x64)
+	add(MacOsX, x64, ARM)
+	add(IOS) {
+		headerDirs = ["iosgl"]
+		cppExcludes = []
+	}
 }

@@ -81,15 +81,8 @@ public class FloatCounter implements Poolable {
 	}
 
 	@Override
-	public String toString() {
-		return "FloatCounter{" +
-				"count=" + count +
-				", total=" + total +
-				", min=" + min +
-				", max=" + max +
-				", average=" + average +
-				", latest=" + latest +
-				", value=" + value +
-				'}';
+	public String toString () {
+		return "FloatCounter{" + "count=" + count + ", total=" + total + ", min=" + min + ", max=" + max + ", average=" + average
+			+ ", latest=" + latest + ", value=" + value + '}';
 	}
 }

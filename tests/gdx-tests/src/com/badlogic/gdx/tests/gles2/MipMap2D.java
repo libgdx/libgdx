@@ -44,8 +44,8 @@ public class MipMap2D extends GdxTest {
 			+ "void main()                                         \n" + "{                                                   \n"
 			+ "  gl_FragColor = texture2D( s_texture, v_texCoord );\n" + "}                                                   \n";
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 4, "a_position"), new VertexAttribute(
-			Usage.TextureCoordinates, 2, "a_texCoord"));
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 4, "a_position"),
+			new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord"));
 		float[] vertices = {-0.5f, 0.5f, 0.0f, 1.5f, // Position 0
 			0.0f, 0.0f, // TexCoord 0
 			-0.5f, -0.5f, 0.0f, 0.75f, // Position 1

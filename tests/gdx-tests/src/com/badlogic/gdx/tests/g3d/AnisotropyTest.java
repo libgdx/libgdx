@@ -55,16 +55,14 @@ public class AnisotropyTest extends GdxTest {
 
 	private void changeAnisotropy () {
 		targetAnisotropicLevel *= 2;
-		if (targetAnisotropicLevel > 16)
-			targetAnisotropicLevel = 1;
+		if (targetAnisotropicLevel > 16) targetAnisotropicLevel = 1;
 		float value = brick.setAnisotropicFilter(targetAnisotropicLevel);
 		Gdx.app.log("anisotropic value", Float.toString(value));
 	}
 
 	@Override
 	public void render () {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-			changeAnisotropy();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) changeAnisotropy();
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		batch.setProjectionMatrix(cam.combined);

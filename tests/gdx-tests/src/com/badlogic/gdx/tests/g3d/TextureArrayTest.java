@@ -31,14 +31,13 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.profiling.GLErrorListener;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 
 /** @author Tomski **/
-@GdxTestConfig(requireGL30=true)
+@GdxTestConfig(requireGL30 = true)
 public class TextureArrayTest extends GdxTest {
 
 	TextureArray textureArray;
@@ -58,10 +57,15 @@ public class TextureArrayTest extends GdxTest {
 		glProfiler = new GLProfiler(Gdx.graphics);
 		glProfiler.enable();
 
-		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
-		ShaderProgram.prependFragmentCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop) ? "#version 140\n #extension GL_EXT_texture_array : enable\n" : "#version 300 es\n";
+		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+			? "#version 140\n #extension GL_EXT_texture_array : enable\n"
+			: "#version 300 es\n";
+		ShaderProgram.prependFragmentCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+			? "#version 140\n #extension GL_EXT_texture_array : enable\n"
+			: "#version 300 es\n";
 
-		String[] texPaths = new String[] {  "data/g3d/materials/Searing Gorge.jpg",  "data/g3d/materials/Lava Cracks.jpg", "data/g3d/materials/Deep Fire.jpg" };
+		String[] texPaths = new String[] {"data/g3d/materials/Searing Gorge.jpg", "data/g3d/materials/Lava Cracks.jpg",
+			"data/g3d/materials/Deep Fire.jpg"};
 
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(8, 10f, 20f);
@@ -71,20 +75,22 @@ public class TextureArrayTest extends GdxTest {
 		cameraController = new FirstPersonCameraController(camera);
 		Gdx.input.setInputProcessor(cameraController);
 
-		FileHandle [] texFiles = new FileHandle[texPaths.length];
-		for(int i=0 ; i<texPaths.length ; i++){
+		FileHandle[] texFiles = new FileHandle[texPaths.length];
+		for (int i = 0; i < texPaths.length; i++) {
 			texFiles[i] = Gdx.files.internal(texPaths[i]);
 		}
-		
+
 		textureArray = new TextureArray(true, texFiles);
 		textureArray.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 		textureArray.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
-		shaderProgram = new ShaderProgram(Gdx.files.internal("data/shaders/texturearray.vert"), Gdx.files.internal("data/shaders/texturearray.frag"));
+		shaderProgram = new ShaderProgram(Gdx.files.internal("data/shaders/texturearray.vert"),
+			Gdx.files.internal("data/shaders/texturearray.frag"));
 		System.out.println(shaderProgram.getLog());
 
 		int vertexStride = 6;
 		int vertexCount = 100 * 100;
-		terrain = new Mesh(false, vertexCount * 6, 0, new VertexAttributes(VertexAttribute.Position(), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 3, ShaderProgram.TEXCOORD_ATTRIBUTE + 0)));
+		terrain = new Mesh(false, vertexCount * 6, 0, new VertexAttributes(VertexAttribute.Position(),
+			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 3, ShaderProgram.TEXCOORD_ATTRIBUTE + 0)));
 
 		Pixmap data = new Pixmap(Gdx.files.internal("data/g3d/heightmap.png"));
 		float[] vertices = new float[vertexCount * vertexStride * 6];
@@ -106,14 +112,15 @@ public class TextureArrayTest extends GdxTest {
 	}
 
 	Color tmpColor = new Color();
+
 	private int addVertex (int i, int j, float[] vertsOut, Pixmap heightmap, int idx) {
-		int pixel = heightmap.getPixel((int) (i/100f * heightmap.getWidth()), (int)(j/100f * heightmap.getHeight()));
+		int pixel = heightmap.getPixel((int)(i / 100f * heightmap.getWidth()), (int)(j / 100f * heightmap.getHeight()));
 		tmpColor.set(pixel);
-		vertsOut[idx++] = i/5f;
-		vertsOut[idx++] = tmpColor.r * 25f/5f;
-		vertsOut[idx++] = j/ 5f;
-		vertsOut[idx++] = i/20f;
-		vertsOut[idx++] = j/20f;
+		vertsOut[idx++] = i / 5f;
+		vertsOut[idx++] = tmpColor.r * 25f / 5f;
+		vertsOut[idx++] = j / 5f;
+		vertsOut[idx++] = i / 20f;
+		vertsOut[idx++] = j / 20f;
 		vertsOut[idx++] = (tmpColor.r * 3f) - 0.5f;
 		return idx;
 	}

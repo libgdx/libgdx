@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 public class ModelCacheTest extends Benchmark3DTest {
 	ModelCache modelCache;
 	CheckBox cacheCheckBox;
-	
+
 	@Override
 	public void create () {
 		super.create();
@@ -22,7 +23,7 @@ public class ModelCacheTest extends Benchmark3DTest {
 		cacheCheckBox.setPosition(hudWidth - cacheCheckBox.getWidth(), moveCheckBox.getTop());
 		hud.addActor(cacheCheckBox);
 	}
-	
+
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		if (cacheCheckBox.isChecked()) {
@@ -30,12 +31,11 @@ public class ModelCacheTest extends Benchmark3DTest {
 			modelCache.add(instances);
 			modelCache.end();
 			batch.render(modelCache, lighting ? environment : null);
-		}
-		else {
+		} else {
 			batch.render(instances, lighting ? environment : null);
 		}
 	}
-	
+
 	@Override
 	public void dispose () {
 		super.dispose();

@@ -19,13 +19,14 @@ package com.badlogic.gdx.graphics.g3d.decals;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
-/** <p>
+/**
+ * <p>
  * This class provides hooks which are invoked by {@link DecalBatch} to evaluate the group a sprite falls into, as well as to
  * adjust settings before and after rendering a group.
  * </p>
  * <p>
- * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()} method provides the strategy with a list
- * of all the decals, which are contained in the group itself, and will be rendered before the associated call to
+ * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()} method provides the strategy with a
+ * list of all the decals, which are contained in the group itself, and will be rendered before the associated call to
  * {@link #afterGroup(int)}.<br/>
  * A call to {@code beforeGroup()} is always followed by a call to {@code afterGroup()}.<br/>
  * <b>Groups are always invoked based on their ascending int values</b>. Group -10 will be rendered before group -5, group -5
@@ -38,7 +39,8 @@ import com.badlogic.gdx.utils.Array;
  * sorting, ... all based on the requirements of the current group. The batch itself does not change OpenGL settings except for
  * whichever changes are entailed {@link DecalMaterial#set()}. If the group requires a special shader, blending,
  * {@link #getGroupShader(int)} should return it so that DecalBatch can apply it while rendering the group.
- * </p> */
+ * </p>
+ */
 public interface GroupStrategy {
 	/** Returns the shader to be used for the group. Can be null in which case the GroupStrategy doesn't support GLES 2.0
 	 * @param group the group

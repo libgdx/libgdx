@@ -79,8 +79,8 @@ public class VoxelTest extends GdxTest {
 		controller.update();
 
 		spriteBatch.begin();
-		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks
-			+ "/" + voxelWorld.numChunks, 0, 20);
+		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/"
+			+ voxelWorld.numChunks, 0, 20);
 		spriteBatch.end();
 	}
 

@@ -45,7 +45,7 @@ public class OpenALSound implements Sound {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
 		buffer.order(ByteOrder.nativeOrder());
 		buffer.put(pcm, 0, bytes);
-		((Buffer) buffer).flip();
+		((Buffer)buffer).flip();
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
@@ -64,7 +64,8 @@ public class OpenALSound implements Sound {
 			// Attempt to recover by stopping the least recently played sound
 			audio.retain(this, true);
 			sourceID = audio.obtainSource(false);
-		} else audio.retain(this, false);
+		} else
+			audio.retain(this, false);
 		// In case it still didn't work
 		if (sourceID == -1) return -1;
 		long soundId = audio.getSoundId(sourceID);

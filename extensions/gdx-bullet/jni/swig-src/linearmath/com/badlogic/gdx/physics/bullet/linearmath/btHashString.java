@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btHashString extends BulletBase {
 	private long swigCPtr;
-	
-	protected btHashString(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btHashString (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btHashString, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btHashString(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btHashString, normally you should not need this constructor it's intended for low-level usage. */
+	public btHashString (long cPtr, boolean cMemoryOwn) {
 		this("btHashString", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btHashString obj) {
+
+	public static long getCPtr (btHashString obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,28 +52,28 @@ public class btHashString extends BulletBase {
 		super.delete();
 	}
 
-  public String getString() {
-    return LinearMathJNI.btHashString_string_get(swigCPtr, this);
-  }
+	public String getString () {
+		return LinearMathJNI.btHashString_string_get(swigCPtr, this);
+	}
 
-  public void setHash(long value) {
-    LinearMathJNI.btHashString_hash_set(swigCPtr, this, value);
-  }
+	public void setHash (long value) {
+		LinearMathJNI.btHashString_hash_set(swigCPtr, this, value);
+	}
 
-  public long getHash() {
-    return LinearMathJNI.btHashString_hash_get(swigCPtr, this);
-  }
+	public long getHash () {
+		return LinearMathJNI.btHashString_hash_get(swigCPtr, this);
+	}
 
-  public btHashString(String name) {
-    this(LinearMathJNI.new_btHashString(name), true);
-  }
+	public btHashString (String name) {
+		this(LinearMathJNI.new_btHashString(name), true);
+	}
 
-  public int portableStringCompare(String src, String dst) {
-    return LinearMathJNI.btHashString_portableStringCompare(swigCPtr, this, src, dst);
-  }
+	public int portableStringCompare (String src, String dst) {
+		return LinearMathJNI.btHashString_portableStringCompare(swigCPtr, this, src, dst);
+	}
 
-  public boolean equals(btHashString other) {
-    return LinearMathJNI.btHashString_equals(swigCPtr, this, btHashString.getCPtr(other), other);
-  }
+	public boolean equals (btHashString other) {
+		return LinearMathJNI.btHashString_equals(swigCPtr, this, btHashString.getCPtr(other), other);
+	}
 
 }

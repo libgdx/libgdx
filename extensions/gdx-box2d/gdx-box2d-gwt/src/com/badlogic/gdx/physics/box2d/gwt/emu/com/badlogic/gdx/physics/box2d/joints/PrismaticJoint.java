@@ -125,7 +125,7 @@ public class PrismaticJoint extends Joint {
 		return joint.getMaxMotorForce();
 	}
 
-	/** Get the reference angle.  */
+	/** Get the reference angle. */
 	public float getReferenceAngle () {
 		return joint.getReferenceAngle();
 	}

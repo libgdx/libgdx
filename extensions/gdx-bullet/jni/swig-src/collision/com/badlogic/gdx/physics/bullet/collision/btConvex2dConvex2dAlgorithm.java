@@ -8,46 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btConvex2dConvex2dAlgorithm extends btActivatingCollisionAlgorithm {
 	private long swigCPtr;
-	
-	protected btConvex2dConvex2dAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvex2dConvex2dAlgorithm (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConvex2dConvex2dAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btConvex2dConvex2dAlgorithm, normally you should not need this constructor it's intended for low-level usage. */
-	public btConvex2dConvex2dAlgorithm(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btConvex2dConvex2dAlgorithm, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btConvex2dConvex2dAlgorithm (long cPtr, boolean cMemoryOwn) {
 		this("btConvex2dConvex2dAlgorithm", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConvex2dConvex2dAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvex2dConvex2dAlgorithm obj) {
+
+	public static long getCPtr (btConvex2dConvex2dAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,100 +53,108 @@ public class btConvex2dConvex2dAlgorithm extends btActivatingCollisionAlgorithm 
 		super.delete();
 	}
 
-  public btConvex2dConvex2dAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver pdSolver, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {
-    this(CollisionJNI.new_btConvex2dConvex2dAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexPenetrationDepthSolver.getCPtr(pdSolver), pdSolver, numPerturbationIterations, minimumPointsPerturbationThreshold), true);
-  }
+	public btConvex2dConvex2dAlgorithm (btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci,
+		btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btVoronoiSimplexSolver simplexSolver,
+		btConvexPenetrationDepthSolver pdSolver, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {
+		this(CollisionJNI.new_btConvex2dConvex2dAlgorithm(btPersistentManifold.getCPtr(mf), mf,
+			btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap,
+			btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver,
+			btConvexPenetrationDepthSolver.getCPtr(pdSolver), pdSolver, numPerturbationIterations,
+			minimumPointsPerturbationThreshold), true);
+	}
 
-  public void setLowLevelOfDetail(boolean useLowLevel) {
-    CollisionJNI.btConvex2dConvex2dAlgorithm_setLowLevelOfDetail(swigCPtr, this, useLowLevel);
-  }
+	public void setLowLevelOfDetail (boolean useLowLevel) {
+		CollisionJNI.btConvex2dConvex2dAlgorithm_setLowLevelOfDetail(swigCPtr, this, useLowLevel);
+	}
 
-  public btPersistentManifold getManifold() {
-    long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_getManifold(swigCPtr, this);
-    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
-  }
+	public btPersistentManifold getManifold () {
+		long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_getManifold(swigCPtr, this);
+		return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+	}
 
-  static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
-  	private long swigCPtr;
-  	
-  	protected CreateFunc(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
-  	public CreateFunc(long cPtr, boolean cMemoryOwn) {
-  		this("CreateFunc", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(CreateFunc obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				CollisionJNI.delete_btConvex2dConvex2dAlgorithm_CreateFunc(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public void setPdSolver(btConvexPenetrationDepthSolver value) {
-      CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_pdSolver_set(swigCPtr, this, btConvexPenetrationDepthSolver.getCPtr(value), value);
-    }
-  
-    public btConvexPenetrationDepthSolver getPdSolver() {
-      long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_pdSolver_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btConvexPenetrationDepthSolver(cPtr, false);
-    }
-  
-    public void setSimplexSolver(btVoronoiSimplexSolver value) {
-      CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_simplexSolver_set(swigCPtr, this, btVoronoiSimplexSolver.getCPtr(value), value);
-    }
-  
-    public btVoronoiSimplexSolver getSimplexSolver() {
-      long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_simplexSolver_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btVoronoiSimplexSolver(cPtr, false);
-    }
-  
-    public void setNumPerturbationIterations(int value) {
-      CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_numPerturbationIterations_set(swigCPtr, this, value);
-    }
-  
-    public int getNumPerturbationIterations() {
-      return CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_numPerturbationIterations_get(swigCPtr, this);
-    }
-  
-    public void setMinimumPointsPerturbationThreshold(int value) {
-      CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_minimumPointsPerturbationThreshold_set(swigCPtr, this, value);
-    }
-  
-    public int getMinimumPointsPerturbationThreshold() {
-      return CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_minimumPointsPerturbationThreshold_get(swigCPtr, this);
-    }
-  
-    public CreateFunc(btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver pdSolver) {
-      this(CollisionJNI.new_btConvex2dConvex2dAlgorithm_CreateFunc(btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexPenetrationDepthSolver.getCPtr(pdSolver), pdSolver), true);
-    }
-  
-  }
+	static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
+		private long swigCPtr;
+
+		protected CreateFunc (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
+			swigCPtr = cPtr;
+		}
+
+		/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
+		public CreateFunc (long cPtr, boolean cMemoryOwn) {
+			this("CreateFunc", cPtr, cMemoryOwn);
+			construct();
+		}
+
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		}
+
+		public static long getCPtr (CreateFunc obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
+
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
+
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					CollisionJNI.delete_btConvex2dConvex2dAlgorithm_CreateFunc(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
+
+		public void setPdSolver (btConvexPenetrationDepthSolver value) {
+			CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_pdSolver_set(swigCPtr, this,
+				btConvexPenetrationDepthSolver.getCPtr(value), value);
+		}
+
+		public btConvexPenetrationDepthSolver getPdSolver () {
+			long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_pdSolver_get(swigCPtr, this);
+			return (cPtr == 0) ? null : new btConvexPenetrationDepthSolver(cPtr, false);
+		}
+
+		public void setSimplexSolver (btVoronoiSimplexSolver value) {
+			CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_simplexSolver_set(swigCPtr, this,
+				btVoronoiSimplexSolver.getCPtr(value), value);
+		}
+
+		public btVoronoiSimplexSolver getSimplexSolver () {
+			long cPtr = CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_simplexSolver_get(swigCPtr, this);
+			return (cPtr == 0) ? null : new btVoronoiSimplexSolver(cPtr, false);
+		}
+
+		public void setNumPerturbationIterations (int value) {
+			CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_numPerturbationIterations_set(swigCPtr, this, value);
+		}
+
+		public int getNumPerturbationIterations () {
+			return CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_numPerturbationIterations_get(swigCPtr, this);
+		}
+
+		public void setMinimumPointsPerturbationThreshold (int value) {
+			CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_minimumPointsPerturbationThreshold_set(swigCPtr, this, value);
+		}
+
+		public int getMinimumPointsPerturbationThreshold () {
+			return CollisionJNI.btConvex2dConvex2dAlgorithm_CreateFunc_minimumPointsPerturbationThreshold_get(swigCPtr, this);
+		}
+
+		public CreateFunc (btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver pdSolver) {
+			this(CollisionJNI.new_btConvex2dConvex2dAlgorithm_CreateFunc(btVoronoiSimplexSolver.getCPtr(simplexSolver),
+				simplexSolver, btConvexPenetrationDepthSolver.getCPtr(pdSolver), pdSolver), true);
+		}
+
+	}
 
 }

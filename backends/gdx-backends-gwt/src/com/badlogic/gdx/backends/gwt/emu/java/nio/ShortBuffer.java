@@ -24,7 +24,8 @@ package java.nio;
  * <ul>
  * <li>{@link #allocate(int) Allocate} a new short array and create a buffer based on it;</li>
  * <li>{@link #wrap(short[]) Wrap} an existing short array to create a new buffer;</li>
- * <li>Use {@link java.nio.ByteBuffer#asShortBuffer() ByteBuffer.asShortBuffer} to create a short buffer based on a byte buffer.</li>
+ * <li>Use {@link java.nio.ByteBuffer#asShortBuffer() ByteBuffer.asShortBuffer} to create a short buffer based on a byte
+ * buffer.</li>
  * </ul>
  * 
  * @since Android 1.0 */
@@ -57,7 +58,8 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 
 	/** Creates a new short buffer by wrapping the given short array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
+	 * array.
 	 * </p>
 	 * 
 	 * @param array the short array which the new buffer will be based on.
@@ -225,8 +227,8 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 		return get(dest, 0, dest.length);
 	}
 
-	/** Reads shorts from the current position into the specified short array, starting from the specified offset, and increases the
-	 * position by the number of shorts read.
+	/** Reads shorts from the current position into the specified short array, starting from the specified offset, and increases
+	 * the position by the number of shorts read.
 	 * 
 	 * @param dest the target short array.
 	 * @param off the offset of the short array, must not be negative and not greater than {@code dest.length}.
@@ -322,7 +324,8 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	 * @since Android 1.0 */
 	public abstract ShortBuffer put (short s);
 
-	/** Writes shorts from the given short array to the current position and increases the position by the number of shorts written.
+	/** Writes shorts from the given short array to the current position and increases the position by the number of shorts
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as {@code put(src, 0, src.length)}.
 	 * </p>

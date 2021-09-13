@@ -91,8 +91,7 @@ public class Wav {
 				if (type != 1) throw new GdxRuntimeException("WAV files must be PCM: " + type);
 
 				channels = read() & 0xff | (read() & 0xff) << 8;
-				if (channels != 1 && channels != 2)
-					throw new GdxRuntimeException("WAV files must have 1 or 2 channels: " + channels);
+				if (channels != 1 && channels != 2) throw new GdxRuntimeException("WAV files must have 1 or 2 channels: " + channels);
 
 				sampleRate = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 

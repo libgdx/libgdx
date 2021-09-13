@@ -77,7 +77,7 @@ public class GwtGraphics extends AbstractGraphics {
 			int width = Window.getClientWidth() - config.padHorizontal;
 			int height = Window.getClientHeight() - config.padVertical;
 			double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
-			setCanvasSize((int) (density * width), (int) (density * height));
+			setCanvasSize((int)(density * width), (int)(density * height));
 		} else {
 			setCanvasSize(config.width, config.height);
 		}
@@ -130,7 +130,6 @@ public class GwtGraphics extends AbstractGraphics {
 
 	}
 
-
 	@Override
 	public int getWidth () {
 		return canvas.getWidth();
@@ -178,12 +177,12 @@ public class GwtGraphics extends AbstractGraphics {
 
 	@Override
 	public float getPpiX () {
-		return 96f * (float) getNativeScreenDensity();
+		return 96f * (float)getNativeScreenDensity();
 	}
 
 	@Override
 	public float getPpiY () {
-		return 96f * (float) getNativeScreenDensity();
+		return 96f * (float)getNativeScreenDensity();
 	}
 
 	@Override
@@ -269,7 +268,7 @@ public class GwtGraphics extends AbstractGraphics {
 		}
 	}
 
-	private native boolean setFullscreenJSNI(GwtGraphics graphics, CanvasElement element, int screenWidth, int screenHeight)/*-{
+	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element, int screenWidth, int screenHeight)/*-{
 		// Attempt to use the non-prefixed standard API (https://fullscreen.spec.whatwg.org)
 		if (element.requestFullscreen) {
 			element.width = screenWidth;
@@ -340,27 +339,26 @@ public class GwtGraphics extends AbstractGraphics {
 	@Override
 	public DisplayMode getDisplayMode () {
 		double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
-		return new DisplayMode((int) (getScreenWidthJSNI() * density),
-				(int) (getScreenHeightJSNI() * density), 60, 8) {};
+		return new DisplayMode((int)(getScreenWidthJSNI() * density), (int)(getScreenHeightJSNI() * density), 60, 8) {};
 	}
 
 	@Override
-	public int getSafeInsetLeft() {
+	public int getSafeInsetLeft () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetTop() {
+	public int getSafeInsetTop () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetBottom() {
+	public int getSafeInsetBottom () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetRight() {
+	public int getSafeInsetRight () {
 		return 0;
 	}
 
@@ -381,7 +379,7 @@ public class GwtGraphics extends AbstractGraphics {
 		return true;
 	}
 
-	void setCanvasSize(int width, int height) {
+	void setCanvasSize (int width, int height) {
 		canvas.setWidth(width);
 		canvas.setHeight(height);
 
@@ -391,7 +389,6 @@ public class GwtGraphics extends AbstractGraphics {
 			canvas.getStyle().setHeight(height / density, Style.Unit.PX);
 		}
 	}
-
 
 	@Override
 	public Monitor getPrimaryMonitor () {
@@ -405,7 +402,7 @@ public class GwtGraphics extends AbstractGraphics {
 
 	@Override
 	public Monitor[] getMonitors () {
-		return new Monitor[] { getPrimaryMonitor() };
+		return new Monitor[] {getPrimaryMonitor()};
 	}
 
 	@Override
@@ -521,14 +518,12 @@ public class GwtGraphics extends AbstractGraphics {
 	public void setForegroundFPS (int fps) {
 	}
 
-	/**
-	 * See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
+	/** See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
 	 *
-	 * @return value indicating the ratio of the display's resolution in physical pixels to the resolution in CSS
-	 * pixels. A value of 1 indicates a classic 96 DPI (76 DPI on some platforms) display, while a value of 2
-	 * is expected for HiDPI/Retina displays.
-	 */
-	public static native double getNativeScreenDensity() /*-{
+	 * @return value indicating the ratio of the display's resolution in physical pixels to the resolution in CSS pixels. A value
+	 *         of 1 indicates a classic 96 DPI (76 DPI on some platforms) display, while a value of 2 is expected for HiDPI/Retina
+	 *         displays. */
+	public static native double getNativeScreenDensity () /*-{
 		return $wnd.devicePixelRatio || 1;
 	}-*/;
 

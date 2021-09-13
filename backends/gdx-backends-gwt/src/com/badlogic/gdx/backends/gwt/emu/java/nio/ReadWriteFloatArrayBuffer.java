@@ -24,7 +24,8 @@ package java.nio;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
 
 	static ReadWriteFloatArrayBuffer copy (FloatArrayBuffer other, int markOfOther) {

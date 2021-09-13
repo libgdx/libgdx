@@ -15,34 +15,34 @@
  ******************************************************************************/
 
 ext {
-    mainTestClass = "com.badlogic.gdx.tests.lwjgl.LwjglTestStarter"
+	mainTestClass = "com.badlogic.gdx.tests.lwjgl.LwjglTestStarter"
 }
 sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
 dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-lwjgl")
-    compile testnatives.desktop
+	compile project(":tests:gdx-tests")
+	compile project(":backends:gdx-backend-lwjgl")
+	compile testnatives.desktop
 }
 
 task launchTestsLwjgl (dependsOn: classes, type: JavaExec) {
-    main = mainTestClass
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = new File("../gdx-tests-android/assets")
-    ignoreExitValue = true
+	main = mainTestClass
+	classpath = sourceSets.main.runtimeClasspath
+	standardInput = System.in
+	workingDir = new File("../gdx-tests-android/assets")
+	ignoreExitValue = true
 }
 configure (launchTestsLwjgl) {
-    group "LibGDX"
-    description = "Run the Lwjgl tests"
+	group "LibGDX"
+	description = "Run the Lwjgl tests"
 }
 task dist(type: Jar, dependsOn: classes) {
-    manifest {
-        attributes 'Main-Class': project.mainTestClass
-    }
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
+	manifest {
+		attributes 'Main-Class': project.mainTestClass
+	}
+	dependsOn configurations.runtimeClasspath
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	with jar
 }

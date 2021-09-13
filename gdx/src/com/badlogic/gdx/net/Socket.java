@@ -25,10 +25,12 @@ import com.badlogic.gdx.utils.Disposable;
 
 /** A client socket that talks to a server socket via some {@link Protocol}. See
  * {@link Net#newClientSocket(Protocol, String, int, SocketHints)} and
- * {@link Net#newServerSocket(Protocol, int, ServerSocketHints)}.</p>
+ * {@link Net#newServerSocket(Protocol, int, ServerSocketHints)}.
+ * </p>
  * 
  * A socket has an {@link InputStream} used to send data to the other end of the connection, and an {@link OutputStream} to
- * receive data from the other end of the connection.</p>
+ * receive data from the other end of the connection.
+ * </p>
  * 
  * A socket needs to be disposed if it is no longer used. Disposing also closes the connection.
  * 

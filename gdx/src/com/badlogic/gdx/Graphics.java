@@ -80,8 +80,7 @@ public interface Graphics {
 
 	/** Describes a monitor
 	 *
-	 * @author badlogic
-	 */
+	 * @author badlogic */
 	class Monitor {
 		public final int virtualX;
 		public final int virtualY;
@@ -156,25 +155,17 @@ public interface Graphics {
 	/** @return amount of pixels per logical pixel (point) */
 	float getBackBufferScale ();
 
-	/**
-	 * @return the inset from the left which avoids display cutouts in logical pixels
-	 */
-	int getSafeInsetLeft();
+	/** @return the inset from the left which avoids display cutouts in logical pixels */
+	int getSafeInsetLeft ();
 
-	/**
-	 * @return the inset from the top which avoids display cutouts in logical pixels
-	 */
-	int getSafeInsetTop();
+	/** @return the inset from the top which avoids display cutouts in logical pixels */
+	int getSafeInsetTop ();
 
-	/**
-	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels
-	 */
-	int getSafeInsetBottom();
+	/** @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels */
+	int getSafeInsetBottom ();
 
-	/**
-	 * @return the inset from the right which avoids display cutouts in logical pixels
-	 */
-	int getSafeInsetRight();
+	/** @return the inset from the right which avoids display cutouts in logical pixels */
+	int getSafeInsetRight ();
 
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
@@ -186,7 +177,7 @@ public interface Graphics {
 	/** @return the time span between the current frame and the last frame in seconds. */
 	float getDeltaTime ();
 
-	/** @return the time span between the current frame and the last frame in seconds, without smoothing 
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing
 	 * @deprecated use {@link #getDeltaTime()} instead. */
 	@Deprecated
 	float getRawDeltaTime ();
@@ -227,19 +218,19 @@ public interface Graphics {
 	boolean supportsDisplayModeChange ();
 
 	/** @return the primary monitor **/
-	Monitor getPrimaryMonitor();
+	Monitor getPrimaryMonitor ();
 
 	/** @return the monitor the application's window is located on */
-	Monitor getMonitor();
+	Monitor getMonitor ();
 
 	/** @return the currently connected {@link Monitor}s */
-	Monitor[] getMonitors();
+	Monitor[] getMonitors ();
 
 	/** @return the supported fullscreen {@link DisplayMode}(s) of the monitor the window is on */
 	DisplayMode[] getDisplayModes ();
 
 	/** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
-	DisplayMode[] getDisplayModes(Monitor monitor);
+	DisplayMode[] getDisplayModes (Monitor monitor);
 
 	/** @return the current {@link DisplayMode} of the monitor the window is on. */
 	DisplayMode getDisplayMode ();
@@ -257,7 +248,7 @@ public interface Graphics {
 	 *
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @return whether the operation succeeded*/
+	 * @return whether the operation succeeded */
 	boolean setWindowedMode (int width, int height);
 
 	/** Sets the title of the window. Ignored on Android.
@@ -265,29 +256,24 @@ public interface Graphics {
 	 * @param title the title. */
 	void setTitle (String title);
 
-	/** Sets the window decoration as enabled or disabled. On Android, this will enable/disable
-	 *  the menu bar.
+	/** Sets the window decoration as enabled or disabled. On Android, this will enable/disable the menu bar.
 	 *
-	 *  Note that immediate behavior of this method may vary depending on the implementation. It
-	 *  may be necessary for the window to be recreated in order for the changes to take effect.
-	 *  Consult the documentation for the backend in use for more information.
+	 * Note that immediate behavior of this method may vary depending on the implementation. It may be necessary for the window to
+	 * be recreated in order for the changes to take effect. Consult the documentation for the backend in use for more information.
 	 *
-	 *  Supported on all GDX desktop backends and on Android (to disable the menu bar).
+	 * Supported on all GDX desktop backends and on Android (to disable the menu bar).
 	 *
-	 * @param undecorated true if the window border or status bar should be hidden. false otherwise.
-	 */
+	 * @param undecorated true if the window border or status bar should be hidden. false otherwise. */
 	void setUndecorated (boolean undecorated);
 
 	/** Sets whether or not the window should be resizable. Ignored on Android.
 	 *
-	 *  Note that immediate behavior of this method may vary depending on the implementation. It
-	 *  may be necessary for the window to be recreated in order for the changes to take effect.
-	 *  Consult the documentation for the backend in use for more information.
+	 * Note that immediate behavior of this method may vary depending on the implementation. It may be necessary for the window to
+	 * be recreated in order for the changes to take effect. Consult the documentation for the backend in use for more information.
 	 *
-	 *  Supported on all GDX desktop backends.
+	 * Supported on all GDX desktop backends.
 	 *
-	 * @param resizable
-	 */
+	 * @param resizable */
 	void setResizable (boolean resizable);
 
 	/** Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.
@@ -299,7 +285,7 @@ public interface Graphics {
 	 * generally advised to be used on mobile platforms.
 	 *
 	 * @param fps the targeted fps; default differs by platform */
-	public void setForegroundFPS (int fps );
+	public void setForegroundFPS (int fps);
 
 	/** @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance */
 	BufferFormat getBufferFormat ();
@@ -314,9 +300,9 @@ public interface Graphics {
 	 * <ul>
 	 * <li>A call to {@link #requestRendering()}</li>
 	 * <li>Input events from the touch screen/mouse or keyboard</li>
-	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case
-	 * of a multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, 
-	 * post a runnable to the window instead. </li>
+	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case of a
+	 * multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, post a
+	 * runnable to the window instead.</li>
 	 * </ul>
 	 *
 	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. This method can be called from any
@@ -335,9 +321,9 @@ public interface Graphics {
 	boolean isFullscreen ();
 
 	/** Create a new cursor represented by the {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format,
-	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a safe bet),
-	 * and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the 
-	 * system cursor by calling {@link #setCursor(Cursor)} .
+	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a
+	 * safe bet), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that
+	 * can be set as the system cursor by calling {@link #setCursor(Cursor)} .
 	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
@@ -347,13 +333,12 @@ public interface Graphics {
 
 	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
 	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
-	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
+	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main
+	 * render thread, and maximum one time per frame.
 	 *
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor} */
 	void setCursor (Cursor cursor);
 
-	/**
-	 * Sets one of the predefined {@link SystemCursor}s
-	 */
-	void setSystemCursor(SystemCursor systemCursor);
+	/** Sets one of the predefined {@link SystemCursor}s */
+	void setSystemCursor (SystemCursor systemCursor);
 }

@@ -12,44 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftBodyJointData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btSoftBodyJointData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSoftBodyJointData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSoftBodyJointData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btSoftBodyJointData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSoftBodyJointData, normally you should not need this constructor it's intended for low-level usage. */
+	public btSoftBodyJointData (long cPtr, boolean cMemoryOwn) {
 		this("btSoftBodyJointData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSoftBodyJointData obj) {
+
+	public static long getCPtr (btSoftBodyJointData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,106 +55,106 @@ public class btSoftBodyJointData extends BulletBase {
 		super.delete();
 	}
 
-  public void setBodyA(long value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyA_set(swigCPtr, this, value);
-  }
+	public void setBodyA (long value) {
+		SoftbodyJNI.btSoftBodyJointData_bodyA_set(swigCPtr, this, value);
+	}
 
-  public long getBodyA() {
-    return SoftbodyJNI.btSoftBodyJointData_bodyA_get(swigCPtr, this);
-  }
+	public long getBodyA () {
+		return SoftbodyJNI.btSoftBodyJointData_bodyA_get(swigCPtr, this);
+	}
 
-  public void setBodyB(long value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyB_set(swigCPtr, this, value);
-  }
+	public void setBodyB (long value) {
+		SoftbodyJNI.btSoftBodyJointData_bodyB_set(swigCPtr, this, value);
+	}
 
-  public long getBodyB() {
-    return SoftbodyJNI.btSoftBodyJointData_bodyB_get(swigCPtr, this);
-  }
+	public long getBodyB () {
+		return SoftbodyJNI.btSoftBodyJointData_bodyB_get(swigCPtr, this);
+	}
 
-  public void setRefs(btVector3FloatData value) {
-    SoftbodyJNI.btSoftBodyJointData_refs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setRefs (btVector3FloatData value) {
+		SoftbodyJNI.btSoftBodyJointData_refs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getRefs() {
-    long cPtr = SoftbodyJNI.btSoftBodyJointData_refs_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getRefs () {
+		long cPtr = SoftbodyJNI.btSoftBodyJointData_refs_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setCfm(float value) {
-    SoftbodyJNI.btSoftBodyJointData_cfm_set(swigCPtr, this, value);
-  }
+	public void setCfm (float value) {
+		SoftbodyJNI.btSoftBodyJointData_cfm_set(swigCPtr, this, value);
+	}
 
-  public float getCfm() {
-    return SoftbodyJNI.btSoftBodyJointData_cfm_get(swigCPtr, this);
-  }
+	public float getCfm () {
+		return SoftbodyJNI.btSoftBodyJointData_cfm_get(swigCPtr, this);
+	}
 
-  public void setErp(float value) {
-    SoftbodyJNI.btSoftBodyJointData_erp_set(swigCPtr, this, value);
-  }
+	public void setErp (float value) {
+		SoftbodyJNI.btSoftBodyJointData_erp_set(swigCPtr, this, value);
+	}
 
-  public float getErp() {
-    return SoftbodyJNI.btSoftBodyJointData_erp_get(swigCPtr, this);
-  }
+	public float getErp () {
+		return SoftbodyJNI.btSoftBodyJointData_erp_get(swigCPtr, this);
+	}
 
-  public void setSplit(float value) {
-    SoftbodyJNI.btSoftBodyJointData_split_set(swigCPtr, this, value);
-  }
+	public void setSplit (float value) {
+		SoftbodyJNI.btSoftBodyJointData_split_set(swigCPtr, this, value);
+	}
 
-  public float getSplit() {
-    return SoftbodyJNI.btSoftBodyJointData_split_get(swigCPtr, this);
-  }
+	public float getSplit () {
+		return SoftbodyJNI.btSoftBodyJointData_split_get(swigCPtr, this);
+	}
 
-  public void setDelete(int value) {
-    SoftbodyJNI.btSoftBodyJointData_delete_set(swigCPtr, this, value);
-  }
+	public void setDelete (int value) {
+		SoftbodyJNI.btSoftBodyJointData_delete_set(swigCPtr, this, value);
+	}
 
-  public int getDelete() {
-    return SoftbodyJNI.btSoftBodyJointData_delete_get(swigCPtr, this);
-  }
+	public int getDelete () {
+		return SoftbodyJNI.btSoftBodyJointData_delete_get(swigCPtr, this);
+	}
 
-  public void setRelPosition(btVector3FloatData value) {
-    SoftbodyJNI.btSoftBodyJointData_relPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setRelPosition (btVector3FloatData value) {
+		SoftbodyJNI.btSoftBodyJointData_relPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getRelPosition() {
-    long cPtr = SoftbodyJNI.btSoftBodyJointData_relPosition_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getRelPosition () {
+		long cPtr = SoftbodyJNI.btSoftBodyJointData_relPosition_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setBodyAtype(int value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyAtype_set(swigCPtr, this, value);
-  }
+	public void setBodyAtype (int value) {
+		SoftbodyJNI.btSoftBodyJointData_bodyAtype_set(swigCPtr, this, value);
+	}
 
-  public int getBodyAtype() {
-    return SoftbodyJNI.btSoftBodyJointData_bodyAtype_get(swigCPtr, this);
-  }
+	public int getBodyAtype () {
+		return SoftbodyJNI.btSoftBodyJointData_bodyAtype_get(swigCPtr, this);
+	}
 
-  public void setBodyBtype(int value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyBtype_set(swigCPtr, this, value);
-  }
+	public void setBodyBtype (int value) {
+		SoftbodyJNI.btSoftBodyJointData_bodyBtype_set(swigCPtr, this, value);
+	}
 
-  public int getBodyBtype() {
-    return SoftbodyJNI.btSoftBodyJointData_bodyBtype_get(swigCPtr, this);
-  }
+	public int getBodyBtype () {
+		return SoftbodyJNI.btSoftBodyJointData_bodyBtype_get(swigCPtr, this);
+	}
 
-  public void setJointType(int value) {
-    SoftbodyJNI.btSoftBodyJointData_jointType_set(swigCPtr, this, value);
-  }
+	public void setJointType (int value) {
+		SoftbodyJNI.btSoftBodyJointData_jointType_set(swigCPtr, this, value);
+	}
 
-  public int getJointType() {
-    return SoftbodyJNI.btSoftBodyJointData_jointType_get(swigCPtr, this);
-  }
+	public int getJointType () {
+		return SoftbodyJNI.btSoftBodyJointData_jointType_get(swigCPtr, this);
+	}
 
-  public void setPad(int value) {
-    SoftbodyJNI.btSoftBodyJointData_pad_set(swigCPtr, this, value);
-  }
+	public void setPad (int value) {
+		SoftbodyJNI.btSoftBodyJointData_pad_set(swigCPtr, this, value);
+	}
 
-  public int getPad() {
-    return SoftbodyJNI.btSoftBodyJointData_pad_get(swigCPtr, this);
-  }
+	public int getPad () {
+		return SoftbodyJNI.btSoftBodyJointData_pad_get(swigCPtr, this);
+	}
 
-  public btSoftBodyJointData() {
-    this(SoftbodyJNI.new_btSoftBodyJointData(), true);
-  }
+	public btSoftBodyJointData () {
+		this(SoftbodyJNI.new_btSoftBodyJointData(), true);
+	}
 
 }

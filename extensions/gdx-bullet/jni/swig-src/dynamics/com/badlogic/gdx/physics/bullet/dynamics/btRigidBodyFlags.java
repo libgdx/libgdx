@@ -9,10 +9,9 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class btRigidBodyFlags {
-  public final static int BT_DISABLE_WORLD_GRAVITY = 1;
-  public final static int BT_ENABLE_GYROSCOPIC_FORCE_EXPLICIT = 2;
-  public final static int BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_WORLD = 4;
-  public final static int BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY = 8;
-  public final static int BT_ENABLE_GYROPSCOPIC_FORCE = BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY;
+	public final static int BT_DISABLE_WORLD_GRAVITY = 1;
+	public final static int BT_ENABLE_GYROSCOPIC_FORCE_EXPLICIT = 2;
+	public final static int BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_WORLD = 4;
+	public final static int BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY = 8;
+	public final static int BT_ENABLE_GYROPSCOPIC_FORCE = BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY;
 }
-

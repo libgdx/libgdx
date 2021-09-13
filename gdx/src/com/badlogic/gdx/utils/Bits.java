@@ -128,7 +128,7 @@ public class Bits {
 		}
 		return 0;
 	}
-	
+
 	/** @return true if this bitset contains at least one bit set to true */
 	public boolean notEmpty () {
 		return !isEmpty();
@@ -202,16 +202,16 @@ public class Bits {
 		return bits.length << 6;
 	}
 
-	/** Performs a logical <b>AND</b> of this target bit set with the argument bit set. This bit set is modified so that each bit in
-	 * it has the value true if and only if it both initially had the value true and the corresponding bit in the bit set argument
-	 * also had the value true.
+	/** Performs a logical <b>AND</b> of this target bit set with the argument bit set. This bit set is modified so that each bit
+	 * in it has the value true if and only if it both initially had the value true and the corresponding bit in the bit set
+	 * argument also had the value true.
 	 * @param other a bit set */
 	public void and (Bits other) {
 		int commonWords = Math.min(bits.length, other.bits.length);
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] &= other.bits[i];
 		}
-		
+
 		if (bits.length > commonWords) {
 			for (int i = commonWords, s = bits.length; s > i; i++) {
 				bits[i] = 0L;
@@ -228,8 +228,8 @@ public class Bits {
 		}
 	}
 
-	/** Performs a logical <b>OR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has the
-	 * value true if and only if it either already had the value true or the corresponding bit in the bit set argument has the
+	/** Performs a logical <b>OR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has
+	 * the value true if and only if it either already had the value true or the corresponding bit in the bit set argument has the
 	 * value true.
 	 * @param other a bit set */
 	public void or (Bits other) {
@@ -237,7 +237,7 @@ public class Bits {
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] |= other.bits[i];
 		}
-		
+
 		if (commonWords < other.bits.length) {
 			checkCapacity(other.bits.length);
 			for (int i = commonWords, s = other.bits.length; s > i; i++) {
@@ -255,11 +255,11 @@ public class Bits {
 	 * @param other */
 	public void xor (Bits other) {
 		int commonWords = Math.min(bits.length, other.bits.length);
-		
+
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] ^= other.bits[i];
 		}
-		
+
 		if (commonWords < other.bits.length) {
 			checkCapacity(other.bits.length);
 			for (int i = commonWords, s = other.bits.length; s > i; i++) {
@@ -283,8 +283,8 @@ public class Bits {
 		return false;
 	}
 
-	/** Returns true if this bit set is a super set of the specified set, i.e. it has all bits set to true that are also set to true
-	 * in the specified BitSet.
+	/** Returns true if this bit set is a super set of the specified set, i.e. it has all bits set to true that are also set to
+	 * true in the specified BitSet.
 	 * 
 	 * @param other a bit set
 	 * @return boolean indicating whether this bit set is a super set of the specified set */
@@ -306,9 +306,9 @@ public class Bits {
 		}
 		return true;
 	}
-	
+
 	@Override
-	public int hashCode() {
+	public int hashCode () {
 		final int word = length() >>> 6;
 		int hash = 0;
 		for (int i = 0; word >= i; i++) {
@@ -318,26 +318,21 @@ public class Bits {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		
-		Bits other = (Bits) obj;
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		Bits other = (Bits)obj;
 		long[] otherBits = other.bits;
-		
+
 		int commonWords = Math.min(bits.length, otherBits.length);
 		for (int i = 0; commonWords > i; i++) {
-			if (bits[i] != otherBits[i])
-				return false;
+			if (bits[i] != otherBits[i]) return false;
 		}
-		
-		if (bits.length == otherBits.length)
-			return true;
-		
+
+		if (bits.length == otherBits.length) return true;
+
 		return length() == other.length();
 	}
 }

@@ -25,7 +25,8 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 
 	static DirectReadWriteByteBuffer copy (DirectByteBuffer other, int markOfOther) {

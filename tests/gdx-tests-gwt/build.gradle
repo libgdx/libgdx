@@ -15,15 +15,15 @@
  ******************************************************************************/
 
 buildscript {
-    dependencies {
-        classpath "org.wisepersist:gwt-gradle-plugin:${versions.gwtPlugin}"
-        classpath "org.gretty:gretty:${versions.gretty}"
-    }
+	dependencies {
+		classpath "org.wisepersist:gwt-gradle-plugin:${versions.gwtPlugin}"
+		classpath "org.gretty:gretty:${versions.gretty}"
+	}
 }
 
 configurations.all {
-    // gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
-    exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
+	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
+	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
 apply plugin: 'war'
@@ -39,86 +39,86 @@ gretty.contextPath = "/"
 gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
 dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backends-gwt")
-    compile project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
+	compile project(":tests:gdx-tests")
+	compile project(":backends:gdx-backends-gwt")
+	compile project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
 }
 
 gwt {
-    gwtVersion='2.8.2' // Should match the gwt version used for building the gwt backend
-    maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
-    minHeapSize="1G"
+	gwtVersion='2.8.2' // Should match the gwt version used for building the gwt backend
+	maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+	minHeapSize="1G"
 
-    src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
-    devModules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
+	src = files(file("src/")) // Needs to be in front of "modules" below.
+	modules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
+	devModules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
 
-    compiler.strict = true
-    compiler.disableCastChecking = true
+	compiler.strict = true
+	compiler.disableCastChecking = true
 }
 
 task startHttpServer () {
-    dependsOn draftCompileGwt
+	dependsOn draftCompileGwt
 
-    doFirst {
-        copy {
-            from "webapp"
-            into gretty.resourceBase
-        }
+	doFirst {
+		copy {
+			from "webapp"
+			into gretty.resourceBase
+		}
 
-        copy {
-            from "war"
-            into gretty.resourceBase
-        }
-    }
+		copy {
+			from "war"
+			into gretty.resourceBase
+		}
+	}
 }
 
 task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
-    // The next line allows ports to be reused instead of
-    // needing a process to be manually terminated.
-    file("build/TEMP_PORTS.properties").delete()
-    // Somewhat of a hack; uses Gretty's support for wrapping a task in
-    // a start and then stop of a Jetty server that serves files while
-    // also running the SuperDev code server.
-    integrationTestTask 'superDev'
+	// The next line allows ports to be reused instead of
+	// needing a process to be manually terminated.
+	file("build/TEMP_PORTS.properties").delete()
+	// Somewhat of a hack; uses Gretty's support for wrapping a task in
+	// a start and then stop of a Jetty server that serves files while
+	// also running the SuperDev code server.
+	integrationTestTask 'superDev'
 
-    interactive false
+	interactive false
 }
 
 task superDev (type: GwtSuperDev) {
-    dependsOn startHttpServer
-    doFirst {
-        gwt.modules = gwt.devModules
-    }
+	dependsOn startHttpServer
+	doFirst {
+		gwt.modules = gwt.devModules
+	}
 }
 
 task dist(dependsOn: [clean, compileGwt]) {
-    doLast {
-        file("build/dist").mkdirs()
-        copy {
-            from "build/gwt/out"
-            into "build/dist"
-        }
-        copy {
-            from "webapp"
-            into "build/dist"
-        }
-        copy {
-            from "war"
-            into "build/dist"
-        }
-    }
+	doLast {
+		file("build/dist").mkdirs()
+		copy {
+			from "build/gwt/out"
+			into "build/dist"
+		}
+		copy {
+			from "webapp"
+			into "build/dist"
+		}
+		copy {
+			from "war"
+			into "build/dist"
+		}
+	}
 }
 
 
 task addSource {
-    doLast {
-        sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
-        sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
-    }
+	doLast {
+		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
+	}
 }
 
 tasks.compileGwt.dependsOn(addSource)

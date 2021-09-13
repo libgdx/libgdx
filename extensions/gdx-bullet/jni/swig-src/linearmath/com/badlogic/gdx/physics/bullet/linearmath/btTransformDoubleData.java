@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btTransformDoubleData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btTransformDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btTransformDoubleData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btTransformDoubleData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btTransformDoubleData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btTransformDoubleData, normally you should not need this constructor it's intended for low-level usage. */
+	public btTransformDoubleData (long cPtr, boolean cMemoryOwn) {
 		this("btTransformDoubleData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btTransformDoubleData obj) {
+
+	public static long getCPtr (btTransformDoubleData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,26 +52,26 @@ public class btTransformDoubleData extends BulletBase {
 		super.delete();
 	}
 
-  public void setBasis(btMatrix3x3DoubleData value) {
-    LinearMathJNI.btTransformDoubleData_basis_set(swigCPtr, this, btMatrix3x3DoubleData.getCPtr(value), value);
-  }
+	public void setBasis (btMatrix3x3DoubleData value) {
+		LinearMathJNI.btTransformDoubleData_basis_set(swigCPtr, this, btMatrix3x3DoubleData.getCPtr(value), value);
+	}
 
-  public btMatrix3x3DoubleData getBasis() {
-    long cPtr = LinearMathJNI.btTransformDoubleData_basis_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btMatrix3x3DoubleData(cPtr, false);
-  }
+	public btMatrix3x3DoubleData getBasis () {
+		long cPtr = LinearMathJNI.btTransformDoubleData_basis_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btMatrix3x3DoubleData(cPtr, false);
+	}
 
-  public void setOrigin(btVector3DoubleData value) {
-    LinearMathJNI.btTransformDoubleData_origin_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
-  }
+	public void setOrigin (btVector3DoubleData value) {
+		LinearMathJNI.btTransformDoubleData_origin_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+	}
 
-  public btVector3DoubleData getOrigin() {
-    long cPtr = LinearMathJNI.btTransformDoubleData_origin_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
-  }
+	public btVector3DoubleData getOrigin () {
+		long cPtr = LinearMathJNI.btTransformDoubleData_origin_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
+	}
 
-  public btTransformDoubleData() {
-    this(LinearMathJNI.new_btTransformDoubleData(), true);
-  }
+	public btTransformDoubleData () {
+		this(LinearMathJNI.new_btTransformDoubleData(), true);
+	}
 
 }

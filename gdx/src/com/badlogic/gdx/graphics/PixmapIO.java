@@ -41,9 +41,9 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class PixmapIO {
-	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. First three integers define the width, height
-	 * and format, remaining bytes are zlib compressed pixels. To be able to load the Pixmap to a Texture, use ".cim" as the file
-	 * suffix. Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
+	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. First three integers define the width,
+	 * height and format, remaining bytes are zlib compressed pixels. To be able to load the Pixmap to a Texture, use ".cim" as the
+	 * file suffix. Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
 	 * @param file the file to write the Pixmap to */
 	static public void writeCIM (FileHandle file, Pixmap pixmap) {
 		CIM.write(file, pixmap);
@@ -97,8 +97,8 @@ public class PixmapIO {
 				out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));
 
 				ByteBuffer pixelBuf = pixmap.getPixels();
-				((Buffer) pixelBuf).position(0);
-				((Buffer) pixelBuf).limit(pixelBuf.capacity());
+				((Buffer)pixelBuf).position(0);
+				((Buffer)pixelBuf).limit(pixelBuf.capacity());
 
 				int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
 				int iterations = pixelBuf.capacity() / BUFFER_SIZE;
@@ -113,8 +113,8 @@ public class PixmapIO {
 					out.write(writeBuffer, 0, remainingBytes);
 				}
 
-				((Buffer) pixelBuf).position(0);
-				((Buffer) pixelBuf).limit(pixelBuf.capacity());
+				((Buffer)pixelBuf).position(0);
+				((Buffer)pixelBuf).limit(pixelBuf.capacity());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
 			} finally {
@@ -133,8 +133,8 @@ public class PixmapIO {
 				Pixmap pixmap = new Pixmap(width, height, format);
 
 				ByteBuffer pixelBuf = pixmap.getPixels();
-				((Buffer) pixelBuf).position(0);
-				((Buffer) pixelBuf).limit(pixelBuf.capacity());
+				((Buffer)pixelBuf).position(0);
+				((Buffer)pixelBuf).limit(pixelBuf.capacity());
 
 				synchronized (readBuffer) {
 					int readBytes = 0;
@@ -143,8 +143,8 @@ public class PixmapIO {
 					}
 				}
 
-				((Buffer) pixelBuf).position(0);
-				((Buffer) pixelBuf).limit(pixelBuf.capacity());
+				((Buffer)pixelBuf).position(0);
+				((Buffer)pixelBuf).limit(pixelBuf.capacity());
 				return pixmap;
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
@@ -178,6 +178,7 @@ public class PixmapIO {
 	 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	 * THE SOFTWARE.
 	 * </pre>
+	 * 
 	 * @author Matthias Mann
 	 * @author Nathan Sweet */
 	static public class PNG implements Disposable {
@@ -263,7 +264,7 @@ public class PixmapIO {
 			for (int y = 0, h = pixmap.getHeight(); y < h; y++) {
 				int py = flipY ? (h - y - 1) : y;
 				if (rgba8888) {
-					((Buffer) pixels).position(py * lineLen);
+					((Buffer)pixels).position(py * lineLen);
 					pixels.get(curLine, 0, lineLen);
 				} else {
 					for (int px = 0, x = 0; px < pixmap.getWidth(); px++) {
@@ -305,7 +306,7 @@ public class PixmapIO {
 				curLine = prevLine;
 				prevLine = temp;
 			}
-			((Buffer) pixels).position(oldPosition);
+			((Buffer)pixels).position(oldPosition);
 			deflaterOutput.finish();
 			buffer.endChunk(dataOutput);
 

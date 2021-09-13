@@ -71,10 +71,8 @@ public class GridPoint2 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * @param other The other point
-	 * @return the squared distance between this point and the other point.
-	 */
+	/** @param other The other point
+	 * @return the squared distance between this point and the other point. */
 	public float dst2 (GridPoint2 other) {
 		int xd = other.x - x;
 		int yd = other.y - y;
@@ -82,11 +80,9 @@ public class GridPoint2 implements Serializable {
 		return xd * xd + yd * yd;
 	}
 
-	/**
-	 * @param x The x-coordinate of the other point
+	/** @param x The x-coordinate of the other point
 	 * @param y The y-coordinate of the other point
-	 * @return the squared distance between this point and the other point.
-	 */
+	 * @return the squared distance between this point and the other point. */
 	public float dst2 (int x, int y) {
 		int xd = x - this.x;
 		int yd = y - this.y;
@@ -94,10 +90,8 @@ public class GridPoint2 implements Serializable {
 		return xd * xd + yd * yd;
 	}
 
-	/**
-	 * @param other The other point
-	 * @return the distance between this point and the other vector.
-	 */
+	/** @param other The other point
+	 * @return the distance between this point and the other vector. */
 	public float dst (GridPoint2 other) {
 		int xd = other.x - x;
 		int yd = other.y - y;
@@ -105,11 +99,9 @@ public class GridPoint2 implements Serializable {
 		return (float)Math.sqrt(xd * xd + yd * yd);
 	}
 
-	/**
-	 * @param x The x-coordinate of the other point
+	/** @param x The x-coordinate of the other point
 	 * @param y The y-coordinate of the other point
-	 * @return the distance between this point and the other point.
-	 */
+	 * @return the distance between this point and the other point. */
 	public float dst (int x, int y) {
 		int xd = x - this.x;
 		int yd = y - this.y;
@@ -117,59 +109,49 @@ public class GridPoint2 implements Serializable {
 		return (float)Math.sqrt(xd * xd + yd * yd);
 	}
 
-	/**
-	 * Adds another 2D grid point to this point.
+	/** Adds another 2D grid point to this point.
 	 *
 	 * @param other The other point
-	 * @return this 2d grid point for chaining.
-	 */
+	 * @return this 2d grid point for chaining. */
 	public GridPoint2 add (GridPoint2 other) {
 		x += other.x;
 		y += other.y;
 		return this;
 	}
 
-	/**
-	 * Adds another 2D grid point to this point.
+	/** Adds another 2D grid point to this point.
 	 *
 	 * @param x The x-coordinate of the other point
 	 * @param y The y-coordinate of the other point
-	 * @return this 2d grid point for chaining.
-	 */
+	 * @return this 2d grid point for chaining. */
 	public GridPoint2 add (int x, int y) {
 		this.x += x;
 		this.y += y;
 		return this;
 	}
 
-	/**
-	 * Subtracts another 2D grid point from this point.
+	/** Subtracts another 2D grid point from this point.
 	 *
 	 * @param other The other point
-	 * @return this 2d grid point for chaining.
-	 */
+	 * @return this 2d grid point for chaining. */
 	public GridPoint2 sub (GridPoint2 other) {
 		x -= other.x;
 		y -= other.y;
 		return this;
 	}
 
-	/**
-	 * Subtracts another 2D grid point from this point.
+	/** Subtracts another 2D grid point from this point.
 	 *
 	 * @param x The x-coordinate of the other point
 	 * @param y The y-coordinate of the other point
-	 * @return this 2d grid point for chaining.
-	 */
+	 * @return this 2d grid point for chaining. */
 	public GridPoint2 sub (int x, int y) {
 		this.x -= x;
 		this.y -= y;
 		return this;
 	}
 
-	/**
-	 * @return a copy of this grid point
-	 */
+	/** @return a copy of this grid point */
 	public GridPoint2 cpy () {
 		return new GridPoint2(this);
 	}

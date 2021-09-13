@@ -20,27 +20,24 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
-/** <p>
- * An Animation stores a list of objects representing an animated sequence, e.g. for running or jumping. Each
- * object in the Animation is called a key frame, and multiple key frames make up the animation.
+/**
  * <p>
- * The animation's type is the class representing a frame of animation. For example, a typical 2D animation could be made
- * up of {@link com.badlogic.gdx.graphics.g2d.TextureRegion TextureRegions} and would be specified as:
- * <p><code>Animation&lt;TextureRegion&gt; myAnimation = new Animation&lt;TextureRegion&gt;(...);</code>
+ * An Animation stores a list of objects representing an animated sequence, e.g. for running or jumping. Each object in the
+ * Animation is called a key frame, and multiple key frames make up the animation.
+ * <p>
+ * The animation's type is the class representing a frame of animation. For example, a typical 2D animation could be made up of
+ * {@link com.badlogic.gdx.graphics.g2d.TextureRegion TextureRegions} and would be specified as:
+ * <p>
+ * <code>Animation&lt;TextureRegion&gt; myAnimation = new Animation&lt;TextureRegion&gt;(...);</code>
  * 
  * @author mzechner */
 public class Animation<T> {
-	
+
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
-		NORMAL,
-		REVERSED,
-		LOOP,
-		LOOP_REVERSED,
-		LOOP_PINGPONG,
-		LOOP_RANDOM,
+		NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM,
 	}
-	
+
 	/** Length must not be modified without updating {@link #animationDuration}. See {@link #setKeyFrames(T[])}. */
 	T[] keyFrames;
 	private float frameDuration;
@@ -68,8 +65,8 @@ public class Animation<T> {
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can
-	 * return the correct type of array. Otherwise, it returns an Object[].*/
+	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can return the
+	 *           correct type of array. Otherwise, it returns an Object[]. */
 	public Animation (float frameDuration, Array<? extends T> keyFrames, PlayMode playMode) {
 		this(frameDuration, keyFrames);
 		setPlayMode(playMode);
@@ -84,9 +81,8 @@ public class Animation<T> {
 		setKeyFrames(keyFrames);
 	}
 
-	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
-	 * state this Animation instance represents, e.g. running, jumping and so on. The mode specifies whether the animation is
-	 * looping or not.
+	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the state this
+	 * Animation instance represents, e.g. running, jumping and so on. The mode specifies whether the animation is looping or not.
 	 * 
 	 * @param stateTime the time spent in the state represented by this animation.
 	 * @param looping whether the animation is looping or not.
@@ -112,9 +108,9 @@ public class Animation<T> {
 		return frame;
 	}
 
-	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the
-	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
-	 * {@link #setPlayMode(PlayMode)} method.
+	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the state this
+	 * Animation instance represents, e.g. running, jumping and so on using the mode specified by {@link #setPlayMode(PlayMode)}
+	 * method.
 	 * 
 	 * @param stateTime
 	 * @return the frame of animation for the given state time. */
@@ -142,7 +138,7 @@ public class Animation<T> {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			int lastFrameNumber = (int) ((lastStateTime) / frameDuration);
+			int lastFrameNumber = (int)((lastStateTime) / frameDuration);
 			if (lastFrameNumber != frameNumber) {
 				frameNumber = MathUtils.random(keyFrames.length - 1);
 			} else {
@@ -170,7 +166,7 @@ public class Animation<T> {
 	public T[] getKeyFrames () {
 		return keyFrames;
 	}
-	
+
 	protected void setKeyFrames (T... keyFrames) {
 		this.keyFrames = keyFrames;
 		this.animationDuration = keyFrames.length * frameDuration;

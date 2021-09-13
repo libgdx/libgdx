@@ -8,46 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class MyInternalTriangleIndexCallback extends btInternalTriangleIndexCallback {
 	private long swigCPtr;
-	
-	protected MyInternalTriangleIndexCallback(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected MyInternalTriangleIndexCallback (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.MyInternalTriangleIndexCallback_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new MyInternalTriangleIndexCallback, normally you should not need this constructor it's intended for low-level usage. */
-	public MyInternalTriangleIndexCallback(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new MyInternalTriangleIndexCallback, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public MyInternalTriangleIndexCallback (long cPtr, boolean cMemoryOwn) {
 		this("MyInternalTriangleIndexCallback", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.MyInternalTriangleIndexCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(MyInternalTriangleIndexCallback obj) {
+
+	public static long getCPtr (MyInternalTriangleIndexCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,34 +53,35 @@ public class MyInternalTriangleIndexCallback extends btInternalTriangleIndexCall
 		super.delete();
 	}
 
-  public void setGimpactShape(btGImpactMeshShape value) {
-    CollisionJNI.MyInternalTriangleIndexCallback_gimpactShape_set(swigCPtr, this, btGImpactMeshShape.getCPtr(value), value);
-  }
+	public void setGimpactShape (btGImpactMeshShape value) {
+		CollisionJNI.MyInternalTriangleIndexCallback_gimpactShape_set(swigCPtr, this, btGImpactMeshShape.getCPtr(value), value);
+	}
 
-  public btGImpactMeshShape getGimpactShape() {
-    long cPtr = CollisionJNI.MyInternalTriangleIndexCallback_gimpactShape_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btGImpactMeshShape(cPtr, false);
-  }
+	public btGImpactMeshShape getGimpactShape () {
+		long cPtr = CollisionJNI.MyInternalTriangleIndexCallback_gimpactShape_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btGImpactMeshShape(cPtr, false);
+	}
 
-  public void setColShape(btCompoundShape value) {
-    CollisionJNI.MyInternalTriangleIndexCallback_colShape_set(swigCPtr, this, btCompoundShape.getCPtr(value), value);
-  }
+	public void setColShape (btCompoundShape value) {
+		CollisionJNI.MyInternalTriangleIndexCallback_colShape_set(swigCPtr, this, btCompoundShape.getCPtr(value), value);
+	}
 
-  public btCompoundShape getColShape() {
-    long cPtr = CollisionJNI.MyInternalTriangleIndexCallback_colShape_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCompoundShape(cPtr, false);
-  }
+	public btCompoundShape getColShape () {
+		long cPtr = CollisionJNI.MyInternalTriangleIndexCallback_colShape_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCompoundShape(cPtr, false);
+	}
 
-  public void setDepth(float value) {
-    CollisionJNI.MyInternalTriangleIndexCallback_depth_set(swigCPtr, this, value);
-  }
+	public void setDepth (float value) {
+		CollisionJNI.MyInternalTriangleIndexCallback_depth_set(swigCPtr, this, value);
+	}
 
-  public float getDepth() {
-    return CollisionJNI.MyInternalTriangleIndexCallback_depth_get(swigCPtr, this);
-  }
+	public float getDepth () {
+		return CollisionJNI.MyInternalTriangleIndexCallback_depth_get(swigCPtr, this);
+	}
 
-  public MyInternalTriangleIndexCallback(btCompoundShape colShape, btGImpactMeshShape meshShape, float depth) {
-    this(CollisionJNI.new_MyInternalTriangleIndexCallback(btCompoundShape.getCPtr(colShape), colShape, btGImpactMeshShape.getCPtr(meshShape), meshShape, depth), true);
-  }
+	public MyInternalTriangleIndexCallback (btCompoundShape colShape, btGImpactMeshShape meshShape, float depth) {
+		this(CollisionJNI.new_MyInternalTriangleIndexCallback(btCompoundShape.getCPtr(colShape), colShape,
+			btGImpactMeshShape.getCPtr(meshShape), meshShape, depth), true);
+	}
 
 }

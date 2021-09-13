@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btPositionAndRadius extends BulletBase {
 	private long swigCPtr;
-	
-	protected btPositionAndRadius(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPositionAndRadius (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btPositionAndRadius, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btPositionAndRadius(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btPositionAndRadius, normally you should not need this constructor it's intended for low-level usage. */
+	public btPositionAndRadius (long cPtr, boolean cMemoryOwn) {
 		this("btPositionAndRadius", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPositionAndRadius obj) {
+
+	public static long getCPtr (btPositionAndRadius obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,25 +53,25 @@ public class btPositionAndRadius extends BulletBase {
 		super.delete();
 	}
 
-  public void setPos(btVector3FloatData value) {
-    CollisionJNI.btPositionAndRadius_pos_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setPos (btVector3FloatData value) {
+		CollisionJNI.btPositionAndRadius_pos_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getPos() {
-    long cPtr = CollisionJNI.btPositionAndRadius_pos_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getPos () {
+		long cPtr = CollisionJNI.btPositionAndRadius_pos_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setRadius(float value) {
-    CollisionJNI.btPositionAndRadius_radius_set(swigCPtr, this, value);
-  }
+	public void setRadius (float value) {
+		CollisionJNI.btPositionAndRadius_radius_set(swigCPtr, this, value);
+	}
 
-  public float getRadius() {
-    return CollisionJNI.btPositionAndRadius_radius_get(swigCPtr, this);
-  }
+	public float getRadius () {
+		return CollisionJNI.btPositionAndRadius_radius_get(swigCPtr, this);
+	}
 
-  public btPositionAndRadius() {
-    this(CollisionJNI.new_btPositionAndRadius(), true);
-  }
+	public btPositionAndRadius () {
+		this(CollisionJNI.new_btPositionAndRadius(), true);
+	}
 
 }

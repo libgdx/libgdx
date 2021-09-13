@@ -159,8 +159,8 @@ public abstract class OcclusionCuller implements Disposable {
 	/** @param frustum Set the frustum plane buffers to this frustum */
 	private void setFrustumPlanes (Frustum frustum) {
 		// All frustum planes except 'near' (index 0) should be sent to Bullet.
-		((Buffer) frustumNormals).clear();
-		((Buffer) frustumOffsets).clear();
+		((Buffer)frustumNormals).clear();
+		((Buffer)frustumOffsets).clear();
 		for (int i = 1; i < 6; i++) {
 			Plane plane = frustum.planes[i];
 			// Since the plane normals map to an array of btVector3, all four vector components (x, y, z, w)

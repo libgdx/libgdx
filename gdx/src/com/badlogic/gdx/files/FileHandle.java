@@ -263,13 +263,15 @@ public class FileHandle {
 	}
 
 	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
-	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory
+	 *            mapping fails, or is a {@link FileType#Classpath} file. */
 	public ByteBuffer map () {
 		return map(MapMode.READ_ONLY);
 	}
 
 	/** Attempts to memory map this file. Android files must not be compressed.
-	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory
+	 *            mapping fails, or is a {@link FileType#Classpath} file. */
 	public ByteBuffer map (FileChannel.MapMode mode) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
 		RandomAccessFile raf = null;

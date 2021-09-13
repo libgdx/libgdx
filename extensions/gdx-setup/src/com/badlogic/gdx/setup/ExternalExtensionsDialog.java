@@ -196,8 +196,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 	private void initData () throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
-		Document doc = builder.parse(ExternalExtensionsDialog.class
-			.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
+		Document doc = builder
+			.parse(ExternalExtensionsDialog.class.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
 
 		doc.getDocumentElement().normalize();
 
@@ -294,7 +294,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		}
 	}
 
-	private void addToDependencyMapFromXML (Map<String, List<ExternalExtensionDependency>> dependencies, Element eElement, String platform) {
+	private void addToDependencyMapFromXML (Map<String, List<ExternalExtensionDependency>> dependencies, Element eElement,
+		String platform) {
 		if (eElement.getElementsByTagName(platform).item(0) != null) {
 			Element project = (Element)eElement.getElementsByTagName(platform).item(0);
 
@@ -402,7 +403,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		}
 
 	}
-	
+
 	@Override
 	public void tableChanged (TableModelEvent e) {
 		int row = e.getFirstRow();

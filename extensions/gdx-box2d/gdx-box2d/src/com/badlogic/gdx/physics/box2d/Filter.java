@@ -29,7 +29,7 @@ public class Filter {
 	 * collision group. Non-zero group filtering always wins against the mask bits. */
 	public short groupIndex = 0;
 
-	public void set(Filter filter) {
+	public void set (Filter filter) {
 		categoryBits = filter.categoryBits;
 		maskBits = filter.maskBits;
 		groupIndex = filter.groupIndex;

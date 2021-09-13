@@ -841,8 +841,7 @@ public class Stage extends InputAdapter implements Disposable {
 	public void dispose () {
 		clear();
 		if (ownsBatch) batch.dispose();
-		if (debugShapes != null)
-			debugShapes.dispose();
+		if (debugShapes != null) debugShapes.dispose();
 	}
 
 	/** Check if screen coordinates are inside the viewport's screen area. */

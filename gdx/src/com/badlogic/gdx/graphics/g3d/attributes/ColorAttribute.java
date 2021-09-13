@@ -128,9 +128,9 @@ public class ColorAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 953 * result + color.toIntBits();
-		return result; 
+		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return (int)(type - o.type);

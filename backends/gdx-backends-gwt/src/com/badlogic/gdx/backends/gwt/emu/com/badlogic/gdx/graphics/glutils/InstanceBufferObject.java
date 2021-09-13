@@ -27,12 +27,10 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-/**
- * Modification of the {@link VertexBufferObject} class.
- * Sets the glVertexAttribDivisor for every {@link VertexAttribute} automatically.
+/** Modification of the {@link VertexBufferObject} class. Sets the glVertexAttribDivisor for every {@link VertexAttribute}
+ * automatically.
  *
- * @author mrdlink
- */
+ * @author mrdlink */
 public class InstanceBufferObject implements InstanceData {
 
 	private VertexAttributes attributes;
@@ -81,16 +79,13 @@ public class InstanceBufferObject implements InstanceData {
 		return buffer;
 	}
 
-	/**
-	 * Low level method to reset the buffer and attributes to the specified values. Use with care!
+	/** Low level method to reset the buffer and attributes to the specified values. Use with care!
 	 *
 	 * @param data
 	 * @param ownsBuffer
-	 * @param value
-	 */
+	 * @param value */
 	protected void setBuffer (Buffer data, boolean ownsBuffer, VertexAttributes value) {
-		if (isBound)
-			throw new GdxRuntimeException("Cannot change attributes while VBO is bound");
+		if (isBound) throw new GdxRuntimeException("Cannot change attributes while VBO is bound");
 		attributes = value;
 		if (data instanceof ByteBuffer)
 			byteBuffer = (ByteBuffer)data;
@@ -154,29 +149,22 @@ public class InstanceBufferObject implements InstanceData {
 		bufferChanged();
 	}
 
-	/**
-	 * @return The GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, e.g. GL_STATIC_DRAW or
-	 * GL_DYNAMIC_DRAW
-	 */
+	/** @return The GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, e.g. GL_STATIC_DRAW or
+	 *         GL_DYNAMIC_DRAW */
 	protected int getUsage () {
 		return usage;
 	}
 
-	/**
-	 * Set the GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, can only be called when the
-	 * VBO is not bound.
-	 */
+	/** Set the GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, can only be called when the
+	 * VBO is not bound. */
 	protected void setUsage (int value) {
-		if (isBound)
-			throw new GdxRuntimeException("Cannot change usage while VBO is bound");
+		if (isBound) throw new GdxRuntimeException("Cannot change usage while VBO is bound");
 		usage = value;
 	}
 
-	/**
-	 * Binds this InstanceBufferObject for rendering via glDrawArraysInstanced or glDrawElementsInstanced
+	/** Binds this InstanceBufferObject for rendering via glDrawArraysInstanced or glDrawElementsInstanced
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void bind (ShaderProgram shader) {
 		bind(shader, null);
@@ -198,12 +186,12 @@ public class InstanceBufferObject implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 
-				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
 			}
 
@@ -211,23 +199,21 @@ public class InstanceBufferObject implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 
-				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
 			}
 		}
 		isBound = true;
 	}
 
-	/**
-	 * Unbinds this InstanceBufferObject.
+	/** Unbinds this InstanceBufferObject.
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void unbind (final ShaderProgram shader) {
 		unbind(shader, null);
@@ -241,8 +227,7 @@ public class InstanceBufferObject implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.disableVertexAttribute(location + unitOffset);
 			}
@@ -250,8 +235,7 @@ public class InstanceBufferObject implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 			}
@@ -260,18 +244,14 @@ public class InstanceBufferObject implements InstanceData {
 		isBound = false;
 	}
 
-	/**
-	 * Invalidates the InstanceBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-	 */
+	/** Invalidates the InstanceBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	@Override
 	public void invalidate () {
 		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
-	/**
-	 * Disposes of all resources this InstanceBufferObject uses.
-	 */
+	/** Disposes of all resources this InstanceBufferObject uses. */
 	@Override
 	public void dispose () {
 		GL20 gl = Gdx.gl20;

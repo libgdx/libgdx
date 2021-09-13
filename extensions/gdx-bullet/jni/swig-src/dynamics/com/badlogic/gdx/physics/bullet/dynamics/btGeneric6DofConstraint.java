@@ -8,47 +8,44 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btGeneric6DofConstraint extends btTypedConstraint {
 	private long swigCPtr;
-	
-	protected btGeneric6DofConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btGeneric6DofConstraint (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.btGeneric6DofConstraint_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btGeneric6DofConstraint, normally you should not need this constructor it's intended for low-level usage. */
-	public btGeneric6DofConstraint(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btGeneric6DofConstraint, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btGeneric6DofConstraint (long cPtr, boolean cMemoryOwn) {
 		this("btGeneric6DofConstraint", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.btGeneric6DofConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btGeneric6DofConstraint obj) {
+
+	public static long getCPtr (btGeneric6DofConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,218 +56,232 @@ public class btGeneric6DofConstraint extends btTypedConstraint {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return DynamicsJNI.btGeneric6DofConstraint_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return DynamicsJNI.btGeneric6DofConstraint_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    DynamicsJNI.btGeneric6DofConstraint_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		DynamicsJNI.btGeneric6DofConstraint_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return DynamicsJNI.btGeneric6DofConstraint_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return DynamicsJNI.btGeneric6DofConstraint_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    DynamicsJNI.btGeneric6DofConstraint_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		DynamicsJNI.btGeneric6DofConstraint_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return DynamicsJNI.btGeneric6DofConstraint_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return DynamicsJNI.btGeneric6DofConstraint_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    DynamicsJNI.btGeneric6DofConstraint_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		DynamicsJNI.btGeneric6DofConstraint_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return DynamicsJNI.btGeneric6DofConstraint_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return DynamicsJNI.btGeneric6DofConstraint_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    DynamicsJNI.btGeneric6DofConstraint_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		DynamicsJNI.btGeneric6DofConstraint_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public void setUseSolveConstraintObsolete(boolean value) {
-    DynamicsJNI.btGeneric6DofConstraint_useSolveConstraintObsolete_set(swigCPtr, this, value);
-  }
+	public void setUseSolveConstraintObsolete (boolean value) {
+		DynamicsJNI.btGeneric6DofConstraint_useSolveConstraintObsolete_set(swigCPtr, this, value);
+	}
 
-  public boolean getUseSolveConstraintObsolete() {
-    return DynamicsJNI.btGeneric6DofConstraint_useSolveConstraintObsolete_get(swigCPtr, this);
-  }
+	public boolean getUseSolveConstraintObsolete () {
+		return DynamicsJNI.btGeneric6DofConstraint_useSolveConstraintObsolete_get(swigCPtr, this);
+	}
 
-  public btGeneric6DofConstraint(btRigidBody rbA, btRigidBody rbB, Matrix4 frameInA, Matrix4 frameInB, boolean useLinearReferenceFrameA) {
-    this(DynamicsJNI.new_btGeneric6DofConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, frameInA, frameInB, useLinearReferenceFrameA), true);
-  }
+	public btGeneric6DofConstraint (btRigidBody rbA, btRigidBody rbB, Matrix4 frameInA, Matrix4 frameInB,
+		boolean useLinearReferenceFrameA) {
+		this(DynamicsJNI.new_btGeneric6DofConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, frameInA,
+			frameInB, useLinearReferenceFrameA), true);
+	}
 
-  public btGeneric6DofConstraint(btRigidBody rbB, Matrix4 frameInB, boolean useLinearReferenceFrameB) {
-    this(DynamicsJNI.new_btGeneric6DofConstraint__SWIG_1(btRigidBody.getCPtr(rbB), rbB, frameInB, useLinearReferenceFrameB), true);
-  }
+	public btGeneric6DofConstraint (btRigidBody rbB, Matrix4 frameInB, boolean useLinearReferenceFrameB) {
+		this(DynamicsJNI.new_btGeneric6DofConstraint__SWIG_1(btRigidBody.getCPtr(rbB), rbB, frameInB, useLinearReferenceFrameB),
+			true);
+	}
 
-  public void calculateTransforms(Matrix4 transA, Matrix4 transB) {
-    DynamicsJNI.btGeneric6DofConstraint_calculateTransforms__SWIG_0(swigCPtr, this, transA, transB);
-  }
+	public void calculateTransforms (Matrix4 transA, Matrix4 transB) {
+		DynamicsJNI.btGeneric6DofConstraint_calculateTransforms__SWIG_0(swigCPtr, this, transA, transB);
+	}
 
-  public void calculateTransforms() {
-    DynamicsJNI.btGeneric6DofConstraint_calculateTransforms__SWIG_1(swigCPtr, this);
-  }
+	public void calculateTransforms () {
+		DynamicsJNI.btGeneric6DofConstraint_calculateTransforms__SWIG_1(swigCPtr, this);
+	}
 
-  public Matrix4 getCalculatedTransformA() {
-	return DynamicsJNI.btGeneric6DofConstraint_getCalculatedTransformA(swigCPtr, this);
-}
+	public Matrix4 getCalculatedTransformA () {
+		return DynamicsJNI.btGeneric6DofConstraint_getCalculatedTransformA(swigCPtr, this);
+	}
 
-  public Matrix4 getCalculatedTransformB() {
-	return DynamicsJNI.btGeneric6DofConstraint_getCalculatedTransformB(swigCPtr, this);
-}
+	public Matrix4 getCalculatedTransformB () {
+		return DynamicsJNI.btGeneric6DofConstraint_getCalculatedTransformB(swigCPtr, this);
+	}
 
-  public Matrix4 getFrameOffsetAConst() {
-	return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetAConst(swigCPtr, this);
-}
+	public Matrix4 getFrameOffsetAConst () {
+		return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetAConst(swigCPtr, this);
+	}
 
-  public Matrix4 getFrameOffsetBConst() {
-	return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetBConst(swigCPtr, this);
-}
+	public Matrix4 getFrameOffsetBConst () {
+		return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetBConst(swigCPtr, this);
+	}
 
-  public Matrix4 getFrameOffsetA() {
-	return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetA(swigCPtr, this);
-}
+	public Matrix4 getFrameOffsetA () {
+		return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetA(swigCPtr, this);
+	}
 
-  public Matrix4 getFrameOffsetB() {
-	return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetB(swigCPtr, this);
-}
+	public Matrix4 getFrameOffsetB () {
+		return DynamicsJNI.btGeneric6DofConstraint_getFrameOffsetB(swigCPtr, this);
+	}
 
-  public void getInfo1NonVirtual(btTypedConstraint.btConstraintInfo1 info) {
-    DynamicsJNI.btGeneric6DofConstraint_getInfo1NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo1.getCPtr(info), info);
-  }
+	public void getInfo1NonVirtual (btTypedConstraint.btConstraintInfo1 info) {
+		DynamicsJNI.btGeneric6DofConstraint_getInfo1NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo1.getCPtr(info),
+			info);
+	}
 
-  public void getInfo2NonVirtual(btTypedConstraint.btConstraintInfo2 info, Matrix4 transA, Matrix4 transB, Vector3 linVelA, Vector3 linVelB, Vector3 angVelA, Vector3 angVelB) {
-    DynamicsJNI.btGeneric6DofConstraint_getInfo2NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo2.getCPtr(info), info, transA, transB, linVelA, linVelB, angVelA, angVelB);
-  }
+	public void getInfo2NonVirtual (btTypedConstraint.btConstraintInfo2 info, Matrix4 transA, Matrix4 transB, Vector3 linVelA,
+		Vector3 linVelB, Vector3 angVelA, Vector3 angVelB) {
+		DynamicsJNI.btGeneric6DofConstraint_getInfo2NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo2.getCPtr(info),
+			info, transA, transB, linVelA, linVelB, angVelA, angVelB);
+	}
 
-  public void updateRHS(float timeStep) {
-    DynamicsJNI.btGeneric6DofConstraint_updateRHS(swigCPtr, this, timeStep);
-  }
+	public void updateRHS (float timeStep) {
+		DynamicsJNI.btGeneric6DofConstraint_updateRHS(swigCPtr, this, timeStep);
+	}
 
-  public Vector3 getAxis(int axis_index) {
-	return DynamicsJNI.btGeneric6DofConstraint_getAxis(swigCPtr, this, axis_index);
-}
+	public Vector3 getAxis (int axis_index) {
+		return DynamicsJNI.btGeneric6DofConstraint_getAxis(swigCPtr, this, axis_index);
+	}
 
-  public float getAngle(int axis_index) {
-    return DynamicsJNI.btGeneric6DofConstraint_getAngle(swigCPtr, this, axis_index);
-  }
+	public float getAngle (int axis_index) {
+		return DynamicsJNI.btGeneric6DofConstraint_getAngle(swigCPtr, this, axis_index);
+	}
 
-  public float getRelativePivotPosition(int axis_index) {
-    return DynamicsJNI.btGeneric6DofConstraint_getRelativePivotPosition(swigCPtr, this, axis_index);
-  }
+	public float getRelativePivotPosition (int axis_index) {
+		return DynamicsJNI.btGeneric6DofConstraint_getRelativePivotPosition(swigCPtr, this, axis_index);
+	}
 
-  public void setFrames(Matrix4 frameA, Matrix4 frameB) {
-    DynamicsJNI.btGeneric6DofConstraint_setFrames(swigCPtr, this, frameA, frameB);
-  }
+	public void setFrames (Matrix4 frameA, Matrix4 frameB) {
+		DynamicsJNI.btGeneric6DofConstraint_setFrames(swigCPtr, this, frameA, frameB);
+	}
 
-  public boolean testAngularLimitMotor(int axis_index) {
-    return DynamicsJNI.btGeneric6DofConstraint_testAngularLimitMotor(swigCPtr, this, axis_index);
-  }
+	public boolean testAngularLimitMotor (int axis_index) {
+		return DynamicsJNI.btGeneric6DofConstraint_testAngularLimitMotor(swigCPtr, this, axis_index);
+	}
 
-  public void setLinearLowerLimit(Vector3 linearLower) {
-    DynamicsJNI.btGeneric6DofConstraint_setLinearLowerLimit(swigCPtr, this, linearLower);
-  }
+	public void setLinearLowerLimit (Vector3 linearLower) {
+		DynamicsJNI.btGeneric6DofConstraint_setLinearLowerLimit(swigCPtr, this, linearLower);
+	}
 
-  public void getLinearLowerLimit(Vector3 linearLower) {
-    DynamicsJNI.btGeneric6DofConstraint_getLinearLowerLimit(swigCPtr, this, linearLower);
-  }
+	public void getLinearLowerLimit (Vector3 linearLower) {
+		DynamicsJNI.btGeneric6DofConstraint_getLinearLowerLimit(swigCPtr, this, linearLower);
+	}
 
-  public void setLinearUpperLimit(Vector3 linearUpper) {
-    DynamicsJNI.btGeneric6DofConstraint_setLinearUpperLimit(swigCPtr, this, linearUpper);
-  }
+	public void setLinearUpperLimit (Vector3 linearUpper) {
+		DynamicsJNI.btGeneric6DofConstraint_setLinearUpperLimit(swigCPtr, this, linearUpper);
+	}
 
-  public void getLinearUpperLimit(Vector3 linearUpper) {
-    DynamicsJNI.btGeneric6DofConstraint_getLinearUpperLimit(swigCPtr, this, linearUpper);
-  }
+	public void getLinearUpperLimit (Vector3 linearUpper) {
+		DynamicsJNI.btGeneric6DofConstraint_getLinearUpperLimit(swigCPtr, this, linearUpper);
+	}
 
-  public void setAngularLowerLimit(Vector3 angularLower) {
-    DynamicsJNI.btGeneric6DofConstraint_setAngularLowerLimit(swigCPtr, this, angularLower);
-  }
+	public void setAngularLowerLimit (Vector3 angularLower) {
+		DynamicsJNI.btGeneric6DofConstraint_setAngularLowerLimit(swigCPtr, this, angularLower);
+	}
 
-  public void getAngularLowerLimit(Vector3 angularLower) {
-    DynamicsJNI.btGeneric6DofConstraint_getAngularLowerLimit(swigCPtr, this, angularLower);
-  }
+	public void getAngularLowerLimit (Vector3 angularLower) {
+		DynamicsJNI.btGeneric6DofConstraint_getAngularLowerLimit(swigCPtr, this, angularLower);
+	}
 
-  public void setAngularUpperLimit(Vector3 angularUpper) {
-    DynamicsJNI.btGeneric6DofConstraint_setAngularUpperLimit(swigCPtr, this, angularUpper);
-  }
+	public void setAngularUpperLimit (Vector3 angularUpper) {
+		DynamicsJNI.btGeneric6DofConstraint_setAngularUpperLimit(swigCPtr, this, angularUpper);
+	}
 
-  public void getAngularUpperLimit(Vector3 angularUpper) {
-    DynamicsJNI.btGeneric6DofConstraint_getAngularUpperLimit(swigCPtr, this, angularUpper);
-  }
+	public void getAngularUpperLimit (Vector3 angularUpper) {
+		DynamicsJNI.btGeneric6DofConstraint_getAngularUpperLimit(swigCPtr, this, angularUpper);
+	}
 
-  public btRotationalLimitMotor getRotationalLimitMotor(int index) {
-    long cPtr = DynamicsJNI.btGeneric6DofConstraint_getRotationalLimitMotor(swigCPtr, this, index);
-    return (cPtr == 0) ? null : new btRotationalLimitMotor(cPtr, false);
-  }
+	public btRotationalLimitMotor getRotationalLimitMotor (int index) {
+		long cPtr = DynamicsJNI.btGeneric6DofConstraint_getRotationalLimitMotor(swigCPtr, this, index);
+		return (cPtr == 0) ? null : new btRotationalLimitMotor(cPtr, false);
+	}
 
-  public btTranslationalLimitMotor getTranslationalLimitMotor() {
-    long cPtr = DynamicsJNI.btGeneric6DofConstraint_getTranslationalLimitMotor(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTranslationalLimitMotor(cPtr, false);
-  }
+	public btTranslationalLimitMotor getTranslationalLimitMotor () {
+		long cPtr = DynamicsJNI.btGeneric6DofConstraint_getTranslationalLimitMotor(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTranslationalLimitMotor(cPtr, false);
+	}
 
-  public void setLimit(int axis, float lo, float hi) {
-    DynamicsJNI.btGeneric6DofConstraint_setLimit(swigCPtr, this, axis, lo, hi);
-  }
+	public void setLimit (int axis, float lo, float hi) {
+		DynamicsJNI.btGeneric6DofConstraint_setLimit(swigCPtr, this, axis, lo, hi);
+	}
 
-  public boolean isLimited(int limitIndex) {
-    return DynamicsJNI.btGeneric6DofConstraint_isLimited(swigCPtr, this, limitIndex);
-  }
+	public boolean isLimited (int limitIndex) {
+		return DynamicsJNI.btGeneric6DofConstraint_isLimited(swigCPtr, this, limitIndex);
+	}
 
-  public void calcAnchorPos() {
-    DynamicsJNI.btGeneric6DofConstraint_calcAnchorPos(swigCPtr, this);
-  }
+	public void calcAnchorPos () {
+		DynamicsJNI.btGeneric6DofConstraint_calcAnchorPos(swigCPtr, this);
+	}
 
-  public int get_limit_motor_info2(btRotationalLimitMotor limot, Matrix4 transA, Matrix4 transB, Vector3 linVelA, Vector3 linVelB, Vector3 angVelA, Vector3 angVelB, btTypedConstraint.btConstraintInfo2 info, int row, Vector3 ax1, int rotational, int rotAllowed) {
-    return DynamicsJNI.btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0(swigCPtr, this, btRotationalLimitMotor.getCPtr(limot), limot, transA, transB, linVelA, linVelB, angVelA, angVelB, btTypedConstraint.btConstraintInfo2.getCPtr(info), info, row, ax1, rotational, rotAllowed);
-  }
+	public int get_limit_motor_info2 (btRotationalLimitMotor limot, Matrix4 transA, Matrix4 transB, Vector3 linVelA,
+		Vector3 linVelB, Vector3 angVelA, Vector3 angVelB, btTypedConstraint.btConstraintInfo2 info, int row, Vector3 ax1,
+		int rotational, int rotAllowed) {
+		return DynamicsJNI.btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0(swigCPtr, this,
+			btRotationalLimitMotor.getCPtr(limot), limot, transA, transB, linVelA, linVelB, angVelA, angVelB,
+			btTypedConstraint.btConstraintInfo2.getCPtr(info), info, row, ax1, rotational, rotAllowed);
+	}
 
-  public int get_limit_motor_info2(btRotationalLimitMotor limot, Matrix4 transA, Matrix4 transB, Vector3 linVelA, Vector3 linVelB, Vector3 angVelA, Vector3 angVelB, btTypedConstraint.btConstraintInfo2 info, int row, Vector3 ax1, int rotational) {
-    return DynamicsJNI.btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1(swigCPtr, this, btRotationalLimitMotor.getCPtr(limot), limot, transA, transB, linVelA, linVelB, angVelA, angVelB, btTypedConstraint.btConstraintInfo2.getCPtr(info), info, row, ax1, rotational);
-  }
+	public int get_limit_motor_info2 (btRotationalLimitMotor limot, Matrix4 transA, Matrix4 transB, Vector3 linVelA,
+		Vector3 linVelB, Vector3 angVelA, Vector3 angVelB, btTypedConstraint.btConstraintInfo2 info, int row, Vector3 ax1,
+		int rotational) {
+		return DynamicsJNI.btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1(swigCPtr, this,
+			btRotationalLimitMotor.getCPtr(limot), limot, transA, transB, linVelA, linVelB, angVelA, angVelB,
+			btTypedConstraint.btConstraintInfo2.getCPtr(info), info, row, ax1, rotational);
+	}
 
-  public boolean getUseFrameOffset() {
-    return DynamicsJNI.btGeneric6DofConstraint_getUseFrameOffset(swigCPtr, this);
-  }
+	public boolean getUseFrameOffset () {
+		return DynamicsJNI.btGeneric6DofConstraint_getUseFrameOffset(swigCPtr, this);
+	}
 
-  public void setUseFrameOffset(boolean frameOffsetOnOff) {
-    DynamicsJNI.btGeneric6DofConstraint_setUseFrameOffset(swigCPtr, this, frameOffsetOnOff);
-  }
+	public void setUseFrameOffset (boolean frameOffsetOnOff) {
+		DynamicsJNI.btGeneric6DofConstraint_setUseFrameOffset(swigCPtr, this, frameOffsetOnOff);
+	}
 
-  public boolean getUseLinearReferenceFrameA() {
-    return DynamicsJNI.btGeneric6DofConstraint_getUseLinearReferenceFrameA(swigCPtr, this);
-  }
+	public boolean getUseLinearReferenceFrameA () {
+		return DynamicsJNI.btGeneric6DofConstraint_getUseLinearReferenceFrameA(swigCPtr, this);
+	}
 
-  public void setUseLinearReferenceFrameA(boolean linearReferenceFrameA) {
-    DynamicsJNI.btGeneric6DofConstraint_setUseLinearReferenceFrameA(swigCPtr, this, linearReferenceFrameA);
-  }
+	public void setUseLinearReferenceFrameA (boolean linearReferenceFrameA) {
+		DynamicsJNI.btGeneric6DofConstraint_setUseLinearReferenceFrameA(swigCPtr, this, linearReferenceFrameA);
+	}
 
-  public void setParam(int num, float value, int axis) {
-    DynamicsJNI.btGeneric6DofConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
-  }
+	public void setParam (int num, float value, int axis) {
+		DynamicsJNI.btGeneric6DofConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
+	}
 
-  public void setParam(int num, float value) {
-    DynamicsJNI.btGeneric6DofConstraint_setParam__SWIG_1(swigCPtr, this, num, value);
-  }
+	public void setParam (int num, float value) {
+		DynamicsJNI.btGeneric6DofConstraint_setParam__SWIG_1(swigCPtr, this, num, value);
+	}
 
-  public float getParam(int num, int axis) {
-    return DynamicsJNI.btGeneric6DofConstraint_getParam__SWIG_0(swigCPtr, this, num, axis);
-  }
+	public float getParam (int num, int axis) {
+		return DynamicsJNI.btGeneric6DofConstraint_getParam__SWIG_0(swigCPtr, this, num, axis);
+	}
 
-  public float getParam(int num) {
-    return DynamicsJNI.btGeneric6DofConstraint_getParam__SWIG_1(swigCPtr, this, num);
-  }
+	public float getParam (int num) {
+		return DynamicsJNI.btGeneric6DofConstraint_getParam__SWIG_1(swigCPtr, this, num);
+	}
 
-  public void setAxis(Vector3 axis1, Vector3 axis2) {
-    DynamicsJNI.btGeneric6DofConstraint_setAxis(swigCPtr, this, axis1, axis2);
-  }
+	public void setAxis (Vector3 axis1, Vector3 axis2) {
+		DynamicsJNI.btGeneric6DofConstraint_setAxis(swigCPtr, this, axis1, axis2);
+	}
 
-  public int getFlags() {
-    return DynamicsJNI.btGeneric6DofConstraint_getFlags(swigCPtr, this);
-  }
+	public int getFlags () {
+		return DynamicsJNI.btGeneric6DofConstraint_getFlags(swigCPtr, this);
+	}
 
 }

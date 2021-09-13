@@ -20,10 +20,10 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears. <a
- * href="http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and
- * parallel lines remain parallel after the transformation. Operations on affine matrices are faster because the last row can
- * always be assumed (0, 0, 1).
+/** A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears.
+ * <a href="http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and parallel
+ * lines remain parallel after the transformation. Operations on affine matrices are faster because the last row can always be
+ * assumed (0, 0, 1).
  *
  * @author vmilea */
 public final class Affine2 implements Serializable {
@@ -92,6 +92,7 @@ public final class Affine2 implements Serializable {
 	 *      [  M10  M11  M13  ]
 	 *      [   0    0    1   ]
 	 * </pre>
+	 * 
 	 * @param matrix The source matrix, assumed to be an affine transformation within XY plane. This matrix will not be modified.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Affine2 set (Matrix4 matrix) {
@@ -363,6 +364,7 @@ public final class Affine2 implements Serializable {
 	 * <pre>
 	 * A.mul(B) results in A := AB
 	 * </pre>
+	 * 
 	 * @param other Matrix to multiply by.
 	 * @return This matrix for the purpose of chaining operations together. */
 	public Affine2 mul (Affine2 other) {
@@ -387,6 +389,7 @@ public final class Affine2 implements Serializable {
 	 * <pre>
 	 * A.preMul(B) results in A := BA
 	 * </pre>
+	 * 
 	 * @param other The other Matrix to multiply by
 	 * @return This matrix for the purpose of chaining operations. */
 	public Affine2 preMul (Affine2 other) {

@@ -27,15 +27,18 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
  * {@link #offset} represents the offset in the indices array and {@link #size} represents the number of indices. When the mesh
  * isn't indexed, then the {@link #offset} member represents the offset in the vertices array and the {@link #size} member
- * represents the number of vertices.</p>
+ * represents the number of vertices.
+ * </p>
  * 
  * In other words: Regardless whether the mesh is indexed or not, when {@link #primitiveType} is not a strip, then {@link #size}
  * equals the number of primitives multiplied by the number of vertices per primitive. So if the MeshPart represents 4 triangles (
  * {@link #primitiveType} is GL_TRIANGLES), then the {@link #size} member is 12 (4 triangles * 3 vertices = 12 vertices total).
  * Likewise, if the part represents 12 lines ({@link #primitiveType} is GL_LINES), then the size is 24 (12 lines * 2 vertices = 24
- * vertices total).</p>
+ * vertices total).
+ * </p>
  * 
- * Note that some classes might require the mesh (part) to be indexed.</p>
+ * Note that some classes might require the mesh (part) to be indexed.
+ * </p>
  * 
  * The {@link Mesh} referenced by the {@link #mesh} member must outlive the MeshPart. When the mesh is disposed, the MeshPart is
  * unusable.
@@ -131,8 +134,8 @@ public class MeshPart {
 	 * @param other The other MeshPart to compare this MeshPart to.
 	 * @return True when this MeshPart equals the other MeshPart (ignoring the {@link #id} member), false otherwise. */
 	public boolean equals (final MeshPart other) {
-		return other == this
-			|| (other != null && other.mesh == mesh && other.primitiveType == primitiveType && other.offset == offset && other.size == size);
+		return other == this || (other != null && other.mesh == mesh && other.primitiveType == primitiveType
+			&& other.offset == offset && other.size == size);
 	}
 
 	@Override

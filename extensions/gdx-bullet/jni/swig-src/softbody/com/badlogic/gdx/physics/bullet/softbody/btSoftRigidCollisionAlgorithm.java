@@ -8,48 +8,43 @@
 
 package com.badlogic.gdx.physics.bullet.softbody;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftRigidCollisionAlgorithm extends btCollisionAlgorithm {
 	private long swigCPtr;
-	
-	protected btSoftRigidCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSoftRigidCollisionAlgorithm (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, SoftbodyJNI.btSoftRigidCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSoftRigidCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */
-	public btSoftRigidCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSoftRigidCollisionAlgorithm, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btSoftRigidCollisionAlgorithm (long cPtr, boolean cMemoryOwn) {
 		this("btSoftRigidCollisionAlgorithm", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(SoftbodyJNI.btSoftRigidCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSoftRigidCollisionAlgorithm obj) {
+
+	public static long getCPtr (btSoftRigidCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,57 +55,59 @@ public class btSoftRigidCollisionAlgorithm extends btCollisionAlgorithm {
 		super.delete();
 	}
 
-  public btSoftRigidCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper col0, btCollisionObjectWrapper col1Wrap, boolean isSwapped) {
-    this(SoftbodyJNI.new_btSoftRigidCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(col0), col0, btCollisionObjectWrapper.getCPtr(col1Wrap), col1Wrap, isSwapped), true);
-  }
+	public btSoftRigidCollisionAlgorithm (btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci,
+		btCollisionObjectWrapper col0, btCollisionObjectWrapper col1Wrap, boolean isSwapped) {
+		this(SoftbodyJNI.new_btSoftRigidCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf,
+			btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(col0), col0,
+			btCollisionObjectWrapper.getCPtr(col1Wrap), col1Wrap, isSwapped), true);
+	}
 
-  static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
-  	private long swigCPtr;
-  	
-  	protected CreateFunc(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, SoftbodyJNI.btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
-  	public CreateFunc(long cPtr, boolean cMemoryOwn) {
-  		this("CreateFunc", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(SoftbodyJNI.btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(CreateFunc obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				SoftbodyJNI.delete_btSoftRigidCollisionAlgorithm_CreateFunc(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public CreateFunc() {
-      this(SoftbodyJNI.new_btSoftRigidCollisionAlgorithm_CreateFunc(), true);
-    }
-  
-  }
+	static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
+		private long swigCPtr;
+
+		protected CreateFunc (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, SoftbodyJNI.btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
+			swigCPtr = cPtr;
+		}
+
+		/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
+		public CreateFunc (long cPtr, boolean cMemoryOwn) {
+			this("CreateFunc", cPtr, cMemoryOwn);
+			construct();
+		}
+
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(SoftbodyJNI.btSoftRigidCollisionAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		}
+
+		public static long getCPtr (CreateFunc obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
+
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
+
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					SoftbodyJNI.delete_btSoftRigidCollisionAlgorithm_CreateFunc(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
+
+		public CreateFunc () {
+			this(SoftbodyJNI.new_btSoftRigidCollisionAlgorithm_CreateFunc(), true);
+		}
+
+	}
 
 }

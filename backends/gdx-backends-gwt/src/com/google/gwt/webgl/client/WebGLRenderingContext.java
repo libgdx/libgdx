@@ -32,7 +32,8 @@ import com.google.gwt.typedarrays.shared.TypedArrays;
 /** TODO: Lots more documentation needed here.
  * 
  * Taken from the WebGL Draft Spec as of Aug 30, 2010:
- * https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html TODO: Update this to the Feb 11 version. */
+ * https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html TODO: Update this to the Feb 11
+ * version. */
 public class WebGLRenderingContext extends JavaScriptObject {
 
 	/* ClearBufferMask */
@@ -906,7 +907,8 @@ public class WebGLRenderingContext extends JavaScriptObject {
 				format, type, pixels);
 	}-*/;
 
-	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type, ImageData pixels) /*-{
+	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type,
+		ImageData pixels) /*-{
 		this.texSubImage2D(target, level, xoffset, yoffset, format, type,
 				pixels);
 	}-*/;

@@ -15,56 +15,65 @@
  ******************************************************************************/
 
 sourceSets.main.java.srcDirs = [
-        "jni/swig-src/collision",
-        "jni/swig-src/dynamics",
-        "jni/swig-src/extras",
-        "jni/swig-src/linearmath",
-        "jni/swig-src/softbody",
-        "jni/swig-src/inversedynamics",
-        "src"
+	"jni/swig-src/collision",
+	"jni/swig-src/dynamics",
+	"jni/swig-src/extras",
+	"jni/swig-src/linearmath",
+	"jni/swig-src/softbody",
+	"jni/swig-src/inversedynamics",
+	"src"
 ]
 
 dependencies {
-    compile project(":gdx")
+	compile project(":gdx")
 }
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
-    sharedLibName = "gdx-bullet"
-    nativeCodeGenerator {
-        sourceDir = "src"
-    }
-    all {
-        headerDirs = ["src/bullet/", "src/custom/", "src/extras/Serialize/", "src/extras/"]
-        cExcludes = ["src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"]
-        cppExcludes = ["src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"]
-        
-        // SWIG doesn't emit strict aliasing compliant code
-        cppFlags += " -fno-strict-aliasing";
-        // SWIG directors aren't clearly documented to require RTTI, but SWIG
-        // normally generates a small number of dynamic_casts for director code.
-        // gdx-bullet's swig build.xml replaces these with static C casts so we
-        // can compile without RTTI and save some disk space. It seems to work
-        // with these static casts.
-        cppFlags += " -fno-rtti";
-        // Disable profiling (it's on by default). If you change this, you
-        // must regenerate the SWIG wrappers with the changed value.
-        cppFlags += " -DBT_NO_PROFILE";
-        //Bullet 2 compatibility with inverse dynamics
-        cppFlags += " -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2";
-    }
-    add(Windows, x32)
-    add(Windows, x64)
-    add(Linux, x64)
-    add(Linux, x32, ARM)
-    add(Linux, x64, ARM)
-    add(MacOsX, x64)
-    add(MacOsX, x64, ARM)
-    add(Android) {
-        cppFlags += " -fexceptions"
-        androidApplicationMk += "APP_STL := c++_static";
-    }
-    add(IOS) {
-        cppFlags += " -stdlib=libc++";
-    }
+	sharedLibName = "gdx-bullet"
+	nativeCodeGenerator {
+		sourceDir = "src"
+	}
+	all {
+		headerDirs = [
+			"src/bullet/",
+			"src/custom/",
+			"src/extras/Serialize/",
+			"src/extras/"
+		]
+		cExcludes = [
+			"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"
+		]
+		cppExcludes = [
+			"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"
+		]
+
+		// SWIG doesn't emit strict aliasing compliant code
+		cppFlags += " -fno-strict-aliasing";
+		// SWIG directors aren't clearly documented to require RTTI, but SWIG
+		// normally generates a small number of dynamic_casts for director code.
+		// gdx-bullet's swig build.xml replaces these with static C casts so we
+		// can compile without RTTI and save some disk space. It seems to work
+		// with these static casts.
+		cppFlags += " -fno-rtti";
+		// Disable profiling (it's on by default). If you change this, you
+		// must regenerate the SWIG wrappers with the changed value.
+		cppFlags += " -DBT_NO_PROFILE";
+		//Bullet 2 compatibility with inverse dynamics
+		cppFlags += " -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2";
+	}
+	add(Windows, x32)
+	add(Windows, x64)
+	add(Linux, x64)
+	add(Linux, x32, ARM)
+	add(Linux, x64, ARM)
+	add(MacOsX, x64)
+	add(MacOsX, x64, ARM)
+	add(Android) {
+		cppFlags += " -fexceptions"
+		androidApplicationMk += "APP_STL := c++_static";
+	}
+	add(IOS) {
+		cppFlags += " -stdlib=libc++";
+	}
 }

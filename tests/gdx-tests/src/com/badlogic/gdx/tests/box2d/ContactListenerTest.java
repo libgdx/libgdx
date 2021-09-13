@@ -178,37 +178,28 @@ public class ContactListenerTest extends Box2DTest implements ContactListener {
 	@Override
 	public void beginContact (Contact contact) {
 		System.out.println(String.format("beginContact() addr=%d", getContactAddr(contact)));
-		System.out.println(String.format("beginContact() addrA=%d, addrB=%d", 
-			getFixtureAddrA(contact), 
-			getFixtureAddrB(contact)));
-		System.out.println(String.format("beginContact() fixA=%s, fixB=%s", 
-			contact.getFixtureA(), 
-			contact.getFixtureB()));
-		
-		final Body toRemove = contact.getFixtureA().getBody().getType() == BodyType.DynamicBody ?
-			contact.getFixtureA().getBody() :
-			contact.getFixtureB().getBody();
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run () {
-					world.destroyBody(toRemove);
-				}
-			});
+		System.out.println(String.format("beginContact() addrA=%d, addrB=%d", getFixtureAddrA(contact), getFixtureAddrB(contact)));
+		System.out.println(String.format("beginContact() fixA=%s, fixB=%s", contact.getFixtureA(), contact.getFixtureB()));
+
+		final Body toRemove = contact.getFixtureA().getBody().getType() == BodyType.DynamicBody ? contact.getFixtureA().getBody()
+			: contact.getFixtureB().getBody();
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run () {
+				world.destroyBody(toRemove);
+			}
+		});
 	}
 
 	@Override
 	public void endContact (Contact contact) {
 		System.out.println(String.format("  endContact() addr=%d", getContactAddr(contact)));
-		System.out.println(String.format("  endContact() addrA=%d, addrB=%d", 
-			getFixtureAddrA(contact), 
-			getFixtureAddrB(contact)));
-		System.out.println(String.format("  endContact() fixA=%s, fixB=%s", 
-			contact.getFixtureA(), 
-			contact.getFixtureB()));
-		
+		System.out.println(String.format("  endContact() addrA=%d, addrB=%d", getFixtureAddrA(contact), getFixtureAddrB(contact)));
+		System.out.println(String.format("  endContact() fixA=%s, fixB=%s", contact.getFixtureA(), contact.getFixtureB()));
+
 		final Fixture fixtureA = contact.getFixtureA();
 		final Fixture fixtureB = contact.getFixtureB();
-		if(fixtureA == null || fixtureB == null) {
+		if (fixtureA == null || fixtureB == null) {
 			throw new RuntimeException("No fixture found.");
 		}
 	}
@@ -216,42 +207,42 @@ public class ContactListenerTest extends Box2DTest implements ContactListener {
 	@Override
 	public void preSolve (Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void postSolve (Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	public long getFixtureAddrA(Contact contact) {
+
+	public long getFixtureAddrA (Contact contact) {
 		try {
 			long addr = getContactAddr(contact);
-			
+
 			Method getFixtureA = contact.getClass().getDeclaredMethod("jniGetFixtureA", long.class);
 			getFixtureA.setAccessible(true);
-			return (Long) getFixtureA.invoke(contact, addr);
+			return (Long)getFixtureA.invoke(contact, addr);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
-		
-	public long getFixtureAddrB(Contact contact) {
+
+	public long getFixtureAddrB (Contact contact) {
 		try {
-			long addr =getContactAddr(contact);
-			
+			long addr = getContactAddr(contact);
+
 			Method getFixtureB = contact.getClass().getDeclaredMethod("jniGetFixtureB", long.class);
 			getFixtureB.setAccessible(true);
-			return (Long) getFixtureB.invoke(contact, addr);
+			return (Long)getFixtureB.invoke(contact, addr);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
-	
-	public long getContactAddr(Contact contact) {
+
+	public long getContactAddr (Contact contact) {
 		try {
 			Field addrField = contact.getClass().getDeclaredField("addr");
 			addrField.setAccessible(true);

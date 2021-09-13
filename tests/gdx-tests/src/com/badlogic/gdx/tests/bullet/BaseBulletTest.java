@@ -46,12 +46,12 @@ import com.badlogic.gdx.utils.Disposable;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib.
-	private final static String customDesktopLib = null;//"D:\\Xoppa\\code\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null;// "D:\\Xoppa\\code\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 
 	private static boolean initialized = false;
-	
+
 	public static boolean shadows = true;
-	
+
 	public static void init () {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
@@ -73,7 +73,7 @@ public class BaseBulletTest extends BulletTest {
 	public ModelBatch modelBatch;
 	public Array<Disposable> disposables = new Array<Disposable>();
 	private int debugMode = DebugDrawModes.DBG_NoDebug;
-	
+
 	protected final static Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
 
 	public BulletWorld createWorld () {
@@ -88,8 +88,7 @@ public class BaseBulletTest extends BulletTest {
 		light = shadows ? new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f) : new DirectionalLight();
 		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
 		environment.add(light);
-		if (shadows)
-			environment.shadowMap = (DirectionalShadowLight)light;
+		if (shadows) environment.shadowMap = (DirectionalShadowLight)light;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 
 		modelBatch = new ModelBatch();
@@ -108,24 +107,10 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 
 		// Create some simple models
-		final Model groundModel = modelBuilder.createRect(
-			20f,
-			0f,
-			-20f,
-			-20f,
-			0f,
-			-20f,
-			-20f,
-			0f,
-			20f,
-			20f,
-			0f,
-			20f,
-			0,
-			1,
-			0,
-			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-				.createShininess(16f)), Usage.Position | Usage.Normal);
+		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0,
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(16f)),
+			Usage.Position | Usage.Normal);
 		disposables.add(groundModel);
 		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
 			ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), Usage.Position | Usage.Normal);
@@ -152,8 +137,7 @@ public class BaseBulletTest extends BulletTest {
 		shadowBatch.dispose();
 		shadowBatch = null;
 
-		if (shadows)
-			((DirectionalShadowLight)light).dispose();
+		if (shadows) ((DirectionalShadowLight)light).dispose();
 		light = null;
 
 		super.dispose();
@@ -231,7 +215,8 @@ public class BaseBulletTest extends BulletTest {
 
 	public void toggleDebugMode () {
 		if (world.getDebugMode() == DebugDrawModes.DBG_NoDebug)
-			setDebugMode(DebugDrawModes.DBG_DrawWireframe | DebugDrawModes.DBG_DrawFeaturesText | DebugDrawModes.DBG_DrawText | DebugDrawModes.DBG_DrawContactPoints);
+			setDebugMode(DebugDrawModes.DBG_DrawWireframe | DebugDrawModes.DBG_DrawFeaturesText | DebugDrawModes.DBG_DrawText
+				| DebugDrawModes.DBG_DrawContactPoints);
 		else if (world.renderMeshes)
 			world.renderMeshes = false;
 		else {

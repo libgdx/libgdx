@@ -136,8 +136,8 @@ public class ModelCache implements Disposable, RenderableProvider {
 		}
 	}
 
-	/** A {@link RenderableSorter} that sorts by vertex attributes, material attributes and primitive types (in that order), so that
-	 * meshes can be easily merged.
+	/** A {@link RenderableSorter} that sorts by vertex attributes, material attributes and primitive types (in that order), so
+	 * that meshes can be easily merged.
 	 * @author Xoppa */
 	public static class Sorter implements RenderableSorter, Comparator<Renderable> {
 		@Override
@@ -281,8 +281,8 @@ public class ModelCache implements Disposable, RenderableProvider {
 
 			if (!samePart) {
 				if (!sameMesh) {
-					final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
-						meshBuilder.getNumIndices()));
+					final Mesh mesh = meshBuilder
+						.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(), meshBuilder.getNumIndices()));
 					while (offset < renderables.size)
 						renderables.get(offset++).meshPart.mesh = mesh;
 					meshBuilder.begin(vertexAttributes = va);
@@ -301,8 +301,8 @@ public class ModelCache implements Disposable, RenderableProvider {
 			meshBuilder.addMesh(renderable.meshPart.mesh, renderable.meshPart.offset, renderable.meshPart.size);
 		}
 
-		final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
-			meshBuilder.getNumIndices()));
+		final Mesh mesh = meshBuilder
+			.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(), meshBuilder.getNumIndices()));
 		while (offset < renderables.size)
 			renderables.get(offset++).meshPart.mesh = mesh;
 
@@ -311,10 +311,10 @@ public class ModelCache implements Disposable, RenderableProvider {
 		previous.meshPart.size = part.size;
 	}
 
-	/** Adds the specified {@link Renderable} to the cache. Must be called in between a call to {@link #begin()} and {@link #end()}.
-	 * All member objects might (depending on possibilities) be used by reference and should not change while the cache is used. If
-	 * the {@link Renderable#bones} member is not null then skinning is assumed and the renderable will be added as-is, by
-	 * reference. Otherwise the renderable will be merged with other renderables as much as possible, depending on the
+	/** Adds the specified {@link Renderable} to the cache. Must be called in between a call to {@link #begin()} and
+	 * {@link #end()}. All member objects might (depending on possibilities) be used by reference and should not change while the
+	 * cache is used. If the {@link Renderable#bones} member is not null then skinning is assumed and the renderable will be added
+	 * as-is, by reference. Otherwise the renderable will be merged with other renderables as much as possible, depending on the
 	 * {@link Mesh#getVertexAttributes()}, {@link Renderable#material} and primitiveType (in that order). The
 	 * {@link Renderable#environment}, {@link Renderable#shader} and {@link Renderable#userData} values (if any) are removed.
 	 * @param renderable The {@link Renderable} to add, should not change while the cache is needed. */

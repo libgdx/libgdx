@@ -13,14 +13,14 @@ package java.io;
 public class StringWriter extends Writer {
 	private final StringBuffer out;
 
-	public StringWriter() {
+	public StringWriter () {
 		out = new StringBuffer();
 	}
-	
-	public StringWriter(int initialCapacity) {
+
+	public StringWriter (int initialCapacity) {
 		out = new StringBuffer(initialCapacity);
 	}
-	
+
 	public void write (char[] b, int offset, int length) throws IOException {
 		out.append(b, offset, length);
 	}
@@ -28,8 +28,8 @@ public class StringWriter extends Writer {
 	public String toString () {
 		return out.toString();
 	}
-	
-	public StringBuffer getBuffer() {
+
+	public StringBuffer getBuffer () {
 		return out;
 	}
 

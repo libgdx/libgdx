@@ -66,7 +66,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
-		public void invoke(long windowHandle, final int width, final int height) {
+		public void invoke (long windowHandle, final int width, final int height) {
 			updateFramebufferInfo();
 			if (!window.isListenerInitialized()) {
 				return;
@@ -79,7 +79,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		}
 	};
 
-	public Lwjgl3Graphics(Lwjgl3Window window) {
+	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
 		if (window.getConfig().useGL30) {
 			this.gl30 = new Lwjgl3GL30();
@@ -119,11 +119,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		}
 	}
 
-	public Lwjgl3Window getWindow() {
+	public Lwjgl3Window getWindow () {
 		return window;
 	}
 
-	void updateFramebufferInfo() {
+	void updateFramebufferInfo () {
 		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		this.backBufferWidth = tmpBuffer.get(0);
 		this.backBufferHeight = tmpBuffer2.get(0);
@@ -131,14 +131,13 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
 		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
 		Lwjgl3ApplicationConfiguration config = window.getConfig();
-		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil,
-				config.samples, false);
+		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
+			false);
 	}
 
-	void update() {
+	void update () {
 		long time = System.nanoTime();
-		if (lastFrameTime == -1)
-			lastFrameTime = time;
+		if (lastFrameTime == -1) lastFrameTime = time;
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 
@@ -152,17 +151,17 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public boolean isGL30Available() {
+	public boolean isGL30Available () {
 		return gl30 != null;
 	}
 
 	@Override
-	public GL20 getGL20() {
+	public GL20 getGL20 () {
 		return gl20;
 	}
 
 	@Override
-	public GL30 getGL30() {
+	public GL30 getGL30 () {
 		return gl30;
 	}
 
@@ -177,7 +176,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public int getWidth() {
+	public int getWidth () {
 		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
 			return backBufferWidth;
 		} else {
@@ -186,7 +185,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight () {
 		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
 			return backBufferHeight;
 		} else {
@@ -195,40 +194,40 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public int getBackBufferWidth() {
+	public int getBackBufferWidth () {
 		return backBufferWidth;
 	}
 
 	@Override
-	public int getBackBufferHeight() {
+	public int getBackBufferHeight () {
 		return backBufferHeight;
 	}
 
-	public int getLogicalWidth() {
+	public int getLogicalWidth () {
 		return logicalWidth;
 	}
 
-	public int getLogicalHeight() {
+	public int getLogicalHeight () {
 		return logicalHeight;
 	}
 
 	@Override
-	public long getFrameId() {
+	public long getFrameId () {
 		return frameId;
 	}
 
 	@Override
-	public float getDeltaTime() {
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public int getFramesPerSecond() {
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
 	@Override
-	public GraphicsType getType() {
+	public GraphicsType getType () {
 		return GraphicsType.LWJGL3;
 	}
 
@@ -238,45 +237,45 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public float getPpiX() {
+	public float getPpiX () {
 		return getPpcX() * 2.54f;
 	}
 
 	@Override
-	public float getPpiY() {
+	public float getPpiY () {
 		return getPpcY() * 2.54f;
 	}
 
 	@Override
-	public float getPpcX() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+	public float getPpcX () {
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeX = tmpBuffer.get(0);
 		DisplayMode mode = getDisplayMode();
-		return mode.width / (float) sizeX * 10;
+		return mode.width / (float)sizeX * 10;
 	}
 
 	@Override
-	public float getPpcY() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+	public float getPpcY () {
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeY = tmpBuffer2.get(0);
 		DisplayMode mode = getDisplayMode();
-		return mode.height / (float) sizeY * 10;
+		return mode.height / (float)sizeY * 10;
 	}
 
 	@Override
-	public boolean supportsDisplayModeChange() {
+	public boolean supportsDisplayModeChange () {
 		return true;
 	}
 
 	@Override
-	public Monitor getPrimaryMonitor() {
+	public Monitor getPrimaryMonitor () {
 		return Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(GLFW.glfwGetPrimaryMonitor());
 	}
 
 	@Override
-	public Monitor getMonitor() {
+	public Monitor getMonitor () {
 		Monitor[] monitors = getMonitors();
 		Monitor result = monitors[0];
 
@@ -293,10 +292,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			DisplayMode mode = getDisplayMode(monitor);
 
 			overlap = Math.max(0,
-					Math.min(windowX + windowWidth, monitor.virtualX + mode.width)
-							- Math.max(windowX, monitor.virtualX))
-					* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height)
-							- Math.max(windowY, monitor.virtualY));
+				Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX))
+				* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
 
 			if (bestOverlap < overlap) {
 				bestOverlap = overlap;
@@ -307,7 +304,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public Monitor[] getMonitors() {
+	public Monitor[] getMonitors () {
 		PointerBuffer glfwMonitors = GLFW.glfwGetMonitors();
 		Monitor[] monitors = new Monitor[glfwMonitors.limit()];
 		for (int i = 0; i < glfwMonitors.limit(); i++) {
@@ -317,66 +314,66 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes() {
+	public DisplayMode[] getDisplayModes () {
 		return Lwjgl3ApplicationConfiguration.getDisplayModes(getMonitor());
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes(Monitor monitor) {
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
 		return Lwjgl3ApplicationConfiguration.getDisplayModes(monitor);
 	}
 
 	@Override
-	public DisplayMode getDisplayMode() {
+	public DisplayMode getDisplayMode () {
 		return Lwjgl3ApplicationConfiguration.getDisplayMode(getMonitor());
 	}
 
 	@Override
-	public DisplayMode getDisplayMode(Monitor monitor) {
+	public DisplayMode getDisplayMode (Monitor monitor) {
 		return Lwjgl3ApplicationConfiguration.getDisplayMode(monitor);
 	}
 
 	@Override
-	public int getSafeInsetLeft() {
+	public int getSafeInsetLeft () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetTop() {
+	public int getSafeInsetTop () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetBottom() {
+	public int getSafeInsetBottom () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetRight() {
+	public int getSafeInsetRight () {
 		return 0;
 	}
 
 	@Override
-	public boolean setFullscreenMode(DisplayMode displayMode) {
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
-		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode) displayMode;
+		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode)displayMode;
 		if (isFullscreen()) {
-			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
+			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode)getDisplayMode();
 			if (currentMode.getMonitor() == newMode.getMonitor() && currentMode.refreshRate == newMode.refreshRate) {
 				// same monitor and refresh rate
 				GLFW.glfwSetWindowSize(window.getWindowHandle(), newMode.width, newMode.height);
 			} else {
 				// different monitor and/or refresh rate
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
-						0, 0, newMode.width, newMode.height, newMode.refreshRate);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(), 0, 0, newMode.width, newMode.height,
+					newMode.refreshRate);
 			}
 		} else {
 			// store window position so we can restore it when switching from fullscreen to windowed later
 			storeCurrentWindowPositionAndDisplayMode();
-			
+
 			// switch from windowed to fullscreen
-			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
-					0, 0, newMode.width, newMode.height, newMode.refreshRate);
+			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(), 0, 0, newMode.width, newMode.height,
+				newMode.refreshRate);
 		}
 		updateFramebufferInfo();
 
@@ -384,8 +381,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		return true;
 	}
-	
-	private void storeCurrentWindowPositionAndDisplayMode() {
+
+	private void storeCurrentWindowPositionAndDisplayMode () {
 		windowPosXBeforeFullscreen = window.getPositionX();
 		windowPosYBeforeFullscreen = window.getPositionY();
 		windowWidthBeforeFullscreen = logicalWidth;
@@ -394,14 +391,15 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public boolean setWindowedMode(int width, int height) {
+	public boolean setWindowedMode (int width, int height) {
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
 			if (width != logicalWidth || height != logicalHeight) {
-				//Center window
-				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				// Center window
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				window.setPosition(tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
+				window.setPosition(tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2,
+					tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
 			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 		} else {
@@ -409,15 +407,13 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 				storeCurrentWindowPositionAndDisplayMode();
 			}
 			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) {
-				Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-						tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2, width, height,
-						displayModeBeforeFullscreen.refreshRate);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2,
+					tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2, width, height, displayModeBeforeFullscreen.refreshRate);
 			} else {
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-						windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
-						displayModeBeforeFullscreen.refreshRate);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
+					height, displayModeBeforeFullscreen.refreshRate);
 			}
 		}
 		updateFramebufferInfo();
@@ -425,7 +421,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public void setTitle (String title) {
 		if (title == null) {
 			title = "";
 		}
@@ -433,25 +429,25 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public void setUndecorated(boolean undecorated) {
+	public void setUndecorated (boolean undecorated) {
 		getWindow().getConfig().setDecorated(!undecorated);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
 	@Override
-	public void setResizable(boolean resizable) {
+	public void setResizable (boolean resizable) {
 		getWindow().getConfig().setResizable(resizable);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override
-	public void setVSync(boolean vsync) {
+	public void setVSync (boolean vsync) {
 		getWindow().getConfig().vSyncEnabled = vsync;
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
 	}
 
 	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
-	 *  Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
+	 * Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
 	 *
 	 * @param fps fps */
 	@Override
@@ -460,64 +456,64 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
-	public BufferFormat getBufferFormat() {
+	public BufferFormat getBufferFormat () {
 		return bufferFormat;
 	}
 
 	@Override
-	public boolean supportsExtension(String extension) {
+	public boolean supportsExtension (String extension) {
 		return GLFW.glfwExtensionSupported(extension);
 	}
 
 	@Override
-	public void setContinuousRendering(boolean isContinuous) {
+	public void setContinuousRendering (boolean isContinuous) {
 		this.isContinuous = isContinuous;
 	}
 
 	@Override
-	public boolean isContinuousRendering() {
+	public boolean isContinuousRendering () {
 		return isContinuous;
 	}
 
 	@Override
-	public void requestRendering() {
+	public void requestRendering () {
 		window.requestRendering();
 	}
 
 	@Override
-	public boolean isFullscreen() {
+	public boolean isFullscreen () {
 		return GLFW.glfwGetWindowMonitor(window.getWindowHandle()) != 0;
 	}
 
 	@Override
-	public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot) {
+	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return new Lwjgl3Cursor(getWindow(), pixmap, xHotspot, yHotspot);
 	}
 
 	@Override
-	public void setCursor(Cursor cursor) {
-		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor) cursor).glfwCursor);
+	public void setCursor (Cursor cursor) {
+		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor)cursor).glfwCursor);
 	}
 
 	@Override
-	public void setSystemCursor(SystemCursor systemCursor) {
+	public void setSystemCursor (SystemCursor systemCursor) {
 		Lwjgl3Cursor.setSystemCursor(getWindow().getWindowHandle(), systemCursor);
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		this.resizeCallback.free();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {
 		final long monitorHandle;
 
-		Lwjgl3DisplayMode(long monitor, int width, int height, int refreshRate, int bitsPerPixel) {
+		Lwjgl3DisplayMode (long monitor, int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 			this.monitorHandle = monitor;
 		}
 
-		public long getMonitor() {
+		public long getMonitor () {
 			return monitorHandle;
 		}
 	}
@@ -525,12 +521,12 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	public static class Lwjgl3Monitor extends Monitor {
 		final long monitorHandle;
 
-		Lwjgl3Monitor(long monitor, int virtualX, int virtualY, String name) {
+		Lwjgl3Monitor (long monitor, int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
 			this.monitorHandle = monitor;
 		}
 
-		public long getMonitorHandle() {
+		public long getMonitorHandle () {
 			return monitorHandle;
 		}
 	}

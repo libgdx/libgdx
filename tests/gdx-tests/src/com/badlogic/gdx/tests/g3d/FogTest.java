@@ -58,8 +58,8 @@ public class FogTest extends GdxTest implements ApplicationListener {
 		cam.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position
-			| Usage.Normal);
+		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+			Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
@@ -73,7 +73,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 		inputController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		
+
 		ScreenUtils.clear(0.13f, 0.13f, 0.13f, 1, true);
 
 		modelBatch.begin(cam);

@@ -80,8 +80,8 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 
 	public void setupScene () {
-		plane = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(
-			Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		plane = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		plane.setVertices(new float[] {-10, -1, 10, 0, 1, 0, 10, -1, 10, 0, 1, 0, 10, -1, -10, 0, 1, 0, -10, -1, -10, 0, 1, 0});
 		plane.setIndices(new short[] {3, 2, 1, 1, 0, 3});
 
@@ -119,8 +119,8 @@ public class ProjectiveTextureTest extends GdxTest {
 
 		reload.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
-					.internal("data/shaders/projtex-frag.glsl").readString());
+				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(),
+					Gdx.files.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {
 					Gdx.app.log("GLSL ERROR", "Couldn't reload shaders:\n" + prog.getLog());
 				} else {
@@ -133,8 +133,8 @@ public class ProjectiveTextureTest extends GdxTest {
 
 	public void setupShaders () {
 		ShaderProgram.pedantic = false;
-		projTexShader = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files.internal(
-			"data/shaders/projtex-frag.glsl").readString());
+		projTexShader = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(),
+			Gdx.files.internal("data/shaders/projtex-frag.glsl").readString());
 		if (!projTexShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + projTexShader.getLog());
 	}
 

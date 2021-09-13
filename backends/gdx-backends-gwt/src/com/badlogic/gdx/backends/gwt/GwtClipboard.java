@@ -43,8 +43,7 @@ public class GwtClipboard implements Clipboard {
 	public void setContents (String content) {
 		this.content = content;
 		if (requestedWritePermissions || GwtApplication.agentInfo().isFirefox()) {
-			if (hasWritePermissions)
-				setContentJSNI(content);
+			if (hasWritePermissions) setContentJSNI(content);
 		} else {
 			GwtPermissions.queryPermission("clipboard-write", writeHandler);
 			requestedWritePermissions = true;
@@ -59,18 +58,18 @@ public class GwtClipboard implements Clipboard {
 
 	private class ClipboardWriteHandler implements GwtPermissions.GwtPermissionResult {
 		@Override
-		public void granted() {
+		public void granted () {
 			hasWritePermissions = true;
 			setContentJSNI(content);
 		}
 
 		@Override
-		public void denied() {
+		public void denied () {
 			hasWritePermissions = false;
 		}
 
 		@Override
-		public void prompt() {
+		public void prompt () {
 			hasWritePermissions = true;
 			setContentJSNI(content);
 		}

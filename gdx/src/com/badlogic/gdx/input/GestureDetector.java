@@ -70,7 +70,7 @@ public class GestureDetector extends InputAdapter {
 	 * @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps.
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
-	 * @param maxFlingDelay no fling event is fired when the time in seconds the finger was dragged is larger than this, 	see
+	 * @param maxFlingDelay no fling event is fired when the time in seconds the finger was dragged is larger than this, see
 	 *           {@link GestureListener#fling(float, float, int)} */
 	public GestureDetector (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {

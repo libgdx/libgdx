@@ -60,7 +60,8 @@ public class AndroidFileHandle extends FileHandle {
 	public FileHandle sibling (String name) {
 		name = name.replace('\\', '/');
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
-		return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
+		return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); // this way we can find the sibling even
+																														// if it's inside the obb
 	}
 
 	public FileHandle parent () {
@@ -254,11 +255,9 @@ public class AndroidFileHandle extends FileHandle {
 		return super.file();
 	}
 
-	/**
-	 * @return an AssetFileDescriptor for this file or null if the file is not of type Internal
-	 * @throws IOException - thrown by AssetManager.openFd()
-	 */
-	public AssetFileDescriptor getAssetFileDescriptor() throws IOException {
+	/** @return an AssetFileDescriptor for this file or null if the file is not of type Internal
+	 * @throws IOException - thrown by AssetManager.openFd() */
+	public AssetFileDescriptor getAssetFileDescriptor () throws IOException {
 		return assets != null ? assets.openFd(path()) : null;
 	}
 }

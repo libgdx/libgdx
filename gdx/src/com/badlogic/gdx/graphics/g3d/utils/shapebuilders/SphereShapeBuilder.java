@@ -33,7 +33,8 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 		build(builder, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
 	}
 
-	/** @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead of using the method signature taking a matrix. */
+	/** @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead of using the method signature taking a
+	 *             matrix. */
 	@Deprecated
 	public static void build (MeshPartBuilder builder, final Matrix4 transform, float width, float height, float depth,
 		int divisionsU, int divisionsV) {
@@ -45,7 +46,8 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 		build(builder, matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 
-	/** @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead of using the method signature taking a matrix. */
+	/** @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead of using the method signature taking a
+	 *             matrix. */
 	@Deprecated
 	public static void build (MeshPartBuilder builder, final Matrix4 transform, float width, float height, float depth,
 		int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {

@@ -48,13 +48,13 @@ public class SetupPreferences {
 		for (File i : files) {
 			if (i.exists()) return i;
 		}
-		return files[files.length-1]; // default to $HOME/.gdxsetup
+		return files[files.length - 1]; // default to $HOME/.gdxsetup
 	}
 
 	private final Properties properties = new Properties();
 	private final File file = findFile();
 
-	public SetupPreferences () {		
+	public SetupPreferences () {
 		if (!file.exists()) return;
 		InputStream in = null;
 		try {
@@ -63,11 +63,10 @@ public class SetupPreferences {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
-			if (in != null)
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+			if (in != null) try {
+				in.close();
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -177,11 +176,10 @@ public class SetupPreferences {
 		} catch (Exception ex) {
 			throw new RuntimeException("Error writing preferences: " + file, ex);
 		} finally {
-			if (out != null)
-				try {
-					out.close();
-				} catch (IOException e) {
-				}
+			if (out != null) try {
+				out.close();
+			} catch (IOException e) {
+			}
 		}
 	}
 

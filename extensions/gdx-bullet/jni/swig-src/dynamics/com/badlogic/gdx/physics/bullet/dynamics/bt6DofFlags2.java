@@ -9,9 +9,8 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class bt6DofFlags2 {
-  public final static int BT_6DOF_FLAGS_CFM_STOP2 = 1;
-  public final static int BT_6DOF_FLAGS_ERP_STOP2 = 2;
-  public final static int BT_6DOF_FLAGS_CFM_MOTO2 = 4;
-  public final static int BT_6DOF_FLAGS_ERP_MOTO2 = 8;
+	public final static int BT_6DOF_FLAGS_CFM_STOP2 = 1;
+	public final static int BT_6DOF_FLAGS_ERP_STOP2 = 2;
+	public final static int BT_6DOF_FLAGS_CFM_MOTO2 = 4;
+	public final static int BT_6DOF_FLAGS_ERP_MOTO2 = 8;
 }
-

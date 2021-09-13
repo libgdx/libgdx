@@ -8,47 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btDantzigSolver extends btMLCPSolverInterface {
 	private long swigCPtr;
-	
-	protected btDantzigSolver(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btDantzigSolver (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.btDantzigSolver_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btDantzigSolver, normally you should not need this constructor it's intended for low-level usage. */
-	public btDantzigSolver(long cPtr, boolean cMemoryOwn) {
+	public btDantzigSolver (long cPtr, boolean cMemoryOwn) {
 		this("btDantzigSolver", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.btDantzigSolver_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btDantzigSolver obj) {
+
+	public static long getCPtr (btDantzigSolver obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,16 +53,26 @@ public class btDantzigSolver extends btMLCPSolverInterface {
 		super.delete();
 	}
 
-  public btDantzigSolver() {
-    this(DynamicsJNI.new_btDantzigSolver(), true);
-  }
+	public btDantzigSolver () {
+		this(DynamicsJNI.new_btDantzigSolver(), true);
+	}
 
-  public boolean solveMLCP(SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x, SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency, int numIterations, boolean useSparsity) {
-    return DynamicsJNI.btDantzigSolver_solveMLCP__SWIG_0(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A), SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x), SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi), SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations, useSparsity);
-  }
+	public boolean solveMLCP (SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x,
+		SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency,
+		int numIterations, boolean useSparsity) {
+		return DynamicsJNI.btDantzigSolver_solveMLCP__SWIG_0(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi),
+			SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations, useSparsity);
+	}
 
-  public boolean solveMLCP(SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x, SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency, int numIterations) {
-    return DynamicsJNI.btDantzigSolver_solveMLCP__SWIG_1(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A), SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x), SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi), SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations);
-  }
+	public boolean solveMLCP (SWIGTYPE_p_btMatrixXT_float_t A, SWIGTYPE_p_btVectorXT_float_t b, SWIGTYPE_p_btVectorXT_float_t x,
+		SWIGTYPE_p_btVectorXT_float_t lo, SWIGTYPE_p_btVectorXT_float_t hi, SWIGTYPE_p_btAlignedObjectArrayT_int_t limitDependency,
+		int numIterations) {
+		return DynamicsJNI.btDantzigSolver_solveMLCP__SWIG_1(swigCPtr, this, SWIGTYPE_p_btMatrixXT_float_t.getCPtr(A),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(b), SWIGTYPE_p_btVectorXT_float_t.getCPtr(x),
+			SWIGTYPE_p_btVectorXT_float_t.getCPtr(lo), SWIGTYPE_p_btVectorXT_float_t.getCPtr(hi),
+			SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(limitDependency), numIterations);
+	}
 
 }

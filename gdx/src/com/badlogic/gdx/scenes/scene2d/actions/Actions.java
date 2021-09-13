@@ -495,12 +495,10 @@ public class Actions {
 		return addAction;
 	}
 
-	/**
-	 * Sets the target of an action and returns the action.
+	/** Sets the target of an action and returns the action.
 	 * @param target the desired target of the action
 	 * @param action the action on which to set the target
-	 * @return the action with its target set
-	 */
+	 * @return the action with its target set */
 	static public Action targeting (Actor target, Action action) {
 		action.setTarget(target);
 		return action;

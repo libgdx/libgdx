@@ -393,7 +393,8 @@ public class AnimationController extends BaseAnimationController {
 	 * @param transitionTime The time to transition the new animation on top of the currently playing animation (if any).
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the animation
 	 *         is completed. */
-	public AnimationDesc queue (final String id, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+	public AnimationDesc queue (final String id, int loopCount, float speed, final AnimationListener listener,
+		float transitionTime) {
 		return queue(id, 0f, -1f, loopCount, speed, listener, transitionTime);
 	}
 

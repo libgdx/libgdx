@@ -108,7 +108,8 @@ public class Polygon implements Shape2D {
 		dirty = true;
 	}
 
-	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being applied.
+	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being
+	 * applied.
 	 * 
 	 * @param vertices float array where every even element represents the x-coordinate of a vertex, and the proceeding element
 	 *           representing the y-coordinate.
@@ -119,16 +120,16 @@ public class Polygon implements Shape2D {
 		dirty = true;
 	}
 
-	 /** Set vertex position
-	  * @param vertexNum min=0, max=vertices.length/2-1
-	  * @throws IllegalArgumentException if vertex doesnt exist */
-	 public void setVertex (int vertexNum, float x, float y) {
-		  if (vertexNum < 0 || vertexNum > localVertices.length / 2 - 1)
-				throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
-		  localVertices[2 * vertexNum] = x;
-		  localVertices[2 * vertexNum + 1] = y;
-		  dirty = true;
-	 }
+	/** Set vertex position
+	 * @param vertexNum min=0, max=vertices.length/2-1
+	 * @throws IllegalArgumentException if vertex doesnt exist */
+	public void setVertex (int vertexNum, float x, float y) {
+		if (vertexNum < 0 || vertexNum > localVertices.length / 2 - 1)
+			throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
+		localVertices[2 * vertexNum] = x;
+		localVertices[2 * vertexNum + 1] = y;
+		dirty = true;
+	}
 
 	/** Translates the polygon's position by the specified horizontal and vertical amounts. */
 	public void translate (float x, float y) {
@@ -163,7 +164,8 @@ public class Polygon implements Shape2D {
 		dirty = true;
 	}
 
-	/** Sets the polygon's world vertices to be recalculated when calling {@link #getTransformedVertices() getTransformedVertices}. */
+	/** Sets the polygon's world vertices to be recalculated when calling {@link #getTransformedVertices()
+	 * getTransformedVertices}. */
 	public void dirty () {
 		dirty = true;
 	}
@@ -174,22 +176,22 @@ public class Polygon implements Shape2D {
 		return GeometryUtils.polygonArea(vertices, 0, vertices.length);
 	}
 
-	 public int getVertexCount(){
-		  return this.localVertices.length / 2;
-	 }
-	 
-	 /** @return Position(transformed) of vertex */
-	 public Vector2 getVertex (int vertexNum, Vector2 pos) {
-		  if (vertexNum < 0 || vertexNum > getVertexCount())
-				throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
-		  float[] vertices = this.getTransformedVertices();
-		  return pos.set(vertices[2 * vertexNum], vertices[2 * vertexNum + 1]);
-	 }
+	public int getVertexCount () {
+		return this.localVertices.length / 2;
+	}
 
-	 public Vector2 getCentroid(Vector2 centroid){
-		  float[] vertices = getTransformedVertices();
-		  return GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
-	 }
+	/** @return Position(transformed) of vertex */
+	public Vector2 getVertex (int vertexNum, Vector2 pos) {
+		if (vertexNum < 0 || vertexNum > getVertexCount())
+			throw new IllegalArgumentException("the vertex " + vertexNum + " doesn't exist");
+		float[] vertices = this.getTransformedVertices();
+		return pos.set(vertices[2 * vertexNum], vertices[2 * vertexNum + 1]);
+	}
+
+	public Vector2 getCentroid (Vector2 centroid) {
+		float[] vertices = getTransformedVertices();
+		return GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
+	}
 
 	/** Returns an axis-aligned bounding box of this polygon.
 	 * 

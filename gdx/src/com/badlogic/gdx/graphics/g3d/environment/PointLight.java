@@ -23,17 +23,17 @@ public class PointLight extends BaseLight<PointLight> {
 	public final Vector3 position = new Vector3();
 	public float intensity;
 
-	public PointLight setPosition(float positionX, float positionY, float positionZ) {
+	public PointLight setPosition (float positionX, float positionY, float positionZ) {
 		this.position.set(positionX, positionY, positionZ);
 		return this;
 	}
 
-	public PointLight setPosition(Vector3 position) {
+	public PointLight setPosition (Vector3 position) {
 		this.position.set(position);
 		return this;
 	}
 
-	public PointLight setIntensity(float intensity) {
+	public PointLight setIntensity (float intensity) {
 		this.intensity = intensity;
 		return this;
 	}
@@ -73,10 +73,11 @@ public class PointLight extends BaseLight<PointLight> {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof PointLight) && equals((PointLight) obj);
+		return (obj instanceof PointLight) && equals((PointLight)obj);
 	}
 
 	public boolean equals (PointLight other) {
-		return (other != null && (other == this || (color.equals(other.color) && position.equals(other.position) && intensity == other.intensity)));
+		return (other != null
+			&& (other == this || (color.equals(other.color) && position.equals(other.position) && intensity == other.intensity)));
 	}
 }

@@ -23,7 +23,8 @@ package java.nio;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class ReadOnlyIntArrayBuffer extends IntArrayBuffer {
 
 	static ReadOnlyIntArrayBuffer copy (IntArrayBuffer other, int markOfOther) {
