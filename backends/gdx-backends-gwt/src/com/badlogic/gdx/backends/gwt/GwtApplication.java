@@ -444,7 +444,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public long getJavaHeap () {
-		return (long) usedJSHeapSize();
+		return (long)usedJSHeapSize();
 	}
 
 	@Override
