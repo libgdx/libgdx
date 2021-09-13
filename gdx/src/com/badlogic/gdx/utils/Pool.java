@@ -84,8 +84,8 @@ abstract public class Pool<T> {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
-	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is reached,
-	 * and when the pool is {@link #clear() cleared} */
+	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is
+	 * reached, and when the pool is {@link #clear() cleared} */
 	protected void discard (T object) {
 	}
 
@@ -112,10 +112,10 @@ abstract public class Pool<T> {
 
 	/** Removes and discards all free objects from this pool. */
 	public void clear () {
-		for (int i = 0; i < freeObjects.size; i++) {
-			T obj = freeObjects.pop();
-			discard(obj);
-		}
+		Array<T> freeObjects = this.freeObjects;
+		for (int i = 0, n = freeObjects.size; i < n; i++)
+			discard(freeObjects.get(i));
+		freeObjects.clear();
 	}
 
 	/** The number of objects available to be obtained. */

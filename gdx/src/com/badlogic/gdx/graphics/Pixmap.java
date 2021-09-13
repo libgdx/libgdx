@@ -67,11 +67,11 @@ public class Pixmap implements Disposable {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
 			throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
 		}
-		
+
 		public static int toGlFormat (Format format) {
 			return Gdx2DPixmap.toGlFormat(toGdx2DPixmapFormat(format));
 		}
-		
+
 		public static int toGlType (Format format) {
 			return Gdx2DPixmap.toGlType(toGdx2DPixmapFormat(format));
 		}
@@ -139,8 +139,8 @@ public class Pixmap implements Disposable {
 		fill();
 	}
 
-	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
-	 * Not available on GWT backend.
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP. Not
+	 * available on GWT backend.
 	 *
 	 * @param encodedData the encoded image data
 	 * @param offset the offset
@@ -172,22 +172,21 @@ public class Pixmap implements Disposable {
 		this.pixmap = pixmap;
 	}
 
-	/**
-	 * Downloads an image from http(s) url and passes it as a {@link Pixmap} to the specified {@link DownloadPixmapResponseListener}
+	/** Downloads an image from http(s) url and passes it as a {@link Pixmap} to the specified
+	 * {@link DownloadPixmapResponseListener}
 	 *
 	 * @param url http url to download the image from
-	 * @param responseListener the listener to call once the image is available as a {@link Pixmap}
-	 */
-	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+	 * @param responseListener the listener to call once the image is available as a {@link Pixmap} */
+	public static void downloadFromUrl (String url, final DownloadPixmapResponseListener responseListener) {
 		Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
 		request.setUrl(url);
 		Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
 			@Override
-			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+			public void handleHttpResponse (Net.HttpResponse httpResponse) {
 				final byte[] result = httpResponse.getResult();
 				Gdx.app.postRunnable(new Runnable() {
 					@Override
-					public void run() {
+					public void run () {
 						try {
 							Pixmap pixmap = new Pixmap(result, 0, result.length);
 							responseListener.downloadComplete(pixmap);
@@ -199,12 +198,12 @@ public class Pixmap implements Disposable {
 			}
 
 			@Override
-			public void failed(Throwable t) {
+			public void failed (Throwable t) {
 				responseListener.downloadFailed(t);
 			}
 
 			@Override
-			public void cancelled() {
+			public void cancelled () {
 				// no way to cancel, will never get called
 			}
 		});
@@ -254,8 +253,8 @@ public class Pixmap implements Disposable {
 		pixmap.drawLine(x, y, x2, y2, color);
 	}
 
-	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
-	 * using the current color.
+	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points
+	 * downwards) using the current color.
 	 * 
 	 * @param x The x coordinate
 	 * @param y The y coordinate
@@ -440,26 +439,20 @@ public class Pixmap implements Disposable {
 	public Blending getBlending () {
 		return blending;
 	}
-	
+
 	/** @return the currently set {@link Filter} */
-	public Filter getFilter (){
+	public Filter getFilter () {
 		return filter;
 	}
 
-	/**
-	 * Response listener for {@link #downloadFromUrl(String, DownloadPixmapResponseListener)}
-	 */
+	/** Response listener for {@link #downloadFromUrl(String, DownloadPixmapResponseListener)} */
 	public interface DownloadPixmapResponseListener {
 
-		/**
-		 * Called on the render thread when image was downloaded successfully.
-		 * @param pixmap
-		 */
-		void downloadComplete(Pixmap pixmap);
+		/** Called on the render thread when image was downloaded successfully.
+		 * @param pixmap */
+		void downloadComplete (Pixmap pixmap);
 
-		/**
-		 * Called when image download failed. This might get called on a background thread.
-		 */
-		void downloadFailed(Throwable t);
+		/** Called when image download failed. This might get called on a background thread. */
+		void downloadFailed (Throwable t);
 	}
 }

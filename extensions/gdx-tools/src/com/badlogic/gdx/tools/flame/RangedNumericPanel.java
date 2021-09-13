@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -35,13 +36,12 @@ class RangedNumericPanel extends ParticleValuePanel<RangedNumericValue> {
 	JButton rangeButton;
 	JLabel label;
 
-	public RangedNumericPanel (FlameMain editor, RangedNumericValue value, String name, String description) 
-	{
+	public RangedNumericPanel (FlameMain editor, RangedNumericValue value, String name, String description) {
 		this(editor, value, name, description, true);
 	}
-	
-	public RangedNumericPanel (FlameMain editor, RangedNumericValue value, String name, String description, boolean isAlwaysActive) 
-	{
+
+	public RangedNumericPanel (FlameMain editor, RangedNumericValue value, String name, String description,
+		boolean isAlwaysActive) {
 		super(editor, name, description, isAlwaysActive);
 		setValue(value);
 	}
@@ -71,8 +71,7 @@ class RangedNumericPanel extends ParticleValuePanel<RangedNumericValue> {
 			contentPanel.add(rangeButton, new GridBagConstraints(5, 2, 1, 1, 1.0, 0, GridBagConstraints.WEST,
 				GridBagConstraints.NONE, new Insets(0, 1, 0, 0), 0, 0));
 		}
-		
-		
+
 		minSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				RangedNumericPanel.this.value.setLowMin((Float)minSlider.getValue());
@@ -99,13 +98,12 @@ class RangedNumericPanel extends ParticleValuePanel<RangedNumericValue> {
 
 	public void setValue (RangedNumericValue value) {
 		super.setValue(value);
-		if(value == null) return;
+		if (value == null) return;
 		setValue(minSlider, value.getLowMin());
 		setValue(maxSlider, value.getLowMax());
-		//System.out.println("min "+value.getLowMin()+", max "+value.getLowMax());
-		if (minSlider.getValue() == maxSlider.getValue()) 
+		// System.out.println("min "+value.getLowMin()+", max "+value.getLowMax());
+		if (minSlider.getValue() == maxSlider.getValue())
 			rangeButton.doClick(0);
-		else if(!maxSlider.isVisible())
-				maxSlider.setVisible(true);
+		else if (!maxSlider.isVisible()) maxSlider.setVisible(true);
 	}
 }

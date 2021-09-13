@@ -3,14 +3,12 @@ package com.badlogic.gdx.utils;
 
 import static org.junit.Assert.*;
 
-import java.util.Iterator;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 public class LongQueueTest {
 	@Test
-	public void addFirstAndLastTest() {
+	public void addFirstAndLastTest () {
 		LongQueue queue = new LongQueue();
 		queue.addFirst(1);
 		queue.addLast(2);
@@ -24,7 +22,7 @@ public class LongQueueTest {
 	}
 
 	@Test
-	public void removeLastTest() {
+	public void removeLastTest () {
 		LongQueue queue = new LongQueue();
 		queue.addLast(1);
 		queue.addLast(2);
@@ -51,7 +49,7 @@ public class LongQueueTest {
 	}
 
 	@Test
-	public void removeFirstTest() {
+	public void removeFirstTest () {
 		LongQueue queue = new LongQueue();
 		queue.addLast(1);
 		queue.addLast(2);

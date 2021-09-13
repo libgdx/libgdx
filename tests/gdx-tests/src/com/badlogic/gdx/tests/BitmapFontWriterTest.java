@@ -61,7 +61,8 @@ public class BitmapFontWriterTest extends GdxTest {
 
 		info.overrideMetrics(generatedFont.getData());
 
-		BitmapFontWriter.writeFont(generatedFont.getData(), new String[] {"bitmapWrittenFont.png"}, Gdx.files.local("bitmapWrittenFont.fnt"), info, 512, 512);
+		BitmapFontWriter.writeFont(generatedFont.getData(), new String[] {"bitmapWrittenFont.png"},
+			Gdx.files.local("bitmapWrittenFont.fnt"), info, 512, 512);
 		BitmapFontWriter.writePixmaps(param.packer.getPages(), Gdx.files.local(""), "bitmapWrittenFont");
 
 		final float ascent = generatedFont.getAscent();
@@ -106,11 +107,12 @@ public class BitmapFontWriterTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(1f, 0.5f, 0.5f, 1f);
 
-		renderer.setProjectionMatrix(renderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		renderer.setProjectionMatrix(
+			renderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
-		spriteBatch.setProjectionMatrix(spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		spriteBatch.setProjectionMatrix(
+			spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		spriteBatch.begin();
-
 
 		String text = "Sphinx of black quartz.";
 		generatedFont.setColor(Color.RED);

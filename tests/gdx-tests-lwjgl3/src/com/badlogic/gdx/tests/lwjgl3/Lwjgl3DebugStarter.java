@@ -45,9 +45,9 @@ public class Lwjgl3DebugStarter {
 			BitmapFont font;
 			FPSLogger fps = new FPSLogger();
 			Texture texture;
-			
+
 			@Override
-			public void create () {			
+			public void create () {
 				BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
 				texture = new Texture("data/badlogic.jpg");
 				batch = new SpriteBatch();
@@ -69,53 +69,53 @@ public class Lwjgl3DebugStarter {
 					@Override
 					public boolean keyTyped (char character) {
 						System.out.println("Key typed: '" + character + "', " + (int)character);
-						
-						if(character == 'f') {
+
+						if (character == 'f') {
 							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-//							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
-//							for(DisplayMode mode: modes) {
-//								if(mode.width == 1920 && mode.height == 1080) {
-//									Gdx.graphics.setFullscreenMode(mode);
-//									break;
-//								}
-//							}
+// DisplayMode[] modes = Gdx.graphics.getDisplayModes();
+// for(DisplayMode mode: modes) {
+// if(mode.width == 1920 && mode.height == 1080) {
+// Gdx.graphics.setFullscreenMode(mode);
+// break;
+// }
+// }
 						}
-						if(character == 'w') {
+						if (character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
 						}
-						if(character == 'e') {
+						if (character == 'e') {
 							throw new GdxRuntimeException("derp");
-						}			
-						if(character == 'c') {
+						}
+						if (character == 'c') {
 							Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
 						}
 						Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
-						if(character == 'v') {
+						if (character == 'v') {
 							window.setVisible(false);
 						}
-						if(character == 's') {
+						if (character == 's') {
 							window.setVisible(true);
 						}
-						if(character == 'q') {
+						if (character == 'q') {
 							window.closeWindow();
 						}
-						if(character == 'i') {
+						if (character == 'i') {
 							window.iconifyWindow();
 						}
-						if(character == 'm') {
+						if (character == 'm') {
 							window.maximizeWindow();
 						}
-						if(character == 'r') {
+						if (character == 'r') {
 							window.restoreWindow();
 						}
-						if(character == 'u') {
+						if (character == 'u') {
 							Gdx.net.openURI("https://google.com");
 						}
 						return false;
-					}										
+					}
 				});
 			}
-			
+
 			long start = System.nanoTime();
 
 			@Override
@@ -124,10 +124,11 @@ public class Lwjgl3DebugStarter {
 				HdpiUtils.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.begin();
-				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
-									  Gdx.graphics.getBackBufferWidth() + "x" + Gdx.graphics.getBackBufferHeight() + ", " +
-									  Gdx.input.getX() + ", " + Gdx.input.getY() + ", " + 
-									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);				
+				font.draw(batch,
+					Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " + Gdx.graphics.getBackBufferWidth() + "x"
+						+ Gdx.graphics.getBackBufferHeight() + ", " + Gdx.input.getX() + ", " + Gdx.input.getY() + ", "
+						+ Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(),
+					0, 20);
 				batch.draw(texture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				batch.end();
 				fps.log();
@@ -157,15 +158,15 @@ public class Lwjgl3DebugStarter {
 		config.setWindowedMode(640, 480);
 		config.setWindowListener(new Lwjgl3WindowListener() {
 			@Override
-			public void created(Lwjgl3Window window) {
+			public void created (Lwjgl3Window window) {
 				Gdx.app.log("Window", "created");
 			}
 
 			@Override
 			public void iconified (boolean isIconified) {
-				Gdx.app.log("Window", "iconified: "+ (isIconified ? "true" : "false"));
+				Gdx.app.log("Window", "iconified: " + (isIconified ? "true" : "false"));
 			}
-			
+
 			@Override
 			public void maximized (boolean isMaximized) {
 				Gdx.app.log("Window", "maximized: " + (isMaximized ? "true" : "false"));
@@ -188,22 +189,22 @@ public class Lwjgl3DebugStarter {
 			}
 
 			@Override
-			public void filesDropped (String[] files) {	
-				for (String file : files){
+			public void filesDropped (String[] files) {
+				for (String file : files) {
 					Gdx.app.log("Window", "File dropped: " + file);
 				}
 			}
 
 			@Override
-			public void refreshRequested() {
+			public void refreshRequested () {
 				Gdx.app.log("Window", "refreshRequested");
 			}
 		});
-		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
+		for (DisplayMode mode : Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
-		}	
+		}
 
-		System.setProperty("java.awt.headless", "true"); 
+		System.setProperty("java.awt.headless", "true");
 		new Lwjgl3Application(test, config);
 	}
 }

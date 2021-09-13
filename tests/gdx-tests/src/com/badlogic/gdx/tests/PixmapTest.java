@@ -39,10 +39,10 @@ public class PixmapTest extends GdxTest {
 		// Create an empty dynamic pixmap
 		pixmap = new Pixmap(800, 480, Pixmap.Format.RGBA8888);
 		pixmapCustom = new Pixmap(256, 256, Pixmap.Format.RGBA8888);
-		
+
 		ByteBuffer buffer = BufferUtils.newByteBuffer(pixmapCustom.getWidth() * pixmapCustom.getHeight() * 4);
-		for(int y=0 ; y<pixmapCustom.getHeight() ; y++){
-			for(int x=0 ; x<pixmapCustom.getWidth() ; x++){
+		for (int y = 0; y < pixmapCustom.getHeight(); y++) {
+			for (int x = 0; x < pixmapCustom.getWidth(); x++) {
 				buffer.put((byte)x);
 				buffer.put((byte)y);
 				buffer.put((byte)0);

@@ -365,7 +365,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	public @Null N getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
-		return foundNode;
+		try {
+			return foundNode;
+		} finally {
+			foundNode = null;
+		}
 	}
 
 	private float getNodeAt (Array<N> nodes, float y, float rowY) {

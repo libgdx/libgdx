@@ -17,7 +17,7 @@
 group = "box2d-parent"
 
 subprojects {
-    dependencies {
-        compile project(":gdx")
-    }
+	dependencies {
+		compile project(":gdx")
+	}
 }

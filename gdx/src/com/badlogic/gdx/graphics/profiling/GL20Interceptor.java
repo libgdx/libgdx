@@ -32,7 +32,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 		super(glProfiler);
 		this.gl20 = gl20;
 	}
-	
+
 	private void check () {
 		int error = gl20.glGetError();
 		while (error != GL20.GL_NO_ERROR) {
@@ -241,7 +241,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 	@Override
 	public int glGetError () {
 		calls++;
-		//Errors by glGetError are undetectable
+		// Errors by glGetError are undetectable
 		return gl20.glGetError();
 	}
 

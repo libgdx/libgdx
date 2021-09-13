@@ -57,6 +57,7 @@ import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.SOFTDirectChannels;
 
 /** @author Nathan Sweet */
 public class OpenALLwjgl3Audio implements Lwjgl3Audio {
@@ -109,6 +110,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		}
 		AL.createCapabilities(deviceCapabilities);
 
+		alGetError();
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
 			int sourceID = alGenSources();
@@ -121,13 +123,13 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
-		((Buffer) orientation).flip();
+		((Buffer)orientation).flip();
 		alListenerfv(AL_ORIENTATION, orientation);
 		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
-		((Buffer) velocity).flip();
+		((Buffer)velocity).flip();
 		alListenerfv(AL_VELOCITY, velocity);
 		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
-		((Buffer) position).flip();
+		((Buffer)position).flip();
 		alListenerfv(AL_POSITION, position);
 
 		recentSounds = new OpenALSound[simultaneousSources];
@@ -173,12 +175,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
+				Long oldSoundId = sourceToSoundId.remove(sourceId);
+				if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					Long oldSoundId = sourceToSoundId.remove(sourceId);
-					if (oldSoundId != null) soundIdToSource.remove(oldSoundId);
-
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);
@@ -188,6 +189,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
 				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 1f);
+				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, AL10.AL_TRUE);
 				return sourceId;
 			}
 		}
@@ -311,8 +313,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			alDeleteSources(sourceID);
 		}
 
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
+		sourceToSoundId = null;
+		soundIdToSource = null;
 
 		alcDestroyContext(context);
 		alcCloseDevice(device);

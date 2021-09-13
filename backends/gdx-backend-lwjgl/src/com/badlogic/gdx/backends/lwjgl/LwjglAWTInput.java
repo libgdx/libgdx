@@ -158,12 +158,13 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint, OnscreenKeyboardType type) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint,
+		OnscreenKeyboardType type) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
@@ -421,7 +422,7 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 
 	}
 
@@ -857,8 +858,8 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
-		if(button < 0 || button >= justPressedButtons.length) return false;
+	public boolean isButtonJustPressed (int button) {
+		if (button < 0 || button >= justPressedButtons.length) return false;
 		return justPressedButtons[button];
 	}
 

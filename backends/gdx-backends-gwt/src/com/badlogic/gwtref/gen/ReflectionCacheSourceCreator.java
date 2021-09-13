@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
@@ -44,8 +42,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ReflectionCacheSourceCreator {
-	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList("char", "int",
-			"long", "byte", "short", "float", "double", "boolean"));
+	private static final List<String> PRIMITIVE_TYPES = Collections
+		.unmodifiableList(Arrays.asList("char", "int", "long", "byte", "short", "float", "double", "boolean"));
 	final TreeLogger logger;
 	final GeneratorContext context;
 	final JClassType type;
@@ -53,7 +51,7 @@ public class ReflectionCacheSourceCreator {
 	final String packageName;
 	SourceWriter sw;
 	final StringBuilder source = new StringBuilder();
-	final List<JType> types = new ArrayList<JType>();
+	final List<JType> types;
 	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
 	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<String, String>();
@@ -90,12 +88,13 @@ public class ReflectionCacheSourceCreator {
 		boolean unused;
 	}
 
-	public ReflectionCacheSourceCreator (TreeLogger logger, GeneratorContext context, JClassType type) {
+	public ReflectionCacheSourceCreator (TreeLogger logger, GeneratorContext context, JClassType type, List<JType> types) {
 		this.logger = logger;
 		this.context = context;
 		this.type = type;
 		this.packageName = type.getPackage().getName();
 		this.simpleName = type.getSimpleSourceName() + "Generated";
+		this.types = types;
 		logger.log(Type.INFO, type.getQualifiedSourceName());
 	}
 
@@ -140,49 +139,6 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void generateLookups () {
-		TypeOracle typeOracle = context.getTypeOracle();
-		JPackage[] packages = typeOracle.getPackages();
-
-		// gather all types from wanted packages
-		for (JPackage p : packages) {
-			for (JClassType t : p.getTypes()) {
-				gatherTypes(t.getErasedType(), types);
-			}
-		}
-
-		// gather all types from explicitly requested packages
-		try {
-			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
-			for (String s : prop.getValues()) {
-				JClassType type = typeOracle.findType(s);
-				if (type != null) gatherTypes(type.getErasedType(), types);
-			}
-		} catch (BadPropertyValueException e) {
-		}
-
-		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.util.Map").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.String").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Boolean").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Byte").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Long").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Character").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Short").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Integer").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Float").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.CharSequence").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Double").getErasedType(), types);
-		gatherTypes(typeOracle.findType("java.lang.Object").getErasedType(), types);
-
-		// sort the types so the generated output will be stable between runs
-		Collections.sort(types, new Comparator<JType>() {
-			public int compare (JType o1, JType o2) {
-				return o1.getQualifiedSourceName().compareTo(o2.getQualifiedSourceName());
-			}
-		});
-
 		// generate Type lookup generator methods.
 		for (JType t : types) {
 			p(createTypeGenerator(t));
@@ -224,110 +180,6 @@ public class ReflectionCacheSourceCreator {
 		logger.log(Type.INFO, types.size() + " types reflected");
 	}
 
-	private void out (String message, int nesting) {
-		String nestedMsg = "";
-		for (int i = 0; i < nesting; i++)
-			nestedMsg += "  ";
-		logger.log(Type.INFO, nestedMsg);
-	}
-
-	int nesting = 0;
-
-	private void gatherTypes (JType type, List<JType> types) {
-		nesting++;
-		// came here from a type that has no super class
-		if (type == null) {
-			nesting--;
-			return;
-		}
-		// package info
-		if (type.getQualifiedSourceName().contains("-")) {
-			nesting--;
-			return;
-		}
-
-		// not visible
-		if (!isVisible(type)) {
-			nesting--;
-			return;
-		}
-
-		// filter reflection scope based on configuration in gwt xml module
-		boolean keep = false;
-		String name = type.getQualifiedSourceName();
-		try {
-			ConfigurationProperty prop;
-			keep |= !name.contains(".");
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
-			for (String s : prop.getValues())
-				keep |= name.contains(s);
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.exclude");
-			for (String s : prop.getValues())
-				keep &= !name.equals(s);
-		} catch (BadPropertyValueException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (!keep) {
-			nesting--;
-			return;
-		}
-
-		// already visited this type
-		if (types.contains(type.getErasedType())) {
-			nesting--;
-			return;
-		}
-		types.add(type.getErasedType());
-		out(type.getErasedType().getQualifiedSourceName(), nesting);
-
-		if (type instanceof JPrimitiveType) {
-			// nothing to do for a primitive type
-			nesting--;
-			return;
-		} else {
-			// gather fields
-			JClassType c = (JClassType)type;
-			JField[] fields = c.getFields();
-			if (fields != null) {
-				for (JField field : fields) {
-					gatherTypes(field.getType().getErasedType(), types);
-				}
-			}
-
-			// gather super types & interfaces
-			gatherTypes(c.getSuperclass(), types);
-			JClassType[] interfaces = c.getImplementedInterfaces();
-			if (interfaces != null) {
-				for (JClassType i : interfaces) {
-					gatherTypes(i.getErasedType(), types);
-				}
-			}
-
-			// gather method parameter & return types
-			JMethod[] methods = c.getMethods();
-			if (methods != null) {
-				for (JMethod m : methods) {
-					gatherTypes(m.getReturnType().getErasedType(), types);
-					if (m.getParameterTypes() != null) {
-						for (JType p : m.getParameterTypes()) {
-							gatherTypes(p.getErasedType(), types);
-						}
-					}
-				}
-			}
-
-			// gather inner classes
-			JClassType[] inner = c.getNestedTypes();
-			if (inner != null) {
-				for (JClassType i : inner) {
-					gatherTypes(i.getErasedType(), types);
-				}
-			}
-		}
-		nesting--;
-	}
-
 	private String generateMethodStub (MethodStub stub) {
 		sb.setLength(0);
 
@@ -336,7 +188,8 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 
-		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util")) || stub.enclosingType.contains("google")) {
+		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util"))
+			|| stub.enclosingType.contains("google")) {
 			logger.log(Type.INFO, "not emitting code for accessing method " + stub.name + " in class '" + stub.enclosingType
 				+ ", either in java.* or GWT related class");
 			return "";
@@ -355,8 +208,8 @@ public class ReflectionCacheSourceCreator {
 					+ "' is not invokable because one of its argument types is not visible");
 				return "";
 			} else if (paramType.startsWith("long") || paramType.contains("java.lang.Long")) {
-				logger.log(Type.INFO, "method '" + stub.name + "' of class '" + stub.enclosingType
-					+ " has long parameter, prohibited in JSNI");
+				logger.log(Type.INFO,
+					"method '" + stub.name + "' of class '" + stub.enclosingType + " has long parameter, prohibited in JSNI");
 				return "";
 			} else {
 				stub.parameterTypes.set(i, paramType.replace(".class", ""));
@@ -368,8 +221,8 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 		if (stub.returnType.startsWith("long") || stub.returnType.contains("java.lang.Long")) {
-			logger.log(Type.INFO, "method '" + stub.name + "' of class '" + stub.enclosingType
-				+ " has long return type, prohibited in JSNI");
+			logger.log(Type.INFO,
+				"method '" + stub.name + "' of class '" + stub.enclosingType + " has long return type, prohibited in JSNI");
 			return "";
 		}
 
@@ -465,7 +318,7 @@ public class ReflectionCacheSourceCreator {
 		return sb.toString();
 	}
 
-	private boolean isVisible (JType type) {
+	static boolean isVisible (JType type) {
 		if (type == null) return false;
 
 		if (type instanceof JClassType) {
@@ -516,7 +369,7 @@ public class ReflectionCacheSourceCreator {
 			// if it's not a class, it may be an interface instead
 			c = t.isInterface();
 		}
-		
+
 		if (c != null && c.getImplementedInterfaces() != null) {
 			interfaces = "new HashSet<Class>(Arrays.asList(";
 			boolean used = false;
@@ -531,18 +384,19 @@ public class ReflectionCacheSourceCreator {
 			else
 				interfaces = null;
 		}
-		
+
 		String varName = "c" + id;
 		pb("private static Type " + varName + ";");
 		pb("private static Type " + varName + "() {");
 		pb("if(" + varName + "!=null) return " + varName + ";");
-		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", " + interfaces + ");");
+		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", "
+			+ interfaces + ");");
 
-		if( c == null && t.isArray() != null){
+		if (c == null && t.isArray() != null) {
 			// if it's not a class or an interface, it may be an array instead
 			c = t.isArray();
 		}
-		
+
 		if (c != null) {
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
 			if (c.isArray() != null) {
@@ -556,7 +410,7 @@ public class ReflectionCacheSourceCreator {
 			}
 			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
 			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
-			if (c.isAnnotation() != null) pb(varName + ".isAnnotation = true;");			
+			if (c.isAnnotation() != null) pb(varName + ".isAnnotation = true;");
 
 			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
@@ -610,7 +464,10 @@ public class ReflectionCacheSourceCreator {
 
 			Annotation[] annotations = c.getDeclaredAnnotations();
 			if (annotations != null && annotations.length > 0) {
-				pb(varName + ".annotations = " + getAnnotations(annotations) + ";");
+				String annotations1 = getAnnotations(annotations);
+				if (!"null".equals(annotations1)) { // avoid nulling the default empty array for annotations.
+					pb(varName + ".annotations = " + annotations1 + ";");
+				}
 			}
 		} else {
 			pb(varName + ".isAbstract = true;"); // Primitives are _always_ abstract
@@ -658,7 +515,7 @@ public class ReflectionCacheSourceCreator {
 					}
 					stub.isConstructor = true;
 					stub.returnType = stub.enclosingType;
-				}				
+				}
 				stub.jnsi = "";
 				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
@@ -673,8 +530,8 @@ public class ReflectionCacheSourceCreator {
 					for (JParameter p : m.getParameters()) {
 						stub.parameterTypes.add(getType(p.getType()));
 						stub.jnsi += p.getType().getErasedType().getJNISignature();
-						String paramName = (p.getName() + "__" + p.getType().getErasedType().getJNISignature()).replaceAll(
-							"[/;\\[\\]]", "_");
+						String paramName = (p.getName() + "__" + p.getType().getErasedType().getJNISignature()).replaceAll("[/;\\[\\]]",
+							"_");
 						String paramInstantiation = "new Parameter(\"" + p.getName() + "\", " + getType(p.getType()) + ", \""
 							+ p.getType().getJNISignature() + "\")";
 						parameterName2ParameterInstantiation.put(paramName, paramInstantiation);
@@ -686,8 +543,8 @@ public class ReflectionCacheSourceCreator {
 				}
 
 				pb(stub.isAbstract + ", " + stub.isFinal + ", " + stub.isStatic + ", " + m.isDefaultAccess() + ", " + m.isPrivate()
-					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", "
-					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
+					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", " + stub.isMethod
+					+ ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
 			}
 			pb("};");
 		}
@@ -721,10 +578,7 @@ public class ReflectionCacheSourceCreator {
 	private String getAnnotations (Annotation[] annotations) {
 		if (annotations != null && annotations.length > 0) {
 			int numValidAnnotations = 0;
-			final Class<?>[] ignoredAnnotations = {
-				Nonnull.class, Nullable.class,
-				Deprecated.class, Retention.class,
-			};
+			final Class<?>[] ignoredAnnotations = {Nonnull.class, Nullable.class, Deprecated.class, Retention.class,};
 			StringBuilder b = new StringBuilder();
 			b.append("new java.lang.annotation.Annotation[] {");
 			for (Annotation annotation : annotations) {
@@ -913,8 +767,8 @@ public class ReflectionCacheSourceCreator {
 		SwitchedCodeBlock pc = new SwitchedCodeBlock("field.setter");
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			pc.add(stub.setter, "s" + stub.setter + "(" + cast(stub.enclosingType, "obj") + ", " + cast(stub.type, "value")
-				+ "); return;");
+			pc.add(stub.setter,
+				"s" + stub.setter + "(" + cast(stub.enclosingType, "obj") + ", " + cast(stub.type, "value") + "); return;");
 		}
 		pc.print();
 		p("   throw new IllegalArgumentException(\"Missing setter-stub \" + field.setter + \" for field \" + field.name);");

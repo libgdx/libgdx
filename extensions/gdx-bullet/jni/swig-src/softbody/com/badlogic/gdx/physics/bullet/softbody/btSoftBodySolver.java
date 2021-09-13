@@ -12,44 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftBodySolver extends BulletBase {
 	private long swigCPtr;
-	
-	protected btSoftBodySolver(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btSoftBodySolver (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btSoftBodySolver, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btSoftBodySolver(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btSoftBodySolver, normally you should not need this constructor it's intended for low-level usage. */
+	public btSoftBodySolver (long cPtr, boolean cMemoryOwn) {
 		this("btSoftBodySolver", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btSoftBodySolver obj) {
+
+	public static long getCPtr (btSoftBodySolver obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -60,77 +55,81 @@ public class btSoftBodySolver extends BulletBase {
 		super.delete();
 	}
 
-  public int getSolverType() {
-    return SoftbodyJNI.btSoftBodySolver_getSolverType(swigCPtr, this);
-  }
+	public int getSolverType () {
+		return SoftbodyJNI.btSoftBodySolver_getSolverType(swigCPtr, this);
+	}
 
-  public boolean checkInitialized() {
-    return SoftbodyJNI.btSoftBodySolver_checkInitialized(swigCPtr, this);
-  }
+	public boolean checkInitialized () {
+		return SoftbodyJNI.btSoftBodySolver_checkInitialized(swigCPtr, this);
+	}
 
-  public void optimize(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t softBodies, boolean forceUpdate) {
-    SoftbodyJNI.btSoftBodySolver_optimize__SWIG_0(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t.getCPtr(softBodies), forceUpdate);
-  }
+	public void optimize (SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t softBodies, boolean forceUpdate) {
+		SoftbodyJNI.btSoftBodySolver_optimize__SWIG_0(swigCPtr, this,
+			SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t.getCPtr(softBodies), forceUpdate);
+	}
 
-  public void optimize(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t softBodies) {
-    SoftbodyJNI.btSoftBodySolver_optimize__SWIG_1(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t.getCPtr(softBodies));
-  }
+	public void optimize (SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t softBodies) {
+		SoftbodyJNI.btSoftBodySolver_optimize__SWIG_1(swigCPtr, this,
+			SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody_p_t.getCPtr(softBodies));
+	}
 
-  public void copyBackToSoftBodies(boolean bMove) {
-    SoftbodyJNI.btSoftBodySolver_copyBackToSoftBodies__SWIG_0(swigCPtr, this, bMove);
-  }
+	public void copyBackToSoftBodies (boolean bMove) {
+		SoftbodyJNI.btSoftBodySolver_copyBackToSoftBodies__SWIG_0(swigCPtr, this, bMove);
+	}
 
-  public void copyBackToSoftBodies() {
-    SoftbodyJNI.btSoftBodySolver_copyBackToSoftBodies__SWIG_1(swigCPtr, this);
-  }
+	public void copyBackToSoftBodies () {
+		SoftbodyJNI.btSoftBodySolver_copyBackToSoftBodies__SWIG_1(swigCPtr, this);
+	}
 
-  public void predictMotion(float solverdt) {
-    SoftbodyJNI.btSoftBodySolver_predictMotion(swigCPtr, this, solverdt);
-  }
+	public void predictMotion (float solverdt) {
+		SoftbodyJNI.btSoftBodySolver_predictMotion(swigCPtr, this, solverdt);
+	}
 
-  public void solveConstraints(float solverdt) {
-    SoftbodyJNI.btSoftBodySolver_solveConstraints(swigCPtr, this, solverdt);
-  }
+	public void solveConstraints (float solverdt) {
+		SoftbodyJNI.btSoftBodySolver_solveConstraints(swigCPtr, this, solverdt);
+	}
 
-  public void updateSoftBodies() {
-    SoftbodyJNI.btSoftBodySolver_updateSoftBodies(swigCPtr, this);
-  }
+	public void updateSoftBodies () {
+		SoftbodyJNI.btSoftBodySolver_updateSoftBodies(swigCPtr, this);
+	}
 
-  public void processCollision(btSoftBody arg0, btCollisionObjectWrapper arg1) {
-    SoftbodyJNI.btSoftBodySolver_processCollision__SWIG_0(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0, btCollisionObjectWrapper.getCPtr(arg1), arg1);
-  }
+	public void processCollision (btSoftBody arg0, btCollisionObjectWrapper arg1) {
+		SoftbodyJNI.btSoftBodySolver_processCollision__SWIG_0(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0,
+			btCollisionObjectWrapper.getCPtr(arg1), arg1);
+	}
 
-  public void processCollision(btSoftBody arg0, btSoftBody arg1) {
-    SoftbodyJNI.btSoftBodySolver_processCollision__SWIG_1(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0, btSoftBody.getCPtr(arg1), arg1);
-  }
+	public void processCollision (btSoftBody arg0, btSoftBody arg1) {
+		SoftbodyJNI.btSoftBodySolver_processCollision__SWIG_1(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0,
+			btSoftBody.getCPtr(arg1), arg1);
+	}
 
-  public void setNumberOfPositionIterations(int iterations) {
-    SoftbodyJNI.btSoftBodySolver_setNumberOfPositionIterations(swigCPtr, this, iterations);
-  }
+	public void setNumberOfPositionIterations (int iterations) {
+		SoftbodyJNI.btSoftBodySolver_setNumberOfPositionIterations(swigCPtr, this, iterations);
+	}
 
-  public int getNumberOfPositionIterations() {
-    return SoftbodyJNI.btSoftBodySolver_getNumberOfPositionIterations(swigCPtr, this);
-  }
+	public int getNumberOfPositionIterations () {
+		return SoftbodyJNI.btSoftBodySolver_getNumberOfPositionIterations(swigCPtr, this);
+	}
 
-  public void setNumberOfVelocityIterations(int iterations) {
-    SoftbodyJNI.btSoftBodySolver_setNumberOfVelocityIterations(swigCPtr, this, iterations);
-  }
+	public void setNumberOfVelocityIterations (int iterations) {
+		SoftbodyJNI.btSoftBodySolver_setNumberOfVelocityIterations(swigCPtr, this, iterations);
+	}
 
-  public int getNumberOfVelocityIterations() {
-    return SoftbodyJNI.btSoftBodySolver_getNumberOfVelocityIterations(swigCPtr, this);
-  }
+	public int getNumberOfVelocityIterations () {
+		return SoftbodyJNI.btSoftBodySolver_getNumberOfVelocityIterations(swigCPtr, this);
+	}
 
-  public float getTimeScale() {
-    return SoftbodyJNI.btSoftBodySolver_getTimeScale(swigCPtr, this);
-  }
+	public float getTimeScale () {
+		return SoftbodyJNI.btSoftBodySolver_getTimeScale(swigCPtr, this);
+	}
 
-  public final static class SolverTypes {
-    public final static int DEFAULT_SOLVER = 0;
-    public final static int CPU_SOLVER = DEFAULT_SOLVER + 1;
-    public final static int CL_SOLVER = CPU_SOLVER + 1;
-    public final static int CL_SIMD_SOLVER = CL_SOLVER + 1;
-    public final static int DX_SOLVER = CL_SIMD_SOLVER + 1;
-    public final static int DX_SIMD_SOLVER = DX_SOLVER + 1;
-  }
+	public final static class SolverTypes {
+		public final static int DEFAULT_SOLVER = 0;
+		public final static int CPU_SOLVER = DEFAULT_SOLVER + 1;
+		public final static int CL_SOLVER = CPU_SOLVER + 1;
+		public final static int CL_SIMD_SOLVER = CL_SOLVER + 1;
+		public final static int DX_SOLVER = CL_SIMD_SOLVER + 1;
+		public final static int DX_SIMD_SOLVER = DX_SOLVER + 1;
+	}
 
 }

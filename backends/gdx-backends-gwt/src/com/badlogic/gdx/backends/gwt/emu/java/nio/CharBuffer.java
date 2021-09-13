@@ -60,7 +60,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 
 	/** Creates a new char buffer by wrapping the given char array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
+	 * array.
 	 * </p>
 	 * 
 	 * @param array the char array which the new buffer will be based on.
@@ -96,8 +97,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 
 	/** Creates a new char buffer by wrapping the given char sequence.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code end}, capacity will be the length of the char sequence.
-	 * The new buffer is read-only.
+	 * The new buffer's position will be {@code start}, limit will be {@code end}, capacity will be the length of the char
+	 * sequence. The new buffer is read-only.
 	 * </p>
 	 * 
 	 * @param chseq the char sequence which the new buffer will be based on.
@@ -425,8 +426,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 		return this;
 	}
 
-	/** Writes all the remaining chars of the {@code src} char buffer to this buffer's current position, and increases both buffers'
-	 * position by the number of chars copied.
+	/** Writes all the remaining chars of the {@code src} char buffer to this buffer's current position, and increases both
+	 * buffers' position by the number of chars copied.
 	 * 
 	 * @param src the source char buffer.
 	 * @return this buffer.

@@ -84,8 +84,7 @@ public class ParticleEmitterTest extends GdxTest {
 					particleCount += 5;
 				else if (keycode == Input.Keys.PLUS) {
 					emitter = new ParticleEmitter(emitter);
-				}
-				else if (keycode == Input.Keys.DPAD_DOWN)
+				} else if (keycode == Input.Keys.DPAD_DOWN)
 					particleCount -= 5;
 				else if (keycode == Input.Keys.SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size;
@@ -141,7 +140,7 @@ public class ParticleEmitterTest extends GdxTest {
 		if (fpsCounter > 3) {
 			fpsCounter = 0;
 			int activeCount = emitters.get(emitterIndex).getActiveCount();
-			Gdx.app.log("libgdx", activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
+			Gdx.app.log("libGDX", activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
 	}
 

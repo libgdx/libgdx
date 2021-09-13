@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.badlogic.gdx.backends.iosrobovm.custom;
 
 /*<imports>*/
@@ -24,36 +25,51 @@ import org.robovm.apple.foundation.*;
 /*</imports>*/
 
 /*<javadoc>*/
-/**
- * @since Available in iOS 2.0 and later.
- * @deprecated Deprecated in iOS 5.0.
- */
+/** @since Available in iOS 2.0 and later.
+ * @deprecated Deprecated in iOS 5.0. */
 @Deprecated
-/*</javadoc>*/
-/*<annotations>*/@Library("UIKit") @NativeClass/*</annotations>*/
-/*<visibility>*/public/*</visibility>*/ class /*<name>*/UIAcceleration/*</name>*/ 
-    extends /*<extends>*/NSObject/*</extends>*/ 
-    /*<implements>*//*</implements>*/ {
+/* </javadoc> */
+/* <annotations> */
+@Library("UIKit")
+@NativeClass
+/* </annotations> */
+/* <visibility> */public/* </visibility> */ class /* <name> */ UIAcceleration/* </name> */
+	extends /* <extends> */NSObject/* </extends> */
+/* <implements> *//* </implements> */ {
 
-    /*<ptr>*/public static class UIAccelerationPtr extends Ptr<UIAcceleration, UIAccelerationPtr> {}/*</ptr>*/
-    /*<bind>*/static { ObjCRuntime.bind(UIAcceleration.class); }/*</bind>*/
-    /*<constants>*//*</constants>*/
-    /*<constructors>*/
-    public UIAcceleration() {}
-    protected UIAcceleration(SkipInit skipInit) { super(skipInit); }
-    /*</constructors>*/
-    /*<properties>*/
-    @Property(selector = "timestamp")
-    public native double getTimestamp();
-    @Property(selector = "x")
-    public native double getX();
-    @Property(selector = "y")
-    public native double getY();
-    @Property(selector = "z")
-    public native double getZ();
-    /*</properties>*/
-    /*<members>*//*</members>*/
-    /*<methods>*/
-    
-    /*</methods>*/
+	/* <ptr> */public static class UIAccelerationPtr extends Ptr<UIAcceleration, UIAccelerationPtr> {
+	}
+
+	/* </ptr> */
+	/* <bind> */static {
+		ObjCRuntime.bind(UIAcceleration.class);
+	}/* </bind> */
+	/* <constants> *//* </constants> */
+	/* <constructors> */
+
+	public UIAcceleration () {
+	}
+
+	protected UIAcceleration (SkipInit skipInit) {
+		super(skipInit);
+	}
+
+	/* </constructors> */
+	/* <properties> */
+	@Property(selector = "timestamp")
+	public native double getTimestamp ();
+
+	@Property(selector = "x")
+	public native double getX ();
+
+	@Property(selector = "y")
+	public native double getY ();
+
+	@Property(selector = "z")
+	public native double getZ ();
+	/* </properties> */
+	/* <members> *//* </members> */
+	/* <methods> */
+
+	/* </methods> */
 }

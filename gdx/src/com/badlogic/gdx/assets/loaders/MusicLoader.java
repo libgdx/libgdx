@@ -33,12 +33,10 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
 	public MusicLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
-	
-	/** Returns the {@link Music} instance currently loaded by this
-	 * {@link MusicLoader}.
+
+	/** Returns the {@link Music} instance currently loaded by this {@link MusicLoader}.
 	 * 
-	 * @return the currently loaded {@link Music}, otherwise {@code null} if
-	 *         no {@link Music} has been loaded yet. */
+	 * @return the currently loaded {@link Music}, otherwise {@code null} if no {@link Music} has been loaded yet. */
 	protected Music getLoadedMusic () {
 		return music;
 	}

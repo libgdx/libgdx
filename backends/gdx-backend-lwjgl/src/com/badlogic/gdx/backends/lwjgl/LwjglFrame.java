@@ -147,7 +147,11 @@ public class LwjglFrame extends JFrame {
 			public void run () {
 				addCanvas();
 				setVisible(true);
-				lwjglCanvas.getCanvas().requestFocus();
+				try {
+					lwjglCanvas.getCanvas().requestFocus();
+				} catch (Throwable ignored) {
+					// Fails on Linux sometimes, seems shared lib isn't loaded for LinuxDisplay#callErrorHandler.
+				}
 			}
 		});
 	}

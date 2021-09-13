@@ -91,7 +91,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		ticks++;
 
 		// GTW: check if we have a file that was not preloaded and is not done loading yet
-		Preloader preloader = ((GwtApplication) Gdx.app).getPreloader();
+		Preloader preloader = ((GwtApplication)Gdx.app).getPreloader();
 		if (preloader.isNotFetchedYet(assetDesc.fileName)) {
 			preloader.preloadSingleFile(assetDesc.fileName);
 			// Loader.finishLoading breaks everything
@@ -100,10 +100,10 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		} else
 		// End of GTW
 
-			if (loader instanceof SynchronousAssetLoader)
-				handleSyncLoader();
-			else
-				handleAsyncLoader();
+		if (loader instanceof SynchronousAssetLoader)
+			handleSyncLoader();
+		else
+			handleAsyncLoader();
 		return asset != null;
 	}
 

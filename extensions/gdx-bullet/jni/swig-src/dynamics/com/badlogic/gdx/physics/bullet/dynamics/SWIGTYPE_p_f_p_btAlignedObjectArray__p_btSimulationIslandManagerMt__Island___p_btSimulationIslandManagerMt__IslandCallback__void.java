@@ -9,18 +9,19 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public class SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void {
-  private transient long swigCPtr;
+	private transient long swigCPtr;
 
-  protected SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void (
+		long cPtr, @SuppressWarnings("unused") boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void () {
+		swigCPtr = 0;
+	}
 
-  protected static long getCPtr(SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	protected static long getCPtr (
+		SWIGTYPE_p_f_p_btAlignedObjectArray__p_btSimulationIslandManagerMt__Island___p_btSimulationIslandManagerMt__IslandCallback__void obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

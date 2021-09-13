@@ -67,13 +67,13 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		skin.add("default", font = new BitmapFont(Gdx.files.internal("data/arial-32.fnt"), false));
 
 		populateTable();
-		
+
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
 	}
-	
-	void nextColor(){
-		synchronized (this){
+
+	void nextColor () {
+		synchronized (this) {
 			colorCycle = (colorCycle + 1) % 3;
 		}
 	}
@@ -83,141 +83,153 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		float delta = Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f);
 		elapsed += delta;
 		float value = elapsed % 1f;
-		value = value < 0.5f ? 
-			Interpolation.fade.apply(2 * value) : 1 - Interpolation.fade.apply(2 * value - 1);
-		value = 0.2f + value * 0.8f; //avoid black
-		
-		synchronized (this){
-			switch (colorCycle){
-			case 0: 
-				Gdx.gl.glClearColor(value, 0, 0, 1); 
+		value = value < 0.5f ? Interpolation.fade.apply(2 * value) : 1 - Interpolation.fade.apply(2 * value - 1);
+		value = 0.2f + value * 0.8f; // avoid black
+
+		synchronized (this) {
+			switch (colorCycle) {
+			case 0:
+				Gdx.gl.glClearColor(value, 0, 0, 1);
 				break;
-			case 1: 
-				Gdx.gl.glClearColor(0, value, 0, 1); 
+			case 1:
+				Gdx.gl.glClearColor(0, value, 0, 1);
 				break;
-			case 2: 
-				Gdx.gl.glClearColor(0, 0, value, 1); 
+			case 2:
+				Gdx.gl.glClearColor(0, 0, value, 1);
 				break;
 			}
 		}
-		
+
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		Camera cam = stage.getCamera();
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
-		batch.draw(region, cam.position.x - texture.getWidth() / 2, cam.position.y - texture.getHeight() / 2, 
-			texture.getWidth() / 2f, texture.getHeight() / 2f, (float)texture.getWidth(), (float)texture.getHeight(), 1f, 1f, -((elapsed / 2f) % 1f) * 360f);
+		batch.draw(region, cam.position.x - texture.getWidth() / 2, cam.position.y - texture.getHeight() / 2,
+			texture.getWidth() / 2f, texture.getHeight() / 2f, (float)texture.getWidth(), (float)texture.getHeight(), 1f, 1f,
+			-((elapsed / 2f) % 1f) * 360f);
 		batch.end();
-		
+
 		stage.act(delta);
 		stage.draw();
 	}
-	
-	private void populateTable (){
+
+	private void populateTable () {
 		Table root = new Table();
 		stage.addActor(root);
 		root.setFillParent(true);
 		root.pad(5);
 		root.defaults().left().space(5);
-		
+
 		Button button0 = new TextButton("Toggle continuous rendering", skin, "toggle");
-		button0.addListener(new ChangeListener(){
+		button0.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				boolean continuous = Gdx.graphics.isContinuousRendering();
 				Gdx.graphics.setContinuousRendering(!continuous);
 			}
 		});
 		root.add(button0).row();
-		
+
 		final String str1 = "2s sleep -> Application.postRunnable()";
 		Button button1 = new TextButton(str1, skin);
-		button1.addListener(new ChangeListener(){
+		button1.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				new Thread(new Runnable(){
+				new Thread(new Runnable() {
 					public void run () {
 						try {
 							Thread.sleep(2000);
-						} catch (InterruptedException ignored){}
+						} catch (InterruptedException ignored) {
+						}
 						nextColor();
-						Gdx.app.postRunnable(new Runnable(){
+						Gdx.app.postRunnable(new Runnable() {
 							public void run () {
 								Gdx.app.log(str1, "Posted runnable to Gdx.app");
 							}
 						});
-					}}).start();
-				
-			}});
+					}
+				}).start();
+
+			}
+		});
 		root.add(button1).row();
 
 		final String str2 = "2s sleep -> Graphics.requestRendering()";
 		Button button2 = new TextButton(str2, skin);
-		button2.addListener(new ChangeListener(){
+		button2.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				final Graphics graphics = Gdx.graphics; // caching necessary to ensure call on this window
-				new Thread(new Runnable(){
+				new Thread(new Runnable() {
 					public void run () {
 						try {
 							Thread.sleep(2000);
-						} catch (InterruptedException ignored){}
+						} catch (InterruptedException ignored) {
+						}
 						nextColor();
 						graphics.requestRendering();
 						Gdx.app.log(str2, "Called Gdx.graphics.requestRendering()");
-					}}).start();
-				
-			}});
+					}
+				}).start();
+
+			}
+		});
 		root.add(button2).row();
-		
+
 		final String str3 = "2s Timer -> Application.postRunnable()";
 		Button button3 = new TextButton(str3, skin);
-		button3.addListener(new ChangeListener(){
+		button3.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				Timer.schedule(new Task(){
+				Timer.schedule(new Task() {
 					public void run () {
 						nextColor();
-						Gdx.app.postRunnable(new Runnable(){
+						Gdx.app.postRunnable(new Runnable() {
 							public void run () {
 								Gdx.app.log(str3, "Posted runnable to Gdx.app");
 							}
 						});
-					}}, 2f);
-			}});
+					}
+				}, 2f);
+			}
+		});
 		root.add(button3).row();
-		
+
 		final String str4 = "2s DelayAction";
 		Button button4 = new TextButton(str4, skin);
-		button4.addListener(new ChangeListener(){
+		button4.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				stage.addAction(Actions.sequence(Actions.delay(2), Actions.run(new Runnable(){
+				stage.addAction(Actions.sequence(Actions.delay(2), Actions.run(new Runnable() {
 					public void run () {
 						nextColor();
 						Gdx.app.log(str4, "RunnableAction executed");
 					}
 				})));
-			}});
+			}
+		});
 		root.add(button4).row();
-		
+
 		final String str5 = "(2s sleep -> toggle continuous) 2X";
 		Button button5 = new TextButton(str5, skin);
-		button5.addListener(new ChangeListener(){
+		button5.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				final Graphics graphics = Gdx.graphics; // caching necessary to ensure call on this window
-				new Thread(new Runnable(){
+				new Thread(new Runnable() {
 					public void run () {
-						for (int i=0; i<2; i++){
+						for (int i = 0; i < 2; i++) {
 							try {
 								Thread.sleep(2000);
-							} catch (InterruptedException ignored){}
+							} catch (InterruptedException ignored) {
+							}
 							nextColor();
 							boolean continuous = graphics.isContinuousRendering();
 							graphics.setContinuousRendering(!continuous);
 							Gdx.app.log(str5, "Toggled continuous");
 						}
-					}}).start();
-				
-			}});
+					}
+				}).start();
+
+			}
+		});
 		root.add(button5).row();
-		
+
 		final CheckBox actionsRequestRendering = new CheckBox("ActionsRequestRendering", skin);
 		actionsRequestRendering.setChecked(true);
 		actionsRequestRendering.addListener(new ChangeListener() {
@@ -226,17 +238,17 @@ public class NoncontinuousRenderingTest extends GdxTest {
 			}
 		});
 		root.add(actionsRequestRendering).row();
-		
+
 		Drawable knobDown = skin.newDrawable("default-slider-knob", Color.GRAY);
 		SliderStyle sliderStyle = skin.get("default-horizontal", SliderStyle.class);
 		sliderStyle.knobDown = knobDown;
-		Slider slider = new Slider (0, 100, 1, false, sliderStyle);
+		Slider slider = new Slider(0, 100, 1, false, sliderStyle);
 		root.add(slider).row();
-		
+
 		SelectBox<Pixmap.Format> selectBox = new SelectBox(skin);
 		selectBox.setItems(Pixmap.Format.values());
 		root.add(selectBox).row();
-		
+
 		root.add();
 		root.add().grow();
 	}
@@ -245,9 +257,9 @@ public class NoncontinuousRenderingTest extends GdxTest {
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
 	}
-	
+
 	@Override
-	public void dispose (){
+	public void dispose () {
 		batch.dispose();
 		texture.dispose();
 		stage.dispose();

@@ -36,16 +36,16 @@ public class MotorJointDef extends JointDef {
 
 	/** Position of bodyB minus the position of bodyA, in bodyA's frame, in meters. */
 	public final Vector2 linearOffset = new Vector2();
-	
+
 	/** The bodyB angle minus bodyA angle in radians. */
 	public float angularOffset = 0.0f;
-	
+
 	/** The maximum motor force in N. */
 	public float maxForce = 1.0f;
-	
+
 	/** The maximum motor torque in N-m. */
 	public float maxTorque = 1.0f;
-	
+
 	/** Position correction factor in the range [0,1]. */
 	public float correctionFactor = 0.3f;
 

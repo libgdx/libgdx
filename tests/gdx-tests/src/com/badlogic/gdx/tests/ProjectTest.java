@@ -56,8 +56,8 @@ public class ProjectTest extends GdxTest {
 		cam.far = 200;
 		Random rand = new Random();
 		for (int i = 0; i < instances.length; i++) {
-			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100
-				- rand.nextFloat() * 100, rand.nextFloat() * -100 - 3);
+			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100,
+				rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * -100 - 3);
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();

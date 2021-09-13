@@ -8,47 +8,44 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btPoint2PointConstraint extends btTypedConstraint {
 	private long swigCPtr;
-	
-	protected btPoint2PointConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPoint2PointConstraint (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.btPoint2PointConstraint_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btPoint2PointConstraint, normally you should not need this constructor it's intended for low-level usage. */
-	public btPoint2PointConstraint(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btPoint2PointConstraint, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btPoint2PointConstraint (long cPtr, boolean cMemoryOwn) {
 		this("btPoint2PointConstraint", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.btPoint2PointConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPoint2PointConstraint obj) {
+
+	public static long getCPtr (btPoint2PointConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,109 +56,112 @@ public class btPoint2PointConstraint extends btTypedConstraint {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return DynamicsJNI.btPoint2PointConstraint_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return DynamicsJNI.btPoint2PointConstraint_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    DynamicsJNI.btPoint2PointConstraint_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		DynamicsJNI.btPoint2PointConstraint_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return DynamicsJNI.btPoint2PointConstraint_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return DynamicsJNI.btPoint2PointConstraint_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    DynamicsJNI.btPoint2PointConstraint_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		DynamicsJNI.btPoint2PointConstraint_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return DynamicsJNI.btPoint2PointConstraint_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return DynamicsJNI.btPoint2PointConstraint_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    DynamicsJNI.btPoint2PointConstraint_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		DynamicsJNI.btPoint2PointConstraint_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return DynamicsJNI.btPoint2PointConstraint_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return DynamicsJNI.btPoint2PointConstraint_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    DynamicsJNI.btPoint2PointConstraint_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		DynamicsJNI.btPoint2PointConstraint_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public void setUseSolveConstraintObsolete(boolean value) {
-    DynamicsJNI.btPoint2PointConstraint_useSolveConstraintObsolete_set(swigCPtr, this, value);
-  }
+	public void setUseSolveConstraintObsolete (boolean value) {
+		DynamicsJNI.btPoint2PointConstraint_useSolveConstraintObsolete_set(swigCPtr, this, value);
+	}
 
-  public boolean getUseSolveConstraintObsolete() {
-    return DynamicsJNI.btPoint2PointConstraint_useSolveConstraintObsolete_get(swigCPtr, this);
-  }
+	public boolean getUseSolveConstraintObsolete () {
+		return DynamicsJNI.btPoint2PointConstraint_useSolveConstraintObsolete_get(swigCPtr, this);
+	}
 
-  public void setSetting(btConstraintSetting value) {
-    DynamicsJNI.btPoint2PointConstraint_setting_set(swigCPtr, this, btConstraintSetting.getCPtr(value), value);
-  }
+	public void setSetting (btConstraintSetting value) {
+		DynamicsJNI.btPoint2PointConstraint_setting_set(swigCPtr, this, btConstraintSetting.getCPtr(value), value);
+	}
 
-  public btConstraintSetting getSetting() {
-    long cPtr = DynamicsJNI.btPoint2PointConstraint_setting_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btConstraintSetting(cPtr, false);
-  }
+	public btConstraintSetting getSetting () {
+		long cPtr = DynamicsJNI.btPoint2PointConstraint_setting_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btConstraintSetting(cPtr, false);
+	}
 
-  public btPoint2PointConstraint(btRigidBody rbA, btRigidBody rbB, Vector3 pivotInA, Vector3 pivotInB) {
-    this(DynamicsJNI.new_btPoint2PointConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, pivotInA, pivotInB), true);
-  }
+	public btPoint2PointConstraint (btRigidBody rbA, btRigidBody rbB, Vector3 pivotInA, Vector3 pivotInB) {
+		this(DynamicsJNI.new_btPoint2PointConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, pivotInA,
+			pivotInB), true);
+	}
 
-  public btPoint2PointConstraint(btRigidBody rbA, Vector3 pivotInA) {
-    this(DynamicsJNI.new_btPoint2PointConstraint__SWIG_1(btRigidBody.getCPtr(rbA), rbA, pivotInA), true);
-  }
+	public btPoint2PointConstraint (btRigidBody rbA, Vector3 pivotInA) {
+		this(DynamicsJNI.new_btPoint2PointConstraint__SWIG_1(btRigidBody.getCPtr(rbA), rbA, pivotInA), true);
+	}
 
-  public void getInfo1NonVirtual(btTypedConstraint.btConstraintInfo1 info) {
-    DynamicsJNI.btPoint2PointConstraint_getInfo1NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo1.getCPtr(info), info);
-  }
+	public void getInfo1NonVirtual (btTypedConstraint.btConstraintInfo1 info) {
+		DynamicsJNI.btPoint2PointConstraint_getInfo1NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo1.getCPtr(info),
+			info);
+	}
 
-  public void getInfo2NonVirtual(btTypedConstraint.btConstraintInfo2 info, Matrix4 body0_trans, Matrix4 body1_trans) {
-    DynamicsJNI.btPoint2PointConstraint_getInfo2NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo2.getCPtr(info), info, body0_trans, body1_trans);
-  }
+	public void getInfo2NonVirtual (btTypedConstraint.btConstraintInfo2 info, Matrix4 body0_trans, Matrix4 body1_trans) {
+		DynamicsJNI.btPoint2PointConstraint_getInfo2NonVirtual(swigCPtr, this, btTypedConstraint.btConstraintInfo2.getCPtr(info),
+			info, body0_trans, body1_trans);
+	}
 
-  public void updateRHS(float timeStep) {
-    DynamicsJNI.btPoint2PointConstraint_updateRHS(swigCPtr, this, timeStep);
-  }
+	public void updateRHS (float timeStep) {
+		DynamicsJNI.btPoint2PointConstraint_updateRHS(swigCPtr, this, timeStep);
+	}
 
-  public void setPivotA(Vector3 pivotA) {
-    DynamicsJNI.btPoint2PointConstraint_setPivotA(swigCPtr, this, pivotA);
-  }
+	public void setPivotA (Vector3 pivotA) {
+		DynamicsJNI.btPoint2PointConstraint_setPivotA(swigCPtr, this, pivotA);
+	}
 
-  public void setPivotB(Vector3 pivotB) {
-    DynamicsJNI.btPoint2PointConstraint_setPivotB(swigCPtr, this, pivotB);
-  }
+	public void setPivotB (Vector3 pivotB) {
+		DynamicsJNI.btPoint2PointConstraint_setPivotB(swigCPtr, this, pivotB);
+	}
 
-  public Vector3 getPivotInA() {
-	return DynamicsJNI.btPoint2PointConstraint_getPivotInA(swigCPtr, this);
-}
+	public Vector3 getPivotInA () {
+		return DynamicsJNI.btPoint2PointConstraint_getPivotInA(swigCPtr, this);
+	}
 
-  public Vector3 getPivotInB() {
-	return DynamicsJNI.btPoint2PointConstraint_getPivotInB(swigCPtr, this);
-}
+	public Vector3 getPivotInB () {
+		return DynamicsJNI.btPoint2PointConstraint_getPivotInB(swigCPtr, this);
+	}
 
-  public void setParam(int num, float value, int axis) {
-    DynamicsJNI.btPoint2PointConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
-  }
+	public void setParam (int num, float value, int axis) {
+		DynamicsJNI.btPoint2PointConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
+	}
 
-  public void setParam(int num, float value) {
-    DynamicsJNI.btPoint2PointConstraint_setParam__SWIG_1(swigCPtr, this, num, value);
-  }
+	public void setParam (int num, float value) {
+		DynamicsJNI.btPoint2PointConstraint_setParam__SWIG_1(swigCPtr, this, num, value);
+	}
 
-  public float getParam(int num, int axis) {
-    return DynamicsJNI.btPoint2PointConstraint_getParam__SWIG_0(swigCPtr, this, num, axis);
-  }
+	public float getParam (int num, int axis) {
+		return DynamicsJNI.btPoint2PointConstraint_getParam__SWIG_0(swigCPtr, this, num, axis);
+	}
 
-  public float getParam(int num) {
-    return DynamicsJNI.btPoint2PointConstraint_getParam__SWIG_1(swigCPtr, this, num);
-  }
+	public float getParam (int num) {
+		return DynamicsJNI.btPoint2PointConstraint_getParam__SWIG_1(swigCPtr, this, num);
+	}
 
-  public int getFlags() {
-    return DynamicsJNI.btPoint2PointConstraint_getFlags(swigCPtr, this);
-  }
+	public int getFlags () {
+		return DynamicsJNI.btPoint2PointConstraint_getFlags(swigCPtr, this);
+	}
 
 }

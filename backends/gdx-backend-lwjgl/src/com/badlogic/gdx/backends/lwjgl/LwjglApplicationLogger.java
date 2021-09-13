@@ -18,9 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for Lwjgl
- */
+/** Default implementation of {@link ApplicationLogger} for Lwjgl */
 public class LwjglApplicationLogger implements ApplicationLogger {
 
 	@Override

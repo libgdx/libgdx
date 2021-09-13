@@ -64,7 +64,7 @@ public class CubemapAttribute extends Attribute {
 		result = 967 * result + textureDescription.hashCode();
 		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return (int)(type - o.type);

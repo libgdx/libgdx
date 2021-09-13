@@ -10,43 +10,39 @@ package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btGeometryUtil extends BulletBase {
 	private long swigCPtr;
-	
-	protected btGeometryUtil(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btGeometryUtil (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btGeometryUtil, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btGeometryUtil(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btGeometryUtil, normally you should not need this constructor it's intended for low-level usage. */
+	public btGeometryUtil (long cPtr, boolean cMemoryOwn) {
 		this("btGeometryUtil", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btGeometryUtil obj) {
+
+	public static long getCPtr (btGeometryUtil obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,28 +53,31 @@ public class btGeometryUtil extends BulletBase {
 		super.delete();
 	}
 
-  public static void getPlaneEquationsFromVertices(btVector3Array vertices, btVector3Array planeEquationsOut) {
-    LinearMathJNI.btGeometryUtil_getPlaneEquationsFromVertices(btVector3Array.getCPtr(vertices), vertices, btVector3Array.getCPtr(planeEquationsOut), planeEquationsOut);
-  }
+	public static void getPlaneEquationsFromVertices (btVector3Array vertices, btVector3Array planeEquationsOut) {
+		LinearMathJNI.btGeometryUtil_getPlaneEquationsFromVertices(btVector3Array.getCPtr(vertices), vertices,
+			btVector3Array.getCPtr(planeEquationsOut), planeEquationsOut);
+	}
 
-  public static void getVerticesFromPlaneEquations(btVector3Array planeEquations, btVector3Array verticesOut) {
-    LinearMathJNI.btGeometryUtil_getVerticesFromPlaneEquations(btVector3Array.getCPtr(planeEquations), planeEquations, btVector3Array.getCPtr(verticesOut), verticesOut);
-  }
+	public static void getVerticesFromPlaneEquations (btVector3Array planeEquations, btVector3Array verticesOut) {
+		LinearMathJNI.btGeometryUtil_getVerticesFromPlaneEquations(btVector3Array.getCPtr(planeEquations), planeEquations,
+			btVector3Array.getCPtr(verticesOut), verticesOut);
+	}
 
-  public static boolean isInside(btVector3Array vertices, Vector3 planeNormal, float margin) {
-    return LinearMathJNI.btGeometryUtil_isInside(btVector3Array.getCPtr(vertices), vertices, planeNormal, margin);
-  }
+	public static boolean isInside (btVector3Array vertices, Vector3 planeNormal, float margin) {
+		return LinearMathJNI.btGeometryUtil_isInside(btVector3Array.getCPtr(vertices), vertices, planeNormal, margin);
+	}
 
-  public static boolean isPointInsidePlanes(btVector3Array planeEquations, Vector3 point, float margin) {
-    return LinearMathJNI.btGeometryUtil_isPointInsidePlanes(btVector3Array.getCPtr(planeEquations), planeEquations, point, margin);
-  }
+	public static boolean isPointInsidePlanes (btVector3Array planeEquations, Vector3 point, float margin) {
+		return LinearMathJNI.btGeometryUtil_isPointInsidePlanes(btVector3Array.getCPtr(planeEquations), planeEquations, point,
+			margin);
+	}
 
-  public static boolean areVerticesBehindPlane(Vector3 planeNormal, btVector3Array vertices, float margin) {
-    return LinearMathJNI.btGeometryUtil_areVerticesBehindPlane(planeNormal, btVector3Array.getCPtr(vertices), vertices, margin);
-  }
+	public static boolean areVerticesBehindPlane (Vector3 planeNormal, btVector3Array vertices, float margin) {
+		return LinearMathJNI.btGeometryUtil_areVerticesBehindPlane(planeNormal, btVector3Array.getCPtr(vertices), vertices, margin);
+	}
 
-  public btGeometryUtil() {
-    this(LinearMathJNI.new_btGeometryUtil(), true);
-  }
+	public btGeometryUtil () {
+		this(LinearMathJNI.new_btGeometryUtil(), true);
+	}
 
 }

@@ -8,54 +8,45 @@
 
 package com.badlogic.gdx.physics.bullet.extras;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.physics.bullet.inversedynamics.MultiBodyTree;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btContactSolverInfo;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 
 import java.nio.Buffer;
 
 public class btBulletWorldImporter extends btWorldImporter {
 	private long swigCPtr;
 
-	protected btBulletWorldImporter(final String className, long cPtr, boolean cMemoryOwn) {
+	protected btBulletWorldImporter (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, ExtrasJNI.btBulletWorldImporter_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 
 	/** Construct a new btBulletWorldImporter, normally you should not need this constructor it's intended for low-level usage. */
-	public btBulletWorldImporter(long cPtr, boolean cMemoryOwn) {
+	public btBulletWorldImporter (long cPtr, boolean cMemoryOwn) {
 		this("btBulletWorldImporter", cPtr, cMemoryOwn);
 		construct();
 	}
 
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(ExtrasJNI.btBulletWorldImporter_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
 
-	public static long getCPtr(btBulletWorldImporter obj) {
+	public static long getCPtr (btBulletWorldImporter obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -66,64 +57,67 @@ public class btBulletWorldImporter extends btWorldImporter {
 		super.delete();
 	}
 
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
+	protected void swigDirectorDisconnect () {
+		swigCMemOwn = false;
+		delete();
+	}
 
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    ExtrasJNI.btBulletWorldImporter_change_ownership(this, swigCPtr, false);
-  }
+	public void swigReleaseOwnership () {
+		swigCMemOwn = false;
+		ExtrasJNI.btBulletWorldImporter_change_ownership(this, swigCPtr, false);
+	}
 
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    ExtrasJNI.btBulletWorldImporter_change_ownership(this, swigCPtr, true);
-  }
+	public void swigTakeOwnership () {
+		swigCMemOwn = true;
+		ExtrasJNI.btBulletWorldImporter_change_ownership(this, swigCPtr, true);
+	}
 
-	public boolean loadFile(final com.badlogic.gdx.files.FileHandle fileHandle) {
+	public boolean loadFile (final com.badlogic.gdx.files.FileHandle fileHandle) {
 		final int len = (int)fileHandle.length();
-		if (len <= 0)
-			throw new com.badlogic.gdx.utils.GdxRuntimeException("Incorrect file specified");
+		if (len <= 0) throw new com.badlogic.gdx.utils.GdxRuntimeException("Incorrect file specified");
 		java.nio.ByteBuffer buff = com.badlogic.gdx.utils.BufferUtils.newUnsafeByteBuffer(len);
 		buff.put(fileHandle.readBytes());
-		((Buffer) buff).position(0);
+		((Buffer)buff).position(0);
 		boolean result = loadFileFromMemory(buff, len);
 		com.badlogic.gdx.utils.BufferUtils.disposeUnsafeByteBuffer(buff);
 		return result;
 	}
 
-  public btBulletWorldImporter(btDynamicsWorld world) {
-    this(ExtrasJNI.new_btBulletWorldImporter__SWIG_0(btDynamicsWorld.getCPtr(world), world), true);
-    ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
-  }
+	public btBulletWorldImporter (btDynamicsWorld world) {
+		this(ExtrasJNI.new_btBulletWorldImporter__SWIG_0(btDynamicsWorld.getCPtr(world), world), true);
+		ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
+	}
 
-  public btBulletWorldImporter() {
-    this(ExtrasJNI.new_btBulletWorldImporter__SWIG_1(), true);
-    ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
-  }
+	public btBulletWorldImporter () {
+		this(ExtrasJNI.new_btBulletWorldImporter__SWIG_1(), true);
+		ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
+	}
 
-  public boolean loadFile(String fileName, String preSwapFilenameOut) {
-    return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_0(swigCPtr, this, fileName, preSwapFilenameOut);
-  }
+	public boolean loadFile (String fileName, String preSwapFilenameOut) {
+		return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_0(swigCPtr, this, fileName, preSwapFilenameOut);
+	}
 
-  public boolean loadFile(String fileName) {
-    return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_1(swigCPtr, this, fileName);
-  }
+	public boolean loadFile (String fileName) {
+		return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_1(swigCPtr, this, fileName);
+	}
 
-  public boolean loadFileFromMemory(SWIGTYPE_p_bParse__btBulletFile file) {
-    return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_0(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
-  }
+	public boolean loadFileFromMemory (SWIGTYPE_p_bParse__btBulletFile file) {
+		return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_0(swigCPtr, this,
+			SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
+	}
 
-  public boolean convertAllObjects(SWIGTYPE_p_bParse__btBulletFile file) {
-    return (getClass() == btBulletWorldImporter.class) ? ExtrasJNI.btBulletWorldImporter_convertAllObjects(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file)) : ExtrasJNI.btBulletWorldImporter_convertAllObjectsSwigExplicitbtBulletWorldImporter(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
-  }
+	public boolean convertAllObjects (SWIGTYPE_p_bParse__btBulletFile file) {
+		return (getClass() == btBulletWorldImporter.class)
+			? ExtrasJNI.btBulletWorldImporter_convertAllObjects(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file))
+			: ExtrasJNI.btBulletWorldImporter_convertAllObjectsSwigExplicitbtBulletWorldImporter(swigCPtr, this,
+				SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
+	}
 
-  public boolean loadFileFromMemory(java.nio.ByteBuffer memoryBuffer, int len) {
-    assert memoryBuffer.isDirect() : "Buffer must be allocated direct.";
-    {
-      return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_1(swigCPtr, this, memoryBuffer, len);
-    }
-  }
+	public boolean loadFileFromMemory (java.nio.ByteBuffer memoryBuffer, int len) {
+		assert memoryBuffer.isDirect() : "Buffer must be allocated direct.";
+		{
+			return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_1(swigCPtr, this, memoryBuffer, len);
+		}
+	}
 
 }

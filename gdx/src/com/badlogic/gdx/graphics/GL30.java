@@ -1394,10 +1394,7 @@ public interface GL30 extends GL20 {
 
 	@Override
 	@Deprecated
-	/**
-	 * In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid.
-	 * Use the other version of this function instead, pass a zero-based offset which references
-	 * the buffer currently bound to GL_ARRAY_BUFFER.
-	 */
-	void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
+	/** In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid. Use the other version of this function
+	 * instead, pass a zero-based offset which references the buffer currently bound to GL_ARRAY_BUFFER. */
+	void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 }

@@ -89,8 +89,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<UITouch>(UITouch.class);
-	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(UIAcceleration.class);
-	
+	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(
+		UIAcceleration.class);
+
 	IOSApplication app;
 	IOSApplicationConfiguration config;
 	int[] deltaX = new int[MAX_TOUCHES];
@@ -123,7 +124,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
-	//CMMotionManager motionManager;
+	// CMMotionManager motionManager;
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
@@ -139,13 +140,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public void setupPeripherals () {
-		//motionManager = new CMMotionManager();
+		// motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
 		UIDevice device = UIDevice.getCurrentDevice();
 		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 
-		if (app.getVersion() >= 9){
+		if (app.getVersion() >= 9) {
 			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
@@ -153,10 +154,10 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	protected void setupCompass () {
 		if (config.useCompass) {
-			//setupMagnetometer();
+			// setupMagnetometer();
 		}
 	}
-	
+
 	protected void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
@@ -180,79 +181,79 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
-//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;	
-//	private void setupAccelerometer () {
-//		if (config.useAccelerometer) {
-//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);			
-//			accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
-//				@Override
-//				public void invoke(CMAccelerometerData accelData, NSError error) {
-//					updateAccelerometer(accelData);					
-//				}
-//			};
-//			motionManager.startAccelerometerUpdates(new NSOperationQueue(), accelVoid);
-//		}
-//	}
-	
+// VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;
+// private void setupAccelerometer () {
+// if (config.useAccelerometer) {
+// motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
+// accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
+// @Override
+// public void invoke(CMAccelerometerData accelData, NSError error) {
+// updateAccelerometer(accelData);
+// }
+// };
+// motionManager.startAccelerometerUpdates(new NSOperationQueue(), accelVoid);
+// }
+// }
+
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
-//	VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
-//	private void setupMagnetometer () {
-//		if (motionManager.isMagnetometerAvailable() && config.useCompass) compassSupported = true;
-//		else return;
-//		motionManager.setMagnetometerUpdateInterval(config.magnetometerUpdate);
-//		magnetVoid = new VoidBlock2<CMMagnetometerData, NSError>() {
-//			@Override
-//			public void invoke(CMMagnetometerData magnetData, NSError error) {
-//				updateRotation(magnetData);
-//			}
-//		};
-//		motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
-//	}
-	
-//	private void updateAccelerometer (CMAccelerometerData data) {
-//		float x = (float) data.getAcceleration().x() * 10f;
-//		float y = (float) data.getAcceleration().y() * 10f;
-//		float z = (float) data.getAcceleration().z() * 10f;
-//		acceleration[0] = -x;
-//		acceleration[1] = -y;
-//		acceleration[2] = -z;
-//	}
-//	
-//	private void updateRotation (CMMagnetometerData data) {
-//		final float eX = (float) data.getMagneticField().x();
-//		final float eY = (float) data.getMagneticField().y();
-//		final float eZ = (float) data.getMagneticField().z();
-//				
-//		float gX = acceleration[0];
-//		float gY = acceleration[1];
-//		float gZ = acceleration[2];
-//		
-//		float cX = eY * gZ - eZ * gY;
-//		float cY = eZ * gX - eX * gZ;
-//		float cZ = eX * gY - eY * gX;
-//		
-//		final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
-//		final float invertC = 1.0f / normal;
-//		cX *= invertC;
-//		cY *= invertC;
-//		cZ *= invertC;
-//		final float invertG = 1.0f / (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-//		gX *= invertG;
-//		gY *= invertG;
-//		gZ *= invertG;
-//		final float mX = gY * cZ - gZ * cY;
-//		final float mY = gZ * cX - gX * cZ;
-//		final float mZ = gX * cY - gY * cX;
-//		
-//		R[0] = cX;	R[1] = cY;	R[2] = cZ;
-//		R[3] = mX;	R[4] = mY;	R[5] = mZ;
-//		R[6] = gX;	R[7] = gY;	R[8] = gZ;
-//		
-//		rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
-//		rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
-//		rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
-//	}
+// VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
+// private void setupMagnetometer () {
+// if (motionManager.isMagnetometerAvailable() && config.useCompass) compassSupported = true;
+// else return;
+// motionManager.setMagnetometerUpdateInterval(config.magnetometerUpdate);
+// magnetVoid = new VoidBlock2<CMMagnetometerData, NSError>() {
+// @Override
+// public void invoke(CMMagnetometerData magnetData, NSError error) {
+// updateRotation(magnetData);
+// }
+// };
+// motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
+// }
+
+// private void updateAccelerometer (CMAccelerometerData data) {
+// float x = (float) data.getAcceleration().x() * 10f;
+// float y = (float) data.getAcceleration().y() * 10f;
+// float z = (float) data.getAcceleration().z() * 10f;
+// acceleration[0] = -x;
+// acceleration[1] = -y;
+// acceleration[2] = -z;
+// }
+//
+// private void updateRotation (CMMagnetometerData data) {
+// final float eX = (float) data.getMagneticField().x();
+// final float eY = (float) data.getMagneticField().y();
+// final float eZ = (float) data.getMagneticField().z();
+//
+// float gX = acceleration[0];
+// float gY = acceleration[1];
+// float gZ = acceleration[2];
+//
+// float cX = eY * gZ - eZ * gY;
+// float cY = eZ * gX - eX * gZ;
+// float cZ = eX * gY - eY * gX;
+//
+// final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
+// final float invertC = 1.0f / normal;
+// cX *= invertC;
+// cY *= invertC;
+// cZ *= invertC;
+// final float invertG = 1.0f / (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+// gX *= invertG;
+// gY *= invertG;
+// gZ *= invertG;
+// final float mX = gY * cZ - gZ * cY;
+// final float mY = gZ * cX - gX * cZ;
+// final float mZ = gX * cY - gY * cX;
+//
+// R[0] = cX; R[1] = cY; R[2] = cZ;
+// R[3] = mX; R[4] = mY; R[5] = mZ;
+// R[6] = gX; R[7] = gY; R[8] = gZ;
+//
+// rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
+// rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
+// rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
+// }
 
 	@Override
 	public float getAccelerometerX () {
@@ -268,7 +269,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
-	
 
 	@Override
 	public float getAzimuth () {
@@ -291,7 +291,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	@Override
 	public void getRotationMatrix (float[] matrix) {
 		if (matrix.length != 9) return;
-		//TODO implement when azimuth is fixed
+		// TODO implement when azimuth is fixed
 	}
 
 	@Override
@@ -375,20 +375,20 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
+	public boolean isButtonJustPressed (int button) {
 		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint, type);
 		app.getUIViewController().presentViewController(uiAlertController, true, null);
-	}	
+	}
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
@@ -448,7 +448,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		softkeyboardActive = visible;
 		if (visible) {
 			UIKeyboardType preferredInputType;
-			if(type == null) type = OnscreenKeyboardType.Default;
+			if (type == null) type = OnscreenKeyboardType.Default;
 			textfield.setKeyboardType(getIosInputType(type));
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
@@ -457,45 +457,43 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}
 	}
 
-	protected UIKeyboardType getIosInputType(OnscreenKeyboardType type) {
+	protected UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
 		UIKeyboardType preferredInputType;
 		switch (type) {
-			case NumberPad:
-				preferredInputType = UIKeyboardType.NumberPad;
-				break;
-			case PhonePad:
-				preferredInputType = UIKeyboardType.PhonePad;
-				break;
-			case Email:
-				preferredInputType = UIKeyboardType.EmailAddress;
-				break;
-			case URI:
-				preferredInputType = UIKeyboardType.URL;
-				break;
-			case Password: //no equivalent in UIKeyboardType?
-			default:
-				preferredInputType = UIKeyboardType.Default;
-				break;
+		case NumberPad:
+			preferredInputType = UIKeyboardType.NumberPad;
+			break;
+		case PhonePad:
+			preferredInputType = UIKeyboardType.PhonePad;
+			break;
+		case Email:
+			preferredInputType = UIKeyboardType.EmailAddress;
+			break;
+		case URI:
+			preferredInputType = UIKeyboardType.URL;
+			break;
+		case Password: // no equivalent in UIKeyboardType?
+		default:
+			preferredInputType = UIKeyboardType.Default;
+			break;
 		}
 		return preferredInputType;
 	}
 
-	/**
-	 * Set the keyboard to close when the UITextField return key is pressed
-	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
-	 */
+	/** Set the keyboard to close when the UITextField return key is pressed
+	 * @param shouldClose Whether or not the keyboard should clsoe on return key press */
 	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
 		keyboardCloseOnReturn = shouldClose;
 	}
-	
+
 	public UITextField getKeyboardTextField () {
 		if (textfield == null) createDefaultTextField();
 		return textfield;
 	}
-	
+
 	private void createDefaultTextField () {
 		textfield = new UITextField(new CGRect(10, 10, 100, 50));
-		//Parameters
+		// Parameters
 		// Setting parameters
 		textfield.setKeyboardType(UIKeyboardType.Default);
 		textfield.setReturnKeyType(UIReturnKeyType.Done);
@@ -507,18 +505,19 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		textfield.setText("x");
 		app.getUIViewController().getView().addSubview(textfield);
 	}
-	
+
 	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
 	 * @param type
 	 * @return UIAlertController */
-	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder, final OnscreenKeyboardType type) {
+	private UIAlertController buildUIAlertController (final TextInputListener listener, String title, final String text,
+		final String placeholder, final OnscreenKeyboardType type) {
 		final UIAlertController uiAlertController = new UIAlertController(title, text, UIAlertControllerStyle.Alert);
 		uiAlertController.addTextField(new VoidBlock1<UITextField>() {
 			@Override
-			public void invoke(UITextField uiTextField) {
+			public void invoke (UITextField uiTextField) {
 				uiTextField.setPlaceholder(placeholder);
 				uiTextField.setText(text);
 				uiTextField.setKeyboardType(getIosInputType(type));
@@ -530,7 +529,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		});
 		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {
 			@Override
-			public void invoke(UIAlertAction uiAlertAction) {
+			public void invoke (UIAlertAction uiAlertAction) {
 				// user clicked "Ok" button
 				UITextField textField = uiAlertController.getTextFields().get(0);
 				listener.input(textField.getText());
@@ -538,7 +537,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}));
 		uiAlertController.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Cancel, new VoidBlock1<UIAlertAction>() {
 			@Override
-			public void invoke(UIAlertAction uiAlertAction) {
+			public void invoke (UIAlertAction uiAlertAction) {
 				// user clicked "Cancel" button
 				listener.canceled();
 			}
@@ -636,65 +635,64 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public boolean onKey(UIKey key, boolean down) {
+	public boolean onKey (UIKey key, boolean down) {
 		if (key == null) {
 			return false;
 		}
 
 		int keyCode = getGdxKeyCode(key);
 
-		if (keyCode != Keys.UNKNOWN)
-			synchronized (keyEvents) {
-				hadHardwareKeyEvent = true;
+		if (keyCode != Keys.UNKNOWN) synchronized (keyEvents) {
+			hadHardwareKeyEvent = true;
 
-				KeyEvent event = keyEventPool.obtain();
-				long timeStamp = System.nanoTime();
-				event.timeStamp = timeStamp;
-				event.keyChar = 0;
-				event.keyCode = keyCode;
-				event.type = down ? KeyEvent.KEY_DOWN : KeyEvent.KEY_UP;
-				keyEvents.add(event);
+			KeyEvent event = keyEventPool.obtain();
+			long timeStamp = System.nanoTime();
+			event.timeStamp = timeStamp;
+			event.keyChar = 0;
+			event.keyCode = keyCode;
+			event.type = down ? KeyEvent.KEY_DOWN : KeyEvent.KEY_UP;
+			keyEvents.add(event);
 
-				if (!down) {
-					char character;
+			if (!down) {
+				char character;
 
-					switch (keyCode) {
-						case Keys.DEL:
-							character = 8;
-							break;
-						case Keys.FORWARD_DEL:
-							character = 127;
-							break;
-						case Keys.ENTER:
-							character = 13;
-							break;
-						default:
-							String characters = key.getCharacters();
-							// special keys return constants like "UIKeyInputF5", so we check for length 1
-							character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
-					}
-
-					if (character >= 0) {
-						event = keyEventPool.obtain();
-						event.timeStamp = timeStamp;
-						event.type = KeyEvent.KEY_TYPED;
-						event.keyCode = keyCode;
-						event.keyChar = character;
-						keyEvents.add(event);
-					}
-
-					if (pressedKeys[keyCode]) {
-						pressedKeyCount--;
-						pressedKeys[keyCode] = false;
-					}
-				} else {
-					if (!pressedKeys[event.keyCode]) {
-						pressedKeyCount++;
-						pressedKeys[event.keyCode] = true;
-					}
+				switch (keyCode) {
+				case Keys.DEL:
+					character = 8;
+					break;
+				case Keys.FORWARD_DEL:
+					character = 127;
+					break;
+				case Keys.ENTER:
+					character = 13;
+					break;
+				default:
+					String characters = key.getCharacters();
+					// special keys return constants like "UIKeyInputF5", so we check for length 1
+					character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
 				}
 
+				if (character >= 0) {
+					event = keyEventPool.obtain();
+					event.timeStamp = timeStamp;
+					event.type = KeyEvent.KEY_TYPED;
+					event.keyCode = keyCode;
+					event.keyChar = character;
+					keyEvents.add(event);
+				}
+
+				if (pressedKeys[keyCode]) {
+					pressedKeyCount--;
+					pressedKeys[keyCode] = false;
+				}
+			} else {
+				if (!pressedKeys[event.keyCode]) {
+					pressedKeyCount++;
+					pressedKeys[event.keyCode] = true;
+				}
 			}
+
+		}
 
 		return isCatchKey(keyCode);
 	}
@@ -735,18 +733,18 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			for (KeyEvent e : keyEvents) {
 				currentEventTimeStamp = e.timeStamp;
 				switch (e.type) {
-					case KeyEvent.KEY_DOWN:
-						if (inputProcessor != null) inputProcessor.keyDown(e.keyCode);
-						keyJustPressed = true;
-						justPressedKeys[e.keyCode] = true;
-						break;
-					case KeyEvent.KEY_UP:
-						if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
-						break;
-					case KeyEvent.KEY_TYPED:
-						// don't process key typed events if soft keyboard is active
-						// the soft keyboard hook already catches the changes
-						if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
+				case KeyEvent.KEY_DOWN:
+					if (inputProcessor != null) inputProcessor.keyDown(e.keyCode);
+					keyJustPressed = true;
+					justPressedKeys[e.keyCode] = true;
+					break;
+				case KeyEvent.KEY_UP:
+					if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
+					break;
+				case KeyEvent.KEY_TYPED:
+					// don't process key typed events if soft keyboard is active
+					// the soft keyboard hook already catches the changes
+					if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
 				}
 
 			}
@@ -800,13 +798,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			// Get and map the location to our drawing space
 			{
 				CGPoint loc = touch.getLocationInView(app.graphics.view);
-				locX = (int) (loc.getX() - screenBounds.x);
-				locY = (int) (loc.getY() - screenBounds.y);
+				locX = (int)(loc.getX() - screenBounds.x);
+				locY = (int)(loc.getY() - screenBounds.y);
 				if (config.hdpiMode == HdpiMode.Pixels) {
 					locX *= app.pixelsPerPoint;
 					locY *= app.pixelsPerPoint;
 				}
-				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
+				// app.debug("IOSInput","pos= "+loc+" bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
 			// if its not supported, we will simply use 1.0f when touch is present
@@ -886,24 +884,24 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public float getGyroscopeX() {
+	public float getGyroscopeX () {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public float getGyroscopeY() {
+	public float getGyroscopeY () {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public float getGyroscopeZ() {
+	public float getGyroscopeZ () {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	protected int getGdxKeyCode(UIKey key) {
+	protected int getGdxKeyCode (UIKey key) {
 		UIKeyboardHIDUsage keyCode;
 		try {
 			keyCode = key.getKeyCode();
@@ -912,271 +910,271 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}
 
 		switch (keyCode) {
-			case KeyboardA:
-				return Keys.A;
-			case KeyboardB:
-				return Keys.B;
-			case KeyboardC:
-				return Keys.C;
-			case KeyboardD:
-				return Keys.D;
-			case KeyboardE:
-				return Keys.E;
-			case KeyboardF:
-				return Keys.F;
-			case KeyboardG:
-				return Keys.G;
-			case KeyboardH:
-				return Keys.H;
-			case KeyboardI:
-				return Keys.I;
-			case KeyboardJ:
-				return Keys.J;
-			case KeyboardK:
-				return Keys.K;
-			case KeyboardL:
-				return Keys.L;
-			case KeyboardM:
-				return Keys.M;
-			case KeyboardN:
-				return Keys.N;
-			case KeyboardO:
-				return Keys.O;
-			case KeyboardP:
-				return Keys.P;
-			case KeyboardQ:
-				return Keys.Q;
-			case KeyboardR:
-				return Keys.R;
-			case KeyboardS:
-				return Keys.S;
-			case KeyboardT:
-				return Keys.T;
-			case KeyboardU:
-				return Keys.U;
-			case KeyboardV:
-				return Keys.V;
-			case KeyboardW:
-				return Keys.W;
-			case KeyboardX:
-				return Keys.X;
-			case KeyboardY:
-				return Keys.Y;
-			case KeyboardZ:
-				return Keys.Z;
-			case Keyboard1:
-				return Keys.NUM_1;
-			case Keyboard2:
-				return Keys.NUM_2;
-			case Keyboard3:
-				return Keys.NUM_3;
-			case Keyboard4:
-				return Keys.NUM_4;
-			case Keyboard5:
-				return Keys.NUM_5;
-			case Keyboard6:
-				return Keys.NUM_6;
-			case Keyboard7:
-				return Keys.NUM_7;
-			case Keyboard8:
-				return Keys.NUM_8;
-			case Keyboard9:
-				return Keys.NUM_9;
-			case Keyboard0:
-				return Keys.NUM_0;
-			case KeyboardReturnOrEnter:
-				return Keys.ENTER;
-			case KeyboardEscape:
-				return Keys.ESCAPE;
-			case KeyboardDeleteOrBackspace:
-				return Keys.BACKSPACE;
-			case KeyboardTab:
-				return Keys.TAB;
-			case KeyboardSpacebar:
-				return Keys.SPACE;
-			case KeyboardHyphen:
-				return Keys.MINUS;
-			case KeyboardEqualSign:
-				return Keys.EQUALS;
-			case KeyboardOpenBracket:
-				return Keys.LEFT_BRACKET;
-			case KeyboardCloseBracket:
-				return Keys.RIGHT_BRACKET;
-			case KeyboardBackslash:
-				return Keys.BACKSLASH;
-			case KeyboardNonUSPound:
-				return Keys.POUND;
-			case KeyboardSemicolon:
-				return Keys.SEMICOLON;
-			case KeyboardQuote:
-				return Keys.APOSTROPHE;
-			case KeyboardGraveAccentAndTilde:
-				return Keys.GRAVE;
-			case KeyboardComma:
-				return Keys.COMMA;
-			case KeyboardPeriod:
-				return Keys.PERIOD;
-			case KeyboardSlash:
-				return Keys.SLASH;
-			case KeyboardF1:
-				return Keys.F1;
-			case KeyboardF2:
-				return Keys.F2;
-			case KeyboardF3:
-				return Keys.F3;
-			case KeyboardF4:
-				return Keys.F4;
-			case KeyboardF5:
-				return Keys.F5;
-			case KeyboardF6:
-				return Keys.F6;
-			case KeyboardF7:
-				return Keys.F7;
-			case KeyboardF8:
-				return Keys.F8;
-			case KeyboardF9:
-				return Keys.F9;
-			case KeyboardF10:
-				return Keys.F10;
-			case KeyboardF11:
-				return Keys.F11;
-			case KeyboardF12:
-				return Keys.F12;
-			case KeyboardF13:
-				return Keys.F13;
-			case KeyboardF14:
-				return Keys.F14;
-			case KeyboardF15:
-				return Keys.F15;
-			case KeyboardF16:
-				return Keys.F16;
-			case KeyboardF17:
-				return Keys.F17;
-			case KeyboardF18:
-				return Keys.F18;
-			case KeyboardF19:
-				return Keys.F19;
-			case KeyboardF20:
-				return Keys.F20;
-			case KeyboardF21:
-				return Keys.F21;
-			case KeyboardF22:
-				return Keys.F22;
-			case KeyboardF23:
-				return Keys.F23;
-			case KeyboardF24:
-				return Keys.F24;
-			case KeyboardPause:
-				return Keys.PAUSE;
-			case KeyboardInsert:
-				return Keys.INSERT;
-			case KeyboardHome:
-				return Keys.HOME;
-			case KeyboardPageUp:
-				return Keys.PAGE_UP;
-			case KeyboardDeleteForward:
-				return Keys.FORWARD_DEL;
-			case KeyboardEnd:
-				return Keys.END;
-			case KeyboardPageDown:
-				return Keys.PAGE_DOWN;
-			case KeyboardRightArrow:
-				return Keys.RIGHT;
-			case KeyboardLeftArrow:
-				return Keys.LEFT;
-			case KeyboardDownArrow:
-				return Keys.DOWN;
-			case KeyboardUpArrow:
-				return Keys.UP;
-			case KeypadNumLock:
-				return Keys.NUM_LOCK;
-			case KeypadSlash:
-				return Keys.NUMPAD_DIVIDE;
-			case KeypadAsterisk:
-				return Keys.NUMPAD_MULTIPLY;
-			case KeypadHyphen:
-				return Keys.NUMPAD_SUBTRACT;
-			case KeypadPlus:
-				return Keys.NUMPAD_ADD;
-			case KeypadEnter:
-				return Keys.NUMPAD_ENTER;
-			case Keypad1:
-				return Keys.NUM_1;
-			case Keypad2:
-				return Keys.NUM_2;
-			case Keypad3:
-				return Keys.NUM_3;
-			case Keypad4:
-				return Keys.NUM_4;
-			case Keypad5:
-				return Keys.NUM_5;
-			case Keypad6:
-				return Keys.NUM_6;
-			case Keypad7:
-				return Keys.NUM_7;
-			case Keypad8:
-				return Keys.NUM_8;
-			case Keypad9:
-				return Keys.NUM_9;
-			case Keypad0:
-				return Keys.NUM_0;
-			case KeypadPeriod:
-				return Keys.NUMPAD_DOT;
-			case KeyboardNonUSBackslash:
-				return Keys.BACKSLASH;
-			case KeyboardApplication:
-				return Keys.MENU;
-			case KeyboardPower:
-				return Keys.POWER;
-			case KeypadEqualSign:
-			case KeypadEqualSignAS400:
-				return Keys.NUMPAD_EQUALS;
-			case KeyboardHelp:
-				return Keys.F1;
-			case KeyboardMenu:
-				return Keys.MENU;
-			case KeyboardSelect:
-				return Keys.BUTTON_SELECT;
-			case KeyboardStop:
-				return Keys.MEDIA_STOP;
-			case KeyboardFind:
-				return Keys.SEARCH;
-			case KeyboardMute:
-				return Keys.MUTE;
-			case KeyboardVolumeUp:
-				return Keys.VOLUME_UP;
-			case KeyboardVolumeDown:
-				return Keys.VOLUME_DOWN;
-			case KeypadComma:
-				return Keys.NUMPAD_COMMA;
-			case KeyboardAlternateErase:
-				return Keys.DEL;
-			case KeyboardCancel:
-				return Keys.ESCAPE;
-			case KeyboardClear:
-				return Keys.CLEAR;
-			case KeyboardReturn:
-				return Keys.ENTER;
-			case KeyboardLeftControl:
-				return Keys.CONTROL_LEFT;
-			case KeyboardLeftShift:
-				return Keys.SHIFT_LEFT;
-			case KeyboardLeftAlt:
-				return Keys.ALT_LEFT;
-			case KeyboardRightControl:
-				return Keys.CONTROL_RIGHT;
-			case KeyboardRightShift:
-				return Keys.SHIFT_RIGHT;
-			case KeyboardRightAlt:
-				return Keys.ALT_RIGHT;
-			case KeyboardCapsLock:
-				return Keys.CAPS_LOCK;
-			case KeyboardPrintScreen:
-				return Keys.PRINT_SCREEN;
-			case KeyboardScrollLock:
-				return Keys.SCROLL_LOCK;
-			default:
-				return Keys.UNKNOWN;
+		case KeyboardA:
+			return Keys.A;
+		case KeyboardB:
+			return Keys.B;
+		case KeyboardC:
+			return Keys.C;
+		case KeyboardD:
+			return Keys.D;
+		case KeyboardE:
+			return Keys.E;
+		case KeyboardF:
+			return Keys.F;
+		case KeyboardG:
+			return Keys.G;
+		case KeyboardH:
+			return Keys.H;
+		case KeyboardI:
+			return Keys.I;
+		case KeyboardJ:
+			return Keys.J;
+		case KeyboardK:
+			return Keys.K;
+		case KeyboardL:
+			return Keys.L;
+		case KeyboardM:
+			return Keys.M;
+		case KeyboardN:
+			return Keys.N;
+		case KeyboardO:
+			return Keys.O;
+		case KeyboardP:
+			return Keys.P;
+		case KeyboardQ:
+			return Keys.Q;
+		case KeyboardR:
+			return Keys.R;
+		case KeyboardS:
+			return Keys.S;
+		case KeyboardT:
+			return Keys.T;
+		case KeyboardU:
+			return Keys.U;
+		case KeyboardV:
+			return Keys.V;
+		case KeyboardW:
+			return Keys.W;
+		case KeyboardX:
+			return Keys.X;
+		case KeyboardY:
+			return Keys.Y;
+		case KeyboardZ:
+			return Keys.Z;
+		case Keyboard1:
+			return Keys.NUM_1;
+		case Keyboard2:
+			return Keys.NUM_2;
+		case Keyboard3:
+			return Keys.NUM_3;
+		case Keyboard4:
+			return Keys.NUM_4;
+		case Keyboard5:
+			return Keys.NUM_5;
+		case Keyboard6:
+			return Keys.NUM_6;
+		case Keyboard7:
+			return Keys.NUM_7;
+		case Keyboard8:
+			return Keys.NUM_8;
+		case Keyboard9:
+			return Keys.NUM_9;
+		case Keyboard0:
+			return Keys.NUM_0;
+		case KeyboardReturnOrEnter:
+			return Keys.ENTER;
+		case KeyboardEscape:
+			return Keys.ESCAPE;
+		case KeyboardDeleteOrBackspace:
+			return Keys.BACKSPACE;
+		case KeyboardTab:
+			return Keys.TAB;
+		case KeyboardSpacebar:
+			return Keys.SPACE;
+		case KeyboardHyphen:
+			return Keys.MINUS;
+		case KeyboardEqualSign:
+			return Keys.EQUALS;
+		case KeyboardOpenBracket:
+			return Keys.LEFT_BRACKET;
+		case KeyboardCloseBracket:
+			return Keys.RIGHT_BRACKET;
+		case KeyboardBackslash:
+			return Keys.BACKSLASH;
+		case KeyboardNonUSPound:
+			return Keys.POUND;
+		case KeyboardSemicolon:
+			return Keys.SEMICOLON;
+		case KeyboardQuote:
+			return Keys.APOSTROPHE;
+		case KeyboardGraveAccentAndTilde:
+			return Keys.GRAVE;
+		case KeyboardComma:
+			return Keys.COMMA;
+		case KeyboardPeriod:
+			return Keys.PERIOD;
+		case KeyboardSlash:
+			return Keys.SLASH;
+		case KeyboardF1:
+			return Keys.F1;
+		case KeyboardF2:
+			return Keys.F2;
+		case KeyboardF3:
+			return Keys.F3;
+		case KeyboardF4:
+			return Keys.F4;
+		case KeyboardF5:
+			return Keys.F5;
+		case KeyboardF6:
+			return Keys.F6;
+		case KeyboardF7:
+			return Keys.F7;
+		case KeyboardF8:
+			return Keys.F8;
+		case KeyboardF9:
+			return Keys.F9;
+		case KeyboardF10:
+			return Keys.F10;
+		case KeyboardF11:
+			return Keys.F11;
+		case KeyboardF12:
+			return Keys.F12;
+		case KeyboardF13:
+			return Keys.F13;
+		case KeyboardF14:
+			return Keys.F14;
+		case KeyboardF15:
+			return Keys.F15;
+		case KeyboardF16:
+			return Keys.F16;
+		case KeyboardF17:
+			return Keys.F17;
+		case KeyboardF18:
+			return Keys.F18;
+		case KeyboardF19:
+			return Keys.F19;
+		case KeyboardF20:
+			return Keys.F20;
+		case KeyboardF21:
+			return Keys.F21;
+		case KeyboardF22:
+			return Keys.F22;
+		case KeyboardF23:
+			return Keys.F23;
+		case KeyboardF24:
+			return Keys.F24;
+		case KeyboardPause:
+			return Keys.PAUSE;
+		case KeyboardInsert:
+			return Keys.INSERT;
+		case KeyboardHome:
+			return Keys.HOME;
+		case KeyboardPageUp:
+			return Keys.PAGE_UP;
+		case KeyboardDeleteForward:
+			return Keys.FORWARD_DEL;
+		case KeyboardEnd:
+			return Keys.END;
+		case KeyboardPageDown:
+			return Keys.PAGE_DOWN;
+		case KeyboardRightArrow:
+			return Keys.RIGHT;
+		case KeyboardLeftArrow:
+			return Keys.LEFT;
+		case KeyboardDownArrow:
+			return Keys.DOWN;
+		case KeyboardUpArrow:
+			return Keys.UP;
+		case KeypadNumLock:
+			return Keys.NUM_LOCK;
+		case KeypadSlash:
+			return Keys.NUMPAD_DIVIDE;
+		case KeypadAsterisk:
+			return Keys.NUMPAD_MULTIPLY;
+		case KeypadHyphen:
+			return Keys.NUMPAD_SUBTRACT;
+		case KeypadPlus:
+			return Keys.NUMPAD_ADD;
+		case KeypadEnter:
+			return Keys.NUMPAD_ENTER;
+		case Keypad1:
+			return Keys.NUM_1;
+		case Keypad2:
+			return Keys.NUM_2;
+		case Keypad3:
+			return Keys.NUM_3;
+		case Keypad4:
+			return Keys.NUM_4;
+		case Keypad5:
+			return Keys.NUM_5;
+		case Keypad6:
+			return Keys.NUM_6;
+		case Keypad7:
+			return Keys.NUM_7;
+		case Keypad8:
+			return Keys.NUM_8;
+		case Keypad9:
+			return Keys.NUM_9;
+		case Keypad0:
+			return Keys.NUM_0;
+		case KeypadPeriod:
+			return Keys.NUMPAD_DOT;
+		case KeyboardNonUSBackslash:
+			return Keys.BACKSLASH;
+		case KeyboardApplication:
+			return Keys.MENU;
+		case KeyboardPower:
+			return Keys.POWER;
+		case KeypadEqualSign:
+		case KeypadEqualSignAS400:
+			return Keys.NUMPAD_EQUALS;
+		case KeyboardHelp:
+			return Keys.F1;
+		case KeyboardMenu:
+			return Keys.MENU;
+		case KeyboardSelect:
+			return Keys.BUTTON_SELECT;
+		case KeyboardStop:
+			return Keys.MEDIA_STOP;
+		case KeyboardFind:
+			return Keys.SEARCH;
+		case KeyboardMute:
+			return Keys.MUTE;
+		case KeyboardVolumeUp:
+			return Keys.VOLUME_UP;
+		case KeyboardVolumeDown:
+			return Keys.VOLUME_DOWN;
+		case KeypadComma:
+			return Keys.NUMPAD_COMMA;
+		case KeyboardAlternateErase:
+			return Keys.DEL;
+		case KeyboardCancel:
+			return Keys.ESCAPE;
+		case KeyboardClear:
+			return Keys.CLEAR;
+		case KeyboardReturn:
+			return Keys.ENTER;
+		case KeyboardLeftControl:
+			return Keys.CONTROL_LEFT;
+		case KeyboardLeftShift:
+			return Keys.SHIFT_LEFT;
+		case KeyboardLeftAlt:
+			return Keys.ALT_LEFT;
+		case KeyboardRightControl:
+			return Keys.CONTROL_RIGHT;
+		case KeyboardRightShift:
+			return Keys.SHIFT_RIGHT;
+		case KeyboardRightAlt:
+			return Keys.ALT_RIGHT;
+		case KeyboardCapsLock:
+			return Keys.CAPS_LOCK;
+		case KeyboardPrintScreen:
+			return Keys.PRINT_SCREEN;
+		case KeyboardScrollLock:
+			return Keys.SCROLL_LOCK;
+		default:
+			return Keys.UNKNOWN;
 		}
 	}
 }

@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 ext {
-    mainTestClass = "com.badlogic.gdx.tests.lwjgl3.Lwjgl3TestStarter"
+	mainTestClass = "com.badlogic.gdx.tests.lwjgl3.Lwjgl3TestStarter"
 }
 sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
@@ -23,34 +23,34 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-lwjgl3")
-    compile testnatives.desktop
+	compile project(":tests:gdx-tests")
+	compile project(":backends:gdx-backend-lwjgl3")
+	compile testnatives.desktop
 }
 
 task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
-    main = mainTestClass
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = new File("../gdx-tests-android/assets")
-    ignoreExitValue = true
-    
-    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-        // Required to run lwjgl java apps on Mac OSX
-        jvmArgs = ["-XstartOnFirstThread"]
-    }
+	main = mainTestClass
+	classpath = sourceSets.main.runtimeClasspath
+	standardInput = System.in
+	workingDir = new File("../gdx-tests-android/assets")
+	ignoreExitValue = true
+
+	if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+		// Required to run lwjgl java apps on Mac OSX
+		jvmArgs = ["-XstartOnFirstThread"]
+	}
 }
 configure (launchTestsLwjgl3) {
-    group "LibGDX"
-    description = "Run the Lwjgl3 tests"
+	group "LibGDX"
+	description = "Run the Lwjgl3 tests"
 }
 task dist(type: Jar, dependsOn: classes) {
-    manifest {
-        attributes 'Main-Class': project.mainTestClass
-    }
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
+	manifest {
+		attributes 'Main-Class': project.mainTestClass
+	}
+	dependsOn configurations.runtimeClasspath
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	with jar
 }

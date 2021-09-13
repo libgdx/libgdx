@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -44,12 +45,12 @@ class ScaledNumericPanel extends ParticleValuePanel<ScaledNumericValue> {
 	JButton lowRangeButton;
 	JButton highRangeButton;
 
-	public ScaledNumericPanel (FlameMain editor, ScaledNumericValue value, String chartTitle, String name, String description){
+	public ScaledNumericPanel (FlameMain editor, ScaledNumericValue value, String chartTitle, String name, String description) {
 		this(editor, value, chartTitle, name, description, true);
 	}
-	
-	public ScaledNumericPanel (FlameMain editor, ScaledNumericValue value, 
-												String chartTitle, String name, String description, boolean isAlwaysActive){
+
+	public ScaledNumericPanel (FlameMain editor, ScaledNumericValue value, String chartTitle, String name, String description,
+		boolean isAlwaysActive) {
 		super(editor, name, description, isAlwaysActive);
 		initializeComponents(chartTitle);
 		setValue(value);
@@ -93,13 +94,13 @@ class ScaledNumericPanel extends ParticleValuePanel<ScaledNumericValue> {
 			}
 			{
 				lowMinSlider = new Slider(0, -999999, 999999, 1f);
-				formPanel.add(lowMinSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
-					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+				formPanel.add(lowMinSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			{
 				lowMaxSlider = new Slider(0, -999999, 999999, 1f);
-				formPanel.add(lowMaxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
-					GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
+				formPanel.add(lowMaxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+					new Insets(0, 6, 0, 0), 0, 0));
 			}
 			{
 				lowRangeButton = new JButton("<");
@@ -130,7 +131,7 @@ class ScaledNumericPanel extends ParticleValuePanel<ScaledNumericValue> {
 			contentPanel.add(relativeCheckBox, new GridBagConstraints(7, 5, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
 		}
-		
+
 		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				ScaledNumericPanel.this.value.setLowMin(lowMinSlider.getValue());
@@ -213,30 +214,29 @@ class ScaledNumericPanel extends ParticleValuePanel<ScaledNumericValue> {
 				chart.revalidate();
 			}
 		});
-		
+
 	}
-	
+
 	@Override
-	public void setValue(ScaledNumericValue value){
+	public void setValue (ScaledNumericValue value) {
 		super.setValue(value);
-		if(this.value == null)return;
+		if (this.value == null) return;
 		setValue(lowMinSlider, this.value.getLowMin());
 		setValue(lowMaxSlider, this.value.getLowMax());
 		setValue(highMinSlider, this.value.getHighMin());
 		setValue(highMaxSlider, this.value.getHighMax());
 		chart.setValues(this.value.getTimeline(), this.value.getScaling());
 		setValue(relativeCheckBox, this.value.isRelative());
-		
-		if (	(this.value.getLowMin() == this.value.getLowMax() && lowMaxSlider.isVisible()) || 
-				(this.value.getLowMin() != this.value.getLowMax() && !lowMaxSlider.isVisible()) ) {
+
+		if ((this.value.getLowMin() == this.value.getLowMax() && lowMaxSlider.isVisible())
+			|| (this.value.getLowMin() != this.value.getLowMax() && !lowMaxSlider.isVisible())) {
 			lowRangeButton.doClick(0);
 		}
-		if ( 	((this.value.getHighMin() == this.value.getHighMax()) && highMaxSlider.isVisible()) ||
-				((this.value.getHighMin() != this.value.getHighMax()) && !highMaxSlider.isVisible()) ) 
-			highRangeButton.doClick(0);
+		if (((this.value.getHighMin() == this.value.getHighMax()) && highMaxSlider.isVisible())
+			|| ((this.value.getHighMin() != this.value.getHighMax()) && !highMaxSlider.isVisible())) highRangeButton.doClick(0);
 	}
 
-	public Chart getChart(){
+	public Chart getChart () {
 		return chart;
 	}
 

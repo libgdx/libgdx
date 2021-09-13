@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static org.lwjgl.openal.AL10.*;
-import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
 
 /** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music {
@@ -77,15 +76,17 @@ public abstract class OpenALMusic implements Music {
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				int errorCode = alGetError();
 				if (errorCode != AL_NO_ERROR)
 					throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
 			}
 
-			alSourcei(sourceID, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+
+			alGetError();
 
 			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {
@@ -139,7 +140,9 @@ public abstract class OpenALMusic implements Music {
 		return isLooping;
 	}
 
+	/** @param volume Must be > 0. */
 	public void setVolume (float volume) {
+		if (volume < 0) throw new IllegalArgumentException("volume cannot be < 0: " + volume);
 		this.volume = volume;
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
@@ -249,7 +252,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	private boolean fill (int bufferID) {
-		((Buffer) tempBuffer).clear();
+		((Buffer)tempBuffer).clear();
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
@@ -266,7 +269,7 @@ public abstract class OpenALMusic implements Music {
 		float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
 		renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds);
 
-		((Buffer) tempBuffer.put(tempBytes, 0, length)).flip();
+		((Buffer)tempBuffer.put(tempBytes, 0, length)).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);
 		return true;
 	}

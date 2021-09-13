@@ -32,7 +32,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
-/** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
+/** See <a href=
+ * "https://web.archive.org/web/20200427191041/http://www.badlogicgames.com/wordpress/?p=12555">http://www.badlogicgames.com/wordpress/?p=12555</a>
  * @author mzechner */
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;

@@ -8,46 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexTriangleCallback extends btTriangleCallback {
 	private long swigCPtr;
-	
-	protected btConvexTriangleCallback(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvexTriangleCallback (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConvexTriangleCallback_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btConvexTriangleCallback, normally you should not need this constructor it's intended for low-level usage. */
-	public btConvexTriangleCallback(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btConvexTriangleCallback, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btConvexTriangleCallback (long cPtr, boolean cMemoryOwn) {
 		this("btConvexTriangleCallback", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConvexTriangleCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvexTriangleCallback obj) {
+
+	public static long getCPtr (btConvexTriangleCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,97 +54,108 @@ public class btConvexTriangleCallback extends btTriangleCallback {
 		super.delete();
 	}
 
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
+	protected void swigDirectorDisconnect () {
+		swigCMemOwn = false;
+		delete();
+	}
 
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, false);
-  }
+	public void swigReleaseOwnership () {
+		swigCMemOwn = false;
+		CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, false);
+	}
 
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, true);
-  }
+	public void swigTakeOwnership () {
+		swigCMemOwn = true;
+		CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, true);
+	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConvexTriangleCallback_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConvexTriangleCallback_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConvexTriangleCallback_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConvexTriangleCallback_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConvexTriangleCallback_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConvexTriangleCallback_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConvexTriangleCallback_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConvexTriangleCallback_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConvexTriangleCallback_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConvexTriangleCallback_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConvexTriangleCallback_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConvexTriangleCallback_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConvexTriangleCallback_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConvexTriangleCallback_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConvexTriangleCallback_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConvexTriangleCallback_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public void setTriangleCount(int value) {
-    CollisionJNI.btConvexTriangleCallback_triangleCount_set(swigCPtr, this, value);
-  }
+	public void setTriangleCount (int value) {
+		CollisionJNI.btConvexTriangleCallback_triangleCount_set(swigCPtr, this, value);
+	}
 
-  public int getTriangleCount() {
-    return CollisionJNI.btConvexTriangleCallback_triangleCount_get(swigCPtr, this);
-  }
+	public int getTriangleCount () {
+		return CollisionJNI.btConvexTriangleCallback_triangleCount_get(swigCPtr, this);
+	}
 
-  public void setManifoldPtr(btPersistentManifold value) {
-    CollisionJNI.btConvexTriangleCallback_manifoldPtr_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
-  }
+	public void setManifoldPtr (btPersistentManifold value) {
+		CollisionJNI.btConvexTriangleCallback_manifoldPtr_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
+	}
 
-  public btPersistentManifold getManifoldPtr() {
-    long cPtr = CollisionJNI.btConvexTriangleCallback_manifoldPtr_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
-  }
+	public btPersistentManifold getManifoldPtr () {
+		long cPtr = CollisionJNI.btConvexTriangleCallback_manifoldPtr_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+	}
 
-  public btConvexTriangleCallback(btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
-    this(CollisionJNI.new_btConvexTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
-    CollisionJNI.btConvexTriangleCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
-  }
+	public btConvexTriangleCallback (btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap,
+		btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
+		this(CollisionJNI.new_btConvexTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher,
+			btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap,
+			isSwapped), true);
+		CollisionJNI.btConvexTriangleCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+	}
 
-  public void setTimeStepAndCounters(float collisionMarginTriangle, btDispatcherInfo dispatchInfo, btCollisionObjectWrapper convexBodyWrap, btCollisionObjectWrapper triBodyWrap, btManifoldResult resultOut) {
-    CollisionJNI.btConvexTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btCollisionObjectWrapper.getCPtr(convexBodyWrap), convexBodyWrap, btCollisionObjectWrapper.getCPtr(triBodyWrap), triBodyWrap, btManifoldResult.getCPtr(resultOut), resultOut);
-  }
+	public void setTimeStepAndCounters (float collisionMarginTriangle, btDispatcherInfo dispatchInfo,
+		btCollisionObjectWrapper convexBodyWrap, btCollisionObjectWrapper triBodyWrap, btManifoldResult resultOut) {
+		CollisionJNI.btConvexTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle,
+			btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btCollisionObjectWrapper.getCPtr(convexBodyWrap), convexBodyWrap,
+			btCollisionObjectWrapper.getCPtr(triBodyWrap), triBodyWrap, btManifoldResult.getCPtr(resultOut), resultOut);
+	}
 
-  public void clearWrapperData() {
-    CollisionJNI.btConvexTriangleCallback_clearWrapperData(swigCPtr, this);
-  }
+	public void clearWrapperData () {
+		CollisionJNI.btConvexTriangleCallback_clearWrapperData(swigCPtr, this);
+	}
 
-  public void processTriangle(btVector3 triangle, int partId, int triangleIndex) {
-    if (getClass() == btConvexTriangleCallback.class) CollisionJNI.btConvexTriangleCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex); else CollisionJNI.btConvexTriangleCallback_processTriangleSwigExplicitbtConvexTriangleCallback(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
-  }
+	public void processTriangle (btVector3 triangle, int partId, int triangleIndex) {
+		if (getClass() == btConvexTriangleCallback.class)
+			CollisionJNI.btConvexTriangleCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId,
+				triangleIndex);
+		else
+			CollisionJNI.btConvexTriangleCallback_processTriangleSwigExplicitbtConvexTriangleCallback(swigCPtr, this,
+				btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
+	}
 
-  public void clearCache() {
-    CollisionJNI.btConvexTriangleCallback_clearCache(swigCPtr, this);
-  }
+	public void clearCache () {
+		CollisionJNI.btConvexTriangleCallback_clearCache(swigCPtr, this);
+	}
 
-  public Vector3 getAabbMin() {
-	return CollisionJNI.btConvexTriangleCallback_getAabbMin(swigCPtr, this);
-}
+	public Vector3 getAabbMin () {
+		return CollisionJNI.btConvexTriangleCallback_getAabbMin(swigCPtr, this);
+	}
 
-  public Vector3 getAabbMax() {
-	return CollisionJNI.btConvexTriangleCallback_getAabbMax(swigCPtr, this);
-}
+	public Vector3 getAabbMax () {
+		return CollisionJNI.btConvexTriangleCallback_getAabbMax(swigCPtr, this);
+	}
 
 }

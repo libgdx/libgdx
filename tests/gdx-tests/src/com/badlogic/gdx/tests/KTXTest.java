@@ -111,8 +111,8 @@ public class KTXTest extends GdxTest {
 		perspectiveCamera.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position
-			| Usage.Normal);
+		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+			Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(perspectiveCamera)));

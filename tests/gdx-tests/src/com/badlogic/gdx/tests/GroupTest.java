@@ -129,20 +129,19 @@ public class GroupTest extends GdxTest {
 		horiz.fill();
 		horiz.expand();
 		horiz.invalidate();
-		
+
 		horizWrap.setVisible(true);
 		horizWrap.fill();
 		horizWrap.expand();
 		horizWrap.setWidth(Gdx.input.getX() - horizWrap.getX());
 		// horizWrap.setHeight(horizWrap.getPrefHeight());
 		horizWrap.setHeight(200);
-		
+
 		vert.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vert.getY());
 		// vert.setWidth(200);
 		vertWrap.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vertWrap.getY());
 // vertWrap.setWidth(vertWrap.getPrefWidth());
 		vertWrap.setWidth(200);
-		
 
 		// Vary the transforms to exercise the different code paths.
 		group2.setBounds(150, 150, 150, 150);
@@ -204,8 +203,8 @@ public class GroupTest extends GdxTest {
 
 		public void draw (Batch batch, float parentAlpha) {
 			// Use Stage#toScreenCoordinates, which we know is correct.
-			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY()).rotateDeg(getRotation())
-				.add(getOriginX(), getOriginY()).add(getX(), getY());
+			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY())
+				.rotateDeg(getRotation()).add(getOriginX(), getOriginY()).add(getX(), getY());
 			getStage().toScreenCoordinates(toScreenCoordinates, batch.getTransformMatrix());
 
 			// Do the same as toScreenCoordinates via Actor#localToParentCoordinates.

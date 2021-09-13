@@ -9,18 +9,17 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 public class SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t {
-  private transient long swigCPtr;
+	private transient long swigCPtr;
 
-  protected SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t (long cPtr, @SuppressWarnings("unused") boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t () {
+		swigCPtr = 0;
+	}
 
-  protected static long getCPtr(SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	protected static long getCPtr (SWIGTYPE_p_btHashMapT_btHashPtr_void_p_t obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

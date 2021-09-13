@@ -76,8 +76,7 @@ public class Bresenham2 {
 		}
 		if (h < 0)
 			dy1 = -1;
-		else if (h > 0)
-			dy1 = 1;
+		else if (h > 0) dy1 = 1;
 		int longest = Math.abs(w);
 		int shortest = Math.abs(h);
 		if (longest < shortest) {

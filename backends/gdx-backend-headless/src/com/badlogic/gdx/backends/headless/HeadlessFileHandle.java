@@ -25,11 +25,11 @@ import java.io.File;
 /** @author mzechner
  * @author Nathan Sweet */
 public final class HeadlessFileHandle extends FileHandle {
-	public HeadlessFileHandle(String fileName, FileType type) {
+	public HeadlessFileHandle (String fileName, FileType type) {
 		super(fileName, type);
 	}
 
-	public HeadlessFileHandle(File file, FileType type) {
+	public HeadlessFileHandle (File file, FileType type) {
 		super(file, type);
 	}
 

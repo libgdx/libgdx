@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -38,12 +39,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
 /** @author Inferno */
 public abstract class EditorPanel<T> extends JPanel {
 	private String name;
 	private String description;
-	protected  T value;
+	protected T value;
 	private JPanel titlePanel;
 	JToggleButton activeButton;
 	JPanel contentPanel;
@@ -54,7 +54,7 @@ public abstract class EditorPanel<T> extends JPanel {
 	JLabel nameLabel, descriptionLabel;
 	protected boolean isAlwaysActive, isAlwaysShown = false, isRemovable;
 	protected FlameMain editor;
-	
+
 	public EditorPanel (FlameMain editor, String name, String description, boolean alwaysActive, boolean isRemovable) {
 		this.editor = editor;
 		this.name = name;
@@ -64,21 +64,22 @@ public abstract class EditorPanel<T> extends JPanel {
 		initializeComponents();
 		showContent(false);
 	}
-	
+
 	public EditorPanel (FlameMain editor, String name, String description) {
 		this(editor, name, description, true, false);
 	}
 
-	protected void activate () {}
-	
+	protected void activate () {
+	}
+
 	public void showContent (boolean visible) {
 		contentPanel.setVisible(visible);
 		advancedPanel.setVisible(visible && advancedButton.isSelected());
 		advancedButton.setVisible(visible && hasAdvanced);
 		descriptionLabel.setText(visible ? description : "");
 	}
-	
-	public void setIsAlwayShown(boolean isAlwaysShown){
+
+	public void setIsAlwayShown (boolean isAlwaysShown) {
 		showContent(isAlwaysShown);
 		this.isAlwaysShown = isAlwaysShown;
 		titlePanel.setCursor(null);
@@ -122,8 +123,8 @@ public abstract class EditorPanel<T> extends JPanel {
 			titlePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			{
 				nameLabel = new JLabel(name);
-				titlePanel.add(nameLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-					new Insets(3, 6, 3, 6), 0, 0));
+				titlePanel.add(nameLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.NONE, new Insets(3, 6, 3, 6), 0, 0));
 				nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			}
 			{
@@ -160,12 +161,10 @@ public abstract class EditorPanel<T> extends JPanel {
 				new Insets(0, 6, 6, 6), 0, 0));
 			advancedPanel.setVisible(false);
 		}
-		
 
 		titlePanel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked (MouseEvent event) {
-				if(!isAlwaysShown)
-					showContent(!contentPanel.isVisible());
+				if (!isAlwaysShown) showContent(!contentPanel.isVisible());
 			}
 		});
 		activeButton.addActionListener(new ActionListener() {
@@ -178,14 +177,14 @@ public abstract class EditorPanel<T> extends JPanel {
 				advancedPanel.setVisible(advancedButton.isSelected());
 			}
 		});
-		
+
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				removePanel();
 			}
 		});
 	}
-	
+
 	protected void removePanel () {
 		Container parent = this.getParent();
 		parent.remove(this);
@@ -193,34 +192,34 @@ public abstract class EditorPanel<T> extends JPanel {
 		parent.repaint();
 	}
 
-	public void setName(String name){
+	public void setName (String name) {
 		this.name = name;
 		nameLabel.setText(name);
 	}
-	
-	public void setDescription(String desc){
+
+	public void setDescription (String desc) {
 		description = desc;
 		descriptionLabel.setText(desc);
 	}
-	
-	
-	protected void addContent(int row, int column, JComponent component){
+
+	protected void addContent (int row, int column, JComponent component) {
 		addContent(row, column, component, true, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 	}
-	
-	protected void addContent(int row, int column, JComponent component, boolean addBorder){
+
+	protected void addContent (int row, int column, JComponent component, boolean addBorder) {
 		addContent(row, column, component, addBorder, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 	}
-	
-	protected void addContent(int row, int column, JComponent component, int anchor, int fill){
+
+	protected void addContent (int row, int column, JComponent component, int anchor, int fill) {
 		addContent(row, column, component, true, anchor, fill);
 	}
-	
-	protected void addContent(int row, int column, JComponent component, boolean addBorders, int anchor, int fill, float wx, float wy){
+
+	protected void addContent (int row, int column, JComponent component, boolean addBorders, int anchor, int fill, float wx,
+		float wy) {
 		addContent(contentPanel, row, column, component, addBorders, anchor, fill, wx, wy);
 	}
-	
-	protected void addContent(int row, int column, JComponent component, boolean addBorders, int anchor, int fill){
+
+	protected void addContent (int row, int column, JComponent component, boolean addBorders, int anchor, int fill) {
 		addContent(row, column, component, addBorders, anchor, fill, 1, 1);
 	}
 
@@ -229,56 +228,55 @@ public abstract class EditorPanel<T> extends JPanel {
 		activeButton.setVisible(value == null ? false : !isAlwaysActive);
 		removeButton.setVisible(isRemovable);
 	}
-	
-	public static void addContent( JPanel panel, int row, int column, JComponent component, boolean addBorders, int anchor, int fill, float wx, float wy){
-		if(addBorders) component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
-		panel.add(component, new GridBagConstraints(column, row, 1, 1, wx, wy, anchor, fill,
-			new Insets(0, 0, 0, 0), 0, 0));
+
+	public static void addContent (JPanel panel, int row, int column, JComponent component, boolean addBorders, int anchor,
+		int fill, float wx, float wy) {
+		if (addBorders) component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
+		panel.add(component, new GridBagConstraints(column, row, 1, 1, wx, wy, anchor, fill, new Insets(0, 0, 0, 0), 0, 0));
 	}
-	
-	protected static <K> void setValue(JSpinner spinner, K object){
+
+	protected static <K> void setValue (JSpinner spinner, K object) {
 		ChangeListener[] listeners = spinner.getChangeListeners();
 		ChangeListener listener = null;
-		if(listeners != null && listeners.length >0){
+		if (listeners != null && listeners.length > 0) {
 			listener = listeners[0];
 			spinner.removeChangeListener(listener);
 		}
 		spinner.setValue(object);
-		if(listener != null) spinner.addChangeListener(listener);
+		if (listener != null) spinner.addChangeListener(listener);
 	}
-	
-	protected static void setValue(JCheckBox checkBox, boolean isSelected){
+
+	protected static void setValue (JCheckBox checkBox, boolean isSelected) {
 		ActionListener[] listeners = checkBox.getActionListeners();
 		ActionListener listener = null;
-		if(listeners != null && listeners.length >0){
+		if (listeners != null && listeners.length > 0) {
 			listener = listeners[0];
 			checkBox.removeActionListener(listener);
 		}
 		checkBox.setSelected(isSelected);
-		if(listener != null) checkBox.addActionListener(listener);
+		if (listener != null) checkBox.addActionListener(listener);
 	}
-	
-	protected static <K> void setValue(Slider slider, float value){
+
+	protected static <K> void setValue (Slider slider, float value) {
 		ChangeListener[] listeners = slider.spinner.getChangeListeners();
 		ChangeListener listener = null;
-		if(listeners != null && listeners.length >0){
+		if (listeners != null && listeners.length > 0) {
 			listener = listeners[0];
 			slider.spinner.removeChangeListener(listener);
 		}
 		slider.setValue(value);
-		if(listener != null) slider.spinner.addChangeListener(listener);
+		if (listener != null) slider.spinner.addChangeListener(listener);
 	}
 
 	protected static void setValue (DefaultTableModel tableModel, Object value, int row, int column) {
 		TableModelListener[] listeners = tableModel.getTableModelListeners();
 		TableModelListener listener = null;
-		if(listeners != null && listeners.length >0){
+		if (listeners != null && listeners.length > 0) {
 			listener = listeners[0];
 			tableModel.removeTableModelListener(listener);
 		}
 		tableModel.setValueAt(value, row, column);
-		if(listener != null) tableModel.addTableModelListener(listener);
+		if (listener != null) tableModel.addTableModelListener(listener);
 	}
-	
-	
+
 }

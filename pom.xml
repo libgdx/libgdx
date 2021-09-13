@@ -10,10 +10,10 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.15-SNAPSHOT</version>
+  <version>1.10.1-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
-  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
+  <description>Android/Desktop/iOS/HTML5 game development framework</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://github.com/libgdx/libgdx/issues</url>
@@ -80,9 +80,10 @@
               <phase>prepare-package</phase>
               <goals><goal>run</goal></goals>
               <configuration>
+              <skip>${skipFetchNatives}</skip>
               <target>
                 <ant antfile="${basedir}/fetch.xml">
-                  <target name="fetch-gdx"/>
+                  <target name="fetch-gdx" />
                 </ant>
               </target>
               </configuration>

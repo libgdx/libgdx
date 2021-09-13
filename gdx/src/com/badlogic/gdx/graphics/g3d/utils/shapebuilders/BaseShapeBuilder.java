@@ -42,7 +42,7 @@ public class BaseShapeBuilder {
 	protected static final Vector3 tmpV5 = new Vector3();
 	protected static final Vector3 tmpV6 = new Vector3();
 	protected static final Vector3 tmpV7 = new Vector3();
-	
+
 	/* VertexInfo */
 	protected static final VertexInfo vertTmp0 = new VertexInfo();
 	protected static final VertexInfo vertTmp1 = new VertexInfo();
@@ -53,10 +53,10 @@ public class BaseShapeBuilder {
 	protected static final VertexInfo vertTmp6 = new VertexInfo();
 	protected static final VertexInfo vertTmp7 = new VertexInfo();
 	protected static final VertexInfo vertTmp8 = new VertexInfo();
-	
+
 	/* Matrix4 */
 	protected static final Matrix4 matTmp1 = new Matrix4();
-	
+
 	private final static FlushablePool<Vector3> vectorPool = new FlushablePool<Vector3>() {
 		@Override
 		protected Vector3 newObject () {

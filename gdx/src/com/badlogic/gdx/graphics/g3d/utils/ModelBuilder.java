@@ -158,8 +158,8 @@ public class ModelBuilder {
 		return part(id, mesh, primitiveType, 0, mesh.getNumIndices(), material);
 	}
 
-	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the shape of
-	 * the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh binds.
+	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the shape
+	 * of the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh binds.
 	 * Therefore you can only build one part at a time. The resources the Material might contain are not managed, use
 	 * {@link #manage(Disposable)} to add those to the model.
 	 * @return The {@link MeshPartBuilder} you can use to build the MeshPart. */
@@ -169,8 +169,8 @@ public class ModelBuilder {
 		return builder;
 	}
 
-	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the shape of
-	 * the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh binds.
+	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the shape
+	 * of the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh binds.
 	 * Therefore you can only build one part at a time. The resources the Material might contain are not managed, use
 	 * {@link #manage(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
@@ -180,16 +180,16 @@ public class ModelBuilder {
 		return part(id, primitiveType, MeshBuilder.createAttributes(attributes), material);
 	}
 
-	/** Convenience method to create a model with a single node containing a box shape. The resources the Material might contain are
-	 * not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	/** Convenience method to create a model with a single node containing a box shape. The resources the Material might contain
+	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public Model createBox (float width, float height, float depth, final Material material, final long attributes) {
 		return createBox(width, height, depth, GL20.GL_TRIANGLES, material, attributes);
 	}
 
-	/** Convenience method to create a model with a single node containing a box shape. The resources the Material might contain are
-	 * not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	/** Convenience method to create a model with a single node containing a box shape. The resources the Material might contain
+	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public Model createBox (float width, float height, float depth, int primitiveType, final Material material,
@@ -204,7 +204,8 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public Model createRect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
-		float x01, float y01, float z01, float normalX, float normalY, float normalZ, final Material material, final long attributes) {
+		float x01, float y01, float z01, float normalX, float normalY, float normalZ, final Material material,
+		final long attributes) {
 		return createRect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, GL20.GL_TRIANGLES,
 			material, attributes);
 	}
@@ -235,8 +236,8 @@ public class ModelBuilder {
 	 * contain are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
-	public Model createCylinder (float width, float height, float depth, int divisions, int primitiveType,
-		final Material material, final long attributes) {
+	public Model createCylinder (float width, float height, float depth, int divisions, int primitiveType, final Material material,
+		final long attributes) {
 		return createCylinder(width, height, depth, divisions, primitiveType, material, attributes, 0, 360);
 	}
 
@@ -253,8 +254,8 @@ public class ModelBuilder {
 	 * contain are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
-	public Model createCylinder (float width, float height, float depth, int divisions, int primitiveType,
-		final Material material, final long attributes, float angleFrom, float angleTo) {
+	public Model createCylinder (float width, float height, float depth, int divisions, int primitiveType, final Material material,
+		final long attributes, float angleFrom, float angleTo) {
 		begin();
 		part("cylinder", primitiveType, attributes, material).cylinder(width, height, depth, divisions, angleFrom, angleTo);
 		return end();
@@ -264,7 +265,8 @@ public class ModelBuilder {
 	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
-	public Model createCone (float width, float height, float depth, int divisions, final Material material, final long attributes) {
+	public Model createCone (float width, float height, float depth, int divisions, final Material material,
+		final long attributes) {
 		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
 
@@ -281,8 +283,8 @@ public class ModelBuilder {
 	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
-	public Model createCone (float width, float height, float depth, int divisions, final Material material,
-		final long attributes, float angleFrom, float angleTo) {
+	public Model createCone (float width, float height, float depth, int divisions, final Material material, final long attributes,
+		float angleFrom, float angleTo) {
 		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
 	}
 
@@ -337,16 +339,16 @@ public class ModelBuilder {
 		return end();
 	}
 
-	/** Convenience method to create a model with a single node containing a capsule shape. The resources the Material might contain
-	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	/** Convenience method to create a model with a single node containing a capsule shape. The resources the Material might
+	 * contain are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public Model createCapsule (float radius, float height, int divisions, final Material material, final long attributes) {
 		return createCapsule(radius, height, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
 
-	/** Convenience method to create a model with a single node containing a capsule shape. The resources the Material might contain
-	 * are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	/** Convenience method to create a model with a single node containing a capsule shape. The resources the Material might
+	 * contain are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public Model createCapsule (float radius, float height, int divisions, int primitiveType, final Material material,
@@ -379,8 +381,8 @@ public class ModelBuilder {
 			rebuildReferences(model, child);
 	}
 
-	/** Convenience method to create a model with three orthonormal vectors shapes. The resources the Material might contain are not
-	 * managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	/** Convenience method to create a model with three orthonormal vectors shapes. The resources the Material might contain are
+	 * not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param axisLength Length of each axis.
 	 * @param capLength is the height of the cap in percentage, must be in (0,1)
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]

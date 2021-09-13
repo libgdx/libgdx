@@ -46,12 +46,11 @@ public class WebAudioAPIMusic implements Music {
 		audioControlGraph.setSource(audioSourceNode);
 	}
 
-	public void ended()
-	{
-		if(this.onCompletionListener != null) this.onCompletionListener.onCompletion(this);
+	public void ended () {
+		if (this.onCompletionListener != null) this.onCompletionListener.onCompletion(this);
 	}
 
-	public native JavaScriptObject createMediaElementAudioSourceNode(JavaScriptObject audioContext, JavaScriptObject audioElement) /*-{
+	public native JavaScriptObject createMediaElementAudioSourceNode (JavaScriptObject audioContext, JavaScriptObject audioElement) /*-{
 		var source = audioContext.createMediaElementSource(audioElement);
 		var self = this;
 		audioElement.addEventListener("ended", self.@com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIMusic::ended());

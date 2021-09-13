@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btGenericPoolAllocator extends BulletBase {
 	private long swigCPtr;
-	
-	protected btGenericPoolAllocator(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btGenericPoolAllocator (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btGenericPoolAllocator, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btGenericPoolAllocator(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btGenericPoolAllocator, normally you should not need this constructor it's intended for low-level usage. */
+	public btGenericPoolAllocator (long cPtr, boolean cMemoryOwn) {
 		this("btGenericPoolAllocator", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btGenericPoolAllocator obj) {
+
+	public static long getCPtr (btGenericPoolAllocator obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,37 +53,37 @@ public class btGenericPoolAllocator extends BulletBase {
 		super.delete();
 	}
 
-  public void setPools(SWIGTYPE_p_p_btGenericMemoryPool value) {
-    CollisionJNI.btGenericPoolAllocator_pools_set(swigCPtr, this, SWIGTYPE_p_p_btGenericMemoryPool.getCPtr(value));
-  }
+	public void setPools (SWIGTYPE_p_p_btGenericMemoryPool value) {
+		CollisionJNI.btGenericPoolAllocator_pools_set(swigCPtr, this, SWIGTYPE_p_p_btGenericMemoryPool.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_p_btGenericMemoryPool getPools() {
-    long cPtr = CollisionJNI.btGenericPoolAllocator_pools_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_btGenericMemoryPool(cPtr, false);
-  }
+	public SWIGTYPE_p_p_btGenericMemoryPool getPools () {
+		long cPtr = CollisionJNI.btGenericPoolAllocator_pools_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_p_btGenericMemoryPool(cPtr, false);
+	}
 
-  public void setPool_count(long value) {
-    CollisionJNI.btGenericPoolAllocator_pool_count_set(swigCPtr, this, value);
-  }
+	public void setPool_count (long value) {
+		CollisionJNI.btGenericPoolAllocator_pool_count_set(swigCPtr, this, value);
+	}
 
-  public long getPool_count() {
-    return CollisionJNI.btGenericPoolAllocator_pool_count_get(swigCPtr, this);
-  }
+	public long getPool_count () {
+		return CollisionJNI.btGenericPoolAllocator_pool_count_get(swigCPtr, this);
+	}
 
-  public long get_pool_capacity() {
-    return CollisionJNI.btGenericPoolAllocator_get_pool_capacity(swigCPtr, this);
-  }
+	public long get_pool_capacity () {
+		return CollisionJNI.btGenericPoolAllocator_get_pool_capacity(swigCPtr, this);
+	}
 
-  public btGenericPoolAllocator(long pool_element_size, long pool_element_count) {
-    this(CollisionJNI.new_btGenericPoolAllocator(pool_element_size, pool_element_count), true);
-  }
+	public btGenericPoolAllocator (long pool_element_size, long pool_element_count) {
+		this(CollisionJNI.new_btGenericPoolAllocator(pool_element_size, pool_element_count), true);
+	}
 
-  public long allocate(long size_bytes) {
-    return CollisionJNI.btGenericPoolAllocator_allocate(swigCPtr, this, size_bytes);
-  }
+	public long allocate (long size_bytes) {
+		return CollisionJNI.btGenericPoolAllocator_allocate(swigCPtr, this, size_bytes);
+	}
 
-  public boolean freeMemory(long pointer) {
-    return CollisionJNI.btGenericPoolAllocator_freeMemory(swigCPtr, this, pointer);
-  }
+	public boolean freeMemory (long pointer) {
+		return CollisionJNI.btGenericPoolAllocator_freeMemory(swigCPtr, this, pointer);
+	}
 
 }

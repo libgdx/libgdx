@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class _btMprSupport_t extends BulletBase {
 	private long swigCPtr;
-	
-	protected _btMprSupport_t(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected _btMprSupport_t (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new _btMprSupport_t, normally you should not need this constructor it's intended for low-level usage. */ 
-	public _btMprSupport_t(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new _btMprSupport_t, normally you should not need this constructor it's intended for low-level usage. */
+	public _btMprSupport_t (long cPtr, boolean cMemoryOwn) {
 		this("_btMprSupport_t", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(_btMprSupport_t obj) {
+
+	public static long getCPtr (_btMprSupport_t obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,35 +53,35 @@ public class _btMprSupport_t extends BulletBase {
 		super.delete();
 	}
 
-  public void setV(btVector3 value) {
-    CollisionJNI._btMprSupport_t_v_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setV (btVector3 value) {
+		CollisionJNI._btMprSupport_t_v_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getV() {
-    long cPtr = CollisionJNI._btMprSupport_t_v_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getV () {
+		long cPtr = CollisionJNI._btMprSupport_t_v_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setV1(btVector3 value) {
-    CollisionJNI._btMprSupport_t_v1_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setV1 (btVector3 value) {
+		CollisionJNI._btMprSupport_t_v1_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getV1() {
-    long cPtr = CollisionJNI._btMprSupport_t_v1_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getV1 () {
+		long cPtr = CollisionJNI._btMprSupport_t_v1_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setV2(btVector3 value) {
-    CollisionJNI._btMprSupport_t_v2_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setV2 (btVector3 value) {
+		CollisionJNI._btMprSupport_t_v2_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getV2() {
-    long cPtr = CollisionJNI._btMprSupport_t_v2_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getV2 () {
+		long cPtr = CollisionJNI._btMprSupport_t_v2_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public _btMprSupport_t() {
-    this(CollisionJNI.new__btMprSupport_t(), true);
-  }
+	public _btMprSupport_t () {
+		this(CollisionJNI.new__btMprSupport_t(), true);
+	}
 
 }

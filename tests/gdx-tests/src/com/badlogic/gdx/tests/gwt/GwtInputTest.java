@@ -50,7 +50,7 @@ public class GwtInputTest extends GdxTest {
 		renderer.rect(Gdx.input.getX() - 15, Gdx.graphics.getHeight() - Gdx.input.getY() - 15, 30, 30);
 		renderer.rect(x, y, 30, 30);
 		renderer.end();
-		
+
 		if (Gdx.input.isKeyPressed(Keys.ALT_LEFT)) {
 			Gdx.app.log("GwtInputTest", "key pressed: " + "ALT_LEFT");
 		}
@@ -72,13 +72,13 @@ public class GwtInputTest extends GdxTest {
 		if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 			y -= 1;
 		}
-		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 			Gdx.app.log("GwtInputTest", "button pressed: LEFT");
 		}
-		if (Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE)){
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE)) {
 			Gdx.app.log("GwtInputTest", "button pressed: MIDDLE");
 		}
-		if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
 			Gdx.app.log("GwtInputTest", "button pressed: RIGHT");
 		}
 	}

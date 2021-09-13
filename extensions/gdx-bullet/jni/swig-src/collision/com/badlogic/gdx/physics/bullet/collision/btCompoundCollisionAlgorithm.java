@@ -8,46 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btCompoundCollisionAlgorithm extends btActivatingCollisionAlgorithm {
 	private long swigCPtr;
-	
-	protected btCompoundCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btCompoundCollisionAlgorithm (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btCompoundCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btCompoundCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */
-	public btCompoundCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btCompoundCollisionAlgorithm, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btCompoundCollisionAlgorithm (long cPtr, boolean cMemoryOwn) {
 		this("btCompoundCollisionAlgorithm", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btCompoundCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btCompoundCollisionAlgorithm obj) {
+
+	public static long getCPtr (btCompoundCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,111 +53,112 @@ public class btCompoundCollisionAlgorithm extends btActivatingCollisionAlgorithm
 		super.delete();
 	}
 
-  public btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
-    this(CollisionJNI.new_btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
-  }
+	public btCompoundCollisionAlgorithm (btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap,
+		btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
+		this(CollisionJNI.new_btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci,
+			btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap,
+			isSwapped), true);
+	}
 
-  public btCollisionAlgorithm getChildAlgorithm(int n) {
-    long cPtr = CollisionJNI.btCompoundCollisionAlgorithm_getChildAlgorithm(swigCPtr, this, n);
-    return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
-  }
+	public btCollisionAlgorithm getChildAlgorithm (int n) {
+		long cPtr = CollisionJNI.btCompoundCollisionAlgorithm_getChildAlgorithm(swigCPtr, this, n);
+		return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
+	}
 
-  static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
-  	private long swigCPtr;
-  	
-  	protected CreateFunc(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, CollisionJNI.btCompoundCollisionAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
-  	public CreateFunc(long cPtr, boolean cMemoryOwn) {
-  		this("CreateFunc", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(CollisionJNI.btCompoundCollisionAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(CreateFunc obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				CollisionJNI.delete_btCompoundCollisionAlgorithm_CreateFunc(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public CreateFunc() {
-      this(CollisionJNI.new_btCompoundCollisionAlgorithm_CreateFunc(), true);
-    }
-  
-  }
+	static public class CreateFunc extends btCollisionAlgorithmCreateFunc {
+		private long swigCPtr;
 
-  static public class SwappedCreateFunc extends btCollisionAlgorithmCreateFunc {
-  	private long swigCPtr;
-  	
-  	protected SwappedCreateFunc(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, CollisionJNI.btCompoundCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new SwappedCreateFunc, normally you should not need this constructor it's intended for low-level usage. */
-  	public SwappedCreateFunc(long cPtr, boolean cMemoryOwn) {
-  		this("SwappedCreateFunc", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(CollisionJNI.btCompoundCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(SwappedCreateFunc obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				CollisionJNI.delete_btCompoundCollisionAlgorithm_SwappedCreateFunc(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public SwappedCreateFunc() {
-      this(CollisionJNI.new_btCompoundCollisionAlgorithm_SwappedCreateFunc(), true);
-    }
-  
-  }
+		protected CreateFunc (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, CollisionJNI.btCompoundCollisionAlgorithm_CreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
+			swigCPtr = cPtr;
+		}
+
+		/** Construct a new CreateFunc, normally you should not need this constructor it's intended for low-level usage. */
+		public CreateFunc (long cPtr, boolean cMemoryOwn) {
+			this("CreateFunc", cPtr, cMemoryOwn);
+			construct();
+		}
+
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(CollisionJNI.btCompoundCollisionAlgorithm_CreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		}
+
+		public static long getCPtr (CreateFunc obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
+
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
+
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					CollisionJNI.delete_btCompoundCollisionAlgorithm_CreateFunc(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
+
+		public CreateFunc () {
+			this(CollisionJNI.new_btCompoundCollisionAlgorithm_CreateFunc(), true);
+		}
+
+	}
+
+	static public class SwappedCreateFunc extends btCollisionAlgorithmCreateFunc {
+		private long swigCPtr;
+
+		protected SwappedCreateFunc (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, CollisionJNI.btCompoundCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast(cPtr), cMemoryOwn);
+			swigCPtr = cPtr;
+		}
+
+		/** Construct a new SwappedCreateFunc, normally you should not need this constructor it's intended for low-level usage. */
+		public SwappedCreateFunc (long cPtr, boolean cMemoryOwn) {
+			this("SwappedCreateFunc", cPtr, cMemoryOwn);
+			construct();
+		}
+
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(CollisionJNI.btCompoundCollisionAlgorithm_SwappedCreateFunc_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		}
+
+		public static long getCPtr (SwappedCreateFunc obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
+
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
+
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					CollisionJNI.delete_btCompoundCollisionAlgorithm_SwappedCreateFunc(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
+
+		public SwappedCreateFunc () {
+			this(CollisionJNI.new_btCompoundCollisionAlgorithm_SwappedCreateFunc(), true);
+		}
+
+	}
 
 }

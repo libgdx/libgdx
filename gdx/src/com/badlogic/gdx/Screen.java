@@ -16,7 +16,8 @@
 
 package com.badlogic.gdx;
 
-/** <p>
+/**
+ * <p>
  * Represents one of many application screens, such as a main menu, a settings menu, the game screen and so on.
  * </p>
  * <p>
@@ -24,10 +25,10 @@ package com.badlogic.gdx;
  * </p>
  * @see Game */
 public interface Screen {
-	
+
 	/** Called when this screen becomes the current screen for a {@link Game}. */
 	public void show ();
-	
+
 	/** Called when the screen should render itself.
 	 * @param delta The time in seconds since the last render. */
 	public void render (float delta);

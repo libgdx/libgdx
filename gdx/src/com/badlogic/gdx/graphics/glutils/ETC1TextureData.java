@@ -81,8 +81,8 @@ public class ETC1TextureData implements TextureData {
 			pixmap.dispose();
 			useMipMaps = false;
 		} else {
-			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, data.compressedData.capacity()
-				- data.dataOffset, data.compressedData);
+			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0,
+				data.compressedData.capacity() - data.dataOffset, data.compressedData);
 			if (useMipMaps()) Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		}
 		data.dispose();

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx;
 
 public abstract class AbstractGraphics implements Graphics {
@@ -9,11 +10,12 @@ public abstract class AbstractGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		return getPpiX() / 160f;
+		float ppiX = getPpiX();
+		return (ppiX > 0 && ppiX <= Float.MAX_VALUE) ? ppiX / 160f : 1f;
 	}
 
 	@Override
 	public float getBackBufferScale () {
-		return getBackBufferWidth() / (float) getWidth();
+		return getBackBufferWidth() / (float)getWidth();
 	}
 }

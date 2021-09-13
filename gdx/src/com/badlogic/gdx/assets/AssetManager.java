@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.assets;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
@@ -221,9 +219,6 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
-		// convert all windows path separators to unix style
-		fileName = fileName.replace('\\', '/');
-
 		// check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
 		if (tasks.size > 0) {
 			AssetLoadingTask currentTask = tasks.first();
@@ -699,43 +694,50 @@ public class AssetManager implements Disposable {
 
 	/** Disposes all assets in the manager and stops all asynchronous loading. */
 	@Override
-	public synchronized void dispose () {
+	public void dispose () {
 		log.debug("Disposing.");
 		clear();
 		executor.dispose();
 	}
 
 	/** Clears and disposes all assets and the preloading queue. */
-	public synchronized void clear () {
-		loadQueue.clear();
-		while (!update()) {
+	public void clear () {
+		synchronized (this) {
+			loadQueue.clear();
 		}
 
-		ObjectIntMap<String> dependencyCount = new ObjectIntMap<String>();
-		while (assetTypes.size > 0) {
-			// for each asset, figure out how often it was referenced
-			dependencyCount.clear();
-			Array<String> assets = assetTypes.keys().toArray();
-			for (String asset : assets) {
-				Array<String> dependencies = assetDependencies.get(asset);
-				if (dependencies == null) continue;
-				for (String dependency : dependencies)
-					dependencyCount.getAndIncrement(dependency, 0, 1);
+		// Lock is temporarily released to yield to blocked executor threads
+		// A pending async task can cause a deadlock if we do not release
+
+		finishLoading();
+
+		synchronized (this) {
+			ObjectIntMap<String> dependencyCount = new ObjectIntMap<String>();
+			while (assetTypes.size > 0) {
+				// for each asset, figure out how often it was referenced
+				dependencyCount.clear(51);
+				Array<String> assets = assetTypes.keys().toArray();
+				for (String asset : assets) {
+					Array<String> dependencies = assetDependencies.get(asset);
+					if (dependencies == null) continue;
+					for (String dependency : dependencies)
+						dependencyCount.getAndIncrement(dependency, 0, 1);
+				}
+
+				// only dispose of assets that are root assets (not referenced)
+				for (String asset : assets)
+					if (dependencyCount.get(asset, 0) == 0) unload(asset);
 			}
 
-			// only dispose of assets that are root assets (not referenced)
-			for (String asset : assets)
-				if (dependencyCount.get(asset, 0) == 0) unload(asset);
+			this.assets.clear(51);
+			this.assetTypes.clear(51);
+			this.assetDependencies.clear(51);
+			this.loaded = 0;
+			this.toLoad = 0;
+			this.peakTasks = 0;
+			this.loadQueue.clear();
+			this.tasks.clear();
 		}
-
-		this.assets.clear();
-		this.assetTypes.clear();
-		this.assetDependencies.clear();
-		this.loaded = 0;
-		this.toLoad = 0;
-		this.peakTasks = 0;
-		this.loadQueue.clear();
-		this.tasks.clear();
 	}
 
 	/** @return the {@link Logger} used by the {@link AssetManager} */

@@ -69,7 +69,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	EGLContext eglContext;
 	GLVersion glVersion;
 	String extensions;
-	DisplayRotationHelper displayRotationHelper;
 
 	protected long lastFrameTime = System.nanoTime();
 	protected float deltaTime = 0;
@@ -104,11 +103,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			displayRotationHelper = new DefaultDisplayRotationHelper(app.getContext());
-		} else {
-			displayRotationHelper = new LegacyDisplayRotationHelper();
-		}
 		preserveEGLContextOnPause();
 		if (focusableView) {
 			view.setFocusable(true);
@@ -122,7 +116,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application,
 		final ResolutionStrategy resolutionStrategy) {
-		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
@@ -135,7 +129,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	public void onPauseGLSurfaceView () {
-		displayRotationHelper.onPause();
 		if (view != null) {
 			view.onPause();
 		}
@@ -145,7 +138,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		if (view != null) {
 			view.onResume();
 		}
-		displayRotationHelper.onResume();
 	}
 
 	protected EGLConfigChooser getEglConfigChooser () {
@@ -279,7 +271,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
 		this.width = width;
 		this.height = height;
-		displayRotationHelper.onSurfaceChanged();
+		updatePpi();
+		updateSafeAreaInsets();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
 			app.getApplicationListener().create();
@@ -288,6 +281,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 				running = true;
 			}
 		}
+		app.getApplicationListener().resize(width, height);
 	}
 
 	@Override
@@ -410,12 +404,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
-		if (displayRotationHelper.getAndResetRefreshNeeded()) {
-			updatePpi();
-			updateSafeAreaInsets();
-			app.getApplicationListener().resize(width, height);
-		}
-
 		long time = System.nanoTime();
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {

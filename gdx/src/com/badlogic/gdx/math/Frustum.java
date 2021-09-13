@@ -38,15 +38,15 @@ public class Frustum {
 			clipSpacePlanePointsArray[j++] = v.z;
 		}
 	}
-	
+
 	private final static Vector3 tmpV = new Vector3();
 
 	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];
 
 	/** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
-	public final Vector3[] planePoints = {new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(),
-		new Vector3(), new Vector3(), new Vector3()};
+	public final Vector3[] planePoints = {new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(),
+		new Vector3(), new Vector3()};
 	protected final float[] planePointsArray = new float[8 * 3];
 
 	public Frustum () {
@@ -109,8 +109,8 @@ public class Frustum {
 	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustum (Vector3 center, float radius) {
 		for (int i = 0; i < 6; i++)
-			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
-				return false;
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius
+				- planes[i].d)) return false;
 		return true;
 	}
 
@@ -134,8 +134,8 @@ public class Frustum {
 	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
 		for (int i = 2; i < 6; i++)
-			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
-				return false;
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius
+				- planes[i].d)) return false;
 		return true;
 	}
 

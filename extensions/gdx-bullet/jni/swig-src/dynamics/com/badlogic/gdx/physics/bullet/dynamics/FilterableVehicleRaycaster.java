@@ -8,47 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class FilterableVehicleRaycaster extends btDefaultVehicleRaycaster {
 	private long swigCPtr;
-	
-	protected FilterableVehicleRaycaster(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected FilterableVehicleRaycaster (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.FilterableVehicleRaycaster_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new FilterableVehicleRaycaster, normally you should not need this constructor it's intended for low-level usage. */
-	public FilterableVehicleRaycaster(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new FilterableVehicleRaycaster, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public FilterableVehicleRaycaster (long cPtr, boolean cMemoryOwn) {
 		this("FilterableVehicleRaycaster", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.FilterableVehicleRaycaster_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(FilterableVehicleRaycaster obj) {
+
+	public static long getCPtr (FilterableVehicleRaycaster obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,16 +54,16 @@ public class FilterableVehicleRaycaster extends btDefaultVehicleRaycaster {
 		super.delete();
 	}
 
-  public FilterableVehicleRaycaster(btDynamicsWorld world) {
-    this(DynamicsJNI.new_FilterableVehicleRaycaster(btDynamicsWorld.getCPtr(world), world), true);
-  }
+	public FilterableVehicleRaycaster (btDynamicsWorld world) {
+		this(DynamicsJNI.new_FilterableVehicleRaycaster(btDynamicsWorld.getCPtr(world), world), true);
+	}
 
-  public void setCollisionFilterMask(short collisionFilterMask) {
-    DynamicsJNI.FilterableVehicleRaycaster_setCollisionFilterMask(swigCPtr, this, collisionFilterMask);
-  }
+	public void setCollisionFilterMask (short collisionFilterMask) {
+		DynamicsJNI.FilterableVehicleRaycaster_setCollisionFilterMask(swigCPtr, this, collisionFilterMask);
+	}
 
-  public void setCollisionFilterGroup(short collisionFilterGroup) {
-    DynamicsJNI.FilterableVehicleRaycaster_setCollisionFilterGroup(swigCPtr, this, collisionFilterGroup);
-  }
+	public void setCollisionFilterGroup (short collisionFilterGroup) {
+		DynamicsJNI.FilterableVehicleRaycaster_setCollisionFilterGroup(swigCPtr, this, collisionFilterGroup);
+	}
 
 }

@@ -38,6 +38,7 @@ public class XmlReader {
 	private final Array<Element> elements = new Array(8);
 	private Element root, current;
 	private final StringBuilder textBuffer = new StringBuilder(64);
+	private String entitiesText;
 
 	public Element parse (String xml) {
 		char[] data = xml.toCharArray();
@@ -91,12 +92,12 @@ public class XmlReader {
 		String attributeName = null;
 		boolean hasBody = false;
 
-		// line 93 "XmlReader.java"
+		// line 3 "XmlReader.java"
 		{
 			cs = xml_start;
 		}
 
-		// line 97 "XmlReader.java"
+		// line 7 "XmlReader.java"
 		{
 			int _klen;
 			int _trans = 0;
@@ -175,13 +176,13 @@ public class XmlReader {
 						while (_nacts-- > 0) {
 							switch (_xml_actions[_acts++]) {
 							case 0:
-							// line 94 "XmlReader.rl"
+							// line 97 "XmlReader.rl"
 							{
 								s = p;
 							}
 								break;
 							case 1:
-							// line 95 "XmlReader.rl"
+							// line 98 "XmlReader.rl"
 							{
 								char c = data[s];
 								if (c == '?' || c == '!') {
@@ -216,7 +217,7 @@ public class XmlReader {
 							}
 								break;
 							case 2:
-							// line 125 "XmlReader.rl"
+							// line 127 "XmlReader.rl"
 							{
 								hasBody = false;
 								close();
@@ -228,7 +229,7 @@ public class XmlReader {
 							}
 								break;
 							case 3:
-							// line 130 "XmlReader.rl"
+							// line 132 "XmlReader.rl"
 							{
 								close();
 								{
@@ -239,7 +240,7 @@ public class XmlReader {
 							}
 								break;
 							case 4:
-							// line 134 "XmlReader.rl"
+							// line 136 "XmlReader.rl"
 							{
 								if (hasBody) {
 									cs = 15;
@@ -249,19 +250,13 @@ public class XmlReader {
 							}
 								break;
 							case 5:
-							// line 137 "XmlReader.rl"
+							// line 139 "XmlReader.rl"
 							{
 								attributeName = new String(data, s, p - s);
 							}
 								break;
 							case 6:
-							// line 140 "XmlReader.rl"
-							{
-								attribute(attributeName, new String(data, s, p - s));
-							}
-								break;
-							case 7:
-							// line 143 "XmlReader.rl"
+							// line 142 "XmlReader.rl"
 							{
 								int end = p;
 								while (end != s) {
@@ -293,13 +288,25 @@ public class XmlReader {
 								}
 								if (entityFound) {
 									if (s < end) textBuffer.append(data, s, end - s);
-									text(textBuffer.toString());
+									entitiesText = textBuffer.toString();
 									textBuffer.setLength(0);
 								} else
-									text(new String(data, s, end - s));
+									entitiesText = new String(data, s, end - s);
 							}
 								break;
-							// line 286 "XmlReader.java"
+							case 7:
+							// line 178 "XmlReader.rl"
+							{
+								attribute(attributeName, entitiesText);
+							}
+								break;
+							case 8:
+							// line 181 "XmlReader.rl"
+							{
+								text(entitiesText);
+							}
+								break;
+							// line 201 "XmlReader.java"
 							}
 						}
 					}
@@ -320,7 +327,9 @@ public class XmlReader {
 			}
 		}
 
-		// line 190 "XmlReader.rl"
+		// line 195 "XmlReader.rl"
+
+		entitiesText = null;
 
 		if (p < pe) {
 			int lineNumber = 1;
@@ -338,9 +347,9 @@ public class XmlReader {
 		return root;
 	}
 
-	// line 324 "XmlReader.java"
+	// line 221 "XmlReader.java"
 	private static byte[] init__xml_actions_0 () {
-		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 2, 0, 6, 2, 1, 4, 2, 2, 4};
+		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 2, 1, 4, 2, 2, 4, 2, 6, 7, 2, 6, 8, 3, 0, 6, 7};
 	}
 
 	private static final byte _xml_actions[] = init__xml_actions_0();
@@ -401,8 +410,8 @@ public class XmlReader {
 	private static final byte _xml_trans_targs[] = init__xml_trans_targs_0();
 
 	private static byte[] init__xml_trans_actions_0 () {
-		return new byte[] {0, 0, 0, 1, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 1, 0, 1, 0, 0, 0, 15,
-			1, 0, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 0, 0, 7, 1, 0, 0};
+		return new byte[] {0, 0, 0, 1, 0, 3, 3, 13, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 25, 0, 19, 5, 16, 0, 1, 0, 1, 0, 0, 0, 22,
+			1, 0, 0, 3, 3, 13, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 25, 0, 19, 5, 16, 0, 0, 0, 7, 1, 0, 0};
 	}
 
 	private static final byte _xml_trans_actions[] = init__xml_trans_actions_0();
@@ -414,7 +423,7 @@ public class XmlReader {
 	static final int xml_en_elementBody = 15;
 	static final int xml_en_main = 1;
 
-	// line 209 "XmlReader.rl"
+	// line 215 "XmlReader.rl"
 
 	protected void open (String name) {
 		Element child = new Element(name, current);

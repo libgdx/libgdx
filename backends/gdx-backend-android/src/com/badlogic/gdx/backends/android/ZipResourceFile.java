@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.badlogic.gdx.backends.android;
 
 import android.content.res.AssetFileDescriptor;
@@ -45,13 +46,12 @@ public class ZipResourceFile {
 	static final boolean LOGV = false;
 
 	// 4-byte number
-	static private int swapEndian(int i) {
-		return ((i & 0xff) << 24) + ((i & 0xff00) << 8)
-				+ ((i & 0xff0000) >>> 8) + ((i >>> 24) & 0xff);
+	static private int swapEndian (int i) {
+		return ((i & 0xff) << 24) + ((i & 0xff00) << 8) + ((i & 0xff0000) >>> 8) + ((i >>> 24) & 0xff);
 	}
 
 	// 2-byte number
-	static private int swapEndian(short i) {
+	static private int swapEndian (short i) {
 		return ((i & 0x00FF) << 8 | (i & 0xFF00) >>> 8);
 	}
 
@@ -88,16 +88,13 @@ public class ZipResourceFile {
 	static final int kCompressDeflated = 8; // standard deflate
 
 	/*
-	 * The values we return for ZipEntryRO use 0 as an invalid value, so we want
-	 * to adjust the hash table index by a fixed amount. Using a large value
-	 * helps insure that people don't mix & match arguments, e.g. to
-	 * findEntryByIndex().
+	 * The values we return for ZipEntryRO use 0 as an invalid value, so we want to adjust the hash table index by a fixed amount.
+	 * Using a large value helps insure that people don't mix & match arguments, e.g. to findEntryByIndex().
 	 */
 	static final int kZipEntryAdj = 10000;
 
 	static public final class ZipEntryRO {
-		public ZipEntryRO(final String zipFileName, final File file,
-				final String fileName) {
+		public ZipEntryRO (final String zipFileName, final File file, final String fileName) {
 			mFileName = fileName;
 			mZipFileName = zipFileName;
 			mFile = file;
@@ -117,8 +114,7 @@ public class ZipResourceFile {
 
 		public long mOffset = -1;
 
-		public void setOffsetFromFile(RandomAccessFile f, ByteBuffer buf)
-				throws IOException {
+		public void setOffsetFromFile (RandomAccessFile f, ByteBuffer buf) throws IOException {
 			long localHdrOffset = mLocalHdrOffset;
 			try {
 				f.seek(localHdrOffset);
@@ -137,33 +133,26 @@ public class ZipResourceFile {
 			}
 		}
 
-		/**
-		 * Calculates the offset of the start of the Zip file entry within the
-		 * Zip file.
+		/** Calculates the offset of the start of the Zip file entry within the Zip file.
 		 *
-		 * @return the offset, in bytes from the start of the file of the entry
-		 */
-		public long getOffset() {
+		 * @return the offset, in bytes from the start of the file of the entry */
+		public long getOffset () {
 			return mOffset;
 		}
 
-		/**
-		 * isUncompressed
+		/** isUncompressed
 		 *
-		 * @return true if the file is stored in uncompressed form
-		 */
-		public boolean isUncompressed() {
+		 * @return true if the file is stored in uncompressed form */
+		public boolean isUncompressed () {
 			return mMethod == kCompressStored;
 		}
 
-		public AssetFileDescriptor getAssetFileDescriptor() {
+		public AssetFileDescriptor getAssetFileDescriptor () {
 			if (mMethod == kCompressStored) {
 				ParcelFileDescriptor pfd;
 				try {
-					pfd = ParcelFileDescriptor.open(mFile,
-							ParcelFileDescriptor.MODE_READ_ONLY);
-					return new AssetFileDescriptor(pfd, getOffset(),
-							mUncompressedLength);
+					pfd = ParcelFileDescriptor.open(mFile, ParcelFileDescriptor.MODE_READ_ONLY);
+					return new AssetFileDescriptor(pfd, getOffset(), mUncompressedLength);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -172,11 +161,11 @@ public class ZipResourceFile {
 			return null;
 		}
 
-		public String getZipFileName() {
+		public String getZipFileName () {
 			return mZipFileName;
 		}
 
-		public File getZipFile() {
+		public File getZipFile () {
 			return mFile;
 		}
 
@@ -187,15 +176,14 @@ public class ZipResourceFile {
 	/* for reading compressed files */
 	public HashMap<File, ZipFile> mZipFiles = new HashMap<File, ZipFile>();
 
-	public ZipResourceFile(String zipFileName) throws IOException {
+	public ZipResourceFile (String zipFileName) throws IOException {
 		addPatchFile(zipFileName);
 	}
 
-	ZipEntryRO[] getEntriesAt(String path) {
+	ZipEntryRO[] getEntriesAt (String path) {
 		Vector<ZipEntryRO> zev = new Vector<ZipEntryRO>();
 		Collection<ZipEntryRO> values = mHashMap.values();
-		if (null == path)
-			path = "";
+		if (null == path) path = "";
 		int length = path.length();
 		for (ZipEntryRO ze : values) {
 			if (ze.mFileName.startsWith(path)) {
@@ -208,23 +196,18 @@ public class ZipResourceFile {
 		return zev.toArray(entries);
 	}
 
-	public ZipEntryRO[] getAllEntries() {
+	public ZipEntryRO[] getAllEntries () {
 		Collection<ZipEntryRO> values = mHashMap.values();
 		return values.toArray(new ZipEntryRO[values.size()]);
 	}
 
-	/**
-	 * getAssetFileDescriptor allows for ZipResourceFile to directly feed
-	 * Android API's that want an fd, offset, and length such as the
-	 * MediaPlayer. It also allows for the class to be used in a content
-	 * provider that can feed video players. The file must be stored
-	 * (non-compressed) in the Zip file for this to work.
+	/** getAssetFileDescriptor allows for ZipResourceFile to directly feed Android API's that want an fd, offset, and length such
+	 * as the MediaPlayer. It also allows for the class to be used in a content provider that can feed video players. The file must
+	 * be stored (non-compressed) in the Zip file for this to work.
 	 *
 	 * @param assetPath
-	 * @return the asset file descriptor for the file, or null if the file isn't
-	 *         present or is stored compressed
-	 */
-	public AssetFileDescriptor getAssetFileDescriptor(String assetPath) {
+	 * @return the asset file descriptor for the file, or null if the file isn't present or is stored compressed */
+	public AssetFileDescriptor getAssetFileDescriptor (String assetPath) {
 		ZipEntryRO entry = mHashMap.get(assetPath);
 		if (null != entry) {
 			return entry.getAssetFileDescriptor();
@@ -232,16 +215,13 @@ public class ZipResourceFile {
 		return null;
 	}
 
-	/**
-	 * getInputStream returns an AssetFileDescriptor.AutoCloseInputStream
-	 * associated with the asset that is contained in the Zip file, or a
-	 * standard ZipInputStream if necessary to uncompress the file
+	/** getInputStream returns an AssetFileDescriptor.AutoCloseInputStream associated with the asset that is contained in the Zip
+	 * file, or a standard ZipInputStream if necessary to uncompress the file
 	 *
 	 * @param assetPath
 	 * @return an input stream for the named asset path, or null if not found
-	 * @throws IOException
-	 */
-	public InputStream getInputStream(String assetPath) throws IOException {
+	 * @throws IOException */
+	public InputStream getInputStream (String assetPath) throws IOException {
 		ZipEntryRO entry = mHashMap.get(assetPath);
 		if (null != entry) {
 			if (entry.isUncompressed()) {
@@ -254,8 +234,7 @@ public class ZipResourceFile {
 					mZipFiles.put(entry.getZipFile(), zf);
 				}
 				ZipEntry zi = zf.getEntry(assetPath);
-				if (null != zi)
-					return zf.getInputStream(zi);
+				if (null != zi) return zf.getInputStream(zi);
 			}
 		}
 		return null;
@@ -263,16 +242,14 @@ public class ZipResourceFile {
 
 	ByteBuffer mLEByteBuffer = ByteBuffer.allocate(4);
 
-	static private int read4LE(RandomAccessFile f) throws EOFException,
-			IOException {
+	static private int read4LE (RandomAccessFile f) throws EOFException, IOException {
 		return swapEndian(f.readInt());
 	}
 
 	/*
-	 * Opens the specified file read-only. We memory-map the entire thing and
-	 * close the file before returning.
+	 * Opens the specified file read-only. We memory-map the entire thing and close the file before returning.
 	 */
-	void addPatchFile(String zipFileName) throws IOException {
+	void addPatchFile (String zipFileName) throws IOException {
 		File file = new File(zipFileName);
 		RandomAccessFile f = new RandomAccessFile(file, "r");
 		long fileLength = f.length();
@@ -283,8 +260,7 @@ public class ZipResourceFile {
 		}
 
 		long readAmount = kMaxEOCDSearch;
-		if (readAmount > fileLength)
-			readAmount = fileLength;
+		if (readAmount > fileLength) readAmount = fileLength;
 
 		/*
 		 * Make sure this is a Zip archive.
@@ -301,34 +277,28 @@ public class ZipResourceFile {
 		}
 
 		/*
-		 * Perform the traditional EOCD snipe hunt. We're searching for the End
-		 * of Central Directory magic number, which appears at the start of the
-		 * EOCD block. It's followed by 18 bytes of EOCD stuff and up to 64KB of
-		 * archive comment. We need to read the last part of the file into a
-		 * buffer, dig through it to find the magic number, parse some values
-		 * out, and use those to determine the extent of the CD. We start by
-		 * pulling in the last part of the file.
+		 * Perform the traditional EOCD snipe hunt. We're searching for the End of Central Directory magic number, which appears at
+		 * the start of the EOCD block. It's followed by 18 bytes of EOCD stuff and up to 64KB of archive comment. We need to read
+		 * the last part of the file into a buffer, dig through it to find the magic number, parse some values out, and use those to
+		 * determine the extent of the CD. We start by pulling in the last part of the file.
 		 */
 		long searchStart = fileLength - readAmount;
 
 		f.seek(searchStart);
-		ByteBuffer bbuf = ByteBuffer.allocate((int) readAmount);
+		ByteBuffer bbuf = ByteBuffer.allocate((int)readAmount);
 		byte[] buffer = bbuf.array();
 		f.readFully(buffer);
 		bbuf.order(ByteOrder.LITTLE_ENDIAN);
 
 		/*
-		 * Scan backward for the EOCD magic. In an archive without a trailing
-		 * comment, we'll find it on the first try. (We may want to consider
-		 * doing an initial minimal read; if we don't find it, retry with a
-		 * second read as above.)
+		 * Scan backward for the EOCD magic. In an archive without a trailing comment, we'll find it on the first try. (We may want
+		 * to consider doing an initial minimal read; if we don't find it, retry with a second read as above.)
 		 */
 
 		// EOCD == 0x50, 0x4b, 0x05, 0x06
 		int eocdIdx;
 		for (eocdIdx = buffer.length - kEOCDLen; eocdIdx >= 0; eocdIdx--) {
-			if (buffer[eocdIdx] == 0x50
-					&& bbuf.getInt(eocdIdx) == kEOCDSignature) {
+			if (buffer[eocdIdx] == 0x50 && bbuf.getInt(eocdIdx) == kEOCDSignature) {
 				if (LOGV) {
 					Log.v(LOG_TAG, "+++ Found EOCD at index: " + eocdIdx);
 				}
@@ -337,13 +307,11 @@ public class ZipResourceFile {
 		}
 
 		if (eocdIdx < 0) {
-			Log.d(LOG_TAG, "Zip: EOCD not found, " + zipFileName
-					+ " is not zip");
+			Log.d(LOG_TAG, "Zip: EOCD not found, " + zipFileName + " is not zip");
 		}
 
 		/*
-		 * Grab the CD offset and size, and the number of entries in the
-		 * archive. After that, we can release our EOCD hunt buffer.
+		 * Grab the CD offset and size, and the number of entries in the archive. After that, we can release our EOCD hunt buffer.
 		 */
 
 		int numEntries = bbuf.getShort(eocdIdx + kEOCDNumEntries);
@@ -352,8 +320,7 @@ public class ZipResourceFile {
 
 		// Verify that they look reasonable.
 		if (dirOffset + dirSize > fileLength) {
-			Log.w(LOG_TAG, "bad offsets (dir " + dirOffset + ", size "
-					+ dirSize + ", eocd " + eocdIdx + ")");
+			Log.w(LOG_TAG, "bad offsets (dir " + dirOffset + ", size " + dirSize + ", eocd " + eocdIdx + ")");
 			throw new IOException();
 		}
 		if (numEntries == 0) {
@@ -362,12 +329,10 @@ public class ZipResourceFile {
 		}
 
 		if (LOGV) {
-			Log.v(LOG_TAG, "+++ numEntries=" + numEntries + " dirSize="
-					+ dirSize + " dirOffset=" + dirOffset);
+			Log.v(LOG_TAG, "+++ numEntries=" + numEntries + " dirSize=" + dirSize + " dirOffset=" + dirOffset);
 		}
 
-		MappedByteBuffer directoryMap = f.getChannel().map(
-				FileChannel.MapMode.READ_ONLY, dirOffset, dirSize);
+		MappedByteBuffer directoryMap = f.getChannel().map(FileChannel.MapMode.READ_ONLY, dirOffset, dirSize);
 		directoryMap.order(ByteOrder.LITTLE_ENDIAN);
 
 		byte[] tempBuf = new byte[0xffff];
@@ -386,23 +351,20 @@ public class ZipResourceFile {
 
 		for (int i = 0; i < numEntries; i++) {
 			if (directoryMap.getInt(currentOffset) != kCDESignature) {
-				Log.w(LOG_TAG, "Missed a central dir sig (at " + currentOffset
-						+ ")");
+				Log.w(LOG_TAG, "Missed a central dir sig (at " + currentOffset + ")");
 				throw new IOException();
 			}
 
 			/* useful stuff from the directory entry */
-			int fileNameLen = directoryMap
-					.getShort(currentOffset + kCDENameLen) & 0xffff;
+			int fileNameLen = directoryMap.getShort(currentOffset + kCDENameLen) & 0xffff;
 			int extraLen = directoryMap.getShort(currentOffset + kCDEExtraLen) & 0xffff;
-			int commentLen = directoryMap.getShort(currentOffset
-					+ kCDECommentLen) & 0xffff;
+			int commentLen = directoryMap.getShort(currentOffset + kCDECommentLen) & 0xffff;
 
 			/* get the CDE filename */
 
-			((Buffer) directoryMap).position(currentOffset + kCDELen);
+			((Buffer)directoryMap).position(currentOffset + kCDELen);
 			directoryMap.get(tempBuf, 0, fileNameLen);
-			((Buffer) directoryMap).position(0);
+			((Buffer)directoryMap).position(0);
 
 			/* UTF-8 on Android */
 			String str = new String(tempBuf, 0, fileNameLen);
@@ -414,15 +376,12 @@ public class ZipResourceFile {
 			ze.mMethod = directoryMap.getShort(currentOffset + kCDEMethod) & 0xffff;
 			ze.mWhenModified = directoryMap.getInt(currentOffset + kCDEModWhen) & 0xffffffffL;
 			ze.mCRC32 = directoryMap.getLong(currentOffset + kCDECRC) & 0xffffffffL;
-			ze.mCompressedLength = directoryMap.getLong(currentOffset
-					+ kCDECompLen) & 0xffffffffL;
-			ze.mUncompressedLength = directoryMap.getLong(currentOffset
-					+ kCDEUncompLen) & 0xffffffffL;
-			ze.mLocalHdrOffset = directoryMap.getInt(currentOffset
-					+ kCDELocalOffset) & 0xffffffffL;
+			ze.mCompressedLength = directoryMap.getLong(currentOffset + kCDECompLen) & 0xffffffffL;
+			ze.mUncompressedLength = directoryMap.getLong(currentOffset + kCDEUncompLen) & 0xffffffffL;
+			ze.mLocalHdrOffset = directoryMap.getInt(currentOffset + kCDELocalOffset) & 0xffffffffL;
 
 			// set the offsets
-			((Buffer) buf).clear();
+			((Buffer)buf).clear();
 			ze.setOffsetFromFile(f, buf);
 
 			// put file into hash

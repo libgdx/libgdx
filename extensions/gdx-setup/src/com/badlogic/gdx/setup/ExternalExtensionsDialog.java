@@ -105,7 +105,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 			}
 		});
 
-		setTitle("Third party external extensions");
+		setTitle("Third-party external extensions");
 		setSize(600, 300);
 		setLocationRelativeTo(null);
 	}
@@ -113,6 +113,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 	public void showDialog (Component parent) {
 		takeSnapshot();
 		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 		setVisible(true);
 	}
 
@@ -120,8 +121,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 
 		topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		warningNotice = new JLabel("List of third party extensions for LibGDX");
-		warningNotice2 = new JLabel("These are not maintained by the LibGDX team, please see the support links for info and help");
+		warningNotice = new JLabel("List of third-party extensions for libGDX");
+		warningNotice2 = new JLabel("These are not maintained by the libGDX team. Please see the support links for info and help.");
 		warningNotice.setHorizontalAlignment(JLabel.CENTER);
 		warningNotice2.setHorizontalAlignment(JLabel.CENTER);
 
@@ -195,8 +196,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 	private void initData () throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
-		Document doc = builder.parse(ExternalExtensionsDialog.class
-			.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
+		Document doc = builder
+			.parse(ExternalExtensionsDialog.class.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
 
 		doc.getDocumentElement().normalize();
 
@@ -260,8 +261,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		scrollPane.setBackground(new Color(36, 36, 36));
 		scrollPane.getViewport().setBackground(new Color(36, 36, 36));
 
-		warningNotice.setForeground(new Color(255, 20, 20));
-		warningNotice2.setForeground(new Color(255, 20, 20));
+		warningNotice.setForeground(new Color(235, 70, 61));
+		warningNotice2.setForeground(new Color(235, 70, 61));
 	}
 
 	void onOK () {
@@ -293,7 +294,8 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		}
 	}
 
-	private void addToDependencyMapFromXML (Map<String, List<ExternalExtensionDependency>> dependencies, Element eElement, String platform) {
+	private void addToDependencyMapFromXML (Map<String, List<ExternalExtensionDependency>> dependencies, Element eElement,
+		String platform) {
 		if (eElement.getElementsByTagName(platform).item(0) != null) {
 			Element project = (Element)eElement.getElementsByTagName(platform).item(0);
 
@@ -401,7 +403,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 		}
 
 	}
-	
+
 	@Override
 	public void tableChanged (TableModelEvent e) {
 		int row = e.getFirstRow();

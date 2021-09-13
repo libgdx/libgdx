@@ -34,7 +34,7 @@ public class ClipboardTest extends GdxTest {
 	TextButton buttonHasContents;
 
 	@Override
-	public void create() {
+	public void create () {
 		stage = new Stage();
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		textArea = new TextArea("", skin);
@@ -45,29 +45,29 @@ public class ClipboardTest extends GdxTest {
 		textArea.setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 3f);
 
 		textArea.setPosition(Gdx.graphics.getWidth() / 2f - textArea.getWidth() / 2f,
-				Gdx.graphics.getHeight() / 2f - textArea.getHeight() / 2f);
+			Gdx.graphics.getHeight() / 2f - textArea.getHeight() / 2f);
 		buttonCopy.setPosition(Gdx.graphics.getWidth() / 4f - buttonCopy.getWidth() / 2f,
-				Gdx.graphics.getHeight() / 4f - buttonCopy.getHeight() / 2f);
+			Gdx.graphics.getHeight() / 4f - buttonCopy.getHeight() / 2f);
 		buttonPaste.setPosition(3 * Gdx.graphics.getWidth() / 4f - buttonPaste.getWidth() / 2f,
-				Gdx.graphics.getHeight() / 4f - buttonPaste.getHeight() / 2f);
+			Gdx.graphics.getHeight() / 4f - buttonPaste.getHeight() / 2f);
 		buttonHasContents.setPosition(Gdx.graphics.getWidth() / 2f - buttonHasContents.getWidth() / 2f,
-				Gdx.graphics.getHeight() / 4f - buttonHasContents.getHeight() / 2f);
+			Gdx.graphics.getHeight() / 4f - buttonHasContents.getHeight() / 2f);
 
 		buttonCopy.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Gdx.app.getClipboard().setContents(textArea.getText());
 			}
 		});
 		buttonPaste.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				textArea.setText(Gdx.app.getClipboard().getContents());
 			}
 		});
 		buttonHasContents.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				buttonHasContents.setText("Has Contents: " + Gdx.app.getClipboard().hasContents());
 			}
 		});
@@ -81,7 +81,7 @@ public class ClipboardTest extends GdxTest {
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		stage.act();
 		stage.draw();
 	}

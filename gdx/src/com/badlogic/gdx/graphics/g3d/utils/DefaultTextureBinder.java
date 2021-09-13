@@ -39,7 +39,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	/** The textures currently exclusive bound */
 	private final GLTexture[] textures;
 	/** Texture units ordered from most to least recently used */
-	private int [] unitsLRU;
+	private int[] unitsLRU;
 	/** The method of binding to use */
 	private final int method;
 	/** Flag to indicate the current texture is reused */
@@ -61,8 +61,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public DefaultTextureBinder (final int method, final int offset, int count) {
 		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
 		if (count < 0) count = max - offset;
-		if (offset < 0 || count < 0 || (offset + count) > max)
-			throw new GdxRuntimeException("Illegal arguments");
+		if (offset < 0 || count < 0 || (offset + count) > max) throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
 		this.offset = offset;
 		this.count = count;

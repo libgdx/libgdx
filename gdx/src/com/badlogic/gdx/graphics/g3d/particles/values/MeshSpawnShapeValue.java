@@ -48,14 +48,14 @@ public abstract class MeshSpawnShapeValue extends SpawnShapeValue {
 		public static Vector3 pick (float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3,
 			Vector3 vector) {
 			float a = MathUtils.random(), b = MathUtils.random();
-			return vector.set(x1 + a * (x2 - x1) + b * (x3 - x1), y1 + a * (y2 - y1) + b * (y3 - y1), z1 + a * (z2 - z1) + b
-				* (z3 - z1));
+			return vector.set(x1 + a * (x2 - x1) + b * (x3 - x1), y1 + a * (y2 - y1) + b * (y3 - y1),
+				z1 + a * (z2 - z1) + b * (z3 - z1));
 		}
 
 		public Vector3 pick (Vector3 vector) {
 			float a = MathUtils.random(), b = MathUtils.random();
-			return vector.set(x1 + a * (x2 - x1) + b * (x3 - x1), y1 + a * (y2 - y1) + b * (y3 - y1), z1 + a * (z2 - z1) + b
-				* (z3 - z1));
+			return vector.set(x1 + a * (x2 - x1) + b * (x3 - x1), y1 + a * (y2 - y1) + b * (y3 - y1),
+				z1 + a * (z2 - z1) + b * (z3 - z1));
 		}
 	}
 

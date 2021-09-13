@@ -95,9 +95,8 @@ public class ParticleShader extends BaseShader {
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl")
-				.readString();
+		if (defaultFragmentShader == null) defaultFragmentShader = Gdx.files
+			.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -276,7 +275,7 @@ public class ParticleShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof ParticleShader) && equals((ParticleShader) obj);
+		return (obj instanceof ParticleShader) && equals((ParticleShader)obj);
 	}
 
 	public boolean equals (ParticleShader obj) {

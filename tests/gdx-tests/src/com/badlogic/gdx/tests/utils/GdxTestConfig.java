@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.utils;
 
 import static java.lang.annotation.ElementType.TYPE;

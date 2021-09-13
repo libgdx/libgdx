@@ -41,11 +41,11 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, "input ["+type+"]: " + text, 0, Gdx.graphics.getHeight());
+		font.draw(batch, "input [" + type + "]: " + text, 0, Gdx.graphics.getHeight());
 		batch.end();
 
 		if (Gdx.input.justTouched()) {
-			type = OnscreenKeyboardType.values()[(type.ordinal()+1) % OnscreenKeyboardType.values().length];
+			type = OnscreenKeyboardType.values()[(type.ordinal() + 1) % OnscreenKeyboardType.values().length];
 			Gdx.input.setOnscreenKeyboardVisible(true, type);
 		}
 	}

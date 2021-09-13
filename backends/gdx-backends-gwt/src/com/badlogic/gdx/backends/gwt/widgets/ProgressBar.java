@@ -29,7 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>.gwt-ProgressBar-shell .gwt-ProgressBar-text { text on the bar }</li>
  * <li>.gwt-ProgressBar-shell .gwt-ProgressBar-text-firstHalf { applied to text when progress is less than 50 percent }</li>
  * <li>.gwt-ProgressBar-shell .gwt-ProgressBar-text-secondHalf { applied to text when progress is greater than 50 percent }</li>
- * </ul> */
+ * </ul>
+ */
 public class ProgressBar extends Widget implements ResizableWidget {
 
 	private static final String DEFAULT_TEXT_CLASS_NAME = "gwt-ProgressBar-text";

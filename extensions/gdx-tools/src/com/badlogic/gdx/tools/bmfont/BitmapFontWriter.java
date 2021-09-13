@@ -29,9 +29,9 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * The font file format is from the AngelCodeFont BMFont tool.
  * <p>
- * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}. BitmapFontWriter gives more flexibility, eg
- * borders and shadows can be used. Hiero is able to avoid outputting the same glyph image more than once if multiple character
- * codes have the exact same glyph.
+ * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}.
+ * BitmapFontWriter gives more flexibility, eg borders and shadows can be used. Hiero is able to avoid outputting the same glyph
+ * image more than once if multiple character codes have the exact same glyph.
  * @author mattdesl AKA davedes */
 public class BitmapFontWriter {
 
@@ -47,7 +47,7 @@ public class BitmapFontWriter {
 	/** The output format */
 	private static OutputFormat format = OutputFormat.Text;
 
-	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for LibGDX) or XML (for other engines, like
+	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for libGDX) or XML (for other engines, like
 	 * Pixi.js).
 	 * 
 	 * @param fmt the output format to use */
@@ -82,8 +82,8 @@ public class BitmapFontWriter {
 		public int horizontal, vertical;
 	}
 
-	/** The font "info" line; everything except padding and override metrics are ignored by LibGDX's BitmapFont reader, it is otherwise just useful for
-	 * clean and organized output. */
+	/** The font "info" line; everything except padding and override metrics are ignored by libGDX's BitmapFont reader, it is
+	 * otherwise just useful for clean and organized output. */
 	public static class FontInfo {
 		/** Face name */
 		public String face;
@@ -155,10 +155,10 @@ public class BitmapFontWriter {
 	 * texture page. The glyphs in BitmapFontData have a "page" id, which references the index of the pageRef you specify here.
 	 * 
 	 * The FontInfo parameter is useful for cleaner output; such as including a size and font face name hint. However, it can be
-	 * null to use default values. LibGDX ignores most of the "info" line when reading back fonts, only padding is used. Padding
+	 * null to use default values. libGDX ignores most of the "info" line when reading back fonts, only padding is used. Padding
 	 * also affects the size, location, and offset of the glyphs that are output.
 	 * 
-	 * Likewise, the scaleW and scaleH are only for cleaner output. They are currently ignored by LibGDX's reader. For maximum
+	 * Likewise, the scaleW and scaleH are only for cleaner output. They are currently ignored by libGDX's reader. For maximum
 	 * compatibility with other BMFont tools, you should use the width and height of your texture pages (each page should be the
 	 * same size).
 	 * 
@@ -252,7 +252,8 @@ public class BitmapFontWriter {
 				.append(quote(String.format("%-5s", empty ? 0 : g.width), true)).append("height=")
 				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
-				.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
+				.append(
+					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
 				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
 				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
 				.append("\n");
@@ -288,15 +289,11 @@ public class BitmapFontWriter {
 		if (info.hasOverrideMetrics) {
 			if (xml) buf.append("\t<metrics>\n");
 
-			buf.append(xmlTab).append(xmlOpen)
-					.append("metrics ascent=").append(quote(info.ascent, true))
-					.append(" descent=").append(quote(info.descent, true))
-					.append(" down=").append(quote(info.down, true))
-					.append(" capHeight=").append(quote(info.capHeight, true))
-					.append(" lineHeight=").append(quote(info.lineHeight, true))
-					.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true))
-					.append(" xHeight=").append(quote(info.xHeight, true))
-					.append(xmlCloseSelf).append("\n");
+			buf.append(xmlTab).append(xmlOpen).append("metrics ascent=").append(quote(info.ascent, true)).append(" descent=")
+				.append(quote(info.descent, true)).append(" down=").append(quote(info.down, true)).append(" capHeight=")
+				.append(quote(info.capHeight, true)).append(" lineHeight=").append(quote(info.lineHeight, true))
+				.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true)).append(" xHeight=")
+				.append(quote(info.xHeight, true)).append(xmlCloseSelf).append("\n");
 
 			if (xml) buf.append("\t</metrics>\n");
 		}

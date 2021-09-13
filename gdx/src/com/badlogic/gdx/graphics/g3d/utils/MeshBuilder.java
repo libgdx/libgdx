@@ -125,8 +125,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
 			attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
-		if ((usage & Usage.Normal) == Usage.Normal)
-			attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		if ((usage & Usage.Normal) == Usage.Normal) attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		if ((usage & Usage.TextureCoordinates) == Usage.TextureCoordinates)
 			attrs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final VertexAttribute attributes[] = new VertexAttribute[attrs.size];
@@ -240,9 +239,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		if (attributes == null) throw new GdxRuntimeException("Call begin() first");
 		if (!attributes.equals(mesh.getVertexAttributes())) throw new GdxRuntimeException("Mesh attributes don't match");
-		if ((mesh.getMaxVertices() * stride) < vertices.size)
-			throw new GdxRuntimeException("Mesh can't hold enough vertices: " + mesh.getMaxVertices() + " * " + stride + " < "
-				+ vertices.size);
+		if ((mesh.getMaxVertices() * stride) < vertices.size) throw new GdxRuntimeException(
+			"Mesh can't hold enough vertices: " + mesh.getMaxVertices() + " * " + stride + " < " + vertices.size);
 		if (mesh.getMaxIndices() < indices.size)
 			throw new GdxRuntimeException("Mesh can't hold enough indices: " + mesh.getMaxIndices() + " < " + indices.size);
 
@@ -587,8 +585,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public short vertex (final VertexInfo info) {
-		return vertex(info.hasPosition ? info.position : null, info.hasNormal ? info.normal : null, info.hasColor ? info.color
-			: null, info.hasUV ? info.uv : null);
+		return vertex(info.hasPosition ? info.position : null, info.hasNormal ? info.normal : null,
+			info.hasColor ? info.color : null, info.hasUV ? info.uv : null);
 	}
 
 	@Override
@@ -723,12 +721,12 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
-		float x01, float y01, float z01, float normalX, float normalY, float normalZ) {
-		rect(vertTmp1.set(null, null, null, null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(0f, 1f), vertTmp2
-			.set(null, null, null, null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(1f, 1f),
-			vertTmp3.set(null, null, null, null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(1f, 0f), vertTmp4
-				.set(null, null, null, null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(0f, 0f));
+	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01,
+		float y01, float z01, float normalX, float normalY, float normalZ) {
+		rect(vertTmp1.set(null, null, null, null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(0f, 1f),
+			vertTmp2.set(null, null, null, null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(1f, 1f),
+			vertTmp3.set(null, null, null, null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(1f, 0f),
+			vertTmp4.set(null, null, null, null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(0f, 0f));
 	}
 
 	@Override
@@ -800,9 +798,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			index((short)(indices[i] + offset));
 	}
 
-	
 	// TODO: The following methods are deprecated and will be removed in a future release
-	
+
 	@Override
 	@Deprecated
 	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
@@ -821,9 +818,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Deprecated
 	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
 		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
-		PatchShapeBuilder.build(this, x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, divisionsU, divisionsV);
+		PatchShapeBuilder.build(this, x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ,
+			divisionsU, divisionsV);
 	}
-	
+
 	@Override
 	@Deprecated
 	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
@@ -880,16 +878,16 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ) {
-		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
-			tangentY, tangentZ, binormalX, binormalY, binormalZ);
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY,
+			tangentZ, binormalX, binormalY, binormalZ);
 	}
 
 	@Override
 	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float angleFrom, float angleTo) {
-		EllipseShapeBuilder
-			.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom, angleTo);
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom,
+			angleTo);
 	}
 
 	@Override
@@ -911,8 +909,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
 		float angleFrom, float angleTo) {
-		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
-			tangentY, tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY,
+			tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
 	}
 
 	@Override
@@ -1036,7 +1034,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
 		ConeShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo);
 	}
-	
+
 	@Override
 	@Deprecated
 	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV) {
@@ -1069,7 +1067,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void capsule (float radius, float height, int divisions) {
 		CapsuleShapeBuilder.build(this, radius, height, divisions);
 	}
-	
+
 	@Override
 	@Deprecated
 	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,

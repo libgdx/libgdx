@@ -175,8 +175,8 @@ public class Node {
 		return getNode(children, id, recursive, ignoreCase);
 	}
 
-	/** Adds the specified node as the currently last child of this node. If the node is already a child of another node, then it is
-	 * removed from its current parent.
+	/** Adds the specified node as the currently last child of this node. If the node is already a child of another node, then it
+	 * is removed from its current parent.
 	 * @param child The Node to add as child of this Node
 	 * @return the zero-based index of the child */
 	public <T extends Node> int addChild (final T child) {
@@ -191,8 +191,8 @@ public class Node {
 		return insertChildren(-1, nodes);
 	}
 
-	/** Insert the specified node as child of this node at the specified index. If the node is already a child of another node, then
-	 * it is removed from its current parent. If the specified index is less than zero or equal or greater than
+	/** Insert the specified node as child of this node at the specified index. If the node is already a child of another node,
+	 * then it is removed from its current parent. If the specified index is less than zero or equal or greater than
 	 * {@link #getChildCount()} then the Node is added as the currently last child.
 	 * @param index The zero-based index at which to add the child
 	 * @param child The Node to add as child of this Node
