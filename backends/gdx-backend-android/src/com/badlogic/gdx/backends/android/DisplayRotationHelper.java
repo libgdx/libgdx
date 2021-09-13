@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.android;
 
 public interface DisplayRotationHelper {
