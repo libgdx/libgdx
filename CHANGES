@@ -1,5 +1,6 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
+- iOS: Update to MobiVM 2.3.14
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.

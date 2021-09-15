@@ -24,7 +24,7 @@ public class DependencyBank {
 	static String libgdxVersion = "1.10.0";
 	// Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.10.1-SNAPSHOT";
-	static String roboVMVersion = "2.3.12";
+	static String roboVMVersion = "2.3.14";
 	static String buildToolsVersion = "29.0.3";
 	static String androidAPILevel = "30";
 	static String androidMinAPILevel = "14";
