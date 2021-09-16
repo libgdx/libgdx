@@ -8,1044 +8,2246 @@
 
 package com.badlogic.gdx.physics.bullet.linearmath;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.Pool;
 
 public class LinearMathJNI {
-  public final static native int btGetVersion();
-  public final static native float btSqrt(float jarg1);
-  public final static native float btFabs(float jarg1);
-  public final static native float btCos(float jarg1);
-  public final static native float btSin(float jarg1);
-  public final static native float btTan(float jarg1);
-  public final static native float btAcos(float jarg1);
-  public final static native float btAsin(float jarg1);
-  public final static native float btAtan(float jarg1);
-  public final static native float btAtan2(float jarg1, float jarg2);
-  public final static native float btExp(float jarg1);
-  public final static native float btLog(float jarg1);
-  public final static native float btPow(float jarg1, float jarg2);
-  public final static native float btFmod(float jarg1, float jarg2);
-  public final static native float btAtan2Fast(float jarg1, float jarg2);
-  public final static native boolean btFuzzyZero(float jarg1);
-  public final static native boolean btEqual(float jarg1, float jarg2);
-  public final static native boolean btGreaterEqual(float jarg1, float jarg2);
-  public final static native int btIsNegative(float jarg1);
-  public final static native float btRadians(float jarg1);
-  public final static native float btDegrees(float jarg1);
-  public final static native float btFsel(float jarg1, float jarg2, float jarg3);
-  public final static native boolean btMachineIsLittleEndian();
-  public final static native long btSelect__SWIG_0(long jarg1, long jarg2, long jarg3);
-  public final static native int btSelect__SWIG_1(long jarg1, int jarg2, int jarg3);
-  public final static native float btSelect__SWIG_2(long jarg1, float jarg2, float jarg3);
-  public final static native long btSwapEndian__SWIG_0(long jarg1);
-  public final static native int btSwapEndian__SWIG_1(int jarg1);
-  public final static native long btSwapEndianInt(int jarg1);
-  public final static native int btSwapEndian__SWIG_2(short jarg1);
-  public final static native long btSwapEndianFloat(float jarg1);
-  public final static native float btUnswapEndianFloat(long jarg1);
-  public final static native void btSwapEndianDouble(double jarg1, java.nio.ByteBuffer jarg2);
-  public final static native double btUnswapEndianDouble(java.nio.ByteBuffer jarg1);
-  public final static native float btLargeDot(java.nio.FloatBuffer jarg1, java.nio.FloatBuffer jarg2, int jarg3);
-  public final static native float btNormalizeAngle(float jarg1);
-  public final static native long new_btTypedObject(int jarg1);
-  public final static native void btTypedObject_objectType_set(long jarg1, btTypedObject jarg1_, int jarg2);
-  public final static native int btTypedObject_objectType_get(long jarg1, btTypedObject jarg1_);
-  public final static native void delete_btTypedObject(long jarg1);
-  public final static native long new_btTransform__SWIG_0();
-  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
-  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
-  public final static native long new_btTransform__SWIG_5(Matrix4 jarg1);
-  public final static native Matrix4 btTransform_operatorAssignment(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native Vector3 btTransform_operatorFunctionCall(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Vector3 btTransform_operatorMultiplication__SWIG_0(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Quaternion btTransform_operatorMultiplication__SWIG_1(long jarg1, btTransform jarg1_, Quaternion jarg2);
-  public final static native Matrix3 btTransform_getBasis(long jarg1, btTransform jarg1_);
-  public final static native Matrix3 btTransform_getBasisConst(long jarg1, btTransform jarg1_);
-  public final static native Vector3 btTransform_getOrigin(long jarg1, btTransform jarg1_);
-  public final static native Vector3 btTransform_getOriginConst(long jarg1, btTransform jarg1_);
-  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
-  public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
-  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
-  public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_operatorMultiplicationAssignment(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btTransform_inverse(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_inverseTimes(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btTransform_operatorMultiplication__SWIG_2(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btTransform_getIdentity();
-  public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerializeDouble(long jarg1, btTransform jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native void btTransform_deSerializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void delete_btTransform(long jarg1);
-  public final static native boolean operatorEqualTo__SWIG_0(Matrix4 jarg1, Matrix4 jarg2);
-  public final static native void btTransformFloatData_basis_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native long btTransformFloatData_basis_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native void btTransformFloatData_origin_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btTransformFloatData_origin_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native long new_btTransformFloatData();
-  public final static native void delete_btTransformFloatData(long jarg1);
-  public final static native void btTransformDoubleData_basis_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btMatrix3x3DoubleData jarg2_);
-  public final static native long btTransformDoubleData_basis_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native void btTransformDoubleData_origin_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btTransformDoubleData_origin_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native long new_btTransformDoubleData();
-  public final static native void delete_btTransformDoubleData(long jarg1);
-  public final static native long btVector3_operatorNew__SWIG_0(long jarg1, btVector3 jarg1_, long jarg2);
-  public final static native void btVector3_operatorDelete__SWIG_0(long jarg1, btVector3 jarg1_, long jarg2);
-  public final static native long btVector3_operatorNew__SWIG_1(long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
-  public final static native void btVector3_operatorDelete__SWIG_1(long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
-  public final static native long btVector3_operatorNewArray__SWIG_0(long jarg1, btVector3 jarg1_, long jarg2);
-  public final static native void btVector3_operatorDeleteArray__SWIG_0(long jarg1, btVector3 jarg1_, long jarg2);
-  public final static native long btVector3_operatorNewArray__SWIG_1(long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
-  public final static native void btVector3_operatorDeleteArray__SWIG_1(long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
-  public final static native void btVector3_floats_set(long jarg1, btVector3 jarg1_, float[] jarg2);
-  public final static native float[] btVector3_floats_get(long jarg1, btVector3 jarg1_);
-  public final static native long new_btVector3__SWIG_0();
-  public final static native long new_btVector3__SWIG_1(float jarg1, float jarg2, float jarg3);
-  public final static native Vector3 btVector3_operatorAdditionAssignment(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_operatorSubtractionAssignment(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_operatorMultiplicationAssignment__SWIG_0(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native Vector3 btVector3_operatorDivisionAssignment(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native float btVector3_dot(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_length2(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_length(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_norm(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_safeNorm(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_distance2(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_distance(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_safeNormalize(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_normalize(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_normalized(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_rotate(long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
-  public final static native float btVector3_angle(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_absolute(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_cross(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_triple(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native int btVector3_minAxis(long jarg1, btVector3 jarg1_);
-  public final static native int btVector3_maxAxis(long jarg1, btVector3 jarg1_);
-  public final static native int btVector3_furthestAxis(long jarg1, btVector3 jarg1_);
-  public final static native int btVector3_closestAxis(long jarg1, btVector3 jarg1_);
-  public final static native void btVector3_setInterpolate3(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native Vector3 btVector3_lerp(long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
-  public final static native Vector3 btVector3_operatorMultiplicationAssignment__SWIG_1(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_getX(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_getY(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_getZ(long jarg1, btVector3 jarg1_);
-  public final static native void btVector3_setX(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native void btVector3_setY(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native void btVector3_setZ(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native void btVector3_setW(long jarg1, btVector3 jarg1_, float jarg2);
-  public final static native float btVector3_x(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_y(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_z(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_w(long jarg1, btVector3 jarg1_);
-  public final static native java.nio.FloatBuffer btVector3_operatorbtScalarPtr(long jarg1, btVector3 jarg1_);
-  public final static native java.nio.FloatBuffer btVector3_operatorbtConstScalarPtr(long jarg1, btVector3 jarg1_);
-  public final static native boolean btVector3_operatorEqualTo(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native boolean btVector3_operatorNotEqualTo(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native void btVector3_setMax(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native void btVector3_setMin(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native void btVector3_setValue(long jarg1, btVector3 jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btVector3_getSkewSymmetricMatrix(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btVector3_setZero(long jarg1, btVector3 jarg1_);
-  public final static native boolean btVector3_isZero(long jarg1, btVector3 jarg1_);
-  public final static native boolean btVector3_fuzzyZero(long jarg1, btVector3 jarg1_);
-  public final static native void btVector3_serialize(long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native void btVector3_deSerialize(long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native void btVector3_serializeFloat(long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native void btVector3_deSerializeFloat(long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native void btVector3_serializeDouble(long jarg1, btVector3 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native void btVector3_deSerializeDouble(long jarg1, btVector3 jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native int btVector3_maxDot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3, long jarg4);
-  public final static native int btVector3_minDot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3, long jarg4);
-  public final static native Vector3 btVector3_dot3(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void delete_btVector3(long jarg1);
-  public final static native Vector3 operatorAddition__SWIG_0(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 operatorMultiplication__SWIG_0(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 operatorSubtraction__SWIG_0(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 operatorSubtraction__SWIG_1(Vector3 jarg1);
-  public final static native Vector3 operatorMultiplication__SWIG_1(Vector3 jarg1, float jarg2);
-  public final static native Vector3 operatorMultiplication__SWIG_2(float jarg1, Vector3 jarg2);
-  public final static native Vector3 operatorDivision__SWIG_0(Vector3 jarg1, float jarg2);
-  public final static native Vector3 operatorDivision__SWIG_1(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btDot(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btDistance2(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btDistance(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btAngle__SWIG_0(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 btCross(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btTriple(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
-  public final static native Vector3 lerp(Vector3 jarg1, Vector3 jarg2, float jarg3);
-  public final static native long new_btVector4__SWIG_0();
-  public final static native long new_btVector4__SWIG_1(float jarg1, float jarg2, float jarg3, float jarg4);
-  public final static native long btVector4_absolute4(long jarg1, btVector4 jarg1_);
-  public final static native float btVector4_getW(long jarg1, btVector4 jarg1_);
-  public final static native int btVector4_maxAxis4(long jarg1, btVector4 jarg1_);
-  public final static native int btVector4_minAxis4(long jarg1, btVector4 jarg1_);
-  public final static native int btVector4_closestAxis4(long jarg1, btVector4 jarg1_);
-  public final static native void btVector4_setValue(long jarg1, btVector4 jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native void delete_btVector4(long jarg1);
-  public final static native void btSwapScalarEndian(float jarg1, long jarg2);
-  public final static native void btSwapVector3Endian(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btUnSwapVector3Endian(Vector3 jarg1);
-  public final static native void btVector3FloatData_floats_set(long jarg1, btVector3FloatData jarg1_, float[] jarg2);
-  public final static native float[] btVector3FloatData_floats_get(long jarg1, btVector3FloatData jarg1_);
-  public final static native long new_btVector3FloatData();
-  public final static native void delete_btVector3FloatData(long jarg1);
-  public final static native void btVector3DoubleData_floats_set(long jarg1, btVector3DoubleData jarg1_, double[] jarg2);
-  public final static native double[] btVector3DoubleData_floats_get(long jarg1, btVector3DoubleData jarg1_);
-  public final static native long new_btVector3DoubleData();
-  public final static native void delete_btVector3DoubleData(long jarg1);
-  public final static native float btQuadWord_getX(long jarg1, btQuadWord jarg1_);
-  public final static native float btQuadWord_getY(long jarg1, btQuadWord jarg1_);
-  public final static native float btQuadWord_getZ(long jarg1, btQuadWord jarg1_);
-  public final static native void btQuadWord_setX(long jarg1, btQuadWord jarg1_, float jarg2);
-  public final static native void btQuadWord_setY(long jarg1, btQuadWord jarg1_, float jarg2);
-  public final static native void btQuadWord_setZ(long jarg1, btQuadWord jarg1_, float jarg2);
-  public final static native void btQuadWord_setW(long jarg1, btQuadWord jarg1_, float jarg2);
-  public final static native float btQuadWord_x(long jarg1, btQuadWord jarg1_);
-  public final static native float btQuadWord_y(long jarg1, btQuadWord jarg1_);
-  public final static native float btQuadWord_z(long jarg1, btQuadWord jarg1_);
-  public final static native float btQuadWord_w(long jarg1, btQuadWord jarg1_);
-  public final static native java.nio.FloatBuffer btQuadWord_operatorbtScalarPtr(long jarg1, btQuadWord jarg1_);
-  public final static native java.nio.FloatBuffer btQuadWord_operatorbtConstScalarPtr(long jarg1, btQuadWord jarg1_);
-  public final static native boolean btQuadWord_operatorEqualTo(long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
-  public final static native boolean btQuadWord_operatorNotEqualTo(long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
-  public final static native void btQuadWord_setValue__SWIG_0(long jarg1, btQuadWord jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btQuadWord_setValue__SWIG_1(long jarg1, btQuadWord jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
-  public final static native long new_btQuadWord__SWIG_0();
-  public final static native long new_btQuadWord__SWIG_1(float jarg1, float jarg2, float jarg3);
-  public final static native long new_btQuadWord__SWIG_2(float jarg1, float jarg2, float jarg3, float jarg4);
-  public final static native void btQuadWord_setMax(long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
-  public final static native void btQuadWord_setMin(long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
-  public final static native void delete_btQuadWord(long jarg1);
-  public final static native long new_btQuaternion__SWIG_0();
-  public final static native long new_btQuaternion__SWIG_1(float jarg1, float jarg2, float jarg3, float jarg4);
-  public final static native long new_btQuaternion__SWIG_2(Vector3 jarg1, float jarg2);
-  public final static native long new_btQuaternion__SWIG_3(float jarg1, float jarg2, float jarg3);
-  public final static native void btQuaternion_setRotation(long jarg1, btQuaternion jarg1_, Vector3 jarg2, float jarg3);
-  public final static native void btQuaternion_setEuler(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btQuaternion_setEulerZYX(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btQuaternion_getEulerZYX(long jarg1, btQuaternion jarg1_, long jarg2, long jarg3, long jarg4);
-  public final static native Quaternion btQuaternion_operatorAdditionAssignment(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_operatorSubtractionAssignment(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_operatorMultiplicationAssignment__SWIG_0(long jarg1, btQuaternion jarg1_, float jarg2);
-  public final static native Quaternion btQuaternion_operatorMultiplicationAssignment__SWIG_1(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native float btQuaternion_dot(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native float btQuaternion_length2(long jarg1, btQuaternion jarg1_);
-  public final static native float btQuaternion_length(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_safeNormalize(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_normalize(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_operatorMultiplication(long jarg1, btQuaternion jarg1_, float jarg2);
-  public final static native Quaternion btQuaternion_operatorDivision(long jarg1, btQuaternion jarg1_, float jarg2);
-  public final static native Quaternion btQuaternion_operatorDivisionAssignment(long jarg1, btQuaternion jarg1_, float jarg2);
-  public final static native Quaternion btQuaternion_normalized(long jarg1, btQuaternion jarg1_);
-  public final static native float btQuaternion_angle(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native float btQuaternion_angleShortestPath(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native float btQuaternion_getAngle(long jarg1, btQuaternion jarg1_);
-  public final static native float btQuaternion_getAngleShortestPath(long jarg1, btQuaternion jarg1_);
-  public final static native Vector3 btQuaternion_getAxis(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_inverse(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_operatorAddition(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_operatorSubtraction__SWIG_0(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_operatorSubtraction__SWIG_1(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_farthest(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_nearest(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_slerp(long jarg1, btQuaternion jarg1_, Quaternion jarg2, float jarg3);
-  public final static native Quaternion btQuaternion_getIdentity();
-  public final static native float btQuaternion_getW(long jarg1, btQuaternion jarg1_);
-  public final static native void btQuaternion_serialize(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionFloatData jarg2_);
-  public final static native void btQuaternion_deSerialize(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionFloatData jarg2_);
-  public final static native void btQuaternion_serializeFloat(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionFloatData jarg2_);
-  public final static native void btQuaternion_deSerializeFloat(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionFloatData jarg2_);
-  public final static native void btQuaternion_serializeDouble(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionDoubleData jarg2_);
-  public final static native void btQuaternion_deSerializeDouble(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternionDoubleData jarg2_);
-  public final static native void delete_btQuaternion(long jarg1);
-  public final static native Quaternion operatorMultiplication__SWIG_3(Quaternion jarg1, Quaternion jarg2);
-  public final static native Quaternion operatorMultiplication__SWIG_4(Quaternion jarg1, Vector3 jarg2);
-  public final static native Quaternion operatorMultiplication__SWIG_5(Vector3 jarg1, Quaternion jarg2);
-  public final static native float dot(Quaternion jarg1, Quaternion jarg2);
-  public final static native float length(Quaternion jarg1);
-  public final static native float btAngle__SWIG_1(Quaternion jarg1, Quaternion jarg2);
-  public final static native Quaternion inverse(Quaternion jarg1);
-  public final static native Quaternion slerp(Quaternion jarg1, Quaternion jarg2, float jarg3);
-  public final static native Vector3 quatRotate(Quaternion jarg1, Vector3 jarg2);
-  public final static native Quaternion shortestArcQuat(Vector3 jarg1, Vector3 jarg2);
-  public final static native Quaternion shortestArcQuatNormalize2(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btQuaternionFloatData_floats_set(long jarg1, btQuaternionFloatData jarg1_, float[] jarg2);
-  public final static native float[] btQuaternionFloatData_floats_get(long jarg1, btQuaternionFloatData jarg1_);
-  public final static native long new_btQuaternionFloatData();
-  public final static native void delete_btQuaternionFloatData(long jarg1);
-  public final static native void btQuaternionDoubleData_floats_set(long jarg1, btQuaternionDoubleData jarg1_, double[] jarg2);
-  public final static native double[] btQuaternionDoubleData_floats_get(long jarg1, btQuaternionDoubleData jarg1_);
-  public final static native long new_btQuaternionDoubleData();
-  public final static native void delete_btQuaternionDoubleData(long jarg1);
-  public final static native long new_btMatrix3x3__SWIG_0();
-  public final static native long new_btMatrix3x3__SWIG_1(Quaternion jarg1);
-  public final static native long new_btMatrix3x3__SWIG_2(float jarg1, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9);
-  public final static native long new_btMatrix3x3__SWIG_3(Matrix3 jarg1);
-  public final static native Matrix3 btMatrix3x3_operatorAssignment(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native Vector3 btMatrix3x3_getColumn(long jarg1, btMatrix3x3 jarg1_, int jarg2);
-  public final static native Vector3 btMatrix3x3_getRow(long jarg1, btMatrix3x3 jarg1_, int jarg2);
-  public final static native Vector3 btMatrix3x3_operatorSubscript(long jarg1, btMatrix3x3 jarg1_, int jarg2);
-  public final static native Vector3 btMatrix3x3_operatorSubscriptConst(long jarg1, btMatrix3x3 jarg1_, int jarg2);
-  public final static native Matrix3 btMatrix3x3_operatorMultiplicationAssignment(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMatrix3x3_operatorAdditionAssignment(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMatrix3x3_operatorSubtractionAssignment(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native void btMatrix3x3_setFromOpenGLSubMatrix(long jarg1, btMatrix3x3 jarg1_, java.nio.FloatBuffer jarg2);
-  public final static native void btMatrix3x3_setValue(long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10);
-  public final static native void btMatrix3x3_setRotation(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
-  public final static native void btMatrix3x3_setEulerYPR(long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btMatrix3x3_setEulerZYX(long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native void btMatrix3x3_setIdentity(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Matrix3 btMatrix3x3_getIdentity();
-  public final static native void btMatrix3x3_getOpenGLSubMatrix(long jarg1, btMatrix3x3 jarg1_, java.nio.FloatBuffer jarg2);
-  public final static native void btMatrix3x3_getRotation(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
-  public final static native void btMatrix3x3_getEulerYPR(long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3, long jarg4);
-  public final static native void btMatrix3x3_getEulerZYX__SWIG_0(long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3, long jarg4, long jarg5);
-  public final static native void btMatrix3x3_getEulerZYX__SWIG_1(long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3, long jarg4);
-  public final static native Matrix3 btMatrix3x3_scaled(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native float btMatrix3x3_determinant(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Matrix3 btMatrix3x3_adjoint(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Matrix3 btMatrix3x3_absolute(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Matrix3 btMatrix3x3_transpose(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Matrix3 btMatrix3x3_inverse(long jarg1, btMatrix3x3 jarg1_);
-  public final static native Vector3 btMatrix3x3_solve33(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native Matrix3 btMatrix3x3_transposeTimes(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native Matrix3 btMatrix3x3_timesTranspose(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native float btMatrix3x3_tdotx(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native float btMatrix3x3_tdoty(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native float btMatrix3x3_tdotz(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native void btMatrix3x3_extractRotation__SWIG_0(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2, float jarg3, int jarg4);
-  public final static native void btMatrix3x3_extractRotation__SWIG_1(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2, float jarg3);
-  public final static native void btMatrix3x3_extractRotation__SWIG_2(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
-  public final static native void btMatrix3x3_diagonalize__SWIG_0(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3, int jarg4);
-  public final static native void btMatrix3x3_diagonalize__SWIG_1(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3);
-  public final static native void btMatrix3x3_diagonalize__SWIG_2(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
-  public final static native float btMatrix3x3_cofac(long jarg1, btMatrix3x3 jarg1_, int jarg2, int jarg3, int jarg4, int jarg5);
-  public final static native void btMatrix3x3_serialize(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native void btMatrix3x3_serializeFloat(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native void btMatrix3x3_deSerialize(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native void btMatrix3x3_deSerializeFloat(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
-  public final static native void btMatrix3x3_deSerializeDouble(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3DoubleData jarg2_);
-  public final static native void delete_btMatrix3x3(long jarg1);
-  public final static native Matrix3 operatorMultiplication__SWIG_6(Matrix3 jarg1, float jarg2);
-  public final static native Matrix3 operatorAddition__SWIG_1(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native Matrix3 operatorSubtraction__SWIG_2(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native Vector3 operatorMultiplication__SWIG_7(Matrix3 jarg1, Vector3 jarg2);
-  public final static native Vector3 operatorMultiplication__SWIG_8(Vector3 jarg1, Matrix3 jarg2);
-  public final static native Matrix3 operatorMultiplication__SWIG_9(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native boolean operatorEqualTo__SWIG_1(Matrix3 jarg1, Matrix3 jarg2);
-  public final static native void btMatrix3x3FloatData_el_set(long jarg1, btMatrix3x3FloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btMatrix3x3FloatData_el_get(long jarg1, btMatrix3x3FloatData jarg1_);
-  public final static native long new_btMatrix3x3FloatData();
-  public final static native void delete_btMatrix3x3FloatData(long jarg1);
-  public final static native void btMatrix3x3DoubleData_el_set(long jarg1, btMatrix3x3DoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btMatrix3x3DoubleData_el_get(long jarg1, btMatrix3x3DoubleData jarg1_);
-  public final static native long new_btMatrix3x3DoubleData();
-  public final static native void delete_btMatrix3x3DoubleData(long jarg1);
-  public final static native void AabbExpand(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native boolean TestPointAgainstAabb2(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
-  public final static native boolean TestAabbAgainstAabb2(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native boolean TestTriangleAgainstAabb2(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native int btOutcode(Vector3 jarg1, Vector3 jarg2);
-  public final static native boolean btRayAabb2(Vector3 jarg1, Vector3 jarg2, long[] jarg3, long jarg4, btVector3 jarg4_, long jarg5, float jarg6, float jarg7);
-  public final static native boolean btRayAabb(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5, Vector3 jarg6);
-  public final static native void btTransformAabb__SWIG_0(Vector3 jarg1, float jarg2, Matrix4 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btTransformAabb__SWIG_1(Vector3 jarg1, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer jarg1, java.nio.IntBuffer jarg2, java.nio.IntBuffer jarg3, java.nio.IntBuffer jarg4);
-  public final static native void btIDebugDraw_DefaultColors_activeObject_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_activeObject_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_deactivatedObject_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_deactivatedObject_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_wantsDeactivationObject_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_wantsDeactivationObject_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_disabledDeactivationObject_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_disabledDeactivationObject_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_disabledSimulationObject_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_disabledSimulationObject_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_aabb_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_aabb_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native void btIDebugDraw_DefaultColors_contactPoint_set(long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btIDebugDraw_DefaultColors_contactPoint_get(long jarg1, btIDebugDraw.DefaultColors jarg1_);
-  public final static native long new_btIDebugDraw_DefaultColors();
-  public final static native void delete_btIDebugDraw_DefaultColors(long jarg1);
-  public final static native void delete_btIDebugDraw(long jarg1);
-  public final static native long btIDebugDraw_getDefaultColors(long jarg1, btIDebugDraw jarg1_);
-  public final static native long btIDebugDraw_getDefaultColorsSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_setDefaultColors(long jarg1, btIDebugDraw jarg1_, long jarg2, btIDebugDraw.DefaultColors jarg2_);
-  public final static native void btIDebugDraw_setDefaultColorsSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btIDebugDraw.DefaultColors jarg2_);
-  public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
-  public final static native void btIDebugDraw_drawContactPoint(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_reportErrorWarning(long jarg1, btIDebugDraw jarg1_, String jarg2);
-  public final static native void btIDebugDraw_draw3dText(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, String jarg3);
-  public final static native void btIDebugDraw_setDebugMode(long jarg1, btIDebugDraw jarg1_, int jarg2);
-  public final static native int btIDebugDraw_getDebugMode(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
-  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
-  public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11, boolean jarg12);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11, boolean jarg12);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_2(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_2(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
-  public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_clearLines(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_clearLinesSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_flushLines(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
-  public final static native long new_btIDebugDraw();
-  public final static native void btIDebugDraw_director_connect(btIDebugDraw obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void btIDebugDraw_change_ownership(btIDebugDraw obj, long cptr, boolean take_or_release);
-  public final static native void btGeometryUtil_getPlaneEquationsFromVertices(long jarg1, btVector3Array jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native void btGeometryUtil_getVerticesFromPlaneEquations(long jarg1, btVector3Array jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native boolean btGeometryUtil_isInside(long jarg1, btVector3Array jarg1_, Vector3 jarg2, float jarg3);
-  public final static native boolean btGeometryUtil_isPointInsidePlanes(long jarg1, btVector3Array jarg1_, Vector3 jarg2, float jarg3);
-  public final static native boolean btGeometryUtil_areVerticesBehindPlane(Vector3 jarg1, long jarg2, btVector3Array jarg2_, float jarg3);
-  public final static native long new_btGeometryUtil();
-  public final static native void delete_btGeometryUtil(long jarg1);
-  public final static native void GEN_srand(long jarg1);
-  public final static native long GEN_rand();
-  public final static native Vector3 btAabbSupport(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btTransformUtil_integrateTransform(Matrix4 jarg1, Vector3 jarg2, Vector3 jarg3, float jarg4, Matrix4 jarg5);
-  public final static native void btTransformUtil_calculateVelocityQuaternion(Vector3 jarg1, Vector3 jarg2, Quaternion jarg3, Quaternion jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
-  public final static native void btTransformUtil_calculateDiffAxisAngleQuaternion(Quaternion jarg1, Quaternion jarg2, Vector3 jarg3, long jarg4);
-  public final static native void btTransformUtil_calculateVelocity(Matrix4 jarg1, Matrix4 jarg2, float jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btTransformUtil_calculateDiffAxisAngle(Matrix4 jarg1, Matrix4 jarg2, Vector3 jarg3, long jarg4);
-  public final static native long new_btTransformUtil();
-  public final static native void delete_btTransformUtil(long jarg1);
-  public final static native long new_btConvexSeparatingDistanceUtil(float jarg1, float jarg2);
-  public final static native float btConvexSeparatingDistanceUtil_getConservativeSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_);
-  public final static native void btConvexSeparatingDistanceUtil_updateSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native void btConvexSeparatingDistanceUtil_initSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Matrix4 jarg5);
-  public final static native void delete_btConvexSeparatingDistanceUtil(long jarg1);
-  public final static native long new_HullResult();
-  public final static native void HullResult_mPolygons_set(long jarg1, HullResult jarg1_, boolean jarg2);
-  public final static native boolean HullResult_mPolygons_get(long jarg1, HullResult jarg1_);
-  public final static native void HullResult_mNumOutputVertices_set(long jarg1, HullResult jarg1_, long jarg2);
-  public final static native long HullResult_mNumOutputVertices_get(long jarg1, HullResult jarg1_);
-  public final static native void HullResult_OutputVertices_set(long jarg1, HullResult jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long HullResult_OutputVertices_get(long jarg1, HullResult jarg1_);
-  public final static native void HullResult_mNumFaces_set(long jarg1, HullResult jarg1_, long jarg2);
-  public final static native long HullResult_mNumFaces_get(long jarg1, HullResult jarg1_);
-  public final static native void HullResult_mNumIndices_set(long jarg1, HullResult jarg1_, long jarg2);
-  public final static native long HullResult_mNumIndices_get(long jarg1, HullResult jarg1_);
-  public final static native void HullResult_Indices_set(long jarg1, HullResult jarg1_, long jarg2);
-  public final static native long HullResult_Indices_get(long jarg1, HullResult jarg1_);
-  public final static native void delete_HullResult(long jarg1);
-  public final static native long new_HullDesc__SWIG_0();
-  public final static native long new_HullDesc__SWIG_1(int jarg1, long jarg2, long jarg3, btVector3 jarg3_, long jarg4);
-  public final static native long new_HullDesc__SWIG_2(int jarg1, long jarg2, long jarg3, btVector3 jarg3_);
-  public final static native boolean HullDesc_HasHullFlag(long jarg1, HullDesc jarg1_, int jarg2);
-  public final static native void HullDesc_SetHullFlag(long jarg1, HullDesc jarg1_, int jarg2);
-  public final static native void HullDesc_ClearHullFlag(long jarg1, HullDesc jarg1_, int jarg2);
-  public final static native void HullDesc_mFlags_set(long jarg1, HullDesc jarg1_, long jarg2);
-  public final static native long HullDesc_mFlags_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mVcount_set(long jarg1, HullDesc jarg1_, long jarg2);
-  public final static native long HullDesc_mVcount_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mVertices_set(long jarg1, HullDesc jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long HullDesc_mVertices_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mVertexStride_set(long jarg1, HullDesc jarg1_, long jarg2);
-  public final static native long HullDesc_mVertexStride_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mNormalEpsilon_set(long jarg1, HullDesc jarg1_, float jarg2);
-  public final static native float HullDesc_mNormalEpsilon_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mMaxVertices_set(long jarg1, HullDesc jarg1_, long jarg2);
-  public final static native long HullDesc_mMaxVertices_get(long jarg1, HullDesc jarg1_);
-  public final static native void HullDesc_mMaxFaces_set(long jarg1, HullDesc jarg1_, long jarg2);
-  public final static native long HullDesc_mMaxFaces_get(long jarg1, HullDesc jarg1_);
-  public final static native void delete_HullDesc(long jarg1);
-  public final static native void btPlane_normal_set(long jarg1, btPlane jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btPlane_normal_get(long jarg1, btPlane jarg1_);
-  public final static native void btPlane_dist_set(long jarg1, btPlane jarg1_, float jarg2);
-  public final static native float btPlane_dist_get(long jarg1, btPlane jarg1_);
-  public final static native long new_btPlane__SWIG_0(Vector3 jarg1, float jarg2);
-  public final static native long new_btPlane__SWIG_1();
-  public final static native void delete_btPlane(long jarg1);
-  public final static native void ConvexH_HalfEdge_ea_set(long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
-  public final static native short ConvexH_HalfEdge_ea_get(long jarg1, ConvexH.HalfEdge jarg1_);
-  public final static native void ConvexH_HalfEdge_v_set(long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
-  public final static native short ConvexH_HalfEdge_v_get(long jarg1, ConvexH.HalfEdge jarg1_);
-  public final static native void ConvexH_HalfEdge_p_set(long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
-  public final static native short ConvexH_HalfEdge_p_get(long jarg1, ConvexH.HalfEdge jarg1_);
-  public final static native long new_ConvexH_HalfEdge__SWIG_0();
-  public final static native long new_ConvexH_HalfEdge__SWIG_1(short jarg1, short jarg2, short jarg3);
-  public final static native void delete_ConvexH_HalfEdge(long jarg1);
-  public final static native long new_ConvexH__SWIG_0();
-  public final static native void delete_ConvexH(long jarg1);
-  public final static native void ConvexH_vertices_set(long jarg1, ConvexH jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long ConvexH_vertices_get(long jarg1, ConvexH jarg1_);
-  public final static native void ConvexH_edges_set(long jarg1, ConvexH jarg1_, long jarg2);
-  public final static native long ConvexH_edges_get(long jarg1, ConvexH jarg1_);
-  public final static native void ConvexH_facets_set(long jarg1, ConvexH jarg1_, long jarg2);
-  public final static native long ConvexH_facets_get(long jarg1, ConvexH jarg1_);
-  public final static native long new_ConvexH__SWIG_1(int jarg1, int jarg2, int jarg3);
-  public final static native void int4_x_set(long jarg1, int4 jarg1_, int jarg2);
-  public final static native int int4_x_get(long jarg1, int4 jarg1_);
-  public final static native void int4_y_set(long jarg1, int4 jarg1_, int jarg2);
-  public final static native int int4_y_get(long jarg1, int4 jarg1_);
-  public final static native void int4_z_set(long jarg1, int4 jarg1_, int jarg2);
-  public final static native int int4_z_get(long jarg1, int4 jarg1_);
-  public final static native void int4_w_set(long jarg1, int4 jarg1_, int jarg2);
-  public final static native int int4_w_get(long jarg1, int4 jarg1_);
-  public final static native long new_int4__SWIG_0();
-  public final static native long new_int4__SWIG_1(int jarg1, int jarg2, int jarg3, int jarg4);
-  public final static native int int4_operatorSubscriptConst(long jarg1, int4 jarg1_, int jarg2);
-  public final static native long int4_operatorSubscript(long jarg1, int4 jarg1_, int jarg2);
-  public final static native void delete_int4(long jarg1);
-  public final static native long new_PHullResult();
-  public final static native void PHullResult_mVcount_set(long jarg1, PHullResult jarg1_, long jarg2);
-  public final static native long PHullResult_mVcount_get(long jarg1, PHullResult jarg1_);
-  public final static native void PHullResult_mIndexCount_set(long jarg1, PHullResult jarg1_, long jarg2);
-  public final static native long PHullResult_mIndexCount_get(long jarg1, PHullResult jarg1_);
-  public final static native void PHullResult_mFaceCount_set(long jarg1, PHullResult jarg1_, long jarg2);
-  public final static native long PHullResult_mFaceCount_get(long jarg1, PHullResult jarg1_);
-  public final static native void PHullResult_mVertices_set(long jarg1, PHullResult jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long PHullResult_mVertices_get(long jarg1, PHullResult jarg1_);
-  public final static native void PHullResult_Indices_set(long jarg1, PHullResult jarg1_, long jarg2);
-  public final static native long PHullResult_Indices_get(long jarg1, PHullResult jarg1_);
-  public final static native void delete_PHullResult(long jarg1);
-  public final static native void HullLibrary_vertexIndexMapping_set(long jarg1, HullLibrary jarg1_, long jarg2);
-  public final static native long HullLibrary_vertexIndexMapping_get(long jarg1, HullLibrary jarg1_);
-  public final static native int HullLibrary_CreateConvexHull(long jarg1, HullLibrary jarg1_, long jarg2, HullDesc jarg2_, long jarg3, HullResult jarg3_);
-  public final static native int HullLibrary_ReleaseResult(long jarg1, HullLibrary jarg1_, long jarg2, HullResult jarg2_);
-  public final static native long new_HullLibrary();
-  public final static native void delete_HullLibrary(long jarg1);
-  public final static native long new_GrahamVector3(Vector3 jarg1, int jarg2);
-  public final static native void GrahamVector3_angle_set(long jarg1, GrahamVector3 jarg1_, float jarg2);
-  public final static native float GrahamVector3_angle_get(long jarg1, GrahamVector3 jarg1_);
-  public final static native void GrahamVector3_orgIndex_set(long jarg1, GrahamVector3 jarg1_, int jarg2);
-  public final static native int GrahamVector3_orgIndex_get(long jarg1, GrahamVector3 jarg1_);
-  public final static native void delete_GrahamVector3(long jarg1);
-  public final static native void btAngleCompareFunc_anchor_set(long jarg1, btAngleCompareFunc jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btAngleCompareFunc_anchor_get(long jarg1, btAngleCompareFunc jarg1_);
-  public final static native long new_btAngleCompareFunc(Vector3 jarg1);
-  public final static native boolean btAngleCompareFunc_operatorFunctionCall(long jarg1, btAngleCompareFunc jarg1_, long jarg2, GrahamVector3 jarg2_, long jarg3, GrahamVector3 jarg3_);
-  public final static native void delete_btAngleCompareFunc(long jarg1);
-  public final static native void GrahamScanConvexHull2D(long jarg1, long jarg2, Vector3 jarg3);
-  public final static native long new_btPoolAllocator(int jarg1, int jarg2);
-  public final static native void delete_btPoolAllocator(long jarg1);
-  public final static native int btPoolAllocator_getFreeCount(long jarg1, btPoolAllocator jarg1_);
-  public final static native int btPoolAllocator_getUsedCount(long jarg1, btPoolAllocator jarg1_);
-  public final static native int btPoolAllocator_getMaxCount(long jarg1, btPoolAllocator jarg1_);
-  public final static native long btPoolAllocator_allocate(long jarg1, btPoolAllocator jarg1_, int jarg2);
-  public final static native boolean btPoolAllocator_validPtr(long jarg1, btPoolAllocator jarg1_, long jarg2);
-  public final static native void btPoolAllocator_freeMemory(long jarg1, btPoolAllocator jarg1_, long jarg2);
-  public final static native int btPoolAllocator_getElementSize(long jarg1, btPoolAllocator jarg1_);
-  public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddress(long jarg1, btPoolAllocator jarg1_);
-  public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddressConst(long jarg1, btPoolAllocator jarg1_);
-  public final static native long new_btClock__SWIG_0();
-  public final static native long new_btClock__SWIG_1(long jarg1, btClock jarg1_);
-  public final static native long btClock_operatorAssignment(long jarg1, btClock jarg1_, long jarg2, btClock jarg2_);
-  public final static native void delete_btClock(long jarg1);
-  public final static native void btClock_reset(long jarg1, btClock jarg1_);
-  public final static native java.math.BigInteger btClock_getTimeMilliseconds(long jarg1, btClock jarg1_);
-  public final static native java.math.BigInteger btClock_getTimeMicroseconds(long jarg1, btClock jarg1_);
-  public final static native java.math.BigInteger btClock_getTimeNanoseconds(long jarg1, btClock jarg1_);
-  public final static native float btClock_getTimeSeconds(long jarg1, btClock jarg1_);
-  public final static native long btGetCurrentEnterProfileZoneFunc();
-  public final static native long btGetCurrentLeaveProfileZoneFunc();
-  public final static native void btSetCustomEnterProfileZoneFunc(long jarg1);
-  public final static native void btSetCustomLeaveProfileZoneFunc(long jarg1);
-  public final static native long new_CProfileSample(String jarg1);
-  public final static native void delete_CProfileSample(long jarg1);
-  public final static native int btConvexHullComputer_Edge_getSourceVertex(long jarg1, btConvexHullComputer.Edge jarg1_);
-  public final static native int btConvexHullComputer_Edge_getTargetVertex(long jarg1, btConvexHullComputer.Edge jarg1_);
-  public final static native long btConvexHullComputer_Edge_getNextEdgeOfVertex(long jarg1, btConvexHullComputer.Edge jarg1_);
-  public final static native long btConvexHullComputer_Edge_getNextEdgeOfFace(long jarg1, btConvexHullComputer.Edge jarg1_);
-  public final static native long btConvexHullComputer_Edge_getReverseEdge(long jarg1, btConvexHullComputer.Edge jarg1_);
-  public final static native long new_btConvexHullComputer_Edge();
-  public final static native void delete_btConvexHullComputer_Edge(long jarg1);
-  public final static native void btConvexHullComputer_vertices_set(long jarg1, btConvexHullComputer jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long btConvexHullComputer_vertices_get(long jarg1, btConvexHullComputer jarg1_);
-  public final static native void btConvexHullComputer_edges_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
-  public final static native long btConvexHullComputer_edges_get(long jarg1, btConvexHullComputer jarg1_);
-  public final static native void btConvexHullComputer_faces_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
-  public final static native long btConvexHullComputer_faces_get(long jarg1, btConvexHullComputer jarg1_);
-  public final static native float btConvexHullComputer_compute__SWIG_0(long jarg1, btConvexHullComputer jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
-  public final static native float btConvexHullComputer_compute__SWIG_1(long jarg1, btConvexHullComputer jarg1_, java.nio.DoubleBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
-  public final static native long new_btConvexHullComputer();
-  public final static native void delete_btConvexHullComputer(long jarg1);
-  public final static native long new_btGEN_Link__SWIG_0();
-  public final static native long new_btGEN_Link__SWIG_1(long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
-  public final static native long btGEN_Link_getNext(long jarg1, btGEN_Link jarg1_);
-  public final static native long btGEN_Link_getPrev(long jarg1, btGEN_Link jarg1_);
-  public final static native boolean btGEN_Link_isHead(long jarg1, btGEN_Link jarg1_);
-  public final static native boolean btGEN_Link_isTail(long jarg1, btGEN_Link jarg1_);
-  public final static native void btGEN_Link_insertBefore(long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
-  public final static native void btGEN_Link_insertAfter(long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
-  public final static native void btGEN_Link_remove(long jarg1, btGEN_Link jarg1_);
-  public final static native void delete_btGEN_Link(long jarg1);
-  public final static native long new_btGEN_List();
-  public final static native long btGEN_List_getHead(long jarg1, btGEN_List jarg1_);
-  public final static native long btGEN_List_getTail(long jarg1, btGEN_List jarg1_);
-  public final static native void btGEN_List_addHead(long jarg1, btGEN_List jarg1_, long jarg2, btGEN_Link jarg2_);
-  public final static native void btGEN_List_addTail(long jarg1, btGEN_List jarg1_, long jarg2, btGEN_Link jarg2_);
-  public final static native void delete_btGEN_List(long jarg1);
-  public final static native long btAlignedAllocInternal(long jarg1, int jarg2);
-  public final static native void btAlignedFreeInternal(long jarg1);
-  public final static native void btAlignedAllocSetCustom(long jarg1, long jarg2);
-  public final static native void btAlignedAllocSetCustomAligned(long jarg1, long jarg2);
-  public final static native String btHashString_string_get(long jarg1, btHashString jarg1_);
-  public final static native void btHashString_hash_set(long jarg1, btHashString jarg1_, long jarg2);
-  public final static native long btHashString_hash_get(long jarg1, btHashString jarg1_);
-  public final static native long new_btHashString(String jarg1);
-  public final static native int btHashString_portableStringCompare(long jarg1, btHashString jarg1_, String jarg2, String jarg3);
-  public final static native boolean btHashString_equals(long jarg1, btHashString jarg1_, long jarg2, btHashString jarg2_);
-  public final static native void delete_btHashString(long jarg1);
-  public final static native int BT_HASH_NULL_get();
-  public final static native long new_btHashInt__SWIG_0();
-  public final static native long new_btHashInt__SWIG_1(int jarg1);
-  public final static native int btHashInt_getUid1(long jarg1, btHashInt jarg1_);
-  public final static native void btHashInt_setUid1(long jarg1, btHashInt jarg1_, int jarg2);
-  public final static native boolean btHashInt_equals(long jarg1, btHashInt jarg1_, long jarg2, btHashInt jarg2_);
-  public final static native long btHashInt_getHash(long jarg1, btHashInt jarg1_);
-  public final static native void delete_btHashInt(long jarg1);
-  public final static native long new_btHashPtr(long jarg1);
-  public final static native long btHashPtr_getPointer(long jarg1, btHashPtr jarg1_);
-  public final static native boolean btHashPtr_equals(long jarg1, btHashPtr jarg1_, long jarg2, btHashPtr jarg2_);
-  public final static native long btHashPtr_getHash(long jarg1, btHashPtr jarg1_);
-  public final static native void delete_btHashPtr(long jarg1);
-  public final static native void btBlock_previous_set(long jarg1, btBlock jarg1_, long jarg2, btBlock jarg2_);
-  public final static native long btBlock_previous_get(long jarg1, btBlock jarg1_);
-  public final static native void btBlock_address_set(long jarg1, btBlock jarg1_, java.nio.ByteBuffer jarg2);
-  public final static native java.nio.ByteBuffer btBlock_address_get(long jarg1, btBlock jarg1_);
-  public final static native long new_btBlock();
-  public final static native void delete_btBlock(long jarg1);
-  public final static native long new_btStackAlloc(long jarg1);
-  public final static native void delete_btStackAlloc(long jarg1);
-  public final static native void btStackAlloc_create(long jarg1, btStackAlloc jarg1_, long jarg2);
-  public final static native void btStackAlloc_destroy(long jarg1, btStackAlloc jarg1_);
-  public final static native int btStackAlloc_getAvailableMemory(long jarg1, btStackAlloc jarg1_);
-  public final static native java.nio.ByteBuffer btStackAlloc_allocate(long jarg1, btStackAlloc jarg1_, long jarg2);
-  public final static native long btStackAlloc_beginBlock(long jarg1, btStackAlloc jarg1_);
-  public final static native void btStackAlloc_endBlock(long jarg1, btStackAlloc jarg1_, long jarg2, btBlock jarg2_);
-  public final static native boolean btIntSortPredicate_operatorFunctionCall(long jarg1, btIntSortPredicate jarg1_, int jarg2, int jarg3);
-  public final static native long new_btIntSortPredicate();
-  public final static native void delete_btIntSortPredicate(long jarg1);
-  public final static native void setElem__SWIG_0(long jarg1, int jarg2, int jarg3, double jarg4);
-  public final static native void setElem__SWIG_1(long jarg1, int jarg2, int jarg3, float jarg4);
-  public final static native long new_btPolarDecomposition__SWIG_0(float jarg1, long jarg2);
-  public final static native long new_btPolarDecomposition__SWIG_1(float jarg1);
-  public final static native long new_btPolarDecomposition__SWIG_2();
-  public final static native long btPolarDecomposition_decompose(long jarg1, btPolarDecomposition jarg1_, Matrix3 jarg2, Matrix3 jarg3, Matrix3 jarg4);
-  public final static native long btPolarDecomposition_maxIterations(long jarg1, btPolarDecomposition jarg1_);
-  public final static native void delete_btPolarDecomposition(long jarg1);
-  public final static native long polarDecompose(Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
-  public final static native void sBulletDNAstr_set(String jarg1);
-  public final static native String sBulletDNAstr_get();
-  public final static native void sBulletDNAlen_set(int jarg1);
-  public final static native int sBulletDNAlen_get();
-  public final static native void sBulletDNAstr64_set(String jarg1);
-  public final static native String sBulletDNAstr64_get();
-  public final static native void sBulletDNAlen64_set(int jarg1);
-  public final static native int sBulletDNAlen64_get();
-  public final static native int btStrLen(String jarg1);
-  public final static native void btChunk_chunkCode_set(long jarg1, btChunk jarg1_, int jarg2);
-  public final static native int btChunk_chunkCode_get(long jarg1, btChunk jarg1_);
-  public final static native void btChunk_length_set(long jarg1, btChunk jarg1_, int jarg2);
-  public final static native int btChunk_length_get(long jarg1, btChunk jarg1_);
-  public final static native void btChunk_oldPtr_set(long jarg1, btChunk jarg1_, long jarg2);
-  public final static native long btChunk_oldPtr_get(long jarg1, btChunk jarg1_);
-  public final static native void btChunk_dna_nr_set(long jarg1, btChunk jarg1_, int jarg2);
-  public final static native int btChunk_dna_nr_get(long jarg1, btChunk jarg1_);
-  public final static native void btChunk_number_set(long jarg1, btChunk jarg1_, int jarg2);
-  public final static native int btChunk_number_get(long jarg1, btChunk jarg1_);
-  public final static native long new_btChunk();
-  public final static native void delete_btChunk(long jarg1);
-  public final static native void delete_btSerializer(long jarg1);
-  public final static native java.nio.ByteBuffer btSerializer_getBufferPointer(long jarg1, btSerializer jarg1_);
-  public final static native int btSerializer_getCurrentBufferSize(long jarg1, btSerializer jarg1_);
-  public final static native long btSerializer_allocate(long jarg1, btSerializer jarg1_, long jarg2, int jarg3);
-  public final static native void btSerializer_finalizeChunk(long jarg1, btSerializer jarg1_, long jarg2, btChunk jarg2_, String jarg3, int jarg4, long jarg5);
-  public final static native long btSerializer_findPointer(long jarg1, btSerializer jarg1_, long jarg2);
-  public final static native long btSerializer_getUniquePointer(long jarg1, btSerializer jarg1_, long jarg2);
-  public final static native void btSerializer_startSerialization(long jarg1, btSerializer jarg1_);
-  public final static native void btSerializer_finishSerialization(long jarg1, btSerializer jarg1_);
-  public final static native String btSerializer_findNameForPointer(long jarg1, btSerializer jarg1_, long jarg2);
-  public final static native void btSerializer_registerNameForPointer(long jarg1, btSerializer jarg1_, long jarg2, String jarg3);
-  public final static native void btSerializer_serializeName(long jarg1, btSerializer jarg1_, String jarg2);
-  public final static native int btSerializer_getSerializationFlags(long jarg1, btSerializer jarg1_);
-  public final static native void btSerializer_setSerializationFlags(long jarg1, btSerializer jarg1_, int jarg2);
-  public final static native int btSerializer_getNumChunks(long jarg1, btSerializer jarg1_);
-  public final static native long btSerializer_getChunk(long jarg1, btSerializer jarg1_, int jarg2);
-  public final static native void btPointerUid_ptr_set(long jarg1, btPointerUid jarg1_, long jarg2);
-  public final static native long btPointerUid_ptr_get(long jarg1, btPointerUid jarg1_);
-  public final static native void btPointerUid_uniqueIds_set(long jarg1, btPointerUid jarg1_, int[] jarg2);
-  public final static native int[] btPointerUid_uniqueIds_get(long jarg1, btPointerUid jarg1_);
-  public final static native long new_btPointerUid();
-  public final static native void delete_btPointerUid(long jarg1);
-  public final static native long new_btBulletSerializedArrays();
-  public final static native void btBulletSerializedArrays_bvhsDouble_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_bvhsDouble_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_bvhsFloat_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_bvhsFloat_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_colShapeData_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_colShapeData_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_dynamicWorldInfoDataDouble_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_dynamicWorldInfoDataDouble_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_dynamicWorldInfoDataFloat_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_dynamicWorldInfoDataFloat_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_rigidBodyDataDouble_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_rigidBodyDataDouble_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_rigidBodyDataFloat_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_rigidBodyDataFloat_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_collisionObjectDataDouble_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_collisionObjectDataDouble_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_collisionObjectDataFloat_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_collisionObjectDataFloat_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_constraintDataFloat_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_constraintDataFloat_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_constraintDataDouble_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_constraintDataDouble_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_constraintData_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_constraintData_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_softBodyFloatData_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_softBodyFloatData_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void btBulletSerializedArrays_softBodyDoubleData_set(long jarg1, btBulletSerializedArrays jarg1_, long jarg2);
-  public final static native long btBulletSerializedArrays_softBodyDoubleData_get(long jarg1, btBulletSerializedArrays jarg1_);
-  public final static native void delete_btBulletSerializedArrays(long jarg1);
-  public final static native long btDefaultSerializer_skipPointers_get(long jarg1, btDefaultSerializer jarg1_);
-  public final static native long new_btDefaultSerializer__SWIG_0(int jarg1, java.nio.ByteBuffer jarg2);
-  public final static native long new_btDefaultSerializer__SWIG_1(int jarg1);
-  public final static native long new_btDefaultSerializer__SWIG_2();
-  public final static native void delete_btDefaultSerializer(long jarg1);
-  public final static native int btDefaultSerializer_getMemoryDnaSizeInBytes();
-  public final static native String btDefaultSerializer_getMemoryDna();
-  public final static native void btDefaultSerializer_insertHeader(long jarg1, btDefaultSerializer jarg1_);
-  public final static native void btDefaultSerializer_writeHeader(long jarg1, btDefaultSerializer jarg1_, java.nio.ByteBuffer jarg2);
-  public final static native java.nio.ByteBuffer btDefaultSerializer_internalAlloc(long jarg1, btDefaultSerializer jarg1_, long jarg2);
-  public final static native void btSpatialForceVector_topVec_set(long jarg1, btSpatialForceVector jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSpatialForceVector_topVec_get(long jarg1, btSpatialForceVector jarg1_);
-  public final static native void btSpatialForceVector_bottomVec_set(long jarg1, btSpatialForceVector jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSpatialForceVector_bottomVec_get(long jarg1, btSpatialForceVector jarg1_);
-  public final static native long new_btSpatialForceVector__SWIG_0();
-  public final static native long new_btSpatialForceVector__SWIG_1(Vector3 jarg1, Vector3 jarg2);
-  public final static native long new_btSpatialForceVector__SWIG_2(float jarg1, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
-  public final static native void btSpatialForceVector_setVector(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSpatialForceVector_setValue(long jarg1, btSpatialForceVector jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-  public final static native void btSpatialForceVector_addVector(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSpatialForceVector_addValue(long jarg1, btSpatialForceVector jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-  public final static native Vector3 btSpatialForceVector_getLinear(long jarg1, btSpatialForceVector jarg1_);
-  public final static native Vector3 btSpatialForceVector_getAngular(long jarg1, btSpatialForceVector jarg1_);
-  public final static native void btSpatialForceVector_setLinear(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialForceVector_setAngular(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialForceVector_addAngular(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialForceVector_addLinear(long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialForceVector_setZero(long jarg1, btSpatialForceVector jarg1_);
-  public final static native long btSpatialForceVector_operatorAdditionAssignment(long jarg1, btSpatialForceVector jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btSpatialForceVector_operatorSubtractionAssignment(long jarg1, btSpatialForceVector jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btSpatialForceVector_operatorSubtraction__SWIG_0(long jarg1, btSpatialForceVector jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btSpatialForceVector_operatorAddition(long jarg1, btSpatialForceVector jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btSpatialForceVector_operatorSubtraction__SWIG_1(long jarg1, btSpatialForceVector jarg1_);
-  public final static native long btSpatialForceVector_operatorMultiplication(long jarg1, btSpatialForceVector jarg1_, float jarg2);
-  public final static native void delete_btSpatialForceVector(long jarg1);
-  public final static native void btSpatialMotionVector_topVec_set(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSpatialMotionVector_topVec_get(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native void btSpatialMotionVector_bottomVec_set(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSpatialMotionVector_bottomVec_get(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native long new_btSpatialMotionVector__SWIG_0();
-  public final static native long new_btSpatialMotionVector__SWIG_1(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btSpatialMotionVector_setVector(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSpatialMotionVector_setValue(long jarg1, btSpatialMotionVector jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-  public final static native void btSpatialMotionVector_addVector(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btSpatialMotionVector_addValue(long jarg1, btSpatialMotionVector jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-  public final static native Vector3 btSpatialMotionVector_getAngular(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native Vector3 btSpatialMotionVector_getLinear(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native void btSpatialMotionVector_setAngular(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialMotionVector_setLinear(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialMotionVector_addAngular(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialMotionVector_addLinear(long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
-  public final static native void btSpatialMotionVector_setZero(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native float btSpatialMotionVector_dot(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btSpatialForceVector jarg2_);
-  public final static native long btSpatialMotionVector_operatorAdditionAssignment(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btSpatialMotionVector_operatorSubtractionAssignment(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btSpatialMotionVector_operatorMultiplicationAssignment(long jarg1, btSpatialMotionVector jarg1_, float jarg2);
-  public final static native long btSpatialMotionVector_operatorSubtraction__SWIG_0(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btSpatialMotionVector_operatorAddition(long jarg1, btSpatialMotionVector jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native long btSpatialMotionVector_operatorSubtraction__SWIG_1(long jarg1, btSpatialMotionVector jarg1_);
-  public final static native long btSpatialMotionVector_operatorMultiplication(long jarg1, btSpatialMotionVector jarg1_, float jarg2);
-  public final static native void delete_btSpatialMotionVector(long jarg1);
-  public final static native void btSymmetricSpatialDyad_topLeftMat_set(long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSymmetricSpatialDyad_topLeftMat_get(long jarg1, btSymmetricSpatialDyad jarg1_);
-  public final static native void btSymmetricSpatialDyad_topRightMat_set(long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSymmetricSpatialDyad_topRightMat_get(long jarg1, btSymmetricSpatialDyad jarg1_);
-  public final static native void btSymmetricSpatialDyad_bottomLeftMat_set(long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSymmetricSpatialDyad_bottomLeftMat_get(long jarg1, btSymmetricSpatialDyad jarg1_);
-  public final static native long new_btSymmetricSpatialDyad__SWIG_0();
-  public final static native long new_btSymmetricSpatialDyad__SWIG_1(Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
-  public final static native void btSymmetricSpatialDyad_setMatrix(long jarg1, btSymmetricSpatialDyad jarg1_, Matrix3 jarg2, Matrix3 jarg3, Matrix3 jarg4);
-  public final static native void btSymmetricSpatialDyad_addMatrix(long jarg1, btSymmetricSpatialDyad jarg1_, Matrix3 jarg2, Matrix3 jarg3, Matrix3 jarg4);
-  public final static native void btSymmetricSpatialDyad_setIdentity(long jarg1, btSymmetricSpatialDyad jarg1_);
-  public final static native long btSymmetricSpatialDyad_operatorSubtractionAssignment(long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_);
-  public final static native long btSymmetricSpatialDyad_operatorMultiplication(long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2, btSpatialMotionVector jarg2_);
-  public final static native void delete_btSymmetricSpatialDyad(long jarg1);
-  public final static native void btSpatialTransformationMatrix_rotMat_set(long jarg1, btSpatialTransformationMatrix jarg1_, long jarg2, btMatrix3x3 jarg2_);
-  public final static native long btSpatialTransformationMatrix_rotMat_get(long jarg1, btSpatialTransformationMatrix jarg1_);
-  public final static native void btSpatialTransformationMatrix_trnVec_set(long jarg1, btSpatialTransformationMatrix jarg1_, long jarg2, btVector3 jarg2_);
-  public final static native long btSpatialTransformationMatrix_trnVec_get(long jarg1, btSpatialTransformationMatrix jarg1_);
-  public final static native void btSpatialTransformationMatrix_transformInverse__SWIG_2(long jarg1, btSpatialTransformationMatrix jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_, long jarg3, btSymmetricSpatialDyad jarg3_, int jarg4);
-  public final static native void btSpatialTransformationMatrix_transformInverse__SWIG_3(long jarg1, btSpatialTransformationMatrix jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_, long jarg3, btSymmetricSpatialDyad jarg3_);
-  public final static native long new_btSpatialTransformationMatrix();
-  public final static native void delete_btSpatialTransformationMatrix(long jarg1);
-  public final static native long BT_MAX_THREAD_COUNT_get();
-  public final static native boolean btIsMainThread();
-  public final static native boolean btThreadsAreRunning();
-  public final static native long btGetCurrentThreadIndex();
-  public final static native void btResetThreadIndexCounter();
-  public final static native long new_btSpinMutex();
-  public final static native void btSpinMutex_lock(long jarg1, btSpinMutex jarg1_);
-  public final static native void btSpinMutex_unlock(long jarg1, btSpinMutex jarg1_);
-  public final static native boolean btSpinMutex_tryLock(long jarg1, btSpinMutex jarg1_);
-  public final static native void delete_btSpinMutex(long jarg1);
-  public final static native void btMutexLock(long jarg1, btSpinMutex jarg1_);
-  public final static native void btMutexUnlock(long jarg1, btSpinMutex jarg1_);
-  public final static native boolean btMutexTryLock(long jarg1, btSpinMutex jarg1_);
-  public final static native void delete_btIParallelForBody(long jarg1);
-  public final static native void btIParallelForBody_forLoop(long jarg1, btIParallelForBody jarg1_, int jarg2, int jarg3);
-  public final static native void delete_btITaskScheduler(long jarg1);
-  public final static native String btITaskScheduler_getName(long jarg1, btITaskScheduler jarg1_);
-  public final static native int btITaskScheduler_getMaxNumThreads(long jarg1, btITaskScheduler jarg1_);
-  public final static native int btITaskScheduler_getNumThreads(long jarg1, btITaskScheduler jarg1_);
-  public final static native void btITaskScheduler_setNumThreads(long jarg1, btITaskScheduler jarg1_, int jarg2);
-  public final static native void btITaskScheduler_parallelFor(long jarg1, btITaskScheduler jarg1_, int jarg2, int jarg3, int jarg4, long jarg5, btIParallelForBody jarg5_);
-  public final static native void btITaskScheduler_activate(long jarg1, btITaskScheduler jarg1_);
-  public final static native void btITaskScheduler_deactivate(long jarg1, btITaskScheduler jarg1_);
-  public final static native void btSetTaskScheduler(long jarg1, btITaskScheduler jarg1_);
-  public final static native long btGetTaskScheduler();
-  public final static native long btGetSequentialTaskScheduler();
-  public final static native long btGetOpenMPTaskScheduler();
-  public final static native long btGetTBBTaskScheduler();
-  public final static native long btGetPPLTaskScheduler();
-  public final static native void btParallelFor(int jarg1, int jarg2, int jarg3, long jarg4, btIParallelForBody jarg4_);
-  public final static native void delete_btMotionState(long jarg1);
-  public final static native void btMotionState_getWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
-  public final static native void btMotionState_setWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
-  public final static native long new_btMotionState();
-  public final static native void btMotionState_director_connect(btMotionState obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void btMotionState_change_ownership(btMotionState obj, long cptr, boolean take_or_release);
-  public final static native void btDefaultMotionState_graphicsWorldTrans_set(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btDefaultMotionState_graphicsWorldTrans_get(long jarg1, btDefaultMotionState jarg1_);
-  public final static native void btDefaultMotionState_centerOfMassOffset_set(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btDefaultMotionState_centerOfMassOffset_get(long jarg1, btDefaultMotionState jarg1_);
-  public final static native void btDefaultMotionState_startWorldTrans_set(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btDefaultMotionState_startWorldTrans_get(long jarg1, btDefaultMotionState jarg1_);
-  public final static native void btDefaultMotionState_userPointer_set(long jarg1, btDefaultMotionState jarg1_, long jarg2);
-  public final static native long btDefaultMotionState_userPointer_get(long jarg1, btDefaultMotionState jarg1_);
-  public final static native long btDefaultMotionState_operatorNew__SWIG_0(long jarg1, btDefaultMotionState jarg1_, long jarg2);
-  public final static native void btDefaultMotionState_operatorDelete__SWIG_0(long jarg1, btDefaultMotionState jarg1_, long jarg2);
-  public final static native long btDefaultMotionState_operatorNew__SWIG_1(long jarg1, btDefaultMotionState jarg1_, long jarg2, long jarg3);
-  public final static native void btDefaultMotionState_operatorDelete__SWIG_1(long jarg1, btDefaultMotionState jarg1_, long jarg2, long jarg3);
-  public final static native long btDefaultMotionState_operatorNewArray__SWIG_0(long jarg1, btDefaultMotionState jarg1_, long jarg2);
-  public final static native void btDefaultMotionState_operatorDeleteArray__SWIG_0(long jarg1, btDefaultMotionState jarg1_, long jarg2);
-  public final static native long btDefaultMotionState_operatorNewArray__SWIG_1(long jarg1, btDefaultMotionState jarg1_, long jarg2, long jarg3);
-  public final static native void btDefaultMotionState_operatorDeleteArray__SWIG_1(long jarg1, btDefaultMotionState jarg1_, long jarg2, long jarg3);
-  public final static native long new_btDefaultMotionState__SWIG_0(Matrix4 jarg1, Matrix4 jarg2);
-  public final static native long new_btDefaultMotionState__SWIG_1(Matrix4 jarg1);
-  public final static native long new_btDefaultMotionState__SWIG_2();
-  public final static native void btDefaultMotionState_getGraphicsWorldTrans(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
-  public final static native void btDefaultMotionState_getCenterOfMassOffset(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
-  public final static native void btDefaultMotionState_getStartWorldTrans(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
-  public final static native void delete_btDefaultMotionState(long jarg1);
-  public final static native long btVector3Array_operatorAssignment(long jarg1, btVector3Array jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long new_btVector3Array__SWIG_0();
-  public final static native void delete_btVector3Array(long jarg1);
-  public final static native long new_btVector3Array__SWIG_1(long jarg1, btVector3Array jarg1_);
-  public final static native int btVector3Array_size(long jarg1, btVector3Array jarg1_);
-  public final static native Vector3 btVector3Array_atConst(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native Vector3 btVector3Array_at(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native Vector3 btVector3Array_operatorSubscriptConst(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native Vector3 btVector3Array_operatorSubscript(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native void btVector3Array_clear(long jarg1, btVector3Array jarg1_);
-  public final static native void btVector3Array_pop_back(long jarg1, btVector3Array jarg1_);
-  public final static native void btVector3Array_resizeNoInitialize(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native void btVector3Array_resize__SWIG_0(long jarg1, btVector3Array jarg1_, int jarg2, Vector3 jarg3);
-  public final static native void btVector3Array_resize__SWIG_1(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native Vector3 btVector3Array_expandNonInitializing(long jarg1, btVector3Array jarg1_);
-  public final static native Vector3 btVector3Array_expand__SWIG_0(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3Array_expand__SWIG_1(long jarg1, btVector3Array jarg1_);
-  public final static native void btVector3Array_push_back(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native int btVector3Array_capacity(long jarg1, btVector3Array jarg1_);
-  public final static native void btVector3Array_reserve(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native boolean btVector3Array_less_operatorFunctionCall(long jarg1, btVector3Array.less jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native long new_btVector3Array_less();
-  public final static native void delete_btVector3Array_less(long jarg1);
-  public final static native void btVector3Array_swap(long jarg1, btVector3Array jarg1_, int jarg2, int jarg3);
-  public final static native int btVector3Array_findBinarySearch(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native int btVector3Array_findLinearSearch(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native int btVector3Array_findLinearSearch2(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native void btVector3Array_removeAtIndex(long jarg1, btVector3Array jarg1_, int jarg2);
-  public final static native void btVector3Array_remove(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
-  public final static native void btVector3Array_initializeFromBuffer(long jarg1, btVector3Array jarg1_, long jarg2, int jarg3, int jarg4);
-  public final static native void btVector3Array_copyFromArray(long jarg1, btVector3Array jarg1_, long jarg2, btVector3Array jarg2_);
-  public final static native long btScalarArray_operatorAssignment(long jarg1, btScalarArray jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long new_btScalarArray__SWIG_0();
-  public final static native void delete_btScalarArray(long jarg1);
-  public final static native long new_btScalarArray__SWIG_1(long jarg1, btScalarArray jarg1_);
-  public final static native int btScalarArray_size(long jarg1, btScalarArray jarg1_);
-  public final static native float btScalarArray_atConst(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native long btScalarArray_at(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native float btScalarArray_operatorSubscriptConst(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native long btScalarArray_operatorSubscript(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native void btScalarArray_clear(long jarg1, btScalarArray jarg1_);
-  public final static native void btScalarArray_pop_back(long jarg1, btScalarArray jarg1_);
-  public final static native void btScalarArray_resizeNoInitialize(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native void btScalarArray_resize__SWIG_0(long jarg1, btScalarArray jarg1_, int jarg2, float jarg3);
-  public final static native void btScalarArray_resize__SWIG_1(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native long btScalarArray_expandNonInitializing(long jarg1, btScalarArray jarg1_);
-  public final static native long btScalarArray_expand__SWIG_0(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native long btScalarArray_expand__SWIG_1(long jarg1, btScalarArray jarg1_);
-  public final static native void btScalarArray_push_back(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native int btScalarArray_capacity(long jarg1, btScalarArray jarg1_);
-  public final static native void btScalarArray_reserve(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native boolean btScalarArray_less_operatorFunctionCall(long jarg1, float jarg2, float jarg3);
-  public final static native long new_btScalarArray_less();
-  public final static native void delete_btScalarArray_less(long jarg1);
-  public final static native void btScalarArray_swap(long jarg1, btScalarArray jarg1_, int jarg2, int jarg3);
-  public final static native int btScalarArray_findBinarySearch(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native int btScalarArray_findLinearSearch(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native int btScalarArray_findLinearSearch2(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native void btScalarArray_removeAtIndex(long jarg1, btScalarArray jarg1_, int jarg2);
-  public final static native void btScalarArray_remove(long jarg1, btScalarArray jarg1_, float jarg2);
-  public final static native void btScalarArray_initializeFromBuffer(long jarg1, btScalarArray jarg1_, long jarg2, int jarg3, int jarg4);
-  public final static native void btScalarArray_copyFromArray(long jarg1, btScalarArray jarg1_, long jarg2, btScalarArray jarg2_);
-  public final static native long btVector4_SWIGUpcast(long jarg1);
-  public final static native long btQuaternion_SWIGUpcast(long jarg1);
-  public final static native long GrahamVector3_SWIGUpcast(long jarg1);
-  public final static native long btDefaultSerializer_SWIGUpcast(long jarg1);
-  public final static native long btDefaultMotionState_SWIGUpcast(long jarg1);
+	public final static native int btGetVersion ();
 
-  public static long SwigDirector_btIDebugDraw_getDefaultColors(btIDebugDraw jself) {
-    return btIDebugDraw.DefaultColors.getCPtr(jself.getDefaultColors());
-  }
-  public static void SwigDirector_btIDebugDraw_setDefaultColors(btIDebugDraw jself, long arg0) {
-    jself.setDefaultColors(new btIDebugDraw.DefaultColors(arg0, false));
-  }
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 color) {
-    jself.drawLine(from, to, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 fromColor, Vector3 toColor) {
-    jself.drawLine(from, to, fromColor, toColor);
-  }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw jself, float radius, Matrix4 transform, Vector3 color) {
-    jself.drawSphere(radius, transform, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw jself, Vector3 p, float radius, Vector3 color) {
-    jself.drawSphere(p, radius, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0(btIDebugDraw jself, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 arg3, Vector3 arg4, Vector3 arg5, Vector3 color, float alpha) {
-    jself.drawTriangle(v0, v1, v2, arg3, arg4, arg5, color, alpha);
-  }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1(btIDebugDraw jself, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 color, float arg4) {
-    jself.drawTriangle(v0, v1, v2, color, arg4);
-  }
-  public static void SwigDirector_btIDebugDraw_drawContactPoint(btIDebugDraw jself, Vector3 PointOnB, Vector3 normalOnB, float distance, int lifeTime, Vector3 color) {
-    jself.drawContactPoint(PointOnB, normalOnB, distance, lifeTime, color);
-  }
-  public static void SwigDirector_btIDebugDraw_reportErrorWarning(btIDebugDraw jself, String warningString) {
-    jself.reportErrorWarning(warningString);
-  }
-  public static void SwigDirector_btIDebugDraw_draw3dText(btIDebugDraw jself, Vector3 location, String textString) {
-    jself.draw3dText(location, textString);
-  }
-  public static void SwigDirector_btIDebugDraw_setDebugMode(btIDebugDraw jself, int debugMode) {
-    jself.setDebugMode(debugMode);
-  }
-  public static int SwigDirector_btIDebugDraw_getDebugMode(btIDebugDraw jself) {
-    return jself.getDebugMode();
-  }
-  public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 color) {
-    jself.drawAabb(from, to, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw jself, Matrix4 transform, float orthoLen) {
-    jself.drawTransform(transform, orthoLen);
-  }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw jself, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
-    jself.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, stepDegrees);
-  }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw jself, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect) {
-    jself.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect);
-  }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw jself, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees, boolean drawCenter) {
-    jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees, drawCenter);
-  }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw jself, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees) {
-    jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees);
-  }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2(btIDebugDraw jself, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color) {
-    jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw jself, Vector3 bbMin, Vector3 bbMax, Vector3 color) {
-    jself.drawBox(bbMin, bbMax, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw jself, Vector3 bbMin, Vector3 bbMax, Matrix4 trans, Vector3 color) {
-    jself.drawBox(bbMin, bbMax, trans, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw jself, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
-    jself.drawCapsule(radius, halfHeight, upAxis, transform, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw jself, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
-    jself.drawCylinder(radius, halfHeight, upAxis, transform, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw jself, float radius, float height, int upAxis, Matrix4 transform, Vector3 color) {
-    jself.drawCone(radius, height, upAxis, transform, color);
-  }
-  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw jself, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
-    jself.drawPlane(planeNormal, planeConst, transform, color);
-  }
-  public static void SwigDirector_btIDebugDraw_clearLines(btIDebugDraw jself) {
-    jself.clearLines();
-  }
-  public static void SwigDirector_btIDebugDraw_flushLines(btIDebugDraw jself) {
-    jself.flushLines();
-  }
-  public static void SwigDirector_btMotionState_getWorldTransform(btMotionState jself, Matrix4 worldTrans) {
-    jself.getWorldTransform(worldTrans);
-  }
-  public static void SwigDirector_btMotionState_setWorldTransform(btMotionState jself, Matrix4 worldTrans) {
-    jself.setWorldTransform(worldTrans);
-  }
+	public final static native float btSqrt (float jarg1);
 
-  private final static native void swig_module_init();
-  static {
-    swig_module_init();
-  }
+	public final static native float btFabs (float jarg1);
+
+	public final static native float btCos (float jarg1);
+
+	public final static native float btSin (float jarg1);
+
+	public final static native float btTan (float jarg1);
+
+	public final static native float btAcos (float jarg1);
+
+	public final static native float btAsin (float jarg1);
+
+	public final static native float btAtan (float jarg1);
+
+	public final static native float btAtan2 (float jarg1, float jarg2);
+
+	public final static native float btExp (float jarg1);
+
+	public final static native float btLog (float jarg1);
+
+	public final static native float btPow (float jarg1, float jarg2);
+
+	public final static native float btFmod (float jarg1, float jarg2);
+
+	public final static native float btAtan2Fast (float jarg1, float jarg2);
+
+	public final static native boolean btFuzzyZero (float jarg1);
+
+	public final static native boolean btEqual (float jarg1, float jarg2);
+
+	public final static native boolean btGreaterEqual (float jarg1, float jarg2);
+
+	public final static native int btIsNegative (float jarg1);
+
+	public final static native float btRadians (float jarg1);
+
+	public final static native float btDegrees (float jarg1);
+
+	public final static native float btFsel (float jarg1, float jarg2, float jarg3);
+
+	public final static native boolean btMachineIsLittleEndian ();
+
+	public final static native long btSelect__SWIG_0 (long jarg1, long jarg2, long jarg3);
+
+	public final static native int btSelect__SWIG_1 (long jarg1, int jarg2, int jarg3);
+
+	public final static native float btSelect__SWIG_2 (long jarg1, float jarg2, float jarg3);
+
+	public final static native long btSwapEndian__SWIG_0 (long jarg1);
+
+	public final static native int btSwapEndian__SWIG_1 (int jarg1);
+
+	public final static native long btSwapEndianInt (int jarg1);
+
+	public final static native int btSwapEndian__SWIG_2 (short jarg1);
+
+	public final static native long btSwapEndianFloat (float jarg1);
+
+	public final static native float btUnswapEndianFloat (long jarg1);
+
+	public final static native void btSwapEndianDouble (double jarg1, java.nio.ByteBuffer jarg2);
+
+	public final static native double btUnswapEndianDouble (java.nio.ByteBuffer jarg1);
+
+	public final static native float btLargeDot (java.nio.FloatBuffer jarg1, java.nio.FloatBuffer jarg2, int jarg3);
+
+	public final static native float btNormalizeAngle (float jarg1);
+
+	public final static native long new_btTypedObject (int jarg1);
+
+	public final static native void btTypedObject_objectType_set (long jarg1, btTypedObject jarg1_, int jarg2);
+
+	public final static native int btTypedObject_objectType_get (long jarg1, btTypedObject jarg1_);
+
+	public final static native void delete_btTypedObject (long jarg1);
+
+	public final static native long new_btTransform__SWIG_0 ();
+
+	public final static native long new_btTransform__SWIG_1 (Quaternion jarg1, Vector3 jarg2);
+
+	public final static native long new_btTransform__SWIG_2 (Quaternion jarg1);
+
+	public final static native long new_btTransform__SWIG_3 (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native long new_btTransform__SWIG_4 (Matrix3 jarg1);
+
+	public final static native long new_btTransform__SWIG_5 (Matrix4 jarg1);
+
+	public final static native Matrix4 btTransform_operatorAssignment (long jarg1, btTransform jarg1_, Matrix4 jarg2);
+
+	public final static native void btTransform_mult (long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+
+	public final static native Vector3 btTransform_operatorFunctionCall (long jarg1, btTransform jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btTransform_operatorMultiplication__SWIG_0 (long jarg1, btTransform jarg1_, Vector3 jarg2);
+
+	public final static native Quaternion btTransform_operatorMultiplication__SWIG_1 (long jarg1, btTransform jarg1_,
+		Quaternion jarg2);
+
+	public final static native Matrix3 btTransform_getBasis (long jarg1, btTransform jarg1_);
+
+	public final static native Matrix3 btTransform_getBasisConst (long jarg1, btTransform jarg1_);
+
+	public final static native Vector3 btTransform_getOrigin (long jarg1, btTransform jarg1_);
+
+	public final static native Vector3 btTransform_getOriginConst (long jarg1, btTransform jarg1_);
+
+	public final static native Quaternion btTransform_getRotation (long jarg1, btTransform jarg1_);
+
+	public final static native void btTransform_setFromOpenGLMatrix (long jarg1, btTransform jarg1_, float[] jarg2);
+
+	public final static native void btTransform_getOpenGLMatrix (long jarg1, btTransform jarg1_, float[] jarg2);
+
+	public final static native void btTransform_setOrigin (long jarg1, btTransform jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btTransform_invXform (long jarg1, btTransform jarg1_, Vector3 jarg2);
+
+	public final static native void btTransform_setBasis (long jarg1, btTransform jarg1_, Matrix3 jarg2);
+
+	public final static native void btTransform_setRotation (long jarg1, btTransform jarg1_, Quaternion jarg2);
+
+	public final static native void btTransform_setIdentity (long jarg1, btTransform jarg1_);
+
+	public final static native Matrix4 btTransform_operatorMultiplicationAssignment (long jarg1, btTransform jarg1_,
+		Matrix4 jarg2);
+
+	public final static native Matrix4 btTransform_inverse (long jarg1, btTransform jarg1_);
+
+	public final static native Matrix4 btTransform_inverseTimes (long jarg1, btTransform jarg1_, Matrix4 jarg2);
+
+	public final static native Matrix4 btTransform_operatorMultiplication__SWIG_2 (long jarg1, btTransform jarg1_, Matrix4 jarg2);
+
+	public final static native Matrix4 btTransform_getIdentity ();
+
+	public final static native void btTransform_serialize (long jarg1, btTransform jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native void btTransform_serializeFloat (long jarg1, btTransform jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native void btTransform_deSerialize (long jarg1, btTransform jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native void btTransform_deSerializeDouble (long jarg1, btTransform jarg1_, long jarg2,
+		btTransformDoubleData jarg2_);
+
+	public final static native void btTransform_deSerializeFloat (long jarg1, btTransform jarg1_, long jarg2,
+		btTransformFloatData jarg2_);
+
+	public final static native void delete_btTransform (long jarg1);
+
+	public final static native boolean operatorEqualTo__SWIG_0 (Matrix4 jarg1, Matrix4 jarg2);
+
+	public final static native void btTransformFloatData_basis_set (long jarg1, btTransformFloatData jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native long btTransformFloatData_basis_get (long jarg1, btTransformFloatData jarg1_);
+
+	public final static native void btTransformFloatData_origin_set (long jarg1, btTransformFloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btTransformFloatData_origin_get (long jarg1, btTransformFloatData jarg1_);
+
+	public final static native long new_btTransformFloatData ();
+
+	public final static native void delete_btTransformFloatData (long jarg1);
+
+	public final static native void btTransformDoubleData_basis_set (long jarg1, btTransformDoubleData jarg1_, long jarg2,
+		btMatrix3x3DoubleData jarg2_);
+
+	public final static native long btTransformDoubleData_basis_get (long jarg1, btTransformDoubleData jarg1_);
+
+	public final static native void btTransformDoubleData_origin_set (long jarg1, btTransformDoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btTransformDoubleData_origin_get (long jarg1, btTransformDoubleData jarg1_);
+
+	public final static native long new_btTransformDoubleData ();
+
+	public final static native void delete_btTransformDoubleData (long jarg1);
+
+	public final static native long btVector3_operatorNew__SWIG_0 (long jarg1, btVector3 jarg1_, long jarg2);
+
+	public final static native void btVector3_operatorDelete__SWIG_0 (long jarg1, btVector3 jarg1_, long jarg2);
+
+	public final static native long btVector3_operatorNew__SWIG_1 (long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
+
+	public final static native void btVector3_operatorDelete__SWIG_1 (long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
+
+	public final static native long btVector3_operatorNewArray__SWIG_0 (long jarg1, btVector3 jarg1_, long jarg2);
+
+	public final static native void btVector3_operatorDeleteArray__SWIG_0 (long jarg1, btVector3 jarg1_, long jarg2);
+
+	public final static native long btVector3_operatorNewArray__SWIG_1 (long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
+
+	public final static native void btVector3_operatorDeleteArray__SWIG_1 (long jarg1, btVector3 jarg1_, long jarg2, long jarg3);
+
+	public final static native void btVector3_floats_set (long jarg1, btVector3 jarg1_, float[] jarg2);
+
+	public final static native float[] btVector3_floats_get (long jarg1, btVector3 jarg1_);
+
+	public final static native long new_btVector3__SWIG_0 ();
+
+	public final static native long new_btVector3__SWIG_1 (float jarg1, float jarg2, float jarg3);
+
+	public final static native Vector3 btVector3_operatorAdditionAssignment (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btVector3_operatorSubtractionAssignment (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btVector3_operatorMultiplicationAssignment__SWIG_0 (long jarg1, btVector3 jarg1_,
+		float jarg2);
+
+	public final static native Vector3 btVector3_operatorDivisionAssignment (long jarg1, btVector3 jarg1_, float jarg2);
+
+	public final static native float btVector3_dot (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native float btVector3_length2 (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_length (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_norm (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_safeNorm (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_distance2 (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native float btVector3_distance (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btVector3_safeNormalize (long jarg1, btVector3 jarg1_);
+
+	public final static native Vector3 btVector3_normalize (long jarg1, btVector3 jarg1_);
+
+	public final static native Vector3 btVector3_normalized (long jarg1, btVector3 jarg1_);
+
+	public final static native Vector3 btVector3_rotate (long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native float btVector3_angle (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btVector3_absolute (long jarg1, btVector3 jarg1_);
+
+	public final static native Vector3 btVector3_cross (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native float btVector3_triple (long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native int btVector3_minAxis (long jarg1, btVector3 jarg1_);
+
+	public final static native int btVector3_maxAxis (long jarg1, btVector3 jarg1_);
+
+	public final static native int btVector3_furthestAxis (long jarg1, btVector3 jarg1_);
+
+	public final static native int btVector3_closestAxis (long jarg1, btVector3 jarg1_);
+
+	public final static native void btVector3_setInterpolate3 (long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3,
+		float jarg4);
+
+	public final static native Vector3 btVector3_lerp (long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native Vector3 btVector3_operatorMultiplicationAssignment__SWIG_1 (long jarg1, btVector3 jarg1_,
+		Vector3 jarg2);
+
+	public final static native float btVector3_getX (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_getY (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_getZ (long jarg1, btVector3 jarg1_);
+
+	public final static native void btVector3_setX (long jarg1, btVector3 jarg1_, float jarg2);
+
+	public final static native void btVector3_setY (long jarg1, btVector3 jarg1_, float jarg2);
+
+	public final static native void btVector3_setZ (long jarg1, btVector3 jarg1_, float jarg2);
+
+	public final static native void btVector3_setW (long jarg1, btVector3 jarg1_, float jarg2);
+
+	public final static native float btVector3_x (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_y (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_z (long jarg1, btVector3 jarg1_);
+
+	public final static native float btVector3_w (long jarg1, btVector3 jarg1_);
+
+	public final static native java.nio.FloatBuffer btVector3_operatorbtScalarPtr (long jarg1, btVector3 jarg1_);
+
+	public final static native java.nio.FloatBuffer btVector3_operatorbtConstScalarPtr (long jarg1, btVector3 jarg1_);
+
+	public final static native boolean btVector3_operatorEqualTo (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native boolean btVector3_operatorNotEqualTo (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native void btVector3_setMax (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native void btVector3_setMin (long jarg1, btVector3 jarg1_, Vector3 jarg2);
+
+	public final static native void btVector3_setValue (long jarg1, btVector3 jarg1_, float jarg2, float jarg3, float jarg4);
+
+	public final static native void btVector3_getSkewSymmetricMatrix (long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_,
+		long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+
+	public final static native void btVector3_setZero (long jarg1, btVector3 jarg1_);
+
+	public final static native boolean btVector3_isZero (long jarg1, btVector3 jarg1_);
+
+	public final static native boolean btVector3_fuzzyZero (long jarg1, btVector3 jarg1_);
+
+	public final static native void btVector3_serialize (long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native void btVector3_deSerialize (long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native void btVector3_serializeFloat (long jarg1, btVector3 jarg1_, long jarg2, btVector3FloatData jarg2_);
+
+	public final static native void btVector3_deSerializeFloat (long jarg1, btVector3 jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native void btVector3_serializeDouble (long jarg1, btVector3 jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native void btVector3_deSerializeDouble (long jarg1, btVector3 jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native int btVector3_maxDot (long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3,
+		long jarg4);
+
+	public final static native int btVector3_minDot (long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3,
+		long jarg4);
+
+	public final static native Vector3 btVector3_dot3 (long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native void delete_btVector3 (long jarg1);
+
+	public final static native Vector3 operatorAddition__SWIG_0 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 operatorMultiplication__SWIG_0 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 operatorSubtraction__SWIG_0 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 operatorSubtraction__SWIG_1 (Vector3 jarg1);
+
+	public final static native Vector3 operatorMultiplication__SWIG_1 (Vector3 jarg1, float jarg2);
+
+	public final static native Vector3 operatorMultiplication__SWIG_2 (float jarg1, Vector3 jarg2);
+
+	public final static native Vector3 operatorDivision__SWIG_0 (Vector3 jarg1, float jarg2);
+
+	public final static native Vector3 operatorDivision__SWIG_1 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native float btDot (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native float btDistance2 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native float btDistance (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native float btAngle__SWIG_0 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 btCross (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native float btTriple (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native Vector3 lerp (Vector3 jarg1, Vector3 jarg2, float jarg3);
+
+	public final static native long new_btVector4__SWIG_0 ();
+
+	public final static native long new_btVector4__SWIG_1 (float jarg1, float jarg2, float jarg3, float jarg4);
+
+	public final static native long btVector4_absolute4 (long jarg1, btVector4 jarg1_);
+
+	public final static native float btVector4_getW (long jarg1, btVector4 jarg1_);
+
+	public final static native int btVector4_maxAxis4 (long jarg1, btVector4 jarg1_);
+
+	public final static native int btVector4_minAxis4 (long jarg1, btVector4 jarg1_);
+
+	public final static native int btVector4_closestAxis4 (long jarg1, btVector4 jarg1_);
+
+	public final static native void btVector4_setValue (long jarg1, btVector4 jarg1_, float jarg2, float jarg3, float jarg4,
+		float jarg5);
+
+	public final static native void delete_btVector4 (long jarg1);
+
+	public final static native void btSwapScalarEndian (float jarg1, long jarg2);
+
+	public final static native void btSwapVector3Endian (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native void btUnSwapVector3Endian (Vector3 jarg1);
+
+	public final static native void btVector3FloatData_floats_set (long jarg1, btVector3FloatData jarg1_, float[] jarg2);
+
+	public final static native float[] btVector3FloatData_floats_get (long jarg1, btVector3FloatData jarg1_);
+
+	public final static native long new_btVector3FloatData ();
+
+	public final static native void delete_btVector3FloatData (long jarg1);
+
+	public final static native void btVector3DoubleData_floats_set (long jarg1, btVector3DoubleData jarg1_, double[] jarg2);
+
+	public final static native double[] btVector3DoubleData_floats_get (long jarg1, btVector3DoubleData jarg1_);
+
+	public final static native long new_btVector3DoubleData ();
+
+	public final static native void delete_btVector3DoubleData (long jarg1);
+
+	public final static native float btQuadWord_getX (long jarg1, btQuadWord jarg1_);
+
+	public final static native float btQuadWord_getY (long jarg1, btQuadWord jarg1_);
+
+	public final static native float btQuadWord_getZ (long jarg1, btQuadWord jarg1_);
+
+	public final static native void btQuadWord_setX (long jarg1, btQuadWord jarg1_, float jarg2);
+
+	public final static native void btQuadWord_setY (long jarg1, btQuadWord jarg1_, float jarg2);
+
+	public final static native void btQuadWord_setZ (long jarg1, btQuadWord jarg1_, float jarg2);
+
+	public final static native void btQuadWord_setW (long jarg1, btQuadWord jarg1_, float jarg2);
+
+	public final static native float btQuadWord_x (long jarg1, btQuadWord jarg1_);
+
+	public final static native float btQuadWord_y (long jarg1, btQuadWord jarg1_);
+
+	public final static native float btQuadWord_z (long jarg1, btQuadWord jarg1_);
+
+	public final static native float btQuadWord_w (long jarg1, btQuadWord jarg1_);
+
+	public final static native java.nio.FloatBuffer btQuadWord_operatorbtScalarPtr (long jarg1, btQuadWord jarg1_);
+
+	public final static native java.nio.FloatBuffer btQuadWord_operatorbtConstScalarPtr (long jarg1, btQuadWord jarg1_);
+
+	public final static native boolean btQuadWord_operatorEqualTo (long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
+
+	public final static native boolean btQuadWord_operatorNotEqualTo (long jarg1, btQuadWord jarg1_, long jarg2,
+		btQuadWord jarg2_);
+
+	public final static native void btQuadWord_setValue__SWIG_0 (long jarg1, btQuadWord jarg1_, float jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void btQuadWord_setValue__SWIG_1 (long jarg1, btQuadWord jarg1_, float jarg2, float jarg3,
+		float jarg4, float jarg5);
+
+	public final static native long new_btQuadWord__SWIG_0 ();
+
+	public final static native long new_btQuadWord__SWIG_1 (float jarg1, float jarg2, float jarg3);
+
+	public final static native long new_btQuadWord__SWIG_2 (float jarg1, float jarg2, float jarg3, float jarg4);
+
+	public final static native void btQuadWord_setMax (long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
+
+	public final static native void btQuadWord_setMin (long jarg1, btQuadWord jarg1_, long jarg2, btQuadWord jarg2_);
+
+	public final static native void delete_btQuadWord (long jarg1);
+
+	public final static native long new_btQuaternion__SWIG_0 ();
+
+	public final static native long new_btQuaternion__SWIG_1 (float jarg1, float jarg2, float jarg3, float jarg4);
+
+	public final static native long new_btQuaternion__SWIG_2 (Vector3 jarg1, float jarg2);
+
+	public final static native long new_btQuaternion__SWIG_3 (float jarg1, float jarg2, float jarg3);
+
+	public final static native void btQuaternion_setRotation (long jarg1, btQuaternion jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native void btQuaternion_setEuler (long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
+
+	public final static native void btQuaternion_setEulerZYX (long jarg1, btQuaternion jarg1_, float jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void btQuaternion_getEulerZYX (long jarg1, btQuaternion jarg1_, long jarg2, long jarg3, long jarg4);
+
+	public final static native Quaternion btQuaternion_operatorAdditionAssignment (long jarg1, btQuaternion jarg1_,
+		Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_operatorSubtractionAssignment (long jarg1, btQuaternion jarg1_,
+		Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_operatorMultiplicationAssignment__SWIG_0 (long jarg1, btQuaternion jarg1_,
+		float jarg2);
+
+	public final static native Quaternion btQuaternion_operatorMultiplicationAssignment__SWIG_1 (long jarg1, btQuaternion jarg1_,
+		Quaternion jarg2);
+
+	public final static native float btQuaternion_dot (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native float btQuaternion_length2 (long jarg1, btQuaternion jarg1_);
+
+	public final static native float btQuaternion_length (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_safeNormalize (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_normalize (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_operatorMultiplication (long jarg1, btQuaternion jarg1_, float jarg2);
+
+	public final static native Quaternion btQuaternion_operatorDivision (long jarg1, btQuaternion jarg1_, float jarg2);
+
+	public final static native Quaternion btQuaternion_operatorDivisionAssignment (long jarg1, btQuaternion jarg1_, float jarg2);
+
+	public final static native Quaternion btQuaternion_normalized (long jarg1, btQuaternion jarg1_);
+
+	public final static native float btQuaternion_angle (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native float btQuaternion_angleShortestPath (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native float btQuaternion_getAngle (long jarg1, btQuaternion jarg1_);
+
+	public final static native float btQuaternion_getAngleShortestPath (long jarg1, btQuaternion jarg1_);
+
+	public final static native Vector3 btQuaternion_getAxis (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_inverse (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_operatorAddition (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_operatorSubtraction__SWIG_0 (long jarg1, btQuaternion jarg1_,
+		Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_operatorSubtraction__SWIG_1 (long jarg1, btQuaternion jarg1_);
+
+	public final static native Quaternion btQuaternion_farthest (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_nearest (long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+
+	public final static native Quaternion btQuaternion_slerp (long jarg1, btQuaternion jarg1_, Quaternion jarg2, float jarg3);
+
+	public final static native Quaternion btQuaternion_getIdentity ();
+
+	public final static native float btQuaternion_getW (long jarg1, btQuaternion jarg1_);
+
+	public final static native void btQuaternion_serialize (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionFloatData jarg2_);
+
+	public final static native void btQuaternion_deSerialize (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionFloatData jarg2_);
+
+	public final static native void btQuaternion_serializeFloat (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionFloatData jarg2_);
+
+	public final static native void btQuaternion_deSerializeFloat (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionFloatData jarg2_);
+
+	public final static native void btQuaternion_serializeDouble (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionDoubleData jarg2_);
+
+	public final static native void btQuaternion_deSerializeDouble (long jarg1, btQuaternion jarg1_, long jarg2,
+		btQuaternionDoubleData jarg2_);
+
+	public final static native void delete_btQuaternion (long jarg1);
+
+	public final static native Quaternion operatorMultiplication__SWIG_3 (Quaternion jarg1, Quaternion jarg2);
+
+	public final static native Quaternion operatorMultiplication__SWIG_4 (Quaternion jarg1, Vector3 jarg2);
+
+	public final static native Quaternion operatorMultiplication__SWIG_5 (Vector3 jarg1, Quaternion jarg2);
+
+	public final static native float dot (Quaternion jarg1, Quaternion jarg2);
+
+	public final static native float length (Quaternion jarg1);
+
+	public final static native float btAngle__SWIG_1 (Quaternion jarg1, Quaternion jarg2);
+
+	public final static native Quaternion inverse (Quaternion jarg1);
+
+	public final static native Quaternion slerp (Quaternion jarg1, Quaternion jarg2, float jarg3);
+
+	public final static native Vector3 quatRotate (Quaternion jarg1, Vector3 jarg2);
+
+	public final static native Quaternion shortestArcQuat (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native Quaternion shortestArcQuatNormalize2 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native void btQuaternionFloatData_floats_set (long jarg1, btQuaternionFloatData jarg1_, float[] jarg2);
+
+	public final static native float[] btQuaternionFloatData_floats_get (long jarg1, btQuaternionFloatData jarg1_);
+
+	public final static native long new_btQuaternionFloatData ();
+
+	public final static native void delete_btQuaternionFloatData (long jarg1);
+
+	public final static native void btQuaternionDoubleData_floats_set (long jarg1, btQuaternionDoubleData jarg1_, double[] jarg2);
+
+	public final static native double[] btQuaternionDoubleData_floats_get (long jarg1, btQuaternionDoubleData jarg1_);
+
+	public final static native long new_btQuaternionDoubleData ();
+
+	public final static native void delete_btQuaternionDoubleData (long jarg1);
+
+	public final static native long new_btMatrix3x3__SWIG_0 ();
+
+	public final static native long new_btMatrix3x3__SWIG_1 (Quaternion jarg1);
+
+	public final static native long new_btMatrix3x3__SWIG_2 (float jarg1, float jarg2, float jarg3, float jarg4, float jarg5,
+		float jarg6, float jarg7, float jarg8, float jarg9);
+
+	public final static native long new_btMatrix3x3__SWIG_3 (Matrix3 jarg1);
+
+	public final static native Matrix3 btMatrix3x3_operatorAssignment (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native Vector3 btMatrix3x3_getColumn (long jarg1, btMatrix3x3 jarg1_, int jarg2);
+
+	public final static native Vector3 btMatrix3x3_getRow (long jarg1, btMatrix3x3 jarg1_, int jarg2);
+
+	public final static native Vector3 btMatrix3x3_operatorSubscript (long jarg1, btMatrix3x3 jarg1_, int jarg2);
+
+	public final static native Vector3 btMatrix3x3_operatorSubscriptConst (long jarg1, btMatrix3x3 jarg1_, int jarg2);
+
+	public final static native Matrix3 btMatrix3x3_operatorMultiplicationAssignment (long jarg1, btMatrix3x3 jarg1_,
+		Matrix3 jarg2);
+
+	public final static native Matrix3 btMatrix3x3_operatorAdditionAssignment (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native Matrix3 btMatrix3x3_operatorSubtractionAssignment (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native void btMatrix3x3_setFromOpenGLSubMatrix (long jarg1, btMatrix3x3 jarg1_,
+		java.nio.FloatBuffer jarg2);
+
+	public final static native void btMatrix3x3_setValue (long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3, float jarg4,
+		float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10);
+
+	public final static native void btMatrix3x3_setRotation (long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
+
+	public final static native void btMatrix3x3_setEulerYPR (long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void btMatrix3x3_setEulerZYX (long jarg1, btMatrix3x3 jarg1_, float jarg2, float jarg3,
+		float jarg4);
+
+	public final static native void btMatrix3x3_setIdentity (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Matrix3 btMatrix3x3_getIdentity ();
+
+	public final static native void btMatrix3x3_getOpenGLSubMatrix (long jarg1, btMatrix3x3 jarg1_, java.nio.FloatBuffer jarg2);
+
+	public final static native void btMatrix3x3_getRotation (long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
+
+	public final static native void btMatrix3x3_getEulerYPR (long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3, long jarg4);
+
+	public final static native void btMatrix3x3_getEulerZYX__SWIG_0 (long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3,
+		long jarg4, long jarg5);
+
+	public final static native void btMatrix3x3_getEulerZYX__SWIG_1 (long jarg1, btMatrix3x3 jarg1_, long jarg2, long jarg3,
+		long jarg4);
+
+	public final static native Matrix3 btMatrix3x3_scaled (long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
+
+	public final static native float btMatrix3x3_determinant (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Matrix3 btMatrix3x3_adjoint (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Matrix3 btMatrix3x3_absolute (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Matrix3 btMatrix3x3_transpose (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Matrix3 btMatrix3x3_inverse (long jarg1, btMatrix3x3 jarg1_);
+
+	public final static native Vector3 btMatrix3x3_solve33 (long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
+
+	public final static native Matrix3 btMatrix3x3_transposeTimes (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native Matrix3 btMatrix3x3_timesTranspose (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native float btMatrix3x3_tdotx (long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
+
+	public final static native float btMatrix3x3_tdoty (long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
+
+	public final static native float btMatrix3x3_tdotz (long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
+
+	public final static native void btMatrix3x3_extractRotation__SWIG_0 (long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2,
+		float jarg3, int jarg4);
+
+	public final static native void btMatrix3x3_extractRotation__SWIG_1 (long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2,
+		float jarg3);
+
+	public final static native void btMatrix3x3_extractRotation__SWIG_2 (long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
+
+	public final static native void btMatrix3x3_diagonalize__SWIG_0 (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3,
+		int jarg4);
+
+	public final static native void btMatrix3x3_diagonalize__SWIG_1 (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3);
+
+	public final static native void btMatrix3x3_diagonalize__SWIG_2 (long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
+
+	public final static native float btMatrix3x3_cofac (long jarg1, btMatrix3x3 jarg1_, int jarg2, int jarg3, int jarg4,
+		int jarg5);
+
+	public final static native void btMatrix3x3_serialize (long jarg1, btMatrix3x3 jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native void btMatrix3x3_serializeFloat (long jarg1, btMatrix3x3 jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native void btMatrix3x3_deSerialize (long jarg1, btMatrix3x3 jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native void btMatrix3x3_deSerializeFloat (long jarg1, btMatrix3x3 jarg1_, long jarg2,
+		btMatrix3x3FloatData jarg2_);
+
+	public final static native void btMatrix3x3_deSerializeDouble (long jarg1, btMatrix3x3 jarg1_, long jarg2,
+		btMatrix3x3DoubleData jarg2_);
+
+	public final static native void delete_btMatrix3x3 (long jarg1);
+
+	public final static native Matrix3 operatorMultiplication__SWIG_6 (Matrix3 jarg1, float jarg2);
+
+	public final static native Matrix3 operatorAddition__SWIG_1 (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native Matrix3 operatorSubtraction__SWIG_2 (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native Vector3 operatorMultiplication__SWIG_7 (Matrix3 jarg1, Vector3 jarg2);
+
+	public final static native Vector3 operatorMultiplication__SWIG_8 (Vector3 jarg1, Matrix3 jarg2);
+
+	public final static native Matrix3 operatorMultiplication__SWIG_9 (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native boolean operatorEqualTo__SWIG_1 (Matrix3 jarg1, Matrix3 jarg2);
+
+	public final static native void btMatrix3x3FloatData_el_set (long jarg1, btMatrix3x3FloatData jarg1_, long jarg2,
+		btVector3FloatData jarg2_);
+
+	public final static native long btMatrix3x3FloatData_el_get (long jarg1, btMatrix3x3FloatData jarg1_);
+
+	public final static native long new_btMatrix3x3FloatData ();
+
+	public final static native void delete_btMatrix3x3FloatData (long jarg1);
+
+	public final static native void btMatrix3x3DoubleData_el_set (long jarg1, btMatrix3x3DoubleData jarg1_, long jarg2,
+		btVector3DoubleData jarg2_);
+
+	public final static native long btMatrix3x3DoubleData_el_get (long jarg1, btMatrix3x3DoubleData jarg1_);
+
+	public final static native long new_btMatrix3x3DoubleData ();
+
+	public final static native void delete_btMatrix3x3DoubleData (long jarg1);
+
+	public final static native void AabbExpand (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native boolean TestPointAgainstAabb2 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native boolean TestAabbAgainstAabb2 (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native boolean TestTriangleAgainstAabb2 (long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3);
+
+	public final static native int btOutcode (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native boolean btRayAabb2 (Vector3 jarg1, Vector3 jarg2, long[] jarg3, long jarg4, btVector3 jarg4_,
+		long jarg5, float jarg6, float jarg7);
+
+	public final static native boolean btRayAabb (Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5,
+		Vector3 jarg6);
+
+	public final static native void btTransformAabb__SWIG_0 (Vector3 jarg1, float jarg2, Matrix4 jarg3, Vector3 jarg4,
+		Vector3 jarg5);
+
+	public final static native void btTransformAabb__SWIG_1 (Vector3 jarg1, Vector3 jarg2, float jarg3, Matrix4 jarg4,
+		Vector3 jarg5, Vector3 jarg6);
+
+	public final static native long testQuantizedAabbAgainstQuantizedAabb (java.nio.IntBuffer jarg1, java.nio.IntBuffer jarg2,
+		java.nio.IntBuffer jarg3, java.nio.IntBuffer jarg4);
+
+	public final static native void btIDebugDraw_DefaultColors_activeObject_set (long jarg1, btIDebugDraw.DefaultColors jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_activeObject_get (long jarg1, btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_deactivatedObject_set (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_deactivatedObject_get (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_wantsDeactivationObject_set (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_wantsDeactivationObject_get (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_disabledDeactivationObject_set (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_disabledDeactivationObject_get (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_disabledSimulationObject_set (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_disabledSimulationObject_get (long jarg1,
+		btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_aabb_set (long jarg1, btIDebugDraw.DefaultColors jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_aabb_get (long jarg1, btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native void btIDebugDraw_DefaultColors_contactPoint_set (long jarg1, btIDebugDraw.DefaultColors jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btIDebugDraw_DefaultColors_contactPoint_get (long jarg1, btIDebugDraw.DefaultColors jarg1_);
+
+	public final static native long new_btIDebugDraw_DefaultColors ();
+
+	public final static native void delete_btIDebugDraw_DefaultColors (long jarg1);
+
+	public final static native void delete_btIDebugDraw (long jarg1);
+
+	public final static native long btIDebugDraw_getDefaultColors (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native long btIDebugDraw_getDefaultColorsSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native void btIDebugDraw_setDefaultColors (long jarg1, btIDebugDraw jarg1_, long jarg2,
+		btIDebugDraw.DefaultColors jarg2_);
+
+	public final static native void btIDebugDraw_setDefaultColorsSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_,
+		long jarg2, btIDebugDraw.DefaultColors jarg2_);
+
+	public final static native void btIDebugDraw_drawLine__SWIG_0 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawLine__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_drawSphere__SWIG_0 (long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3,
+		Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0 (long jarg1, btIDebugDraw jarg1_,
+		float jarg2, Matrix4 jarg3, Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawSphere__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3,
+		Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, float jarg3, Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawTriangle__SWIG_0 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
+
+	public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
+
+	public final static native void btIDebugDraw_drawTriangle__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
+
+	public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
+
+	public final static native void btIDebugDraw_drawContactPoint (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		float jarg4, int jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_reportErrorWarning (long jarg1, btIDebugDraw jarg1_, String jarg2);
+
+	public final static native void btIDebugDraw_draw3dText (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, String jarg3);
+
+	public final static native void btIDebugDraw_setDebugMode (long jarg1, btIDebugDraw jarg1_, int jarg2);
+
+	public final static native int btIDebugDraw_getDebugMode (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native void btIDebugDraw_drawAabb (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawTransform (long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
+
+	public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_,
+		Matrix4 jarg2, float jarg3);
+
+	public final static native void btIDebugDraw_drawArc__SWIG_0 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
+
+	public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9,
+		boolean jarg10, float jarg11);
+
+	public final static native void btIDebugDraw_drawArc__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
+
+	public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9,
+		boolean jarg10);
+
+	public final static native void btIDebugDraw_drawSpherePatch__SWIG_0 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11,
+		boolean jarg12);
+
+	public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9,
+		Vector3 jarg10, float jarg11, boolean jarg12);
+
+	public final static native void btIDebugDraw_drawSpherePatch__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10,
+		float jarg11);
+
+	public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9,
+		Vector3 jarg10, float jarg11);
+
+	public final static native void btIDebugDraw_drawSpherePatch__SWIG_2 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
+
+	public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_2 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9,
+		Vector3 jarg10);
+
+	public final static native void btIDebugDraw_drawBox__SWIG_0 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+
+	public final static native void btIDebugDraw_drawBox__SWIG_1 (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3,
+		Matrix4 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1 (long jarg1, btIDebugDraw jarg1_,
+		Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_drawCapsule (long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4,
+		Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_, float jarg2,
+		float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawCylinder (long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3,
+		int jarg4, Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_,
+		float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawCone (long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4,
+		Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_, float jarg2,
+		float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+
+	public final static native void btIDebugDraw_drawPlane (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3,
+		Matrix4 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_, Vector3 jarg2,
+		float jarg3, Matrix4 jarg4, Vector3 jarg5);
+
+	public final static native void btIDebugDraw_clearLines (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native void btIDebugDraw_clearLinesSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native void btIDebugDraw_flushLines (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native void btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw (long jarg1, btIDebugDraw jarg1_);
+
+	public final static native long new_btIDebugDraw ();
+
+	public final static native void btIDebugDraw_director_connect (btIDebugDraw obj, long cptr, boolean mem_own,
+		boolean weak_global);
+
+	public final static native void btIDebugDraw_change_ownership (btIDebugDraw obj, long cptr, boolean take_or_release);
+
+	public final static native void btGeometryUtil_getPlaneEquationsFromVertices (long jarg1, btVector3Array jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native void btGeometryUtil_getVerticesFromPlaneEquations (long jarg1, btVector3Array jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native boolean btGeometryUtil_isInside (long jarg1, btVector3Array jarg1_, Vector3 jarg2, float jarg3);
+
+	public final static native boolean btGeometryUtil_isPointInsidePlanes (long jarg1, btVector3Array jarg1_, Vector3 jarg2,
+		float jarg3);
+
+	public final static native boolean btGeometryUtil_areVerticesBehindPlane (Vector3 jarg1, long jarg2, btVector3Array jarg2_,
+		float jarg3);
+
+	public final static native long new_btGeometryUtil ();
+
+	public final static native void delete_btGeometryUtil (long jarg1);
+
+	public final static native void GEN_srand (long jarg1);
+
+	public final static native long GEN_rand ();
+
+	public final static native Vector3 btAabbSupport (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native void btTransformUtil_integrateTransform (Matrix4 jarg1, Vector3 jarg2, Vector3 jarg3, float jarg4,
+		Matrix4 jarg5);
+
+	public final static native void btTransformUtil_calculateVelocityQuaternion (Vector3 jarg1, Vector3 jarg2, Quaternion jarg3,
+		Quaternion jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
+
+	public final static native void btTransformUtil_calculateDiffAxisAngleQuaternion (Quaternion jarg1, Quaternion jarg2,
+		Vector3 jarg3, long jarg4);
+
+	public final static native void btTransformUtil_calculateVelocity (Matrix4 jarg1, Matrix4 jarg2, float jarg3, Vector3 jarg4,
+		Vector3 jarg5);
+
+	public final static native void btTransformUtil_calculateDiffAxisAngle (Matrix4 jarg1, Matrix4 jarg2, Vector3 jarg3,
+		long jarg4);
+
+	public final static native long new_btTransformUtil ();
+
+	public final static native void delete_btTransformUtil (long jarg1);
+
+	public final static native long new_btConvexSeparatingDistanceUtil (float jarg1, float jarg2);
+
+	public final static native float btConvexSeparatingDistanceUtil_getConservativeSeparatingDistance (long jarg1,
+		btConvexSeparatingDistanceUtil jarg1_);
+
+	public final static native void btConvexSeparatingDistanceUtil_updateSeparatingDistance (long jarg1,
+		btConvexSeparatingDistanceUtil jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+
+	public final static native void btConvexSeparatingDistanceUtil_initSeparatingDistance (long jarg1,
+		btConvexSeparatingDistanceUtil jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Matrix4 jarg5);
+
+	public final static native void delete_btConvexSeparatingDistanceUtil (long jarg1);
+
+	public final static native long new_HullResult ();
+
+	public final static native void HullResult_mPolygons_set (long jarg1, HullResult jarg1_, boolean jarg2);
+
+	public final static native boolean HullResult_mPolygons_get (long jarg1, HullResult jarg1_);
+
+	public final static native void HullResult_mNumOutputVertices_set (long jarg1, HullResult jarg1_, long jarg2);
+
+	public final static native long HullResult_mNumOutputVertices_get (long jarg1, HullResult jarg1_);
+
+	public final static native void HullResult_OutputVertices_set (long jarg1, HullResult jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long HullResult_OutputVertices_get (long jarg1, HullResult jarg1_);
+
+	public final static native void HullResult_mNumFaces_set (long jarg1, HullResult jarg1_, long jarg2);
+
+	public final static native long HullResult_mNumFaces_get (long jarg1, HullResult jarg1_);
+
+	public final static native void HullResult_mNumIndices_set (long jarg1, HullResult jarg1_, long jarg2);
+
+	public final static native long HullResult_mNumIndices_get (long jarg1, HullResult jarg1_);
+
+	public final static native void HullResult_Indices_set (long jarg1, HullResult jarg1_, long jarg2);
+
+	public final static native long HullResult_Indices_get (long jarg1, HullResult jarg1_);
+
+	public final static native void delete_HullResult (long jarg1);
+
+	public final static native long new_HullDesc__SWIG_0 ();
+
+	public final static native long new_HullDesc__SWIG_1 (int jarg1, long jarg2, long jarg3, btVector3 jarg3_, long jarg4);
+
+	public final static native long new_HullDesc__SWIG_2 (int jarg1, long jarg2, long jarg3, btVector3 jarg3_);
+
+	public final static native boolean HullDesc_HasHullFlag (long jarg1, HullDesc jarg1_, int jarg2);
+
+	public final static native void HullDesc_SetHullFlag (long jarg1, HullDesc jarg1_, int jarg2);
+
+	public final static native void HullDesc_ClearHullFlag (long jarg1, HullDesc jarg1_, int jarg2);
+
+	public final static native void HullDesc_mFlags_set (long jarg1, HullDesc jarg1_, long jarg2);
+
+	public final static native long HullDesc_mFlags_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mVcount_set (long jarg1, HullDesc jarg1_, long jarg2);
+
+	public final static native long HullDesc_mVcount_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mVertices_set (long jarg1, HullDesc jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long HullDesc_mVertices_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mVertexStride_set (long jarg1, HullDesc jarg1_, long jarg2);
+
+	public final static native long HullDesc_mVertexStride_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mNormalEpsilon_set (long jarg1, HullDesc jarg1_, float jarg2);
+
+	public final static native float HullDesc_mNormalEpsilon_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mMaxVertices_set (long jarg1, HullDesc jarg1_, long jarg2);
+
+	public final static native long HullDesc_mMaxVertices_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void HullDesc_mMaxFaces_set (long jarg1, HullDesc jarg1_, long jarg2);
+
+	public final static native long HullDesc_mMaxFaces_get (long jarg1, HullDesc jarg1_);
+
+	public final static native void delete_HullDesc (long jarg1);
+
+	public final static native void btPlane_normal_set (long jarg1, btPlane jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long btPlane_normal_get (long jarg1, btPlane jarg1_);
+
+	public final static native void btPlane_dist_set (long jarg1, btPlane jarg1_, float jarg2);
+
+	public final static native float btPlane_dist_get (long jarg1, btPlane jarg1_);
+
+	public final static native long new_btPlane__SWIG_0 (Vector3 jarg1, float jarg2);
+
+	public final static native long new_btPlane__SWIG_1 ();
+
+	public final static native void delete_btPlane (long jarg1);
+
+	public final static native void ConvexH_HalfEdge_ea_set (long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
+
+	public final static native short ConvexH_HalfEdge_ea_get (long jarg1, ConvexH.HalfEdge jarg1_);
+
+	public final static native void ConvexH_HalfEdge_v_set (long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
+
+	public final static native short ConvexH_HalfEdge_v_get (long jarg1, ConvexH.HalfEdge jarg1_);
+
+	public final static native void ConvexH_HalfEdge_p_set (long jarg1, ConvexH.HalfEdge jarg1_, short jarg2);
+
+	public final static native short ConvexH_HalfEdge_p_get (long jarg1, ConvexH.HalfEdge jarg1_);
+
+	public final static native long new_ConvexH_HalfEdge__SWIG_0 ();
+
+	public final static native long new_ConvexH_HalfEdge__SWIG_1 (short jarg1, short jarg2, short jarg3);
+
+	public final static native void delete_ConvexH_HalfEdge (long jarg1);
+
+	public final static native long new_ConvexH__SWIG_0 ();
+
+	public final static native void delete_ConvexH (long jarg1);
+
+	public final static native void ConvexH_vertices_set (long jarg1, ConvexH jarg1_, long jarg2, btVector3Array jarg2_);
+
+	public final static native long ConvexH_vertices_get (long jarg1, ConvexH jarg1_);
+
+	public final static native void ConvexH_edges_set (long jarg1, ConvexH jarg1_, long jarg2);
+
+	public final static native long ConvexH_edges_get (long jarg1, ConvexH jarg1_);
+
+	public final static native void ConvexH_facets_set (long jarg1, ConvexH jarg1_, long jarg2);
+
+	public final static native long ConvexH_facets_get (long jarg1, ConvexH jarg1_);
+
+	public final static native long new_ConvexH__SWIG_1 (int jarg1, int jarg2, int jarg3);
+
+	public final static native void int4_x_set (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native int int4_x_get (long jarg1, int4 jarg1_);
+
+	public final static native void int4_y_set (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native int int4_y_get (long jarg1, int4 jarg1_);
+
+	public final static native void int4_z_set (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native int int4_z_get (long jarg1, int4 jarg1_);
+
+	public final static native void int4_w_set (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native int int4_w_get (long jarg1, int4 jarg1_);
+
+	public final static native long new_int4__SWIG_0 ();
+
+	public final static native long new_int4__SWIG_1 (int jarg1, int jarg2, int jarg3, int jarg4);
+
+	public final static native int int4_operatorSubscriptConst (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native long int4_operatorSubscript (long jarg1, int4 jarg1_, int jarg2);
+
+	public final static native void delete_int4 (long jarg1);
+
+	public final static native long new_PHullResult ();
+
+	public final static native void PHullResult_mVcount_set (long jarg1, PHullResult jarg1_, long jarg2);
+
+	public final static native long PHullResult_mVcount_get (long jarg1, PHullResult jarg1_);
+
+	public final static native void PHullResult_mIndexCount_set (long jarg1, PHullResult jarg1_, long jarg2);
+
+	public final static native long PHullResult_mIndexCount_get (long jarg1, PHullResult jarg1_);
+
+	public final static native void PHullResult_mFaceCount_set (long jarg1, PHullResult jarg1_, long jarg2);
+
+	public final static native long PHullResult_mFaceCount_get (long jarg1, PHullResult jarg1_);
+
+	public final static native void PHullResult_mVertices_set (long jarg1, PHullResult jarg1_, long jarg2, btVector3 jarg2_);
+
+	public final static native long PHullResult_mVertices_get (long jarg1, PHullResult jarg1_);
+
+	public final static native void PHullResult_Indices_set (long jarg1, PHullResult jarg1_, long jarg2);
+
+	public final static native long PHullResult_Indices_get (long jarg1, PHullResult jarg1_);
+
+	public final static native void delete_PHullResult (long jarg1);
+
+	public final static native void HullLibrary_vertexIndexMapping_set (long jarg1, HullLibrary jarg1_, long jarg2);
+
+	public final static native long HullLibrary_vertexIndexMapping_get (long jarg1, HullLibrary jarg1_);
+
+	public final static native int HullLibrary_CreateConvexHull (long jarg1, HullLibrary jarg1_, long jarg2, HullDesc jarg2_,
+		long jarg3, HullResult jarg3_);
+
+	public final static native int HullLibrary_ReleaseResult (long jarg1, HullLibrary jarg1_, long jarg2, HullResult jarg2_);
+
+	public final static native long new_HullLibrary ();
+
+	public final static native void delete_HullLibrary (long jarg1);
+
+	public final static native long new_GrahamVector3 (Vector3 jarg1, int jarg2);
+
+	public final static native void GrahamVector3_angle_set (long jarg1, GrahamVector3 jarg1_, float jarg2);
+
+	public final static native float GrahamVector3_angle_get (long jarg1, GrahamVector3 jarg1_);
+
+	public final static native void GrahamVector3_orgIndex_set (long jarg1, GrahamVector3 jarg1_, int jarg2);
+
+	public final static native int GrahamVector3_orgIndex_get (long jarg1, GrahamVector3 jarg1_);
+
+	public final static native void delete_GrahamVector3 (long jarg1);
+
+	public final static native void btAngleCompareFunc_anchor_set (long jarg1, btAngleCompareFunc jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btAngleCompareFunc_anchor_get (long jarg1, btAngleCompareFunc jarg1_);
+
+	public final static native long new_btAngleCompareFunc (Vector3 jarg1);
+
+	public final static native boolean btAngleCompareFunc_operatorFunctionCall (long jarg1, btAngleCompareFunc jarg1_, long jarg2,
+		GrahamVector3 jarg2_, long jarg3, GrahamVector3 jarg3_);
+
+	public final static native void delete_btAngleCompareFunc (long jarg1);
+
+	public final static native void GrahamScanConvexHull2D (long jarg1, long jarg2, Vector3 jarg3);
+
+	public final static native long new_btPoolAllocator (int jarg1, int jarg2);
+
+	public final static native void delete_btPoolAllocator (long jarg1);
+
+	public final static native int btPoolAllocator_getFreeCount (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native int btPoolAllocator_getUsedCount (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native int btPoolAllocator_getMaxCount (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native long btPoolAllocator_allocate (long jarg1, btPoolAllocator jarg1_, int jarg2);
+
+	public final static native boolean btPoolAllocator_validPtr (long jarg1, btPoolAllocator jarg1_, long jarg2);
+
+	public final static native void btPoolAllocator_freeMemory (long jarg1, btPoolAllocator jarg1_, long jarg2);
+
+	public final static native int btPoolAllocator_getElementSize (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddress (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddressConst (long jarg1, btPoolAllocator jarg1_);
+
+	public final static native long new_btClock__SWIG_0 ();
+
+	public final static native long new_btClock__SWIG_1 (long jarg1, btClock jarg1_);
+
+	public final static native long btClock_operatorAssignment (long jarg1, btClock jarg1_, long jarg2, btClock jarg2_);
+
+	public final static native void delete_btClock (long jarg1);
+
+	public final static native void btClock_reset (long jarg1, btClock jarg1_);
+
+	public final static native java.math.BigInteger btClock_getTimeMilliseconds (long jarg1, btClock jarg1_);
+
+	public final static native java.math.BigInteger btClock_getTimeMicroseconds (long jarg1, btClock jarg1_);
+
+	public final static native java.math.BigInteger btClock_getTimeNanoseconds (long jarg1, btClock jarg1_);
+
+	public final static native float btClock_getTimeSeconds (long jarg1, btClock jarg1_);
+
+	public final static native long btGetCurrentEnterProfileZoneFunc ();
+
+	public final static native long btGetCurrentLeaveProfileZoneFunc ();
+
+	public final static native void btSetCustomEnterProfileZoneFunc (long jarg1);
+
+	public final static native void btSetCustomLeaveProfileZoneFunc (long jarg1);
+
+	public final static native long new_CProfileSample (String jarg1);
+
+	public final static native void delete_CProfileSample (long jarg1);
+
+	public final static native int btConvexHullComputer_Edge_getSourceVertex (long jarg1, btConvexHullComputer.Edge jarg1_);
+
+	public final static native int btConvexHullComputer_Edge_getTargetVertex (long jarg1, btConvexHullComputer.Edge jarg1_);
+
+	public final static native long btConvexHullComputer_Edge_getNextEdgeOfVertex (long jarg1, btConvexHullComputer.Edge jarg1_);
+
+	public final static native long btConvexHullComputer_Edge_getNextEdgeOfFace (long jarg1, btConvexHullComputer.Edge jarg1_);
+
+	public final static native long btConvexHullComputer_Edge_getReverseEdge (long jarg1, btConvexHullComputer.Edge jarg1_);
+
+	public final static native long new_btConvexHullComputer_Edge ();
+
+	public final static native void delete_btConvexHullComputer_Edge (long jarg1);
+
+	public final static native void btConvexHullComputer_vertices_set (long jarg1, btConvexHullComputer jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long btConvexHullComputer_vertices_get (long jarg1, btConvexHullComputer jarg1_);
+
+	public final static native void btConvexHullComputer_edges_set (long jarg1, btConvexHullComputer jarg1_, long jarg2);
+
+	public final static native long btConvexHullComputer_edges_get (long jarg1, btConvexHullComputer jarg1_);
+
+	public final static native void btConvexHullComputer_faces_set (long jarg1, btConvexHullComputer jarg1_, long jarg2);
+
+	public final static native long btConvexHullComputer_faces_get (long jarg1, btConvexHullComputer jarg1_);
+
+	public final static native float btConvexHullComputer_compute__SWIG_0 (long jarg1, btConvexHullComputer jarg1_,
+		java.nio.FloatBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+
+	public final static native float btConvexHullComputer_compute__SWIG_1 (long jarg1, btConvexHullComputer jarg1_,
+		java.nio.DoubleBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+
+	public final static native long new_btConvexHullComputer ();
+
+	public final static native void delete_btConvexHullComputer (long jarg1);
+
+	public final static native long new_btGEN_Link__SWIG_0 ();
+
+	public final static native long new_btGEN_Link__SWIG_1 (long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
+
+	public final static native long btGEN_Link_getNext (long jarg1, btGEN_Link jarg1_);
+
+	public final static native long btGEN_Link_getPrev (long jarg1, btGEN_Link jarg1_);
+
+	public final static native boolean btGEN_Link_isHead (long jarg1, btGEN_Link jarg1_);
+
+	public final static native boolean btGEN_Link_isTail (long jarg1, btGEN_Link jarg1_);
+
+	public final static native void btGEN_Link_insertBefore (long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
+
+	public final static native void btGEN_Link_insertAfter (long jarg1, btGEN_Link jarg1_, long jarg2, btGEN_Link jarg2_);
+
+	public final static native void btGEN_Link_remove (long jarg1, btGEN_Link jarg1_);
+
+	public final static native void delete_btGEN_Link (long jarg1);
+
+	public final static native long new_btGEN_List ();
+
+	public final static native long btGEN_List_getHead (long jarg1, btGEN_List jarg1_);
+
+	public final static native long btGEN_List_getTail (long jarg1, btGEN_List jarg1_);
+
+	public final static native void btGEN_List_addHead (long jarg1, btGEN_List jarg1_, long jarg2, btGEN_Link jarg2_);
+
+	public final static native void btGEN_List_addTail (long jarg1, btGEN_List jarg1_, long jarg2, btGEN_Link jarg2_);
+
+	public final static native void delete_btGEN_List (long jarg1);
+
+	public final static native long btAlignedAllocInternal (long jarg1, int jarg2);
+
+	public final static native void btAlignedFreeInternal (long jarg1);
+
+	public final static native void btAlignedAllocSetCustom (long jarg1, long jarg2);
+
+	public final static native void btAlignedAllocSetCustomAligned (long jarg1, long jarg2);
+
+	public final static native String btHashString_string_get (long jarg1, btHashString jarg1_);
+
+	public final static native void btHashString_hash_set (long jarg1, btHashString jarg1_, long jarg2);
+
+	public final static native long btHashString_hash_get (long jarg1, btHashString jarg1_);
+
+	public final static native long new_btHashString (String jarg1);
+
+	public final static native int btHashString_portableStringCompare (long jarg1, btHashString jarg1_, String jarg2,
+		String jarg3);
+
+	public final static native boolean btHashString_equals (long jarg1, btHashString jarg1_, long jarg2, btHashString jarg2_);
+
+	public final static native void delete_btHashString (long jarg1);
+
+	public final static native int BT_HASH_NULL_get ();
+
+	public final static native long new_btHashInt__SWIG_0 ();
+
+	public final static native long new_btHashInt__SWIG_1 (int jarg1);
+
+	public final static native int btHashInt_getUid1 (long jarg1, btHashInt jarg1_);
+
+	public final static native void btHashInt_setUid1 (long jarg1, btHashInt jarg1_, int jarg2);
+
+	public final static native boolean btHashInt_equals (long jarg1, btHashInt jarg1_, long jarg2, btHashInt jarg2_);
+
+	public final static native long btHashInt_getHash (long jarg1, btHashInt jarg1_);
+
+	public final static native void delete_btHashInt (long jarg1);
+
+	public final static native long new_btHashPtr (long jarg1);
+
+	public final static native long btHashPtr_getPointer (long jarg1, btHashPtr jarg1_);
+
+	public final static native boolean btHashPtr_equals (long jarg1, btHashPtr jarg1_, long jarg2, btHashPtr jarg2_);
+
+	public final static native long btHashPtr_getHash (long jarg1, btHashPtr jarg1_);
+
+	public final static native void delete_btHashPtr (long jarg1);
+
+	public final static native void btBlock_previous_set (long jarg1, btBlock jarg1_, long jarg2, btBlock jarg2_);
+
+	public final static native long btBlock_previous_get (long jarg1, btBlock jarg1_);
+
+	public final static native void btBlock_address_set (long jarg1, btBlock jarg1_, java.nio.ByteBuffer jarg2);
+
+	public final static native java.nio.ByteBuffer btBlock_address_get (long jarg1, btBlock jarg1_);
+
+	public final static native long new_btBlock ();
+
+	public final static native void delete_btBlock (long jarg1);
+
+	public final static native long new_btStackAlloc (long jarg1);
+
+	public final static native void delete_btStackAlloc (long jarg1);
+
+	public final static native void btStackAlloc_create (long jarg1, btStackAlloc jarg1_, long jarg2);
+
+	public final static native void btStackAlloc_destroy (long jarg1, btStackAlloc jarg1_);
+
+	public final static native int btStackAlloc_getAvailableMemory (long jarg1, btStackAlloc jarg1_);
+
+	public final static native java.nio.ByteBuffer btStackAlloc_allocate (long jarg1, btStackAlloc jarg1_, long jarg2);
+
+	public final static native long btStackAlloc_beginBlock (long jarg1, btStackAlloc jarg1_);
+
+	public final static native void btStackAlloc_endBlock (long jarg1, btStackAlloc jarg1_, long jarg2, btBlock jarg2_);
+
+	public final static native boolean btIntSortPredicate_operatorFunctionCall (long jarg1, btIntSortPredicate jarg1_, int jarg2,
+		int jarg3);
+
+	public final static native long new_btIntSortPredicate ();
+
+	public final static native void delete_btIntSortPredicate (long jarg1);
+
+	public final static native void setElem__SWIG_0 (long jarg1, int jarg2, int jarg3, double jarg4);
+
+	public final static native void setElem__SWIG_1 (long jarg1, int jarg2, int jarg3, float jarg4);
+
+	public final static native long new_btPolarDecomposition__SWIG_0 (float jarg1, long jarg2);
+
+	public final static native long new_btPolarDecomposition__SWIG_1 (float jarg1);
+
+	public final static native long new_btPolarDecomposition__SWIG_2 ();
+
+	public final static native long btPolarDecomposition_decompose (long jarg1, btPolarDecomposition jarg1_, Matrix3 jarg2,
+		Matrix3 jarg3, Matrix3 jarg4);
+
+	public final static native long btPolarDecomposition_maxIterations (long jarg1, btPolarDecomposition jarg1_);
+
+	public final static native void delete_btPolarDecomposition (long jarg1);
+
+	public final static native long polarDecompose (Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
+
+	public final static native void sBulletDNAstr_set (String jarg1);
+
+	public final static native String sBulletDNAstr_get ();
+
+	public final static native void sBulletDNAlen_set (int jarg1);
+
+	public final static native int sBulletDNAlen_get ();
+
+	public final static native void sBulletDNAstr64_set (String jarg1);
+
+	public final static native String sBulletDNAstr64_get ();
+
+	public final static native void sBulletDNAlen64_set (int jarg1);
+
+	public final static native int sBulletDNAlen64_get ();
+
+	public final static native int btStrLen (String jarg1);
+
+	public final static native void btChunk_chunkCode_set (long jarg1, btChunk jarg1_, int jarg2);
+
+	public final static native int btChunk_chunkCode_get (long jarg1, btChunk jarg1_);
+
+	public final static native void btChunk_length_set (long jarg1, btChunk jarg1_, int jarg2);
+
+	public final static native int btChunk_length_get (long jarg1, btChunk jarg1_);
+
+	public final static native void btChunk_oldPtr_set (long jarg1, btChunk jarg1_, long jarg2);
+
+	public final static native long btChunk_oldPtr_get (long jarg1, btChunk jarg1_);
+
+	public final static native void btChunk_dna_nr_set (long jarg1, btChunk jarg1_, int jarg2);
+
+	public final static native int btChunk_dna_nr_get (long jarg1, btChunk jarg1_);
+
+	public final static native void btChunk_number_set (long jarg1, btChunk jarg1_, int jarg2);
+
+	public final static native int btChunk_number_get (long jarg1, btChunk jarg1_);
+
+	public final static native long new_btChunk ();
+
+	public final static native void delete_btChunk (long jarg1);
+
+	public final static native void delete_btSerializer (long jarg1);
+
+	public final static native java.nio.ByteBuffer btSerializer_getBufferPointer (long jarg1, btSerializer jarg1_);
+
+	public final static native int btSerializer_getCurrentBufferSize (long jarg1, btSerializer jarg1_);
+
+	public final static native long btSerializer_allocate (long jarg1, btSerializer jarg1_, long jarg2, int jarg3);
+
+	public final static native void btSerializer_finalizeChunk (long jarg1, btSerializer jarg1_, long jarg2, btChunk jarg2_,
+		String jarg3, int jarg4, long jarg5);
+
+	public final static native long btSerializer_findPointer (long jarg1, btSerializer jarg1_, long jarg2);
+
+	public final static native long btSerializer_getUniquePointer (long jarg1, btSerializer jarg1_, long jarg2);
+
+	public final static native void btSerializer_startSerialization (long jarg1, btSerializer jarg1_);
+
+	public final static native void btSerializer_finishSerialization (long jarg1, btSerializer jarg1_);
+
+	public final static native String btSerializer_findNameForPointer (long jarg1, btSerializer jarg1_, long jarg2);
+
+	public final static native void btSerializer_registerNameForPointer (long jarg1, btSerializer jarg1_, long jarg2,
+		String jarg3);
+
+	public final static native void btSerializer_serializeName (long jarg1, btSerializer jarg1_, String jarg2);
+
+	public final static native int btSerializer_getSerializationFlags (long jarg1, btSerializer jarg1_);
+
+	public final static native void btSerializer_setSerializationFlags (long jarg1, btSerializer jarg1_, int jarg2);
+
+	public final static native int btSerializer_getNumChunks (long jarg1, btSerializer jarg1_);
+
+	public final static native long btSerializer_getChunk (long jarg1, btSerializer jarg1_, int jarg2);
+
+	public final static native void btPointerUid_ptr_set (long jarg1, btPointerUid jarg1_, long jarg2);
+
+	public final static native long btPointerUid_ptr_get (long jarg1, btPointerUid jarg1_);
+
+	public final static native void btPointerUid_uniqueIds_set (long jarg1, btPointerUid jarg1_, int[] jarg2);
+
+	public final static native int[] btPointerUid_uniqueIds_get (long jarg1, btPointerUid jarg1_);
+
+	public final static native long new_btPointerUid ();
+
+	public final static native void delete_btPointerUid (long jarg1);
+
+	public final static native long new_btBulletSerializedArrays ();
+
+	public final static native void btBulletSerializedArrays_bvhsDouble_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_bvhsDouble_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_bvhsFloat_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_bvhsFloat_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_colShapeData_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_colShapeData_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_dynamicWorldInfoDataDouble_set (long jarg1,
+		btBulletSerializedArrays jarg1_, long jarg2);
+
+	public final static native long btBulletSerializedArrays_dynamicWorldInfoDataDouble_get (long jarg1,
+		btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_dynamicWorldInfoDataFloat_set (long jarg1,
+		btBulletSerializedArrays jarg1_, long jarg2);
+
+	public final static native long btBulletSerializedArrays_dynamicWorldInfoDataFloat_get (long jarg1,
+		btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_rigidBodyDataDouble_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_rigidBodyDataDouble_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_rigidBodyDataFloat_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_rigidBodyDataFloat_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_collisionObjectDataDouble_set (long jarg1,
+		btBulletSerializedArrays jarg1_, long jarg2);
+
+	public final static native long btBulletSerializedArrays_collisionObjectDataDouble_get (long jarg1,
+		btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_collisionObjectDataFloat_set (long jarg1,
+		btBulletSerializedArrays jarg1_, long jarg2);
+
+	public final static native long btBulletSerializedArrays_collisionObjectDataFloat_get (long jarg1,
+		btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_constraintDataFloat_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_constraintDataFloat_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_constraintDataDouble_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_constraintDataDouble_get (long jarg1,
+		btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_constraintData_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_constraintData_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_softBodyFloatData_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_softBodyFloatData_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void btBulletSerializedArrays_softBodyDoubleData_set (long jarg1, btBulletSerializedArrays jarg1_,
+		long jarg2);
+
+	public final static native long btBulletSerializedArrays_softBodyDoubleData_get (long jarg1, btBulletSerializedArrays jarg1_);
+
+	public final static native void delete_btBulletSerializedArrays (long jarg1);
+
+	public final static native long btDefaultSerializer_skipPointers_get (long jarg1, btDefaultSerializer jarg1_);
+
+	public final static native long new_btDefaultSerializer__SWIG_0 (int jarg1, java.nio.ByteBuffer jarg2);
+
+	public final static native long new_btDefaultSerializer__SWIG_1 (int jarg1);
+
+	public final static native long new_btDefaultSerializer__SWIG_2 ();
+
+	public final static native void delete_btDefaultSerializer (long jarg1);
+
+	public final static native int btDefaultSerializer_getMemoryDnaSizeInBytes ();
+
+	public final static native String btDefaultSerializer_getMemoryDna ();
+
+	public final static native void btDefaultSerializer_insertHeader (long jarg1, btDefaultSerializer jarg1_);
+
+	public final static native void btDefaultSerializer_writeHeader (long jarg1, btDefaultSerializer jarg1_,
+		java.nio.ByteBuffer jarg2);
+
+	public final static native java.nio.ByteBuffer btDefaultSerializer_internalAlloc (long jarg1, btDefaultSerializer jarg1_,
+		long jarg2);
+
+	public final static native void btSpatialForceVector_topVec_set (long jarg1, btSpatialForceVector jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSpatialForceVector_topVec_get (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native void btSpatialForceVector_bottomVec_set (long jarg1, btSpatialForceVector jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSpatialForceVector_bottomVec_get (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native long new_btSpatialForceVector__SWIG_0 ();
+
+	public final static native long new_btSpatialForceVector__SWIG_1 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native long new_btSpatialForceVector__SWIG_2 (float jarg1, float jarg2, float jarg3, float jarg4,
+		float jarg5, float jarg6);
+
+	public final static native void btSpatialForceVector_setVector (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSpatialForceVector_setValue (long jarg1, btSpatialForceVector jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+	public final static native void btSpatialForceVector_addVector (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSpatialForceVector_addValue (long jarg1, btSpatialForceVector jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+	public final static native Vector3 btSpatialForceVector_getLinear (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native Vector3 btSpatialForceVector_getAngular (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native void btSpatialForceVector_setLinear (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialForceVector_setAngular (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialForceVector_addAngular (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialForceVector_addLinear (long jarg1, btSpatialForceVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialForceVector_setZero (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native long btSpatialForceVector_operatorAdditionAssignment (long jarg1, btSpatialForceVector jarg1_,
+		long jarg2, btSpatialForceVector jarg2_);
+
+	public final static native long btSpatialForceVector_operatorSubtractionAssignment (long jarg1, btSpatialForceVector jarg1_,
+		long jarg2, btSpatialForceVector jarg2_);
+
+	public final static native long btSpatialForceVector_operatorSubtraction__SWIG_0 (long jarg1, btSpatialForceVector jarg1_,
+		long jarg2, btSpatialForceVector jarg2_);
+
+	public final static native long btSpatialForceVector_operatorAddition (long jarg1, btSpatialForceVector jarg1_, long jarg2,
+		btSpatialForceVector jarg2_);
+
+	public final static native long btSpatialForceVector_operatorSubtraction__SWIG_1 (long jarg1, btSpatialForceVector jarg1_);
+
+	public final static native long btSpatialForceVector_operatorMultiplication (long jarg1, btSpatialForceVector jarg1_,
+		float jarg2);
+
+	public final static native void delete_btSpatialForceVector (long jarg1);
+
+	public final static native void btSpatialMotionVector_topVec_set (long jarg1, btSpatialMotionVector jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSpatialMotionVector_topVec_get (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native void btSpatialMotionVector_bottomVec_set (long jarg1, btSpatialMotionVector jarg1_, long jarg2,
+		btVector3 jarg2_);
+
+	public final static native long btSpatialMotionVector_bottomVec_get (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native long new_btSpatialMotionVector__SWIG_0 ();
+
+	public final static native long new_btSpatialMotionVector__SWIG_1 (Vector3 jarg1, Vector3 jarg2);
+
+	public final static native void btSpatialMotionVector_setVector (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSpatialMotionVector_setValue (long jarg1, btSpatialMotionVector jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+	public final static native void btSpatialMotionVector_addVector (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2,
+		Vector3 jarg3);
+
+	public final static native void btSpatialMotionVector_addValue (long jarg1, btSpatialMotionVector jarg1_, float jarg2,
+		float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+	public final static native Vector3 btSpatialMotionVector_getAngular (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native Vector3 btSpatialMotionVector_getLinear (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native void btSpatialMotionVector_setAngular (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialMotionVector_setLinear (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialMotionVector_addAngular (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialMotionVector_addLinear (long jarg1, btSpatialMotionVector jarg1_, Vector3 jarg2);
+
+	public final static native void btSpatialMotionVector_setZero (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native float btSpatialMotionVector_dot (long jarg1, btSpatialMotionVector jarg1_, long jarg2,
+		btSpatialForceVector jarg2_);
+
+	public final static native long btSpatialMotionVector_operatorAdditionAssignment (long jarg1, btSpatialMotionVector jarg1_,
+		long jarg2, btSpatialMotionVector jarg2_);
+
+	public final static native long btSpatialMotionVector_operatorSubtractionAssignment (long jarg1, btSpatialMotionVector jarg1_,
+		long jarg2, btSpatialMotionVector jarg2_);
+
+	public final static native long btSpatialMotionVector_operatorMultiplicationAssignment (long jarg1,
+		btSpatialMotionVector jarg1_, float jarg2);
+
+	public final static native long btSpatialMotionVector_operatorSubtraction__SWIG_0 (long jarg1, btSpatialMotionVector jarg1_,
+		long jarg2, btSpatialMotionVector jarg2_);
+
+	public final static native long btSpatialMotionVector_operatorAddition (long jarg1, btSpatialMotionVector jarg1_, long jarg2,
+		btSpatialMotionVector jarg2_);
+
+	public final static native long btSpatialMotionVector_operatorSubtraction__SWIG_1 (long jarg1, btSpatialMotionVector jarg1_);
+
+	public final static native long btSpatialMotionVector_operatorMultiplication (long jarg1, btSpatialMotionVector jarg1_,
+		float jarg2);
+
+	public final static native void delete_btSpatialMotionVector (long jarg1);
+
+	public final static native void btSymmetricSpatialDyad_topLeftMat_set (long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSymmetricSpatialDyad_topLeftMat_get (long jarg1, btSymmetricSpatialDyad jarg1_);
+
+	public final static native void btSymmetricSpatialDyad_topRightMat_set (long jarg1, btSymmetricSpatialDyad jarg1_, long jarg2,
+		btMatrix3x3 jarg2_);
+
+	public final static native long btSymmetricSpatialDyad_topRightMat_get (long jarg1, btSymmetricSpatialDyad jarg1_);
+
+	public final static native void btSymmetricSpatialDyad_bottomLeftMat_set (long jarg1, btSymmetricSpatialDyad jarg1_,
+		long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long btSymmetricSpatialDyad_bottomLeftMat_get (long jarg1, btSymmetricSpatialDyad jarg1_);
+
+	public final static native long new_btSymmetricSpatialDyad__SWIG_0 ();
+
+	public final static native long new_btSymmetricSpatialDyad__SWIG_1 (Matrix3 jarg1, Matrix3 jarg2, Matrix3 jarg3);
+
+	public final static native void btSymmetricSpatialDyad_setMatrix (long jarg1, btSymmetricSpatialDyad jarg1_, Matrix3 jarg2,
+		Matrix3 jarg3, Matrix3 jarg4);
+
+	public final static native void btSymmetricSpatialDyad_addMatrix (long jarg1, btSymmetricSpatialDyad jarg1_, Matrix3 jarg2,
+		Matrix3 jarg3, Matrix3 jarg4);
+
+	public final static native void btSymmetricSpatialDyad_setIdentity (long jarg1, btSymmetricSpatialDyad jarg1_);
+
+	public final static native long btSymmetricSpatialDyad_operatorSubtractionAssignment (long jarg1,
+		btSymmetricSpatialDyad jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_);
+
+	public final static native long btSymmetricSpatialDyad_operatorMultiplication (long jarg1, btSymmetricSpatialDyad jarg1_,
+		long jarg2, btSpatialMotionVector jarg2_);
+
+	public final static native void delete_btSymmetricSpatialDyad (long jarg1);
+
+	public final static native void btSpatialTransformationMatrix_rotMat_set (long jarg1, btSpatialTransformationMatrix jarg1_,
+		long jarg2, btMatrix3x3 jarg2_);
+
+	public final static native long btSpatialTransformationMatrix_rotMat_get (long jarg1, btSpatialTransformationMatrix jarg1_);
+
+	public final static native void btSpatialTransformationMatrix_trnVec_set (long jarg1, btSpatialTransformationMatrix jarg1_,
+		long jarg2, btVector3 jarg2_);
+
+	public final static native long btSpatialTransformationMatrix_trnVec_get (long jarg1, btSpatialTransformationMatrix jarg1_);
+
+	public final static native void btSpatialTransformationMatrix_transformInverse__SWIG_2 (long jarg1,
+		btSpatialTransformationMatrix jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_, long jarg3, btSymmetricSpatialDyad jarg3_,
+		int jarg4);
+
+	public final static native void btSpatialTransformationMatrix_transformInverse__SWIG_3 (long jarg1,
+		btSpatialTransformationMatrix jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_, long jarg3, btSymmetricSpatialDyad jarg3_);
+
+	public final static native long new_btSpatialTransformationMatrix ();
+
+	public final static native void delete_btSpatialTransformationMatrix (long jarg1);
+
+	public final static native long BT_MAX_THREAD_COUNT_get ();
+
+	public final static native boolean btIsMainThread ();
+
+	public final static native boolean btThreadsAreRunning ();
+
+	public final static native long btGetCurrentThreadIndex ();
+
+	public final static native void btResetThreadIndexCounter ();
+
+	public final static native long new_btSpinMutex ();
+
+	public final static native void btSpinMutex_lock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native void btSpinMutex_unlock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native boolean btSpinMutex_tryLock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native void delete_btSpinMutex (long jarg1);
+
+	public final static native void btMutexLock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native void btMutexUnlock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native boolean btMutexTryLock (long jarg1, btSpinMutex jarg1_);
+
+	public final static native void delete_btIParallelForBody (long jarg1);
+
+	public final static native void btIParallelForBody_forLoop (long jarg1, btIParallelForBody jarg1_, int jarg2, int jarg3);
+
+	public final static native void delete_btITaskScheduler (long jarg1);
+
+	public final static native String btITaskScheduler_getName (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native int btITaskScheduler_getMaxNumThreads (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native int btITaskScheduler_getNumThreads (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native void btITaskScheduler_setNumThreads (long jarg1, btITaskScheduler jarg1_, int jarg2);
+
+	public final static native void btITaskScheduler_parallelFor (long jarg1, btITaskScheduler jarg1_, int jarg2, int jarg3,
+		int jarg4, long jarg5, btIParallelForBody jarg5_);
+
+	public final static native void btITaskScheduler_activate (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native void btITaskScheduler_deactivate (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native void btSetTaskScheduler (long jarg1, btITaskScheduler jarg1_);
+
+	public final static native long btGetTaskScheduler ();
+
+	public final static native long btGetSequentialTaskScheduler ();
+
+	public final static native long btGetOpenMPTaskScheduler ();
+
+	public final static native long btGetTBBTaskScheduler ();
+
+	public final static native long btGetPPLTaskScheduler ();
+
+	public final static native void btParallelFor (int jarg1, int jarg2, int jarg3, long jarg4, btIParallelForBody jarg4_);
+
+	public final static native void delete_btMotionState (long jarg1);
+
+	public final static native void btMotionState_getWorldTransform (long jarg1, btMotionState jarg1_, Matrix4 jarg2);
+
+	public final static native void btMotionState_setWorldTransform (long jarg1, btMotionState jarg1_, Matrix4 jarg2);
+
+	public final static native long new_btMotionState ();
+
+	public final static native void btMotionState_director_connect (btMotionState obj, long cptr, boolean mem_own,
+		boolean weak_global);
+
+	public final static native void btMotionState_change_ownership (btMotionState obj, long cptr, boolean take_or_release);
+
+	public final static native void btDefaultMotionState_graphicsWorldTrans_set (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2, btTransform jarg2_);
+
+	public final static native long btDefaultMotionState_graphicsWorldTrans_get (long jarg1, btDefaultMotionState jarg1_);
+
+	public final static native void btDefaultMotionState_centerOfMassOffset_set (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2, btTransform jarg2_);
+
+	public final static native long btDefaultMotionState_centerOfMassOffset_get (long jarg1, btDefaultMotionState jarg1_);
+
+	public final static native void btDefaultMotionState_startWorldTrans_set (long jarg1, btDefaultMotionState jarg1_, long jarg2,
+		btTransform jarg2_);
+
+	public final static native long btDefaultMotionState_startWorldTrans_get (long jarg1, btDefaultMotionState jarg1_);
+
+	public final static native void btDefaultMotionState_userPointer_set (long jarg1, btDefaultMotionState jarg1_, long jarg2);
+
+	public final static native long btDefaultMotionState_userPointer_get (long jarg1, btDefaultMotionState jarg1_);
+
+	public final static native long btDefaultMotionState_operatorNew__SWIG_0 (long jarg1, btDefaultMotionState jarg1_, long jarg2);
+
+	public final static native void btDefaultMotionState_operatorDelete__SWIG_0 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2);
+
+	public final static native long btDefaultMotionState_operatorNew__SWIG_1 (long jarg1, btDefaultMotionState jarg1_, long jarg2,
+		long jarg3);
+
+	public final static native void btDefaultMotionState_operatorDelete__SWIG_1 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long btDefaultMotionState_operatorNewArray__SWIG_0 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2);
+
+	public final static native void btDefaultMotionState_operatorDeleteArray__SWIG_0 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2);
+
+	public final static native long btDefaultMotionState_operatorNewArray__SWIG_1 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native void btDefaultMotionState_operatorDeleteArray__SWIG_1 (long jarg1, btDefaultMotionState jarg1_,
+		long jarg2, long jarg3);
+
+	public final static native long new_btDefaultMotionState__SWIG_0 (Matrix4 jarg1, Matrix4 jarg2);
+
+	public final static native long new_btDefaultMotionState__SWIG_1 (Matrix4 jarg1);
+
+	public final static native long new_btDefaultMotionState__SWIG_2 ();
+
+	public final static native void btDefaultMotionState_getGraphicsWorldTrans (long jarg1, btDefaultMotionState jarg1_,
+		Matrix4 jarg2);
+
+	public final static native void btDefaultMotionState_getCenterOfMassOffset (long jarg1, btDefaultMotionState jarg1_,
+		Matrix4 jarg2);
+
+	public final static native void btDefaultMotionState_getStartWorldTrans (long jarg1, btDefaultMotionState jarg1_,
+		Matrix4 jarg2);
+
+	public final static native void delete_btDefaultMotionState (long jarg1);
+
+	public final static native long btVector3Array_operatorAssignment (long jarg1, btVector3Array jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long new_btVector3Array__SWIG_0 ();
+
+	public final static native void delete_btVector3Array (long jarg1);
+
+	public final static native long new_btVector3Array__SWIG_1 (long jarg1, btVector3Array jarg1_);
+
+	public final static native int btVector3Array_size (long jarg1, btVector3Array jarg1_);
+
+	public final static native Vector3 btVector3Array_atConst (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native Vector3 btVector3Array_at (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native Vector3 btVector3Array_operatorSubscriptConst (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native Vector3 btVector3Array_operatorSubscript (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native void btVector3Array_clear (long jarg1, btVector3Array jarg1_);
+
+	public final static native void btVector3Array_pop_back (long jarg1, btVector3Array jarg1_);
+
+	public final static native void btVector3Array_resizeNoInitialize (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native void btVector3Array_resize__SWIG_0 (long jarg1, btVector3Array jarg1_, int jarg2, Vector3 jarg3);
+
+	public final static native void btVector3Array_resize__SWIG_1 (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native Vector3 btVector3Array_expandNonInitializing (long jarg1, btVector3Array jarg1_);
+
+	public final static native Vector3 btVector3Array_expand__SWIG_0 (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native Vector3 btVector3Array_expand__SWIG_1 (long jarg1, btVector3Array jarg1_);
+
+	public final static native void btVector3Array_push_back (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native int btVector3Array_capacity (long jarg1, btVector3Array jarg1_);
+
+	public final static native void btVector3Array_reserve (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native boolean btVector3Array_less_operatorFunctionCall (long jarg1, btVector3Array.less jarg1_,
+		Vector3 jarg2, Vector3 jarg3);
+
+	public final static native long new_btVector3Array_less ();
+
+	public final static native void delete_btVector3Array_less (long jarg1);
+
+	public final static native void btVector3Array_swap (long jarg1, btVector3Array jarg1_, int jarg2, int jarg3);
+
+	public final static native int btVector3Array_findBinarySearch (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native int btVector3Array_findLinearSearch (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native int btVector3Array_findLinearSearch2 (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native void btVector3Array_removeAtIndex (long jarg1, btVector3Array jarg1_, int jarg2);
+
+	public final static native void btVector3Array_remove (long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+
+	public final static native void btVector3Array_initializeFromBuffer (long jarg1, btVector3Array jarg1_, long jarg2, int jarg3,
+		int jarg4);
+
+	public final static native void btVector3Array_copyFromArray (long jarg1, btVector3Array jarg1_, long jarg2,
+		btVector3Array jarg2_);
+
+	public final static native long btScalarArray_operatorAssignment (long jarg1, btScalarArray jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long new_btScalarArray__SWIG_0 ();
+
+	public final static native void delete_btScalarArray (long jarg1);
+
+	public final static native long new_btScalarArray__SWIG_1 (long jarg1, btScalarArray jarg1_);
+
+	public final static native int btScalarArray_size (long jarg1, btScalarArray jarg1_);
+
+	public final static native float btScalarArray_atConst (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native long btScalarArray_at (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native float btScalarArray_operatorSubscriptConst (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native long btScalarArray_operatorSubscript (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native void btScalarArray_clear (long jarg1, btScalarArray jarg1_);
+
+	public final static native void btScalarArray_pop_back (long jarg1, btScalarArray jarg1_);
+
+	public final static native void btScalarArray_resizeNoInitialize (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native void btScalarArray_resize__SWIG_0 (long jarg1, btScalarArray jarg1_, int jarg2, float jarg3);
+
+	public final static native void btScalarArray_resize__SWIG_1 (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native long btScalarArray_expandNonInitializing (long jarg1, btScalarArray jarg1_);
+
+	public final static native long btScalarArray_expand__SWIG_0 (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native long btScalarArray_expand__SWIG_1 (long jarg1, btScalarArray jarg1_);
+
+	public final static native void btScalarArray_push_back (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native int btScalarArray_capacity (long jarg1, btScalarArray jarg1_);
+
+	public final static native void btScalarArray_reserve (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native boolean btScalarArray_less_operatorFunctionCall (long jarg1, float jarg2, float jarg3);
+
+	public final static native long new_btScalarArray_less ();
+
+	public final static native void delete_btScalarArray_less (long jarg1);
+
+	public final static native void btScalarArray_swap (long jarg1, btScalarArray jarg1_, int jarg2, int jarg3);
+
+	public final static native int btScalarArray_findBinarySearch (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native int btScalarArray_findLinearSearch (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native int btScalarArray_findLinearSearch2 (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native void btScalarArray_removeAtIndex (long jarg1, btScalarArray jarg1_, int jarg2);
+
+	public final static native void btScalarArray_remove (long jarg1, btScalarArray jarg1_, float jarg2);
+
+	public final static native void btScalarArray_initializeFromBuffer (long jarg1, btScalarArray jarg1_, long jarg2, int jarg3,
+		int jarg4);
+
+	public final static native void btScalarArray_copyFromArray (long jarg1, btScalarArray jarg1_, long jarg2,
+		btScalarArray jarg2_);
+
+	public final static native long btVector4_SWIGUpcast (long jarg1);
+
+	public final static native long btQuaternion_SWIGUpcast (long jarg1);
+
+	public final static native long GrahamVector3_SWIGUpcast (long jarg1);
+
+	public final static native long btDefaultSerializer_SWIGUpcast (long jarg1);
+
+	public final static native long btDefaultMotionState_SWIGUpcast (long jarg1);
+
+	public static long SwigDirector_btIDebugDraw_getDefaultColors (btIDebugDraw jself) {
+		return btIDebugDraw.DefaultColors.getCPtr(jself.getDefaultColors());
+	}
+
+	public static void SwigDirector_btIDebugDraw_setDefaultColors (btIDebugDraw jself, long arg0) {
+		jself.setDefaultColors(new btIDebugDraw.DefaultColors(arg0, false));
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0 (btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 color) {
+		jself.drawLine(from, to, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1 (btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 fromColor,
+		Vector3 toColor) {
+		jself.drawLine(from, to, fromColor, toColor);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0 (btIDebugDraw jself, float radius, Matrix4 transform,
+		Vector3 color) {
+		jself.drawSphere(radius, transform, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1 (btIDebugDraw jself, Vector3 p, float radius, Vector3 color) {
+		jself.drawSphere(p, radius, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0 (btIDebugDraw jself, Vector3 v0, Vector3 v1, Vector3 v2,
+		Vector3 arg3, Vector3 arg4, Vector3 arg5, Vector3 color, float alpha) {
+		jself.drawTriangle(v0, v1, v2, arg3, arg4, arg5, color, alpha);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1 (btIDebugDraw jself, Vector3 v0, Vector3 v1, Vector3 v2,
+		Vector3 color, float arg4) {
+		jself.drawTriangle(v0, v1, v2, color, arg4);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawContactPoint (btIDebugDraw jself, Vector3 PointOnB, Vector3 normalOnB,
+		float distance, int lifeTime, Vector3 color) {
+		jself.drawContactPoint(PointOnB, normalOnB, distance, lifeTime, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_reportErrorWarning (btIDebugDraw jself, String warningString) {
+		jself.reportErrorWarning(warningString);
+	}
+
+	public static void SwigDirector_btIDebugDraw_draw3dText (btIDebugDraw jself, Vector3 location, String textString) {
+		jself.draw3dText(location, textString);
+	}
+
+	public static void SwigDirector_btIDebugDraw_setDebugMode (btIDebugDraw jself, int debugMode) {
+		jself.setDebugMode(debugMode);
+	}
+
+	public static int SwigDirector_btIDebugDraw_getDebugMode (btIDebugDraw jself) {
+		return jself.getDebugMode();
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawAabb (btIDebugDraw jself, Vector3 from, Vector3 to, Vector3 color) {
+		jself.drawAabb(from, to, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawTransform (btIDebugDraw jself, Matrix4 transform, float orthoLen) {
+		jself.drawTransform(transform, orthoLen);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0 (btIDebugDraw jself, Vector3 center, Vector3 normal, Vector3 axis,
+		float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
+		jself.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, stepDegrees);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1 (btIDebugDraw jself, Vector3 center, Vector3 normal, Vector3 axis,
+		float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect) {
+		jself.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0 (btIDebugDraw jself, Vector3 center, Vector3 up,
+		Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees,
+		boolean drawCenter) {
+		jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees, drawCenter);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1 (btIDebugDraw jself, Vector3 center, Vector3 up,
+		Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees) {
+		jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2 (btIDebugDraw jself, Vector3 center, Vector3 up,
+		Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color) {
+		jself.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0 (btIDebugDraw jself, Vector3 bbMin, Vector3 bbMax,
+		Vector3 color) {
+		jself.drawBox(bbMin, bbMax, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1 (btIDebugDraw jself, Vector3 bbMin, Vector3 bbMax, Matrix4 trans,
+		Vector3 color) {
+		jself.drawBox(bbMin, bbMax, trans, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawCapsule (btIDebugDraw jself, float radius, float halfHeight, int upAxis,
+		Matrix4 transform, Vector3 color) {
+		jself.drawCapsule(radius, halfHeight, upAxis, transform, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawCylinder (btIDebugDraw jself, float radius, float halfHeight, int upAxis,
+		Matrix4 transform, Vector3 color) {
+		jself.drawCylinder(radius, halfHeight, upAxis, transform, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawCone (btIDebugDraw jself, float radius, float height, int upAxis,
+		Matrix4 transform, Vector3 color) {
+		jself.drawCone(radius, height, upAxis, transform, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_drawPlane (btIDebugDraw jself, Vector3 planeNormal, float planeConst,
+		Matrix4 transform, Vector3 color) {
+		jself.drawPlane(planeNormal, planeConst, transform, color);
+	}
+
+	public static void SwigDirector_btIDebugDraw_clearLines (btIDebugDraw jself) {
+		jself.clearLines();
+	}
+
+	public static void SwigDirector_btIDebugDraw_flushLines (btIDebugDraw jself) {
+		jself.flushLines();
+	}
+
+	public static void SwigDirector_btMotionState_getWorldTransform (btMotionState jself, Matrix4 worldTrans) {
+		jself.getWorldTransform(worldTrans);
+	}
+
+	public static void SwigDirector_btMotionState_setWorldTransform (btMotionState jself, Matrix4 worldTrans) {
+		jself.setWorldTransform(worldTrans);
+	}
+
+	private final static native void swig_module_init ();
+
+	static {
+		swig_module_init();
+	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.flame;
 
 import java.awt.EventQueue;
@@ -40,7 +41,7 @@ public class PreAlpha extends JFrame {
 	BufferedImage image;
 	ImagePanel imagePanel;
 	String lastDir;
-	
+
 	public PreAlpha () {
 		super("Premultiply alpha converter");
 		addWindowListener(new WindowAdapter() {
@@ -55,29 +56,29 @@ public class PreAlpha extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
-        
+
 	private void initializeComponents () {
-		//Create the menu bar.
+		// Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
 
-		//Build the first menu.
+		// Build the first menu.
 		JMenu menu = new JMenu("File");
 		menuBar.add(menu);
 
-		//a group of JMenuItems
+		// a group of JMenuItems
 		JMenuItem menuItem = new JMenuItem("Open");
 		menuItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed (ActionEvent arg0) {
 				open();
 			}
 		});
 		menu.add(menuItem);
-		
+
 		menuItem = new JMenuItem("Save");
 		menuItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed (ActionEvent arg0) {
 				save();
@@ -85,7 +86,7 @@ public class PreAlpha extends JFrame {
 		});
 		menu.add(menuItem);
 		setJMenuBar(menuBar);
-		
+
 		imagePanel = new ImagePanel();
 		getContentPane().add(imagePanel);
 	}
@@ -126,18 +127,18 @@ public class PreAlpha extends JFrame {
 			return;
 		}
 	}
-	
-	private void generatePremultiplyAlpha(File out){
+
+	private void generatePremultiplyAlpha (File out) {
 		try {
 			BufferedImage outImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			float[] color = new float[4];
 			WritableRaster raster = image.getRaster();
 			WritableRaster outRaster = outImage.getRaster();
-			for(int x =0, w = image.getWidth(); x< w; ++x)
-				for(int y =0, h = image.getHeight(); y< h; ++y){
+			for (int x = 0, w = image.getWidth(); x < w; ++x)
+				for (int y = 0, h = image.getHeight(); y < h; ++y) {
 					raster.getPixel(x, y, color);
-					float alpha = color[3]/255f;
-					for(int i=0;i < 3; ++i) 
+					float alpha = color[3] / 255f;
+					for (int i = 0; i < 3; ++i)
 						color[i] *= alpha;
 					outRaster.setPixel(x, y, color);
 				}
@@ -146,7 +147,6 @@ public class PreAlpha extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public static void main (String[] args) {
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

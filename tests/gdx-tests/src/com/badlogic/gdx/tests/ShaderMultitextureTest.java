@@ -46,8 +46,8 @@ public class ShaderMultitextureTest extends GdxTest {
 			+ "  gl_FragColor = texture2D( s_texture, v_texCoord ) * texture2D( s_texture2, v_texCoord);\n"
 			+ "}                                                   \n";
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
-			Usage.TextureCoordinates, 2, "a_texCoord"));
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_position"),
+			new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord"));
 		float[] vertices = {-0.5f, 0.5f, // Position 0
 			0.0f, 0.0f, // TexCoord 0
 			-0.5f, -0.5f, // Position 1

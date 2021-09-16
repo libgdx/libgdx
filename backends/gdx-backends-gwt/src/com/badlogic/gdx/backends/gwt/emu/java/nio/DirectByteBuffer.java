@@ -25,13 +25,15 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Int8Array;
 
-/** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyHeapByteBuffer compose the implementation of direct byte buffers.
+/** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyHeapByteBuffer compose the implementation of direct byte
+ * buffers.
  * <p>
  * DirectByteBuffer implements all the shared readonly methods and is extended by the other two classes.
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 abstract class DirectByteBuffer extends BaseByteBuffer implements HasArrayBufferView {
 
 	Int8Array byteArray;

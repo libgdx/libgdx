@@ -8,46 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleIndexVertexMaterialArray extends btTriangleIndexVertexArray {
 	private long swigCPtr;
-	
-	protected btTriangleIndexVertexMaterialArray(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btTriangleIndexVertexMaterialArray (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btTriangleIndexVertexMaterialArray_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btTriangleIndexVertexMaterialArray, normally you should not need this constructor it's intended for low-level usage. */
-	public btTriangleIndexVertexMaterialArray(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btTriangleIndexVertexMaterialArray, normally you should not need this constructor it's intended for
+	 * low-level usage. */
+	public btTriangleIndexVertexMaterialArray (long cPtr, boolean cMemoryOwn) {
 		this("btTriangleIndexVertexMaterialArray", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btTriangleIndexVertexMaterialArray_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btTriangleIndexVertexMaterialArray obj) {
+
+	public static long getCPtr (btTriangleIndexVertexMaterialArray obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,76 +53,110 @@ public class btTriangleIndexVertexMaterialArray extends btTriangleIndexVertexArr
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btTriangleIndexVertexMaterialArray_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public btTriangleIndexVertexMaterialArray() {
-    this(CollisionJNI.new_btTriangleIndexVertexMaterialArray__SWIG_0(), true);
-  }
+	public btTriangleIndexVertexMaterialArray () {
+		this(CollisionJNI.new_btTriangleIndexVertexMaterialArray__SWIG_0(), true);
+	}
 
-  static private long SwigConstructbtTriangleIndexVertexMaterialArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials, java.nio.ByteBuffer materialBase, int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
-    assert triangleIndexBase.isDirect() : "Buffer must be allocated direct.";
-    assert vertexBase.isDirect() : "Buffer must be allocated direct.";
-    assert materialBase.isDirect() : "Buffer must be allocated direct.";
-    assert triangleMaterialsBase.isDirect() : "Buffer must be allocated direct.";
-    return CollisionJNI.new_btTriangleIndexVertexMaterialArray__SWIG_1(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride, triangleMaterialsBase, materialIndexStride);
-  }
+	static private long SwigConstructbtTriangleIndexVertexMaterialArray (int numTriangles, java.nio.IntBuffer triangleIndexBase,
+		int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials,
+		java.nio.ByteBuffer materialBase, int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
+		assert triangleIndexBase.isDirect() : "Buffer must be allocated direct.";
+		assert vertexBase.isDirect() : "Buffer must be allocated direct.";
+		assert materialBase.isDirect() : "Buffer must be allocated direct.";
+		assert triangleMaterialsBase.isDirect() : "Buffer must be allocated direct.";
+		return CollisionJNI.new_btTriangleIndexVertexMaterialArray__SWIG_1(numTriangles, triangleIndexBase, triangleIndexStride,
+			numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride, triangleMaterialsBase,
+			materialIndexStride);
+	}
 
-  public btTriangleIndexVertexMaterialArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials, java.nio.ByteBuffer materialBase, int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
-    this(btTriangleIndexVertexMaterialArray.SwigConstructbtTriangleIndexVertexMaterialArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride, triangleMaterialsBase, materialIndexStride), true);
-  }
+	public btTriangleIndexVertexMaterialArray (int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride,
+		int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials, java.nio.ByteBuffer materialBase,
+		int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
+		this(btTriangleIndexVertexMaterialArray.SwigConstructbtTriangleIndexVertexMaterialArray(numTriangles, triangleIndexBase,
+			triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride,
+			triangleMaterialsBase, materialIndexStride), true);
+	}
 
-  public void addMaterialProperties(btMaterialProperties mat, int triangleType) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_0(swigCPtr, this, btMaterialProperties.getCPtr(mat), mat, triangleType);
-  }
+	public void addMaterialProperties (btMaterialProperties mat, int triangleType) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_0(swigCPtr, this,
+			btMaterialProperties.getCPtr(mat), mat, triangleType);
+	}
 
-  public void addMaterialProperties(btMaterialProperties mat) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_1(swigCPtr, this, btMaterialProperties.getCPtr(mat), mat);
-  }
+	public void addMaterialProperties (btMaterialProperties mat) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_1(swigCPtr, this,
+			btMaterialProperties.getCPtr(mat), mat);
+	}
 
-  public void getLockedMaterialBase(SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials, SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase, SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType, int subpart) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedMaterialBase__SWIG_0(swigCPtr, this, SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials), SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride), SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles), SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType), subpart);
-  }
+	public void getLockedMaterialBase (SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials,
+		SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase,
+		SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType, int subpart) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedMaterialBase__SWIG_0(swigCPtr, this,
+			SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials),
+			SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride),
+			SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles),
+			SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType), subpart);
+	}
 
-  public void getLockedMaterialBase(SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials, SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase, SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedMaterialBase__SWIG_1(swigCPtr, this, SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials), SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride), SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles), SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType));
-  }
+	public void getLockedMaterialBase (SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials,
+		SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase,
+		SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedMaterialBase__SWIG_1(swigCPtr, this,
+			SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials),
+			SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride),
+			SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles),
+			SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType));
+	}
 
-  public void getLockedReadOnlyMaterialBase(SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials, SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase, SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType, int subpart) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedReadOnlyMaterialBase__SWIG_0(swigCPtr, this, SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials), SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride), SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles), SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType), subpart);
-  }
+	public void getLockedReadOnlyMaterialBase (SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials,
+		SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase,
+		SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType, int subpart) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedReadOnlyMaterialBase__SWIG_0(swigCPtr, this,
+			SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials),
+			SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride),
+			SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles),
+			SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType), subpart);
+	}
 
-  public void getLockedReadOnlyMaterialBase(SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials, SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase, SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType) {
-    CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedReadOnlyMaterialBase__SWIG_1(swigCPtr, this, SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials), SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride), SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles), SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType));
-  }
+	public void getLockedReadOnlyMaterialBase (SWIGTYPE_p_p_unsigned_char materialBase, SWIGTYPE_p_int numMaterials,
+		SWIGTYPE_p_PHY_ScalarType materialType, SWIGTYPE_p_int materialStride, SWIGTYPE_p_p_unsigned_char triangleMaterialBase,
+		SWIGTYPE_p_int numTriangles, SWIGTYPE_p_int triangleMaterialStride, SWIGTYPE_p_PHY_ScalarType triangleType) {
+		CollisionJNI.btTriangleIndexVertexMaterialArray_getLockedReadOnlyMaterialBase__SWIG_1(swigCPtr, this,
+			SWIGTYPE_p_p_unsigned_char.getCPtr(materialBase), SWIGTYPE_p_int.getCPtr(numMaterials),
+			SWIGTYPE_p_PHY_ScalarType.getCPtr(materialType), SWIGTYPE_p_int.getCPtr(materialStride),
+			SWIGTYPE_p_p_unsigned_char.getCPtr(triangleMaterialBase), SWIGTYPE_p_int.getCPtr(numTriangles),
+			SWIGTYPE_p_int.getCPtr(triangleMaterialStride), SWIGTYPE_p_PHY_ScalarType.getCPtr(triangleType));
+	}
 
 }

@@ -8,46 +8,41 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btPersistentManifold extends btTypedObject {
 	private long swigCPtr;
-	
-	protected btPersistentManifold(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPersistentManifold (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btPersistentManifold_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btPersistentManifold, normally you should not need this constructor it's intended for low-level usage. */
-	public btPersistentManifold(long cPtr, boolean cMemoryOwn) {
+	public btPersistentManifold (long cPtr, boolean cMemoryOwn) {
 		this("btPersistentManifold", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btPersistentManifold_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPersistentManifold obj) {
+
+	public static long getCPtr (btPersistentManifold obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,148 +53,154 @@ public class btPersistentManifold extends btTypedObject {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btPersistentManifold_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btPersistentManifold_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btPersistentManifold_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btPersistentManifold_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btPersistentManifold_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btPersistentManifold_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btPersistentManifold_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btPersistentManifold_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btPersistentManifold_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btPersistentManifold_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btPersistentManifold_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btPersistentManifold_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btPersistentManifold_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btPersistentManifold_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btPersistentManifold_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btPersistentManifold_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public void setCompanionIdA(int value) {
-    CollisionJNI.btPersistentManifold_companionIdA_set(swigCPtr, this, value);
-  }
+	public void setCompanionIdA (int value) {
+		CollisionJNI.btPersistentManifold_companionIdA_set(swigCPtr, this, value);
+	}
 
-  public int getCompanionIdA() {
-    return CollisionJNI.btPersistentManifold_companionIdA_get(swigCPtr, this);
-  }
+	public int getCompanionIdA () {
+		return CollisionJNI.btPersistentManifold_companionIdA_get(swigCPtr, this);
+	}
 
-  public void setCompanionIdB(int value) {
-    CollisionJNI.btPersistentManifold_companionIdB_set(swigCPtr, this, value);
-  }
+	public void setCompanionIdB (int value) {
+		CollisionJNI.btPersistentManifold_companionIdB_set(swigCPtr, this, value);
+	}
 
-  public int getCompanionIdB() {
-    return CollisionJNI.btPersistentManifold_companionIdB_get(swigCPtr, this);
-  }
+	public int getCompanionIdB () {
+		return CollisionJNI.btPersistentManifold_companionIdB_get(swigCPtr, this);
+	}
 
-  public void setIndex1a(int value) {
-    CollisionJNI.btPersistentManifold_index1a_set(swigCPtr, this, value);
-  }
+	public void setIndex1a (int value) {
+		CollisionJNI.btPersistentManifold_index1a_set(swigCPtr, this, value);
+	}
 
-  public int getIndex1a() {
-    return CollisionJNI.btPersistentManifold_index1a_get(swigCPtr, this);
-  }
+	public int getIndex1a () {
+		return CollisionJNI.btPersistentManifold_index1a_get(swigCPtr, this);
+	}
 
-  public btPersistentManifold() {
-    this(CollisionJNI.new_btPersistentManifold__SWIG_0(), true);
-  }
+	public btPersistentManifold () {
+		this(CollisionJNI.new_btPersistentManifold__SWIG_0(), true);
+	}
 
-  public btPersistentManifold(btCollisionObject body0, btCollisionObject body1, int arg2, float contactBreakingThreshold, float contactProcessingThreshold) {
-    this(CollisionJNI.new_btPersistentManifold__SWIG_1(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, arg2, contactBreakingThreshold, contactProcessingThreshold), true);
-  }
+	public btPersistentManifold (btCollisionObject body0, btCollisionObject body1, int arg2, float contactBreakingThreshold,
+		float contactProcessingThreshold) {
+		this(CollisionJNI.new_btPersistentManifold__SWIG_1(btCollisionObject.getCPtr(body0), body0,
+			btCollisionObject.getCPtr(body1), body1, arg2, contactBreakingThreshold, contactProcessingThreshold), true);
+	}
 
-  public btCollisionObject getBody0() {
-	return btCollisionObject.getInstance(CollisionJNI.btPersistentManifold_getBody0(swigCPtr, this), false);
-}
+	public btCollisionObject getBody0 () {
+		return btCollisionObject.getInstance(CollisionJNI.btPersistentManifold_getBody0(swigCPtr, this), false);
+	}
 
-  public btCollisionObject getBody1() {
-	return btCollisionObject.getInstance(CollisionJNI.btPersistentManifold_getBody1(swigCPtr, this), false);
-}
+	public btCollisionObject getBody1 () {
+		return btCollisionObject.getInstance(CollisionJNI.btPersistentManifold_getBody1(swigCPtr, this), false);
+	}
 
-  public void setBodies(btCollisionObject body0, btCollisionObject body1) {
-    CollisionJNI.btPersistentManifold_setBodies(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
-  }
+	public void setBodies (btCollisionObject body0, btCollisionObject body1) {
+		CollisionJNI.btPersistentManifold_setBodies(swigCPtr, this, btCollisionObject.getCPtr(body0), body0,
+			btCollisionObject.getCPtr(body1), body1);
+	}
 
-  public void clearUserCache(btManifoldPoint pt) {
-    CollisionJNI.btPersistentManifold_clearUserCache(swigCPtr, this, btManifoldPoint.getCPtr(pt), pt);
-  }
+	public void clearUserCache (btManifoldPoint pt) {
+		CollisionJNI.btPersistentManifold_clearUserCache(swigCPtr, this, btManifoldPoint.getCPtr(pt), pt);
+	}
 
-  public int getNumContacts() {
-    return CollisionJNI.btPersistentManifold_getNumContacts(swigCPtr, this);
-  }
+	public int getNumContacts () {
+		return CollisionJNI.btPersistentManifold_getNumContacts(swigCPtr, this);
+	}
 
-  public void setNumContacts(int cachedPoints) {
-    CollisionJNI.btPersistentManifold_setNumContacts(swigCPtr, this, cachedPoints);
-  }
+	public void setNumContacts (int cachedPoints) {
+		CollisionJNI.btPersistentManifold_setNumContacts(swigCPtr, this, cachedPoints);
+	}
 
-  public btManifoldPoint getContactPointConst(int index) {
-    return new btManifoldPoint(CollisionJNI.btPersistentManifold_getContactPointConst(swigCPtr, this, index), false);
-  }
+	public btManifoldPoint getContactPointConst (int index) {
+		return new btManifoldPoint(CollisionJNI.btPersistentManifold_getContactPointConst(swigCPtr, this, index), false);
+	}
 
-  public btManifoldPoint getContactPoint(int index) {
-    return new btManifoldPoint(CollisionJNI.btPersistentManifold_getContactPoint(swigCPtr, this, index), false);
-  }
+	public btManifoldPoint getContactPoint (int index) {
+		return new btManifoldPoint(CollisionJNI.btPersistentManifold_getContactPoint(swigCPtr, this, index), false);
+	}
 
-  public float getContactBreakingThreshold() {
-    return CollisionJNI.btPersistentManifold_getContactBreakingThreshold(swigCPtr, this);
-  }
+	public float getContactBreakingThreshold () {
+		return CollisionJNI.btPersistentManifold_getContactBreakingThreshold(swigCPtr, this);
+	}
 
-  public float getContactProcessingThreshold() {
-    return CollisionJNI.btPersistentManifold_getContactProcessingThreshold(swigCPtr, this);
-  }
+	public float getContactProcessingThreshold () {
+		return CollisionJNI.btPersistentManifold_getContactProcessingThreshold(swigCPtr, this);
+	}
 
-  public void setContactBreakingThreshold(float contactBreakingThreshold) {
-    CollisionJNI.btPersistentManifold_setContactBreakingThreshold(swigCPtr, this, contactBreakingThreshold);
-  }
+	public void setContactBreakingThreshold (float contactBreakingThreshold) {
+		CollisionJNI.btPersistentManifold_setContactBreakingThreshold(swigCPtr, this, contactBreakingThreshold);
+	}
 
-  public void setContactProcessingThreshold(float contactProcessingThreshold) {
-    CollisionJNI.btPersistentManifold_setContactProcessingThreshold(swigCPtr, this, contactProcessingThreshold);
-  }
+	public void setContactProcessingThreshold (float contactProcessingThreshold) {
+		CollisionJNI.btPersistentManifold_setContactProcessingThreshold(swigCPtr, this, contactProcessingThreshold);
+	}
 
-  public int getCacheEntry(btManifoldPoint newPoint) {
-    return CollisionJNI.btPersistentManifold_getCacheEntry(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint);
-  }
+	public int getCacheEntry (btManifoldPoint newPoint) {
+		return CollisionJNI.btPersistentManifold_getCacheEntry(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint);
+	}
 
-  public int addManifoldPoint(btManifoldPoint newPoint, boolean isPredictive) {
-    return CollisionJNI.btPersistentManifold_addManifoldPoint__SWIG_0(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint, isPredictive);
-  }
+	public int addManifoldPoint (btManifoldPoint newPoint, boolean isPredictive) {
+		return CollisionJNI.btPersistentManifold_addManifoldPoint__SWIG_0(swigCPtr, this, btManifoldPoint.getCPtr(newPoint),
+			newPoint, isPredictive);
+	}
 
-  public int addManifoldPoint(btManifoldPoint newPoint) {
-    return CollisionJNI.btPersistentManifold_addManifoldPoint__SWIG_1(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint);
-  }
+	public int addManifoldPoint (btManifoldPoint newPoint) {
+		return CollisionJNI.btPersistentManifold_addManifoldPoint__SWIG_1(swigCPtr, this, btManifoldPoint.getCPtr(newPoint),
+			newPoint);
+	}
 
-  public void removeContactPoint(int index) {
-    CollisionJNI.btPersistentManifold_removeContactPoint(swigCPtr, this, index);
-  }
+	public void removeContactPoint (int index) {
+		CollisionJNI.btPersistentManifold_removeContactPoint(swigCPtr, this, index);
+	}
 
-  public void replaceContactPoint(btManifoldPoint newPoint, int insertIndex) {
-    CollisionJNI.btPersistentManifold_replaceContactPoint(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint, insertIndex);
-  }
+	public void replaceContactPoint (btManifoldPoint newPoint, int insertIndex) {
+		CollisionJNI.btPersistentManifold_replaceContactPoint(swigCPtr, this, btManifoldPoint.getCPtr(newPoint), newPoint,
+			insertIndex);
+	}
 
-  public boolean validContactDistance(btManifoldPoint pt) {
-    return CollisionJNI.btPersistentManifold_validContactDistance(swigCPtr, this, btManifoldPoint.getCPtr(pt), pt);
-  }
+	public boolean validContactDistance (btManifoldPoint pt) {
+		return CollisionJNI.btPersistentManifold_validContactDistance(swigCPtr, this, btManifoldPoint.getCPtr(pt), pt);
+	}
 
-  public void refreshContactPoints(Matrix4 trA, Matrix4 trB) {
-    CollisionJNI.btPersistentManifold_refreshContactPoints(swigCPtr, this, trA, trB);
-  }
+	public void refreshContactPoints (Matrix4 trA, Matrix4 trB) {
+		CollisionJNI.btPersistentManifold_refreshContactPoints(swigCPtr, this, trA, trB);
+	}
 
-  public void clearManifold() {
-    CollisionJNI.btPersistentManifold_clearManifold(swigCPtr, this);
-  }
+	public void clearManifold () {
+		CollisionJNI.btPersistentManifold_clearManifold(swigCPtr, this);
+	}
 
 }

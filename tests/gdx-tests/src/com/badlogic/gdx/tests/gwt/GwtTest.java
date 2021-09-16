@@ -107,8 +107,9 @@ public class GwtTest extends GdxTest {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
-		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: "
-			+ numSprites, 0, 30);
+		font.draw(batch,
+			"fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: " + numSprites, 0,
+			30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);
 		batch.end();

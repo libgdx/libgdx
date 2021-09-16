@@ -64,8 +64,8 @@ public class Kerning {
 		input = null;
 	}
 
-	/** @return A map from pairs of glyph codes to their kerning in pixels. Each map key encodes two glyph codes:
-	 * the high 16 bits form the first glyph code, and the low 16 bits form the second. */
+	/** @return A map from pairs of glyph codes to their kerning in pixels. Each map key encodes two glyph codes: the high 16 bits
+	 *         form the first glyph code, and the low 16 bits form the second. */
 	public IntIntMap getKernings () {
 		return kernings;
 	}
@@ -92,7 +92,7 @@ public class Kerning {
 			tagBytes[2] = input.readByte();
 			tagBytes[3] = input.readByte();
 			input.skip(4);
-			int offset = (int) input.readUnsignedLong();
+			int offset = (int)input.readUnsignedLong();
 			input.skip(4);
 
 			String tag = new String(tagBytes, "ISO-8859-1");
@@ -125,7 +125,7 @@ public class Kerning {
 			while (kerningCount-- > 0) {
 				int firstGlyphCode = input.readUnsignedShort();
 				int secondGlyphCode = input.readUnsignedShort();
-				int offset = (int) input.readShort();
+				int offset = (int)input.readShort();
 				storeKerningOffset(firstGlyphCode, secondGlyphCode, offset);
 			}
 		}
@@ -150,7 +150,7 @@ public class Kerning {
 		}
 	}
 
-	private void readSubtables ( int type, int lookupPosition) throws IOException {
+	private void readSubtables (int type, int lookupPosition) throws IOException {
 		input.skip(2);
 		int subTableCount = input.readUnsignedShort();
 		int[] subTableOffsets = input.readUnsignedShortArray(subTableCount);
@@ -170,7 +170,7 @@ public class Kerning {
 		}
 	}
 
-	private void readPairAdjustmentSubtable(int subTablePosition) throws IOException {
+	private void readPairAdjustmentSubtable (int subTablePosition) throws IOException {
 		int type = input.readUnsignedShort();
 		if (type == 1) {
 			readPairPositioningAdjustmentFormat1(subTablePosition);
@@ -193,7 +193,7 @@ public class Kerning {
 		int pairSetCount = input.readUnsignedShort();
 		int[] pairSetOffsets = input.readUnsignedShortArray(pairSetCount);
 
-		input.seek((int) (subTablePosition + coverageOffset));
+		input.seek((int)(subTablePosition + coverageOffset));
 		int[] coverage = readCoverageTable();
 
 		// The two should be equal, but just in case they're not, we can still do something sensible.
@@ -201,7 +201,7 @@ public class Kerning {
 
 		for (int i = 0; i < pairSetCount; i++) {
 			int firstGlyph = coverage[i];
-			input.seek((int) (subTablePosition + pairSetOffsets[i]));
+			input.seek((int)(subTablePosition + pairSetOffsets[i]));
 			int pairValueCount = input.readUnsignedShort();
 			for (int j = 0; j < pairValueCount; j++) {
 				int secondGlyph = input.readUnsignedShort();
@@ -225,7 +225,7 @@ public class Kerning {
 
 		int position = input.getPosition();
 
-		input.seek((int) (subTablePosition + coverageOffset));
+		input.seek((int)(subTablePosition + coverageOffset));
 		int[] coverage = readCoverageTable();
 
 		input.seek(position);
@@ -262,7 +262,7 @@ public class Kerning {
 
 	private void readExtensionPositioningFormat1 (int subTablePosition) throws IOException {
 		int lookupType = input.readUnsignedShort();
-		int lookupPosition = subTablePosition + (int) input.readUnsignedLong();
+		int lookupPosition = subTablePosition + (int)input.readUnsignedLong();
 		readSubtable(lookupType, lookupPosition);
 	}
 
@@ -338,7 +338,7 @@ public class Kerning {
 		int xAdvance = 0;
 		for (int mask = 1; mask <= 0x8000 && mask <= valueFormat; mask <<= 1) {
 			if ((valueFormat & mask) != 0) {
-				int value = (int) input.readShort();
+				int value = (int)input.readShort();
 				if (mask == 0x0004) {
 					xAdvance = value;
 				}
@@ -352,7 +352,7 @@ public class Kerning {
 			super(readAllBytes(input));
 		}
 
-		private static byte[] readAllBytes(InputStream input) throws IOException {
+		private static byte[] readAllBytes (InputStream input) throws IOException {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			int numRead;
 			byte[] buffer = new byte[16384];
@@ -377,7 +377,7 @@ public class Kerning {
 		}
 
 		public byte readByte () throws IOException {
-			return (byte) readUnsignedByte();
+			return (byte)readUnsignedByte();
 		}
 
 		public int readUnsignedShort () throws IOException {

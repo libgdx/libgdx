@@ -72,8 +72,8 @@ public class MaterialTest extends GdxTest {
 		material = modelInstance.materials.get(0);
 
 		builder.begin();
-		MeshPartBuilder mpb = builder.part("back", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates, new Material(
-			textureAttribute));
+		MeshPartBuilder mpb = builder.part("back", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates,
+			new Material(textureAttribute));
 		mpb.rect(-2, -2, -2, 2, -2, -2, 2, 2, -2, -2, 2, -2, 0, 0, 1);
 		backModel = builder.end();
 		background = new ModelInstance(backModel);

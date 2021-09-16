@@ -27,11 +27,17 @@ public class ReflectionCorrectnessTest extends GdxTest {
 	public AbstractAnnotationStatic abstractAnnotationStatic;
 	public StaticEnum staticEnum;
 
-	public AbstractInterfaceStatic[] AbstractInterfaceStatic () {	return null;}
+	public AbstractInterfaceStatic[] AbstractInterfaceStatic () {
+		return null;
+	}
 
-	public AbstractAnnotationStatic[] AbstractAnnotationStatic () {	return null;}
+	public AbstractAnnotationStatic[] AbstractAnnotationStatic () {
+		return null;
+	}
 
-	public StaticEnum[] StaticEnum () {	return null;}
+	public StaticEnum[] StaticEnum () {
+		return null;
+	}
 
 	public static class Expectation {
 		public Expectation mArray () {

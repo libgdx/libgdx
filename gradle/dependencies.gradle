@@ -21,7 +21,7 @@ ext {
 }
 
 versions.moe = "2.0.0-SNAPSHOT"
-versions.robovm = "2.3.12"
+versions.robovm = "2.3.14"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.0.9"
 versions.gretty = "3.0.2"
@@ -40,6 +40,7 @@ versions.androidMinSdk = 14
 versions.androidBuildTools = "29.0.3"
 versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
+versions.spotless = "5.14.3"
 
 libraries.lwjgl = [
         "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",

@@ -1,5 +1,6 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
+- iOS: Update to MobiVM 2.3.14
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
@@ -17,6 +18,11 @@
 - API Change: Enable the AL_DIRECT_CHANNELS_SOFT option for Sounds and AudioDevices as well to fix stereo sound
 - API Addition: CameraInputController#setInvertedControls(boolean)
 - API Removal: AnimatedTiledMapTile#frameCount
+- LWJGL 3 is now the default desktop backend. If you want to port your existing applications, take a look here: https://gist.github.com/crykn/eb37cb4f7a03d006b3a0ecad27292a2d
+- Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
+- API Fix: Escaped characters in XML attributes are now properly un-escaped
+- Bug Fix: AssetManager backslash conversion removed - fixes use of filenames containing backslashes
+- gdx-setup now places the assets directory in project root instead of android or core. See advanced settings (UI) or arguments (command line) if you don't want it in root.
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.

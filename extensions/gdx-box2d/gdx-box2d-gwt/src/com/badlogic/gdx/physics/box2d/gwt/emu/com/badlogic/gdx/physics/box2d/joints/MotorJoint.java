@@ -26,10 +26,10 @@ import com.badlogic.gdx.physics.box2d.World;
  * dynamic body with respect to the ground. */
 public class MotorJoint extends Joint {
 	org.jbox2d.dynamics.joints.MotorJoint joint;
-	
+
 	private final Vector2 linearOffset = new Vector2();
 	private final Vec2 tmp = new Vec2();
-	
+
 	public MotorJoint (World world, org.jbox2d.dynamics.joints.MotorJoint joint) {
 		super(world, joint);
 		this.joint = joint;
@@ -40,7 +40,7 @@ public class MotorJoint extends Joint {
 		return linearOffset.set(tmp.x, tmp.y);
 	}
 
-	public void setLinearOffset(Vector2 linearOffset) {
+	public void setLinearOffset (Vector2 linearOffset) {
 		joint.setLinearOffset(tmp.set(linearOffset.x, linearOffset.y));
 	}
 

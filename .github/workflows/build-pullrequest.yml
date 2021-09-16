@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           submodules: 'recursive'
 
       - name: Set up JDK 1.8
@@ -30,7 +31,7 @@ jobs:
 
       - name: Build & test Java code
         run: |
-          ./gradlew fetchNatives build      
+          ./gradlew fetchNatives build
 
       - name: Cleanup Gradle Cache
         run: |

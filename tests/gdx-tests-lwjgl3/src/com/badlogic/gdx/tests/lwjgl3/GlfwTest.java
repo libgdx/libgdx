@@ -26,10 +26,10 @@ public class GlfwTest {
 
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		
+
 		// fullscreen, not current resolution, fails
 		Buffer modes = glfwGetVideoModes(glfwGetPrimaryMonitor());
-		for(int i = 0; i < modes.limit(); i++) {
+		for (int i = 0; i < modes.limit(); i++) {
 			System.out.println(modes.get(i).width() + "x" + modes.get(i).height());
 		}
 		GLFWVidMode mode = modes.get(7);
@@ -45,18 +45,18 @@ public class GlfwTest {
 
 		IntBuffer tmp = BufferUtils.createIntBuffer(1);
 		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
-		
+
 		int fbWidth = 0;
 		int fbHeight = 0;
-		
-		while (!glfwWindowShouldClose(windowHandle)) {			
-			glfwGetFramebufferSize(windowHandle, tmp, tmp2);			
-			if(fbWidth != tmp.get(0) || fbHeight != tmp2.get(0)) {
+
+		while (!glfwWindowShouldClose(windowHandle)) {
+			glfwGetFramebufferSize(windowHandle, tmp, tmp2);
+			if (fbWidth != tmp.get(0) || fbHeight != tmp2.get(0)) {
 				fbWidth = tmp.get(0);
 				fbHeight = tmp2.get(0);
 				System.out.println("Framebuffer: " + tmp.get(0) + "x" + tmp2.get(0));
-//				GL11.glViewport(0, 0, tmp.get(0) * 2, tmp2.get(0) * 2);
-			}			
+// GL11.glViewport(0, 0, tmp.get(0) * 2, tmp2.get(0) * 2);
+			}
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GL11.glBegin(GL11.GL_TRIANGLES);
 			GL11.glVertex2f(-1f, -1f);
@@ -67,7 +67,7 @@ public class GlfwTest {
 			glfwPollEvents();
 		}
 
-		glfwDestroyWindow(windowHandle);		
+		glfwDestroyWindow(windowHandle);
 		glfwTerminate();
 	}
 }

@@ -35,9 +35,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 
-/** This is a simple demonstration of how to perform VERY basic culling on hierarchies of stage actors that do not scale or rotate.
- * It is not a general solution as it assumes that actors and groups are only translated (moved, change their x/y coordinates).
- * NOTE: This has been obsoleted by {@link Cullable}.
+/** This is a simple demonstration of how to perform VERY basic culling on hierarchies of stage actors that do not scale or
+ * rotate. It is not a general solution as it assumes that actors and groups are only translated (moved, change their x/y
+ * coordinates). NOTE: This has been obsoleted by {@link Cullable}.
  * 
  * @author mzechner */
 public class SimpleStageCullingTest extends GdxTest {
@@ -110,7 +110,8 @@ public class SimpleStageCullingTest extends GdxTest {
 	@Override
 	public void create () {
 		// create a stage and a camera controller so we can pan the view.
-		stage = new Stage();;
+		stage = new Stage();
+		;
 		camController = new OrthoCamController((OrthographicCamera)stage.getCamera()); // we know it's an ortho cam at this point!
 		Gdx.input.setInputProcessor(camController);
 

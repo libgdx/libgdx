@@ -20,8 +20,8 @@ public class FacedCubemapData implements CubemapData {
 
 	protected final TextureData[] data = new TextureData[6];
 
-	/** Construct an empty Cubemap. Use the load(...) methods to set the texture of each side. Every side of the cubemap must be set
-	 * before it can be used. */
+	/** Construct an empty Cubemap. Use the load(...) methods to set the texture of each side. Every side of the cubemap must be
+	 * set before it can be used. */
 	public FacedCubemapData () {
 		this((TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null);
 	}
@@ -29,19 +29,17 @@ public class FacedCubemapData implements CubemapData {
 	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
 	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
 		FileHandle positiveZ, FileHandle negativeZ) {
-		this(TextureData.Factory.loadFromFile(positiveX, false), TextureData.Factory.loadFromFile(negativeX,
-			false), TextureData.Factory.loadFromFile(positiveY, false), TextureData.Factory.loadFromFile(
-			negativeY, false), TextureData.Factory.loadFromFile(positiveZ, false), TextureData.Factory
-			.loadFromFile(negativeZ, false));
+		this(TextureData.Factory.loadFromFile(positiveX, false), TextureData.Factory.loadFromFile(negativeX, false),
+			TextureData.Factory.loadFromFile(positiveY, false), TextureData.Factory.loadFromFile(negativeY, false),
+			TextureData.Factory.loadFromFile(positiveZ, false), TextureData.Factory.loadFromFile(negativeZ, false));
 	}
 
 	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
 	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
 		FileHandle positiveZ, FileHandle negativeZ, boolean useMipMaps) {
-		this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(
-			negativeX, useMipMaps), TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory
-			.loadFromFile(negativeY, useMipMaps), TextureData.Factory.loadFromFile(positiveZ, useMipMaps),
-			TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
+		this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
 
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
@@ -53,19 +51,22 @@ public class FacedCubemapData implements CubemapData {
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
 	public FacedCubemapData (Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ,
 		Pixmap negativeZ, boolean useMipMaps) {
-		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
-			: new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
-			null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
-			positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
-				: new PixmapTextureData(negativeZ, null, useMipMaps, false));
+		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false),
+			negativeX == null ? null : new PixmapTextureData(negativeX, null, useMipMaps, false),
+			positiveY == null ? null : new PixmapTextureData(positiveY, null, useMipMaps, false),
+			negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
+			positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false),
+			negativeZ == null ? null : new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
 
 	/** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
 	public FacedCubemapData (int width, int height, int depth, Format format) {
-		this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true), new PixmapTextureData(new Pixmap(depth,
-			height, format), null, false, true), new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
-			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true), new PixmapTextureData(new Pixmap(width,
-				height, format), null, false, true), new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+		this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
 	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
@@ -86,9 +87,9 @@ public class FacedCubemapData implements CubemapData {
 		return true;
 	}
 
-	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set to
-	 * that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change
-	 * to be taken in account.
+	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set
+	 * to that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the
+	 * change to be taken in account.
 	 * @param side The {@link CubemapSide}
 	 * @param file The texture {@link FileHandle} */
 	public void load (CubemapSide side, FileHandle file) {

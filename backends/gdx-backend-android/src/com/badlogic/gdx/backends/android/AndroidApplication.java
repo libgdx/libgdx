@@ -34,8 +34,8 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.*;
 
-/** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
- * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
+/** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class.
+ * In the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
  * configuration for the GLSurfaceView.
  * 
  * @author mzechner */
@@ -52,7 +52,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
@@ -114,8 +115,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
+		graphics = new AndroidGraphics(this, config,
+			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 		input = createInput(this, this, graphics.view, config);
 		audio = createAudio(this, config);
 		files = createFiles();
@@ -170,10 +171,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
 			vlistener.createListener(this);
 		}
-		
+
 		// detect an already connected bluetooth keyboardAvailable
-		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS)
-			input.setKeyboardAvailable(true);
+		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS) input.setKeyboardAvailable(true);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -339,7 +339,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-
 	@Override
 	public Clipboard getClipboard () {
 		return clipboard;
@@ -501,7 +500,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return new DefaultAndroidInput(this, this, graphics.view, config);
 	}
 
-	protected AndroidFiles createFiles() {
+	protected AndroidFiles createFiles () {
 		this.getFilesDir(); // workaround for Android bug #10515463
 		return new DefaultAndroidFiles(this.getAssets(), this, true);
 	}

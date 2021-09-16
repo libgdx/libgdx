@@ -92,7 +92,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // map = TiledLoader.createMap(Gdx.files.internal("data/tiledmap/tilemap csv.tmx"));
 // atlas = new TileAtlas(map, Gdx.files.internal("data/tiledmap/"));
 // renderer = new TileMapRenderer(map, atlas, 8, 8);
-		shader = new ShaderProgram(Gdx.files.internal("data/g2d/batchCommon.vert").readString(), Gdx.files.internal("data/g2d/monochrome.frag").readString());
+		shader = new ShaderProgram(Gdx.files.internal("data/g2d/batchCommon.vert").readString(),
+			Gdx.files.internal("data/g2d/monochrome.frag").readString());
 		System.out.println("plain took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 
 		start = TimeUtils.nanoTime();
@@ -108,8 +109,9 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // manager.load("data/test.etc1", Texture.class);
 // manager.load("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class, new
 // TileMapRendererLoader.TileMapParameter("data/tiledmap/", 8, 8));
-		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
-		manager.load("data/g2d/monochrome.frag", ShaderProgram.class, new ShaderProgramLoader.ShaderProgramParameter(){
+		manager.load("data/i18n/message2", I18NBundle.class,
+			new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
+		manager.load("data/g2d/monochrome.frag", ShaderProgram.class, new ShaderProgramLoader.ShaderProgramParameter() {
 			{
 				vertexFile = "data/g2d/batchCommon.vert";
 			}
@@ -168,11 +170,14 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		}
 		frame++;
 
-		if (manager.isLoaded("data/g2d/monochrome.frag")) batch.setShader(manager.get("data/g2d/monochrome.frag", ShaderProgram.class));
-		else batch.setShader(null);
-		
+		if (manager.isLoaded("data/g2d/monochrome.frag"))
+			batch.setShader(manager.get("data/g2d/monochrome.frag", ShaderProgram.class));
+		else
+			batch.setShader(null);
+
 		batch.begin();
-		if (manager.isLoaded("data/animation_gwt_lazy.png")) batch.draw(manager.get("data/animation_gwt_lazy.png", Texture.class), 100, 100);
+		if (manager.isLoaded("data/animation_gwt_lazy.png"))
+			batch.draw(manager.get("data/animation_gwt_lazy.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
 		if (manager.isLoaded("data/pack.atlas"))
@@ -188,12 +193,12 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // if (manager.isLoaded("data/test.etc1")) batch.draw(manager.get("data/test.etc1", Texture.class), 0, 0);
 // if (manager.isLoaded("data/tiledmap/tilemap csv.tmx")) manager.get("data/tiledmap/tilemap csv.tmx",
 // TileMapRenderer.class).render();
-		if (manager.isLoaded("data/i18n/message2")){
+		if (manager.isLoaded("data/i18n/message2")) {
 			font.draw(batch, manager.get("data/i18n/message2", I18NBundle.class).get("msg"), 100, 400);
 		}
-		if (manager.isLoaded("data/uiskin.json")){
-			skin = manager.get("data/uiskin.json",Skin.class);
-			skinLabel = new Label("label from a Asset Manager skin",skin,"default");
+		if (manager.isLoaded("data/uiskin.json")) {
+			skin = manager.get("data/uiskin.json", Skin.class);
+			skinLabel = new Label("label from a Asset Manager skin", skin, "default");
 			font.draw(batch, "Skin Loaded", 100, 420);
 		}
 

@@ -31,8 +31,8 @@ import android.view.inputmethod.InputConnection;
 import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.backends.android.DefaultAndroidInput;
 
-/** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
- * important details:
+/** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the
+ * following important details:
  * <p/>
  * - The class must use a custom context factory to enable 2.0 rendering. See ContextFactory class definition below.
  * <p/>
@@ -113,7 +113,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	}
 
 	@Override
-	public void onDetachedFromWindow() {
+	public void onDetachedFromWindow () {
 		super.onDetachedFromWindow();
 	}
 
@@ -137,8 +137,8 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		 * We need to choose an EGLConfig that matches the format of our surface exactly. This is going to be done in our custom
 		 * config chooser. See ConfigChooser class definition below.
 		 */
-		setEGLConfigChooser(translucent ? new ConfigChooser(8, 8, 8, 8, depth, stencil) : new ConfigChooser(8, 8, 8, 0, depth,
-			stencil));
+		setEGLConfigChooser(
+			translucent ? new ConfigChooser(8, 8, 8, 8, depth, stencil) : new ConfigChooser(8, 8, 8, 0, depth, stencil));
 
 		/* Set the renderer responsible for frame rendering */
 	}
@@ -148,17 +148,17 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
 			Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
-			checkEglError("Before eglCreateContext "+targetGLESVersion, egl);
+			checkEglError("Before eglCreateContext " + targetGLESVersion, egl);
 			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-			boolean success = checkEglError("After eglCreateContext "+targetGLESVersion, egl);
+			boolean success = checkEglError("After eglCreateContext " + targetGLESVersion, egl);
 
 			if ((!success || context == null) && GLSurfaceView20.targetGLESVersion > 2) {
 				Log.w(TAG, "Falling back to GLES 2");
 				GLSurfaceView20.targetGLESVersion = 2;
 				return createContext(egl, display, eglConfig);
 			}
-			Log.w(TAG, "Returning a GLES "+targetGLESVersion+" context");
+			Log.w(TAG, "Returning a GLES " + targetGLESVersion + " context");
 			return context;
 		}
 
@@ -265,8 +265,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 			int[] attributes = {EGL10.EGL_BUFFER_SIZE, EGL10.EGL_ALPHA_SIZE, EGL10.EGL_BLUE_SIZE, EGL10.EGL_GREEN_SIZE,
 				EGL10.EGL_RED_SIZE, EGL10.EGL_DEPTH_SIZE, EGL10.EGL_STENCIL_SIZE, EGL10.EGL_CONFIG_CAVEAT, EGL10.EGL_CONFIG_ID,
 				EGL10.EGL_LEVEL, EGL10.EGL_MAX_PBUFFER_HEIGHT, EGL10.EGL_MAX_PBUFFER_PIXELS, EGL10.EGL_MAX_PBUFFER_WIDTH,
-				EGL10.EGL_NATIVE_RENDERABLE, EGL10.EGL_NATIVE_VISUAL_ID, EGL10.EGL_NATIVE_VISUAL_TYPE,
-				0x3030, // EGL10.EGL_PRESERVED_RESOURCES,
+				EGL10.EGL_NATIVE_RENDERABLE, EGL10.EGL_NATIVE_VISUAL_ID, EGL10.EGL_NATIVE_VISUAL_TYPE, 0x3030, // EGL10.EGL_PRESERVED_RESOURCES,
 				EGL10.EGL_SAMPLES, EGL10.EGL_SAMPLE_BUFFERS, EGL10.EGL_SURFACE_TYPE, EGL10.EGL_TRANSPARENT_TYPE,
 				EGL10.EGL_TRANSPARENT_RED_VALUE, EGL10.EGL_TRANSPARENT_GREEN_VALUE, EGL10.EGL_TRANSPARENT_BLUE_VALUE, 0x3039, // EGL10.EGL_BIND_TO_TEXTURE_RGB,
 				0x303A, // EGL10.EGL_BIND_TO_TEXTURE_RGBA,
@@ -288,7 +287,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 				if (egl.eglGetConfigAttrib(display, config, attribute, value)) {
 					Log.w(TAG, String.format("  %s: %d\n", name, value[0]));
 				} else {
-					// Log.w(TAG, String.format("  %s: failed\n", name));
+					// Log.w(TAG, String.format(" %s: failed\n", name));
 					while (egl.eglGetError() != EGL10.EGL_SUCCESS)
 						;
 				}

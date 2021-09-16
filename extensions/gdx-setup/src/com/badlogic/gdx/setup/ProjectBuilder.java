@@ -33,11 +33,11 @@ public class ProjectBuilder {
 	File settingsFile;
 	File buildFile;
 
-	public ProjectBuilder(DependencyBank bank) {
+	public ProjectBuilder (DependencyBank bank) {
 		this.bank = bank;
 	}
 
-	public List<String> buildProject(List<ProjectType> projects, List<Dependency> dependencies) {
+	public List<String> buildProject (List<ProjectType> projects, List<Dependency> dependencies) {
 		List<String> incompatibilities = new ArrayList<String>();
 		for (Dependency dep : dependencies) {
 			for (ProjectType type : projects) {
@@ -50,7 +50,7 @@ public class ProjectBuilder {
 		return incompatibilities;
 	}
 
-	public boolean build(Language language) throws IOException {
+	public boolean build (Language language) throws IOException {
 		settingsFile = File.createTempFile("libgdx-setup-settings", ".gradle");
 		buildFile = File.createTempFile("libgdx-setup-build", ".gradle");
 		if (!settingsFile.exists()) {
@@ -84,7 +84,6 @@ public class ProjectBuilder {
 				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
 
-
 			buildBw.close();
 			buildWriter.close();
 			return true;
@@ -94,7 +93,7 @@ public class ProjectBuilder {
 		}
 	}
 
-	public void cleanUp() {
+	public void cleanUp () {
 		settingsFile.deleteOnExit();
 		buildFile.deleteOnExit();
 	}

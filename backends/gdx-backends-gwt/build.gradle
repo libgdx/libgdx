@@ -15,12 +15,12 @@
  ******************************************************************************/
 
 dependencies {
-    compile libraries.gwt
+	compile libraries.gwt
 }
 
 configurations.all {
-    // gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
-    exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
+	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
+	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
 sourceSets.main.java.exclude "**/System.java"

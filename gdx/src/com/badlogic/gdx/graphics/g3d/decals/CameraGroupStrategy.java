@@ -27,7 +27,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
-/** <p>
+/**
+ * <p>
  * Minimalistic grouping strategy that splits decals into opaque and transparent ones enabling and disabling blending as needed.
  * Opaque decals are rendered first (decal color is ignored in opacity check).<br/>
  * Use this strategy only if the vast majority of your decals are opaque and the few transparent ones are unlikely to overlap.
@@ -77,7 +78,8 @@ import com.badlogic.gdx.utils.Pool;
  * <td>disabled</td>
  * </tr>
  * </table>
- * </p> */
+ * </p>
+ */
 public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	private static final int GROUP_OPAQUE = 0;
 	private static final int GROUP_BLEND = 1;

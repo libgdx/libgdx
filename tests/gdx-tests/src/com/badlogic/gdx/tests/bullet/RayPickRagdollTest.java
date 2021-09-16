@@ -57,17 +57,17 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		camera.update();
 
 		world.addConstructor("pelvis", new BulletConstructor(createCapsuleModel(0.15f, 0.2f), 1f, new btCapsuleShape(0.15f, 0.2f)));
-		world
-			.addConstructor("spine", new BulletConstructor(createCapsuleModel(0.15f, 0.28f), 1f, new btCapsuleShape(0.15f, 0.28f)));
+		world.addConstructor("spine",
+			new BulletConstructor(createCapsuleModel(0.15f, 0.28f), 1f, new btCapsuleShape(0.15f, 0.28f)));
 		world.addConstructor("head", new BulletConstructor(createCapsuleModel(0.1f, 0.05f), 1f, new btCapsuleShape(0.1f, 0.05f)));
-		world.addConstructor("upperleg", new BulletConstructor(createCapsuleModel(0.07f, 0.45f), 1f, new btCapsuleShape(0.07f,
-			0.45f)));
-		world.addConstructor("lowerleg", new BulletConstructor(createCapsuleModel(0.05f, 0.37f), 1f, new btCapsuleShape(0.05f,
-			0.37f)));
-		world.addConstructor("upperarm", new BulletConstructor(createCapsuleModel(0.05f, 0.33f), 1f, new btCapsuleShape(0.05f,
-			0.33f)));
-		world.addConstructor("lowerarm", new BulletConstructor(createCapsuleModel(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f,
-			0.25f)));
+		world.addConstructor("upperleg",
+			new BulletConstructor(createCapsuleModel(0.07f, 0.45f), 1f, new btCapsuleShape(0.07f, 0.45f)));
+		world.addConstructor("lowerleg",
+			new BulletConstructor(createCapsuleModel(0.05f, 0.37f), 1f, new btCapsuleShape(0.05f, 0.37f)));
+		world.addConstructor("upperarm",
+			new BulletConstructor(createCapsuleModel(0.05f, 0.33f), 1f, new btCapsuleShape(0.05f, 0.33f)));
+		world.addConstructor("lowerarm",
+			new BulletConstructor(createCapsuleModel(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f, 0.25f)));
 
 		world.add("ground", 0f, 0f, 0f).setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
 			0.25f + 0.5f * (float)Math.random(), 1f);
@@ -173,8 +173,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		btRigidBody rightlowerleg = (btRigidBody)world.add("lowerleg", x + 0.18f, y + 0.2f, z).body;
 		btRigidBody leftupperarm = (btRigidBody)world.add("upperarm",
 			tmpM.setFromEulerAnglesRad(PI2, 0, 0).trn(x - 0.35f, y + 1.45f, z)).body;
-		btRigidBody leftlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAnglesRad(PI2, 0, 0)
-			.trn(x - 0.7f, y + 1.45f, z)).body;
+		btRigidBody leftlowerarm = (btRigidBody)world.add("lowerarm",
+			tmpM.setFromEulerAnglesRad(PI2, 0, 0).trn(x - 0.7f, y + 1.45f, z)).body;
 		btRigidBody rightupperarm = (btRigidBody)world.add("upperarm",
 			tmpM.setFromEulerAnglesRad(-PI2, 0, 0).trn(x + 0.35f, y + 1.45f, z)).body;
 		btRigidBody rightlowerarm = (btRigidBody)world.add("lowerarm",
@@ -258,8 +258,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 
 	protected Model createCapsuleModel (float radius, float height) {
 		final Model result = modelBuilder.createCapsule(radius, height + radius * 2f, 16,
-			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), Usage.Position
-				| Usage.Normal);
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)),
+			Usage.Position | Usage.Normal);
 		disposables.add(result);
 		return result;
 	}

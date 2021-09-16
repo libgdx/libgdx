@@ -1,10 +1,7 @@
-/**
- * Platform independent wrappers for file handles and file streaming.
+/** Platform independent wrappers for file handles and file streaming.
  * 
- * Use {@link com.badlogic.gdx.Gdx#files} to get a reference to the {@link com.badlogic.gdx.Files} implementation
- * to create and look up files.
- *  
- */
+ * Use {@link com.badlogic.gdx.Gdx#files} to get a reference to the {@link com.badlogic.gdx.Files} implementation to create and
+ * look up files. */
 
 package com.badlogic.gdx.files;
 

@@ -37,7 +37,8 @@ public class AndroidVisibilityListener {
 				}
 			});
 		} catch (Throwable t) {
-			application.log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener, unable to use immersive mode.", t);
+			application.log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener, unable to use immersive mode.",
+				t);
 		}
 	}
 }

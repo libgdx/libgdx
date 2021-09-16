@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.setup;
 
-
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 
 import java.io.BufferedWriter;
@@ -27,10 +26,10 @@ public class BuildScriptHelper {
 
 	private static int indent = 0;
 
-	public static void addBuildScript(Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
+	public static void addBuildScript (Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
 		write(wr, "buildscript {");
 		write(wr, language.buildScript + "\n");
-		//repos
+		// repos
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
@@ -38,7 +37,7 @@ public class BuildScriptHelper {
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, DependencyBank.google);
 		write(wr, "}");
-		//dependencies
+		// dependencies
 		write(wr, "dependencies {");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "classpath '" + DependencyBank.gwtPluginImport + "'");
@@ -59,7 +58,7 @@ public class BuildScriptHelper {
 		space(wr);
 	}
 
-	public static void addAllProjects(BufferedWriter wr) throws IOException {
+	public static void addAllProjects (BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
 		write(wr, "apply plugin: \"eclipse\"");
 		space(wr);
@@ -81,11 +80,13 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.gradlePlugins);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
+		write(wr, "maven { url \"" + DependencyBank.jitpackUrl + "\" }");
 		write(wr, "}");
 		write(wr, "}");
 	}
 
-	public static void addProject(Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
+	public static void addProject (Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr)
+		throws IOException {
 		space(wr);
 		write(wr, "project(\":" + project.getName() + "\") {");
 		for (String plugin : project.getPlugins(language)) {
@@ -98,7 +99,8 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+	private static void addDependencies (Language language, ProjectType project, List<Dependency> dependencyList,
+		BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
 			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
@@ -118,13 +120,13 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
+	private static void addConfigurations (ProjectType project, BufferedWriter wr) throws IOException {
 		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
 			write(wr, "configurations { natives }");
 		}
 	}
 
-	private static void write(BufferedWriter wr, String input) throws IOException {
+	private static void write (BufferedWriter wr, String input) throws IOException {
 		int delta = StringUtils.countMatches(input, '{') - StringUtils.countMatches(input, '}');
 		indent += delta *= 4;
 		indent = clamp(indent);
@@ -137,11 +139,11 @@ public class BuildScriptHelper {
 		}
 	}
 
-	private static void space(BufferedWriter wr) throws IOException {
+	private static void space (BufferedWriter wr) throws IOException {
 		wr.write("\n");
 	}
 
-	private static int clamp(int indent) {
+	private static int clamp (int indent) {
 		if (indent < 0) {
 			return 0;
 		}
@@ -150,7 +152,7 @@ public class BuildScriptHelper {
 
 	static class StringUtils {
 
-		public static int countMatches(String input, char match) {
+		public static int countMatches (String input, char match) {
 			int count = 0;
 			for (int i = 0; i < input.length(); i++) {
 				if (input.charAt(i) == match) {
@@ -160,7 +162,7 @@ public class BuildScriptHelper {
 			return count;
 		}
 
-		public static String repeat(String toRepeat, int count) {
+		public static String repeat (String toRepeat, int count) {
 			String repeat = "";
 			for (int i = 0; i < count; i++) {
 				repeat += toRepeat;

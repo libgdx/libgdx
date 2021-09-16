@@ -31,7 +31,7 @@ public class Lwjgl3Clipboard implements Clipboard {
 	}
 
 	@Override
-	public String getContents () {		
+	public String getContents () {
 		return GLFW.glfwGetClipboardString(((Lwjgl3Graphics)Gdx.graphics).getWindow().getWindowHandle());
 	}
 

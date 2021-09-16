@@ -107,7 +107,7 @@ public class SwingLwjglTest extends JFrame {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		canvas3.stop();
 		canvas2.stop();
 		canvas1.stop();

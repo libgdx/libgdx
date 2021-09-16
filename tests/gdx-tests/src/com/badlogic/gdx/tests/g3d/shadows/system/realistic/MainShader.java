@@ -93,18 +93,16 @@ public class MainShader extends DefaultShader {
 	private static String defaultVertexShader = null;
 
 	public static String getDefaultVertexShader () {
-		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/tests/g3d/shadows/system/realistic/main.vertex.glsl")
-				.readString();
+		if (defaultVertexShader == null) defaultVertexShader = Gdx.files
+			.classpath("com/badlogic/gdx/tests/g3d/shadows/system/realistic/main.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/tests/g3d/shadows/system/realistic/main.fragment.glsl")
-				.readString();
+		if (defaultFragmentShader == null) defaultFragmentShader = Gdx.files
+			.classpath("com/badlogic/gdx/tests/g3d/shadows/system/realistic/main.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -194,8 +192,8 @@ public class MainShader extends DefaultShader {
 					Camera cam = dirCameras.get(dl).camera;
 
 					if (cam != null) {
-						program.setUniformf(idx + dirShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(), tr.getV2()
-							- tr.getV());
+						program.setUniformf(idx + dirShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(),
+							tr.getV2() - tr.getV());
 
 						// ProjViewTrans
 						idx = dirShadowMapProjViewTransLoc + i * dirShadowMapProjViewTransSize;

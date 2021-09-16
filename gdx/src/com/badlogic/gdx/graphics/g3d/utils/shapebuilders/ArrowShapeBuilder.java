@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.utils.shapebuilders;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+
 /** Helper class with static methods to build arrow shapes using {@link MeshPartBuilder}.
  * @author xoppa */
 public class ArrowShapeBuilder extends BaseShapeBuilder {
@@ -32,8 +33,8 @@ public class ArrowShapeBuilder extends BaseShapeBuilder {
 	 * @param capLength is the height of the cap in percentage, must be in (0,1)
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
 	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
-	public static void build (MeshPartBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
-		int divisions) {
+	public static void build (MeshPartBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2, float capLength,
+		float stemThickness, int divisions) {
 		Vector3 begin = obtainV3().set(x1, y1, z1), end = obtainV3().set(x2, y2, z2);
 		float length = begin.dst(end);
 		float coneHeight = length * capLength;

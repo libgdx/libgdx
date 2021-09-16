@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btDefaultCollisionConstructionInfo extends BulletBase {
 	private long swigCPtr;
-	
-	protected btDefaultCollisionConstructionInfo(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btDefaultCollisionConstructionInfo (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btDefaultCollisionConstructionInfo, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btDefaultCollisionConstructionInfo(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btDefaultCollisionConstructionInfo, normally you should not need this constructor it's intended for
+	 * low-level usage. */
+	public btDefaultCollisionConstructionInfo (long cPtr, boolean cMemoryOwn) {
 		this("btDefaultCollisionConstructionInfo", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btDefaultCollisionConstructionInfo obj) {
+
+	public static long getCPtr (btDefaultCollisionConstructionInfo obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,58 +54,60 @@ public class btDefaultCollisionConstructionInfo extends BulletBase {
 		super.delete();
 	}
 
-  public void setPersistentManifoldPool(btPoolAllocator value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_persistentManifoldPool_set(swigCPtr, this, btPoolAllocator.getCPtr(value), value);
-  }
+	public void setPersistentManifoldPool (btPoolAllocator value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_persistentManifoldPool_set(swigCPtr, this, btPoolAllocator.getCPtr(value),
+			value);
+	}
 
-  public btPoolAllocator getPersistentManifoldPool() {
-    long cPtr = CollisionJNI.btDefaultCollisionConstructionInfo_persistentManifoldPool_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
-  }
+	public btPoolAllocator getPersistentManifoldPool () {
+		long cPtr = CollisionJNI.btDefaultCollisionConstructionInfo_persistentManifoldPool_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
+	}
 
-  public void setCollisionAlgorithmPool(btPoolAllocator value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_collisionAlgorithmPool_set(swigCPtr, this, btPoolAllocator.getCPtr(value), value);
-  }
+	public void setCollisionAlgorithmPool (btPoolAllocator value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_collisionAlgorithmPool_set(swigCPtr, this, btPoolAllocator.getCPtr(value),
+			value);
+	}
 
-  public btPoolAllocator getCollisionAlgorithmPool() {
-    long cPtr = CollisionJNI.btDefaultCollisionConstructionInfo_collisionAlgorithmPool_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
-  }
+	public btPoolAllocator getCollisionAlgorithmPool () {
+		long cPtr = CollisionJNI.btDefaultCollisionConstructionInfo_collisionAlgorithmPool_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
+	}
 
-  public void setDefaultMaxPersistentManifoldPoolSize(int value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxPersistentManifoldPoolSize_set(swigCPtr, this, value);
-  }
+	public void setDefaultMaxPersistentManifoldPoolSize (int value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxPersistentManifoldPoolSize_set(swigCPtr, this, value);
+	}
 
-  public int getDefaultMaxPersistentManifoldPoolSize() {
-    return CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxPersistentManifoldPoolSize_get(swigCPtr, this);
-  }
+	public int getDefaultMaxPersistentManifoldPoolSize () {
+		return CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxPersistentManifoldPoolSize_get(swigCPtr, this);
+	}
 
-  public void setDefaultMaxCollisionAlgorithmPoolSize(int value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxCollisionAlgorithmPoolSize_set(swigCPtr, this, value);
-  }
+	public void setDefaultMaxCollisionAlgorithmPoolSize (int value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxCollisionAlgorithmPoolSize_set(swigCPtr, this, value);
+	}
 
-  public int getDefaultMaxCollisionAlgorithmPoolSize() {
-    return CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxCollisionAlgorithmPoolSize_get(swigCPtr, this);
-  }
+	public int getDefaultMaxCollisionAlgorithmPoolSize () {
+		return CollisionJNI.btDefaultCollisionConstructionInfo_defaultMaxCollisionAlgorithmPoolSize_get(swigCPtr, this);
+	}
 
-  public void setCustomCollisionAlgorithmMaxElementSize(int value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_set(swigCPtr, this, value);
-  }
+	public void setCustomCollisionAlgorithmMaxElementSize (int value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_set(swigCPtr, this, value);
+	}
 
-  public int getCustomCollisionAlgorithmMaxElementSize() {
-    return CollisionJNI.btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_get(swigCPtr, this);
-  }
+	public int getCustomCollisionAlgorithmMaxElementSize () {
+		return CollisionJNI.btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_get(swigCPtr, this);
+	}
 
-  public void setUseEpaPenetrationAlgorithm(int value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_set(swigCPtr, this, value);
-  }
+	public void setUseEpaPenetrationAlgorithm (int value) {
+		CollisionJNI.btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_set(swigCPtr, this, value);
+	}
 
-  public int getUseEpaPenetrationAlgorithm() {
-    return CollisionJNI.btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_get(swigCPtr, this);
-  }
+	public int getUseEpaPenetrationAlgorithm () {
+		return CollisionJNI.btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_get(swigCPtr, this);
+	}
 
-  public btDefaultCollisionConstructionInfo() {
-    this(CollisionJNI.new_btDefaultCollisionConstructionInfo(), true);
-  }
+	public btDefaultCollisionConstructionInfo () {
+		this(CollisionJNI.new_btDefaultCollisionConstructionInfo(), true);
+	}
 
 }

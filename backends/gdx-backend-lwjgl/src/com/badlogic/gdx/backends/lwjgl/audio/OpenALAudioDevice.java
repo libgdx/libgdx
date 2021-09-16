@@ -100,8 +100,8 @@ public class OpenALAudioDevice implements AudioDevice {
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				int written = Math.min(bufferSize, length);
-				((Buffer) tempBuffer).clear();
-				((Buffer) tempBuffer.put(data, offset, written)).flip();
+				((Buffer)tempBuffer).clear();
+				((Buffer)tempBuffer.put(data, offset, written)).flip();
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
 				alSourceQueueBuffers(sourceID, bufferID);
 				length -= written;
@@ -109,7 +109,7 @@ public class OpenALAudioDevice implements AudioDevice {
 				queuedBuffers++;
 			}
 			// Queue rest of buffers, empty.
-			((Buffer) tempBuffer).clear().flip();
+			((Buffer)tempBuffer).clear().flip();
 			for (int i = queuedBuffers; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
@@ -138,8 +138,8 @@ public class OpenALAudioDevice implements AudioDevice {
 				if (bufferID == AL_INVALID_VALUE) break;
 				renderedSeconds += secondsPerBuffer;
 
-				((Buffer) tempBuffer).clear();
-				((Buffer) tempBuffer.put(data, offset, written)).flip();
+				((Buffer)tempBuffer).clear();
+				((Buffer)tempBuffer.put(data, offset, written)).flip();
 				alBufferData(bufferID, format, tempBuffer, sampleRate);
 
 				alSourceQueueBuffers(sourceID, bufferID);

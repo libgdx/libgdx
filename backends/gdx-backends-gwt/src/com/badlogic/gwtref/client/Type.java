@@ -33,7 +33,7 @@ public class Type {
 	private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 	private static final Set<Class> EMPTY_ASSIGNABLES = Collections.unmodifiableSet(new HashSet<Class>());
 	private static final Set<Class> EMPTY_INTERFACES = Collections.unmodifiableSet(new HashSet<Class>());
-	
+
 	final String name;
 	final int id;
 	final Class clazz;
@@ -96,8 +96,8 @@ public class Type {
 		return clazz == otherType.clazz || (clazz == Object.class && !otherType.isPrimitive)
 			|| otherType.assignables.contains(clazz);
 	}
-	
-	public Class[] getInterfaces() {
+
+	public Class[] getInterfaces () {
 		return interfaces.toArray(new Class[this.interfaces.size()]);
 	}
 
@@ -137,13 +137,13 @@ public class Type {
 		}
 		throw new NoSuchFieldException();
 	}
-	
+
 	/** @return an array containing all the fields of this class, including private and protected fields. See
 	 *         {@link Class#getDeclaredFields()}. */
 	public Field[] getDeclaredFields () {
 		return fields;
 	}
-	
+
 	/** @param name the name of the method
 	 * @param parameterTypes the types of the parameters of the method
 	 * @return the public method that matches the name and parameter types of this type or one of its super interfaces.
@@ -181,7 +181,7 @@ public class Type {
 		}
 		throw new NoSuchMethodException();
 	}
-	
+
 	/** @return an array containing all methods of this class, including abstract, private and protected methods. See
 	 *         {@link Class#getDeclaredMethods()}. */
 	public Method[] getDeclaredMethods () {
@@ -278,7 +278,7 @@ public class Type {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString () {
 		return "Type [name=" + name + ",\n clazz=" + clazz + ",\n superClass=" + superClass + ",\n assignables=" + assignables

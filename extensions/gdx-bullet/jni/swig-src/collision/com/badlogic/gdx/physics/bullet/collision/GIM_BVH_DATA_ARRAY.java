@@ -8,46 +8,40 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class GIM_BVH_DATA_ARRAY extends btGimBvhDataArray {
 	private long swigCPtr;
-	
-	protected GIM_BVH_DATA_ARRAY(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected GIM_BVH_DATA_ARRAY (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.GIM_BVH_DATA_ARRAY_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new GIM_BVH_DATA_ARRAY, normally you should not need this constructor it's intended for low-level usage. */
-	public GIM_BVH_DATA_ARRAY(long cPtr, boolean cMemoryOwn) {
+	public GIM_BVH_DATA_ARRAY (long cPtr, boolean cMemoryOwn) {
 		this("GIM_BVH_DATA_ARRAY", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.GIM_BVH_DATA_ARRAY_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(GIM_BVH_DATA_ARRAY obj) {
+
+	public static long getCPtr (GIM_BVH_DATA_ARRAY obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,8 +52,8 @@ public class GIM_BVH_DATA_ARRAY extends btGimBvhDataArray {
 		super.delete();
 	}
 
-  public GIM_BVH_DATA_ARRAY() {
-    this(CollisionJNI.new_GIM_BVH_DATA_ARRAY(), true);
-  }
+	public GIM_BVH_DATA_ARRAY () {
+		this(CollisionJNI.new_GIM_BVH_DATA_ARRAY(), true);
+	}
 
 }

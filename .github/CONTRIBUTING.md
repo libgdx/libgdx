@@ -85,9 +85,11 @@ Signing the CLA will allow us to use and distribute your code. This is a non-exc
 
 If you work on libGDX code, we require you to use the [Eclipse formatter](https://github.com/libgdx/libgdx/blob/master/eclipse-formatter.xml) located in the root directory of the repository.
 
-Failure to use the formatter will result in Nate being very upset.
+Failure to use the formatter will result in Nate being very upset and the CI to fail.
 
 If you are using IntelliJ IDEA, you can still make use of the eclipse code formatter. See [this article](http://blog.jetbrains.com/idea/2014/01/intellij-idea-13-importing-code-formatter-settings-from-eclipse/?utm_source=hootsuite&utm_campaign=hootsuite) for more information.
+
+To make our life easier, we integrated the formatter with [spotless](https://github.com/diffplug/spotless) in our build system, so you don't have to take the hassle of importing it into your IDE. Just run `./gradlew spotlessApply` and your edited files are correct formatted.
 
 ### Code Style
 

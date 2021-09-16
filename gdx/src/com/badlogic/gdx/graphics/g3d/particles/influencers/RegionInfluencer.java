@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+
 /** It's an {@link Influencer} which assigns a region of a {@link Texture} to the particles.
  * @author Inferno */
 public abstract class RegionInfluencer extends Influencer {
@@ -51,7 +52,8 @@ public abstract class RegionInfluencer extends Influencer {
 		@Override
 		public void init () {
 			AspectTextureRegion region = regions.items[0];
-			for (int i = 0, c = controller.emitter.maxParticleCount * regionChannel.strideSize; i < c; i += regionChannel.strideSize) {
+			for (int i = 0,
+				c = controller.emitter.maxParticleCount * regionChannel.strideSize; i < c; i += regionChannel.strideSize) {
 				regionChannel.data[i + ParticleChannels.UOffset] = region.u;
 				regionChannel.data[i + ParticleChannels.VOffset] = region.v;
 				regionChannel.data[i + ParticleChannels.U2Offset] = region.u2;
@@ -86,7 +88,8 @@ public abstract class RegionInfluencer extends Influencer {
 
 		@Override
 		public void activateParticles (int startIndex, int count) {
-			for (int i = startIndex * regionChannel.strideSize, c = i + count * regionChannel.strideSize; i < c; i += regionChannel.strideSize) {
+			for (int i = startIndex * regionChannel.strideSize,
+				c = i + count * regionChannel.strideSize; i < c; i += regionChannel.strideSize) {
 				AspectTextureRegion region = regions.random();
 				regionChannel.data[i + ParticleChannels.UOffset] = region.u;
 				regionChannel.data[i + ParticleChannels.VOffset] = region.v;
@@ -131,7 +134,8 @@ public abstract class RegionInfluencer extends Influencer {
 
 		@Override
 		public void update () {
-			for (int i = 0, l = ParticleChannels.LifePercentOffset, c = controller.particles.size * regionChannel.strideSize; i < c; i += regionChannel.strideSize, l += lifeChannel.strideSize) {
+			for (int i = 0, l = ParticleChannels.LifePercentOffset, c = controller.particles.size
+				* regionChannel.strideSize; i < c; i += regionChannel.strideSize, l += lifeChannel.strideSize) {
 				AspectTextureRegion region = regions.get((int)(lifeChannel.data[l] * (regions.size - 1)));
 				regionChannel.data[i + ParticleChannels.UOffset] = region.u;
 				regionChannel.data[i + ParticleChannels.VOffset] = region.v;
@@ -173,7 +177,7 @@ public abstract class RegionInfluencer extends Influencer {
 			this.v2 = region.getV2();
 			this.halfInvAspectRatio = 0.5f * ((float)region.getRegionHeight() / region.getRegionWidth());
 			if (region instanceof TextureAtlas.AtlasRegion) {
-				this.imageName = ((TextureAtlas.AtlasRegion) region).name;
+				this.imageName = ((TextureAtlas.AtlasRegion)region).name;
 			}
 		}
 
@@ -185,7 +189,8 @@ public abstract class RegionInfluencer extends Influencer {
 			halfInvAspectRatio = aspectTextureRegion.halfInvAspectRatio;
 			imageName = aspectTextureRegion.imageName;
 		}
-		public void updateUV(TextureAtlas atlas) {
+
+		public void updateUV (TextureAtlas atlas) {
 			if (imageName == null) {
 				return;
 			}
@@ -233,9 +238,11 @@ public abstract class RegionInfluencer extends Influencer {
 			regions.add(new AspectTextureRegion((AspectTextureRegion)regionInfluencer.regions.get(i)));
 		}
 	}
+
 	public void setAtlasName (String atlasName) {
 		this.atlasName = atlasName;
 	}
+
 	public void add (TextureRegion... regions) {
 		this.regions.ensureCapacity(regions.length);
 		for (TextureRegion region : regions) {
@@ -247,7 +254,9 @@ public abstract class RegionInfluencer extends Influencer {
 		atlasName = null;
 		regions.clear();
 	}
+
 	private final static String ASSET_DATA = "atlasAssetData";
+
 	@Override
 	public void load (AssetManager manager, ResourceData resources) {
 		super.load(manager, resources);
@@ -256,11 +265,12 @@ public abstract class RegionInfluencer extends Influencer {
 			return;
 		}
 		TextureAtlas atlas;
-		atlas = (TextureAtlas) manager.get(data.loadAsset());
+		atlas = (TextureAtlas)manager.get(data.loadAsset());
 		for (AspectTextureRegion atr : regions) {
 			atr.updateUV(atlas);
 		}
 	}
+
 	@Override
 	public void save (AssetManager manager, ResourceData resources) {
 		super.save(manager, resources);
@@ -268,10 +278,11 @@ public abstract class RegionInfluencer extends Influencer {
 			SaveData data = resources.getSaveData(ASSET_DATA);
 			if (data == null) {
 				data = resources.createSaveData(ASSET_DATA);
-                        }
+			}
 			data.saveAsset(atlasName, TextureAtlas.class);
 		}
 	}
+
 	@Override
 	public void allocateChannels () {
 		regionChannel = controller.particles.addChannel(ParticleChannels.TextureRegion);

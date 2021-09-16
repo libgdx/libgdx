@@ -72,8 +72,8 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
-			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"), new VertexAttribute(
-				VertexAttributes.Usage.ColorPacked, 4, "a_color"));
+			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"),
+			new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"));
 		float[] vertices = new float[] {-1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f), 0, 1, 0.5f, 1.0f,
 			Color.toFloatBits(0f, 1f, 0f, 1f), 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f)};
 		vbo.setVertices(vertices, 0, vertices.length);

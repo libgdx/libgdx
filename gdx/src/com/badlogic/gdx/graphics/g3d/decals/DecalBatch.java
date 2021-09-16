@@ -27,7 +27,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.SortedIntList;
 
-/** <p>
+/**
+ * <p>
  * Renderer for {@link Decal} objects.
  * </p>
  * <p>
@@ -46,7 +47,8 @@ import com.badlogic.gdx.utils.SortedIntList;
  * states, culling etc. for more details see the {@link GroupStrategy} java doc.<br/>
  * While it shouldn't be necessary to change strategies, if you have to do so, do it before calling {@link #add(Decal)}, and if
  * you already did, call {@link #flush()} first.
- * </p> */
+ * </p>
+ */
 public class DecalBatch implements Disposable {
 	private static final int DEFAULT_SIZE = 1000;
 	private float[] vertices;
@@ -62,11 +64,9 @@ public class DecalBatch implements Disposable {
 	};
 	private final Array<Array<Decal>> usedGroups = new Array<Array<Decal>>(16);
 
-	/**
-	 * Creates a new DecalBatch using the given {@link GroupStrategy}. The most
-	 * commong strategy to use is a {@link CameraGroupStrategy}
-	 * @param groupStrategy
-	 */
+	/** Creates a new DecalBatch using the given {@link GroupStrategy}. The most commong strategy to use is a
+	 * {@link CameraGroupStrategy}
+	 * @param groupStrategy */
 	public DecalBatch (GroupStrategy groupStrategy) {
 		this(DEFAULT_SIZE, groupStrategy);
 	}
@@ -89,13 +89,13 @@ public class DecalBatch implements Disposable {
 		vertices = new float[size * Decal.SIZE];
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if(Gdx.gl30 != null) {
+		if (Gdx.gl30 != null) {
 			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
 		}
-		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(
-				VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(
-				VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(
-				VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
+			new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		short[] indices = new short[size * 6];
 		int v = 0;

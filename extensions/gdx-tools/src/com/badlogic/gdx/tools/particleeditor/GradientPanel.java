@@ -94,8 +94,8 @@ class GradientPanel extends EditorPanel {
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 10));
 		}
 		{
-			hueSlider = new ColorSlider(new Color[] {Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta,
-				Color.red}) {
+			hueSlider = new ColorSlider(
+				new Color[] {Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta, Color.red}) {
 				protected void colorPicked () {
 					saturationSlider.setColors(new Color[] {new Color(Color.HSBtoRGB(getPercentage(), 1, 1)), Color.white});
 					updateColor();
@@ -154,8 +154,8 @@ class GradientPanel extends EditorPanel {
 	void updateColor () {
 		Color color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1));
 		lightnessSlider.setColors(new Color[] {color, Color.black});
-		color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(),
-			1 - lightnessSlider.getPercentage()));
+		color = new Color(
+			Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1 - lightnessSlider.getPercentage()));
 		colorPanel.setBackground(color);
 		gradientEditor.setColor(color);
 

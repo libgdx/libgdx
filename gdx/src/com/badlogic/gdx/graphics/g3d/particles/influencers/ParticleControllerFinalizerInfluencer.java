@@ -36,9 +36,8 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 	@Override
 	public void init () {
 		controllerChannel = controller.particles.getChannel(ParticleChannels.ParticleController);
-		if (controllerChannel == null)
-			throw new GdxRuntimeException(
-				"ParticleController channel not found, specify an influencer which will allocate it please.");
+		if (controllerChannel == null) throw new GdxRuntimeException(
+			"ParticleController channel not found, specify an influencer which will allocate it please.");
 		scaleChannel = controller.particles.getChannel(ParticleChannels.Scale);
 		rotationChannel = controller.particles.getChannel(ParticleChannels.Rotation3D);
 		hasScale = scaleChannel != null;
@@ -52,7 +51,8 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 
 	@Override
 	public void update () {
-		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += positionChannel.strideSize) {
+		for (int i = 0, positionOffset = 0,
+			c = controller.particles.size; i < c; ++i, positionOffset += positionChannel.strideSize) {
 			ParticleController particleController = controllerChannel.data[i];
 			float scale = hasScale ? scaleChannel.data[i] : 1;
 			float qx = 0, qy = 0, qz = 0, qw = 1;
@@ -64,8 +64,8 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 				qw = rotationChannel.data[rotationOffset + ParticleChannels.WOffset];
 			}
 			particleController.setTransform(positionChannel.data[positionOffset + ParticleChannels.XOffset],
-				positionChannel.data[positionOffset + ParticleChannels.YOffset], positionChannel.data[positionOffset
-					+ ParticleChannels.ZOffset], qx, qy, qz, qw, scale);
+				positionChannel.data[positionOffset + ParticleChannels.YOffset],
+				positionChannel.data[positionOffset + ParticleChannels.ZOffset], qx, qy, qz, qw, scale);
 			particleController.update();
 		}
 	}

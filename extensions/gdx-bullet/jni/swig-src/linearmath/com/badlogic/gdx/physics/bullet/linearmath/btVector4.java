@@ -8,45 +8,38 @@
 
 package com.badlogic.gdx.physics.bullet.linearmath;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
-
 public class btVector4 extends btVector3 {
 	private long swigCPtr;
-	
-	protected btVector4(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btVector4 (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, LinearMathJNI.btVector4_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btVector4, normally you should not need this constructor it's intended for low-level usage. */
-	public btVector4(long cPtr, boolean cMemoryOwn) {
+	public btVector4 (long cPtr, boolean cMemoryOwn) {
 		this("btVector4", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(LinearMathJNI.btVector4_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btVector4 obj) {
+
+	public static long getCPtr (btVector4 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,36 +50,36 @@ public class btVector4 extends btVector3 {
 		super.delete();
 	}
 
-  public btVector4() {
-    this(LinearMathJNI.new_btVector4__SWIG_0(), true);
-  }
+	public btVector4 () {
+		this(LinearMathJNI.new_btVector4__SWIG_0(), true);
+	}
 
-  public btVector4(float _x, float _y, float _z, float _w) {
-    this(LinearMathJNI.new_btVector4__SWIG_1(_x, _y, _z, _w), true);
-  }
+	public btVector4 (float _x, float _y, float _z, float _w) {
+		this(LinearMathJNI.new_btVector4__SWIG_1(_x, _y, _z, _w), true);
+	}
 
-  public btVector4 absolute4() {
-    return new btVector4(LinearMathJNI.btVector4_absolute4(swigCPtr, this), true);
-  }
+	public btVector4 absolute4 () {
+		return new btVector4(LinearMathJNI.btVector4_absolute4(swigCPtr, this), true);
+	}
 
-  public float getW() {
-    return LinearMathJNI.btVector4_getW(swigCPtr, this);
-  }
+	public float getW () {
+		return LinearMathJNI.btVector4_getW(swigCPtr, this);
+	}
 
-  public int maxAxis4() {
-    return LinearMathJNI.btVector4_maxAxis4(swigCPtr, this);
-  }
+	public int maxAxis4 () {
+		return LinearMathJNI.btVector4_maxAxis4(swigCPtr, this);
+	}
 
-  public int minAxis4() {
-    return LinearMathJNI.btVector4_minAxis4(swigCPtr, this);
-  }
+	public int minAxis4 () {
+		return LinearMathJNI.btVector4_minAxis4(swigCPtr, this);
+	}
 
-  public int closestAxis4() {
-    return LinearMathJNI.btVector4_closestAxis4(swigCPtr, this);
-  }
+	public int closestAxis4 () {
+		return LinearMathJNI.btVector4_closestAxis4(swigCPtr, this);
+	}
 
-  public void setValue(float _x, float _y, float _z, float _w) {
-    LinearMathJNI.btVector4_setValue(swigCPtr, this, _x, _y, _z, _w);
-  }
+	public void setValue (float _x, float _y, float _z, float _w) {
+		LinearMathJNI.btVector4_setValue(swigCPtr, this, _x, _y, _z, _w);
+	}
 
 }

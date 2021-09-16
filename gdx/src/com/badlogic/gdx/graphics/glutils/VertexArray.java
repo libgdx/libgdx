@@ -25,7 +25,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
 
-/** <p>
+/**
+ * <p>
  * Convenience class for working with OpenGL vertex arrays. It interleaves all data in the order you specified in the constructor
  * via {@link VertexAttribute}.
  * </p>
@@ -57,8 +58,8 @@ public class VertexArray implements VertexData {
 		this.attributes = attributes;
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
 		buffer = byteBuffer.asFloatBuffer();
-		((Buffer) buffer).flip();
-		((Buffer) byteBuffer).flip();
+		((Buffer)buffer).flip();
+		((Buffer)byteBuffer).flip();
 	}
 
 	@Override
@@ -83,16 +84,16 @@ public class VertexArray implements VertexData {
 	@Override
 	public void setVertices (float[] vertices, int offset, int count) {
 		BufferUtils.copy(vertices, byteBuffer, count, offset);
-		((Buffer) buffer).position(0);
-		((Buffer) buffer).limit(count);
+		((Buffer)buffer).position(0);
+		((Buffer)buffer).limit(count);
 	}
 
 	@Override
 	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
 		final int pos = byteBuffer.position();
-		((Buffer) byteBuffer).position(targetOffset * 4);
+		((Buffer)byteBuffer).position(targetOffset * 4);
 		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
-		((Buffer) byteBuffer).position(pos);
+		((Buffer)byteBuffer).position(pos);
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class VertexArray implements VertexData {
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
 		final int numAttributes = attributes.size();
-		((Buffer) byteBuffer).limit(buffer.limit() * 4);
+		((Buffer)byteBuffer).limit(buffer.limit() * 4);
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
@@ -112,11 +113,11 @@ public class VertexArray implements VertexData {
 				shader.enableVertexAttribute(location);
 
 				if (attribute.type == GL20.GL_FLOAT) {
-					((Buffer) buffer).position(attribute.offset / 4);
+					((Buffer)buffer).position(attribute.offset / 4);
 					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
 						attributes.vertexSize, buffer);
 				} else {
-					((Buffer) byteBuffer).position(attribute.offset);
+					((Buffer)byteBuffer).position(attribute.offset);
 					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
 						attributes.vertexSize, byteBuffer);
 				}
@@ -129,11 +130,11 @@ public class VertexArray implements VertexData {
 				shader.enableVertexAttribute(location);
 
 				if (attribute.type == GL20.GL_FLOAT) {
-					((Buffer) buffer).position(attribute.offset / 4);
+					((Buffer)buffer).position(attribute.offset / 4);
 					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
 						attributes.vertexSize, buffer);
 				} else {
-					((Buffer) byteBuffer).position(attribute.offset);
+					((Buffer)byteBuffer).position(attribute.offset);
 					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
 						attributes.vertexSize, byteBuffer);
 				}

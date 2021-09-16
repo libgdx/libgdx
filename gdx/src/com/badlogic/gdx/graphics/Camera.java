@@ -61,8 +61,8 @@ public abstract class Camera {
 	private final Vector3 tmpVec = new Vector3();
 	private final Ray ray = new Ray(new Vector3(), new Vector3());
 
-	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've manipulated
-	 * any of the attributes of the camera. */
+	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've
+	 * manipulated any of the attributes of the camera. */
 	public abstract void update ();
 
 	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes if <code>updateFrustum</code> is
@@ -142,8 +142,8 @@ public abstract class Camera {
 		quat.transform(up);
 	}
 
-	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given
-	 * point. The direction and up vector will not be orthogonalized.
+	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to
+	 * given point. The direction and up vector will not be orthogonalized.
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around

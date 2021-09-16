@@ -109,8 +109,8 @@ public class Encoder {
 					for (; i >= 0; i--) {
 						int matchBit = (matchByte >> i) & 1;
 						int bit = (symbol >> i) & 1;
-						price += com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice(m_Encoders[((1 + matchBit) << 8)
-							+ context], bit);
+						price += com.badlogic.gdx.utils.compression.rangecoder.Encoder
+							.GetPrice(m_Encoders[((1 + matchBit) << 8) + context], bit);
 						context = (context << 1) | bit;
 						if (matchBit != bit) {
 							i--;
@@ -400,9 +400,8 @@ public class Encoder {
 		_numDistancePairs = _matchFinder.GetMatches(_matchDistances);
 		if (_numDistancePairs > 0) {
 			lenRes = _matchDistances[_numDistancePairs - 2];
-			if (lenRes == _numFastBytes)
-				lenRes += _matchFinder.GetMatchLen((int)lenRes - 1, _matchDistances[_numDistancePairs - 1], Base.kMatchMaxLen
-					- lenRes);
+			if (lenRes == _numFastBytes) lenRes += _matchFinder.GetMatchLen((int)lenRes - 1, _matchDistances[_numDistancePairs - 1],
+				Base.kMatchMaxLen - lenRes);
 		}
 		_additionalOffset++;
 		return lenRes;
@@ -417,8 +416,8 @@ public class Encoder {
 
 	int GetRepLen1Price (int state, int posState) {
 		return com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice0(_isRepG0[state])
-			+ com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice0(_isRep0Long[(state << Base.kNumPosStatesBitsMax)
-				+ posState]);
+			+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
+				.GetPrice0(_isRep0Long[(state << Base.kNumPosStatesBitsMax) + posState]);
 	}
 
 	int GetPureRepPrice (int repIndex, int state, int posState) {
@@ -710,8 +709,8 @@ public class Encoder {
 			posState = (position & _posStateMask);
 
 			int curAnd1Price = curPrice
-				+ com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice0(_isMatch[(state << Base.kNumPosStatesBitsMax)
-					+ posState])
+				+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
+					.GetPrice0(_isMatch[(state << Base.kNumPosStatesBitsMax) + posState])
 				+ _literalEncoder.GetSubCoder(position, _matchFinder.GetIndexByte(0 - 2)).GetPrice(!Base.StateIsCharState(state),
 					matchByte, currentByte);
 
@@ -725,9 +724,8 @@ public class Encoder {
 				nextIsChar = true;
 			}
 
-			matchPrice = curPrice
-				+ com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice1(_isMatch[(state << Base.kNumPosStatesBitsMax)
-					+ posState]);
+			matchPrice = curPrice + com.badlogic.gdx.utils.compression.rangecoder.Encoder
+				.GetPrice1(_isMatch[(state << Base.kNumPosStatesBitsMax) + posState]);
 			repMatchPrice = matchPrice + com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice1(_isRep[state]);
 
 			if (matchByte == currentByte && !(nextOptimum.PosPrev < cur && nextOptimum.BackPrev == 0)) {
@@ -805,17 +803,15 @@ public class Encoder {
 						int state2 = Base.StateUpdateRep(state);
 
 						int posStateNext = (position + lenTest) & _posStateMask;
-						int curAndLenCharPrice = repMatchPrice
-							+ GetRepPrice(repIndex, lenTest, state, posState)
+						int curAndLenCharPrice = repMatchPrice + GetRepPrice(repIndex, lenTest, state, posState)
 							+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
 								.GetPrice0(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext])
 							+ _literalEncoder.GetSubCoder(position + lenTest, _matchFinder.GetIndexByte(lenTest - 1 - 1)).GetPrice(true,
 								_matchFinder.GetIndexByte(lenTest - 1 - (reps[repIndex] + 1)), _matchFinder.GetIndexByte(lenTest - 1));
 						state2 = Base.StateUpdateChar(state2);
 						posStateNext = (position + lenTest + 1) & _posStateMask;
-						int nextMatchPrice = curAndLenCharPrice
-							+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
-								.GetPrice1(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext]);
+						int nextMatchPrice = curAndLenCharPrice + com.badlogic.gdx.utils.compression.rangecoder.Encoder
+							.GetPrice1(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext]);
 						int nextRepMatchPrice = nextMatchPrice
 							+ com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice1(_isRep[state2]);
 
@@ -878,14 +874,13 @@ public class Encoder {
 								int curAndLenCharPrice = curAndLenPrice
 									+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
 										.GetPrice0(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext])
-									+ _literalEncoder.GetSubCoder(position + lenTest, _matchFinder.GetIndexByte(lenTest - 1 - 1))
-										.GetPrice(true, _matchFinder.GetIndexByte(lenTest - (curBack + 1) - 1),
-											_matchFinder.GetIndexByte(lenTest - 1));
+									+ _literalEncoder.GetSubCoder(position + lenTest, _matchFinder.GetIndexByte(lenTest - 1 - 1)).GetPrice(
+										true, _matchFinder.GetIndexByte(lenTest - (curBack + 1) - 1),
+										_matchFinder.GetIndexByte(lenTest - 1));
 								state2 = Base.StateUpdateChar(state2);
 								posStateNext = (position + lenTest + 1) & _posStateMask;
-								int nextMatchPrice = curAndLenCharPrice
-									+ com.badlogic.gdx.utils.compression.rangecoder.Encoder
-										.GetPrice1(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext]);
+								int nextMatchPrice = curAndLenCharPrice + com.badlogic.gdx.utils.compression.rangecoder.Encoder
+									.GetPrice1(_isMatch[(state2 << Base.kNumPosStatesBitsMax) + posStateNext]);
 								int nextRepMatchPrice = nextMatchPrice
 									+ com.badlogic.gdx.utils.compression.rangecoder.Encoder.GetPrice1(_isRep[state2]);
 
@@ -1170,7 +1165,8 @@ public class Encoder {
 			for (posSlot = 0; posSlot < _distTableSize; posSlot++)
 				_posSlotPrices[st + posSlot] = encoder.GetPrice(posSlot);
 			for (posSlot = Base.kEndPosModelIndex; posSlot < _distTableSize; posSlot++)
-				_posSlotPrices[st + posSlot] += ((((posSlot >> 1) - 1) - Base.kNumAlignBits) << com.badlogic.gdx.utils.compression.rangecoder.Encoder.kNumBitPriceShiftBits);
+				_posSlotPrices[st + posSlot] += ((((posSlot >> 1) - 1)
+					- Base.kNumAlignBits) << com.badlogic.gdx.utils.compression.rangecoder.Encoder.kNumBitPriceShiftBits);
 
 			int st2 = lenToPosState * Base.kNumFullDistances;
 			int i;

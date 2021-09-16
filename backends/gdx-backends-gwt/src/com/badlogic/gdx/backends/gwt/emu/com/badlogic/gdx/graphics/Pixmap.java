@@ -48,7 +48,7 @@ public class Pixmap implements Disposable {
 	 * @author mzechner */
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
-		
+
 		public static int toGlFormat (Format format) {
 			if (format == Alpha) return GL20.GL_ALPHA;
 			if (format == Intensity) return GL20.GL_ALPHA;
@@ -59,7 +59,7 @@ public class Pixmap implements Disposable {
 			if (format == RGBA8888) return GL20.GL_RGBA;
 			throw new GdxRuntimeException("unknown format: " + format);
 		}
-		
+
 		public static int toGlType (Format format) {
 			if (format == Alpha) return GL20.GL_UNSIGNED_BYTE;
 			if (format == Intensity) return GL20.GL_UNSIGNED_BYTE;
@@ -133,26 +133,26 @@ public class Pixmap implements Disposable {
 		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 	}
 
-	public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+	public static void downloadFromUrl (String url, final DownloadPixmapResponseListener responseListener) {
 		new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
 			@Override
-			public void onProgress(double amount) {
+			public void onProgress (double amount) {
 				// nothing to do
 			}
 
 			@Override
-			public void onFailure() {
+			public void onFailure () {
 				responseListener.downloadFailed(new Exception("Failed to download image"));
 			}
 
 			@Override
-			public void onSuccess(ImageElement result) {
+			public void onSuccess (ImageElement result) {
 				responseListener.downloadComplete(new Pixmap(result));
 			}
 		});
 	}
 
-	public Context2d getContext() {
+	public Context2d getContext () {
 		ensureCanvasExists();
 		return context;
 	}
@@ -172,8 +172,8 @@ public class Pixmap implements Disposable {
 	public Pixmap (int width, int height, Format format) {
 		this(width, height, (ImageElement)null);
 	}
-	
-	private Pixmap(int width, int height, ImageElement imageElement) {
+
+	private Pixmap (int width, int height, ImageElement imageElement) {
 		this.imageElement = imageElement;
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
@@ -185,7 +185,7 @@ public class Pixmap implements Disposable {
 		pixmaps.put(id, this);
 	}
 
-	private Pixmap(int width, int height, VideoElement videoElement) {
+	private Pixmap (int width, int height, VideoElement videoElement) {
 		this.videoElement = videoElement;
 		this.width = videoElement != null ? videoElement.getWidth() : width;
 		this.height = videoElement != null ? videoElement.getHeight() : height;
@@ -371,8 +371,8 @@ public class Pixmap implements Disposable {
 		line(x, y, x2, y2, DrawType.STROKE);
 	}
 
-	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
-	 * using the current color.
+	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points
+	 * downwards) using the current color.
 	 * 
 	 * @param x The x coordinate
 	 * @param y The y coordinate
@@ -388,7 +388,7 @@ public class Pixmap implements Disposable {
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner) */
 	public void drawPixmap (Pixmap pixmap, int x, int y) {
-		CanvasElement image = pixmap.getCanvasElement();		
+		CanvasElement image = pixmap.getCanvasElement();
 		image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
 	}
 
@@ -401,9 +401,9 @@ public class Pixmap implements Disposable {
 	 * @param srcy The source y-coordinate (top left corner);
 	 * @param srcWidth The width of the area form the other Pixmap in pixels
 	 * @param srcHeight The height of the area form the other Pixmap in pixles */
-	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {		
-		CanvasElement image = pixmap.getCanvasElement();		
-		image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);		
+	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
+		CanvasElement image = pixmap.getCanvasElement();
+		image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
@@ -517,10 +517,10 @@ public class Pixmap implements Disposable {
 		context.arc(x, y, radius, 0, 2 * Math.PI, false);
 		fillOrStrokePath(drawType);
 		context.closePath();
-		pixels = null;		
+		pixels = null;
 	}
-	
-	private void line(int x, int y, int x2, int y2, DrawType drawType) {
+
+	private void line (int x, int y, int x2, int y2, DrawType drawType) {
 		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
@@ -534,7 +534,7 @@ public class Pixmap implements Disposable {
 			context.setFillStyle(color);
 			context.setStrokeStyle(color);
 			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
-		}		
+		}
 		context.beginPath();
 		context.moveTo(x, y);
 		context.lineTo(x2, y2);
@@ -542,8 +542,8 @@ public class Pixmap implements Disposable {
 		context.closePath();
 		pixels = null;
 	}
-	
-	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
+
+	private void rectangle (int x, int y, int width, int height, DrawType drawType) {
 		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
@@ -563,35 +563,36 @@ public class Pixmap implements Disposable {
 		context.closePath();
 		pixels = null;
 	}
-	
-	private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
+
+	private void triangle (int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
 		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
 			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
-			context.moveTo(x1,y1);
-			context.lineTo(x2,y2);
-			context.lineTo(x3,y3);
-			context.lineTo(x1,y1);
+			context.moveTo(x1, y1);
+			context.lineTo(x2, y2);
+			context.lineTo(x3, y3);
+			context.lineTo(x1, y1);
 			fillOrStrokePath(drawType);
 			context.closePath();
 			context.setFillStyle(color);
 			context.setStrokeStyle(color);
 			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
-		}		
+		}
 		context.beginPath();
-		context.moveTo(x1,y1);
-		context.lineTo(x2,y2);
-		context.lineTo(x3,y3);
-		context.lineTo(x1,y1);
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x1, y1);
 		fillOrStrokePath(drawType);
 		context.closePath();
 		pixels = null;
 	}
-	
-	private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+
+	private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth,
+		int dstHeight) {
 		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
@@ -605,30 +606,31 @@ public class Pixmap implements Disposable {
 			context.setStrokeStyle(color);
 			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
 		}
-		if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
+		if (srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
 			context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
-		}		
+		}
 		pixels = null;
 	}
-	
-	private void fillOrStrokePath(DrawType drawType) {
+
+	private void fillOrStrokePath (DrawType drawType) {
 		ensureCanvasExists();
 		switch (drawType) {
-			case FILL:
-				context.fill();
-				break;
-			case STROKE:
-				context.stroke();
-				break;
-		}		
+		case FILL:
+			context.fill();
+			break;
+		case STROKE:
+			context.stroke();
+			break;
+		}
 	}
-	
+
 	private enum DrawType {
 		FILL, STROKE
 	}
 
 	public interface DownloadPixmapResponseListener {
-		void downloadComplete(Pixmap pixmap);
-		void downloadFailed(Throwable t);
+		void downloadComplete (Pixmap pixmap);
+
+		void downloadFailed (Throwable t);
 	}
 }

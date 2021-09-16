@@ -23,7 +23,8 @@ package java.nio;
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 abstract class IntArrayBuffer extends IntBuffer {
 
 	protected final int[] backingArray;

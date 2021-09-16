@@ -1,5 +1,5 @@
-package com.badlogic.gdx.tests.g3d.utils;
 
+package com.badlogic.gdx.tests.g3d.utils;
 
 import java.nio.IntBuffer;
 
@@ -27,22 +27,22 @@ public class DefaultTextureBinderTest extends GdxTest {
 		binderRR = new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 0, 4);
 		textures = new Array<Texture>();
 		map = new IntIntMap();
-		for(int i=0 ; i < numTextures ; i++){
+		for (int i = 0; i < numTextures; i++) {
 			textures.add(new Texture(16, 16, Format.RGBA8888));
 			map.put(textures.peek().getTextureObjectHandle(), i);
 		}
 	}
-	
+
 	@Override
 	public void dispose () {
-		for(Texture texture : textures){
+		for (Texture texture : textures) {
 			texture.dispose();
 		}
 	}
-	
+
 	@Override
 	public void render () {
-		
+
 		// Test LRU
 		binderLRU.begin();
 		binderLRU.bind(textures.get(0));
@@ -51,38 +51,40 @@ public class DefaultTextureBinderTest extends GdxTest {
 		binderLRU.bind(textures.get(2));
 		assertBindReuseCounts(3, 1);
 		assertBinding(0, 1, 2);
-		
+
 		binderLRU.bind(textures.get(3));
 		assertBindReuseCounts(1, 0);
 		assertBinding(0, 1, 2, 3);
-		
+
 		binderLRU.bind(textures.get(1));
 		assertBindReuseCounts(0, 1);
 		assertBinding(0, 1, 2, 3);
-		
+
 		binderLRU.bind(textures.get(5));
 		binderLRU.bind(textures.get(2));
 		assertBindReuseCounts(1, 1);
 		assertBinding(5, 1, 2, 3);
-		
+
 		binderLRU.end();
-		
+
 		printBindings(4);
 	}
-	private void assertBinding (int ...b) {
-		for(int i=0 ; i<b.length ; i++){
+
+	private void assertBinding (int... b) {
+		for (int i = 0; i < b.length; i++) {
 			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
 			IntBuffer buffer = BufferUtils.newIntBuffer(16);
 			Gdx.gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
 			int tex = buffer.get(0);
 			int textureID = map.get(tex, -1);
-			if(textureID != b[i]){
+			if (textureID != b[i]) {
 				System.err.println("UNIT " + i + " texture " + textureID + " expected " + b[i]);
 			}
 		}
 	}
+
 	private void printBindings (int n) {
-		for(int i=0 ; i<n ; i++){
+		for (int i = 0; i < n; i++) {
 			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
 			IntBuffer buffer = BufferUtils.newIntBuffer(16);
 			Gdx.gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
@@ -91,9 +93,12 @@ public class DefaultTextureBinderTest extends GdxTest {
 			System.out.println("UNIT " + i + " texture " + textureID);
 		}
 	}
+
 	private void assertBindReuseCounts (int expectedBC, int expectedRC) {
-		if(expectedBC != binderLRU.getBindCount()) System.err.println("bad bind count: " + binderLRU.getBindCount() + " expected" + expectedBC);
-		if(expectedRC != binderLRU.getReuseCount()) System.err.println("bad resuse count: " + binderLRU.getReuseCount() + " expected" + expectedRC);
+		if (expectedBC != binderLRU.getBindCount())
+			System.err.println("bad bind count: " + binderLRU.getBindCount() + " expected" + expectedBC);
+		if (expectedRC != binderLRU.getReuseCount())
+			System.err.println("bad resuse count: " + binderLRU.getReuseCount() + " expected" + expectedRC);
 		binderLRU.resetCounts();
 	}
 

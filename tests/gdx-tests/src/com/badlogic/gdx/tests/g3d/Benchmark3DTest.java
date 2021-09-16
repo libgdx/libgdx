@@ -49,8 +49,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 	protected Environment environment;
 
-	protected Label vertexCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel,
-		lightsLabel;
+	protected Label vertexCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel, lightsLabel;
 
 	protected CheckBox lightingCheckBox, lightsCheckBox;
 
@@ -188,10 +187,10 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 		DirectionalLightsAttribute dirLights = (DirectionalLightsAttribute)environment.get(DirectionalLightsAttribute.Type);
 		PointLightsAttribute pointLights = (PointLightsAttribute)environment.get(PointLightsAttribute.Type);
-		
+
 		stringBuilder.setLength(0);
 		stringBuilder.append("Lights: ");
-		
+
 		stringBuilder.append((dirLights == null ? 0 : dirLights.lights.size) + (pointLights == null ? 0 : pointLights.lights.size));
 		stringBuilder.append(", Directional: ");
 		stringBuilder.append(dirLights == null ? 0 : dirLights.lights.size);
@@ -237,7 +236,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		instance.transform.rotate(Vector3.Z, MathUtils.random(-180, 180));
 		instances.add(instance);
 	}
-	
+
 	@Override
 	public boolean keyUp (int keycode) {
 		if (keycode == Keys.SPACE || keycode == Keys.MENU) {
@@ -245,13 +244,13 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		}
 		return super.keyUp(keycode);
 	}
-	
+
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		onModelClicked(models[MathUtils.random(models.length-1)]);
+		onModelClicked(models[MathUtils.random(models.length - 1)]);
 		return false;
 	}
-	
+
 	@Override
 	public void dispose () {
 		super.dispose();

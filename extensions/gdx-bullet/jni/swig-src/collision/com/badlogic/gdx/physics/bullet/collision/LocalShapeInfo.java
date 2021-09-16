@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class LocalShapeInfo extends BulletBase {
 	private long swigCPtr;
-	
-	protected LocalShapeInfo(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected LocalShapeInfo (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new LocalShapeInfo, normally you should not need this constructor it's intended for low-level usage. */ 
-	public LocalShapeInfo(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new LocalShapeInfo, normally you should not need this constructor it's intended for low-level usage. */
+	public LocalShapeInfo (long cPtr, boolean cMemoryOwn) {
 		this("LocalShapeInfo", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(LocalShapeInfo obj) {
+
+	public static long getCPtr (LocalShapeInfo obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,24 +53,24 @@ public class LocalShapeInfo extends BulletBase {
 		super.delete();
 	}
 
-  public void setShapePart(int value) {
-    CollisionJNI.LocalShapeInfo_shapePart_set(swigCPtr, this, value);
-  }
+	public void setShapePart (int value) {
+		CollisionJNI.LocalShapeInfo_shapePart_set(swigCPtr, this, value);
+	}
 
-  public int getShapePart() {
-    return CollisionJNI.LocalShapeInfo_shapePart_get(swigCPtr, this);
-  }
+	public int getShapePart () {
+		return CollisionJNI.LocalShapeInfo_shapePart_get(swigCPtr, this);
+	}
 
-  public void setTriangleIndex(int value) {
-    CollisionJNI.LocalShapeInfo_triangleIndex_set(swigCPtr, this, value);
-  }
+	public void setTriangleIndex (int value) {
+		CollisionJNI.LocalShapeInfo_triangleIndex_set(swigCPtr, this, value);
+	}
 
-  public int getTriangleIndex() {
-    return CollisionJNI.LocalShapeInfo_triangleIndex_get(swigCPtr, this);
-  }
+	public int getTriangleIndex () {
+		return CollisionJNI.LocalShapeInfo_triangleIndex_get(swigCPtr, this);
+	}
 
-  public LocalShapeInfo() {
-    this(CollisionJNI.new_LocalShapeInfo(), true);
-  }
+	public LocalShapeInfo () {
+		this(CollisionJNI.new_LocalShapeInfo(), true);
+	}
 
 }

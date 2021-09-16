@@ -31,8 +31,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /** Demonstrates how to do simple z-sorting of sprites
  * @author mzechner */
 public class SortedSpriteTest extends GdxTest {
-	/** Sprite based class that adds a z-coordinate for depth sorting. Note that allt he constructors were auto-generated in Eclipse
-	 * (alt + shift + s, c).
+	/** Sprite based class that adds a z-coordinate for depth sorting. Note that allt he constructors were auto-generated in
+	 * Eclipse (alt + shift + s, c).
 	 * @author mzechner */
 	public class MySprite extends Sprite {
 		public float z;

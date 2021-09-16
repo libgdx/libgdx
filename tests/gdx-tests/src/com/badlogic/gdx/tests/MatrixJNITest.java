@@ -24,15 +24,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class MatrixJNITest extends GdxTest {
-	
+
 	private static final float EPSILON = 1e-6f;
-	
+
 	@Override
 	public void create () {
-		
+
 		testRotateTowardDirection();
 		testRotateTowardTarget();
-		
+
 		Matrix4 mat1 = new Matrix4();
 		Matrix4 mat2 = new Matrix4();
 		Matrix4 mat3 = new Matrix4();
@@ -74,7 +74,7 @@ public class MatrixJNITest extends GdxTest {
 		check(mat1, mat3);
 
 		bench();
-		
+
 		System.out.println("All tests passed.");
 	}
 
@@ -142,54 +142,56 @@ public class MatrixJNITest extends GdxTest {
 			if (mat1.val[i] != mat2.val[i]) throw new GdxRuntimeException("matrices not equal");
 		}
 	}
-	
-	public void testRotateTowardDirection(){
-		
+
+	public void testRotateTowardDirection () {
+
 		Vector3 direction = new Vector3(1, 0, 1).nor();
 		Vector3 up = new Vector3(1, 1, 0).nor();
-		
+
 		Matrix4 m1 = new Matrix4().setToLookAt(direction, up).inv();
-		
+
 		Matrix4 m2 = new Matrix4().rotateTowardDirection(direction, up);
-		
+
 		assertEquals(m1, m2, EPSILON);
 	}
-	
-	public void testRotateTowardTarget(){
-		
+
+	public void testRotateTowardTarget () {
+
 		Vector3 position = new Vector3(-4, -2, 30).nor();
 		Vector3 target = new Vector3(10, 8, 3).nor();
 		Vector3 up = new Vector3(0, 1, 0).nor();
-		
+
 		Matrix4 m1 = new Matrix4().setToLookAt(position, target, up).inv();
-		
+
 		Matrix4 m2 = new Matrix4().translate(position).rotateTowardTarget(target, up);
-		
+
 		assertEquals(m1, m2, EPSILON);
 	}
-	
-	private static void assertEquals(Matrix4 expected, Matrix4 actual, float delta) {
+
+	private static void assertEquals (Matrix4 expected, Matrix4 actual, float delta) {
 		assertEquals(expected.val[Matrix4.M00], actual.val[Matrix4.M00], delta);
 		assertEquals(expected.val[Matrix4.M01], actual.val[Matrix4.M01], delta);
 		assertEquals(expected.val[Matrix4.M02], actual.val[Matrix4.M02], delta);
 		assertEquals(expected.val[Matrix4.M03], actual.val[Matrix4.M03], delta);
-		
+
 		assertEquals(expected.val[Matrix4.M10], actual.val[Matrix4.M10], delta);
 		assertEquals(expected.val[Matrix4.M11], actual.val[Matrix4.M11], delta);
 		assertEquals(expected.val[Matrix4.M12], actual.val[Matrix4.M12], delta);
 		assertEquals(expected.val[Matrix4.M13], actual.val[Matrix4.M13], delta);
-		
+
 		assertEquals(expected.val[Matrix4.M20], actual.val[Matrix4.M20], delta);
 		assertEquals(expected.val[Matrix4.M21], actual.val[Matrix4.M21], delta);
 		assertEquals(expected.val[Matrix4.M22], actual.val[Matrix4.M22], delta);
 		assertEquals(expected.val[Matrix4.M23], actual.val[Matrix4.M23], delta);
-		
+
 		assertEquals(expected.val[Matrix4.M30], actual.val[Matrix4.M30], delta);
 		assertEquals(expected.val[Matrix4.M31], actual.val[Matrix4.M31], delta);
 		assertEquals(expected.val[Matrix4.M32], actual.val[Matrix4.M32], delta);
 		assertEquals(expected.val[Matrix4.M33], actual.val[Matrix4.M33], delta);
 	}
-	private static void assertEquals(float expected, float actual, float delta){
-		if(Math.abs(expected - actual) > delta) throw new GdxRuntimeException("assertion failed: expected " + expected + " actual " + actual);
+
+	private static void assertEquals (float expected, float actual, float delta) {
+		if (Math.abs(expected - actual) > delta)
+			throw new GdxRuntimeException("assertion failed: expected " + expected + " actual " + actual);
 	}
 }

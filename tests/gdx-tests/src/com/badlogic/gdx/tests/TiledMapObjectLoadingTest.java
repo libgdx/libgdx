@@ -76,13 +76,13 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
 		shapeRenderer = new ShapeRenderer();
-		
+
 		// Test get objects by type (adding circle manually because it doesn't exists in Tiledmap editor)
-		
+
 		loadingStatus = "loading status:\n";
 		MapLayer layer = map.getLayers().get("Objects");
 		MapObjects mapObjects = layer.getObjects();
-		
+
 		mapObjects.add(new CircleMapObject(280, 400, 50));
 
 		loadingStatus += "- MapObject : " + mapObjects.getByType(MapObject.class).size + "\n";

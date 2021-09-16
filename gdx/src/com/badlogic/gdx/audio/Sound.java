@@ -20,7 +20,8 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 
-/** <p>
+/**
+ * <p>
  * A Sound is a short audio clip that can be played numerous times in parallel. It's completely loaded into memory so only load
  * small audio files. Call the {@link #dispose()} method when you're done using the Sound.
  * </p>
@@ -60,14 +61,14 @@ public interface Sound extends Disposable {
 	 * @return the id of the sound instance if successful, or -1 on failure. */
 	public long loop ();
 
-	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-	 * via a call to {@link #stop(long)} using the returned id.
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the
+	 * sound via a call to {@link #stop(long)} using the returned id.
 	 * @param volume the volume in the range [0, 1]
 	 * @return the id of the sound instance if successful, or -1 on failure. */
 	public long loop (float volume);
 
-	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-	 * via a call to {@link #stop(long)} using the returned id.
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the
+	 * sound via a call to {@link #stop(long)} using the returned id.
 	 * @param volume the volume in the range [0,1]
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
@@ -86,8 +87,8 @@ public interface Sound extends Disposable {
 	/** Releases all the resources. */
 	public void dispose ();
 
-	/** Stops the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no longer
-	 * playing, this has no effect.
+	/** Stops the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no
+	 * longer playing, this has no effect.
 	 * @param soundId the sound id */
 	public void stop (long soundId);
 
@@ -106,8 +107,8 @@ public interface Sound extends Disposable {
 	 * @param looping whether to loop or not. */
 	public void setLooping (long soundId, boolean looping);
 
-	/** Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
-	 * If the sound is no longer playing, this has no effect.
+	/** Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or
+	 * {@link #play(float)}. If the sound is no longer playing, this has no effect.
 	 * @param soundId the sound id
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0 */
 	public void setPitch (long soundId, float pitch);
@@ -123,5 +124,5 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
-	public void setPan (long soundId, float pan, float volume);	
+	public void setPan (long soundId, float pan, float volume);
 }

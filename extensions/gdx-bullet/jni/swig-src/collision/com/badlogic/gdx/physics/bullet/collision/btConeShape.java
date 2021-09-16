@@ -8,46 +8,40 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btConeShape extends btConvexInternalShape {
 	private long swigCPtr;
-	
-	protected btConeShape(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConeShape (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConeShape_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btConeShape, normally you should not need this constructor it's intended for low-level usage. */
-	public btConeShape(long cPtr, boolean cMemoryOwn) {
+	public btConeShape (long cPtr, boolean cMemoryOwn) {
 		this("btConeShape", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConeShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConeShape obj) {
+
+	public static long getCPtr (btConeShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,64 +52,64 @@ public class btConeShape extends btConvexInternalShape {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConeShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConeShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConeShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConeShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConeShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConeShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConeShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConeShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConeShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConeShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConeShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConeShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConeShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConeShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConeShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConeShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public btConeShape(float radius, float height) {
-    this(CollisionJNI.new_btConeShape(radius, height), true);
-  }
+	public btConeShape (float radius, float height) {
+		this(CollisionJNI.new_btConeShape(radius, height), true);
+	}
 
-  public float getRadius() {
-    return CollisionJNI.btConeShape_getRadius(swigCPtr, this);
-  }
+	public float getRadius () {
+		return CollisionJNI.btConeShape_getRadius(swigCPtr, this);
+	}
 
-  public float getHeight() {
-    return CollisionJNI.btConeShape_getHeight(swigCPtr, this);
-  }
+	public float getHeight () {
+		return CollisionJNI.btConeShape_getHeight(swigCPtr, this);
+	}
 
-  public void setRadius(float radius) {
-    CollisionJNI.btConeShape_setRadius(swigCPtr, this, radius);
-  }
+	public void setRadius (float radius) {
+		CollisionJNI.btConeShape_setRadius(swigCPtr, this, radius);
+	}
 
-  public void setHeight(float height) {
-    CollisionJNI.btConeShape_setHeight(swigCPtr, this, height);
-  }
+	public void setHeight (float height) {
+		CollisionJNI.btConeShape_setHeight(swigCPtr, this, height);
+	}
 
-  public void setConeUpIndex(int upIndex) {
-    CollisionJNI.btConeShape_setConeUpIndex(swigCPtr, this, upIndex);
-  }
+	public void setConeUpIndex (int upIndex) {
+		CollisionJNI.btConeShape_setConeUpIndex(swigCPtr, this, upIndex);
+	}
 
-  public int getConeUpIndex() {
-    return CollisionJNI.btConeShape_getConeUpIndex(swigCPtr, this);
-  }
+	public int getConeUpIndex () {
+		return CollisionJNI.btConeShape_getConeUpIndex(swigCPtr, this);
+	}
 
 }

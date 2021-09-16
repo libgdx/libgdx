@@ -49,11 +49,11 @@ public class WebAudioAPIManager implements LifecycleListener {
 		Gdx.app.addLifecycleListener(this);
 
 		/*
-		 * The Web Audio API is blocked on many platforms until the developer triggers the first sound playback using the
-		 * API. But it MUST happen as a direct result of a few specific input events. This is a major point of confusion for
-		 * developers new to the platform. Here we attach event listeners to the graphics canvas in order to unlock the sound system
-		 * on the first input event. On the event, we play a silent sample, which should unlock the sound - on platforms where it is
-		 * not necessary the effect should not be noticeable (i.e. we play silence). As soon as the attempt to unlock has been
+		 * The Web Audio API is blocked on many platforms until the developer triggers the first sound playback using the API. But
+		 * it MUST happen as a direct result of a few specific input events. This is a major point of confusion for developers new
+		 * to the platform. Here we attach event listeners to the graphics canvas in order to unlock the sound system on the first
+		 * input event. On the event, we play a silent sample, which should unlock the sound - on platforms where it is not
+		 * necessary the effect should not be noticeable (i.e. we play silence). As soon as the attempt to unlock has been
 		 * performed, we remove all the event listeners.
 		 */
 		if (isAudioContextLocked(audioContext))
@@ -96,11 +96,11 @@ public class WebAudioAPIManager implements LifecycleListener {
 		soundUnlocked = true;
 	}
 
-	public static boolean isSoundUnlocked() {
+	public static boolean isSoundUnlocked () {
 		return soundUnlocked;
 	}
 
-	static native boolean isAudioContextLocked(JavaScriptObject audioContext)  /*-{
+	static native boolean isAudioContextLocked (JavaScriptObject audioContext) /*-{
 		return audioContext.state !== 'running';
 	}-*/;
 
@@ -161,7 +161,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	public Sound createSound (FileHandle fileHandle) {
 		final WebAudioAPISound newSound = new WebAudioAPISound(audioContext, globalVolumeNode, audioControlGraphPool);
 
-		String url = ((GwtFileHandle) fileHandle).getAssetUrl();
+		String url = ((GwtFileHandle)fileHandle).getAssetUrl();
 
 		XMLHttpRequest request = XMLHttpRequest.create();
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
@@ -190,7 +190,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	}
 
 	public Music createMusic (FileHandle fileHandle) {
-		String url = ((GwtFileHandle) fileHandle).getAssetUrl();
+		String url = ((GwtFileHandle)fileHandle).getAssetUrl();
 
 		Audio audio = Audio.createIfSupported();
 		audio.setSrc(url);

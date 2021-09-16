@@ -23,9 +23,7 @@ import org.robovm.objc.annotation.NativeClass;
 import org.robovm.objc.annotation.Property;
 import org.robovm.rt.bro.annotation.Library;
 
-/**
- * @author Niklas Therning
- */
+/** @author Niklas Therning */
 @Library(Library.INTERNAL)
 @NativeClass
 public final class OALSimpleAudio extends NSObject {
@@ -48,7 +46,7 @@ public final class OALSimpleAudio extends NSObject {
 
 	@Method(selector = "playBuffer:volume:pitch:pan:loop:")
 	public native ALSource playBuffer (ALBuffer buffer, float volume, float pitch, float pan, boolean loop);
-	
+
 	@Property
 	public native boolean isAllowIpod ();
 
@@ -66,8 +64,8 @@ public final class OALSimpleAudio extends NSObject {
 
 	@Property
 	public native void setUseHardwareIfAvailable (boolean useHardwareIfAvailable);
-	
+
 	@Property(selector = "channel")
 	public native ALChannelSource getChannelSource ();
-	
+
 }

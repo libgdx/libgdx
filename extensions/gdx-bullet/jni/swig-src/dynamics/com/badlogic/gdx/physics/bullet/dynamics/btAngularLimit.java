@@ -11,44 +11,39 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btAngularLimit extends BulletBase {
 	private long swigCPtr;
-	
-	protected btAngularLimit(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btAngularLimit (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btAngularLimit, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btAngularLimit(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btAngularLimit, normally you should not need this constructor it's intended for low-level usage. */
+	public btAngularLimit (long cPtr, boolean cMemoryOwn) {
 		this("btAngularLimit", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btAngularLimit obj) {
+
+	public static long getCPtr (btAngularLimit obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,72 +54,72 @@ public class btAngularLimit extends BulletBase {
 		super.delete();
 	}
 
-  public btAngularLimit() {
-    this(DynamicsJNI.new_btAngularLimit(), true);
-  }
+	public btAngularLimit () {
+		this(DynamicsJNI.new_btAngularLimit(), true);
+	}
 
-  public void set(float low, float high, float _softness, float _biasFactor, float _relaxationFactor) {
-    DynamicsJNI.btAngularLimit_set__SWIG_0(swigCPtr, this, low, high, _softness, _biasFactor, _relaxationFactor);
-  }
+	public void set (float low, float high, float _softness, float _biasFactor, float _relaxationFactor) {
+		DynamicsJNI.btAngularLimit_set__SWIG_0(swigCPtr, this, low, high, _softness, _biasFactor, _relaxationFactor);
+	}
 
-  public void set(float low, float high, float _softness, float _biasFactor) {
-    DynamicsJNI.btAngularLimit_set__SWIG_1(swigCPtr, this, low, high, _softness, _biasFactor);
-  }
+	public void set (float low, float high, float _softness, float _biasFactor) {
+		DynamicsJNI.btAngularLimit_set__SWIG_1(swigCPtr, this, low, high, _softness, _biasFactor);
+	}
 
-  public void set(float low, float high, float _softness) {
-    DynamicsJNI.btAngularLimit_set__SWIG_2(swigCPtr, this, low, high, _softness);
-  }
+	public void set (float low, float high, float _softness) {
+		DynamicsJNI.btAngularLimit_set__SWIG_2(swigCPtr, this, low, high, _softness);
+	}
 
-  public void set(float low, float high) {
-    DynamicsJNI.btAngularLimit_set__SWIG_3(swigCPtr, this, low, high);
-  }
+	public void set (float low, float high) {
+		DynamicsJNI.btAngularLimit_set__SWIG_3(swigCPtr, this, low, high);
+	}
 
-  public void test(float angle) {
-    DynamicsJNI.btAngularLimit_test(swigCPtr, this, angle);
-  }
+	public void test (float angle) {
+		DynamicsJNI.btAngularLimit_test(swigCPtr, this, angle);
+	}
 
-  public float getSoftness() {
-    return DynamicsJNI.btAngularLimit_getSoftness(swigCPtr, this);
-  }
+	public float getSoftness () {
+		return DynamicsJNI.btAngularLimit_getSoftness(swigCPtr, this);
+	}
 
-  public float getBiasFactor() {
-    return DynamicsJNI.btAngularLimit_getBiasFactor(swigCPtr, this);
-  }
+	public float getBiasFactor () {
+		return DynamicsJNI.btAngularLimit_getBiasFactor(swigCPtr, this);
+	}
 
-  public float getRelaxationFactor() {
-    return DynamicsJNI.btAngularLimit_getRelaxationFactor(swigCPtr, this);
-  }
+	public float getRelaxationFactor () {
+		return DynamicsJNI.btAngularLimit_getRelaxationFactor(swigCPtr, this);
+	}
 
-  public float getCorrection() {
-    return DynamicsJNI.btAngularLimit_getCorrection(swigCPtr, this);
-  }
+	public float getCorrection () {
+		return DynamicsJNI.btAngularLimit_getCorrection(swigCPtr, this);
+	}
 
-  public float getSign() {
-    return DynamicsJNI.btAngularLimit_getSign(swigCPtr, this);
-  }
+	public float getSign () {
+		return DynamicsJNI.btAngularLimit_getSign(swigCPtr, this);
+	}
 
-  public float getHalfRange() {
-    return DynamicsJNI.btAngularLimit_getHalfRange(swigCPtr, this);
-  }
+	public float getHalfRange () {
+		return DynamicsJNI.btAngularLimit_getHalfRange(swigCPtr, this);
+	}
 
-  public boolean isLimit() {
-    return DynamicsJNI.btAngularLimit_isLimit(swigCPtr, this);
-  }
+	public boolean isLimit () {
+		return DynamicsJNI.btAngularLimit_isLimit(swigCPtr, this);
+	}
 
-  public void fit(SWIGTYPE_p_float angle) {
-    DynamicsJNI.btAngularLimit_fit(swigCPtr, this, SWIGTYPE_p_float.getCPtr(angle));
-  }
+	public void fit (SWIGTYPE_p_float angle) {
+		DynamicsJNI.btAngularLimit_fit(swigCPtr, this, SWIGTYPE_p_float.getCPtr(angle));
+	}
 
-  public float getError() {
-    return DynamicsJNI.btAngularLimit_getError(swigCPtr, this);
-  }
+	public float getError () {
+		return DynamicsJNI.btAngularLimit_getError(swigCPtr, this);
+	}
 
-  public float getLow() {
-    return DynamicsJNI.btAngularLimit_getLow(swigCPtr, this);
-  }
+	public float getLow () {
+		return DynamicsJNI.btAngularLimit_getLow(swigCPtr, this);
+	}
 
-  public float getHigh() {
-    return DynamicsJNI.btAngularLimit_getHigh(swigCPtr, this);
-  }
+	public float getHigh () {
+		return DynamicsJNI.btAngularLimit_getHigh(swigCPtr, this);
+	}
 
 }

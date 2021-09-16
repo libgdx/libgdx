@@ -26,7 +26,8 @@ import com.google.gwt.corp.compatibility.Numbers;
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 abstract class HeapByteBuffer extends BaseByteBuffer {
 
 	protected final byte[] backingArray;

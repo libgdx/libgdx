@@ -31,8 +31,8 @@ import com.badlogic.gdx.utils.Array;
  * to register it.
  * </p>
  * @author Daniel Holderbaum */
-public class FreeTypeFontGeneratorLoader extends
-	SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters> {
+public class FreeTypeFontGeneratorLoader
+	extends SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters> {
 
 	public FreeTypeFontGeneratorLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -54,7 +54,7 @@ public class FreeTypeFontGeneratorLoader extends
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
 		return null;
 	}
-	
+
 	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
 	}
 }

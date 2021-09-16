@@ -24,7 +24,8 @@ package java.nio;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
 
 	static ReadOnlyShortArrayBuffer copy (ShortArrayBuffer other, int markOfOther) {

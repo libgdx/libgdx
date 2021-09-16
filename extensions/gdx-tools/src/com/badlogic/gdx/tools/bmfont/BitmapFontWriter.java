@@ -29,9 +29,9 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * The font file format is from the AngelCodeFont BMFont tool.
  * <p>
- * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}. BitmapFontWriter gives more flexibility, eg
- * borders and shadows can be used. Hiero is able to avoid outputting the same glyph image more than once if multiple character
- * codes have the exact same glyph.
+ * Output is nearly identical to the FreeType settting in the Hiero tool {@Link com.badlogic.gdx.tools.hiero.Hiero}.
+ * BitmapFontWriter gives more flexibility, eg borders and shadows can be used. Hiero is able to avoid outputting the same glyph
+ * image more than once if multiple character codes have the exact same glyph.
  * @author mattdesl AKA davedes */
 public class BitmapFontWriter {
 
@@ -82,8 +82,8 @@ public class BitmapFontWriter {
 		public int horizontal, vertical;
 	}
 
-	/** The font "info" line; everything except padding and override metrics are ignored by libGDX's BitmapFont reader, it is otherwise just useful for
-	 * clean and organized output. */
+	/** The font "info" line; everything except padding and override metrics are ignored by libGDX's BitmapFont reader, it is
+	 * otherwise just useful for clean and organized output. */
 	public static class FontInfo {
 		/** Face name */
 		public String face;
@@ -252,7 +252,8 @@ public class BitmapFontWriter {
 				.append(quote(String.format("%-5s", empty ? 0 : g.width), true)).append("height=")
 				.append(quote(String.format("%-5s", empty ? 0 : g.height), true)).append("xoffset=")
 				.append(quote(String.format("%-5s", g.xoffset - padLeft), true)).append("yoffset=")
-				.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
+				.append(
+					quote(String.format("%-5s", fontData.flipped ? g.yoffset + padTop : -(g.height + (g.yoffset + padTop))), true))
 				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
 				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
 				.append("\n");
@@ -288,15 +289,11 @@ public class BitmapFontWriter {
 		if (info.hasOverrideMetrics) {
 			if (xml) buf.append("\t<metrics>\n");
 
-			buf.append(xmlTab).append(xmlOpen)
-					.append("metrics ascent=").append(quote(info.ascent, true))
-					.append(" descent=").append(quote(info.descent, true))
-					.append(" down=").append(quote(info.down, true))
-					.append(" capHeight=").append(quote(info.capHeight, true))
-					.append(" lineHeight=").append(quote(info.lineHeight, true))
-					.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true))
-					.append(" xHeight=").append(quote(info.xHeight, true))
-					.append(xmlCloseSelf).append("\n");
+			buf.append(xmlTab).append(xmlOpen).append("metrics ascent=").append(quote(info.ascent, true)).append(" descent=")
+				.append(quote(info.descent, true)).append(" down=").append(quote(info.down, true)).append(" capHeight=")
+				.append(quote(info.capHeight, true)).append(" lineHeight=").append(quote(info.lineHeight, true))
+				.append(" spaceXAdvance=").append(quote(info.spaceXAdvance, true)).append(" xHeight=")
+				.append(quote(info.xHeight, true)).append(xmlCloseSelf).append("\n");
 
 			if (xml) buf.append("\t</metrics>\n");
 		}

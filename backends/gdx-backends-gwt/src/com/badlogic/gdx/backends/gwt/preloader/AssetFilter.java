@@ -36,11 +36,8 @@ public interface AssetFilter {
 	 * @return whether to include the file in the war/ folder or not. */
 	public boolean accept (String file, boolean isDirectory);
 
-	/**
-	 *
-	 * @param file the file to filter
-	 * @return whether to preload the file, or to lazy load it via AssetManager
-	 */
+	/** @param file the file to filter
+	 * @return whether to preload the file, or to lazy load it via AssetManager */
 	public boolean preload (String file);
 
 	/** @param file the file to get the type for
@@ -48,7 +45,7 @@ public interface AssetFilter {
 	public AssetType getType (String file);
 
 	/** @param file the file to get the bundle name for
-	 * @return the name of the bundle to which this file should be added */	
-	public String getBundleName(String file);
+	 * @return the name of the bundle to which this file should be added */
+	public String getBundleName (String file);
 
 }

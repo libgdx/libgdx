@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
-/** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It does
- *         not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
+/** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It
+ *         does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
 public abstract class BaseShader implements Shader {
 	public interface Validator {
 		/** @return True if the input is valid for the renderable, false otherwise. */
@@ -46,7 +46,8 @@ public abstract class BaseShader implements Shader {
 	}
 
 	public interface Setter {
-		/** @return True if the uniform only has to be set once per render call, false if the uniform must be set for each renderable. */
+		/** @return True if the uniform only has to be set once per render call, false if the uniform must be set for each
+		 *         renderable. */
 		boolean isGlobal (final BaseShader shader, final int inputID);
 
 		void set (final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);

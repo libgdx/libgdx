@@ -200,7 +200,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		return gyroscopeValues[0];
@@ -222,7 +222,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
-	public void getTextInput(final TextInputListener listener, final String title, final String text, final String hint, final OnscreenKeyboardType keyboardType) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint,
+		final OnscreenKeyboardType keyboardType) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
@@ -232,7 +233,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					input.setInputType(getAndroidInputType(keyboardType));
 				}
 				input.setHint(hint);
-				input.setText(text);				
+				input.setText(text);
 				input.setSingleLine();
 				if (keyboardType == OnscreenKeyboardType.Password) {
 					input.setTransformationMethod(new PasswordTransformationMethod());
@@ -274,27 +275,27 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		});
 	}
 
-	public static int getAndroidInputType(OnscreenKeyboardType type) {
+	public static int getAndroidInputType (OnscreenKeyboardType type) {
 		int inputType;
 		switch (type) {
-			case NumberPad:
-				inputType = InputType.TYPE_CLASS_NUMBER;
-				break;
-			case PhonePad:
-				inputType = InputType.TYPE_CLASS_PHONE;
-				break;
-			case Email:
-				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-				break;
-			case Password:
-				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-				break;
-			case URI:
-				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
-				break;
-			default:
-				inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
-				break;
+		case NumberPad:
+			inputType = InputType.TYPE_CLASS_NUMBER;
+			break;
+		case PhonePad:
+			inputType = InputType.TYPE_CLASS_PHONE;
+			break;
+		case Email:
+			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+			break;
+		case Password:
+			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+			break;
+		case URI:
+			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+			break;
+		default:
+			inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+			break;
 		}
 		return inputType;
 	}
@@ -484,40 +485,40 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 // TODO Seems unused. Delete when confirmed.
-//	/** Called in {@link AndroidLiveWallpaperService} on tap
-//	 * @param x
-//	 * @param y */
-//	public void onTap (int x, int y) {
-//		postTap(x, y);
-//	}
+// /** Called in {@link AndroidLiveWallpaperService} on tap
+// * @param x
+// * @param y */
+// public void onTap (int x, int y) {
+// postTap(x, y);
+// }
 //
-//	/** Called in {@link AndroidLiveWallpaperService} on drop
-//	 * @param x
-//	 * @param y */
-//	public void onDrop (int x, int y) {
-//		postTap(x, y);
-//	}
+// /** Called in {@link AndroidLiveWallpaperService} on drop
+// * @param x
+// * @param y */
+// public void onDrop (int x, int y) {
+// postTap(x, y);
+// }
 //
-//	protected void postTap (int x, int y) {
-//		synchronized (this) {
-//			TouchEvent event = usedTouchEvents.obtain();
-//			event.timeStamp = System.nanoTime();
-//			event.pointer = 0;
-//			event.x = x;
-//			event.y = y;
-//			event.type = TouchEvent.TOUCH_DOWN;
-//			touchEvents.add(event);
+// protected void postTap (int x, int y) {
+// synchronized (this) {
+// TouchEvent event = usedTouchEvents.obtain();
+// event.timeStamp = System.nanoTime();
+// event.pointer = 0;
+// event.x = x;
+// event.y = y;
+// event.type = TouchEvent.TOUCH_DOWN;
+// touchEvents.add(event);
 //
-//			event = usedTouchEvents.obtain();
-//			event.timeStamp = System.nanoTime();
-//			event.pointer = 0;
-//			event.x = x;
-//			event.y = y;
-//			event.type = TouchEvent.TOUCH_UP;
-//			touchEvents.add(event);
-//		}
-//		Gdx.app.getGraphics().requestRendering();
-//	}
+// event = usedTouchEvents.obtain();
+// event.timeStamp = System.nanoTime();
+// event.pointer = 0;
+// event.x = x;
+// event.y = y;
+// event.type = TouchEvent.TOUCH_UP;
+// touchEvents.add(event);
+// }
+// Gdx.app.getGraphics().requestRendering();
+// }
 
 	@Override
 	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
@@ -527,8 +528,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		// If the key is held sufficiently long that it repeats, then the initial down is followed
 		// additional key events with ACTION_DOWN and a non-zero value for getRepeatCount().
 		// We are only interested in the first key down event here and must ignore all others
-		if (e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0)
-			return isCatchKey(keyCode);
+		if (e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0) return isCatchKey(keyCode);
 
 		synchronized (this) {
 			KeyEvent event = null;
@@ -552,7 +552,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			if (e.getKeyCode() < 0 || e.getKeyCode() > Keys.MAX_KEYCODE) {
 				return false;
 			}
-			
+
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
@@ -625,8 +625,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
 					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
-					if(((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
-						((GLSurfaceView20) view).onscreenKeyboardType = tmp;
+					if (((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
+						((GLSurfaceView20)view).onscreenKeyboardType = tmp;
 						manager.restartInput(view);
 					}
 
@@ -681,8 +681,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
-		if(button < 0 || button > NUM_TOUCHES) return false;
+	public boolean isButtonJustPressed (int button) {
+		if (button < 0 || button > NUM_TOUCHES) return false;
 		return justPressedButtons[button];
 	}
 
@@ -690,10 +690,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	final float[] orientation = new float[3];
 
 	private void updateOrientation () {
-		if (rotationVectorAvailable){
+		if (rotationVectorAvailable) {
 			SensorManager.getRotationMatrixFromVector(R, rotationVectorValues);
 		} else if (!SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
-				return; // compass + accelerometer in free fall
+			return; // compass + accelerometer in free fall
 		}
 		SensorManager.getOrientation(R, orientation);
 		azimuth = (float)Math.toDegrees(orientation[0]);
@@ -701,10 +701,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		roll = (float)Math.toDegrees(orientation[2]);
 	}
 
-	/** Returns the rotation matrix describing the devices rotation as per <a href=
-	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])"
-	 * >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix if the platform
-	 * does not have an accelerometer and compass, or a rotation vector sensor.
+	/** Returns the rotation matrix describing the devices rotation as per
+	 * <a href= "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[],
+	 * float[], float[])" >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix
+	 * if the platform does not have an accelerometer and compass, or a rotation vector sensor.
 	 * @param matrix */
 	public void getRotationMatrix (float[] matrix) {
 		if (rotationVectorAvailable)
@@ -745,12 +745,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
 				accelerometerListener = new SensorListener();
-				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer,
-					config.sensorDelay);
+				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer, config.sensorDelay);
 			}
 		} else
 			accelerometerAvailable = false;
-		
+
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).isEmpty()) {
@@ -758,31 +757,28 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			} else {
 				Sensor gyroscope = manager.getSensorList(Sensor.TYPE_GYROSCOPE).get(0);
 				gyroscopeListener = new SensorListener();
-				gyroscopeAvailable = manager.registerListener(gyroscopeListener, gyroscope,
-					config.sensorDelay);
+				gyroscopeAvailable = manager.registerListener(gyroscopeListener, gyroscope, config.sensorDelay);
 			}
 		} else
 			gyroscopeAvailable = false;
 
 		rotationVectorAvailable = false;
-		if (config.useRotationVectorSensor){
+		if (config.useRotationVectorSensor) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			List<Sensor> rotationVectorSensors = manager.getSensorList(Sensor.TYPE_ROTATION_VECTOR);
-			if (!rotationVectorSensors.isEmpty()){
+			if (!rotationVectorSensors.isEmpty()) {
 				rotationVectorListener = new SensorListener();
-				for (Sensor sensor : rotationVectorSensors){ // favor AOSP sensor
-					if (sensor.getVendor().equals("Google Inc.") && sensor.getVersion() == 3){
-						rotationVectorAvailable = manager.registerListener(rotationVectorListener, sensor,
-							config.sensorDelay);
+				for (Sensor sensor : rotationVectorSensors) { // favor AOSP sensor
+					if (sensor.getVendor().equals("Google Inc.") && sensor.getVersion() == 3) {
+						rotationVectorAvailable = manager.registerListener(rotationVectorListener, sensor, config.sensorDelay);
 						break;
 					}
 				}
-				if (!rotationVectorAvailable)
-					rotationVectorAvailable = manager.registerListener(rotationVectorListener, rotationVectorSensors.get(0),
-						config.sensorDelay);
+				if (!rotationVectorAvailable) rotationVectorAvailable = manager.registerListener(rotationVectorListener,
+					rotationVectorSensors.get(0), config.sensorDelay);
 			}
 		}
-		
+
 		if (config.useCompass && !rotationVectorAvailable) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -1007,13 +1003,13 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		Arrays.fill(touched, false);
 	}
 
-	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
-	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
+	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a
+	 * single SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
 	private class SensorListener implements SensorEventListener {
-		
-		public SensorListener (){
-			
+
+		public SensorListener () {
+
 		}
 
 		@Override

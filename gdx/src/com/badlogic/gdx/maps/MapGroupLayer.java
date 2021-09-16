@@ -21,10 +21,7 @@ public class MapGroupLayer extends MapLayer {
 
 	private MapLayers layers = new MapLayers();
 
-	/**
-	 *
-	 * @return the {@link MapLayers} owned by this group
-	 */
+	/** @return the {@link MapLayers} owned by this group */
 	public MapLayers getLayers () {
 		return layers;
 	}

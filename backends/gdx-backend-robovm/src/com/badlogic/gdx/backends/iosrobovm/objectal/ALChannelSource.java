@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import org.robovm.apple.foundation.NSObject;
@@ -13,8 +14,8 @@ public final class ALChannelSource extends NSObject {
 	static {
 		ObjCRuntime.bind(ALChannelSource.class);
 	}
-	
+
 	@Property(selector = "sourcePool")
 	public native ALSoundSourcePool getSourcePool ();
-	
+
 }

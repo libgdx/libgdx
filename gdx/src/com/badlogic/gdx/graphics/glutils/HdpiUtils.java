@@ -30,8 +30,8 @@ public class HdpiUtils {
 
 	/** Allows applications to override HDPI coordinate conversion for glViewport and glScissor calls.
 	 *
-	 * This function can be used to ignore the default behavior, for example when rendering a UI stage
-	 * to an off-screen framebuffer:
+	 * This function can be used to ignore the default behavior, for example when rendering a UI stage to an off-screen
+	 * framebuffer:
 	 *
 	 * <pre>
 	 * HdpiUtils.setMode(HdpiMode.Pixels);
@@ -41,8 +41,7 @@ public class HdpiUtils {
 	 * HdpiUtils.setMode(HdpiMode.Logical);
 	 * </pre>
 	 *
-	 * @param mode set to HdpiMode.Pixels to ignore HDPI conversion for glViewport and glScissor functions
-	 */
+	 * @param mode set to HdpiMode.Pixels to ignore HDPI conversion for glViewport and glScissor functions */
 	public static void setMode (HdpiMode mode) {
 		HdpiUtils.mode = mode;
 	}
@@ -68,36 +67,24 @@ public class HdpiUtils {
 			Gdx.gl.glViewport(x, y, width, height);
 		}
 	}
-	
-	/**
-	 * Converts an x-coordinate given in backbuffer coordinates to
-	 * logical screen coordinates.
-	 */
-	public static int toLogicalX(int backBufferX) {
+
+	/** Converts an x-coordinate given in backbuffer coordinates to logical screen coordinates. */
+	public static int toLogicalX (int backBufferX) {
 		return (int)(backBufferX * Gdx.graphics.getWidth() / (float)Gdx.graphics.getBackBufferWidth());
 	}
 
-	/**
-	 * Convers an y-coordinate given in backbuffer coordinates to
-	 * logical screen coordinates
-	 */
-	public static int toLogicalY(int backBufferY) {
+	/** Convers an y-coordinate given in backbuffer coordinates to logical screen coordinates */
+	public static int toLogicalY (int backBufferY) {
 		return (int)(backBufferY * Gdx.graphics.getHeight() / (float)Gdx.graphics.getBackBufferHeight());
 	}
-	
-	/**
-	 * Converts an x-coordinate given in logical screen coordinates to
-	 * backbuffer coordinates.
-	 */
-	public static int toBackBufferX(int logicalX) {
+
+	/** Converts an x-coordinate given in logical screen coordinates to backbuffer coordinates. */
+	public static int toBackBufferX (int logicalX) {
 		return (int)(logicalX * Gdx.graphics.getBackBufferWidth() / (float)Gdx.graphics.getWidth());
 	}
 
-	/**
-	 * Convers an y-coordinate given in backbuffer coordinates to
-	 * logical screen coordinates
-	 */
-	public static int toBackBufferY(int logicalY) {
+	/** Convers an y-coordinate given in backbuffer coordinates to logical screen coordinates */
+	public static int toBackBufferY (int logicalY) {
 		return (int)(logicalY * Gdx.graphics.getBackBufferHeight() / (float)Gdx.graphics.getHeight());
 	}
 }

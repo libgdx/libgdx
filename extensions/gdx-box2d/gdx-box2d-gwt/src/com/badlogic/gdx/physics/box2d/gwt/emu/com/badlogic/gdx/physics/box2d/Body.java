@@ -172,8 +172,8 @@ public class Body {
 		body.applyForceToCenter(tmp);
 	}
 
-	/** Apply a torque. This affects the angular velocity without affecting the linear velocity of the center of mass. This wakes up
-	 * the body.
+	/** Apply a torque. This affects the angular velocity without affecting the linear velocity of the center of mass. This wakes
+	 * up the body.
 	 * @param torque about the z-axis (out of the screen), usually in N-m. */
 	public void applyTorque (float torque, boolean wake) {
 		body.applyTorque(torque);
@@ -232,8 +232,9 @@ public class Body {
 		return massData;
 	}
 
-	/** Set the mass properties to override the mass properties of the fixtures. Note that this changes the center of mass position.
-	 * Note that creating or destroying fixtures can also alter the mass. This function has no effect if the body isn't dynamic.
+	/** Set the mass properties to override the mass properties of the fixtures. Note that this changes the center of mass
+	 * position. Note that creating or destroying fixtures can also alter the mass. This function has no effect if the body isn't
+	 * dynamic.
 	 * @param data the mass properties. */
 	public void setMassData (MassData data) {
 		massData2.center.set(data.center.x, data.center.y);

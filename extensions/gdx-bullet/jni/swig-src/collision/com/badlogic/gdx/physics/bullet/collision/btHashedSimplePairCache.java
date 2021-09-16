@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btHashedSimplePairCache extends BulletBase {
 	private long swigCPtr;
-	
-	protected btHashedSimplePairCache(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btHashedSimplePairCache (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btHashedSimplePairCache, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btHashedSimplePairCache(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btHashedSimplePairCache, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btHashedSimplePairCache (long cPtr, boolean cMemoryOwn) {
 		this("btHashedSimplePairCache", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btHashedSimplePairCache obj) {
+
+	public static long getCPtr (btHashedSimplePairCache obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,52 +54,54 @@ public class btHashedSimplePairCache extends BulletBase {
 		super.delete();
 	}
 
-  public btHashedSimplePairCache() {
-    this(CollisionJNI.new_btHashedSimplePairCache(), true);
-  }
+	public btHashedSimplePairCache () {
+		this(CollisionJNI.new_btHashedSimplePairCache(), true);
+	}
 
-  public void removeAllPairs() {
-    CollisionJNI.btHashedSimplePairCache_removeAllPairs(swigCPtr, this);
-  }
+	public void removeAllPairs () {
+		CollisionJNI.btHashedSimplePairCache_removeAllPairs(swigCPtr, this);
+	}
 
-  public long removeOverlappingPair(int indexA, int indexB) {
-    return CollisionJNI.btHashedSimplePairCache_removeOverlappingPair(swigCPtr, this, indexA, indexB);
-  }
+	public long removeOverlappingPair (int indexA, int indexB) {
+		return CollisionJNI.btHashedSimplePairCache_removeOverlappingPair(swigCPtr, this, indexA, indexB);
+	}
 
-  public btSimplePair addOverlappingPair(int indexA, int indexB) {
-    long cPtr = CollisionJNI.btHashedSimplePairCache_addOverlappingPair(swigCPtr, this, indexA, indexB);
-    return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
-  }
+	public btSimplePair addOverlappingPair (int indexA, int indexB) {
+		long cPtr = CollisionJNI.btHashedSimplePairCache_addOverlappingPair(swigCPtr, this, indexA, indexB);
+		return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
+	}
 
-  public btSimplePair getOverlappingPairArrayPtr() {
-    long cPtr = CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayPtr(swigCPtr, this);
-    return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
-  }
+	public btSimplePair getOverlappingPairArrayPtr () {
+		long cPtr = CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayPtr(swigCPtr, this);
+		return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
+	}
 
-  public btSimplePair getOverlappingPairArrayPtrConst() {
-    long cPtr = CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayPtrConst(swigCPtr, this);
-    return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
-  }
+	public btSimplePair getOverlappingPairArrayPtrConst () {
+		long cPtr = CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayPtrConst(swigCPtr, this);
+		return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t getOverlappingPairArray() {
-    return new SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t(CollisionJNI.btHashedSimplePairCache_getOverlappingPairArray(swigCPtr, this), false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t getOverlappingPairArray () {
+		return new SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t(
+			CollisionJNI.btHashedSimplePairCache_getOverlappingPairArray(swigCPtr, this), false);
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t getOverlappingPairArrayConst() {
-    return new SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t(CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayConst(swigCPtr, this), false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t getOverlappingPairArrayConst () {
+		return new SWIGTYPE_p_btAlignedObjectArrayT_btSimplePair_t(
+			CollisionJNI.btHashedSimplePairCache_getOverlappingPairArrayConst(swigCPtr, this), false);
+	}
 
-  public btSimplePair findPair(int indexA, int indexB) {
-    long cPtr = CollisionJNI.btHashedSimplePairCache_findPair(swigCPtr, this, indexA, indexB);
-    return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
-  }
+	public btSimplePair findPair (int indexA, int indexB) {
+		long cPtr = CollisionJNI.btHashedSimplePairCache_findPair(swigCPtr, this, indexA, indexB);
+		return (cPtr == 0) ? null : new btSimplePair(cPtr, false);
+	}
 
-  public int GetCount() {
-    return CollisionJNI.btHashedSimplePairCache_GetCount(swigCPtr, this);
-  }
+	public int GetCount () {
+		return CollisionJNI.btHashedSimplePairCache_GetCount(swigCPtr, this);
+	}
 
-  public int getNumOverlappingPairs() {
-    return CollisionJNI.btHashedSimplePairCache_getNumOverlappingPairs(swigCPtr, this);
-  }
+	public int getNumOverlappingPairs () {
+		return CollisionJNI.btHashedSimplePairCache_getNumOverlappingPairs(swigCPtr, this);
+	}
 
 }

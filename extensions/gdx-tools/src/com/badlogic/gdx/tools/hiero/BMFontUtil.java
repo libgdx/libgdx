@@ -172,7 +172,7 @@ public class BMFontUtil {
 				fileName = outputName + (pageIndex + 1) + ".png";
 
 			page.getTexture().bind();
-			((Buffer) buffer).clear();
+			((Buffer)buffer).clear();
 			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
 			WritableRaster raster = pageImage.getRaster();
 			for (int y = 0; y < height; y++) {

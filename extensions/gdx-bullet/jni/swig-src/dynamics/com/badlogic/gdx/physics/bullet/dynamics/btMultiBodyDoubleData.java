@@ -11,44 +11,39 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btMultiBodyDoubleData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btMultiBodyDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btMultiBodyDoubleData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btMultiBodyDoubleData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btMultiBodyDoubleData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btMultiBodyDoubleData, normally you should not need this constructor it's intended for low-level usage. */
+	public btMultiBodyDoubleData (long cPtr, boolean cMemoryOwn) {
 		this("btMultiBodyDoubleData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btMultiBodyDoubleData obj) {
+
+	public static long getCPtr (btMultiBodyDoubleData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,84 +54,84 @@ public class btMultiBodyDoubleData extends BulletBase {
 		super.delete();
 	}
 
-  public void setBaseWorldTransform(btTransformDoubleData value) {
-    DynamicsJNI.btMultiBodyDoubleData_baseWorldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
-  }
+	public void setBaseWorldTransform (btTransformDoubleData value) {
+		DynamicsJNI.btMultiBodyDoubleData_baseWorldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
+	}
 
-  public btTransformDoubleData getBaseWorldTransform() {
-    long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseWorldTransform_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTransformDoubleData(cPtr, false);
-  }
+	public btTransformDoubleData getBaseWorldTransform () {
+		long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseWorldTransform_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTransformDoubleData(cPtr, false);
+	}
 
-  public void setBaseInertia(btVector3DoubleData value) {
-    DynamicsJNI.btMultiBodyDoubleData_baseInertia_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
-  }
+	public void setBaseInertia (btVector3DoubleData value) {
+		DynamicsJNI.btMultiBodyDoubleData_baseInertia_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+	}
 
-  public btVector3DoubleData getBaseInertia() {
-    long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseInertia_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
-  }
+	public btVector3DoubleData getBaseInertia () {
+		long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseInertia_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
+	}
 
-  public void setBaseMass(double value) {
-    DynamicsJNI.btMultiBodyDoubleData_baseMass_set(swigCPtr, this, value);
-  }
+	public void setBaseMass (double value) {
+		DynamicsJNI.btMultiBodyDoubleData_baseMass_set(swigCPtr, this, value);
+	}
 
-  public double getBaseMass() {
-    return DynamicsJNI.btMultiBodyDoubleData_baseMass_get(swigCPtr, this);
-  }
+	public double getBaseMass () {
+		return DynamicsJNI.btMultiBodyDoubleData_baseMass_get(swigCPtr, this);
+	}
 
-  public void setBaseName(String value) {
-    DynamicsJNI.btMultiBodyDoubleData_baseName_set(swigCPtr, this, value);
-  }
+	public void setBaseName (String value) {
+		DynamicsJNI.btMultiBodyDoubleData_baseName_set(swigCPtr, this, value);
+	}
 
-  public String getBaseName() {
-    return DynamicsJNI.btMultiBodyDoubleData_baseName_get(swigCPtr, this);
-  }
+	public String getBaseName () {
+		return DynamicsJNI.btMultiBodyDoubleData_baseName_get(swigCPtr, this);
+	}
 
-  public void setLinks(btMultiBodyLinkDoubleData value) {
-    DynamicsJNI.btMultiBodyDoubleData_links_set(swigCPtr, this, btMultiBodyLinkDoubleData.getCPtr(value), value);
-  }
+	public void setLinks (btMultiBodyLinkDoubleData value) {
+		DynamicsJNI.btMultiBodyDoubleData_links_set(swigCPtr, this, btMultiBodyLinkDoubleData.getCPtr(value), value);
+	}
 
-  public btMultiBodyLinkDoubleData getLinks() {
-    long cPtr = DynamicsJNI.btMultiBodyDoubleData_links_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btMultiBodyLinkDoubleData(cPtr, false);
-  }
+	public btMultiBodyLinkDoubleData getLinks () {
+		long cPtr = DynamicsJNI.btMultiBodyDoubleData_links_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btMultiBodyLinkDoubleData(cPtr, false);
+	}
 
-  public void setBaseCollider(btCollisionObjectDoubleData value) {
-    DynamicsJNI.btMultiBodyDoubleData_baseCollider_set(swigCPtr, this, btCollisionObjectDoubleData.getCPtr(value), value);
-  }
+	public void setBaseCollider (btCollisionObjectDoubleData value) {
+		DynamicsJNI.btMultiBodyDoubleData_baseCollider_set(swigCPtr, this, btCollisionObjectDoubleData.getCPtr(value), value);
+	}
 
-  public btCollisionObjectDoubleData getBaseCollider() {
-    long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseCollider_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectDoubleData(cPtr, false);
-  }
+	public btCollisionObjectDoubleData getBaseCollider () {
+		long cPtr = DynamicsJNI.btMultiBodyDoubleData_baseCollider_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCollisionObjectDoubleData(cPtr, false);
+	}
 
-  public void setPaddingPtr(String value) {
-    DynamicsJNI.btMultiBodyDoubleData_paddingPtr_set(swigCPtr, this, value);
-  }
+	public void setPaddingPtr (String value) {
+		DynamicsJNI.btMultiBodyDoubleData_paddingPtr_set(swigCPtr, this, value);
+	}
 
-  public String getPaddingPtr() {
-    return DynamicsJNI.btMultiBodyDoubleData_paddingPtr_get(swigCPtr, this);
-  }
+	public String getPaddingPtr () {
+		return DynamicsJNI.btMultiBodyDoubleData_paddingPtr_get(swigCPtr, this);
+	}
 
-  public void setNumLinks(int value) {
-    DynamicsJNI.btMultiBodyDoubleData_numLinks_set(swigCPtr, this, value);
-  }
+	public void setNumLinks (int value) {
+		DynamicsJNI.btMultiBodyDoubleData_numLinks_set(swigCPtr, this, value);
+	}
 
-  public int getNumLinks() {
-    return DynamicsJNI.btMultiBodyDoubleData_numLinks_get(swigCPtr, this);
-  }
+	public int getNumLinks () {
+		return DynamicsJNI.btMultiBodyDoubleData_numLinks_get(swigCPtr, this);
+	}
 
-  public void setPadding(String value) {
-    DynamicsJNI.btMultiBodyDoubleData_padding_set(swigCPtr, this, value);
-  }
+	public void setPadding (String value) {
+		DynamicsJNI.btMultiBodyDoubleData_padding_set(swigCPtr, this, value);
+	}
 
-  public String getPadding() {
-    return DynamicsJNI.btMultiBodyDoubleData_padding_get(swigCPtr, this);
-  }
+	public String getPadding () {
+		return DynamicsJNI.btMultiBodyDoubleData_padding_get(swigCPtr, this);
+	}
 
-  public btMultiBodyDoubleData() {
-    this(DynamicsJNI.new_btMultiBodyDoubleData(), true);
-  }
+	public btMultiBodyDoubleData () {
+		this(DynamicsJNI.new_btMultiBodyDoubleData(), true);
+	}
 
 }

@@ -15,78 +15,84 @@
  ******************************************************************************/
 
 dependencies {
-    compile project(":gdx")
-    compile project(":backends:gdx-backend-lwjgl")
-    compile project(":extensions:gdx-freetype")
-    compile project(":backends:gdx-backend-headless")
-    compile testnatives.desktop
+	compile project(":gdx")
+	compile project(":backends:gdx-backend-lwjgl")
+	compile project(":extensions:gdx-freetype")
+	compile project(":backends:gdx-backend-headless")
+	compile testnatives.desktop
 }
 
 sourceSets.main.resources.srcDirs = ["assets"]
 
 ext {
-    particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
-    particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
-    hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
-    texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
+	particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
+	particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
+	hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
+	texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
 
-    toolsAssetsDir = ["assets"]
+	toolsAssetsDir = ["assets"]
 }
 
 task dist2DParticles (type: Jar) {
-    from files(sourceSets.main.java.outputDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir)
+	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.compile.collect {zipTree(it)}}
+	from files(toolsAssetsDir)
 
-    archiveName = "runnable-2D-particles.jar"
+	archiveName = "runnable-2D-particles.jar"
 
-    manifest {
-        attributes 'Main-Class': particles2DMainClass
-    }
+	manifest {
+		attributes 'Main-Class': particles2DMainClass
+	}
 }
 
 task dist3DParticles (type: Jar) {
-    from files(sourceSets.main.java.outputDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir)
+	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.compile.collect {zipTree(it)}}
+	from files(toolsAssetsDir)
 
-    archiveName = "runnable-3D-particles.jar"
+	archiveName = "runnable-3D-particles.jar"
 
-    manifest {
-        attributes 'Main-Class': particles3DMainClass
-    }
+	manifest {
+		attributes 'Main-Class': particles3DMainClass
+	}
 }
 
 task distHiero (type: Jar) {
-    from files(sourceSets.main.java.outputDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir)
+	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.compile.collect {zipTree(it)}}
+	from files(toolsAssetsDir)
 
-    archiveName = "runnable-hiero.jar"
+	archiveName = "runnable-hiero.jar"
 
-    manifest {
-        attributes 'Main-Class': hieroMainClass
-    }
+	manifest {
+		attributes 'Main-Class': hieroMainClass
+	}
 }
 
 task distTexturePacker (type: Jar) {
-    from files(sourceSets.main.java.outputDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir)
+	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.compile.collect {zipTree(it)}}
+	from files(toolsAssetsDir)
 
-    archiveName = "runnable-texturepacker.jar"
+	archiveName = "runnable-texturepacker.jar"
 
-    manifest {
-        attributes 'Main-Class': texturePackerMainClass
-    }
+	manifest {
+		attributes 'Main-Class': texturePackerMainClass
+	}
 }
 
-task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) {
-    doLast {
-        println "Building ye runnables"
-    }
+task buildRunnables (dependsOn: [
+	classes,
+	dist2DParticles,
+	dist3DParticles,
+	distHiero,
+	distTexturePacker
+]) {
+	doLast {
+		println "Building ye runnables"
+	}
 }

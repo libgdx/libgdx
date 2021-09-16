@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static org.lwjgl.openal.AL10.*;
-import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
 
 /** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music {
@@ -253,7 +252,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	private boolean fill (int bufferID) {
-		((Buffer) tempBuffer).clear();
+		((Buffer)tempBuffer).clear();
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
@@ -270,7 +269,7 @@ public abstract class OpenALMusic implements Music {
 		float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
 		renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds);
 
-		((Buffer) tempBuffer.put(tempBytes, 0, length)).flip();
+		((Buffer)tempBuffer.put(tempBytes, 0, length)).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);
 		return true;
 	}

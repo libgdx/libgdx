@@ -23,33 +23,39 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
 
-/** Interface which is used to render one or more {@link Renderable}s.</p>
+/** Interface which is used to render one or more {@link Renderable}s.
+ * </p>
  * 
  * A Shader is responsible for the actual rendering of an {@link Renderable}. Typically, when using OpenGL ES 2.0 or higher, it
  * encapsulates a {@link ShaderProgram} and takes care of all OpenGL calls necessary to render the {@link Renderable}. When using
- * OpenGL ES 1.x it takes care of the fixed pipeline.</p>
+ * OpenGL ES 1.x it takes care of the fixed pipeline.
+ * </p>
  * 
  * To start rendering the {@link #begin(Camera, RenderContext)} method must be called. After which the {@link #end()} method must
  * be called to stop rendering. In between one or more calls to the {@link #render(Renderable)} method can be made to render a
  * {@link Renderable}. The {@link #render(Renderable)} method must not be called before a call to
  * {@link #begin(Camera, RenderContext)} or after a call to {@link #end()}. Each Shader needs exclusive access to the OpenGL state
  * and {@link RenderContext} between the {@link #begin(Camera, RenderContext)} and {@link #end()} methods, therefore only one
- * shader can be used at a time (they must not be nested).</p>
+ * shader can be used at a time (they must not be nested).
+ * </p>
  * 
  * A specific Shader instance might be (and usually is) dedicated to a specific type of {@link Renderable}. For example it might
  * use a {@link ShaderProgram} that is compiled with uniforms (shader input) for specific {@link Attribute} types. Therefore the
  * {@link #canRender(Renderable)} method can be used to check if the Shader instance can be used for a specific
  * {@link Renderable}. Rendering a {@link Renderable} using a Shader for which {@link #canRender(Renderable)} returns false might
- * result in unpredicted behavior or crash the application.</p>
+ * result in unpredicted behavior or crash the application.
+ * </p>
  * 
  * To manage multiple shaders and create a new shader when required, a {@link ShaderProvider} can be used. Therefore, in practice,
  * a specific Shader implementation is usually accompanied by a specific {@link ShaderProvider} implementation (usually extending
- * {@link BaseShaderProvider}).</p>
+ * {@link BaseShaderProvider}).
+ * </p>
  * 
  * When a Shader is constructed, the {@link #init()} method must be called before it can be used. Most commonly, the
  * {@link #init()} method compiles the {@link ShaderProgram}, fetches uniform locations and performs other preparations for usage
  * of the Shader. When the shader is no longer needed, it must disposed using the {@link Disposable#dispose()} method. This, for
- * example, disposed (unloads for memory) the used {@link ShaderProgram}.</p>
+ * example, disposed (unloads for memory) the used {@link ShaderProgram}.
+ * </p>
  * @author Xoppa */
 public interface Shader extends Disposable {
 	/** Initializes the Shader, must be called before the Shader can be used. This typically compiles a {@link ShaderProgram},

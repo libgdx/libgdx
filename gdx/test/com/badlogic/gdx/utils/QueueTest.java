@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class QueueTest {
 	@Test
-	public void addFirstAndLastTest() {
+	public void addFirstAndLastTest () {
 		Queue<Integer> queue = new Queue<Integer>();
 		queue.addFirst(1);
 		queue.addLast(2);
@@ -24,7 +24,7 @@ public class QueueTest {
 	}
 
 	@Test
-	public void removeLastTest() {
+	public void removeLastTest () {
 		Queue<Integer> queue = new Queue<Integer>();
 		queue.addLast(1);
 		queue.addLast(2);
@@ -51,7 +51,7 @@ public class QueueTest {
 	}
 
 	@Test
-	public void removeFirstTest() {
+	public void removeFirstTest () {
 		Queue<Integer> queue = new Queue<Integer>();
 		queue.addLast(1);
 		queue.addLast(2);
@@ -308,18 +308,17 @@ public class QueueTest {
 	}
 
 	@Test
-	public void iteratorRemoveEdgeCaseTest() {//See #4300
+	public void iteratorRemoveEdgeCaseTest () {// See #4300
 		Queue<Integer> queue = new Queue<Integer>();
 
-		//Simulate normal usage
-		for(int i = 0; i < 100; i++) {
+		// Simulate normal usage
+		for (int i = 0; i < 100; i++) {
 			queue.addLast(i);
-			if(i > 50)
-				queue.removeFirst();
+			if (i > 50) queue.removeFirst();
 		}
 
 		Iterator<Integer> it = queue.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			it.next();
 			it.remove();
 		}

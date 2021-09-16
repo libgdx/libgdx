@@ -56,36 +56,36 @@ public final class ClassReflection {
 	static public boolean isStaticClass (Class c) {
 		return Modifier.isStatic(c.getModifiers());
 	}
-	
+
 	/** Determines if the supplied Class object represents an array class. */
 	static public boolean isArray (Class c) {
 		return c.isArray();
 	}
-	
+
 	/** Determines if the supplied Class object represents a primitive type. */
 	static public boolean isPrimitive (Class c) {
 		return c.isPrimitive();
 	}
-	
+
 	/** Determines if the supplied Class object represents an enum type. */
 	static public boolean isEnum (Class c) {
 		return c.isEnum();
 	}
-	
+
 	/** Determines if the supplied Class object represents an annotation type. */
 	static public boolean isAnnotation (Class c) {
 		return c.isAnnotation();
 	}
-	
+
 	/** Determines if the supplied Class object represents an interface type. */
 	static public boolean isInterface (Class c) {
 		return c.isInterface();
 	}
-	
+
 	/** Determines if the supplied Class object represents an abstract type. */
 	static public boolean isAbstract (Class c) {
 		return Modifier.isAbstract(c.getModifiers());
-	}	
+	}
 
 	/** Creates a new instance of the class represented by the supplied Class. */
 	static public <T> T newInstance (Class<T> c) throws ReflectionException {
@@ -97,13 +97,15 @@ public final class ClassReflection {
 			throw new ReflectionException("Could not instantiate instance of class: " + c.getName(), e);
 		}
 	}
-	
-	/** Returns the Class representing the component type of an array. If this class does not represent an array class this method returns null.	 */
-	static public Class getComponentType(Class c){
+
+	/** Returns the Class representing the component type of an array. If this class does not represent an array class this method
+	 * returns null. */
+	static public Class getComponentType (Class c) {
 		return c.getComponentType();
 	}
 
-	/** Returns an array of {@link Constructor} containing the public constructors of the class represented by the supplied Class. */
+	/** Returns an array of {@link Constructor} containing the public constructors of the class represented by the supplied
+	 * Class. */
 	static public Constructor[] getConstructors (Class c) {
 		java.lang.reflect.Constructor[] constructors = c.getConstructors();
 		Constructor[] result = new Constructor[constructors.length];
@@ -137,7 +139,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
-	
+
 	/** Returns the elements of this enum class or null if this Class object does not represent an enum type. */
 	static public Object[] getEnumConstants (Class c) {
 		return c.getEnumConstants();
@@ -175,7 +177,8 @@ public final class ClassReflection {
 		return result;
 	}
 
-	/** Returns a {@link Method} that represents the method declared by the supplied class which takes the supplied parameter types. */
+	/** Returns a {@link Method} that represents the method declared by the supplied class which takes the supplied parameter
+	 * types. */
 	static public Method getDeclaredMethod (Class c, String name, Class... parameterTypes) throws ReflectionException {
 		try {
 			return new Method(c.getDeclaredMethod(name, parameterTypes));
@@ -252,8 +255,8 @@ public final class ClassReflection {
 		return null;
 	}
 
-	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class, or an empty
-	 * array if there are none. Does not include inherited annotations. */
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class, or an empty array
+	 * if there are none. Does not include inherited annotations. */
 	static public Annotation[] getDeclaredAnnotations (Class c) {
 		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
 		Annotation[] result = new Annotation[annotations.length];
@@ -273,7 +276,7 @@ public final class ClassReflection {
 		return null;
 	}
 
-	static public Class[] getInterfaces(Class c) {
+	static public Class[] getInterfaces (Class c) {
 		return c.getInterfaces();
 	}
 

@@ -9,8 +9,7 @@
 package com.badlogic.gdx.physics.bullet.softbody;
 
 public final class btSoftJointBodyType {
-  public final static int BT_JOINT_SOFT_BODY_CLUSTER = 1;
-  public final static int BT_JOINT_RIGID_BODY = BT_JOINT_SOFT_BODY_CLUSTER + 1;
-  public final static int BT_JOINT_COLLISION_OBJECT = BT_JOINT_RIGID_BODY + 1;
+	public final static int BT_JOINT_SOFT_BODY_CLUSTER = 1;
+	public final static int BT_JOINT_RIGID_BODY = BT_JOINT_SOFT_BODY_CLUSTER + 1;
+	public final static int BT_JOINT_COLLISION_OBJECT = BT_JOINT_RIGID_BODY + 1;
 }
-

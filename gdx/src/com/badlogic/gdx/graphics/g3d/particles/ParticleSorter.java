@@ -71,9 +71,9 @@ public abstract class ParticleSorter {
 			int count = 0, i = 0;
 			for (ParticleControllerRenderData data : renderData) {
 				for (int k = 0, c = i + data.controller.particles.size; i < c; ++i, k += data.positionChannel.strideSize) {
-					distances[i] = cx * data.positionChannel.data[k + ParticleChannels.XOffset] + cy
-						* data.positionChannel.data[k + ParticleChannels.YOffset] + cz
-						* data.positionChannel.data[k + ParticleChannels.ZOffset];
+					distances[i] = cx * data.positionChannel.data[k + ParticleChannels.XOffset]
+						+ cy * data.positionChannel.data[k + ParticleChannels.YOffset]
+						+ cz * data.positionChannel.data[k + ParticleChannels.ZOffset];
 					particleIndices[i] = i;
 				}
 				count += data.controller.particles.size;

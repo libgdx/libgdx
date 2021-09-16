@@ -66,7 +66,7 @@ public class BitmapFontAtlasRegionTest extends GdxTest {
 	@Override
 	public void dispose () {
 		Array<String> loaded = this.assets.getAssetNames();
-		
+
 		this.assets.dispose();
 		this.batch.dispose();
 

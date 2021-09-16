@@ -280,7 +280,7 @@ public class ShapeRenderer implements Disposable {
 	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		check(ShapeType.Line, null, segments * 2 + 2);
 		float colorBits = color.toFloatBits();
-		
+
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
 		float subdiv_step = 1f / segments;
 		float subdiv_step2 = subdiv_step * subdiv_step;
@@ -555,7 +555,8 @@ public class ShapeRenderer implements Disposable {
 
 	}
 
-	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
+	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2,
+	 * y2. */
 	public void rectLine (float x1, float y1, float x2, float y2, float width) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
 		float colorBits = color.toFloatBits();
@@ -599,8 +600,9 @@ public class ShapeRenderer implements Disposable {
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 		}
 	}
-	
-	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
+
+	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2,
+	 * y2. */
 	public void rectLine (float x1, float y1, float x2, float y2, float width, Color c1, Color c2) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
 		float col1Bits = c1.toFloatBits();
@@ -651,8 +653,8 @@ public class ShapeRenderer implements Disposable {
 		rectLine(p1.x, p1.y, p2.x, p2.y, width);
 	}
 
-	/** Draws a cube using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x, y and z specify the bottom, left, front corner
-	 * of the rectangle. */
+	/** Draws a cube using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x, y and z specify the bottom, left, front
+	 * corner of the rectangle. */
 	public void box (float x, float y, float z, float width, float height, float depth) {
 		depth = -depth;
 		float colorBits = color.toFloatBits();
@@ -940,7 +942,8 @@ public class ShapeRenderer implements Disposable {
 		renderer.vertex(x + cx, y + cy, 0);
 	}
 
-	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth
+	 * ellipse. */
 	public void ellipse (float x, float y, float width, float height) {
 		ellipse(x, y, width, height, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
 	}
@@ -976,8 +979,9 @@ public class ShapeRenderer implements Disposable {
 			}
 		}
 	}
-	
-	/** Calls {@link #ellipse(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+
+	/** Calls {@link #ellipse(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth
+	 * ellipse. */
 	public void ellipse (float x, float y, float width, float height, float rotation) {
 		ellipse(x, y, width, height, rotation, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
 	}
@@ -988,7 +992,7 @@ public class ShapeRenderer implements Disposable {
 		check(ShapeType.Line, ShapeType.Filled, segments * 3);
 		float colorBits = color.toFloatBits();
 		float angle = 2 * MathUtils.PI / segments;
-		
+
 		rotation = MathUtils.PI * rotation / 180f;
 		float sin = MathUtils.sin(rotation);
 		float cos = MathUtils.cos(rotation);
@@ -1000,7 +1004,7 @@ public class ShapeRenderer implements Disposable {
 			for (int i = 0; i < segments; i++) {
 				renderer.color(colorBits);
 				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
-				
+
 				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
 				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
 
@@ -1014,7 +1018,7 @@ public class ShapeRenderer implements Disposable {
 
 				renderer.color(colorBits);
 				renderer.vertex(cx, cy, 0);
-				
+
 				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
 				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
 
@@ -1099,7 +1103,8 @@ public class ShapeRenderer implements Disposable {
 		}
 	}
 
-	/** Draws a polygon in the x/y plane using {@link ShapeType#Line}. The vertices must contain at least 3 points (6 floats x,y). */
+	/** Draws a polygon in the x/y plane using {@link ShapeType#Line}. The vertices must contain at least 3 points (6 floats
+	 * x,y). */
 	public void polygon (float[] vertices, int offset, int count) {
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
 		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
@@ -1136,7 +1141,8 @@ public class ShapeRenderer implements Disposable {
 		polygon(vertices, 0, vertices.length);
 	}
 
-	/** Draws a polyline in the x/y plane using {@link ShapeType#Line}. The vertices must contain at least 2 points (4 floats x,y). */
+	/** Draws a polyline in the x/y plane using {@link ShapeType#Line}. The vertices must contain at least 2 points (4 floats
+	 * x,y). */
 	public void polyline (float[] vertices, int offset, int count) {
 		if (count < 4) throw new IllegalArgumentException("Polylines must contain at least 2 points.");
 		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have an even number of vertices.");

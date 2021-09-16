@@ -95,7 +95,8 @@ public class DynamicsInfluencer extends Influencer {
 		if (hasAcceleration) {
 			// Previous position is the current position
 			// Attention, this requires that some other influencer setting the position channel must execute before this influencer.
-			for (int i = startIndex * positionChannel.strideSize, c = i + count * positionChannel.strideSize; i < c; i += positionChannel.strideSize) {
+			for (int i = startIndex * positionChannel.strideSize,
+				c = i + count * positionChannel.strideSize; i < c; i += positionChannel.strideSize) {
 				previousPositionChannel.data[i + ParticleChannels.XOffset] = positionChannel.data[i + ParticleChannels.XOffset];
 				previousPositionChannel.data[i + ParticleChannels.YOffset] = positionChannel.data[i + ParticleChannels.YOffset];
 				previousPositionChannel.data[i + ParticleChannels.ZOffset] = positionChannel.data[i + ParticleChannels.ZOffset];
@@ -109,13 +110,15 @@ public class DynamicsInfluencer extends Influencer {
 
 		if (has2dAngularVelocity) {
 			// Rotation back to 0
-			for (int i = startIndex * rotationChannel.strideSize, c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
+			for (int i = startIndex * rotationChannel.strideSize,
+				c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
 				rotationChannel.data[i + ParticleChannels.CosineOffset] = 1;
 				rotationChannel.data[i + ParticleChannels.SineOffset] = 0;
 			}
 		} else if (has3dAngularVelocity) {
 			// Rotation back to 0
-			for (int i = startIndex * rotationChannel.strideSize, c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
+			for (int i = startIndex * rotationChannel.strideSize,
+				c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
 				rotationChannel.data[i + ParticleChannels.XOffset] = 0;
 				rotationChannel.data[i + ParticleChannels.YOffset] = 0;
 				rotationChannel.data[i + ParticleChannels.ZOffset] = 0;
@@ -156,8 +159,9 @@ public class DynamicsInfluencer extends Influencer {
 			 */
 			// Verlet integration
 			for (int i = 0, offset = 0; i < controller.particles.size; ++i, offset += positionChannel.strideSize) {
-				float x = positionChannel.data[offset + ParticleChannels.XOffset], y = positionChannel.data[offset
-					+ ParticleChannels.YOffset], z = positionChannel.data[offset + ParticleChannels.ZOffset];
+				float x = positionChannel.data[offset + ParticleChannels.XOffset],
+					y = positionChannel.data[offset + ParticleChannels.YOffset],
+					z = positionChannel.data[offset + ParticleChannels.ZOffset];
 				positionChannel.data[offset + ParticleChannels.XOffset] = 2 * x
 					- previousPositionChannel.data[offset + ParticleChannels.XOffset]
 					+ accellerationChannel.data[offset + ParticleChannels.XOffset] * controller.deltaTimeSqr;
@@ -180,19 +184,23 @@ public class DynamicsInfluencer extends Influencer {
 					float cosBeta = MathUtils.cosDeg(rotation), sinBeta = MathUtils.sinDeg(rotation);
 					float currentCosine = rotationChannel.data[offset + ParticleChannels.CosineOffset];
 					float currentSine = rotationChannel.data[offset + ParticleChannels.SineOffset];
-					float newCosine = currentCosine * cosBeta - currentSine * sinBeta, newSine = currentSine * cosBeta + currentCosine
-						* sinBeta;
+					float newCosine = currentCosine * cosBeta - currentSine * sinBeta,
+						newSine = currentSine * cosBeta + currentCosine * sinBeta;
 					rotationChannel.data[offset + ParticleChannels.CosineOffset] = newCosine;
 					rotationChannel.data[offset + ParticleChannels.SineOffset] = newSine;
 				}
 			}
 		} else if (has3dAngularVelocity) {
-			for (int i = 0, offset = 0, angularOffset = 0; i < controller.particles.size; ++i, offset += rotationChannel.strideSize, angularOffset += angularVelocityChannel.strideSize) {
+			for (int i = 0, offset = 0,
+				angularOffset = 0; i < controller.particles.size; ++i, offset += rotationChannel.strideSize, angularOffset += angularVelocityChannel.strideSize) {
 
-				float wx = angularVelocityChannel.data[angularOffset + ParticleChannels.XOffset], wy = angularVelocityChannel.data[angularOffset
-					+ ParticleChannels.YOffset], wz = angularVelocityChannel.data[angularOffset + ParticleChannels.ZOffset], qx = rotationChannel.data[offset
-					+ ParticleChannels.XOffset], qy = rotationChannel.data[offset + ParticleChannels.YOffset], qz = rotationChannel.data[offset
-					+ ParticleChannels.ZOffset], qw = rotationChannel.data[offset + ParticleChannels.WOffset];
+				float wx = angularVelocityChannel.data[angularOffset + ParticleChannels.XOffset],
+					wy = angularVelocityChannel.data[angularOffset + ParticleChannels.YOffset],
+					wz = angularVelocityChannel.data[angularOffset + ParticleChannels.ZOffset],
+					qx = rotationChannel.data[offset + ParticleChannels.XOffset],
+					qy = rotationChannel.data[offset + ParticleChannels.YOffset],
+					qz = rotationChannel.data[offset + ParticleChannels.ZOffset],
+					qw = rotationChannel.data[offset + ParticleChannels.WOffset];
 				TMP_Q.set(wx, wy, wz, 0).mul(qx, qy, qz, qw).mul(0.5f * controller.deltaTime).add(qx, qy, qz, qw).nor();
 				rotationChannel.data[offset + ParticleChannels.XOffset] = TMP_Q.x;
 				rotationChannel.data[offset + ParticleChannels.YOffset] = TMP_Q.y;

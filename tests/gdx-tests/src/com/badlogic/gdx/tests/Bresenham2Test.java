@@ -36,23 +36,20 @@ public class Bresenham2Test extends GdxTest {
 	Array<GridPoint2> line;
 	int lastX;
 	int lastY;
-	
-	/**
-	 * If any of the green pixels this draws are still visible after Bresenham2's line is drawn,
-	 * then the implementation in Bresenham2 is wrong.
-	 * <br>
-	 * This is almost exactly taken from http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Java ;
-	 * only the Swing/AWT code was changed to use Pixmap here. The Rosetta Code version doesn't use
-	 * pooling for its points, so the algorithm in Bresenham2 should be more efficient, but this can
-	 * be used as a reference implementation that's probably been picked over and run many times.
+
+	/** If any of the green pixels this draws are still visible after Bresenham2's line is drawn, then the implementation in
+	 * Bresenham2 is wrong. <br>
+	 * This is almost exactly taken from http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Java ; only the Swing/AWT
+	 * code was changed to use Pixmap here. The Rosetta Code version doesn't use pooling for its points, so the algorithm in
+	 * Bresenham2 should be more efficient, but this can be used as a reference implementation that's probably been picked over and
+	 * run many times.
 	 * @param x1 start x
 	 * @param y1 start y
 	 * @param x2 end x
-	 * @param y2 end y
-	 */
-	public void drawRosettaCodeLine(int x1, int y1, int x2, int y2){
+	 * @param y2 end y */
+	public void drawRosettaCodeLine (int x1, int y1, int x2, int y2) {
 		pixmap.setColor(Color.GREEN);
-		
+
 		int d = 0;
 
 		int dx = Math.abs(x2 - x1);
@@ -70,8 +67,7 @@ public class Bresenham2Test extends GdxTest {
 		if (dx >= dy) {
 			while (true) {
 				pixmap.drawPixel(x, y);
-				if (x == x2)
-					break;
+				if (x == x2) break;
 				x += ix;
 				d += dy2;
 				if (d > dx) {
@@ -82,8 +78,7 @@ public class Bresenham2Test extends GdxTest {
 		} else {
 			while (true) {
 				pixmap.drawPixel(x, y);
-				if (y == y2)
-					break;
+				if (y == y2) break;
 				y += iy;
 				d += dx2;
 				if (d > dy) {
@@ -99,7 +94,7 @@ public class Bresenham2Test extends GdxTest {
 	public void create () {
 		pixmap = new Pixmap(160, 120, Format.RGBA8888);
 		pixmap.setColor(Color.WHITE);
-		
+
 		lastX = -1;
 		lastY = -1;
 		drawRosettaCodeLine(79, 59, 80, 60);
@@ -116,7 +111,7 @@ public class Bresenham2Test extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int x = Gdx.input.getX() >> 2, y = Gdx.input.getY() >> 2;
-		if((lastX != x || lastY != y) && x >= 0 && x < 160 && y >= 0 && y < 120) {
+		if ((lastX != x || lastY != y) && x >= 0 && x < 160 && y >= 0 && y < 120) {
 			lastX = x;
 			lastY = y;
 			pixmap.setColor(Color.BLACK);

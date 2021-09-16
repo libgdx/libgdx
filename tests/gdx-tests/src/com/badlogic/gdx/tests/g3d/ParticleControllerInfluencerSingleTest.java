@@ -135,8 +135,9 @@ public class ParticleControllerInfluencerSingleTest extends BaseG3dTest {
 		tangentialAcceleration.isGlobal = false;
 		dynamicsInfluencer.velocities.add(tangentialAcceleration);
 
-		ParticleController ret = new ParticleController("Billboard Controller", emitter, new BillboardRenderer(
-			billboardParticleBatch), new RegionInfluencer.Single(particleTexture), spawnSource, dynamicsInfluencer);
+		ParticleController ret = new ParticleController("Billboard Controller", emitter,
+			new BillboardRenderer(billboardParticleBatch), new RegionInfluencer.Single(particleTexture), spawnSource,
+			dynamicsInfluencer);
 
 		ParticleControllerInfluencer pci = new ParticleControllerInfluencer.Single(ret);
 		SpawnInfluencer si = new SpawnInfluencer(new PointSpawnShapeValue());

@@ -59,7 +59,8 @@ public class Timer {
 		return scheduleTask(task, delaySeconds, intervalSeconds, FOREVER);
 	}
 
-	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval. */
+	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified
+	 * interval. */
 	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
 		if (task.repeatCount != CANCELLED) throw new IllegalArgumentException("The same task may not be scheduled twice.");
 		task.executeTimeMillis = TimeUtils.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
@@ -175,7 +176,8 @@ public class Timer {
 		long intervalMillis;
 		int repeatCount = CANCELLED;
 
-		/** If this is the last time the task will be ran or the task is first cancelled, it may be scheduled again in this method. */
+		/** If this is the last time the task will be ran or the task is first cancelled, it may be scheduled again in this
+		 * method. */
 		abstract public void run ();
 
 		/** Cancels the task. It will not be executed until it is scheduled again. This method can be called at any time. */
@@ -209,7 +211,7 @@ public class Timer {
 		public void run () {
 			synchronized (instances) {
 				if (app != Gdx.app) return;
-				
+
 				long timeMillis = TimeUtils.nanoTime() / 1000000;
 				long waitMillis = 5000;
 				for (int i = 0, n = instances.size; i < n; i++) {
@@ -219,9 +221,9 @@ public class Timer {
 						throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
 					}
 				}
-				
+
 				if (app != Gdx.app) return;
-				
+
 				schedule((int)Math.max(0, waitMillis));
 			}
 		}

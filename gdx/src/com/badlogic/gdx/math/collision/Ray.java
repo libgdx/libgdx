@@ -29,8 +29,9 @@ public class Ray implements Serializable {
 	public final Vector3 origin = new Vector3();
 	public final Vector3 direction = new Vector3();
 
-	public Ray () { }
-	
+	public Ray () {
+	}
+
 	/** Constructor, sets the starting position of the ray and the direction.
 	 * 
 	 * @param origin The starting position
