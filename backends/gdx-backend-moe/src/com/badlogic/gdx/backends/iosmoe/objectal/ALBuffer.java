@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
 import org.moe.natj.general.NatJ;
@@ -35,87 +36,85 @@ public class ALBuffer extends NSObject {
 	}
 
 	@Generated
-	protected ALBuffer(Pointer peer) {
+	protected ALBuffer (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
 	@Owned
 	@Selector("alloc")
-	public static native ALBuffer alloc();
+	public static native ALBuffer alloc ();
 
 	@Generated
 	@Selector("bits")
-	public native int bits();
+	public native int bits ();
 
 	@Generated
 	@Selector("bufferId")
-	public native int bufferId();
+	public native int bufferId ();
 
 	@Generated
 	@Selector("bufferWithName:data:size:format:frequency:")
-	public static native ALBuffer bufferWithNameDataSizeFormatFrequency(
-			String name, VoidPtr data, int size, int format, int frequency);
+	public static native ALBuffer bufferWithNameDataSizeFormatFrequency (String name, VoidPtr data, int size, int format,
+		int frequency);
 
 	@Generated
 	@Selector("channels")
-	public native int channels();
+	public native int channels ();
 
 	@Generated
 	@Selector("device")
-	public native ALDevice device();
+	public native ALDevice device ();
 
 	@Generated
 	@Selector("duration")
-	public native float duration();
+	public native float duration ();
 
 	@Generated
 	@Selector("format")
-	public native int format();
+	public native int format ();
 
 	@Generated
 	@Selector("freeDataOnDestroy")
-	public native boolean freeDataOnDestroy();
+	public native boolean freeDataOnDestroy ();
 
 	@Generated
 	@Selector("frequency")
-	public native int frequency();
+	public native int frequency ();
 
 	@Generated
 	@Selector("init")
-	public native ALBuffer init();
+	public native ALBuffer init ();
 
 	@Generated
 	@Selector("initWithName:data:size:format:frequency:")
-	public native ALBuffer initWithNameDataSizeFormatFrequency(String name,
-			VoidPtr data, int size, int format, int frequency);
+	public native ALBuffer initWithNameDataSizeFormatFrequency (String name, VoidPtr data, int size, int format, int frequency);
 
 	@Generated
 	@Selector("name")
-	public native String name();
+	public native String name ();
 
 	@Generated
 	@Selector("parentBuffer")
-	public native ALBuffer parentBuffer();
+	public native ALBuffer parentBuffer ();
 
 	@Generated
 	@Selector("setFreeDataOnDestroy:")
-	public native void setFreeDataOnDestroy(boolean value);
+	public native void setFreeDataOnDestroy (boolean value);
 
 	@Generated
 	@Selector("setName:")
-	public native void setName(String value);
+	public native void setName (String value);
 
 	@Generated
 	@Selector("setParentBuffer:")
-	public native void setParentBuffer(ALBuffer value);
+	public native void setParentBuffer (ALBuffer value);
 
 	@Generated
 	@Selector("size")
-	public native int size();
+	public native int size ();
 
 	@Generated
 	@Selector("sliceWithName:offset:size:")
-	public native ALBuffer sliceWithNameOffsetSize(String sliceName,
-			int offset, int size);
+	public native ALBuffer sliceWithNameOffsetSize (String sliceName, int offset, int size);
 }

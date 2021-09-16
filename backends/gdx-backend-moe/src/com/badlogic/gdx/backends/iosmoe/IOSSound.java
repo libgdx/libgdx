@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.audio.Sound;
@@ -23,7 +24,6 @@ import com.badlogic.gdx.backends.iosmoe.objectal.OALSimpleAudio;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntArray;
 import apple.foundation.NSArray;
-
 
 public class IOSSound implements Sound {
 

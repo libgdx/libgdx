@@ -39,95 +39,92 @@ public class ALDevice extends NSObject implements OALSuspendManager {
 	}
 
 	@Generated
-	protected ALDevice(Pointer peer) {
+	protected ALDevice (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
 	@Selector("addSuspendListener:")
-	public native void addSuspendListener(
-			@Mapped(ObjCObjectMapper.class) Object listener);
+	public native void addSuspendListener (@Mapped(ObjCObjectMapper.class) Object listener);
 
 	@Generated
 	@Owned
 	@Selector("alloc")
-	public static native ALDevice alloc();
+	public static native ALDevice alloc ();
 
 	@Generated
 	@Selector("clearBuffers")
-	public native void clearBuffers();
+	public native void clearBuffers ();
 
 	@Generated
 	@Selector("contexts")
-	public native NSArray<?> contexts();
+	public native NSArray<?> contexts ();
 
 	@Generated
 	@Selector("device")
-	public native VoidPtr device();
+	public native VoidPtr device ();
 
 	@Generated
 	@Selector("deviceWithDeviceSpecifier:")
-	public static native ALDevice deviceWithDeviceSpecifier(
-			String deviceSpecifier);
+	public static native ALDevice deviceWithDeviceSpecifier (String deviceSpecifier);
 
 	@Generated
 	@Selector("extensions")
-	public native NSArray<?> extensions();
+	public native NSArray<?> extensions ();
 
 	@Generated
 	@Selector("getProcAddress:")
-	public native VoidPtr getProcAddress(String functionName);
+	public native VoidPtr getProcAddress (String functionName);
 
 	@Generated
 	@Selector("init")
-	public native ALDevice init();
+	public native ALDevice init ();
 
 	@Generated
 	@Selector("initWithDeviceSpecifier:")
-	public native ALDevice initWithDeviceSpecifier(String deviceSpecifier);
+	public native ALDevice initWithDeviceSpecifier (String deviceSpecifier);
 
 	@Generated
 	@Selector("interrupted")
-	public native boolean interrupted();
+	public native boolean interrupted ();
 
 	@Generated
 	@Selector("isExtensionPresent:")
-	public native boolean isExtensionPresent(String name);
+	public native boolean isExtensionPresent (String name);
 
 	@Generated
 	@Selector("majorVersion")
-	public native int majorVersion();
+	public native int majorVersion ();
 
 	@Generated
 	@Selector("manuallySuspended")
-	public native boolean manuallySuspended();
+	public native boolean manuallySuspended ();
 
 	@Generated
 	@Selector("minorVersion")
-	public native int minorVersion();
+	public native int minorVersion ();
 
 	@Generated
 	@Selector("notifyContextDeallocating:")
-	public native void notifyContextDeallocating(ALContext context);
+	public native void notifyContextDeallocating (ALContext context);
 
 	@Generated
 	@Selector("notifyContextInitializing:")
-	public native void notifyContextInitializing(ALContext context);
+	public native void notifyContextInitializing (ALContext context);
 
 	@Generated
 	@Selector("removeSuspendListener:")
-	public native void removeSuspendListener(
-			@Mapped(ObjCObjectMapper.class) Object listener);
+	public native void removeSuspendListener (@Mapped(ObjCObjectMapper.class) Object listener);
 
 	@Generated
 	@Selector("setInterrupted:")
-	public native void setInterrupted(boolean value);
+	public native void setInterrupted (boolean value);
 
 	@Generated
 	@Selector("setManuallySuspended:")
-	public native void setManuallySuspended(boolean value);
+	public native void setManuallySuspended (boolean value);
 
 	@Generated
 	@Selector("suspended")
-	public native boolean suspended();
+	public native boolean suspended ();
 }

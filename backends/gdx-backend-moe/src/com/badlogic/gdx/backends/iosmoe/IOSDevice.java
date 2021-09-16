@@ -24,13 +24,13 @@ public class IOSDevice {
 	final String machineString;
 	final int ppi;
 
-	public IOSDevice(String classifier, String machineString, int ppi) {
+	public IOSDevice (String classifier, String machineString, int ppi) {
 		this.classifier = classifier;
 		this.machineString = machineString;
 		this.ppi = ppi;
 	}
 
-	static ObjectMap<String, IOSDevice> populateWithKnownDevices() {
+	static ObjectMap<String, IOSDevice> populateWithKnownDevices () {
 		ObjectMap<String, IOSDevice> deviceMap = new ObjectMap<String, IOSDevice>();
 
 		addDeviceToMap(deviceMap, "IPHONE_2G", "iPhone1,1", 163);
@@ -128,7 +128,7 @@ public class IOSDevice {
 		return deviceMap;
 	}
 
-	static void addDeviceToMap(ObjectMap<String, IOSDevice> deviceMap, String classifier, String machineString, int ppi) {
+	static void addDeviceToMap (ObjectMap<String, IOSDevice> deviceMap, String classifier, String machineString, int ppi) {
 		deviceMap.put(machineString, new IOSDevice(classifier, machineString, ppi));
 	}
 }

@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import apple.NSObject;
 import apple.foundation.NSMutableDictionary;
 import apple.foundation.NSNumber;
 import apple.foundation.NSString;
@@ -118,7 +117,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public String getString (String key) {
-		//Implicit mapping from NSString to String apparently?
+		// Implicit mapping from NSString to String apparently?
 		Object value = nsDictionary.get(key);
 		if (value == null) return "";
 		return value.toString();
@@ -187,7 +186,7 @@ public class IOSPreferences implements Preferences {
 	public void flush () {
 		ObjCRuntime.autoreleasepool(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
 					Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
 				}

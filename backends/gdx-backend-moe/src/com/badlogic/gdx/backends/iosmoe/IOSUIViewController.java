@@ -23,7 +23,6 @@ import apple.coregraphics.struct.CGRect;
 import apple.glkit.GLKViewController;
 import apple.uikit.enums.UIInterfaceOrientation;
 
-
 class IOSUIViewController extends GLKViewController {
 
 	private IOSApplication app;
@@ -42,6 +41,7 @@ class IOSUIViewController extends GLKViewController {
 	protected IOSUIViewController (Pointer peer) {
 		super(peer);
 	}
+
 	public IOSUIViewController init (IOSApplication app, IOSGraphics graphics) {
 		init();
 		this.app = app;
@@ -60,8 +60,7 @@ class IOSUIViewController extends GLKViewController {
 	@Override
 	public void viewDidAppear (boolean animated) {
 		super.viewDidAppear(animated);
-		if (app.viewControllerListener != null)
-			app.viewControllerListener.viewDidAppear(animated);
+		if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 	}
 
 	@Override
@@ -108,7 +107,7 @@ class IOSUIViewController extends GLKViewController {
 	public boolean prefersStatusBarHidden () {
 		return !app.config.statusBarVisible;
 	}
-	
+
 	@Override
 	public boolean prefersHomeIndicatorAutoHidden () {
 		return app.config.hideHomeIndicator;

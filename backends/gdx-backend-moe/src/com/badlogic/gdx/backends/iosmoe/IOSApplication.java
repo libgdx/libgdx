@@ -43,7 +43,6 @@ import apple.coregraphics.struct.CGRect;
 import apple.coregraphics.struct.CGSize;
 import apple.foundation.NSDictionary;
 import apple.foundation.NSMutableDictionary;
-import apple.foundation.NSThread;
 import apple.uikit.UIApplication;
 import apple.uikit.UIDevice;
 import apple.uikit.UIPasteboard;
@@ -193,7 +192,7 @@ public class IOSApplication implements Application {
 		return IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
 	}
 
-	protected IOSInput createInput() {
+	protected IOSInput createInput () {
 		return new IOSInput(this);
 	}
 
@@ -456,7 +455,7 @@ public class IOSApplication implements Application {
 			}
 
 			@Override
-			public boolean hasContents() {
+			public boolean hasContents () {
 				return UIPasteboard.generalPasteboard().hasStrings();
 			}
 

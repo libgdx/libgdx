@@ -17,7 +17,8 @@
 package com.badlogic.gdx.backends.iosmoe;
 
 /** An IOSViewControllerListener can be added to an {@link IOSApplication} via
- * {@link IOSApplication#addViewControllerListener(IOSViewControllerListener)}. It will receive notification of view events.</p>
+ * {@link IOSApplication#addViewControllerListener(IOSViewControllerListener)}. It will receive notification of view events.
+ * </p>
  * 
  * The methods will be invoked on the UI thread.
  * 

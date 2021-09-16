@@ -33,17 +33,17 @@ public final class ALOrientation extends StructObject {
 	private static long __natjCache;
 
 	@Generated
-	public ALOrientation() {
+	public ALOrientation () {
 		super(ALOrientation.class);
 	}
 
 	@Generated
-	protected ALOrientation(Pointer peer) {
+	protected ALOrientation (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
-	public ALOrientation(@ByValue ALVector at, @ByValue ALVector up) {
+	public ALOrientation (@ByValue ALVector at, @ByValue ALVector up) {
 		super(ALOrientation.class);
 		setAt(at);
 		setUp(up);
@@ -52,18 +52,18 @@ public final class ALOrientation extends StructObject {
 	@Generated
 	@StructureField(order = 0, isGetter = true)
 	@ByValue
-	public native ALVector at();
+	public native ALVector at ();
 
 	@Generated
 	@StructureField(order = 0, isGetter = false)
-	public native void setAt(@ByValue ALVector value);
+	public native void setAt (@ByValue ALVector value);
 
 	@Generated
 	@StructureField(order = 1, isGetter = true)
 	@ByValue
-	public native ALVector up();
+	public native ALVector up ();
 
 	@Generated
 	@StructureField(order = 1, isGetter = false)
-	public native void setUp(@ByValue ALVector value);
+	public native void setUp (@ByValue ALVector value);
 }

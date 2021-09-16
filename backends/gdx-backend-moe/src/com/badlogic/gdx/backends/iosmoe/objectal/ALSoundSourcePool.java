@@ -39,39 +39,37 @@ public class ALSoundSourcePool extends NSObject {
 	}
 
 	@Generated
-	protected ALSoundSourcePool(Pointer peer) {
+	protected ALSoundSourcePool (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
 	@Selector("addSource:")
-	public native void addSource(
-			@Mapped(ObjCObjectMapper.class) ALSoundSource source);
+	public native void addSource (@Mapped(ObjCObjectMapper.class) ALSoundSource source);
 
 	@Generated
 	@Owned
 	@Selector("alloc")
-	public static native ALSoundSourcePool alloc();
+	public static native ALSoundSourcePool alloc ();
 
 	@Generated
 	@Selector("getFreeSource:")
 	@MappedReturn(ObjCObjectMapper.class)
-	public native ALSoundSource getFreeSource(boolean attemptToInterrupt);
+	public native ALSoundSource getFreeSource (boolean attemptToInterrupt);
 
 	@Generated
 	@Selector("init")
-	public native ALSoundSourcePool init();
+	public native ALSoundSourcePool init ();
 
 	@Generated
 	@Selector("pool")
-	public static native ALSoundSourcePool pool();
+	public static native ALSoundSourcePool pool ();
 
 	@Generated
 	@Selector("removeSource:")
-	public native void removeSource(
-			@Mapped(ObjCObjectMapper.class) ALSoundSource source);
+	public native void removeSource (@Mapped(ObjCObjectMapper.class) ALSoundSource source);
 
 	@Generated
 	@Selector("sources")
-	public native NSArray<?> sources();
+	public native NSArray<?> sources ();
 }

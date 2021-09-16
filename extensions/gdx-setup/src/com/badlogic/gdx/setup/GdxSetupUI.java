@@ -475,10 +475,7 @@ public class GdxSetupUI extends JFrame {
 
 		JLabel graalvmLocationLabel = new JLabel("GraalVM Home");
 		JTextField graalvmLocationText = new JTextField(
-				System.getProperty("os.name").contains("Windows")
-						? "C:\\Path\\To\\GraalVM"
-						: "/path/to/GraalVM"
-		);
+			System.getProperty("os.name").contains("Windows") ? "C:\\Path\\To\\GraalVM" : "/path/to/GraalVM");
 		SetupButton graalvmLocationButton = new SetupButton("Browse");
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
@@ -559,7 +556,6 @@ public class GdxSetupUI extends JFrame {
 			add(graalvmLocationLabel, new GridBagConstraints(0, 5, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
 			add(graalvmLocationText, new GridBagConstraints(1, 5, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(graalvmLocationButton, new GridBagConstraints(2, 5, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
-
 
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {

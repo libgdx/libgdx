@@ -53,7 +53,8 @@ public class IOSApplicationConfiguration {
 	 * This looks pixel perfect and will save you the trouble to create bigger graphics for the retina display.
 	 * <li>any other value: scales the screens according to your scale factor. A scale factor oof 0.75, 0.8, 1.2, 1.5 etc. works
 	 * very well without any artifacts!
-	 * </ul> */
+	 * </ul>
+	 */
 	public float displayScaleLargeScreenIfRetina = 1.0f;
 	/** Scale factor to use on small screens with retina display, i.e. iPhone 4+, iPod 4+ (has no effect on non-retina screens).
 	 * <ul>
@@ -62,21 +63,24 @@ public class IOSApplicationConfiguration {
 	 * looks pixel perfect and will save you the trouble to create bigger graphics for the retina display.
 	 * <li>any other value: scales the screens according to your scale factor. A scale factor of 0.75, 0.8, 1.2, 1.5 etc. works
 	 * very well without any artifacts!
-	 * </ul> */
+	 * </ul>
+	 */
 	public float displayScaleSmallScreenIfRetina = 1.0f;
 	/** Scale factor to use on large screens without retina display, i.e. iPad 1+2 (has no effect on retina screens).
 	 * <ul>
 	 * <li>1.0 = no scaling (everything is in pixels)
 	 * <li>any other value: scales the screens according to your scale factor. A scale factor of 0.75, 0.8, 1.2, 1.5 etc. works
 	 * very well without any artifacts!
-	 * </ul> */
+	 * </ul>
+	 */
 	public float displayScaleLargeScreenIfNonRetina = 1.0f;
 	/** Scale factor to use on small screens without retina display, i.e. iPhone 1-3, iPod 1-3 (has no effect on retina screens).
 	 * <ul>
 	 * <li>1.0 = no scaling (everything is in pixels)
 	 * <li>any other value: scales the screens according to your scale factor. A scale factor of 0.75, 0.8, 1.2, 1.5 etc. works
 	 * very well without any artifacts!
-	 * </ul> */
+	 * </ul>
+	 */
 	public float displayScaleSmallScreenIfNonRetina = 1.0f;
 
 	/** whether to use the accelerometer, default true **/
@@ -91,21 +95,21 @@ public class IOSApplicationConfiguration {
 
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = true;
-	
+
 	/** whether or not the onScreenKeyboard should be closed on return key **/
 	public boolean keyboardCloseOnReturn = true;
 
-	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-	 *  When GL ES 3 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
+	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES 3
+	 * is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 
 	/** whether the status bar should be visible or not **/
 	public boolean statusBarVisible = false;
-	
+
 	/** whether the home indicator should be hidden or not **/
 	public boolean hideHomeIndicator = true;
-	
+
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
 
@@ -114,13 +118,11 @@ public class IOSApplicationConfiguration {
 
 	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
 
-	/**
-	 * adds device information for newer iOS devices, or overrides information for given ones
+	/** adds device information for newer iOS devices, or overrides information for given ones
 	 * @param classifier human readable device classifier
 	 * @param machineString machine string returned by iOS
-	 * @param ppi device's pixel per inch value
-	 */
-	public void addIosDevice(String classifier, String machineString, int ppi) {
+	 * @param ppi device's pixel per inch value */
+	public void addIosDevice (String classifier, String machineString, int ppi) {
 		IOSDevice.addDeviceToMap(knownDevices, classifier, machineString, ppi);
 	}
 }

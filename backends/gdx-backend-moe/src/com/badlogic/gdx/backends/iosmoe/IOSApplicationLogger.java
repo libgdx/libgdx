@@ -18,40 +18,38 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for ios-moe
- */
+/** Default implementation of {@link ApplicationLogger} for ios-moe */
 public class IOSApplicationLogger implements ApplicationLogger {
 
 	@Override
-	public void log(String tag, String message) {
+	public void log (String tag, String message) {
 		System.out.println(tag + ": " + message);
 	}
 
 	@Override
-	public void log(String tag, String message, Throwable exception) {
+	public void log (String tag, String message, Throwable exception) {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
 	}
 
 	@Override
-	public void error(String tag, String message) {
+	public void error (String tag, String message) {
 		System.err.println(tag + ": " + message);
 	}
 
 	@Override
-	public void error(String tag, String message, Throwable exception) {
+	public void error (String tag, String message, Throwable exception) {
 		System.err.println(tag + ": " + message);
 		exception.printStackTrace();
 	}
 
 	@Override
-	public void debug(String tag, String message) {
+	public void debug (String tag, String message) {
 		System.out.println(tag + ": " + message);
 	}
 
 	@Override
-	public void debug(String tag, String message, Throwable exception) {
+	public void debug (String tag, String message, Throwable exception) {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
 	}

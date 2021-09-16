@@ -233,7 +233,8 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-		Language language, String assetPath, String sdkLocation, CharCallback callback, List<String> gradleArgs, String graalVMLocation) {
+		Language language, String assetPath, String sdkLocation, CharCallback callback, List<String> gradleArgs,
+		String graalVMLocation) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
@@ -353,8 +354,9 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
 		}
 
-		if(builder.modules.contains(ProjectType.IOSMOE)) {
-			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));
+		if (builder.modules.contains(ProjectType.IOSMOE)) {
+			project.files
+				.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
@@ -365,25 +367,43 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
 
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
+			project.files.add(
+				new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
+			project.files.add(new ProjectFile(
+				"ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile(
+				"ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
 
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
@@ -420,8 +440,9 @@ public class GdxSetup {
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
 
-		if(builder.modules.contains(ProjectType.IOSMOE)) {
-			Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "moeUpdateXcodeSettings" + parseGradleArgs(builder.modules, gradleArgs), callback);
+		if (builder.modules.contains(ProjectType.IOSMOE)) {
+			Executor.execute(new File(outputDir), "gradlew.bat", "gradlew",
+				"moeUpdateXcodeSettings" + parseGradleArgs(builder.modules, gradleArgs), callback);
 		}
 		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs),
 			callback);
@@ -676,7 +697,7 @@ public class GdxSetup {
 				}
 			}
 
-		    String graalVMLocation = params.get("graalVMLocation");
+			String graalVMLocation = params.get("graalVMLocation");
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();

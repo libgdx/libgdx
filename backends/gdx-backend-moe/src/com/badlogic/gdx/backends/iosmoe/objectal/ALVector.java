@@ -32,17 +32,17 @@ public final class ALVector extends StructObject {
 	private static long __natjCache;
 
 	@Generated
-	public ALVector() {
+	public ALVector () {
 		super(ALVector.class);
 	}
 
 	@Generated
-	protected ALVector(Pointer peer) {
+	protected ALVector (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
-	public ALVector(float x, float y, float z) {
+	public ALVector (float x, float y, float z) {
 		super(ALVector.class);
 		setX(x);
 		setY(y);
@@ -51,25 +51,25 @@ public final class ALVector extends StructObject {
 
 	@Generated
 	@StructureField(order = 0, isGetter = true)
-	public native float x();
+	public native float x ();
 
 	@Generated
 	@StructureField(order = 0, isGetter = false)
-	public native void setX(float value);
+	public native void setX (float value);
 
 	@Generated
 	@StructureField(order = 1, isGetter = true)
-	public native float y();
+	public native float y ();
 
 	@Generated
 	@StructureField(order = 1, isGetter = false)
-	public native void setY(float value);
+	public native void setY (float value);
 
 	@Generated
 	@StructureField(order = 2, isGetter = true)
-	public native float z();
+	public native float z ();
 
 	@Generated
 	@StructureField(order = 2, isGetter = false)
-	public native void setZ(float value);
+	public native void setZ (float value);
 }

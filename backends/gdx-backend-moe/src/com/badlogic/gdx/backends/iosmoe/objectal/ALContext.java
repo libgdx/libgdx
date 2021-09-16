@@ -39,160 +39,154 @@ public class ALContext extends NSObject implements OALSuspendManager {
 	}
 
 	@Generated
-	protected ALContext(Pointer peer) {
+	protected ALContext (Pointer peer) {
 		super(peer);
 	}
 
 	@Generated
 	@Selector("addSuspendListener:")
-	public native void addSuspendListener(
-			@Mapped(ObjCObjectMapper.class) Object listener);
+	public native void addSuspendListener (@Mapped(ObjCObjectMapper.class) Object listener);
 
 	@Generated
 	@Selector("alVersion")
-	public native String alVersion();
+	public native String alVersion ();
 
 	@Generated
 	@Owned
 	@Selector("alloc")
-	public static native ALContext alloc();
+	public static native ALContext alloc ();
 
 	@Generated
 	@Selector("attributes")
-	public native NSArray<?> attributes();
+	public native NSArray<?> attributes ();
 
 	@Generated
 	@Selector("clearBuffers")
-	public native void clearBuffers();
+	public native void clearBuffers ();
 
 	@Generated
 	@Selector("context")
-	public native VoidPtr context();
+	public native VoidPtr context ();
 
 	@Generated
 	@Selector("contextOnDevice:attributes:")
-	public static native ALContext contextOnDeviceAttributes(ALDevice device,
-			NSArray<?> attributes);
+	public static native ALContext contextOnDeviceAttributes (ALDevice device, NSArray<?> attributes);
 
 	@Generated
 	@Selector("contextOnDevice:outputFrequency:refreshIntervals:synchronousContext:monoSources:stereoSources:")
-	public static native ALContext contextOnDeviceOutputFrequencyRefreshIntervalsSynchronousContextMonoSourcesStereoSources(
-			ALDevice device, int outputFrequency, int refreshIntervals,
-			boolean synchronousContext, int monoSources, int stereoSources);
+	public static native ALContext contextOnDeviceOutputFrequencyRefreshIntervalsSynchronousContextMonoSourcesStereoSources (
+		ALDevice device, int outputFrequency, int refreshIntervals, boolean synchronousContext, int monoSources, int stereoSources);
 
 	@Generated
 	@Selector("device")
-	public native ALDevice device();
+	public native ALDevice device ();
 
 	@Generated
 	@Selector("distanceModel")
-	public native int distanceModel();
+	public native int distanceModel ();
 
 	@Generated
 	@Selector("dopplerFactor")
-	public native float dopplerFactor();
+	public native float dopplerFactor ();
 
 	@Generated
 	@Selector("ensureContextIsCurrent")
-	public native void ensureContextIsCurrent();
+	public native void ensureContextIsCurrent ();
 
 	@Generated
 	@Selector("extensions")
-	public native NSArray<?> extensions();
+	public native NSArray<?> extensions ();
 
 	@Generated
 	@Selector("getProcAddress:")
-	public native VoidPtr getProcAddress(String functionName);
+	public native VoidPtr getProcAddress (String functionName);
 
 	@Generated
 	@Selector("init")
-	public native ALContext init();
+	public native ALContext init ();
 
 	@Generated
 	@Selector("initOnDevice:attributes:")
-	public native ALContext initOnDeviceAttributes(ALDevice device,
-			NSArray<?> attributes);
+	public native ALContext initOnDeviceAttributes (ALDevice device, NSArray<?> attributes);
 
 	@Generated
 	@Selector("initOnDevice:outputFrequency:refreshIntervals:synchronousContext:monoSources:stereoSources:")
-	public native ALContext initOnDeviceOutputFrequencyRefreshIntervalsSynchronousContextMonoSourcesStereoSources(
-			ALDevice device, int outputFrequency, int refreshIntervals,
-			boolean synchronousContext, int monoSources, int stereoSources);
+	public native ALContext initOnDeviceOutputFrequencyRefreshIntervalsSynchronousContextMonoSourcesStereoSources (ALDevice device,
+		int outputFrequency, int refreshIntervals, boolean synchronousContext, int monoSources, int stereoSources);
 
 	@Generated
 	@Selector("interrupted")
-	public native boolean interrupted();
+	public native boolean interrupted ();
 
 	@Generated
 	@Selector("isExtensionPresent:")
-	public native boolean isExtensionPresent(String name);
+	public native boolean isExtensionPresent (String name);
 
 	@Generated
 	@Selector("listener")
-	public native ALListener listener();
+	public native ALListener listener ();
 
 	@Generated
 	@Selector("manuallySuspended")
-	public native boolean manuallySuspended();
+	public native boolean manuallySuspended ();
 
 	@Generated
 	@Selector("notifySourceDeallocating:")
-	public native void notifySourceDeallocating(ALSource source);
+	public native void notifySourceDeallocating (ALSource source);
 
 	@Generated
 	@Selector("notifySourceInitializing:")
-	public native void notifySourceInitializing(ALSource source);
+	public native void notifySourceInitializing (ALSource source);
 
 	@Generated
 	@Selector("process")
-	public native void process();
+	public native void process ();
 
 	@Generated
 	@Selector("removeSuspendListener:")
-	public native void removeSuspendListener(
-			@Mapped(ObjCObjectMapper.class) Object listener);
+	public native void removeSuspendListener (@Mapped(ObjCObjectMapper.class) Object listener);
 
 	@Generated
 	@Selector("renderer")
-	public native String renderer();
+	public native String renderer ();
 
 	@Generated
 	@Selector("setDistanceModel:")
-	public native void setDistanceModel(int value);
+	public native void setDistanceModel (int value);
 
 	@Generated
 	@Selector("setDopplerFactor:")
-	public native void setDopplerFactor(float value);
+	public native void setDopplerFactor (float value);
 
 	@Generated
 	@Selector("setInterrupted:")
-	public native void setInterrupted(boolean value);
+	public native void setInterrupted (boolean value);
 
 	@Generated
 	@Selector("setManuallySuspended:")
-	public native void setManuallySuspended(boolean value);
+	public native void setManuallySuspended (boolean value);
 
 	@Generated
 	@Selector("setSpeedOfSound:")
-	public native void setSpeedOfSound(float value);
+	public native void setSpeedOfSound (float value);
 
 	@Generated
 	@Selector("sources")
-	public native NSArray<?> sources();
+	public native NSArray<?> sources ();
 
 	@Generated
 	@Selector("speedOfSound")
-	public native float speedOfSound();
+	public native float speedOfSound ();
 
 	@Generated
 	@Selector("stopAllSounds")
-	public native void stopAllSounds();
+	public native void stopAllSounds ();
 
 	@Generated
 	@Selector("suspended")
-	public native boolean suspended();
+	public native boolean suspended ();
 
 	@Generated
 	@Selector("vendor")
-	public native String vendor();
+	public native String vendor ();
 }

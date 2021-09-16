@@ -340,8 +340,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public float getBackBufferScale() {
-		return getBackBufferWidth() / (float) getWidth();
+	public float getBackBufferScale () {
+		return getBackBufferWidth() / (float)getWidth();
 	}
 
 	@Override
@@ -436,22 +436,22 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public int getSafeInsetLeft() {
+	public int getSafeInsetLeft () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetTop() {
+	public int getSafeInsetTop () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetBottom() {
+	public int getSafeInsetBottom () {
 		return 0;
 	}
 
 	@Override
-	public int getSafeInsetRight() {
+	public int getSafeInsetRight () {
 		return 0;
 	}
 
@@ -474,7 +474,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public void setForegroundFPS(int fps) {
+	public void setForegroundFPS (int fps) {
 		viewController.setPreferredFramesPerSecond(fps);
 	}
 

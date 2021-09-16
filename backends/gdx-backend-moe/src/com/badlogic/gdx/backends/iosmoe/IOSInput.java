@@ -90,7 +90,7 @@ public class IOSInput implements Input {
 		UIDevice device = UIDevice.currentDevice();
 		if (device.model().equalsIgnoreCase("iphone")) hasVibrator = true;
 
-		if (app.getIosVersion() >= 9){
+		if (app.getIosVersion() >= 9) {
 			long forceTouchCapability = UIScreen.mainScreen().traitCollection().forceTouchCapability();
 			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
@@ -303,8 +303,8 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
-		return button ==  Buttons.LEFT && justTouched;
+	public boolean isButtonJustPressed (int button) {
+		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
@@ -323,7 +323,7 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		buildUIAlertView(listener, title, text, hint, type).show();
 	}
 
@@ -377,7 +377,7 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 		if (textfield == null) createDefaultTextField();
 		if (visible) {
 			textfield.becomeFirstResponder();
@@ -388,25 +388,25 @@ public class IOSInput implements Input {
 		}
 	}
 
-	protected long getIosInputType(OnscreenKeyboardType type) {
+	protected long getIosInputType (OnscreenKeyboardType type) {
 		long preferredInputType;
 		switch (type) {
-			case NumberPad:
-				preferredInputType = UIKeyboardType.NumberPad;
-				break;
-			case PhonePad:
-				preferredInputType = UIKeyboardType.PhonePad;
-				break;
-			case Email:
-				preferredInputType = UIKeyboardType.EmailAddress;
-				break;
-			case URI:
-				preferredInputType = UIKeyboardType.URL;
-				break;
-			case Password: //no equivalent in UIKeyboardType?
-			default:
-				preferredInputType = UIKeyboardType.Default;
-				break;
+		case NumberPad:
+			preferredInputType = UIKeyboardType.NumberPad;
+			break;
+		case PhonePad:
+			preferredInputType = UIKeyboardType.PhonePad;
+			break;
+		case Email:
+			preferredInputType = UIKeyboardType.EmailAddress;
+			break;
+		case URI:
+			preferredInputType = UIKeyboardType.URL;
+			break;
+		case Password: // no equivalent in UIKeyboardType?
+		default:
+			preferredInputType = UIKeyboardType.Default;
+			break;
 		}
 		return preferredInputType;
 	}
@@ -445,7 +445,8 @@ public class IOSInput implements Input {
 	 * @param title Dialog title
 	 * @param text Text for text field
 	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder, OnscreenKeyboardType type) {
+	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder,
+		OnscreenKeyboardType type) {
 		UIAlertViewDelegate delegate = new UIAlertViewDelegate() {
 			@Override
 			public void alertViewClickedButtonAtIndex (UIAlertView alertView, @NInt long buttonIndex) {
