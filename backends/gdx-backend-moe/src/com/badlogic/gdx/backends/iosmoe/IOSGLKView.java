@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.badlogic.gdx.backends.bindings.metalangle.MGLKView;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
@@ -27,13 +26,14 @@ import org.moe.natj.objc.ann.Selector;
 
 import apple.coregraphics.struct.CGRect;
 import apple.foundation.NSSet;
+import apple.glkit.GLKView;
 import apple.uikit.UIEvent;
 import apple.uikit.UITouch;
 
 @org.moe.natj.general.ann.Runtime(ObjCRuntime.class)
 @ObjCClassName("IOSGLKView")
 @RegisterOnStartup
-public class IOSGLKView extends MGLKView {
+public class IOSGLKView extends GLKView {
 
 	private IOSGraphics graphics;
 
@@ -78,7 +78,7 @@ public class IOSGLKView extends MGLKView {
 
 	@Override
 	public void drawRect (@ByValue CGRect cgRect) {
-		graphics.mglkViewDrawInRect(this, cgRect);
+		graphics.glkViewDrawInRect(this, cgRect);
 	}
 
 	public void setGraphics (IOSGraphics graphics) {

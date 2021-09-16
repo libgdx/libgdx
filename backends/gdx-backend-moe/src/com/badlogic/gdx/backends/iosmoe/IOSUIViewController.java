@@ -16,15 +16,15 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.badlogic.gdx.backends.bindings.metalangle.MGLKViewController;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.objc.ann.Selector;
 import apple.coregraphics.struct.CGRect;
+import apple.glkit.GLKViewController;
 import apple.uikit.enums.UIInterfaceOrientation;
 
 
-class IOSUIViewController extends MGLKViewController {
+class IOSUIViewController extends GLKViewController {
 
 	private IOSApplication app;
 	private IOSGraphics graphics;

@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.badlogic.gdx.backends.bindings.metalangle.enums.MGLDrawableColorFormat;
-import com.badlogic.gdx.backends.bindings.metalangle.enums.MGLDrawableDepthFormat;
-import com.badlogic.gdx.backends.bindings.metalangle.enums.MGLDrawableMultisample;
-import com.badlogic.gdx.backends.bindings.metalangle.enums.MGLDrawableStencilFormat;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import apple.glkit.enums.GLKViewDrawableColorFormat;
+import apple.glkit.enums.GLKViewDrawableDepthFormat;
+import apple.glkit.enums.GLKViewDrawableMultisample;
+import apple.glkit.enums.GLKViewDrawableStencilFormat;
 
 public class IOSApplicationConfiguration {
 	/** whether to enable screen dimming. */
@@ -32,16 +32,16 @@ public class IOSApplicationConfiguration {
 	public boolean orientationLandscape = true;
 
 	/** the color format, RGB565 is the default **/
-	public int colorFormat = MGLDrawableColorFormat.RGB565;
+	public int colorFormat = GLKViewDrawableColorFormat.RGB565;
 
 	/** the depth buffer format, Format16 is default **/
-	public int depthFormat = MGLDrawableDepthFormat.Format16;
+	public int depthFormat = GLKViewDrawableDepthFormat.Format16;
 
 	/** the stencil buffer format, None is default **/
-	public int stencilFormat = MGLDrawableStencilFormat.FormatNone;
+	public int stencilFormat = GLKViewDrawableStencilFormat.FormatNone;
 
 	/** the multisample format, None is default **/
-	public int multisample = MGLDrawableMultisample.MultisampleNone;
+	public int multisample = GLKViewDrawableMultisample.MultisampleNone;
 
 	/** number of frames per second, 60 is default **/
 	public int preferredFramesPerSecond = 60;

@@ -16,13 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.badlogic.gdx.backends.bindings.metalangle.MGLContext;
-import com.badlogic.gdx.backends.bindings.metalangle.MGLKView;
-import com.badlogic.gdx.backends.bindings.metalangle.MGLKViewController;
-import com.badlogic.gdx.backends.bindings.metalangle.c.MetalANGLE;
-import com.badlogic.gdx.backends.bindings.metalangle.enums.*;
-import com.badlogic.gdx.backends.bindings.metalangle.protocol.MGLKViewControllerDelegate;
-import com.badlogic.gdx.backends.bindings.metalangle.protocol.MGLKViewDelegate;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
@@ -47,8 +40,18 @@ import apple.NSObject;
 import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGRect;
 import apple.coregraphics.struct.CGSize;
+import apple.glkit.GLKView;
+import apple.glkit.GLKViewController;
+import apple.glkit.enums.GLKViewDrawableColorFormat;
+import apple.glkit.enums.GLKViewDrawableDepthFormat;
+import apple.glkit.enums.GLKViewDrawableMultisample;
+import apple.glkit.enums.GLKViewDrawableStencilFormat;
+import apple.glkit.protocol.GLKViewControllerDelegate;
+import apple.glkit.protocol.GLKViewDelegate;
+import apple.opengles.EAGLContext;
+import apple.opengles.enums.EAGLRenderingAPI;
 
-public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate, MGLKViewControllerDelegate {
+public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
 
@@ -82,7 +85,7 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 	private boolean isFrameRequested = true;
 
 	IOSApplicationConfiguration config;
-	MGLContext context;
+	EAGLContext context;
 	GLVersion glVersion;
 	IOSGLKView view;
 	IOSUIViewController viewController;
@@ -110,14 +113,15 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 		height = (int)bounds.size().height();
 
 		if (useGLES30) {
-			context = MGLContext.alloc().initWithAPI(MGLRenderingAPI.GLES3);
+			context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);
+			;
 			if (context != null)
 				gl20 = gl30 = new IOSGLES30();
 			else
 				Gdx.app.log("IOGraphics", "OpenGL ES 3.0 not supported, falling back on 2.0");
 		}
 		if (context == null) {
-			context = MGLContext.alloc().initWithAPI(MGLRenderingAPI.GLES2);
+			context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES2);
 			gl20 = new IOSGLES20();
 			gl30 = null;
 		}
@@ -141,7 +145,7 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 		this.input = input;
 
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
-		if (config.colorFormat == MGLDrawableColorFormat.RGB565) {
+		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
 			r = 5;
 			g = 6;
 			b = 5;
@@ -149,17 +153,17 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 		} else {
 			r = g = b = a = 8;
 		}
-		if (config.depthFormat == MGLDrawableDepthFormat.Format16) {
+		if (config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
 			depth = 16;
-		} else if (config.depthFormat == MGLDrawableDepthFormat.Format24) {
+		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
 			depth = 24;
 		} else {
 			depth = 0;
 		}
-		if (config.stencilFormat == MGLDrawableStencilFormat.Format8) {
+		if (config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
 			stencil = 8;
 		}
-		if (config.multisample == MGLDrawableMultisample.Multisample4X) {
+		if (config.multisample == GLKViewDrawableMultisample.Multisample4X) {
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
@@ -220,7 +224,7 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 	boolean created = false;
 
 	@Override
-	public void mglkViewDrawInRect (MGLKView view, @ByValue CGRect rect) {
+	public void glkViewDrawInRect (GLKView view, @ByValue CGRect rect) {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
@@ -259,11 +263,11 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 	}
 
 	void makeCurrent () {
-		MGLContext.setCurrentContext(context);
+		EAGLContext.setCurrentContext(context);
 	}
 
 	@Override
-	public void mglkViewControllerUpdate (MGLKViewController glkViewController) {
+	public void glkViewControllerUpdate (GLKViewController glkViewController) {
 		makeCurrent();
 		app.processRunnables();
 		// pause the GLKViewController render loop if we are no longer continuous
@@ -272,6 +276,11 @@ public class IOSGraphics extends NSObject implements Graphics, MGLKViewDelegate,
 			viewController.setPaused(true);
 		}
 		isFrameRequested = false;
+	}
+
+	@Override
+	public void glkViewControllerWillPause (GLKViewController controller, boolean pause) {
+
 	}
 
 	@Override
