@@ -38,7 +38,7 @@ task dist2DParticles (type: Jar) {
 	from {configurations.compile.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-2D-particles.jar"
+	archiveFileName = "runnable-2D-particles.jar"
 
 	manifest {
 		attributes 'Main-Class': particles2DMainClass
@@ -51,7 +51,7 @@ task dist3DParticles (type: Jar) {
 	from {configurations.compile.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-3D-particles.jar"
+	archiveFileName = "runnable-3D-particles.jar"
 
 	manifest {
 		attributes 'Main-Class': particles3DMainClass
@@ -64,7 +64,7 @@ task distHiero (type: Jar) {
 	from {configurations.compile.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-hiero.jar"
+	archiveFileName = "runnable-hiero.jar"
 
 	manifest {
 		attributes 'Main-Class': hieroMainClass
@@ -77,7 +77,7 @@ task distTexturePacker (type: Jar) {
 	from {configurations.compile.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-texturepacker.jar"
+	archiveFileName = "runnable-texturepacker.jar"
 
 	manifest {
 		attributes 'Main-Class': texturePackerMainClass
