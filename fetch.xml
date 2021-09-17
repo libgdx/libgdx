@@ -10,7 +10,7 @@
     <property name="moe" value="https://oss.sonatype.org/service/local/repositories/snapshots/content/org/multi-os-engine/moe-sdk/"/>
     <property name="moe-version" value="2.0.0-SNAPSHOT"/>
     <!--Temporary-->
-    <property name="moe-version-snapshot" value="moe-sdk-2.0.0-20210519.092848-3"/>
+    <property name="moe-version-snapshot" value="moe-sdk-2.0.0-20210803.135011-6"/>
 
     <property name="jnigen" value="https://oss.sonatype.org/content/repositories/releases/com/badlogicgames/gdx"/>
     <property name="jnigen-version" value="2.2.0"/>

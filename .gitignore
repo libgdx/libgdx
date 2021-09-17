@@ -57,6 +57,7 @@ libgdx-*.zip.MD5
 /gdx/libs
 /backends/gdx-backend-jglfw/libs/
 /backends/gdx-backend-robovm/libs/
+/backends/gdx-backend-moe/libs/
 /extensions/gdx-audio/libs/
 /extensions/gdx-box2d/gdx-box2d/libs/
 /extensions/gdx-bullet/libs/
