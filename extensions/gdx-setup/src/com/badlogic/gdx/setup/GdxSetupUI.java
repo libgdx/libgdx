@@ -181,7 +181,7 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		final String graalVMLocation = ui.form.graalvmLocationText.getText().trim();
-		if (graalVMLocation.length() == 0 && modules.contains(ProjectType.IOSMOE)) {
+		if (!GdxSetup.isGraalVMLocationValid(graalVMLocation) && modules.contains(ProjectType.IOSMOE)) {
 			JOptionPane.showMessageDialog(this, "Please enter your GraalVM path");
 			return;
 		}

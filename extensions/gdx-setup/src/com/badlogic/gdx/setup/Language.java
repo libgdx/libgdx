@@ -7,7 +7,7 @@ public enum Language {
 		true), KOTLIN("kotlin", "ext.kotlinVersion = '1.3.41'",
 			"classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion\"",
 			"api \"org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion\"",
-			"kotlin;kotlin;kotlin;android,kotlin-android;kotlin,robovm; ", false);
+			"kotlin;kotlin;kotlin;android,kotlin-android;kotlin,robovm;moe,kotlin; ", false);
 
 	public final String[] corePlugins, lwjgl2Plugins, lwjgl3Plugins, androidPlugins, iosPlugins, iosmoePlugins, htmlPlugins;
 	public final String[][] platformPlugins;

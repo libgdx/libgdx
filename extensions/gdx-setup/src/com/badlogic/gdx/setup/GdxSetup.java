@@ -40,6 +40,10 @@ public class GdxSetup {
 		return new File(sdkLocation, "platforms").exists();
 	}
 
+	public static boolean isGraalVMLocationValid (String sdkLocation) {
+		return new File(sdkLocation, "bin").exists();
+	}
+
 	public static boolean isEmptyDirectory (String destination) {
 		if (new File(destination).exists()) {
 			return new File(destination).list().length == 0;
