@@ -26,7 +26,6 @@ configurations.all {
 	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
-apply plugin: 'war'
 apply plugin: 'gwt'
 apply plugin: 'org.gretty'
 
@@ -123,3 +122,12 @@ task addSource {
 
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
+
+eclipse {
+	classpath {
+		containers += [
+			'com.google.gwt.eclipse.core.GWT_CONTAINER',
+			'com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER'
+		]
+	}
+}

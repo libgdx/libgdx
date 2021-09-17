@@ -51,10 +51,17 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(Test) {
+        systemProperty 'file.encoding', 'UTF-8'
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
-    apply plugin: "idea"
     apply plugin: "java"
     apply plugin: "com.diffplug.spotless"
 
@@ -73,6 +80,48 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
         groovyGradle {
             target '*.gradle'
             greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+        }
+    }
+}
+
+configure(subprojects - project(":backends") - project(":extensions") - project(":tests") - project(":extensions:gdx-box2d-parent")) {
+    apply plugin: "idea"
+    apply plugin: "eclipse"
+
+    //This has to be done in afterEvaluate due to java/android plugin dependency
+    afterEvaluate {
+        eclipse {
+            project {
+                //hide gradle build folders from eclipse
+                resourceFilter {
+                    appliesTo = 'FOLDERS'
+                    type = 'EXCLUDE_ALL'
+                    matcher {
+                        id = 'org.eclipse.ui.ide.multiFilter'
+                        arguments = '1.0-projectRelativePath-matches-true-false-build'
+                    }
+                }
+            }
+            jdt {
+                file {
+                    withProperties { properties ->
+                        def libgdxJdtProperties = new Properties()
+                        libgdxJdtProperties.load(new FileInputStream(".settings/org.eclipse.jdt.libgdx.prefs"))
+                        properties.putAll(libgdxJdtProperties)
+                    }
+                }
+            }
+            classpath.file {
+                whenMerged { classpath ->
+                    classpath.entries.findAll { entry -> entry.kind == 'lib' || entry.kind == 'src' }*.exported = true
+                }
+            }
+        }
+        //Set all projects to use UTF-8 file encoding for all files
+        eclipseJdt.doLast {
+            File f = new File(projectDir, '.settings/org.eclipse.core.resources.prefs')
+            f.write('eclipse.preferences.version=1\n')
+            f.append('encoding/<project>=UTF-8')
         }
     }
 }

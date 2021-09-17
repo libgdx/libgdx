@@ -82,3 +82,9 @@ tests/gdx-tests-android/assets/bitmapWrittenFont.png
 #gradle wrapper
 /local.properties
 natives.zip
+
+#Eclipse metadata
+.metadata
+.classpath
+.project
+.settings

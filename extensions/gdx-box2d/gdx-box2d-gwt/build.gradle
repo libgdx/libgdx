@@ -39,16 +39,16 @@ eclipse {
 				//Exclude emu folder from main classpath entry
 				node.children().each { c ->
 					if(c.attribute('path').equals('src')) {
-						c.attributes().put('excluding', 'com/badlogic/gdx/backends/gwt/emu/')
+						c.attributes().put('excluding', 'com/badlogic/gdx/physics/box2d/gwt/emu/')
 					}
 				}
 
 				//Add second classpath entry for emu folder if not exists
-				def emuNodes = node.children().findAll { it.name() == 'classpathentry' && it.'@path'.equals('src/com/badlogic/gdx/backends/gwt/emu/')}
+				def emuNodes = node.children().findAll { it.name() == 'classpathentry' && it.'@path'.equals('src/com/badlogic/gdx/physics/box2d/gwt/emu/')}
 				if (emuNodes.size() == 0) {
 					def emuNode = node.appendNode('classpathentry')
 					emuNode.attributes().put('kind', 'src')
-					emuNode.attributes().put('path', 'src/com/badlogic/gdx/backends/gwt/emu/')
+					emuNode.attributes().put('path', 'src/com/badlogic/gdx/physics/box2d/gwt/emu/')
 					emuNode.attributes().put('excluding', 'java/lang/System.java')
 				}
 			}
