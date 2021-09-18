@@ -47,6 +47,9 @@ public class OALAudioTrack extends NSObject {
 	@Method
 	public native boolean play ();
 
+	@Method
+	public native boolean playFile (String filePath);
+
 	@Property
 	public native boolean isPaused ();
 
