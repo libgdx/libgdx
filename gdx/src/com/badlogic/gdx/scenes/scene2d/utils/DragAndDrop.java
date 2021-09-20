@@ -147,7 +147,7 @@ public class DragAndDrop {
 
 				if (System.currentTimeMillis() < dragValidTime)
 					isValidTarget = false;
-				else if (!isValidTarget) {
+				else if (!isValidTarget && target != null) {
 					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
 					target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
 					isValidTarget = target.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
