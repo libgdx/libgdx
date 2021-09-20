@@ -29,12 +29,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.maps.objects.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
@@ -91,6 +86,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		loadingStatus += "- PolygonMapObject : " + mapObjects.getByType(PolygonMapObject.class).size + "\n";
 		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
 		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
+		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 	}
@@ -147,6 +143,11 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
+				shapeRenderer.end();
+			} else if (mapObject instanceof PointMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				PointMapObject point = (PointMapObject)mapObject;
+				shapeRenderer.circle(point.getX(), point.getY(), 2f);
 				shapeRenderer.end();
 			}
 		}
