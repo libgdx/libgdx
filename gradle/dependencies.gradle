@@ -18,6 +18,7 @@ ext {
     versions = [:]
     libraries = [:]
     testnatives = [:]
+    gdxnatives = [:]
 }
 
 versions.robovm = "2.3.14"
@@ -133,3 +134,6 @@ testnatives.ios = [
         files("extensions/gdx-freetype/libs/ios32/")
 ]
 
+gdxnatives.desktop = [
+        files("gdx/libs/gdx-natives.jar")
+]
