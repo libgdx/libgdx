@@ -94,4 +94,14 @@ class AndroidAudioDevice implements AudioDevice {
 	public void setVolume (float volume) {
 		track.setStereoVolume(volume, volume);
 	}
+
+	@Override
+	public void pause () {
+		if (track.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) track.pause();
+	}
+
+	@Override
+	public void resume () {
+		if (track.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) track.play();
+	}
 }

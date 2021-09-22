@@ -51,4 +51,14 @@ public class MockAudioDevice implements AudioDevice {
 	public void setVolume (float volume) {
 
 	}
+
+	@Override
+	public void pause () {
+
+	}
+
+	@Override
+	public void resume () {
+
+	}
 }
