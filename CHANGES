@@ -1,5 +1,6 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
+- [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
 - iOS: Update to MobiVM 2.3.14
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
