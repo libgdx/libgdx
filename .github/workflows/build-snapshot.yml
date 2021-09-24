@@ -106,7 +106,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-linux:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -155,7 +155,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-windows:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -202,7 +202,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-android:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -246,7 +246,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   pack-natives:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -335,7 +335,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   release-snapshot:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     needs: pack-natives
     env:
       MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -377,7 +377,7 @@ jobs:
 
 
   build-and-upload-runnables:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
