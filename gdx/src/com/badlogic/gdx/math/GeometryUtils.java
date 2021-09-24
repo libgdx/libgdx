@@ -32,7 +32,7 @@ public final class GeometryUtils {
 	 * 
 	 * <pre>
 	 * GeometryUtils.toBarycoord(p, a, b, c, barycentric);
-	 * // THEN: 
+	 * // THEN:
 	 * float u = 1f - barycentric.x - barycentric.y;
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
