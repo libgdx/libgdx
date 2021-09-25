@@ -392,7 +392,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build Runnables
-        run: ./gradlew clean fetchNatives buildRunnables extensions:gdx-setup:build
+        run: ./gradlew clean fetchNatives buildRunnables build
 
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
