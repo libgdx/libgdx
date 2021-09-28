@@ -60,7 +60,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.ThreadUtils;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
@@ -436,7 +435,7 @@ public class AssetManager implements Disposable {
 		while (true) {
 			boolean done = update();
 			if (done || TimeUtils.millis() > endTime) return done;
-			ThreadUtils.yield();
+			Thread.yield();
 		}
 	}
 
@@ -450,7 +449,7 @@ public class AssetManager implements Disposable {
 	public void finishLoading () {
 		log.debug("Waiting for loading to complete...");
 		while (!update())
-			ThreadUtils.yield();
+			Thread.yield();
 		log.debug("Loading complete.");
 	}
 
@@ -479,7 +478,7 @@ public class AssetManager implements Disposable {
 				}
 				update();
 			}
-			ThreadUtils.yield();
+			Thread.yield();
 		}
 	}
 
