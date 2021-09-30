@@ -606,13 +606,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public Orientation getNativeOrientation () {
-		switch (app.uiApp.getStatusBarOrientation()) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			return Orientation.Landscape;
-		default:
-			return Orientation.Portrait;
-		}
+		return Orientation.Portrait;
 	}
 
 	@Override
