@@ -799,7 +799,7 @@ public class Actor {
 		Group parent = this.parent;
 		if (parent == null) return false;
 		Array<Actor> children = parent.children;
-		if (children.size == 1) return false;
+		if (children.size <= 1) return false;
 		index = Math.min(index, children.size - 1);
 		if (children.get(index) == this) return false;
 		if (!children.removeValue(this, true)) return false;
