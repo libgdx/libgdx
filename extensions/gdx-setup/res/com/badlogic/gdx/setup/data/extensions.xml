@@ -24,7 +24,7 @@
 		<package>com.kotcrab.vis.ui</package>
 		<version>1.4.11</version>
 		<compatibility>1.9.14</compatibility>
-		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
+		<website>https://github.com/kotcrab/vis-ui</website>
 		<gwtInherits>
 			<inherit>com.kotcrab.vis.vis-ui</inherit>
 		</gwtInherits>
