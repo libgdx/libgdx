@@ -249,6 +249,18 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-opengles</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-egl</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-openal</artifactId>
       <version>${lwjgl3.version}</version>
     </dependency>

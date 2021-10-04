@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
@@ -36,6 +37,8 @@ import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
+import org.lwjgl.opengles.GLES;
+import org.lwjgl.opengles.GLES20;
 import org.lwjgl.system.Callback;
 
 import com.badlogic.gdx.Application;
@@ -80,6 +83,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
+			if (SharedLibraryLoader.isMac) GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
@@ -87,7 +91,32 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
+	static void loadANGLE () {
+		try {
+			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
+			Method load = angleLoader.getMethod("load");
+			load.invoke(angleLoader);
+		} catch (ClassNotFoundException t) {
+			return;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
+		}
+	}
+
+	static void postLoadANGLE() {
+		try {
+			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
+			Method load = angleLoader.getMethod("postGlfwInit");
+			load.invoke(angleLoader);
+		} catch (ClassNotFoundException t) {
+			return;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
+		}
+	}
+
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
 		initializeGlfw();
 		setApplicationLogger(new Lwjgl3ApplicationLogger());
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
@@ -111,6 +140,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		this.sync = new Sync();
 
 		Lwjgl3Window window = createWindow(config, listener, 0);
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
 		windows.add(window);
 		try {
 			loop();
@@ -435,7 +465,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 
-		if (config.useGL30) {
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
 			if (SharedLibraryLoader.isMac) {
@@ -444,6 +474,13 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				// see: http://www.glfw.org/docs/latest/compat.html
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 				GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+			}
+		} else {
+			if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
+				GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_EGL_CONTEXT_API);
+				GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_ES_API);
+				GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 2);
+				GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 0);
 			}
 		}
 
@@ -503,14 +540,18 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
-		GL.createCapabilities();
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
+			GLES.createCapabilities();
+		} else {
+			GL.createCapabilities();
+		}
 
-		initiateGL();
+		initiateGL(config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20);
 		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
 				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
 
-		if (!supportsFBO()) {
+		if (config.glEmulation != Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20 && !supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
 				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
@@ -523,11 +564,18 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return windowHandle;
 	}
 
-	private static void initiateGL () {
-		String versionString = GL11.glGetString(GL11.GL_VERSION);
-		String vendorString = GL11.glGetString(GL11.GL_VENDOR);
-		String rendererString = GL11.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+	private static void initiateGL (boolean useGLES20) {
+		if (!useGLES20) {
+			String versionString = GL11.glGetString(GL11.GL_VERSION);
+			String vendorString = GL11.glGetString(GL11.GL_VENDOR);
+			String rendererString = GL11.glGetString(GL11.GL_RENDERER);
+			glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		} else {
+			String versionString = GLES20.glGetString(GL11.GL_VERSION);
+			String vendorString = GLES20.glGetString(GL11.GL_VENDOR);
+			String rendererString = GLES20.glGetString(GL11.GL_RENDERER);
+			glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		}
 	}
 
 	private static boolean supportsFBO () {
