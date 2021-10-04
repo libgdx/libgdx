@@ -37,7 +37,7 @@ public class Label extends Widget {
 
 	private LabelStyle style;
 	private final GlyphLayout layout = new GlyphLayout();
-	private final Vector2 prefSize = new Vector2();
+	private float prefWidth, prefHeight;
 	private final StringBuilder text = new StringBuilder();
 	private int intValue = Integer.MIN_VALUE;
 	private BitmapFontCache cache;
@@ -162,7 +162,8 @@ public class Label extends Widget {
 			prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
 		} else
 			prefSizeLayout.setText(cache.getFont(), text);
-		prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
+		prefWidth = prefSizeLayout.width;
+		prefHeight = prefSizeLayout.height;
 	}
 
 	public void layout () {
@@ -243,7 +244,7 @@ public class Label extends Widget {
 	public float getPrefWidth () {
 		if (wrap) return 0;
 		if (prefSizeInvalid) scaleAndComputePrefSize();
-		float width = prefSize.x;
+		float width = prefWidth;
 		Drawable background = style.background;
 		if (background != null)
 			width = Math.max(width + background.getLeftWidth() + background.getRightWidth(), background.getMinWidth());
@@ -254,7 +255,7 @@ public class Label extends Widget {
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float descentScaleCorrection = 1;
 		if (fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();
-		float height = prefSize.y - style.font.getDescent() * descentScaleCorrection * 2;
+		float height = prefHeight - style.font.getDescent() * descentScaleCorrection * 2;
 		Drawable background = style.background;
 		if (background != null)
 			height = Math.max(height + background.getTopHeight() + background.getBottomHeight(), background.getMinHeight());
