@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Null;
@@ -145,25 +144,24 @@ public class Label extends Widget {
 		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
-		computePrefSize();
+		computePrefSize(Label.prefSizeLayout);
 
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
-	private void computePrefSize () {
+	protected void computePrefSize (GlyphLayout layout) {
 		prefSizeInvalid = false;
-		GlyphLayout prefSizeLayout = Label.prefSizeLayout;
 		if (wrap && ellipsis == null) {
 			float width = getWidth();
 			if (style.background != null) {
 				width = Math.max(width, style.background.getMinWidth()) - style.background.getLeftWidth()
 					- style.background.getRightWidth();
 			}
-			prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
+			layout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
 		} else
-			prefSizeLayout.setText(cache.getFont(), text);
-		prefWidth = prefSizeLayout.width;
-		prefHeight = prefSizeLayout.height;
+			layout.setText(cache.getFont(), text);
+		prefWidth = layout.width;
+		prefHeight = layout.height;
 	}
 
 	public void layout () {
