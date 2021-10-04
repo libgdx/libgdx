@@ -31,6 +31,7 @@ include ":extensions:gdx-bullet"
 include ":extensions:gdx-freetype"
 include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
+include ":extensions:gdx-lwjgl3-angle"
 
 include ":tests"
 include ":tests:gdx-tests"
