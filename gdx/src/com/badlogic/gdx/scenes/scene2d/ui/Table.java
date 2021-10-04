@@ -270,28 +270,32 @@ public class Table extends WidgetGroup {
 	 * {@link #setSkin(Skin)}. */
 	public Cell<Label> add (@Null CharSequence text) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, skin));
+		return add(newLabel(text, skin.get(LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if a skin has been set with {@link Table#Table(Skin)} or
 	 * {@link #setSkin(Skin)}. */
 	public Cell<Label> add (@Null CharSequence text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
+		return add(newLabel(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if a skin has been set with {@link Table#Table(Skin)} or
 	 * {@link #setSkin(Skin)}. */
 	public Cell<Label> add (@Null CharSequence text, String fontName, @Null Color color) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
+		return add(newLabel(text, new LabelStyle(skin.getFont(fontName), color)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if a skin has been set with {@link Table#Table(Skin)} or
 	 * {@link #setSkin(Skin)}. */
 	public Cell<Label> add (@Null CharSequence text, String fontName, String colorName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
+		return add(newLabel(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
+	}
+
+	protected Label newLabel (CharSequence text, LabelStyle style) {
+		return new Label(text, style);
 	}
 
 	/** Adds a cell without an actor. */

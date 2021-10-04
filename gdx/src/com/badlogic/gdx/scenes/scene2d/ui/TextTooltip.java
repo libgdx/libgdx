@@ -47,19 +47,23 @@ public class TextTooltip extends Tooltip<Label> {
 	public TextTooltip (@Null String text, final TooltipManager manager, TextTooltipStyle style) {
 		super(null, manager);
 
-		final Label label = new Label(text, style.label);
+		Label label = newLabel(text, style.label);
 		label.setWrap(true);
 
 		container.setActor(label);
 		container.width(new Value() {
 			public float get (@Null Actor context) {
-				return Math.min(manager.maxWidth, label.getGlyphLayout().width);
+				return Math.min(manager.maxWidth, container.getActor().getGlyphLayout().width);
 			}
 		});
 
 		setStyle(style);
 	}
 
+	protected Label newLabel (String text, LabelStyle style) {
+		return new Label(text, style);
+	}
+	
 	public void setStyle (TextTooltipStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
 		container.getActor().setStyle(style.label);
