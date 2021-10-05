@@ -50,8 +50,6 @@ public class Lwjgl3TestStarter {
 	 * 
 	 * @param argv command line arguments */
 	public static void main (String[] argv) {
-		System.setProperty("java.awt.headless", "true");
-
 		options = new CommandLineOptions(argv);
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
