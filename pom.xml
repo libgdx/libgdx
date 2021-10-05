@@ -66,6 +66,7 @@
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>
     <module>extensions/gdx-lwjgl3-angle</module>
+    <module>extensions/gdx-lwjgl3-glfw-awt-macos</module>
   </modules>
 
   <build>

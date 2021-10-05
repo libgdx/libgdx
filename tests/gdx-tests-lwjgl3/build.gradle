@@ -26,6 +26,7 @@ dependencies {
 	compile project(":tests:gdx-tests")
 	compile project(":backends:gdx-backend-lwjgl3")
 	compile project(":extensions:gdx-lwjgl3-angle")
+	compile project(":extensions:gdx-lwjgl3-glfw-awt-macos")
 	compile testnatives.desktop
 }
 
