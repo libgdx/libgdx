@@ -208,7 +208,7 @@ public class ANGLELoader {
 		}
 	}
 
-	public static void postGlfwInit() {
+	public static void postGlfwInit () {
 		new File(lastWorkingDir, egl.getName()).delete();
 		new File(lastWorkingDir, gles.getName()).delete();
 	}
