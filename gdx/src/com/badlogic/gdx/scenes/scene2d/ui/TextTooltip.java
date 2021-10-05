@@ -63,7 +63,7 @@ public class TextTooltip extends Tooltip<Label> {
 	protected Label newLabel (String text, LabelStyle style) {
 		return new Label(text, style);
 	}
-	
+
 	public void setStyle (TextTooltipStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
 		container.getActor().setStyle(style.label);
