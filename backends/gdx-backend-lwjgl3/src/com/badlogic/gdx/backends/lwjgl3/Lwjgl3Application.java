@@ -57,6 +57,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -80,6 +81,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	static void initializeGlfw () {
 		if (errorCallback == null) {
+			if (SharedLibraryLoader.isMac) loadGlfwAwtMacos();
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
@@ -112,6 +114,20 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			return;
 		} catch (Throwable t) {
 			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
+		}
+	}
+
+	static void loadGlfwAwtMacos () {
+		try {
+			Class loader = Class.forName("com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader");
+			Method load = loader.getMethod("load");
+			File sharedLib = (File)load.invoke(loader);
+			Configuration.GLFW_LIBRARY_NAME.set(sharedLib.getAbsolutePath());
+			Configuration.GLFW_CHECK_THREAD0.set(false);
+		} catch (ClassNotFoundException t) {
+			return;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Couldn't load GLFW AWT for macOS.", t);
 		}
 	}
 
