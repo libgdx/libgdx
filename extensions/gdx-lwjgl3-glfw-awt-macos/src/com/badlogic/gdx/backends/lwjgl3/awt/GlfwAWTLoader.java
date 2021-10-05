@@ -161,7 +161,7 @@ public class GlfwAWTLoader {
 
 		try {
 			EventQueue.invokeAndWait(new Runnable() {
-				public void run() {
+				public void run () {
 					Toolkit.getDefaultToolkit();
 				}
 			});
