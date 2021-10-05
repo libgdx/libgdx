@@ -16,7 +16,8 @@
 
 buildscript {
     repositories {
-        jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         mavenLocal()
     }
     dependencies {
@@ -36,31 +37,61 @@ sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-// Set maven repository
-repositories {
-    jcenter()
-}
-
 // Exclude all files from Gradle's test runner
 test { exclude '**' }
 
-// Setup Multi-OS Engine
-moe {
-    xcode {
-        project 'xcode/IOSTests.xcodeproj'
-        mainTarget 'IOSTests'
-        testTarget 'IOSTests-Test'
-    }
-}
+configurations { natives }
 
-configurations {
-    natives
+// Extracts native libs (*.a) from the native-ios.jar and places them
+// under build/libs/ios/.
+task copyNatives  {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def LD_FLAGS = "LIBGDX_NATIVES = "
+        configurations.natives.files.each { jar ->
+            def outputDir = null
+            if (jar.name.matches(".*natives-ios.*")) outputDir = file("xcode/native/ios")
+            if (outputDir != null) {
+                FileCollection fileCollection = zipTree(jar)
+                for (File libFile : fileCollection) {
+                    if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
+                        copy {
+                            from libFile.getAbsolutePath()
+                            into outputDir
+                        }
+                        LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
+                    }
+                }
+            }
+        }
+        def outFlags = file("xcode/LibGDXMissileCommand/custom.xcconfig");
+        outFlags.write LD_FLAGS
+
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "\n-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
+    }
 }
 
 dependencies {
     compile project(":tests:gdx-tests")
     compile project(":backends:gdx-backend-moe")
     natives testnatives.ios
+}
+
+// Setup Multi-OS Engine
+moe {
+    nativeImage {
+        options = ["--features=com.badlogic.gdx.backends.svm.ConfigCollectionFeatureBase,com.badlogic.gdx.backends.svm.ConfigCollectionFeatureBullet"]
+    }
+    xcode {
+        project 'xcode/IOSTests.xcodeproj'
+        mainTarget 'IOSTests'
+        testTarget 'IOSTests-Test'
+    }
 }
 
 // Setup Eclipse
@@ -71,36 +102,11 @@ eclipse {
     }
 }
 
-task copyNatives {
-    doLast {
-        file("xcode/native/ios/").mkdirs();
-        def LD_FLAGS = "LIBGDX_NATIVES = "
-        configurations.natives.files.each { nativeFolder ->
-            def outputDir = file("xcode/native/ios")
-            def nativeFiles = nativeFolder.listFiles()
-            nativeFiles.each { nativeFile ->
-                if (!nativeFile.absolutePath.endsWith(".tvos")) {
-                    copy {
-                        from nativeFile.getAbsolutePath()
-                        into outputDir
-                    }
-                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
-                }
-            }
-        }
-        def outFlags = file("xcode/IOSTests/custom.xcconfig");
-        outFlags.write LD_FLAGS
-
-        def proguard = file("proguard.append.cfg")
-        if (!proguard.exists()) {
-            proguard = new File("proguard.append.cfg")
-            proguard << "-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
-    }
-}
-
 moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+if (System.getenv('PLATFORM_NAME') != null) {
+    moeXcodeInternal.dependsOn copyNatives
+}

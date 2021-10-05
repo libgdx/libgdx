@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,11 @@
 
 package com.badlogicgames.gdx.tests;
 
+import apple.uikit.c.UIKit;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
-import com.badlogic.gdx.tests.*;
 import org.moe.natj.general.Pointer;
-
-import apple.uikit.c.UIKit;
+import org.moe.natj.objc.ObjCRuntime;
 
 public class IOSTests extends IOSApplication.Delegate {
 
@@ -32,12 +31,15 @@ public class IOSTests extends IOSApplication.Delegate {
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new  IOSApplicationConfiguration();
-		config.useAccelerometer = false;
-		config.useGL30 = false;
-		return new IOSApplication(new BulletTestCollection(), config);
+		//config.useAccelerometer = false;
+		//config.useGL30 = false;
+		return new IOSApplication(new IOSTestWapper(), config);
 	}
 
 	public static void main(String[] argv) {
+		//Necessary?
+		long peer = ObjCRuntime.createAutoreleasePool();
 		UIKit.UIApplicationMain(0, null, null, IOSTests.class.getName());
+		ObjCRuntime.releaseAutoreleasePool(peer);
 	}
 }
