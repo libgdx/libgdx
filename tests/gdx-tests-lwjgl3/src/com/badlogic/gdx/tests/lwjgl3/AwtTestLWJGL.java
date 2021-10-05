@@ -4,7 +4,6 @@ package com.badlogic.gdx.tests.lwjgl3;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
