@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import %PACKAGE%.%MAIN_CLASS%;
 
+
 public class HtmlLauncher extends GwtApplication {
 
         @Override
