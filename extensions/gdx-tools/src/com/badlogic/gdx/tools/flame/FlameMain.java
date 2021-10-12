@@ -998,7 +998,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 		assetManager.load(resolvedPath, type, params);
 		assetManager.finishLoading();
-		T res = assetManager.get(resolvedPath);
+		T res = assetManager.get(resource);
 		if (currentLoader != null) assetManager.setLoader(type, currentLoader);
 
 		if (exist) EventManager.get().fire(EVT_ASSET_RELOADED, new Object[] {oldAsset, res});
