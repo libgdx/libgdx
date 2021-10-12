@@ -962,7 +962,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		try {
 			String path = file.getAbsolutePath().replace("\\", "/");
 			ParticleEffect loadedEffect = load(path, ParticleEffect.class, null,
-					new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches()));
+				new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches()));
 			loadedEffect = loadedEffect.copy();
 			loadedEffect.init();
 			if (replaceCurrentWorkspace) {
