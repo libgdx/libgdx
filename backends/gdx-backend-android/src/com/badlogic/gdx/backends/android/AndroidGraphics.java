@@ -410,6 +410,11 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
+		if (displayRotationHelper.getAndResetRefreshNeeded()) {
+			updatePpi();
+			updateSafeAreaInsets();
+			app.getApplicationListener().resize(width, height);
+		}
 		long time = System.nanoTime();
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
