@@ -456,4 +456,8 @@ public class Lwjgl3Window implements Disposable {
 		if (windowHandle != other.windowHandle) return false;
 		return true;
 	}
+
+	public void flash () {
+		GLFW.glfwRequestWindowAttention(windowHandle);
+	}
 }
