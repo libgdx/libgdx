@@ -20,6 +20,8 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -67,15 +69,20 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			updateFramebufferInfo();
-			if (!window.isListenerInitialized()) {
-				return;
-			}
-			window.makeCurrent();
-			gl20.glViewport(0, 0, width, height);
-			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
-			GLFW.glfwSwapBuffers(windowHandle);
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					updateFramebufferInfo();
+					if (!window.isListenerInitialized()) {
+						return;
+					}
+					window.makeCurrent();
+					gl20.glViewport(0, 0, width, height);
+					window.getListener().resize(getWidth(), getHeight());
+					window.getListener().render();
+					GLFW.glfwSwapBuffers(windowHandle);
+				}
+			});
 		}
 	};
 
