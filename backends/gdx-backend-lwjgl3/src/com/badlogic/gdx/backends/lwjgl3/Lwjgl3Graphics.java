@@ -51,6 +51,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
+	private boolean resetDeltaTime = false;
 	private long frameId;
 	private long frameCounterStart = 0;
 	private int frames;
@@ -146,7 +147,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	void update () {
 		long time = System.nanoTime();
 		if (lastFrameTime == -1) lastFrameTime = time;
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			deltaTime = 0;
+		} else
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 
 		if (time - frameCounterStart >= 1000000000) {
@@ -227,6 +232,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public float getDeltaTime () {
 		return deltaTime;
+	}
+
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
 	}
 
 	@Override
