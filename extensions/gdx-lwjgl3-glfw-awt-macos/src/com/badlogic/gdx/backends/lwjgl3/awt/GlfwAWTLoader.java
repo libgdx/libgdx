@@ -16,14 +16,18 @@
 
 package com.badlogic.gdx.backends.lwjgl3.awt;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.awt.*;
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.UUID;
 import java.util.zip.CRC32;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GlfwAWTLoader {
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
@@ -159,14 +163,16 @@ public class GlfwAWTLoader {
 	public static File load () {
 		if (!isMac) return null;
 
-		try {
-			EventQueue.invokeAndWait(new Runnable() {
-				public void run () {
-					Toolkit.getDefaultToolkit();
-				}
-			});
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Couldn't initialize AWT.", t);
+		if (!java.awt.EventQueue.isDispatchThread()) {
+			try {
+				java.awt.EventQueue.invokeAndWait(new Runnable() {
+					public void run () {
+						java.awt.Toolkit.getDefaultToolkit();
+					}
+				});
+			} catch (Throwable t) {
+				throw new GdxRuntimeException("Couldn't initialize AWT.", t);
+			}
 		}
 
 		String source = "macosx64/libglfw.dylib";
