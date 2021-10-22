@@ -181,6 +181,9 @@ public class Polygon implements Shape2D {
 	 * 
 	 * @return this polygon's bounding box {@link Rectangle} */
 	public Rectangle getBoundingRectangle () {
+		if (!dirty && bounds != null)
+			return bounds;
+
 		float[] vertices = getTransformedVertices();
 
 		float minX = vertices[0];
