@@ -143,10 +143,14 @@ public class Quaternion implements Serializable {
 		final double chy_chp = chy * chp;
 		final double shy_shp = shy * shp;
 
-		x = (float)((chy_shp * chr) + (shy_chp * shr)); // cos(yaw/2) * sin(pitch/2) * cos(roll/2) + sin(yaw/2) * cos(pitch/2) * sin(roll/2)
-		y = (float)((shy_chp * chr) - (chy_shp * shr)); // sin(yaw/2) * cos(pitch/2) * cos(roll/2) - cos(yaw/2) * sin(pitch/2) * sin(roll/2)
-		z = (float)((chy_chp * shr) - (shy_shp * chr)); // cos(yaw/2) * cos(pitch/2) * sin(roll/2) - sin(yaw/2) * sin(pitch/2) * cos(roll/2)
-		w = (float)((chy_chp * chr) + (shy_shp * shr)); // cos(yaw/2) * cos(pitch/2) * cos(roll/2) + sin(yaw/2) * sin(pitch/2) * sin(roll/2)
+		// x = cos(yaw/2) * sin(pitch/2) * cos(roll/2) + sin(yaw/2) * cos(pitch/2) * sin(roll/2)
+		x = (float)((chy_shp * chr) + (shy_chp * shr));
+		// y = sin(yaw/2) * cos(pitch/2) * cos(roll/2) - cos(yaw/2) * sin(pitch/2) * sin(roll/2)
+		y = (float)((shy_chp * chr) - (chy_shp * shr));
+		// z = cos(yaw/2) * cos(pitch/2) * sin(roll/2) - sin(yaw/2) * sin(pitch/2) * cos(roll/2)
+		z = (float)((chy_chp * shr) - (shy_shp * chr));
+		// w = cos(yaw/2) * cos(pitch/2) * cos(roll/2) + sin(yaw/2) * sin(pitch/2) * sin(roll/2)
+		w = (float)((chy_chp * chr) + (shy_shp * shr));
 		return this;
 	}
 
@@ -161,8 +165,7 @@ public class Quaternion implements Serializable {
 	 * @return the rotation around the z axis in radians (between -PI and +PI) */
 	public float getRollRad () {
 		final int pole = getGimbalPole();
-		return (float)(pole == 0 ? Math.atan2(2.0 * (w * z + y * x), 1.0 - 2.0 * (x * x + z * z))
-			: pole * 2.0 * Math.atan2(y, w));
+		return (float)(pole == 0 ? Math.atan2(2.0 * (w * z + y * x), 1.0 - 2.0 * (x * x + z * z)) : pole * 2.0 * Math.atan2(y, w));
 	}
 
 	/** Get the roll euler angle in degrees, which is the rotation around the z axis. Requires that this quaternion is normalized.
