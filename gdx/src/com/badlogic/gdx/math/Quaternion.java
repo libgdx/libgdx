@@ -129,13 +129,13 @@ public class Quaternion implements Serializable {
 	 * @param roll the rotation around the z axis in radians
 	 * @return this quaternion */
 	public Quaternion setEulerAnglesRad (float yaw, float pitch, float roll) {
-		final double hr = roll * 0.5f;
+		final double hr = roll * 0.5;
 		final double shr = Math.sin(hr);
 		final double chr = Math.cos(hr);
-		final double hp = pitch * 0.5f;
+		final double hp = pitch * 0.5;
 		final double shp = Math.sin(hp);
 		final double chp = Math.cos(hp);
-		final double hy = yaw * 0.5f;
+		final double hy = yaw * 0.5;
 		final double shy = Math.sin(hy);
 		final double chy = Math.cos(hy);
 		final double chy_shp = chy * shp;
