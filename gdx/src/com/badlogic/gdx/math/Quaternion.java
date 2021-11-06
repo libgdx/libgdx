@@ -160,7 +160,7 @@ public class Quaternion implements Serializable {
 	/** Get the roll euler angle in radians, which is the rotation around the z axis. Requires that this quaternion is normalized.
 	 * @return the rotation around the z axis in radians (between -PI and +PI) */
 	public float getRollRad () {
-		final double pole = getGimbalPole();
+		final int pole = getGimbalPole();
 		return (float)(pole == 0 ? Math.atan2(2.0 * (w * z + y * x), 1.0 - 2.0 * (x * x + z * z))
 			: pole * 2.0 * Math.atan2(y, w));
 	}
