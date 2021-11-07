@@ -94,22 +94,56 @@ public final class MathUtils {
 
 	// ---
 
-	/** Returns atan2 in radians, less accurate than Math.atan2 but may be faster. Average error of 0.00231 radians (0.1323
-	 * degrees), largest error of 0.00488 radians (0.2796 degrees). */
-	static public float atan2 (float y, float x) {
-		if (x == 0f) {
-			if (y > 0f) return HALF_PI;
-			if (y == 0f) return 0f;
-			return -HALF_PI;
-		}
-		final float atan, z = y / x;
-		if (Math.abs(z) < 1f) {
-			atan = z / (1f + 0.28f * z * z);
-			if (x < 0f) return atan + (y < 0f ? -PI : PI);
-			return atan;
-		}
-		atan = HALF_PI - z / (z * z + 0.28f);
-		return y < 0f ? atan - PI : atan;
+	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons, and because infinite inputs
+	 * should never occur where this is used (only in {@link #atan2(float, float)}).
+	 * @param i any finite float
+	 * @return an output from the inverse tangent function, from PI/-2.0 to PI/2.0 inclusive */
+	private static float atn (final double i) {
+		// We use double precision internally, because some constants need double precision.
+		final double n = Math.abs(i);
+		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
+		final double c = (n - 1.0) / (n + 1.0);
+		// The approximation needs 6 odd powers of c.
+		final double c2 = c * c;
+		final double c3 = c * c2;
+		final double c5 = c3 * c2;
+		final double c7 = c5 * c2;
+		final double c9 = c7 * c2;
+		final double c11 = c9 * c2;
+		return (float)Math.copySign((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+	}
+
+	/** Close approximation of the frequently-used trigonometric method atan2, with higher precision than libGDX's atan2
+	 * approximation. Maximum error is below 0.00009 radians. Takes y and x (in that unusual order) as floats, and returns the
+	 * angle from the origin to that point in radians. It is about 5 times faster than {@link Math#atan2(double, double)} (roughly
+	 * 12 ns instead of roughly 62 ns for Math, on Java 8 HotSpot). It is slightly faster than libGDX' MathUtils approximation of
+	 * the same method; MathUtils seems to have worse average error, though. <br>
+	 * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
+	 * 9's algorithm, which is the second-fastest and second-least precise. The algorithm on sheet 8 is faster, but only by a very
+	 * small degree, and is considerably less precise. That study provides an {@link #atan(float)} method, and the small code to
+	 * make that work as atan2() was worked out from Wikipedia.
+	 * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @return the angle to the given point, in radians as a float; ranges from -PI to PI */
+	public static float atan2 (final float y, float x) {
+		float n = y / x;
+		if (n != n)
+			n = (y == x ? 1f : -1f); // if both y and x are infinite, n would be NaN
+		else if (n - n != n - n) x = 0f; // if n is infinite, y is infinitely larger than x.
+		if (x > 0)
+			return atn(n);
+		else if (x < 0) {
+			if (y >= 0)
+				return atn(n) + PI;
+			else
+				return atn(n) - PI;
+		} else if (y > 0)
+			return x + HALF_PI;
+		else if (y < 0)
+			return x - HALF_PI;
+		else
+			return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
 	}
 
 	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians (0.0016300649
@@ -143,6 +177,29 @@ public final class MathUtils {
 			return -1.5707963267948966f
 				+ (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 		}
+	}
+
+	/** Arc tangent approximation with very low error, using an algorithm from the 1955 research study "Approximations for Digital
+	 * Computers," by RAND Corporation (this is sheet 11's algorithm, which is the fourth-fastest and fourth-least precise). This
+	 * method is usually about 4x faster than {@link Math#atan(double)}, but is somewhat less precise than Math's implementation.
+	 * @param i an input to the inverse tangent function; any float is accepted
+	 * @return an output from the inverse tangent function, from PI/-2.0 to PI/2.0 inclusive */
+	public static float atan (final float i) {
+		// We use double precision internally, because some constants need double precision.
+		// This clips infinite inputs at Double.MAX_VALUE, which still probably becomes infinite
+		// again when converted back to float.
+		final double n = Math.min(Math.abs(i), Double.MAX_VALUE);
+		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
+		final double c = (n - 1.0) / (n + 1.0);
+		// The approximation needs 6 odd powers of c.
+		final double c2 = c * c;
+		final double c3 = c * c2;
+		final double c5 = c3 * c2;
+		final double c7 = c5 * c2;
+		final double c9 = c7 * c2;
+		final double c11 = c9 * c2;
+		return (float)Math.copySign((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
 	}
 
 	// ---
