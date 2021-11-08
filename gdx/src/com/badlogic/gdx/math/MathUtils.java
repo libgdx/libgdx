@@ -115,14 +115,13 @@ public final class MathUtils {
 	}
 
 	/** Close approximation of the frequently-used trigonometric method atan2, with higher precision than libGDX's atan2
-	 * approximation. Maximum error is below 0.00009 radians. Takes y and x (in that unusual order) as floats, and returns the
-	 * angle from the origin to that point in radians. It is about 5 times faster than {@link Math#atan2(double, double)} (roughly
-	 * 12 ns instead of roughly 62 ns for Math, on Java 8 HotSpot). It is slightly faster than libGDX' MathUtils approximation of
-	 * the same method; MathUtils seems to have worse average error, though. <br>
+	 * approximation. Average error is 1.057E-6 radians; maximum error is 1.922E-6. Takes y and x (in that unusual order) as
+	 * floats, and returns the angle from the origin to that point in radians. It is about 4 times faster than
+	 * {@link Math#atan2(double, double)} (roughly 15 ns instead of roughly 60 ns for Math, on Java 8 HotSpot). <br>
 	 * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
-	 * 9's algorithm, which is the second-fastest and second-least precise. The algorithm on sheet 8 is faster, but only by a very
-	 * small degree, and is considerably less precise. That study provides an {@link #atan(float)} method, and the small code to
-	 * make that work as atan2() was worked out from Wikipedia.
+	 * 11's algorithm, which is the fourth-fastest and fourth-least precise. The algorithms on sheets 8-10 are faster, but only by
+	 * a very small degree, and are considerably less precise. That study provides an {@link #atan(float)} method, and that cleanly
+	 * translates to atan2().
 	 * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
 	 * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
 	 * @return the angle to the given point, in radians as a float; ranges from -PI to PI */
