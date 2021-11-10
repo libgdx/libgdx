@@ -18,6 +18,7 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -673,6 +674,13 @@ public final class Intersector {
 		float max = Math.min(Math.min(maxx, maxy), maxz);
 
 		return max >= 0 && max >= min;
+	}
+
+	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	 *
+	 * @return Whether the ray and the oriented bounding box intersect. */
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox bounds) {
+		return intersectRayOrientedBoundsFast(ray, bounds.boundingBox, bounds.orientation);
 	}
 
 	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.

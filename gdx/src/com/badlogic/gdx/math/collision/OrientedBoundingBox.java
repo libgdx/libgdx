@@ -19,21 +19,25 @@ package com.badlogic.gdx.math.collision;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-public class OrientedBoundingBox extends BoundingBox {
+import java.io.Serializable;
+
+public class OrientedBoundingBox implements Serializable {
 	private static final long serialVersionUID = 3864065514676250557L;
 
+	public final BoundingBox boundingBox = new BoundingBox();
 	public final Matrix4 orientation = new Matrix4();
 
 	/** Constructs a new oriented bounding box with the minimum and maximum vector set to zeros. */
 	public OrientedBoundingBox () {
-		clr();
+		boundingBox.clr();
+		orientation.setToTranslation(0, 0, 0);
 	}
 
 	/** Constructs a new oriented bounding box from the given bounding box.
 	 *
 	 * @param bounds The bounding box to copy */
 	public OrientedBoundingBox (BoundingBox bounds) {
-		this.set(bounds);
+		this.boundingBox.set(bounds);
 	}
 
 	/** Constructs the new oriented bounding box using the given minimum and maximum vector.
@@ -41,7 +45,7 @@ public class OrientedBoundingBox extends BoundingBox {
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector */
 	public OrientedBoundingBox (Vector3 minimum, Vector3 maximum) {
-		this.set(minimum, maximum);
+		this.boundingBox.set(minimum, maximum);
 	}
 
 	/** Sets the given bounding box and orientation.
@@ -51,47 +55,47 @@ public class OrientedBoundingBox extends BoundingBox {
 	 * @return This oriented bounding box for chaining. */
 	public OrientedBoundingBox set (BoundingBox bounds, Matrix4 orientation) {
 		orientation.set(orientation);
-		this.set(bounds.min, bounds.max);
+		this.boundingBox.set(bounds.min, bounds.max);
 		return this;
 	}
 
 	public Vector3 getCorner000 (final Vector3 out) {
-		super.getCorner000(out);
+		this.boundingBox.getCorner000(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner001 (final Vector3 out) {
-		super.getCorner001(out);
+		this.boundingBox.getCorner001(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner010 (final Vector3 out) {
-		super.getCorner010(out);
+		this.boundingBox.getCorner010(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner011 (final Vector3 out) {
-		super.getCorner011(out);
+		this.boundingBox.getCorner011(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner100 (final Vector3 out) {
-		super.getCorner100(out);
+		this.boundingBox.getCorner100(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner101 (final Vector3 out) {
-		super.getCorner101(out);
+		this.boundingBox.getCorner101(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner110 (final Vector3 out) {
-		super.getCorner110(out);
+		this.boundingBox.getCorner110(out);
 		return out.mul(orientation);
 	}
 
 	public Vector3 getCorner111 (final Vector3 out) {
-		super.getCorner111(out);
+		this.boundingBox.getCorner111(out);
 		return out.mul(orientation);
 	}
 }

@@ -60,6 +60,8 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	private ModelBatch modelBatch;
 
 	private boolean colliding = false;
+	private static final Color STANDARD_COLOR = Color.BLUE;
+	private static final Color HIGHLIGHT_COLOR = Color.GREEN;
 
 	@Override
 	public void create() {
@@ -68,17 +70,28 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		orientedBoundingBox = new OrientedBoundingBox(new Vector3(-1,-1,-1), new Vector3(1,1,1));
 		orientedBoundingBox.orientation.set(new Quaternion(Vector3.Y, 20));
 
-		Material material = new Material(ColorAttribute.createDiffuse(Color.BLUE));
-
-		com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-		mb.begin();
-		MeshPartBuilder meshPartBuilder = mb.part("hitbox", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
-		BoxShapeBuilder.build(meshPartBuilder, orientedBoundingBox);
-		model = mb.end();
+		model = buildModel();
 		instance = new ModelInstance(model);
 
 		setupCamera();
 		Gdx.input.setInputProcessor(cameraController);
+	}
+
+	private Model buildModel() {
+		Material material = new Material(ColorAttribute.createDiffuse(STANDARD_COLOR));
+		com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+		mb.begin();
+		MeshPartBuilder meshPartBuilder = mb.part("hitbox", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
+		BoxShapeBuilder.build(meshPartBuilder,
+				orientedBoundingBox.getCorner000(new Vector3()),
+				orientedBoundingBox.getCorner010(new Vector3()),
+				orientedBoundingBox.getCorner100(new Vector3()),
+				orientedBoundingBox.getCorner110(new Vector3()),
+				orientedBoundingBox.getCorner001(new Vector3()),
+				orientedBoundingBox.getCorner011(new Vector3()),
+				orientedBoundingBox.getCorner101(new Vector3()),
+				orientedBoundingBox.getCorner111(new Vector3()));
+		return mb.end();
 	}
 
 	private void setupCamera() {
@@ -108,15 +121,15 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 	private void checkCollision() {
 		Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-		boolean intersects = Intersector.intersectRayOrientedBoundsFast(ray, orientedBoundingBox, orientedBoundingBox.orientation);
+		boolean intersects = Intersector.intersectRayOrientedBoundsFast(ray, orientedBoundingBox);
 
 		if (intersects && !colliding) {
 			// Colliding the first time
-			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.GREEN));
+			instance.materials.get(0).set(ColorAttribute.createDiffuse(HIGHLIGHT_COLOR));
 			colliding = true;
 		} else if (!intersects && colliding) {
 			// Not colliding anymore
-			instance.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLUE));
+			instance.materials.get(0).set(ColorAttribute.createDiffuse(STANDARD_COLOR));
 			colliding = false;
 		}
 	}
