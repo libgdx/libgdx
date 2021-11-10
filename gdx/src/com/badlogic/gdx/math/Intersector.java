@@ -680,7 +680,7 @@ public final class Intersector {
 	 *
 	 * @return Whether the ray and the oriented bounding box intersect. */
 	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox bounds) {
-		return intersectRayOrientedBoundsFast(ray, bounds.boundingBox, bounds.orientation);
+		return intersectRayOrientedBoundsFast(ray, bounds.bounds, bounds.transform);
 	}
 
 	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.

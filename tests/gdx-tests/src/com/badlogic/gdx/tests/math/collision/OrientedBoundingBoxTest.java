@@ -31,8 +31,10 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -54,8 +56,9 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	public void create () {
 		modelBatch = new ModelBatch();
 
-		orientedBoundingBox = new OrientedBoundingBox(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
-		orientedBoundingBox.orientation.set(new Quaternion(Vector3.Y, 20));
+		BoundingBox bounds = new BoundingBox(new Vector3(-1,-1,-1), new Vector3(1,1,1));
+		orientedBoundingBox = new OrientedBoundingBox(bounds);
+		orientedBoundingBox.transform.set(new Quaternion(Vector3.Y, 20));
 
 		model = buildModel();
 		instance = new ModelInstance(model);
