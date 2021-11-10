@@ -18,37 +18,24 @@ package com.badlogic.gdx.tests.math.collision;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
-import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Octree;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
-
-import java.util.Random;
 
 public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListener {
 	private OrientedBoundingBox orientedBoundingBox;
@@ -64,10 +51,10 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	private static final Color HIGHLIGHT_COLOR = Color.GREEN;
 
 	@Override
-	public void create() {
+	public void create () {
 		modelBatch = new ModelBatch();
 
-		orientedBoundingBox = new OrientedBoundingBox(new Vector3(-1,-1,-1), new Vector3(1,1,1));
+		orientedBoundingBox = new OrientedBoundingBox(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 		orientedBoundingBox.orientation.set(new Quaternion(Vector3.Y, 20));
 
 		model = buildModel();
@@ -77,24 +64,20 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		Gdx.input.setInputProcessor(cameraController);
 	}
 
-	private Model buildModel() {
+	private Model buildModel () {
 		Material material = new Material(ColorAttribute.createDiffuse(STANDARD_COLOR));
 		com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
 		mb.begin();
 		MeshPartBuilder meshPartBuilder = mb.part("hitbox", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
-		BoxShapeBuilder.build(meshPartBuilder,
-				orientedBoundingBox.getCorner000(new Vector3()),
-				orientedBoundingBox.getCorner010(new Vector3()),
-				orientedBoundingBox.getCorner100(new Vector3()),
-				orientedBoundingBox.getCorner110(new Vector3()),
-				orientedBoundingBox.getCorner001(new Vector3()),
-				orientedBoundingBox.getCorner011(new Vector3()),
-				orientedBoundingBox.getCorner101(new Vector3()),
-				orientedBoundingBox.getCorner111(new Vector3()));
+		BoxShapeBuilder.build(meshPartBuilder, orientedBoundingBox.getCorner000(new Vector3()),
+			orientedBoundingBox.getCorner010(new Vector3()), orientedBoundingBox.getCorner100(new Vector3()),
+			orientedBoundingBox.getCorner110(new Vector3()), orientedBoundingBox.getCorner001(new Vector3()),
+			orientedBoundingBox.getCorner011(new Vector3()), orientedBoundingBox.getCorner101(new Vector3()),
+			orientedBoundingBox.getCorner111(new Vector3()));
 		return mb.end();
 	}
 
-	private void setupCamera() {
+	private void setupCamera () {
 		camera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.01f;
 		camera.far = 100f;
@@ -106,7 +89,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -119,7 +102,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		modelBatch.end();
 	}
 
-	private void checkCollision() {
+	private void checkCollision () {
 		Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 		boolean intersects = Intersector.intersectRayOrientedBoundsFast(ray, orientedBoundingBox);
 
@@ -135,7 +118,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		modelBatch.dispose();
 		model.dispose();
 	}
