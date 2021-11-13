@@ -94,14 +94,23 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox b) {
-		return contains(b.getCorner000(tmpVector)) ||
-				contains(b.getCorner001(tmpVector))||
-				contains(b.getCorner010(tmpVector)) ||
-				contains(b.getCorner011(tmpVector)) ||
-				contains(b.getCorner100(tmpVector)) ||
-				contains(b.getCorner101(tmpVector)) ||
-				contains(b.getCorner110(tmpVector)) ||
-				contains(b.getCorner111(tmpVector));
+		return contains(b.getCorner000(tmpVector)) || contains(b.getCorner001(tmpVector)) || contains(b.getCorner010(tmpVector))
+			|| contains(b.getCorner011(tmpVector)) || contains(b.getCorner100(tmpVector)) || contains(b.getCorner101(tmpVector))
+			|| contains(b.getCorner110(tmpVector)) || contains(b.getCorner111(tmpVector));
+	}
+
+	/** Returns whether the given oriented bounding box is contained in this oriented bounding box.
+	 * @param obb The oriented bounding box
+	 * @return Whether the given oriented bounding box is contained */
+	public boolean contains (OrientedBoundingBox obb) {
+		return contains(obb.getCorner000(tmpVector)) ||
+				contains(obb.getCorner001(tmpVector))||
+				contains(obb.getCorner010(tmpVector)) ||
+				contains(obb.getCorner011(tmpVector)) ||
+				contains(obb.getCorner100(tmpVector)) ||
+				contains(obb.getCorner101(tmpVector)) ||
+				contains(obb.getCorner110(tmpVector)) ||
+				contains(obb.getCorner111(tmpVector));
 	}
 
 }

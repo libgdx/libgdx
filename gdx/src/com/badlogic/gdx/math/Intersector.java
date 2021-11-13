@@ -686,26 +686,26 @@ public final class Intersector {
 	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
 	 *
 	 * Based on code at: https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp#L83
-	 * @param matrix The orientation of the bounding box
+	 * @param transform The transform of the bounding box
 	 * @return Whether the ray and the oriented bounding box intersect. */
-	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 matrix) {
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 transform) {
 		float tMin = 0.0f;
 		float tMax = Float.MAX_VALUE;
 		float t1, t2;
 
-		Vector3 oBBposition = matrix.getTranslation(tmp);
+		Vector3 oBBposition = transform.getTranslation(tmp);
 		Vector3 delta = oBBposition.sub(ray.origin);
 
 		// Test intersection with the 2 planes perpendicular to the OBB's X axis
 		Vector3 xaxis = tmp1;
-		tmp1.set(matrix.val[Matrix4.M00], matrix.val[Matrix4.M10], matrix.val[Matrix4.M20]);
+		tmp1.set(transform.val[Matrix4.M00], transform.val[Matrix4.M10], transform.val[Matrix4.M20]);
 		float e = xaxis.dot(delta);
 		float f = ray.direction.dot(xaxis);
 
 		if (Math.abs(f) > MathUtils.FLOAT_ROUNDING_ERROR) { // Standard case
 			t1 = (e + bounds.min.x) / f; // Intersection with the "left" plane
 			t2 = (e + bounds.max.x) / f; // Intersection with the "right" plane
-			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+			// t1 and t2 now contain distances between ray origin and ray-plane intersections
 
 			// We want t1 to represent the nearest intersection,
 			// so if it's not the case, invert t1 and t2
@@ -725,7 +725,6 @@ public final class Intersector {
 
 			// And here's the trick :
 			// If "far" is closer than "near", then there is NO intersection.
-			// See the images in the tutorials for the visual explanation.
 			if (tMax < tMin) {
 				return false;
 			}
@@ -737,7 +736,7 @@ public final class Intersector {
 		// Test intersection with the 2 planes perpendicular to the OBB's Y axis
 		// Exactly the same thing than above.
 		Vector3 yaxis = tmp2;
-		tmp2.set(matrix.val[Matrix4.M01], matrix.val[Matrix4.M11], matrix.val[Matrix4.M21]);
+		tmp2.set(transform.val[Matrix4.M01], transform.val[Matrix4.M11], transform.val[Matrix4.M21]);
 
 		e = yaxis.dot(delta);
 		f = ray.direction.dot(yaxis);
@@ -768,7 +767,7 @@ public final class Intersector {
 		// Test intersection with the 2 planes perpendicular to the OBB's Z axis
 		// Exactly the same thing than above.
 		Vector3 zaxis = tmp3;
-		tmp3.set(matrix.val[Matrix4.M02], matrix.val[Matrix4.M12], matrix.val[Matrix4.M22]);
+		tmp3.set(transform.val[Matrix4.M02], transform.val[Matrix4.M12], transform.val[Matrix4.M22]);
 
 		e = zaxis.dot(delta);
 		f = ray.direction.dot(zaxis);
