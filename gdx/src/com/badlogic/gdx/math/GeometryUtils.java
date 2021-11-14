@@ -225,54 +225,52 @@ public final class GeometryUtils {
 		return area * 0.5f;
 	}
 
-	 static public void ensureCCW (float[] polygon) {
-		  ensureCCW(polygon, 0, polygon.length);
-	 }
+	static public void ensureCCW (float[] polygon) {
+		ensureCCW(polygon, 0, polygon.length);
+	}
 
-	 static public void ensureCCW (float[] polygon, int offset, int count) {
-		  if (!isClockwise(polygon, offset, count))
-				return;
-		  reverseVertices(polygon, offset, count);
-	 }
+	static public void ensureCCW (float[] polygon, int offset, int count) {
+		if (!isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
 
-	 static public void ensureClockwise (float[] polygon) {
-		  ensureClockwise(polygon, 0, polygon.length);
-	 }
+	static public void ensureClockwise (float[] polygon) {
+		ensureClockwise(polygon, 0, polygon.length);
+	}
 
-	 static public void ensureClockwise (float[] polygon, int offset, int count) {
-		  if (isClockwise(polygon, offset, count))
-				return;
-		  reverseVertices(polygon, offset, count);
-	 }
+	static public void ensureClockwise (float[] polygon, int offset, int count) {
+		if (isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
 
-	 static public void reverseVertices (float[] polygon, int offset, int count) {
-		  int lastX = offset + count - 2;
-		  for (int i = offset, n = offset + count / 2; i < n; i += 2) {
-				int other = lastX - i;
-				float x = polygon[i];
-				float y = polygon[i + 1];
-				polygon[i] = polygon[other];
-				polygon[i + 1] = polygon[other + 1];
-				polygon[other] = x;
-				polygon[other + 1] = y;
-		  }
-	 }
+	static public void reverseVertices (float[] polygon, int offset, int count) {
+		int lastX = offset + count - 2;
+		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
+			int other = lastX - i;
+			float x = polygon[i];
+			float y = polygon[i + 1];
+			polygon[i] = polygon[other];
+			polygon[i + 1] = polygon[other + 1];
+			polygon[other] = x;
+			polygon[other + 1] = y;
+		}
+	}
 
-	 static public boolean isClockwise (float[] polygon, int offset, int count) {
-		  if (count <= 2) return false;
-		  float area = 0;
-		  int last = offset + count - 2;
-		  float x1 = polygon[last], y1 = polygon[last + 1];
-		  for (int i = offset; i <= last; i += 2) {
-				float x2 = polygon[i], y2 = polygon[i + 1];
-				area += x1 * y2 - x2 * y1;
-				x1 = x2;
-				y1 = y2;
-		  }
-		  return area < 0;
-	 }
+	static public boolean isClockwise (float[] polygon, int offset, int count) {
+		if (count <= 2) return false;
+		float area = 0;
+		int last = offset + count - 2;
+		float x1 = polygon[last], y1 = polygon[last + 1];
+		for (int i = offset; i <= last; i += 2) {
+			float x2 = polygon[i], y2 = polygon[i + 1];
+			area += x1 * y2 - x2 * y1;
+			x1 = x2;
+			y1 = y2;
+		}
+		return area < 0;
+	}
 
-	 static public boolean isCCW (float[] polygon, int offset, int count) {
-		  return !isClockwise(polygon, offset, count);
-	 }
+	static public boolean isCCW (float[] polygon, int offset, int count) {
+		return !isClockwise(polygon, offset, count);
+	}
 }
