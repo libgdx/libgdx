@@ -94,22 +94,25 @@ public final class MathUtils {
 
 	// ---
 
-	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons, and because infinite inputs
-	 * should never occur where this is used (only in {@link #atan2(float, float)}).
-	 * @param i any finite float
-	 * @return an output from the inverse tangent function, from PI/-2.0 to PI/2.0 inclusive */
-	private static float atn (final double i) {
+	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons.
+	 * This can be given a double parameter, but is otherwise the same as atan(float), and returns
+	 * a float like that method. It uses the same approximation, from sheet 11 of "Approximations
+	 * for Digital Computers." This is mostly meant to be used inside {@link #atan2(float, float)},
+	 * but it may be a tiny bit faster than atan(float) in other code.
+	 * @param i any finite double or float, but more commonly a float
+	 * @return an output from the inverse tangent function, from {@code -HALF_PI} to {@code HALF_PI} inclusive */
+	public static float atanUnchecked (double i) {
 		// We use double precision internally, because some constants need double precision.
-		final double n = Math.abs(i);
+		double n = Math.abs(i);
 		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
-		final double c = (n - 1.0) / (n + 1.0);
+		double c = (n - 1.0) / (n + 1.0);
 		// The approximation needs 6 odd powers of c.
-		final double c2 = c * c;
-		final double c3 = c * c2;
-		final double c5 = c3 * c2;
-		final double c7 = c5 * c2;
-		final double c9 = c7 * c2;
-		final double c11 = c9 * c2;
+		double c2 = c * c;
+		double c3 = c * c2;
+		double c5 = c3 * c2;
+		double c7 = c5 * c2;
+		double c9 = c7 * c2;
+		double c11 = c9 * c2;
 		return (float)Math.copySign((Math.PI * 0.25)
 			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
 	}
@@ -124,25 +127,23 @@ public final class MathUtils {
 	 * translates to atan2().
 	 * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
 	 * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
-	 * @return the angle to the given point, in radians as a float; ranges from -PI to PI */
+	 * @return the angle to the given point, in radians as a float; ranges from {@code -PI} to {@code PI} */
 	public static float atan2 (final float y, float x) {
 		float n = y / x;
 		if (n != n)
 			n = (y == x ? 1f : -1f); // if both y and x are infinite, n would be NaN
 		else if (n - n != n - n) x = 0f; // if n is infinite, y is infinitely larger than x.
 		if (x > 0)
-			return atn(n);
+			return atanUnchecked(n);
 		else if (x < 0) {
 			if (y >= 0)
-				return atn(n) + PI;
-			else
-				return atn(n) - PI;
+				return atanUnchecked(n) + PI;
+			return atanUnchecked(n) - PI;
 		} else if (y > 0)
 			return x + HALF_PI;
 		else if (y < 0)
 			return x - HALF_PI;
-		else
-			return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
+		return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
 	}
 
 	/** Returns acos in radians; less accurate than Math.acos but may be faster. Average error of 0.00002845 radians (0.0016300649
@@ -155,10 +156,9 @@ public final class MathUtils {
 		float a3 = a * a2; // a cubed
 		if (a >= 0f) {
 			return (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
-		} else {
-			return 3.14159265358979323846f
-				- (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 		}
+		return 3.14159265358979323846f
+				- (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 	}
 
 	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians (0.0016298931
@@ -172,31 +172,33 @@ public final class MathUtils {
 		if (a >= 0f) {
 			return 1.5707963267948966f
 				- (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
-		} else {
-			return -1.5707963267948966f
-				+ (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 		}
+		return -1.5707963267948966f
+				+ (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 	}
 
 	/** Arc tangent approximation with very low error, using an algorithm from the 1955 research study "Approximations for Digital
 	 * Computers," by RAND Corporation (this is sheet 11's algorithm, which is the fourth-fastest and fourth-least precise). This
 	 * method is usually about 4x faster than {@link Math#atan(double)}, but is somewhat less precise than Math's implementation.
+	 * For finite inputs only, you may get a tiny speedup by using {@link #atanUnchecked(double)}, but this method will be correct
+	 * enough for infinite inputs, and atanUnchecked() will not be.
 	 * @param i an input to the inverse tangent function; any float is accepted
-	 * @return an output from the inverse tangent function, from PI/-2.0 to PI/2.0 inclusive */
-	public static float atan (final float i) {
+	 * @return an output from the inverse tangent function, from {@code -HALF_PI} to {@code HALF_PI} inclusive
+	 * @see #atanUnchecked(double) If you know the input will be finite, you can use atanUnchecked() instead. */
+	public static float atan (float i) {
 		// We use double precision internally, because some constants need double precision.
 		// This clips infinite inputs at Double.MAX_VALUE, which still probably becomes infinite
 		// again when converted back to float.
-		final double n = Math.min(Math.abs(i), Double.MAX_VALUE);
+		double n = Math.min(Math.abs(i), Double.MAX_VALUE);
 		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
-		final double c = (n - 1.0) / (n + 1.0);
+		double c = (n - 1.0) / (n + 1.0);
 		// The approximation needs 6 odd powers of c.
-		final double c2 = c * c;
-		final double c3 = c * c2;
-		final double c5 = c3 * c2;
-		final double c7 = c5 * c2;
-		final double c9 = c7 * c2;
-		final double c11 = c9 * c2;
+		double c2 = c * c;
+		double c3 = c * c2;
+		double c5 = c3 * c2;
+		double c7 = c5 * c2;
+		double c9 = c7 * c2;
+		double c11 = c9 * c2;
 		return (float)Math.copySign((Math.PI * 0.25)
 			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
 	}
