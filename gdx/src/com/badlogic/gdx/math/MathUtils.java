@@ -94,11 +94,10 @@ public final class MathUtils {
 
 	// ---
 
-	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons.
-	 * This can be given a double parameter, but is otherwise the same as atan(float), and returns
-	 * a float like that method. It uses the same approximation, from sheet 11 of "Approximations
-	 * for Digital Computers." This is mostly meant to be used inside {@link #atan2(float, float)},
-	 * but it may be a tiny bit faster than atan(float) in other code.
+	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons. This can be given a double
+	 * parameter, but is otherwise the same as atan(float), and returns a float like that method. It uses the same approximation,
+	 * from sheet 11 of "Approximations for Digital Computers." This is mostly meant to be used inside
+	 * {@link #atan2(float, float)}, but it may be a tiny bit faster than atan(float) in other code.
 	 * @param i any finite double or float, but more commonly a float
 	 * @return an output from the inverse tangent function, from {@code -HALF_PI} to {@code HALF_PI} inclusive */
 	public static float atanUnchecked (double i) {
@@ -136,13 +135,11 @@ public final class MathUtils {
 		if (x > 0)
 			return atanUnchecked(n);
 		else if (x < 0) {
-			if (y >= 0)
-				return atanUnchecked(n) + PI;
+			if (y >= 0) return atanUnchecked(n) + PI;
 			return atanUnchecked(n) - PI;
 		} else if (y > 0)
 			return x + HALF_PI;
-		else if (y < 0)
-			return x - HALF_PI;
+		else if (y < 0) return x - HALF_PI;
 		return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
 	}
 
@@ -158,7 +155,7 @@ public final class MathUtils {
 			return (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
 		}
 		return 3.14159265358979323846f
-				- (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+			- (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 	}
 
 	/** Returns asin in radians; less accurate than Math.asin but may be faster. Average error of 0.000028447 radians (0.0016298931
@@ -173,8 +170,7 @@ public final class MathUtils {
 			return 1.5707963267948966f
 				- (float)Math.sqrt(1f - a) * (1.5707288f - 0.2121144f * a + 0.0742610f * a2 - 0.0187293f * a3);
 		}
-		return -1.5707963267948966f
-				+ (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
+		return -1.5707963267948966f + (float)Math.sqrt(1f + a) * (1.5707288f + 0.2121144f * a + 0.0742610f * a2 + 0.0187293f * a3);
 	}
 
 	/** Arc tangent approximation with very low error, using an algorithm from the 1955 research study "Approximations for Digital
