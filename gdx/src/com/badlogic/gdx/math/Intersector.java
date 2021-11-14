@@ -152,6 +152,7 @@ public final class Intersector {
 
 	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
+	 * p2 should be clockwise
 	 * @param p1 The polygon that is being clipped
 	 * @param p2 The clip polygon
 	 * @param overlap The intersection of the two polygons (can be null, if an intersection polygon is not needed)
