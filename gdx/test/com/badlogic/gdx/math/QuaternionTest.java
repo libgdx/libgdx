@@ -20,17 +20,4 @@ public class QuaternionTest {
 		assertEquals(pitch, q.getPitch(), epsilon);
 		assertEquals(roll, q.getRoll(), epsilon);
 	}
-
-	@Test
-	public void testMultipleRotations () {
-		Quaternion q = new Quaternion();
-		Quaternion rot = new Quaternion().setEulerAngles(4f, 0, 0);
-
-		for (int i = 0; i < 90; i++) {
-			q.mul(rot);
-			q.setEulerAngles(q.getYaw(), q.getPitch(), q.getRoll());
-		}
-
-		assertEquals(0f, q.getYaw(), epsilon);
-	}
 }
