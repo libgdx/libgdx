@@ -371,6 +371,29 @@ public final class Intersector {
 		return frustumIsInsideBounds;
 	}
 
+	/** Returns whether the given {@link Frustum} intersects a {@link OrientedBoundingBox}.
+	 * @param frustum The frustum
+	 * @param bounds The oriented bounding box
+	 * @return Whether the frustum intersects the oriented bounding box */
+	public static boolean intersectFrustumBounds (Frustum frustum, OrientedBoundingBox bounds) {
+		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp))
+				|| frustum.pointInFrustum(bounds.getCorner001(tmp)) || frustum.pointInFrustum(bounds.getCorner010(tmp))
+				|| frustum.pointInFrustum(bounds.getCorner011(tmp)) || frustum.pointInFrustum(bounds.getCorner100(tmp))
+				|| frustum.pointInFrustum(bounds.getCorner101(tmp)) || frustum.pointInFrustum(bounds.getCorner110(tmp))
+				|| frustum.pointInFrustum(bounds.getCorner111(tmp));
+
+		if (boundsIntersectsFrustum) {
+			return true;
+		}
+
+		boolean frustumIsInsideBounds = false;
+		for (Vector3 point : frustum.planePoints) {
+			frustumIsInsideBounds |= bounds.contains(point);
+		}
+
+		return frustumIsInsideBounds;
+	}
+
 	/** Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point. You can get the
 	 * intersection point by: Vector2 point(direction1).scl(scalar).add(start1); For more information, check:
 	 * http://stackoverflow.com/a/565282/1091440
@@ -676,19 +699,37 @@ public final class Intersector {
 		return max >= 0 && max >= min;
 	}
 
-	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
 	 *
 	 * @return Whether the ray and the oriented bounding box intersect. */
-	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox bounds) {
-		return intersectRayOrientedBoundsFast(ray, bounds.bounds, bounds.transform);
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox obb) {
+		return intersectRayOrientedBounds (ray, obb, null);
 	}
 
-	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	/** Check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	 * @param transform - the BoundingBox transformation
 	 *
-	 * Based on code at: https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp#L83
-	 * @param transform The transform of the bounding box
 	 * @return Whether the ray and the oriented bounding box intersect. */
 	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 transform) {
+		return intersectRayOrientedBounds (ray, bounds, transform, null);
+	}
+
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
+	 *
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	static public boolean intersectRayOrientedBounds (Ray ray, OrientedBoundingBox obb, Vector3 intersection) {
+		BoundingBox bounds = obb.bounds;
+		Matrix4 transform = obb.transform;
+		return intersectRayOrientedBounds(ray, bounds, transform, intersection);
+	}
+
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
+	 *
+	 * Based on code at: https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp#L83
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	static public boolean intersectRayOrientedBounds (Ray ray, BoundingBox bounds, Matrix4 transform, Vector3 intersection) {
 		float tMin = 0.0f;
 		float tMax = Float.MAX_VALUE;
 		float t1, t2;
@@ -792,6 +833,10 @@ public final class Intersector {
 			}
 		} else if (-e + bounds.min.z > 0.0f || -e + bounds.max.z < 0.0f) {
 			return false;
+		}
+
+		if (intersection != null) {
+			ray.getEndPoint(intersection, tMin);
 		}
 
 		return true;
@@ -1481,5 +1526,89 @@ public final class Intersector {
 		public Vector2 normal = new Vector2();
 		/** Distance of the translation required for the separation */
 		public float depth = 0;
+	}
+
+	/** SAT (separating axis theorem) abstraction */
+	public static class SAT {
+		/**
+		 * Returns whether two geometries (as a set of points) have at least one point of intersection
+		 * using SAT (separating axis theorem)
+		 *
+		 * @param axes - All axes to be tested
+		 * @param aVertices - Vertices from geometry A
+		 * @param bVertices - Vertices from geometry B
+		 *
+		 * @return if geometries are intersecting
+		 */
+		public static boolean hasOverlap(Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
+			for (Vector3 axis : axes) {
+				float aProjMin = Float.MAX_VALUE;
+				float bProjMin = Float.MAX_VALUE;
+				float aProjMax = Float.MIN_VALUE;
+				float bProjMax = Float.MIN_VALUE;
+
+				if (axis.isZero()) {
+					return true;
+				}
+
+				for (Vector3 aVertex : aVertices) {
+					float val = aVertex.dot(axis);
+
+					if (val < aProjMin) {
+						aProjMin = val;
+					}
+
+					if (val > aProjMax) {
+						aProjMax = val;
+					}
+				}
+
+				for (Vector3 bVertex : bVertices) {
+					float val = bVertex.dot(axis);
+
+					if (val < bProjMin) {
+						bProjMin = val;
+					}
+
+					if (val > bProjMax) {
+						bProjMax = val;
+					}
+				}
+
+				float overlap = calculateOverlap(aProjMin, aProjMax, bProjMin, bProjMax);
+
+				// Found a separating axis thus they have no intersection
+				if (overlap <= 0) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * Calculates the amount of overlap of two intervals.
+		 *
+		 * @param aStart - start of interval A
+		 * @param aEnd - end of interval A
+		 * @param bStart - start of interval B
+		 * @param bEnd - end of interval B
+		 * @return the amount of overlap
+		 */
+		public static float calculateOverlap(float aStart, float aEnd, float bStart, float bEnd) {
+			if (aStart < bStart) {
+				if (aEnd < bStart) {
+					return 0f;
+				}
+
+				return aEnd - bStart;
+			}
+
+			if (bEnd < aStart) {
+				return 0f;
+			}
+
+			return bEnd - aStart;
+		}
 	}
 }

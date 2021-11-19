@@ -106,7 +106,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 	private void checkCollision () {
 		Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-		boolean intersects = Intersector.intersectRayOrientedBoundsFast(ray, orientedBoundingBox);
+		boolean intersects = Intersector.intersectRayOrientedBounds(ray, orientedBoundingBox);
 
 		if (intersects && !colliding) {
 			// Colliding the first time
