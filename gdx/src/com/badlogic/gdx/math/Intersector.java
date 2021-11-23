@@ -1547,12 +1547,8 @@ public final class Intersector {
 				float aProjMax = Float.MIN_VALUE;
 				float bProjMax = Float.MIN_VALUE;
 
-				if (axis.isZero()) {
-					return true;
-				}
-
 				for (Vector3 aVertex : aVertices) {
-					float val = aVertex.dot(axis);
+					float val = aVertex.dot(axis) / axis.len();
 
 					if (val < aProjMin) {
 						aProjMin = val;
@@ -1564,7 +1560,7 @@ public final class Intersector {
 				}
 
 				for (Vector3 bVertex : bVertices) {
-					float val = bVertex.dot(axis);
+					float val = bVertex.dot(axis) / axis.len();
 
 					if (val < bProjMin) {
 						bProjMin = val;
@@ -1575,10 +1571,10 @@ public final class Intersector {
 					}
 				}
 
-				float overlap = calculateOverlap(aProjMin, aProjMax, bProjMin, bProjMax);
+				float overlap = overlaps(aProjMin, aProjMax, bProjMin, bProjMax);
 
 				// Found a separating axis thus they have no intersection
-				if (overlap <= 0) {
+				if (overlap < MathUtils.FLOAT_ROUNDING_ERROR) {
 					return false;
 				}
 			}
@@ -1587,15 +1583,15 @@ public final class Intersector {
 		}
 
 		/**
-		 * Calculates the amount of overlap of two intervals.
+		 * Calculates the amount of overlap of two edges.
 		 *
-		 * @param aStart - start of interval A
-		 * @param aEnd - end of interval A
-		 * @param bStart - start of interval B
-		 * @param bEnd - end of interval B
+		 * @param aStart - start of edge A
+		 * @param aEnd - end of edge A
+		 * @param bStart - start of edge B
+		 * @param bEnd - end of edge B
 		 * @return the amount of overlap
 		 */
-		public static float calculateOverlap(float aStart, float aEnd, float bStart, float bEnd) {
+		public static float overlaps(float aStart, float aEnd, float bStart, float bEnd) {
 			if (aStart < bStart) {
 				if (aEnd < bStart) {
 					return 0f;

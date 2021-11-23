@@ -183,25 +183,18 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	public Vector3[] getAxes() {
-		if (axes == null) {
-			axes = new Vector3[]{
-					new Vector3(Vector3.X).mul(transform),
-					new Vector3(Vector3.Y).mul(transform),
-					new Vector3(Vector3.Z).mul(transform)
-			};
-		}
-		return axes;
+		 return new Vector3[] {
+				new Vector3(Vector3.X).mul(transform),
+				new Vector3(Vector3.Y).mul(transform),
+				new Vector3(Vector3.Z).mul(transform)
+		};
 	}
 
 	public Vector3[] getVertices() {
-		if (vertices == null) {
-			vertices = new Vector3[] {
-					getCorner000(new Vector3()), getCorner001(new Vector3()), getCorner010(new Vector3()), getCorner011(new Vector3()),
-					getCorner100(new Vector3()), getCorner101(new Vector3()), getCorner110(new Vector3()), getCorner111(new Vector3())
-			};
-		}
-
-		return vertices;
+		return new Vector3[] {
+				getCorner000(new Vector3()), getCorner001(new Vector3()), getCorner010(new Vector3()), getCorner011(new Vector3()),
+				getCorner100(new Vector3()), getCorner101(new Vector3()), getCorner110(new Vector3()), getCorner111(new Vector3())
+		};
 	}
 
 }
