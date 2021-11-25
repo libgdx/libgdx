@@ -956,7 +956,7 @@ public class Actor {
 		drawDebugBounds(shapes);
 	}
 
-	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
+	/** Draws a rectangle for the bounds of this actor if {@link #getDebug()} is true. */
 	protected void drawDebugBounds (ShapeRenderer shapes) {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);
