@@ -613,6 +613,12 @@ public class FreeTypeFontGenerator implements Disposable {
 		return glyph;
 	}
 
+	/** check the font glyph exists for single UTF-32 code point */
+	public boolean hasGlyph (int charCode) {
+		// 0 stand for undefined character code
+		return face.getCharIndex(charCode) != 0;
+	}
+
 	public String toString () {
 		return name;
 	}
