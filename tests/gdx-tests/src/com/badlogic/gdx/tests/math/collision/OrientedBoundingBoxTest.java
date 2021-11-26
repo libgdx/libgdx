@@ -72,6 +72,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	private void setupScene() {
+		boxes.clear();
 		for (int i = 0; i < BOXES; i++) {
 			boxes.add(new Box());
 		}
