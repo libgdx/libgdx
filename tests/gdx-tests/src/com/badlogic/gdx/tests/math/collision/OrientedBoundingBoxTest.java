@@ -18,6 +18,8 @@ package com.badlogic.gdx.tests.math.collision;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -45,7 +47,7 @@ import java.util.Random;
 
 public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListener {
 
-	private static final int BOXES = 50;
+	private static final int BOXES = 90;
 
 	private PerspectiveCamera camera;
 	private CameraInputController cameraController;
@@ -61,12 +63,18 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	public void create() {
 		modelBatch = new ModelBatch();
 
+		setupScene();
+		setupCamera();
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(cameraController);
+		inputMultiplexer.addProcessor(this);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+	}
+
+	private void setupScene() {
 		for (int i = 0; i < BOXES; i++) {
 			boxes.add(new Box());
 		}
-
-		setupCamera();
-		Gdx.input.setInputProcessor(cameraController);
 	}
 
 	private void setupCamera() {
@@ -140,6 +148,14 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		}
 	}
 
+	@Override
+	public boolean keyUp(int keycode) {
+		if (Input.Keys.SPACE == keycode) {
+			setupScene();
+		}
+		return super.keyUp(keycode);
+	}
+
 	class Box {
 		private final OrientedBoundingBox orientedBoundingBox;
 		public Model model;
@@ -161,7 +177,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		private void buildMovement() {
 			Random random = new Random();
 			float speed = random.nextFloat();
-			float radius = 1 / 20f;
+			float radius = 1 / 30f;
 
 			movement = new Matrix4().setToTranslation(new Vector3(random.nextFloat() * radius,
 					random.nextFloat() * radius, random.nextFloat() * radius));
@@ -184,7 +200,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		}
 
 		public void update() {
-			orientedBoundingBox.transform.mul(movement);
+			orientedBoundingBox.mul(movement);
 			instance.transform.mul(movement);
 		}
 

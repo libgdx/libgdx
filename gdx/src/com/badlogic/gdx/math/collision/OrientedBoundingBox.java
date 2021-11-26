@@ -26,33 +26,89 @@ public class OrientedBoundingBox implements Serializable {
 	private static final long serialVersionUID = 3864065514676250557L;
 
 	private final static Vector3 tmpVector = new Vector3();
-	private final static Matrix4 tmpMatrix = new Matrix4();
 
-	public final BoundingBox bounds = new BoundingBox();
+	/** Bounds used as size. */
+	private final BoundingBox bounds = new BoundingBox();
+	/** Transform matrix. */
 	public final Matrix4 transform = new Matrix4();
+	private final Matrix4 inverseTransform = new Matrix4();
 
-	private Vector3[] vertices;
-	private Vector3[] axes;
+	private final Vector3[] axes = new Vector3[3];
+	private final Vector3[] vertices = new Vector3[8];
 
 	/** Constructs a new oriented bounding box with the minimum and maximum vector set to zeros. */
-	public OrientedBoundingBox () {
+	public OrientedBoundingBox() {
 		bounds.clr();
+		init();
 	}
 
 	/** Constructs a new oriented bounding box from the given bounding box.
 	 *
 	 * @param bounds The bounding box to copy */
-	public OrientedBoundingBox (BoundingBox bounds) {
+	public OrientedBoundingBox(BoundingBox bounds) {
 		this.bounds.set(bounds.min, bounds.max);
+		init();
 	}
 
 	/** Constructs a new oriented bounding box from the given bounding box and transform.
 	 *
 	 * @param bounds The bounding box to copy
 	 * @param transform The transformation matrix to copy */
-	public OrientedBoundingBox (BoundingBox bounds, Matrix4 transform) {
+	public OrientedBoundingBox(BoundingBox bounds, Matrix4 transform) {
 		this.bounds.set(bounds.min, bounds.max);
 		this.transform.set(transform);
+		init();
+		update();
+	}
+
+	private void init() {
+		for (int i = 0; i < axes.length; i++) {
+			axes[i] = new Vector3();
+		}
+		for (int i = 0; i < vertices.length; i++) {
+			vertices[i] = new Vector3();
+		}
+	}
+
+	public Vector3[] getAxes() {
+		return axes;
+	}
+
+	public Vector3[] getVertices() {
+		return vertices;
+	}
+
+	/** Get the current bounds. Call {@link #update()} if you manually change this bounding box. */
+	public BoundingBox getBounds() {
+		return bounds;
+	}
+
+	public void setBounds(BoundingBox bounds) {
+		bounds.set(bounds);
+		bounds.getCorner000(vertices[0b000]).mul(transform);
+		bounds.getCorner001(vertices[0b001]).mul(transform);
+		bounds.getCorner010(vertices[0b010]).mul(transform);
+		bounds.getCorner011(vertices[0b011]).mul(transform);
+		bounds.getCorner100(vertices[0b100]).mul(transform);
+		bounds.getCorner101(vertices[0b101]).mul(transform);
+		bounds.getCorner110(vertices[0b110]).mul(transform);
+		bounds.getCorner111(vertices[0b111]).mul(transform);
+	}
+
+	/** Get the current transformation matrix. Call {@link #update()} if you manually change this matrix. */
+	public Matrix4 getTransform() {
+		return transform;
+	}
+
+	public void setTransform(Matrix4 transform) {
+		transform.set(transform);
+		update();
+	}
+
+	public OrientedBoundingBox set(BoundingBox bounds, Matrix4 transform) {
+		bounds.set(bounds);
+		setTransform(transform);
+		return this;
 	}
 
 	public Vector3 getCorner000 (final Vector3 out) {
@@ -91,7 +147,7 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
 	public boolean contains (Vector3 v) {
-		return contains(v, tmpMatrix.set(transform).inv());
+		return contains(v, inverseTransform);
 	}
 
 	private boolean contains (Vector3 v, Matrix4 invTransform) {
@@ -103,26 +159,24 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox b) {
-		tmpMatrix.set(transform).inv();
-		return contains(b.getCorner000(tmpVector), tmpMatrix) && contains(b.getCorner001(tmpVector), tmpMatrix) &&
-				contains(b.getCorner010(tmpVector), tmpMatrix) && contains(b.getCorner011(tmpVector), tmpMatrix) &&
-				contains(b.getCorner100(tmpVector), tmpMatrix) && contains(b.getCorner101(tmpVector), tmpMatrix) &&
-				contains(b.getCorner110(tmpVector), tmpMatrix) && contains(b.getCorner111(tmpVector), tmpMatrix);
+		return contains(b.getCorner000(tmpVector), inverseTransform) && contains(b.getCorner001(tmpVector), inverseTransform) &&
+				contains(b.getCorner010(tmpVector), inverseTransform) && contains(b.getCorner011(tmpVector), inverseTransform) &&
+				contains(b.getCorner100(tmpVector), inverseTransform) && contains(b.getCorner101(tmpVector), inverseTransform) &&
+				contains(b.getCorner110(tmpVector), inverseTransform) && contains(b.getCorner111(tmpVector), inverseTransform);
 	}
 
 	/** Returns whether the given oriented bounding box is contained in this oriented bounding box.
 	 * @param obb The oriented bounding box
 	 * @return Whether the given oriented bounding box is contained */
 	public boolean contains (OrientedBoundingBox obb) {
-		tmpMatrix.set(transform).inv();
-		return contains(obb.getCorner000(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner001(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner010(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner011(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner100(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner101(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner110(tmpVector), tmpMatrix) &&
-				contains(obb.getCorner111(tmpVector), tmpMatrix);
+		return contains(obb.getCorner000(tmpVector), inverseTransform) &&
+				contains(obb.getCorner001(tmpVector), inverseTransform) &&
+				contains(obb.getCorner010(tmpVector), inverseTransform) &&
+				contains(obb.getCorner011(tmpVector), inverseTransform) &&
+				contains(obb.getCorner100(tmpVector), inverseTransform) &&
+				contains(obb.getCorner101(tmpVector), inverseTransform) &&
+				contains(obb.getCorner110(tmpVector), inverseTransform) &&
+				contains(obb.getCorner111(tmpVector), inverseTransform);
 	}
 
 	/** Returns whether the given bounding box is intersecting this oriented bounding box (at least one point in).
@@ -150,7 +204,7 @@ public class OrientedBoundingBox implements Serializable {
 		Vector3[] bVertices = new Vector3[] {
 				b.getCorner000(new Vector3()), b.getCorner001(new Vector3()), b.getCorner010(new Vector3()), b.getCorner011(new Vector3()),
 				b.getCorner100(new Vector3()), b.getCorner101(new Vector3()), b.getCorner110(new Vector3()), b.getCorner111(new Vector3())
-		};
+		};;
 
 		return Intersector.SAT.hasOverlap(allAxes, aVertices, bVertices);
 	}
@@ -159,8 +213,8 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param obb The oriented bounding box
 	 * @return Whether the given bounding box is intersected */
 	public boolean intersects (OrientedBoundingBox obb) {
-		Vector3[] aAxes = getAxes();
-		Vector3[] bAxes = obb.getAxes();
+		Vector3[] aAxes = axes;
+		Vector3[] bAxes = obb.axes;
 
 		Vector3[] allAxes = new Vector3[] {
 				aAxes[0], aAxes[1], aAxes[2],
@@ -176,25 +230,29 @@ public class OrientedBoundingBox implements Serializable {
 				new Vector3(aAxes[2]).crs(bAxes[2])
 		};
 
-		Vector3[] aVertices = getVertices();
-		Vector3[] bVertices = obb.getVertices();
-
-		return Intersector.SAT.hasOverlap(allAxes, aVertices, bVertices);
+		return Intersector.SAT.hasOverlap(allAxes, vertices, obb.vertices);
 	}
 
-	public Vector3[] getAxes() {
-		 return new Vector3[] {
-				new Vector3(Vector3.X).mul(transform),
-				new Vector3(Vector3.Y).mul(transform),
-				new Vector3(Vector3.Z).mul(transform)
-		};
+	public void mul(Matrix4 transform) {
+		this.transform.mul(transform);
+		update();
 	}
 
-	public Vector3[] getVertices() {
-		return new Vector3[] {
-				getCorner000(new Vector3()), getCorner001(new Vector3()), getCorner010(new Vector3()), getCorner011(new Vector3()),
-				getCorner100(new Vector3()), getCorner101(new Vector3()), getCorner110(new Vector3()), getCorner111(new Vector3())
-		};
-	}
+	private void update() {
+		// Update vertices
+		bounds.getCorner000(vertices[0b000]).mul(transform);
+		bounds.getCorner001(vertices[0b001]).mul(transform);
+		bounds.getCorner010(vertices[0b010]).mul(transform);
+		bounds.getCorner011(vertices[0b011]).mul(transform);
+		bounds.getCorner100(vertices[0b100]).mul(transform);
+		bounds.getCorner101(vertices[0b101]).mul(transform);
+		bounds.getCorner110(vertices[0b110]).mul(transform);
+		bounds.getCorner111(vertices[0b111]).mul(transform);
 
+		axes[0].set(transform.val[Matrix4.M00], transform.val[Matrix4.M10], transform.val[Matrix4.M20]).nor();
+		axes[1].set(transform.val[Matrix4.M01], transform.val[Matrix4.M11], transform.val[Matrix4.M21]).nor();
+		axes[2].set(transform.val[Matrix4.M02], transform.val[Matrix4.M12], transform.val[Matrix4.M22]).nor();
+
+		inverseTransform.set(transform).inv();
+	}
 }
