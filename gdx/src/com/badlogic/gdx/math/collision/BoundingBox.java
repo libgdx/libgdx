@@ -289,13 +289,13 @@ public class BoundingBox implements Serializable {
 	 * @param obb The bounding box
 	 * @return Whether the given oriented bounding box is contained */
 	public boolean contains (OrientedBoundingBox obb) {
-		return contains(obb.getCorner000(tmpVector)) ||
-				contains(obb.getCorner001(tmpVector))||
-				contains(obb.getCorner010(tmpVector)) ||
-				contains(obb.getCorner011(tmpVector)) ||
-				contains(obb.getCorner100(tmpVector)) ||
-				contains(obb.getCorner101(tmpVector)) ||
-				contains(obb.getCorner110(tmpVector)) ||
+		return contains(obb.getCorner000(tmpVector)) &&
+				contains(obb.getCorner001(tmpVector)) &&
+				contains(obb.getCorner010(tmpVector)) &&
+				contains(obb.getCorner011(tmpVector)) &&
+				contains(obb.getCorner100(tmpVector)) &&
+				contains(obb.getCorner101(tmpVector)) &&
+				contains(obb.getCorner110(tmpVector)) &&
 				contains(obb.getCorner111(tmpVector));
 	}
 
