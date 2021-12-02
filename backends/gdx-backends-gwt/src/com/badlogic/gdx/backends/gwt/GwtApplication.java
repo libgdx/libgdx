@@ -67,12 +67,12 @@ import java.util.regex.Pattern;
  * implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
-	private ApplicationListener listener;
-	GwtApplicationConfiguration config;
-	GwtGraphics graphics;
-	private GwtAudio audio;
-	private GwtInput input;
-	private GwtNet net;
+	protected ApplicationListener listener;
+	protected GwtApplicationConfiguration config;
+	protected GwtGraphics graphics;
+	protected GwtAudio audio;
+	protected GwtInput input;
+	protected GwtNet net;
 	private Panel root = null;
 	protected TextArea log = null;
 	private int logLevel = LOG_ERROR;
@@ -80,8 +80,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> runnablesHelper = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	private int lastWidth;
-	private int lastHeight;
+	protected int lastWidth;
+	protected int lastHeight;
 	Preloader preloader;
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
