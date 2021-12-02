@@ -208,7 +208,7 @@ public class SpriteCache implements Disposable {
 			for (int i = 0, n = counts.size; i < n; i++)
 				cache.counts[i] = counts.get(i);
 
-			((Buffer) mesh.getVerticesBuffer(true)).flip();
+			((Buffer)mesh.getVerticesBuffer(true)).flip();
 		} else {
 			// Redefine existing cache.
 			if (cacheCount > cache.maxCount) {
@@ -243,7 +243,7 @@ public class SpriteCache implements Disposable {
 	/** Invalidates all cache IDs and resets the SpriteCache so new caches can be added. */
 	public void clear () {
 		caches.clear();
-		((Buffer) mesh.getVerticesBuffer(true)).clear().flip();
+		((Buffer)mesh.getVerticesBuffer(true)).clear().flip();
 	}
 
 	/** Adds the specified vertices to the cache. Each vertex should have 5 elements, one for each of the attributes: x, y, color,

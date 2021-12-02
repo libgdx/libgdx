@@ -60,8 +60,8 @@ public interface IndexData extends Disposable {
 
 	/**
 	 * <p>
-	 * Returns the underlying ShortBuffer. If you modify the buffer contents they will be uploaded on the next call to {@link #bind()}.
-	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+	 * Returns the underlying ShortBuffer. If you modify the buffer contents they will be uploaded on the next call to
+	 * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
 	 * </p>
 	 * 
 	 * @return the underlying short buffer.

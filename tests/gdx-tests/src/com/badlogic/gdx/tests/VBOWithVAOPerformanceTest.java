@@ -352,7 +352,7 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			isDirty = true;
 			return buffer;
 		}
-		
+
 		@Override
 		public FloatBuffer getBuffer (boolean forWriting) {
 			isDirty |= forWriting;
