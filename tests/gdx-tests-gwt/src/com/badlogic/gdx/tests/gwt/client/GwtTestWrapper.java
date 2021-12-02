@@ -492,10 +492,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				public GdxTest instance () {
 					return new TextAreaTest3();
 				}
-        }, new GwtInstancer() {
-           public GdxTest instance () {
-              return new VertexArrayTest();
-          }
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new VertexArrayTest();
+				}
 			} // these may have issues with tab getting intercepted by the browser
 		};
 
