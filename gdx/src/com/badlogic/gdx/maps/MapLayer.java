@@ -27,6 +27,8 @@ public class MapLayer {
 	private float offsetY;
 	private float renderOffsetX;
 	private float renderOffsetY;
+	private float parallaxX;
+	private float parallaxY;
 	private boolean renderOffsetDirty = true;
 	private MapLayer parent;
 	private MapObjects objects = new MapObjects();
@@ -86,6 +88,22 @@ public class MapLayer {
 		return renderOffsetY;
 	}
 
+	public float getParallaxX() {
+		return parallaxX;
+	}
+
+	public void setParallaxX(float parallaxX) {
+		this.parallaxX = parallaxX;
+	}
+
+	public float getParallaxY() {
+		return parallaxY;
+	}
+
+	public void setParallaxY(float parallaxY) {
+		this.parallaxY = parallaxY;
+	}
+
 	/** set the renderOffsetDirty state to true, when this layer or any parents' offset has changed **/
 	public void invalidateRenderOffset () {
 		renderOffsetDirty = true;
@@ -100,6 +118,11 @@ public class MapLayer {
 	public void setParent (MapLayer parent) {
 		if (parent == this) throw new GdxRuntimeException("Can't set self as the parent");
 		this.parent = parent;
+
+		// in Tiled the final parallax scrolling factor of a layer is multiplied
+		// by the value of each parent layer
+		parallaxX *= parent.getParallaxX();
+		parallaxY *= parent.getParallaxY();
 	}
 
 	/** @return collection of objects contained in the layer */
