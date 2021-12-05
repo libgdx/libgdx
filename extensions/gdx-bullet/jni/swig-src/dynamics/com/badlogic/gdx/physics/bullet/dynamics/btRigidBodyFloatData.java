@@ -11,44 +11,39 @@ package com.badlogic.gdx.physics.bullet.dynamics;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btRigidBodyFloatData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btRigidBodyFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btRigidBodyFloatData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btRigidBodyFloatData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btRigidBodyFloatData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btRigidBodyFloatData, normally you should not need this constructor it's intended for low-level usage. */
+	public btRigidBodyFloatData (long cPtr, boolean cMemoryOwn) {
 		this("btRigidBodyFloatData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btRigidBodyFloatData obj) {
+
+	public static long getCPtr (btRigidBodyFloatData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,187 +54,187 @@ public class btRigidBodyFloatData extends BulletBase {
 		super.delete();
 	}
 
-  public void setCollisionObjectData(btCollisionObjectFloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_collisionObjectData_set(swigCPtr, this, btCollisionObjectFloatData.getCPtr(value), value);
-  }
+	public void setCollisionObjectData (btCollisionObjectFloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_collisionObjectData_set(swigCPtr, this, btCollisionObjectFloatData.getCPtr(value), value);
+	}
 
-  public btCollisionObjectFloatData getCollisionObjectData() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_collisionObjectData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectFloatData(cPtr, false);
-  }
+	public btCollisionObjectFloatData getCollisionObjectData () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_collisionObjectData_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btCollisionObjectFloatData(cPtr, false);
+	}
 
-  public void setInvInertiaTensorWorld(btMatrix3x3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_invInertiaTensorWorld_set(swigCPtr, this, btMatrix3x3FloatData.getCPtr(value), value);
-  }
+	public void setInvInertiaTensorWorld (btMatrix3x3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_invInertiaTensorWorld_set(swigCPtr, this, btMatrix3x3FloatData.getCPtr(value), value);
+	}
 
-  public btMatrix3x3FloatData getInvInertiaTensorWorld() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_invInertiaTensorWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btMatrix3x3FloatData(cPtr, false);
-  }
+	public btMatrix3x3FloatData getInvInertiaTensorWorld () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_invInertiaTensorWorld_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btMatrix3x3FloatData(cPtr, false);
+	}
 
-  public void setLinearVelocity(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_linearVelocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setLinearVelocity (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_linearVelocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getLinearVelocity() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_linearVelocity_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getLinearVelocity () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_linearVelocity_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setAngularVelocity(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_angularVelocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setAngularVelocity (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_angularVelocity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getAngularVelocity() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_angularVelocity_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getAngularVelocity () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_angularVelocity_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setAngularFactor(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_angularFactor_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setAngularFactor (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_angularFactor_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getAngularFactor() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_angularFactor_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getAngularFactor () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_angularFactor_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setLinearFactor(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_linearFactor_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setLinearFactor (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_linearFactor_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getLinearFactor() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_linearFactor_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getLinearFactor () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_linearFactor_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setGravity(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_gravity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setGravity (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_gravity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getGravity() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_gravity_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getGravity () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_gravity_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setGravity_acceleration(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_gravity_acceleration_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setGravity_acceleration (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_gravity_acceleration_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getGravity_acceleration() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_gravity_acceleration_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getGravity_acceleration () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_gravity_acceleration_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setInvInertiaLocal(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_invInertiaLocal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setInvInertiaLocal (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_invInertiaLocal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getInvInertiaLocal() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_invInertiaLocal_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getInvInertiaLocal () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_invInertiaLocal_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setTotalForce(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_totalForce_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setTotalForce (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_totalForce_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getTotalForce() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_totalForce_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getTotalForce () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_totalForce_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setTotalTorque(btVector3FloatData value) {
-    DynamicsJNI.btRigidBodyFloatData_totalTorque_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setTotalTorque (btVector3FloatData value) {
+		DynamicsJNI.btRigidBodyFloatData_totalTorque_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getTotalTorque() {
-    long cPtr = DynamicsJNI.btRigidBodyFloatData_totalTorque_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getTotalTorque () {
+		long cPtr = DynamicsJNI.btRigidBodyFloatData_totalTorque_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public void setInverseMass(float value) {
-    DynamicsJNI.btRigidBodyFloatData_inverseMass_set(swigCPtr, this, value);
-  }
+	public void setInverseMass (float value) {
+		DynamicsJNI.btRigidBodyFloatData_inverseMass_set(swigCPtr, this, value);
+	}
 
-  public float getInverseMass() {
-    return DynamicsJNI.btRigidBodyFloatData_inverseMass_get(swigCPtr, this);
-  }
+	public float getInverseMass () {
+		return DynamicsJNI.btRigidBodyFloatData_inverseMass_get(swigCPtr, this);
+	}
 
-  public void setLinearDamping(float value) {
-    DynamicsJNI.btRigidBodyFloatData_linearDamping_set(swigCPtr, this, value);
-  }
+	public void setLinearDamping (float value) {
+		DynamicsJNI.btRigidBodyFloatData_linearDamping_set(swigCPtr, this, value);
+	}
 
-  public float getLinearDamping() {
-    return DynamicsJNI.btRigidBodyFloatData_linearDamping_get(swigCPtr, this);
-  }
+	public float getLinearDamping () {
+		return DynamicsJNI.btRigidBodyFloatData_linearDamping_get(swigCPtr, this);
+	}
 
-  public void setAngularDamping(float value) {
-    DynamicsJNI.btRigidBodyFloatData_angularDamping_set(swigCPtr, this, value);
-  }
+	public void setAngularDamping (float value) {
+		DynamicsJNI.btRigidBodyFloatData_angularDamping_set(swigCPtr, this, value);
+	}
 
-  public float getAngularDamping() {
-    return DynamicsJNI.btRigidBodyFloatData_angularDamping_get(swigCPtr, this);
-  }
+	public float getAngularDamping () {
+		return DynamicsJNI.btRigidBodyFloatData_angularDamping_get(swigCPtr, this);
+	}
 
-  public void setAdditionalDampingFactor(float value) {
-    DynamicsJNI.btRigidBodyFloatData_additionalDampingFactor_set(swigCPtr, this, value);
-  }
+	public void setAdditionalDampingFactor (float value) {
+		DynamicsJNI.btRigidBodyFloatData_additionalDampingFactor_set(swigCPtr, this, value);
+	}
 
-  public float getAdditionalDampingFactor() {
-    return DynamicsJNI.btRigidBodyFloatData_additionalDampingFactor_get(swigCPtr, this);
-  }
+	public float getAdditionalDampingFactor () {
+		return DynamicsJNI.btRigidBodyFloatData_additionalDampingFactor_get(swigCPtr, this);
+	}
 
-  public void setAdditionalLinearDampingThresholdSqr(float value) {
-    DynamicsJNI.btRigidBodyFloatData_additionalLinearDampingThresholdSqr_set(swigCPtr, this, value);
-  }
+	public void setAdditionalLinearDampingThresholdSqr (float value) {
+		DynamicsJNI.btRigidBodyFloatData_additionalLinearDampingThresholdSqr_set(swigCPtr, this, value);
+	}
 
-  public float getAdditionalLinearDampingThresholdSqr() {
-    return DynamicsJNI.btRigidBodyFloatData_additionalLinearDampingThresholdSqr_get(swigCPtr, this);
-  }
+	public float getAdditionalLinearDampingThresholdSqr () {
+		return DynamicsJNI.btRigidBodyFloatData_additionalLinearDampingThresholdSqr_get(swigCPtr, this);
+	}
 
-  public void setAdditionalAngularDampingThresholdSqr(float value) {
-    DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingThresholdSqr_set(swigCPtr, this, value);
-  }
+	public void setAdditionalAngularDampingThresholdSqr (float value) {
+		DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingThresholdSqr_set(swigCPtr, this, value);
+	}
 
-  public float getAdditionalAngularDampingThresholdSqr() {
-    return DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingThresholdSqr_get(swigCPtr, this);
-  }
+	public float getAdditionalAngularDampingThresholdSqr () {
+		return DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingThresholdSqr_get(swigCPtr, this);
+	}
 
-  public void setAdditionalAngularDampingFactor(float value) {
-    DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingFactor_set(swigCPtr, this, value);
-  }
+	public void setAdditionalAngularDampingFactor (float value) {
+		DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingFactor_set(swigCPtr, this, value);
+	}
 
-  public float getAdditionalAngularDampingFactor() {
-    return DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingFactor_get(swigCPtr, this);
-  }
+	public float getAdditionalAngularDampingFactor () {
+		return DynamicsJNI.btRigidBodyFloatData_additionalAngularDampingFactor_get(swigCPtr, this);
+	}
 
-  public void setLinearSleepingThreshold(float value) {
-    DynamicsJNI.btRigidBodyFloatData_linearSleepingThreshold_set(swigCPtr, this, value);
-  }
+	public void setLinearSleepingThreshold (float value) {
+		DynamicsJNI.btRigidBodyFloatData_linearSleepingThreshold_set(swigCPtr, this, value);
+	}
 
-  public float getLinearSleepingThreshold() {
-    return DynamicsJNI.btRigidBodyFloatData_linearSleepingThreshold_get(swigCPtr, this);
-  }
+	public float getLinearSleepingThreshold () {
+		return DynamicsJNI.btRigidBodyFloatData_linearSleepingThreshold_get(swigCPtr, this);
+	}
 
-  public void setAngularSleepingThreshold(float value) {
-    DynamicsJNI.btRigidBodyFloatData_angularSleepingThreshold_set(swigCPtr, this, value);
-  }
+	public void setAngularSleepingThreshold (float value) {
+		DynamicsJNI.btRigidBodyFloatData_angularSleepingThreshold_set(swigCPtr, this, value);
+	}
 
-  public float getAngularSleepingThreshold() {
-    return DynamicsJNI.btRigidBodyFloatData_angularSleepingThreshold_get(swigCPtr, this);
-  }
+	public float getAngularSleepingThreshold () {
+		return DynamicsJNI.btRigidBodyFloatData_angularSleepingThreshold_get(swigCPtr, this);
+	}
 
-  public void setAdditionalDamping(int value) {
-    DynamicsJNI.btRigidBodyFloatData_additionalDamping_set(swigCPtr, this, value);
-  }
+	public void setAdditionalDamping (int value) {
+		DynamicsJNI.btRigidBodyFloatData_additionalDamping_set(swigCPtr, this, value);
+	}
 
-  public int getAdditionalDamping() {
-    return DynamicsJNI.btRigidBodyFloatData_additionalDamping_get(swigCPtr, this);
-  }
+	public int getAdditionalDamping () {
+		return DynamicsJNI.btRigidBodyFloatData_additionalDamping_get(swigCPtr, this);
+	}
 
-  public btRigidBodyFloatData() {
-    this(DynamicsJNI.new_btRigidBodyFloatData(), true);
-  }
+	public btRigidBodyFloatData () {
+		this(DynamicsJNI.new_btRigidBodyFloatData(), true);
+	}
 
 }

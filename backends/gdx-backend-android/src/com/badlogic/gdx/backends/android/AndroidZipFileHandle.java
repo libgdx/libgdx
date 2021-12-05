@@ -33,46 +33,46 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	private ZipResourceFile expansionFile;
 	private String path;
 
-	public AndroidZipFileHandle(String fileName) {
+	public AndroidZipFileHandle (String fileName) {
 		super(null, fileName, FileType.Internal);
 		initialize();
 	}
 
-	public AndroidZipFileHandle(File file, FileType type) {
+	public AndroidZipFileHandle (File file, FileType type) {
 		super(null, file, type);
 		initialize();
 	}
 
-	private void initialize() {
+	private void initialize () {
 		path = file.getPath().replace('\\', '/');
-		expansionFile = ((AndroidFiles) Gdx.files).getExpansionFile();
+		expansionFile = ((AndroidFiles)Gdx.files).getExpansionFile();
 		AssetFileDescriptor assetFd = expansionFile.getAssetFileDescriptor(getPath());
 		if (assetFd != null) {
 			hasAssetFd = true;
 			fdLength = assetFd.getLength();
 			try {
 				assetFd.close();
-			} catch (IOException e) {}
+			} catch (IOException e) {
+			}
 		} else {
 			hasAssetFd = false;
 		}
 
 		// needed for listing entries and exists() of directories
-		if (isDirectory())
-			path += "/";
+		if (isDirectory()) path += "/";
 	}
 
 	@Override
-	public AssetFileDescriptor getAssetFileDescriptor() throws IOException {
+	public AssetFileDescriptor getAssetFileDescriptor () throws IOException {
 		return expansionFile.getAssetFileDescriptor(getPath());
 	}
 
-	private String getPath() {
+	private String getPath () {
 		return path;
 	}
 
 	@Override
-	public InputStream read() {
+	public InputStream read () {
 		InputStream input = null;
 
 		try {
@@ -84,34 +84,32 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	}
 
 	@Override
-	public FileHandle child(String name) {
-		if (file.getPath().length() == 0)
-			return new AndroidZipFileHandle(new File(name), type);
+	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new AndroidZipFileHandle(new File(name), type);
 		return new AndroidZipFileHandle(new File(file, name), type);
 	}
 
 	@Override
-	public FileHandle sibling(String name) {
-		if (file.getPath().length() == 0)
-			throw new GdxRuntimeException("Cannot get the sibling of the root.");
-		return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
+	public FileHandle sibling (String name) {
+		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
+		return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); // this way we can find the sibling even
+																														// if it's not inside the obb
 	}
 
 	@Override
-	public FileHandle parent() {
+	public FileHandle parent () {
 		File parent = file.getParentFile();
-		if (parent == null)
-			parent = new File("");
+		if (parent == null) parent = new File("");
 		return new AndroidZipFileHandle(parent.getPath());
 	}
 
 	@Override
-	public FileHandle[] list() {
+	public FileHandle[] list () {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+			if (zipEntries[i].mFileName.length() == getPath().length()) // Don't include the directory itself
 				continue;
 			handles[count++] = new AndroidZipFileHandle(zipEntries[i].mFileName);
 		}
@@ -119,16 +117,15 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	}
 
 	@Override
-	public FileHandle[] list(FileFilter filter) {
+	public FileHandle[] list (FileFilter filter) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+			if (zipEntries[i].mFileName.length() == getPath().length()) // Don't include the directory itself
 				continue;
 			FileHandle child = new AndroidZipFileHandle(zipEntries[i].mFileName);
-			if (!filter.accept(child.file()))
-				continue;
+			if (!filter.accept(child.file())) continue;
 			handles[count] = child;
 			count++;
 		}
@@ -141,16 +138,15 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	}
 
 	@Override
-	public FileHandle[] list(FilenameFilter filter) {
+	public FileHandle[] list (FilenameFilter filter) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+			if (zipEntries[i].mFileName.length() == getPath().length()) // Don't include the directory itself
 				continue;
 			String path = zipEntries[i].mFileName;
-			if (!filter.accept(file, path))
-				continue;
+			if (!filter.accept(file, path)) continue;
 			handles[count] = new AndroidZipFileHandle(path);
 			count++;
 		}
@@ -163,16 +159,15 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	}
 
 	@Override
-	public FileHandle[] list(String suffix) {
+	public FileHandle[] list (String suffix) {
 		ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
 		FileHandle[] handles = new FileHandle[zipEntries.length - 1];
 		int count = 0;
 		for (int i = 0, n = zipEntries.length; i < n; i++) {
-			if (zipEntries[i].mFileName.length() == getPath().length()) //Don't include the directory itself
+			if (zipEntries[i].mFileName.length() == getPath().length()) // Don't include the directory itself
 				continue;
 			String path = zipEntries[i].mFileName;
-			if (!path.endsWith(suffix))
-				continue;
+			if (!path.endsWith(suffix)) continue;
 			handles[count] = new AndroidZipFileHandle(path);
 			count++;
 		}
@@ -185,17 +180,17 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 	}
 
 	@Override
-	public boolean isDirectory() {
+	public boolean isDirectory () {
 		return !hasAssetFd;
 	}
 
 	@Override
-	public long length() {
+	public long length () {
 		return hasAssetFd ? fdLength : 0;
 	}
 
 	@Override
-	public boolean exists() {
+	public boolean exists () {
 		return hasAssetFd || expansionFile.getEntriesAt(getPath()).length != 0;
 	}
 }

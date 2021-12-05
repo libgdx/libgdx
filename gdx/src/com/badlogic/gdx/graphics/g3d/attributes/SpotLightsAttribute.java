@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.utils.Array;
 
 /** An {@link Attribute} which can be used to send an {@link Array} of {@link SpotLight} instances to the {@link Shader}. The
- * lights are stored by reference, the {@link #copy()} or {@link #SpotLightsAttribute(SpotLightsAttribute)} method
- * will not create new lights.
+ * lights are stored by reference, the {@link #copy()} or {@link #SpotLightsAttribute(SpotLightsAttribute)} method will not create
+ * new lights.
  * @author Xoppa */
 public class SpotLightsAttribute extends Attribute {
 	public final static String Alias = "spotLights";
@@ -42,7 +42,7 @@ public class SpotLightsAttribute extends Attribute {
 			result = 1237 * result + (light == null ? 0 : light.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public int compareTo (Attribute o) {
 		if (type != o.type) return type < o.type ? -1 : 1;

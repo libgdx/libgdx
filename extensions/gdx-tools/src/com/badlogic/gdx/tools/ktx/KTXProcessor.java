@@ -27,8 +27,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class KTXProcessor {
 
-	final static byte[] HEADER_MAGIC = {(byte)0x0AB, (byte)0x04B, (byte)0x054, (byte)0x058, (byte)0x020, (byte)0x031,
-		(byte)0x031, (byte)0x0BB, (byte)0x00D, (byte)0x00A, (byte)0x01A, (byte)0x00A};
+	final static byte[] HEADER_MAGIC = {(byte)0x0AB, (byte)0x04B, (byte)0x054, (byte)0x058, (byte)0x020, (byte)0x031, (byte)0x031,
+		(byte)0x0BB, (byte)0x00D, (byte)0x00A, (byte)0x01A, (byte)0x00A};
 
 	public static void convert (String input, String output, boolean genMipmaps, boolean packETC1, boolean genAlphaAtlas)
 		throws Exception {
@@ -81,28 +81,28 @@ public class KTXProcessor {
 			if (!isCubemap && !isTexture) {
 				System.out.println("usage : KTXProcessor input_file output_file [-etc1|-etc1a] [-mipmaps]");
 				System.out.println("  input_file  is the texture file to include in the output KTX or ZKTX file.");
-				System.out
-					.println("              for cube map, just provide 6 input files corresponding to the faces in the following order : X+, X-, Y+, Y-, Z+, Z-");
-				System.out
-					.println("  output_file is the path to the output file, its type is based on the extension which must be either KTX or ZKTX");
+				System.out.println(
+					"              for cube map, just provide 6 input files corresponding to the faces in the following order : X+, X-, Y+, Y-, Z+, Z-");
+				System.out.println(
+					"  output_file is the path to the output file, its type is based on the extension which must be either KTX or ZKTX");
 				System.out.println();
 				System.out.println("  options:");
 				System.out.println("    -etc1    input file will be packed using ETC1 compression, dropping the alpha channel");
-				System.out
-					.println("    -etc1a   input file will be packed using ETC1 compression, doubling the height and placing the alpha channel in the bottom half");
+				System.out.println(
+					"    -etc1a   input file will be packed using ETC1 compression, doubling the height and placing the alpha channel in the bottom half");
 				System.out.println("    -mipmaps input file will be processed to generate mipmaps");
 				System.out.println();
 				System.out.println("  examples:");
-				System.out
-					.println("    KTXProcessor in.png out.ktx                                        Create a KTX file with the provided 2D texture");
-				System.out
-					.println("    KTXProcessor in.png out.zktx                                       Create a Zipped KTX file with the provided 2D texture");
-				System.out
-					.println("    KTXProcessor in.png out.zktx -mipmaps                              Create a Zipped KTX file with the provided 2D texture, generating all mipmap levels");
-				System.out
-					.println("    KTXProcessor px.ktx nx.ktx py.ktx ny.ktx pz.ktx nz.ktx out.zktx    Create a Zipped KTX file with the provided cubemap textures");
-				System.out
-					.println("    KTXProcessor in.ktx out.zktx                                       Convert a KTX file to a Zipped KTX file");
+				System.out.println(
+					"    KTXProcessor in.png out.ktx                                        Create a KTX file with the provided 2D texture");
+				System.out.println(
+					"    KTXProcessor in.png out.zktx                                       Create a Zipped KTX file with the provided 2D texture");
+				System.out.println(
+					"    KTXProcessor in.png out.zktx -mipmaps                              Create a Zipped KTX file with the provided 2D texture, generating all mipmap levels");
+				System.out.println(
+					"    KTXProcessor px.ktx nx.ktx py.ktx ny.ktx pz.ktx nz.ktx out.zktx    Create a Zipped KTX file with the provided cubemap textures");
+				System.out.println(
+					"    KTXProcessor in.ktx out.zktx                                       Convert a KTX file to a Zipped KTX file");
 				System.exit(-1);
 			}
 
@@ -170,9 +170,8 @@ public class KTXProcessor {
 						texHeight = facePixmap.getHeight();
 					}
 					if (isGenMipMaps) {
-						if (!MathUtils.isPowerOfTwo(texWidth) || !MathUtils.isPowerOfTwo(texHeight))
-							throw new GdxRuntimeException(
-								"Invalid input : mipmap generation is only available for power of two textures : " + file);
+						if (!MathUtils.isPowerOfTwo(texWidth) || !MathUtils.isPowerOfTwo(texHeight)) throw new GdxRuntimeException(
+							"Invalid input : mipmap generation is only available for power of two textures : " + file);
 						nLevels = Math.max(Integer.SIZE - Integer.numberOfLeadingZeros(texWidth),
 							Integer.SIZE - Integer.numberOfLeadingZeros(texHeight));
 					}
@@ -363,7 +362,7 @@ public class KTXProcessor {
 		public byte[] getBytes () {
 			if (etcData != null) {
 				byte[] result = new byte[getSize()];
-				((Buffer) etcData.compressedData).position(etcData.dataOffset);
+				((Buffer)etcData.compressedData).position(etcData.dataOffset);
 				etcData.compressedData.get(result);
 				return result;
 			}

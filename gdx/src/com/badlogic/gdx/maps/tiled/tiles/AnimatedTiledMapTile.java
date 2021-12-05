@@ -125,8 +125,8 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 			}
 
 		} else {
-			throw new GdxRuntimeException("Cannot set " + intervals.length
-				+ " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");
+			throw new GdxRuntimeException("Cannot set " + intervals.length + " frame intervals. The given int[] must have a size of "
+				+ animationIntervals.length + ".");
 		}
 	}
 
@@ -139,7 +139,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
-	public MapObjects getObjects() {
+	public MapObjects getObjects () {
 		if (objects == null) {
 			objects = new MapObjects();
 		}

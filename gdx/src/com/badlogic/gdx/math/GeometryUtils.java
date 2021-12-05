@@ -31,10 +31,13 @@ public final class GeometryUtils {
 	 * If vertices a,b,c have values aa,bb,cc then to get an interpolated value at point p:
 	 * 
 	 * <pre>
-	 * GeometryUtils.barycentric(p, a, b, c, barycentric);
-	 * float u = 1.f - barycentric.x - barycentric.y;
+	 * GeometryUtils.toBarycoord(p, a, b, c, barycentric);
+	 * // THEN:
+	 * float u = 1f - barycentric.x - barycentric.y;
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
+	 * // OR:
+	 * GeometryUtils.fromBarycoord(barycentric, aa, bb, cc, out);
 	 * </pre>
 	 * 
 	 * @return barycentricOut */
@@ -74,8 +77,8 @@ public final class GeometryUtils {
 		return u * a + barycentric.x * b + barycentric.y * c;
 	}
 
-	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
-	 * Float.Nan is returned.
+	/** Returns the lowest positive root of the quadric equation given by a * x * x + b * x + c = 0. If no solution is given,
+	 * Float.NaN is returned.
 	 * @param a the first coefficient of the quadric equation
 	 * @param b the second coefficient of the quadric equation
 	 * @param c the third coefficient of the quadric equation
@@ -228,6 +231,19 @@ public final class GeometryUtils {
 
 	static public void ensureCCW (float[] polygon, int offset, int count) {
 		if (!isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void ensureClockwise (float[] polygon) {
+		ensureClockwise(polygon, 0, polygon.length);
+	}
+
+	static public void ensureClockwise (float[] polygon, int offset, int count) {
+		if (isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void reverseVertices (float[] polygon, int offset, int count) {
 		int lastX = offset + count - 2;
 		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
@@ -252,5 +268,9 @@ public final class GeometryUtils {
 			y1 = y2;
 		}
 		return area < 0;
+	}
+
+	static public boolean isCCW (float[] polygon, int offset, int count) {
+		return !isClockwise(polygon, offset, count);
 	}
 }

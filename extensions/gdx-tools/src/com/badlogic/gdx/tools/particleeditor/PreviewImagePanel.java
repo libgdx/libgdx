@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tools.particleeditor;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -83,7 +82,8 @@ class PreviewImagePanel extends EditorPanel {
 
 			private void buildImagePanel (JLabel previewImage, File file) {
 				previewContainer.removeAll();
-				previewContainer.add(previewImage, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+				previewContainer.add(previewImage, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
+					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 				previewContainer.updateUI();
 				PreviewImagePanel.this.editor.renderer.setImageBackground(file);
 			}
@@ -106,13 +106,13 @@ class PreviewImagePanel extends EditorPanel {
 		buttonPanel.add(addButton);
 		buttonPanel.add(removeButton);
 
-		getContentPanel().add(buttonPanel, new GridBagConstraints(0, 0, 4, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-			new Insets(5, 5, 5, 5), 0, 0));
+		getContentPanel().add(buttonPanel, new GridBagConstraints(0, 0, 4, 1, 1, 0, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 
 		initializeComponents();
 
-		getContentPanel().add(previewContainer, new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-			new Insets(10, 10, 10, 10), 0, 0));
+		getContentPanel().add(previewContainer, new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 	}
 
 	private void initializeComponents () {
@@ -177,7 +177,8 @@ class PreviewImagePanel extends EditorPanel {
 	}
 
 	public void updateSpritePosition () {
-		editor.renderer.updateImageBackgroundPosSize(valueX.getValue(), valueY.getValue(), valueWidth.getValue(), valueHeight.getValue());
+		editor.renderer.updateImageBackgroundPosSize(valueX.getValue(), valueY.getValue(), valueWidth.getValue(),
+			valueHeight.getValue());
 	}
 
 }

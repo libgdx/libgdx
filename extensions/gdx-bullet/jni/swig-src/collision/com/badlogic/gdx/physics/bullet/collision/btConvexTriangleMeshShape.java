@@ -8,46 +8,43 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexTriangleMeshShape extends btPolyhedralConvexAabbCachingShape {
 	private long swigCPtr;
-	
-	protected btConvexTriangleMeshShape(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvexTriangleMeshShape (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConvexTriangleMeshShape_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btConvexTriangleMeshShape, normally you should not need this constructor it's intended for low-level usage. */
-	public btConvexTriangleMeshShape(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btConvexTriangleMeshShape, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btConvexTriangleMeshShape (long cPtr, boolean cMemoryOwn) {
 		this("btConvexTriangleMeshShape", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConvexTriangleMeshShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvexTriangleMeshShape obj) {
+
+	public static long getCPtr (btConvexTriangleMeshShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,58 +55,61 @@ public class btConvexTriangleMeshShape extends btPolyhedralConvexAabbCachingShap
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConvexTriangleMeshShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConvexTriangleMeshShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConvexTriangleMeshShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConvexTriangleMeshShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConvexTriangleMeshShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConvexTriangleMeshShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConvexTriangleMeshShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConvexTriangleMeshShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConvexTriangleMeshShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConvexTriangleMeshShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConvexTriangleMeshShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConvexTriangleMeshShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConvexTriangleMeshShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConvexTriangleMeshShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConvexTriangleMeshShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConvexTriangleMeshShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public btConvexTriangleMeshShape(btStridingMeshInterface meshInterface, boolean calcAabb) {
-    this(CollisionJNI.new_btConvexTriangleMeshShape__SWIG_0(btStridingMeshInterface.getCPtr(meshInterface), meshInterface, calcAabb), true);
-  }
+	public btConvexTriangleMeshShape (btStridingMeshInterface meshInterface, boolean calcAabb) {
+		this(CollisionJNI.new_btConvexTriangleMeshShape__SWIG_0(btStridingMeshInterface.getCPtr(meshInterface), meshInterface,
+			calcAabb), true);
+	}
 
-  public btConvexTriangleMeshShape(btStridingMeshInterface meshInterface) {
-    this(CollisionJNI.new_btConvexTriangleMeshShape__SWIG_1(btStridingMeshInterface.getCPtr(meshInterface), meshInterface), true);
-  }
+	public btConvexTriangleMeshShape (btStridingMeshInterface meshInterface) {
+		this(CollisionJNI.new_btConvexTriangleMeshShape__SWIG_1(btStridingMeshInterface.getCPtr(meshInterface), meshInterface),
+			true);
+	}
 
-  public btStridingMeshInterface getMeshInterface() {
-    long cPtr = CollisionJNI.btConvexTriangleMeshShape_getMeshInterface(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStridingMeshInterface(cPtr, false);
-  }
+	public btStridingMeshInterface getMeshInterface () {
+		long cPtr = CollisionJNI.btConvexTriangleMeshShape_getMeshInterface(swigCPtr, this);
+		return (cPtr == 0) ? null : new btStridingMeshInterface(cPtr, false);
+	}
 
-  public btStridingMeshInterface getMeshInterfaceConst() {
-    long cPtr = CollisionJNI.btConvexTriangleMeshShape_getMeshInterfaceConst(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStridingMeshInterface(cPtr, false);
-  }
+	public btStridingMeshInterface getMeshInterfaceConst () {
+		long cPtr = CollisionJNI.btConvexTriangleMeshShape_getMeshInterfaceConst(swigCPtr, this);
+		return (cPtr == 0) ? null : new btStridingMeshInterface(cPtr, false);
+	}
 
-  public void calculatePrincipalAxisTransform(Matrix4 principal, Vector3 inertia, SWIGTYPE_p_float volume) {
-    CollisionJNI.btConvexTriangleMeshShape_calculatePrincipalAxisTransform(swigCPtr, this, principal, inertia, SWIGTYPE_p_float.getCPtr(volume));
-  }
+	public void calculatePrincipalAxisTransform (Matrix4 principal, Vector3 inertia, SWIGTYPE_p_float volume) {
+		CollisionJNI.btConvexTriangleMeshShape_calculatePrincipalAxisTransform(swigCPtr, this, principal, inertia,
+			SWIGTYPE_p_float.getCPtr(volume));
+	}
 
 }

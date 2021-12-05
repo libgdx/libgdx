@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.utils;
 
 import com.badlogic.gdx.Gdx;
@@ -5,17 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/**
- * Placeholder class that's wired up with all backends so i can quickly test out
- * issues...
- * @author badlogic
- *
- */
+/** Placeholder class that's wired up with all backends so i can quickly test out issues...
+ * @author badlogic */
 public class IssueTest extends GdxTest {
 	SpriteBatch batch;
 	Texture img;
 	Texture img2;
-	
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

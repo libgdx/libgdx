@@ -84,8 +84,7 @@ public class ParticleEmitterTest extends GdxTest {
 					particleCount += 5;
 				else if (keycode == Input.Keys.PLUS) {
 					emitter = new ParticleEmitter(emitter);
-				}
-				else if (keycode == Input.Keys.DPAD_DOWN)
+				} else if (keycode == Input.Keys.DPAD_DOWN)
 					particleCount -= 5;
 				else if (keycode == Input.Keys.SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size;

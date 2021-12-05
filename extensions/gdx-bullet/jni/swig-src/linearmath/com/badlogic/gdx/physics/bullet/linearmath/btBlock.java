@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btBlock extends BulletBase {
 	private long swigCPtr;
-	
-	protected btBlock(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btBlock (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btBlock, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btBlock(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btBlock, normally you should not need this constructor it's intended for low-level usage. */
+	public btBlock (long cPtr, boolean cMemoryOwn) {
 		this("btBlock", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btBlock obj) {
+
+	public static long getCPtr (btBlock obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,28 +52,28 @@ public class btBlock extends BulletBase {
 		super.delete();
 	}
 
-  public void setPrevious(btBlock value) {
-    LinearMathJNI.btBlock_previous_set(swigCPtr, this, btBlock.getCPtr(value), value);
-  }
+	public void setPrevious (btBlock value) {
+		LinearMathJNI.btBlock_previous_set(swigCPtr, this, btBlock.getCPtr(value), value);
+	}
 
-  public btBlock getPrevious() {
-    long cPtr = LinearMathJNI.btBlock_previous_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBlock(cPtr, false);
-  }
+	public btBlock getPrevious () {
+		long cPtr = LinearMathJNI.btBlock_previous_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btBlock(cPtr, false);
+	}
 
-  public void setAddress(java.nio.ByteBuffer value) {
-    assert value.isDirect() : "Buffer must be allocated direct.";
-    {
-      LinearMathJNI.btBlock_address_set(swigCPtr, this, value);
-    }
-  }
+	public void setAddress (java.nio.ByteBuffer value) {
+		assert value.isDirect() : "Buffer must be allocated direct.";
+		{
+			LinearMathJNI.btBlock_address_set(swigCPtr, this, value);
+		}
+	}
 
-  public java.nio.ByteBuffer getAddress() {
-    return LinearMathJNI.btBlock_address_get(swigCPtr, this);
-}
+	public java.nio.ByteBuffer getAddress () {
+		return LinearMathJNI.btBlock_address_get(swigCPtr, this);
+	}
 
-  public btBlock() {
-    this(LinearMathJNI.new_btBlock(), true);
-  }
+	public btBlock () {
+		this(LinearMathJNI.new_btBlock(), true);
+	}
 
 }

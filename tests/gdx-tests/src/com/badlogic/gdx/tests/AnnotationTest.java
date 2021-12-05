@@ -60,9 +60,17 @@ public class AnnotationTest extends GdxTest {
 	@TestAnnotation(name = "MyAnnotatedClass", someEnum = TestEnum.EnumB)
 	static public class AnnotatedClass {
 		public int unanottatedField;
-		public int unannotatedMethod() { return 0; }
+
+		public int unannotatedMethod () {
+			return 0;
+		}
+
 		@TestAnnotation(name = "MyAnnotatedField", values = {4, 5}) public int annotatedValue;
-		@TestAnnotation(name = "MyAnnotatedMethod", values = {6, 7}) public int annotatedMethod () { return 0; };		
+
+		@TestAnnotation(name = "MyAnnotatedMethod", values = {6, 7})
+		public int annotatedMethod () {
+			return 0;
+		};
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -77,7 +85,7 @@ public class AnnotationTest extends GdxTest {
 	@TestAnnotation(name = "MyInheritClassB")
 	static public class InheritClassB extends InheritClassA {
 	}
-	
+
 	@Override
 	public void create () {
 		font = new BitmapFont();

@@ -49,7 +49,8 @@ public class TextAreaTest3 extends GdxTest {
 		printMetrics("default", styleDefault.font);
 
 		styleArial15 = new TextField.TextFieldStyle(styleDefault);
-		styleArial15.font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), Gdx.files.internal("data/arial-15_00.png"), false);
+		styleArial15.font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), Gdx.files.internal("data/arial-15_00.png"),
+			false);
 		printMetrics("arial15", styleArial15.font);
 
 		styleArial32 = new TextField.TextFieldStyle(styleDefault);
@@ -78,7 +79,8 @@ public class TextAreaTest3 extends GdxTest {
 		StringBuilder sb = new StringBuilder("| Text Area\nEssentially, a text field\nwith\nmultiple\nlines.\n");
 		// we need a bunch of lines to demonstrate that prefHeight is way too large
 		for (int i = 0; i < 30; i++) {
-			sb.append("It can even handle very loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong lines.\n");
+			sb.append(
+				"It can even handle very loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong lines.\n");
 		}
 		textArea = new TextArea(sb.toString(), styleArial32);
 		// we need a container that will allow the TextArea to be as tall as it wants
@@ -104,9 +106,8 @@ public class TextAreaTest3 extends GdxTest {
 		BitmapFont.BitmapFontData data = font.getData();
 		float textHeight = data.capHeight - data.descent;
 		float textFieldHeight = data.capHeight - data.descent * 2;
-		Gdx.app.log(name, "line height = " + data.lineHeight + ", text height = " + textHeight
-			+ ", text field height = " + textFieldHeight
-			+ ", cap height = " + data.capHeight + ", descent = " + data.descent);
+		Gdx.app.log(name, "line height = " + data.lineHeight + ", text height = " + textHeight + ", text field height = "
+			+ textFieldHeight + ", cap height = " + data.capHeight + ", descent = " + data.descent);
 	}
 
 	private Button newStyleButton (final String label, final TextField.TextFieldStyle style, ButtonGroup<TextButton> group) {

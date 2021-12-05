@@ -253,9 +253,9 @@ public class TextArea extends TextField {
 					// see BitmapFontData.getGlyphs()#852 for offset calculation
 					// if selection starts when line starts we want to offset width instead of moving the start as it looks better
 					if (start == lineStart) {
-						fontLineOffsetWidth = lineFirst.fixedWidth? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
+						fontLineOffsetWidth = lineFirst.fixedWidth ? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
 					} else {
-						fontLineOffsetX = lineFirst.fixedWidth? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
+						fontLineOffsetX = lineFirst.fixedWidth ? 0 : -lineFirst.xoffset * fontData.scaleX - fontData.padLeft;
 					}
 				}
 				float selectionX = glyphPositions.get(start) - glyphPositions.get(lineStart);

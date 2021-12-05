@@ -50,7 +50,7 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (manager.update() && manager.isLoaded("size10.ttf")) {
+		if (manager.update(16) && manager.isLoaded("size10.ttf")) {
 			batch.begin();
 			manager.get("size10.ttf", BitmapFont.class).draw(batch, "First font!", 20, 20);
 			manager.get("size20.ttf", BitmapFont.class).draw(batch, "Second font!", 20, 50);

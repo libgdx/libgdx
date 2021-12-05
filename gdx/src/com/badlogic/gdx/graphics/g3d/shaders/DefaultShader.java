@@ -231,8 +231,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter diffuseTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Diffuse))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Diffuse))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -252,8 +252,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter specularTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Specular))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Specular))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -273,8 +273,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter emissiveTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Emissive))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Emissive))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -294,8 +294,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter reflectionTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Reflection))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Reflection))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -309,8 +309,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter normalTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Normal))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Normal))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -324,8 +324,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter ambientTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
-					.get(TextureAttribute.Ambient))).textureDescription);
+				final int unit = shader.context.textureBinder
+					.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Ambient))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -381,8 +381,8 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (combinedAttributes.has(CubemapAttribute.EnvironmentMap)) {
-					shader.set(inputID, shader.context.textureBinder.bind(((CubemapAttribute)combinedAttributes
-						.get(CubemapAttribute.EnvironmentMap)).textureDescription));
+					shader.set(inputID, shader.context.textureBinder
+						.bind(((CubemapAttribute)combinedAttributes.get(CubemapAttribute.EnvironmentMap)).textureDescription));
 				}
 			}
 		};
@@ -535,7 +535,8 @@ public class DefaultShader extends BaseShader {
 		attributesMask = attributes.getMask() | optionalAttributes;
 		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
 
-		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
+		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights
+			: 0];
 		for (int i = 0; i < directionalLights.length; i++)
 			directionalLights[i] = new DirectionalLight();
 		this.pointLights = new PointLight[lighting && config.numPointLights > 0 ? config.numPointLights : 0];
@@ -589,8 +590,9 @@ public class DefaultShader extends BaseShader {
 		u_ambientUVTransform = register(Inputs.ambientUVTransform, Setters.ambientUVTransform);
 		u_alphaTest = register(Inputs.alphaTest);
 
-		u_ambientCubemap = lighting ? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights,
-			config.numPointLights)) : -1;
+		u_ambientCubemap = lighting
+			? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights, config.numPointLights))
+			: -1;
 		u_environmentCubemap = environmentCubemap ? register(Inputs.environmentCubemap, Setters.environmentCubemap) : -1;
 	}
 
@@ -728,7 +730,8 @@ public class DefaultShader extends BaseShader {
 		if (renderable.bones != null && renderable.bones.length > config.numBones) return false;
 		final long renderableMask = combineAttributeMasks(renderable);
 		return (attributesMask == (renderableMask | optionalAttributes))
-			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked()) && (renderable.environment != null) == lighting;
+			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked())
+			&& (renderable.environment != null) == lighting;
 	}
 
 	@Override
@@ -740,7 +743,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof DefaultShader) && equals((DefaultShader) obj);
+		return (obj instanceof DefaultShader) && equals((DefaultShader)obj);
 	}
 
 	public boolean equals (DefaultShader obj) {
@@ -878,8 +881,7 @@ public class DefaultShader extends BaseShader {
 				program.setUniformf(idx + spotLightsDirectionOffset, spotLights[i].direction);
 				program.setUniformf(idx + spotLightsCutoffAngleOffset, spotLights[i].cutoffAngle);
 				program.setUniformf(idx + spotLightsExponentOffset, spotLights[i].exponent);
-				if (spotLightsIntensityOffset >= 0)
-					program.setUniformf(idx + spotLightsIntensityOffset, spotLights[i].intensity);
+				if (spotLightsIntensityOffset >= 0) program.setUniformf(idx + spotLightsIntensityOffset, spotLights[i].intensity);
 				if (spotLightsSize <= 0) break;
 			}
 		}

@@ -52,16 +52,16 @@ public class OcclusionBuffer implements Disposable {
 		 * @return True if in query mode and any of the vertices are behind camera frustum near plane. */
 		boolean evaluate (Quaternion[] vertices) {
 			switch (this) {
-				case DRAW:
-					return false;
-				case QUERY:
-					// If we are querying and any of the vertices are behind the camera, return true.
-					// This means a bounding box will not be considered occluded when any of its vertices
-					// are behind the camera frustum near plane.
-					for (Quaternion vertex : vertices) {
-						if (vertex.z + vertex.w <= 0) return true;
-					}
-					return false;
+			case DRAW:
+				return false;
+			case QUERY:
+				// If we are querying and any of the vertices are behind the camera, return true.
+				// This means a bounding box will not be considered occluded when any of its vertices
+				// are behind the camera frustum near plane.
+				for (Quaternion vertex : vertices) {
+					if (vertex.z + vertex.w <= 0) return true;
+				}
+				return false;
 			}
 			return false;
 		}
@@ -76,11 +76,11 @@ public class OcclusionBuffer implements Disposable {
 		boolean process (FloatBuffer depthBuffer, int bufferIndex, float newDepth) {
 			float oldDepth = depthBuffer.get(bufferIndex);
 			switch (this) {
-				case DRAW:
-					if (newDepth > oldDepth) depthBuffer.put(bufferIndex, newDepth);
-					return false;
-				case QUERY:
-					return (newDepth >= oldDepth);
+			case DRAW:
+				if (newDepth > oldDepth) depthBuffer.put(bufferIndex, newDepth);
+				return false;
+			case QUERY:
+				return (newDepth >= oldDepth);
 			}
 			return false;
 		}
@@ -93,9 +93,9 @@ public class OcclusionBuffer implements Disposable {
 		public Quaternion mul (final Matrix4 matrix) {
 			final float[] val = matrix.val;
 			return this.set(x * val[Matrix4.M00] + y * val[Matrix4.M01] + z * val[Matrix4.M02] + w * val[Matrix4.M03],
-					x * val[Matrix4.M10] + y * val[Matrix4.M11] + z * val[Matrix4.M12] + w * val[Matrix4.M13],
-					x * val[Matrix4.M20] + y * val[Matrix4.M21] + z * val[Matrix4.M22] + w * val[Matrix4.M23],
-					x * val[Matrix4.M30] + y * val[Matrix4.M31] + z * val[Matrix4.M32] + w * val[Matrix4.M33]);
+				x * val[Matrix4.M10] + y * val[Matrix4.M11] + z * val[Matrix4.M12] + w * val[Matrix4.M13],
+				x * val[Matrix4.M20] + y * val[Matrix4.M21] + z * val[Matrix4.M22] + w * val[Matrix4.M23],
+				x * val[Matrix4.M30] + y * val[Matrix4.M31] + z * val[Matrix4.M32] + w * val[Matrix4.M33]);
 		}
 
 		/** Multiply the x,y,z,w components of the passed in quaternion with the scalar and add them to the components of this
@@ -191,7 +191,7 @@ public class OcclusionBuffer implements Disposable {
 
 	/** Clears the depth buffer by setting the depth to -1. */
 	public void clear () {
-		((Buffer) buffer).clear();
+		((Buffer)buffer).clear();
 		while (buffer.position() < buffer.capacity())
 			buffer.put(-1);
 	}
@@ -320,14 +320,14 @@ public class OcclusionBuffer implements Disposable {
 		// Find min/max depth values in buffer
 		float minDepth = Float.POSITIVE_INFINITY;
 		float maxDepth = Float.NEGATIVE_INFINITY;
-		((Buffer) buffer).clear();
+		((Buffer)buffer).clear();
 		while (buffer.position() < buffer.capacity()) {
 			float depth = MathUtils.clamp(buffer.get(), 0, Float.POSITIVE_INFINITY);
 			minDepth = Math.min(depth, minDepth);
 			maxDepth = Math.max(depth, maxDepth);
 		}
 		float extent = 1 / (maxDepth - minDepth);
-		((Buffer) buffer).clear();
+		((Buffer)buffer).clear();
 		// Draw to pixmap
 		for (int x = 0; x < bufferWidth; x++) {
 			for (int y = 0; y < bufferHeight; y++) {
@@ -359,9 +359,9 @@ public class OcclusionBuffer implements Disposable {
 		// Note that x, y, z in e.g. triX corresponds to x components of vertices a, b, c,
 		// which means triX.x is the x coordinate of a.
 		triX.set((int)(a.x * bufferHalfExt.x + bufferOffset.x), (int)(b.x * bufferHalfExt.x + bufferOffset.x),
-				(int)(c.x * bufferHalfExt.x + bufferOffset.x));
+			(int)(c.x * bufferHalfExt.x + bufferOffset.x));
 		triY.set((int)(a.y * bufferHalfExt.y + bufferOffset.y), (int)(b.y * bufferHalfExt.y + bufferOffset.y),
-				(int)(c.y * bufferHalfExt.y + bufferOffset.y));
+			(int)(c.y * bufferHalfExt.y + bufferOffset.y));
 		// X/Y extents
 		int xMin = Math.max(0, Math.min(triX.x, Math.min(triX.y, triX.z)));
 		int xMax = Math.min(bufferWidth, 1 + Math.max(triX.x, Math.max(triX.y, triX.z)));
@@ -374,11 +374,11 @@ public class OcclusionBuffer implements Disposable {
 		triDX.set(triY.x - triY.y, triY.y - triY.z, triY.z - triY.x);
 		triDY.set(triX.y - triX.x - triDX.x * width, triX.z - triX.y - triDX.y * width, triX.x - triX.z - triDX.z * width);
 		cursor.set(yMin * (triX.y - triX.x) + xMin * (triY.x - triY.y) + triX.x * triY.y - triX.y * triY.x,
-				yMin * (triX.z - triX.y) + xMin * (triY.y - triY.z) + triX.y * triY.z - triX.z * triY.y,
-				yMin * (triX.x - triX.z) + xMin * (triY.z - triY.x) + triX.z * triY.x - triX.x * triY.z);
+			yMin * (triX.z - triX.y) + xMin * (triY.y - triY.z) + triX.y * triY.z - triX.z * triY.y,
+			yMin * (triX.x - triX.z) + xMin * (triY.z - triY.x) + triX.z * triY.x - triX.x * triY.z);
 		// Depth interpolation
 		float ia = 1f
-				/ (float)(triX.x * triY.y - triX.y * triY.x + triX.z * triY.x - triX.x * triY.z + triX.y * triY.z - triX.z * triY.y);
+			/ (float)(triX.x * triY.y - triX.y * triY.x + triX.z * triY.x - triX.x * triY.z + triX.y * triY.z - triX.z * triY.y);
 		float dzx = ia * (triY.x * (c.z - b.z) + triY.y * (a.z - c.z) + triY.z * (b.z - a.z));
 		float dzy = ia * (triX.x * (b.z - c.z) + triX.y * (c.z - a.z) + triX.z * (a.z - b.z)) - (dzx * width);
 		float drawDepth = ia * (a.z * cursor.y + b.z * cursor.z + c.z * cursor.x);

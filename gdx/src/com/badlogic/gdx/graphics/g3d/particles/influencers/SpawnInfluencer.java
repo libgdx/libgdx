@@ -63,14 +63,16 @@ public class SpawnInfluencer extends Influencer {
 
 	@Override
 	public void activateParticles (int startIndex, int count) {
-		for (int i = startIndex * positionChannel.strideSize, c = i + count * positionChannel.strideSize; i < c; i += positionChannel.strideSize) {
+		for (int i = startIndex * positionChannel.strideSize,
+			c = i + count * positionChannel.strideSize; i < c; i += positionChannel.strideSize) {
 			spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
 			TMP_V1.mul(controller.transform);
 			positionChannel.data[i + ParticleChannels.XOffset] = TMP_V1.x;
 			positionChannel.data[i + ParticleChannels.YOffset] = TMP_V1.y;
 			positionChannel.data[i + ParticleChannels.ZOffset] = TMP_V1.z;
 		}
-		for (int i = startIndex * rotationChannel.strideSize, c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
+		for (int i = startIndex * rotationChannel.strideSize,
+			c = i + count * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize) {
 			controller.transform.getRotation(TMP_Q, true);
 			rotationChannel.data[i + ParticleChannels.XOffset] = TMP_Q.x;
 			rotationChannel.data[i + ParticleChannels.YOffset] = TMP_Q.y;

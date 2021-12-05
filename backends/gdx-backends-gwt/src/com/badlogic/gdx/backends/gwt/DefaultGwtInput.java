@@ -62,16 +62,16 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 			} else {
 				GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, new GwtPermissions.GwtPermissionResult() {
 					@Override
-					public void granted() {
+					public void granted () {
 						setupAccelerometer();
 					}
 
 					@Override
-					public void denied() {
+					public void denied () {
 					}
 
 					@Override
-					public void prompt() {
+					public void prompt () {
 						setupAccelerometer();
 					}
 				});
@@ -83,16 +83,16 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 			} else {
 				GwtPermissions.queryPermission(GwtGyroscope.PERMISSION, new GwtPermissions.GwtPermissionResult() {
 					@Override
-					public void granted() {
+					public void granted () {
 						setupGyroscope();
 					}
 
 					@Override
-					public void denied() {
+					public void denied () {
 					}
 
 					@Override
-					public void prompt() {
+					public void prompt () {
 						setupGyroscope();
 					}
 				});
@@ -136,39 +136,39 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 
 	@Override
 	public float getAccelerometerX () {
-		return this.accelerometer != null ? (float) this.accelerometer.x() : 0;
+		return this.accelerometer != null ? (float)this.accelerometer.x() : 0;
 	}
 
 	@Override
 	public float getAccelerometerY () {
-		return this.accelerometer != null ? (float) this.accelerometer.y() : 0;
+		return this.accelerometer != null ? (float)this.accelerometer.y() : 0;
 	}
 
 	@Override
 	public float getAccelerometerZ () {
-		return this.accelerometer != null ? (float) this.accelerometer.z() : 0;
+		return this.accelerometer != null ? (float)this.accelerometer.z() : 0;
 	}
 
-	private boolean isAccelerometerPresent() {
+	private boolean isAccelerometerPresent () {
 		return getAccelerometerX() != 0 || getAccelerometerY() != 0 || getAccelerometerZ() != 0;
 	}
 
 	@Override
 	public float getGyroscopeX () {
-		return this.gyroscope != null ? (float) this.gyroscope.x() : 0;
+		return this.gyroscope != null ? (float)this.gyroscope.x() : 0;
 	}
 
 	@Override
 	public float getGyroscopeY () {
-		return this.gyroscope != null ? (float) this.gyroscope.y() : 0;
+		return this.gyroscope != null ? (float)this.gyroscope.y() : 0;
 	}
 
 	@Override
 	public float getGyroscopeZ () {
-		return this.gyroscope != null ? (float) this.gyroscope.z() : 0;
+		return this.gyroscope != null ? (float)this.gyroscope.z() : 0;
 	}
 
-	private boolean isGyroscopePresent() {
+	private boolean isGyroscopePresent () {
 		return getGyroscopeX() != 0 || getGyroscopeY() != 0 || getGyroscopeZ() != 0;
 	}
 
@@ -243,8 +243,8 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
-		if(button < 0 || button >= justPressedButtons.length) return false;
+	public boolean isButtonJustPressed (int button) {
+		if (button < 0 || button >= justPressedButtons.length) return false;
 		return justPressedButtons[button];
 	}
 
@@ -259,7 +259,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
 	}
 
@@ -289,7 +289,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 	}
 
 	@Override
@@ -340,10 +340,10 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Gyroscope) return GwtGyroscope.isSupported() && isGyroscopePresent()
-				&& GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION);
+		if (peripheral == Peripheral.Gyroscope)
+			return GwtGyroscope.isSupported() && isGyroscopePresent() && GwtFeaturePolicy.allowsFeature(GwtGyroscope.PERMISSION);
 		if (peripheral == Peripheral.Accelerometer) return GwtAccelerometer.isSupported() && isAccelerometerPresent()
-				&& GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION);
+			&& GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION);
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
@@ -742,8 +742,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 					processor.keyUp(code);
 				}
 			}
-		}
-		else if (pressedKeyCount > 0) {
+		} else if (pressedKeyCount > 0) {
 			// Gdx.app.log("DefaultGwtInput", "unfocused");
 			IntSetIterator iterator = pressedKeySet.iterator();
 
@@ -966,7 +965,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 			return Keys.UNKNOWN; // FIXME
 		case KEY_RIGHT_WINDOW_KEY:
 			return Keys.UNKNOWN; // FIXME
-			// case KEY_SELECT_KEY: return Keys.SELECT_KEY;
+		// case KEY_SELECT_KEY: return Keys.SELECT_KEY;
 		case KEY_NUMPAD0:
 			return Keys.NUMPAD_0;
 		case KEY_NUMPAD1:
@@ -1184,7 +1183,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	private static final int KEY_MEDIA_STOP = 178;
 	private static final int KEY_MEDIA_PLAY_PAUSE = 179;
 	private static final int KEY_AUDIO_VOLUME_DOWN_FIREFOX = 182;
-	private static final int KEY_AUDIO_VOLUME_UP_FIREFOX  = 183;
+	private static final int KEY_AUDIO_VOLUME_UP_FIREFOX = 183;
 	private static final int KEY_SEMICOLON = 186;
 	private static final int KEY_EQUALS = 187;
 	private static final int KEY_COMMA = 188;

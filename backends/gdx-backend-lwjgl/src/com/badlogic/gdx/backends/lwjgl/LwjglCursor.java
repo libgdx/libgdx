@@ -30,23 +30,23 @@ public class LwjglCursor implements Cursor {
 			}
 
 			if ((pixmap.getWidth() & (pixmap.getWidth() - 1)) != 0) {
-				throw new GdxRuntimeException("Cursor image pixmap width of " + pixmap.getWidth()
-					+ " is not a power-of-two greater than zero.");
+				throw new GdxRuntimeException(
+					"Cursor image pixmap width of " + pixmap.getWidth() + " is not a power-of-two greater than zero.");
 			}
 
 			if ((pixmap.getHeight() & (pixmap.getHeight() - 1)) != 0) {
-				throw new GdxRuntimeException("Cursor image pixmap height of " + pixmap.getHeight()
-					+ " is not a power-of-two greater than zero.");
+				throw new GdxRuntimeException(
+					"Cursor image pixmap height of " + pixmap.getHeight() + " is not a power-of-two greater than zero.");
 			}
 
 			if (xHotspot < 0 || xHotspot >= pixmap.getWidth()) {
-				throw new GdxRuntimeException("xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, "
-					+ pixmap.getWidth() + ").");
+				throw new GdxRuntimeException(
+					"xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, " + pixmap.getWidth() + ").");
 			}
 
 			if (yHotspot < 0 || yHotspot >= pixmap.getHeight()) {
-				throw new GdxRuntimeException("yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, "
-					+ pixmap.getHeight() + ").");
+				throw new GdxRuntimeException(
+					"yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, " + pixmap.getHeight() + ").");
 			}
 
 			// Convert from RGBA8888 to ARGB8888 and flip vertically
@@ -73,8 +73,8 @@ public class LwjglCursor implements Cursor {
 				}
 			}
 
-			lwjglCursor = new org.lwjgl.input.Cursor(pixmap.getWidth(), pixmap.getHeight(), xHotspot, pixmap.getHeight() - yHotspot
-				- 1, 1, IntBuffer.wrap(pixelsARGBflipped), null);
+			lwjglCursor = new org.lwjgl.input.Cursor(pixmap.getWidth(), pixmap.getHeight(), xHotspot,
+				pixmap.getHeight() - yHotspot - 1, 1, IntBuffer.wrap(pixelsARGBflipped), null);
 		} catch (LWJGLException e) {
 			throw new GdxRuntimeException("Could not create cursor image.", e);
 		}

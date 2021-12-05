@@ -76,7 +76,7 @@ public class TableTest extends GdxTest {
 				System.out.println("click!");
 			}
 		});
-//		root.addActor(table);
+// root.addActor(table);
 
 		TextButton button = new TextButton("Text Button", skin);
 		Table table2 = new Table();

@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class GIM_RSORT_TOKEN extends BulletBase {
 	private long swigCPtr;
-	
-	protected GIM_RSORT_TOKEN(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected GIM_RSORT_TOKEN (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new GIM_RSORT_TOKEN, normally you should not need this constructor it's intended for low-level usage. */ 
-	public GIM_RSORT_TOKEN(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new GIM_RSORT_TOKEN, normally you should not need this constructor it's intended for low-level usage. */
+	public GIM_RSORT_TOKEN (long cPtr, boolean cMemoryOwn) {
 		this("GIM_RSORT_TOKEN", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(GIM_RSORT_TOKEN obj) {
+
+	public static long getCPtr (GIM_RSORT_TOKEN obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,36 +53,36 @@ public class GIM_RSORT_TOKEN extends BulletBase {
 		super.delete();
 	}
 
-  public void setKey(long value) {
-    CollisionJNI.GIM_RSORT_TOKEN_key_set(swigCPtr, this, value);
-  }
+	public void setKey (long value) {
+		CollisionJNI.GIM_RSORT_TOKEN_key_set(swigCPtr, this, value);
+	}
 
-  public long getKey() {
-    return CollisionJNI.GIM_RSORT_TOKEN_key_get(swigCPtr, this);
-  }
+	public long getKey () {
+		return CollisionJNI.GIM_RSORT_TOKEN_key_get(swigCPtr, this);
+	}
 
-  public void setValue(long value) {
-    CollisionJNI.GIM_RSORT_TOKEN_value_set(swigCPtr, this, value);
-  }
+	public void setValue (long value) {
+		CollisionJNI.GIM_RSORT_TOKEN_value_set(swigCPtr, this, value);
+	}
 
-  public long getValue() {
-    return CollisionJNI.GIM_RSORT_TOKEN_value_get(swigCPtr, this);
-  }
+	public long getValue () {
+		return CollisionJNI.GIM_RSORT_TOKEN_value_get(swigCPtr, this);
+	}
 
-  public GIM_RSORT_TOKEN() {
-    this(CollisionJNI.new_GIM_RSORT_TOKEN__SWIG_0(), true);
-  }
+	public GIM_RSORT_TOKEN () {
+		this(CollisionJNI.new_GIM_RSORT_TOKEN__SWIG_0(), true);
+	}
 
-  public GIM_RSORT_TOKEN(GIM_RSORT_TOKEN rtoken) {
-    this(CollisionJNI.new_GIM_RSORT_TOKEN__SWIG_1(GIM_RSORT_TOKEN.getCPtr(rtoken), rtoken), true);
-  }
+	public GIM_RSORT_TOKEN (GIM_RSORT_TOKEN rtoken) {
+		this(CollisionJNI.new_GIM_RSORT_TOKEN__SWIG_1(GIM_RSORT_TOKEN.getCPtr(rtoken), rtoken), true);
+	}
 
-  public boolean operatorLessThan(GIM_RSORT_TOKEN other) {
-    return CollisionJNI.GIM_RSORT_TOKEN_operatorLessThan(swigCPtr, this, GIM_RSORT_TOKEN.getCPtr(other), other);
-  }
+	public boolean operatorLessThan (GIM_RSORT_TOKEN other) {
+		return CollisionJNI.GIM_RSORT_TOKEN_operatorLessThan(swigCPtr, this, GIM_RSORT_TOKEN.getCPtr(other), other);
+	}
 
-  public boolean operatorGreaterThan(GIM_RSORT_TOKEN other) {
-    return CollisionJNI.GIM_RSORT_TOKEN_operatorGreaterThan(swigCPtr, this, GIM_RSORT_TOKEN.getCPtr(other), other);
-  }
+	public boolean operatorGreaterThan (GIM_RSORT_TOKEN other) {
+		return CollisionJNI.GIM_RSORT_TOKEN_operatorGreaterThan(swigCPtr, this, GIM_RSORT_TOKEN.getCPtr(other), other);
+	}
 
 }

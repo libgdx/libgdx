@@ -102,7 +102,7 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets the tile to be used for this cell.
 		 * 
-		 * @param tile the {@link TiledMapTile} to use for this cell. 
+		 * @param tile the {@link TiledMapTile} to use for this cell.
 		 * @return this, for method chaining */
 		public Cell setTile (TiledMapTile tile) {
 			this.tile = tile;
@@ -116,7 +116,7 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile horizontally.
 		 * 
-		 * @param flipHorizontally whether or not to flip the tile horizontally. 
+		 * @param flipHorizontally whether or not to flip the tile horizontally.
 		 * @return this, for method chaining */
 		public Cell setFlipHorizontally (boolean flipHorizontally) {
 			this.flipHorizontally = flipHorizontally;
@@ -130,7 +130,7 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile vertically.
 		 * 
-		 * @param flipVertically whether or not this tile should be flipped vertically. 
+		 * @param flipVertically whether or not this tile should be flipped vertically.
 		 * @return this, for method chaining */
 		public Cell setFlipVertically (boolean flipVertically) {
 			this.flipVertically = flipVertically;
@@ -144,7 +144,7 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets the rotation of this cell, in 90 degree increments.
 		 * 
-		 * @param rotation the rotation in 90 degree increments (see ints below). 
+		 * @param rotation the rotation in 90 degree increments (see ints below).
 		 * @return this, for method chaining */
 		public Cell setRotation (int rotation) {
 			this.rotation = rotation;

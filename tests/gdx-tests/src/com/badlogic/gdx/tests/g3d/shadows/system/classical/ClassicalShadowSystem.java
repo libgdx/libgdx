@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * 2 - It's easy to use in custom shader.
  * 3 - There is no constraint about shader varying.
  * </pre>
+ * 
  * @author realitix */
 public class ClassicalShadowSystem extends FirstPassBaseShadowSystem {
 
@@ -76,7 +77,8 @@ public class ClassicalShadowSystem extends FirstPassBaseShadowSystem {
 	}
 
 	protected void init2 () {
-		frameBuffers[SECOND_PASS] = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight(), true);
+		frameBuffers[SECOND_PASS] = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getBackBufferWidth(),
+			Gdx.graphics.getBackBufferHeight(), true);
 		passShaderProviders[SECOND_PASS] = new Pass2ShaderProvider(new Pass2Shader.Config(this));
 	}
 

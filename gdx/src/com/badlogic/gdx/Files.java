@@ -19,7 +19,8 @@ package com.badlogic.gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Provides standard access to the filesystem, classpath, Android app storage (internal and external), and Android assets directory.
+/** Provides standard access to the filesystem, classpath, Android app storage (internal and external), and Android assets
+ * directory.
  * @author mzechner
  * @author Nathan Sweet */
 public interface Files {
@@ -37,7 +38,8 @@ public interface Files {
 		 * Internal files are always readonly. */
 		Internal,
 
-		/** Path relative to the root of the app external storage on Android and to the home directory of the current user on the desktop. */
+		/** Path relative to the root of the app external storage on Android and to the home directory of the current user on the
+		 * desktop. */
 		External,
 
 		/** Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
@@ -76,8 +78,8 @@ public interface Files {
 	/** Returns true if the external storage is ready for file IO. */
 	public boolean isExternalStorageAvailable ();
 
-	/** Returns the local storage path directory. This is the private files directory on Android and the directory of the jar on the
-	 * desktop. */
+	/** Returns the local storage path directory. This is the private files directory on Android and the directory of the jar on
+	 * the desktop. */
 	public String getLocalStoragePath ();
 
 	/** Returns true if the local storage is ready for file IO. */

@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Vector2dTest extends GdxTest {
 	private static final float DURATION = 2.0f;
-	
+
 	private ShapeRenderer renderer;
 	private OrthographicCamera camera;
 
@@ -38,7 +38,7 @@ public class Vector2dTest extends GdxTest {
 	private Vector2 scalingY = new Vector2(Vector2.X);
 	private Vector2 lerping1 = new Vector2(Vector2.X);
 	private Vector2 lerpTarget = new Vector2(Vector2.Y);
-	
+
 	private Vector2 sum = new Vector2().add(Vector2.X).add(Vector2.Y).nor();
 	private Vector2 mash = new Vector2(Vector2.Y);
 
@@ -47,7 +47,7 @@ public class Vector2dTest extends GdxTest {
 	private Vector2 lerpStart2 = new Vector2(Vector2.X);
 	private Vector2 lerpTarget2 = new Vector2(Vector2.Y);
 	private float timePassed = 0;
-	
+
 	private final long start = System.currentTimeMillis();
 
 	@Override
@@ -103,15 +103,14 @@ public class Vector2dTest extends GdxTest {
 		timePassed += Gdx.graphics.getDeltaTime();
 		renderVectorAt(-4, 0, lerping2);
 		lerping2.set(lerpStart2);
-		lerping2.interpolate(lerpTarget2, MathUtils.clamp(timePassed/DURATION,0,1), interpolator);
+		lerping2.interpolate(lerpTarget2, MathUtils.clamp(timePassed / DURATION, 0, 1), interpolator);
 
 		if (lerping2.epsilonEquals(lerpTarget2, 0.025f)) {
 			lerpTarget2.set(-1.0f + MathUtils.random(2.0f), -1.0f + MathUtils.random(2.0f)).nor();
 			lerpStart2.set(lerping2);
 			timePassed = 0;
 		}
-		
-		
+
 		renderVectorAt(-2, -2, mash);
 		mash.set(0, 0).add(rotating).add(scalingX).add(scalingY).add(lerping1);
 

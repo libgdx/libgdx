@@ -53,7 +53,8 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	public float fixedTimeStep = 1f / 60f;
 
 	public BulletWorld (final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world, final Vector3 gravity) {
+		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world,
+		final Vector3 gravity) {
 		this.collisionConfiguration = collisionConfiguration;
 		this.dispatcher = dispatcher;
 		this.broadphase = broadphase;

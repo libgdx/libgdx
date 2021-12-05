@@ -9,16 +9,15 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class btTypedConstraintType {
-  public final static int POINT2POINT_CONSTRAINT_TYPE = 3;
-  public final static int HINGE_CONSTRAINT_TYPE = POINT2POINT_CONSTRAINT_TYPE + 1;
-  public final static int CONETWIST_CONSTRAINT_TYPE = HINGE_CONSTRAINT_TYPE + 1;
-  public final static int D6_CONSTRAINT_TYPE = CONETWIST_CONSTRAINT_TYPE + 1;
-  public final static int SLIDER_CONSTRAINT_TYPE = D6_CONSTRAINT_TYPE + 1;
-  public final static int CONTACT_CONSTRAINT_TYPE = SLIDER_CONSTRAINT_TYPE + 1;
-  public final static int D6_SPRING_CONSTRAINT_TYPE = CONTACT_CONSTRAINT_TYPE + 1;
-  public final static int GEAR_CONSTRAINT_TYPE = D6_SPRING_CONSTRAINT_TYPE + 1;
-  public final static int FIXED_CONSTRAINT_TYPE = GEAR_CONSTRAINT_TYPE + 1;
-  public final static int D6_SPRING_2_CONSTRAINT_TYPE = FIXED_CONSTRAINT_TYPE + 1;
-  public final static int MAX_CONSTRAINT_TYPE = D6_SPRING_2_CONSTRAINT_TYPE + 1;
+	public final static int POINT2POINT_CONSTRAINT_TYPE = 3;
+	public final static int HINGE_CONSTRAINT_TYPE = POINT2POINT_CONSTRAINT_TYPE + 1;
+	public final static int CONETWIST_CONSTRAINT_TYPE = HINGE_CONSTRAINT_TYPE + 1;
+	public final static int D6_CONSTRAINT_TYPE = CONETWIST_CONSTRAINT_TYPE + 1;
+	public final static int SLIDER_CONSTRAINT_TYPE = D6_CONSTRAINT_TYPE + 1;
+	public final static int CONTACT_CONSTRAINT_TYPE = SLIDER_CONSTRAINT_TYPE + 1;
+	public final static int D6_SPRING_CONSTRAINT_TYPE = CONTACT_CONSTRAINT_TYPE + 1;
+	public final static int GEAR_CONSTRAINT_TYPE = D6_SPRING_CONSTRAINT_TYPE + 1;
+	public final static int FIXED_CONSTRAINT_TYPE = GEAR_CONSTRAINT_TYPE + 1;
+	public final static int D6_SPRING_2_CONSTRAINT_TYPE = FIXED_CONSTRAINT_TYPE + 1;
+	public final static int MAX_CONSTRAINT_TYPE = D6_SPRING_2_CONSTRAINT_TYPE + 1;
 }
-

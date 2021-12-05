@@ -165,10 +165,12 @@ public interface Vector<T extends Vector<T>> {
 	 * @param epsilon a positive small number close to zero */
 	boolean isPerpendicular (T other, float epsilon);
 
-	/** @return Whether this vector has similar direction compared to the other vector. True if the normalized dot product is > 0. */
+	/** @return Whether this vector has similar direction compared to the other vector. True if the normalized dot product is >
+	 *         0. */
 	boolean hasSameDirection (T other);
 
-	/** @return Whether this vector has opposite direction compared to the other vector. True if the normalized dot product is < 0. */
+	/** @return Whether this vector has opposite direction compared to the other vector. True if the normalized dot product is <
+	 *         0. */
 	boolean hasOppositeDirection (T other);
 
 	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.

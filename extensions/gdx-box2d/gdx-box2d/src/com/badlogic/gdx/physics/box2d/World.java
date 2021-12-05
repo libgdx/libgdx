@@ -327,7 +327,8 @@ b2ContactFilter defaultFilter;
 		Array<Fixture> fixtureList = body.getFixtureList();
 		while(fixtureList.size > 0) {
 			Fixture fixtureToDelete = fixtureList.removeIndex(0);
- 			this.fixtures.remove(fixtureToDelete.addr).setUserData(null);
+			fixtureToDelete.setUserData(null);
+ 			this.fixtures.remove(fixtureToDelete.addr);
  			freeFixtures.free(fixtureToDelete);
  		}
 		

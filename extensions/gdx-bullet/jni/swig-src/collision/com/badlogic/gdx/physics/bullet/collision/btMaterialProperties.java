@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btMaterialProperties extends BulletBase {
 	private long swigCPtr;
-	
-	protected btMaterialProperties(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btMaterialProperties (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btMaterialProperties, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btMaterialProperties(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btMaterialProperties, normally you should not need this constructor it's intended for low-level usage. */
+	public btMaterialProperties (long cPtr, boolean cMemoryOwn) {
 		this("btMaterialProperties", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btMaterialProperties obj) {
+
+	public static long getCPtr (btMaterialProperties obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,78 +53,78 @@ public class btMaterialProperties extends BulletBase {
 		super.delete();
 	}
 
-  public void setNumMaterials(int value) {
-    CollisionJNI.btMaterialProperties_numMaterials_set(swigCPtr, this, value);
-  }
+	public void setNumMaterials (int value) {
+		CollisionJNI.btMaterialProperties_numMaterials_set(swigCPtr, this, value);
+	}
 
-  public int getNumMaterials() {
-    return CollisionJNI.btMaterialProperties_numMaterials_get(swigCPtr, this);
-  }
+	public int getNumMaterials () {
+		return CollisionJNI.btMaterialProperties_numMaterials_get(swigCPtr, this);
+	}
 
-  public void setMaterialBase(java.nio.ByteBuffer value) {
-    assert value.isDirect() : "Buffer must be allocated direct.";
-    {
-      CollisionJNI.btMaterialProperties_materialBase_set(swigCPtr, this, value);
-    }
-  }
+	public void setMaterialBase (java.nio.ByteBuffer value) {
+		assert value.isDirect() : "Buffer must be allocated direct.";
+		{
+			CollisionJNI.btMaterialProperties_materialBase_set(swigCPtr, this, value);
+		}
+	}
 
-  public java.nio.ByteBuffer getMaterialBase() {
-    return CollisionJNI.btMaterialProperties_materialBase_get(swigCPtr, this);
-}
+	public java.nio.ByteBuffer getMaterialBase () {
+		return CollisionJNI.btMaterialProperties_materialBase_get(swigCPtr, this);
+	}
 
-  public void setMaterialStride(int value) {
-    CollisionJNI.btMaterialProperties_materialStride_set(swigCPtr, this, value);
-  }
+	public void setMaterialStride (int value) {
+		CollisionJNI.btMaterialProperties_materialStride_set(swigCPtr, this, value);
+	}
 
-  public int getMaterialStride() {
-    return CollisionJNI.btMaterialProperties_materialStride_get(swigCPtr, this);
-  }
+	public int getMaterialStride () {
+		return CollisionJNI.btMaterialProperties_materialStride_get(swigCPtr, this);
+	}
 
-  public void setMaterialType(int value) {
-    CollisionJNI.btMaterialProperties_materialType_set(swigCPtr, this, value);
-  }
+	public void setMaterialType (int value) {
+		CollisionJNI.btMaterialProperties_materialType_set(swigCPtr, this, value);
+	}
 
-  public int getMaterialType() {
-    return CollisionJNI.btMaterialProperties_materialType_get(swigCPtr, this);
-  }
+	public int getMaterialType () {
+		return CollisionJNI.btMaterialProperties_materialType_get(swigCPtr, this);
+	}
 
-  public void setNumTriangles(int value) {
-    CollisionJNI.btMaterialProperties_numTriangles_set(swigCPtr, this, value);
-  }
+	public void setNumTriangles (int value) {
+		CollisionJNI.btMaterialProperties_numTriangles_set(swigCPtr, this, value);
+	}
 
-  public int getNumTriangles() {
-    return CollisionJNI.btMaterialProperties_numTriangles_get(swigCPtr, this);
-  }
+	public int getNumTriangles () {
+		return CollisionJNI.btMaterialProperties_numTriangles_get(swigCPtr, this);
+	}
 
-  public void setTriangleMaterialsBase(java.nio.ByteBuffer value) {
-    assert value.isDirect() : "Buffer must be allocated direct.";
-    {
-      CollisionJNI.btMaterialProperties_triangleMaterialsBase_set(swigCPtr, this, value);
-    }
-  }
+	public void setTriangleMaterialsBase (java.nio.ByteBuffer value) {
+		assert value.isDirect() : "Buffer must be allocated direct.";
+		{
+			CollisionJNI.btMaterialProperties_triangleMaterialsBase_set(swigCPtr, this, value);
+		}
+	}
 
-  public java.nio.ByteBuffer getTriangleMaterialsBase() {
-    return CollisionJNI.btMaterialProperties_triangleMaterialsBase_get(swigCPtr, this);
-}
+	public java.nio.ByteBuffer getTriangleMaterialsBase () {
+		return CollisionJNI.btMaterialProperties_triangleMaterialsBase_get(swigCPtr, this);
+	}
 
-  public void setTriangleMaterialStride(int value) {
-    CollisionJNI.btMaterialProperties_triangleMaterialStride_set(swigCPtr, this, value);
-  }
+	public void setTriangleMaterialStride (int value) {
+		CollisionJNI.btMaterialProperties_triangleMaterialStride_set(swigCPtr, this, value);
+	}
 
-  public int getTriangleMaterialStride() {
-    return CollisionJNI.btMaterialProperties_triangleMaterialStride_get(swigCPtr, this);
-  }
+	public int getTriangleMaterialStride () {
+		return CollisionJNI.btMaterialProperties_triangleMaterialStride_get(swigCPtr, this);
+	}
 
-  public void setTriangleType(int value) {
-    CollisionJNI.btMaterialProperties_triangleType_set(swigCPtr, this, value);
-  }
+	public void setTriangleType (int value) {
+		CollisionJNI.btMaterialProperties_triangleType_set(swigCPtr, this, value);
+	}
 
-  public int getTriangleType() {
-    return CollisionJNI.btMaterialProperties_triangleType_get(swigCPtr, this);
-  }
+	public int getTriangleType () {
+		return CollisionJNI.btMaterialProperties_triangleType_get(swigCPtr, this);
+	}
 
-  public btMaterialProperties() {
-    this(CollisionJNI.new_btMaterialProperties(), true);
-  }
+	public btMaterialProperties () {
+		this(CollisionJNI.new_btMaterialProperties(), true);
+	}
 
 }

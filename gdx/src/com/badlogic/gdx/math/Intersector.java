@@ -93,8 +93,8 @@ public final class Intersector {
 	}
 
 	/** Determines on which side of the given line the point is. Returns 1 if the point is on the left side of the line, 0 if the
-	 * point is on the line and -1 if the point is on the right side of the line. Left and right are relative to the lines direction
-	 * which is linePoint1 to linePoint2. */
+	 * point is on the line and -1 if the point is on the right side of the line. Left and right are relative to the lines
+	 * direction which is linePoint1 to linePoint2. */
 	public static int pointLineSide (Vector2 linePoint1, Vector2 linePoint2, Vector2 point) {
 		return (int)Math.signum(
 			(linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y) * (point.x - linePoint1.x));
@@ -350,16 +350,13 @@ public final class Intersector {
 	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
 	 * @param frustum The frustum
 	 * @param bounds The bounding box
-	 * @return Whether the frustum intersects the bounding box*/
+	 * @return Whether the frustum intersects the bounding box */
 	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
-		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner001(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner010(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner011(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner100(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner101(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner110(tmp)) ||
-				frustum.pointInFrustum(bounds.getCorner111(tmp));
+		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp))
+			|| frustum.pointInFrustum(bounds.getCorner001(tmp)) || frustum.pointInFrustum(bounds.getCorner010(tmp))
+			|| frustum.pointInFrustum(bounds.getCorner011(tmp)) || frustum.pointInFrustum(bounds.getCorner100(tmp))
+			|| frustum.pointInFrustum(bounds.getCorner101(tmp)) || frustum.pointInFrustum(bounds.getCorner110(tmp))
+			|| frustum.pointInFrustum(bounds.getCorner111(tmp));
 
 		if (boundsIntersectsFrustum) {
 			return true;
@@ -433,7 +430,8 @@ public final class Intersector {
 		return -1;
 	}
 
-	/** Returns true if the three {@link Plane planes} intersect, setting the point of intersection in {@code intersection}, if any.
+	/** Returns true if the three {@link Plane planes} intersect, setting the point of intersection in {@code intersection}, if
+	 * any.
 	 * @param intersection The point where the three planes intersect */
 	public static boolean intersectPlanes (Plane a, Plane b, Plane c, Vector3 intersection) {
 		tmp1.set(a.normal).crs(b.normal);

@@ -47,7 +47,7 @@
     <gwt.version>2.8.2</gwt.version>
     <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.2.3</lwjgl3.version>
-    <robovm.version>2.3.12</robovm.version>    
+    <robovm.version>2.3.14</robovm.version>
   </properties>
 
   <modules>

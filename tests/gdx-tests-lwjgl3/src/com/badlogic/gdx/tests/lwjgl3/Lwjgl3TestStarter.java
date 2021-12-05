@@ -40,25 +40,23 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Lwjgl3TestStarter {
-	
+
 	static CommandLineOptions options;
 
-	/**
-	 * Runs libgdx tests.
+	/** Runs libgdx tests.
 	 * 
 	 * some options can be passed, see {@link CommandLineOptions}
 	 * 
-	 * @param argv command line arguments
-	 */
+	 * @param argv command line arguments */
 	public static void main (String[] argv) {
 		System.setProperty("java.awt.headless", "true");
 
 		options = new CommandLineOptions(argv);
-		
+
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
 
-		if(options.gl30){
+		if (options.gl30) {
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 
@@ -138,8 +136,8 @@ public class Lwjgl3TestStarter {
 			if (lastClickedTestButton != null) {
 				lastClickedTestButton.setColor(Color.CYAN);
 				scroll.layout();
-				float scrollY = lastClickedTestButton.getY() + scroll.getScrollHeight() / 2 + lastClickedTestButton.getHeight() / 2 + tableSpace * 2
-					+ 20;
+				float scrollY = lastClickedTestButton.getY() + scroll.getScrollHeight() / 2 + lastClickedTestButton.getHeight() / 2
+					+ tableSpace * 2 + 20;
 				scroll.scrollTo(0, scrollY, 0, 0, false, false);
 
 				// Since ScrollPane takes some time for scrolling to a position, we just "fake" time

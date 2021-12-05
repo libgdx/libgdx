@@ -11,43 +11,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexPolyhedron extends BulletBase {
 	private long swigCPtr;
-	
-	protected btConvexPolyhedron(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvexPolyhedron (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btConvexPolyhedron, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btConvexPolyhedron(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btConvexPolyhedron, normally you should not need this constructor it's intended for low-level usage. */
+	public btConvexPolyhedron (long cPtr, boolean cMemoryOwn) {
 		this("btConvexPolyhedron", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvexPolyhedron obj) {
+
+	public static long getCPtr (btConvexPolyhedron obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,123 +55,125 @@ public class btConvexPolyhedron extends BulletBase {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConvexPolyhedron_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConvexPolyhedron_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConvexPolyhedron_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConvexPolyhedron_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConvexPolyhedron_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConvexPolyhedron_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConvexPolyhedron_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConvexPolyhedron_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConvexPolyhedron_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConvexPolyhedron_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConvexPolyhedron_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConvexPolyhedron_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConvexPolyhedron_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConvexPolyhedron_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConvexPolyhedron_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConvexPolyhedron_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public btConvexPolyhedron() {
-    this(CollisionJNI.new_btConvexPolyhedron(), true);
-  }
+	public btConvexPolyhedron () {
+		this(CollisionJNI.new_btConvexPolyhedron(), true);
+	}
 
-  public void setVertices(btVector3Array value) {
-    CollisionJNI.btConvexPolyhedron_vertices_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
-  }
+	public void setVertices (btVector3Array value) {
+		CollisionJNI.btConvexPolyhedron_vertices_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
+	}
 
-  public btVector3Array getVertices() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_vertices_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
-  }
+	public btVector3Array getVertices () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_vertices_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
+	}
 
-  public void setFaces(SWIGTYPE_p_btAlignedObjectArrayT_btFace_t value) {
-    CollisionJNI.btConvexPolyhedron_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btFace_t.getCPtr(value));
-  }
+	public void setFaces (SWIGTYPE_p_btAlignedObjectArrayT_btFace_t value) {
+		CollisionJNI.btConvexPolyhedron_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btFace_t.getCPtr(value));
+	}
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btFace_t getFaces() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_faces_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btFace_t(cPtr, false);
-  }
+	public SWIGTYPE_p_btAlignedObjectArrayT_btFace_t getFaces () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_faces_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btFace_t(cPtr, false);
+	}
 
-  public void setUniqueEdges(btVector3Array value) {
-    CollisionJNI.btConvexPolyhedron_uniqueEdges_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
-  }
+	public void setUniqueEdges (btVector3Array value) {
+		CollisionJNI.btConvexPolyhedron_uniqueEdges_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
+	}
 
-  public btVector3Array getUniqueEdges() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_uniqueEdges_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
-  }
+	public btVector3Array getUniqueEdges () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_uniqueEdges_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
+	}
 
-  public void setLocalCenter(btVector3 value) {
-    CollisionJNI.btConvexPolyhedron_localCenter_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setLocalCenter (btVector3 value) {
+		CollisionJNI.btConvexPolyhedron_localCenter_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getLocalCenter() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_localCenter_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getLocalCenter () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_localCenter_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setExtents(btVector3 value) {
-    CollisionJNI.btConvexPolyhedron_extents_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setExtents (btVector3 value) {
+		CollisionJNI.btConvexPolyhedron_extents_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getExtents() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_extents_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getExtents () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_extents_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setRadius(float value) {
-    CollisionJNI.btConvexPolyhedron_radius_set(swigCPtr, this, value);
-  }
+	public void setRadius (float value) {
+		CollisionJNI.btConvexPolyhedron_radius_set(swigCPtr, this, value);
+	}
 
-  public float getRadius() {
-    return CollisionJNI.btConvexPolyhedron_radius_get(swigCPtr, this);
-  }
+	public float getRadius () {
+		return CollisionJNI.btConvexPolyhedron_radius_get(swigCPtr, this);
+	}
 
-  public void setMC(btVector3 value) {
-    CollisionJNI.btConvexPolyhedron_mC_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setMC (btVector3 value) {
+		CollisionJNI.btConvexPolyhedron_mC_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getMC() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_mC_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getMC () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_mC_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setME(btVector3 value) {
-    CollisionJNI.btConvexPolyhedron_mE_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setME (btVector3 value) {
+		CollisionJNI.btConvexPolyhedron_mE_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getME() {
-    long cPtr = CollisionJNI.btConvexPolyhedron_mE_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getME () {
+		long cPtr = CollisionJNI.btConvexPolyhedron_mE_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void initialize() {
-    CollisionJNI.btConvexPolyhedron_initialize(swigCPtr, this);
-  }
+	public void initialize () {
+		CollisionJNI.btConvexPolyhedron_initialize(swigCPtr, this);
+	}
 
-  public boolean testContainment() {
-    return CollisionJNI.btConvexPolyhedron_testContainment(swigCPtr, this);
-  }
+	public boolean testContainment () {
+		return CollisionJNI.btConvexPolyhedron_testContainment(swigCPtr, this);
+	}
 
-  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin, Vector3 witnesPtMax) {
-    CollisionJNI.btConvexPolyhedron_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj), SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
-  }
+	public void project (Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin,
+		Vector3 witnesPtMax) {
+		CollisionJNI.btConvexPolyhedron_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj),
+			SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
+	}
 
 }

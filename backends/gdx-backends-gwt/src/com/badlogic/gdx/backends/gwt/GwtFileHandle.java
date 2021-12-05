@@ -57,7 +57,7 @@ public class GwtFileHandle extends FileHandle {
 	}
 
 	/** @return The full url to an asset, e.g. http://localhost:8080/assets/data/shotgun-e5f56587d6f025bff049632853ae4ff9.ogg */
-	public String getAssetUrl() {
+	public String getAssetUrl () {
 		return preloader.baseUrl + preloader.assetNames.get(file, file);
 	}
 
@@ -331,9 +331,9 @@ public class GwtFileHandle extends FileHandle {
 		return preloader.list(file, suffix);
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
-	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
-	 * classpath will return false. */
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an
+	 * {@link FileType#Internal} handle to an empty directory will return false. On the desktop, an {@link FileType#Internal}
+	 * handle to a directory on the classpath will return false. */
 	public boolean isDirectory () {
 		return preloader.isDirectory(file);
 	}
@@ -362,8 +362,8 @@ public class GwtFileHandle extends FileHandle {
 		throw new GdxRuntimeException("Cannot mkdirs with an internal file: " + file);
 	}
 
-	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
-	 * will always return false. */
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a
+	 * directory will always return false. */
 	public boolean exists () {
 		return preloader.contains(file);
 	}
@@ -416,7 +416,7 @@ public class GwtFileHandle extends FileHandle {
 		return file;
 	}
 
-	private static String fixSlashes(String path) {
+	private static String fixSlashes (String path) {
 		path = path.replace('\\', '/');
 		if (path.endsWith("/")) {
 			path = path.substring(0, path.length() - 1);

@@ -152,18 +152,16 @@ public class Pass2Shader extends DefaultShader {
 	private static String defaultVertexShader = null;
 
 	public static String getDefaultVertexShader () {
-		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/tests/g3d/shadows/system/classical/pass2.vertex.glsl")
-			.readString();
+		if (defaultVertexShader == null) defaultVertexShader = Gdx.files
+			.classpath("com/badlogic/gdx/tests/g3d/shadows/system/classical/pass2.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
 
 	public static String getDefaultFragmentShader () {
-		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/tests/g3d/shadows/system/classical/pass2.fragment.glsl")
-			.readString();
+		if (defaultFragmentShader == null) defaultFragmentShader = Gdx.files
+			.classpath("com/badlogic/gdx/tests/g3d/shadows/system/classical/pass2.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 

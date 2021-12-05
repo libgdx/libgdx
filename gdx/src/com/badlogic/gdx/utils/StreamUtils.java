@@ -74,9 +74,9 @@ public final class StreamUtils {
 		while ((bytesRead = input.read(buffer)) != -1) {
 			BufferUtils.copy(buffer, 0, output, bytesRead);
 			total += bytesRead;
-			((Buffer) output).position(startPosition + total);
+			((Buffer)output).position(startPosition + total);
 		}
-		((Buffer) output).position(startPosition);
+		((Buffer)output).position(startPosition);
 		return total;
 	}
 
@@ -93,8 +93,8 @@ public final class StreamUtils {
 		return baos.toByteArray();
 	}
 
-	/** Calls {@link #copyStreamToString(InputStream, int, String)} using the input's {@link InputStream#available() available} size
-	 * and the platform's default charset. */
+	/** Calls {@link #copyStreamToString(InputStream, int, String)} using the input's {@link InputStream#available() available}
+	 * size and the platform's default charset. */
 	public static String copyStreamToString (InputStream input) throws IOException {
 		return copyStreamToString(input, input.available(), null);
 	}

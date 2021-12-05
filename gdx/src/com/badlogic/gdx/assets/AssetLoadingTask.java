@@ -28,8 +28,8 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
 
-/** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}.
- * Please don't forget to update the overriding emu file on GWT backend when changing this file!
+/** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Please don't forget to
+ * update the overriding emu file on GWT backend when changing this file!
  * 
  * @author mzechner */
 class AssetLoadingTask implements AsyncTask<Void> {

@@ -49,7 +49,7 @@ public class ShapeRendererAlphaTest extends GdxTest {
 		renderer.setColor(0, 1, 0, 0.5f);
 		renderer.rect(200, 0, 100, 100);
 		renderer.end();
-		
+
 		renderer.begin(ShapeType.Filled);
 		renderer.setColor(new Color(0x000000ff));
 		renderer.rect(300, 0, 100, 100);

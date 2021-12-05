@@ -37,7 +37,7 @@ public class Lwjgl3Cursor implements Cursor {
 	GLFWImage glfwImage;
 	final long glfwCursor;
 
-	Lwjgl3Cursor(Lwjgl3Window window, Pixmap pixmap, int xHotspot, int yHotspot) {
+	Lwjgl3Cursor (Lwjgl3Window window, Pixmap pixmap, int xHotspot, int yHotspot) {
 		this.window = window;
 		if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
 			throw new GdxRuntimeException("Cursor image pixmap is not in RGBA8888 format.");
@@ -45,22 +45,22 @@ public class Lwjgl3Cursor implements Cursor {
 
 		if ((pixmap.getWidth() & (pixmap.getWidth() - 1)) != 0) {
 			throw new GdxRuntimeException(
-					"Cursor image pixmap width of " + pixmap.getWidth() + " is not a power-of-two greater than zero.");
+				"Cursor image pixmap width of " + pixmap.getWidth() + " is not a power-of-two greater than zero.");
 		}
 
 		if ((pixmap.getHeight() & (pixmap.getHeight() - 1)) != 0) {
-			throw new GdxRuntimeException("Cursor image pixmap height of " + pixmap.getHeight()
-					+ " is not a power-of-two greater than zero.");
+			throw new GdxRuntimeException(
+				"Cursor image pixmap height of " + pixmap.getHeight() + " is not a power-of-two greater than zero.");
 		}
 
 		if (xHotspot < 0 || xHotspot >= pixmap.getWidth()) {
-			throw new GdxRuntimeException("xHotspot coordinate of " + xHotspot
-					+ " is not within image width bounds: [0, " + pixmap.getWidth() + ").");
+			throw new GdxRuntimeException(
+				"xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, " + pixmap.getWidth() + ").");
 		}
 
 		if (yHotspot < 0 || yHotspot >= pixmap.getHeight()) {
-			throw new GdxRuntimeException("yHotspot coordinate of " + yHotspot
-					+ " is not within image height bounds: [0, " + pixmap.getHeight() + ").");
+			throw new GdxRuntimeException(
+				"yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, " + pixmap.getHeight() + ").");
 		}
 
 		this.pixmapCopy = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
@@ -76,7 +76,7 @@ public class Lwjgl3Cursor implements Cursor {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		if (pixmapCopy == null) {
 			throw new GdxRuntimeException("Cursor already disposed");
 		}
@@ -87,7 +87,7 @@ public class Lwjgl3Cursor implements Cursor {
 		GLFW.glfwDestroyCursor(glfwCursor);
 	}
 
-	static void dispose(Lwjgl3Window window) {
+	static void dispose (Lwjgl3Window window) {
 		for (int i = cursors.size - 1; i >= 0; i--) {
 			Lwjgl3Cursor cursor = cursors.get(i);
 			if (cursor.window.equals(window)) {
@@ -96,14 +96,14 @@ public class Lwjgl3Cursor implements Cursor {
 		}
 	}
 
-	static void disposeSystemCursors() {
+	static void disposeSystemCursors () {
 		for (long systemCursor : systemCursors.values()) {
 			GLFW.glfwDestroyCursor(systemCursor);
 		}
 		systemCursors.clear();
 	}
 
-	static void setSystemCursor(long windowHandle, SystemCursor systemCursor) {
+	static void setSystemCursor (long windowHandle, SystemCursor systemCursor) {
 		Long glfwCursor = systemCursors.get(systemCursor);
 		if (glfwCursor == null) {
 			long handle = 0;
@@ -118,8 +118,8 @@ public class Lwjgl3Cursor implements Cursor {
 			} else if (systemCursor == SystemCursor.VerticalResize) {
 				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR);
 			} else if (systemCursor == SystemCursor.Ibeam) {
- 				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
-  			} else {
+				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
+			} else {
 				throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
 			}
 

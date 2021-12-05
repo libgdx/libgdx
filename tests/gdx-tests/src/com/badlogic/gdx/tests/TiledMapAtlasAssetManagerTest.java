@@ -83,7 +83,7 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		camera.update();
-		assetManager.update();
+		assetManager.update(16);
 		if (renderer == null && assetManager.isLoaded(fileName)) {
 			map = assetManager.get(fileName);
 			renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);

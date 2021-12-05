@@ -106,7 +106,6 @@ public class FirstPersonCameraController extends InputAdapter {
 			tmp.set(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (autoUpdate)
-			 camera.update(true);
+		if (autoUpdate) camera.update(true);
 	}
 }

@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -60,7 +59,7 @@ public class MusicTest extends GdxTest {
 	}
 
 	float time;
-	
+
 	@Override
 	public void create () {
 
@@ -68,7 +67,7 @@ public class MusicTest extends GdxTest {
 
 		stage = new Stage(new ExtendViewport(600, 480));
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		
+
 		Table sliderTable = new Table();
 		label = new Label("", skin);
 		slider = new Slider(0, 100, 0.1f, false, skin);
@@ -95,7 +94,7 @@ public class MusicTest extends GdxTest {
 		btLoop.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				if(music != null) music.setLooping(btLoop.isChecked());
+				if (music != null) music.setLooping(btLoop.isChecked());
 			}
 		});
 
@@ -128,24 +127,23 @@ public class MusicTest extends GdxTest {
 				music.stop();
 			}
 		});
-		
+
 		Table footerTable = new Table();
 		footerTable.setSize(500f, 120f);
 		footerTable.add(controlsTable);
 		footerTable.add(sliderTable).width(250f);
-		
+
 		setSong(musicBox.getSelected());
-		
+
 		Table table = new Table(skin);
 		table.add(musicBox);
 		table.add(btLoop);
 		table.setFillParent(true);
 		stage.addActor(table);
 		stage.addActor(footerTable);
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
-				
 
 	void setSong (Song song) {
 		if (music != null) {
@@ -197,11 +195,10 @@ public class MusicTest extends GdxTest {
 		stage.act();
 		stage.draw();
 
-		
-//		if(music.isPlaying()){
-//			time += Gdx.graphics.getDeltaTime();
-//			System.out.println("realtime: " + time + " music time: " + currentPosition);
-//		}
+// if(music.isPlaying()){
+// time += Gdx.graphics.getDeltaTime();
+// System.out.println("realtime: " + time + " music time: " + currentPosition);
+// }
 	}
 
 	@Override
@@ -210,7 +207,7 @@ public class MusicTest extends GdxTest {
 		music.dispose();
 	}
 
-	private Drawable getDrawable(String path) {
+	private Drawable getDrawable (String path) {
 		return new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path))));
 	}
 }

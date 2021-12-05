@@ -30,9 +30,9 @@ public class BufferUtilsTest extends GdxTest {
 
 	@Override
 	public void create () {
-		//Not emulated in gwt
-		//ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
-		//BufferUtils.disposeUnsafeByteBuffer(bytebuffer);
+		// Not emulated in gwt
+		// ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
+		// BufferUtils.disposeUnsafeByteBuffer(bytebuffer);
 
 		ByteBuffer bb = BufferUtils.newByteBuffer(8);
 		CharBuffer cb = BufferUtils.newCharBuffer(8);
@@ -42,81 +42,81 @@ public class BufferUtilsTest extends GdxTest {
 		FloatBuffer fb = BufferUtils.newFloatBuffer(8);
 		DoubleBuffer db = BufferUtils.newDoubleBuffer(8);
 
-		((Buffer) bb).position(4);
+		((Buffer)bb).position(4);
 		BufferUtils.copy(new byte[] {1, 2, 3, 4}, 0, bb, 4);
 		checkInt(bb.get(), 1);
 		checkInt(bb.get(), 2);
 		checkInt(bb.get(), 3);
 		checkInt(bb.get(), 4);
 
-		((Buffer) cb).position(4);
+		((Buffer)cb).position(4);
 		BufferUtils.copy(new char[] {1, 2, 3, 4}, 0, cb, 4);
 		checkInt(cb.get(), 1);
 		checkInt(cb.get(), 2);
 		checkInt(cb.get(), 3);
 		checkInt(cb.get(), 4);
-		((Buffer) cb).position(0);
+		((Buffer)cb).position(0);
 		BufferUtils.copy(new char[] {5, 6, 7, 8}, 1, cb, 3);
 		checkInt(cb.get(), 6);
 		checkInt(cb.get(), 7);
 		checkInt(cb.get(), 8);
 
-		((Buffer) sb).position(4);
+		((Buffer)sb).position(4);
 		BufferUtils.copy(new short[] {1, 2, 3, 4}, 0, sb, 4);
 		checkInt(sb.get(), 1);
 		checkInt(sb.get(), 2);
 		checkInt(sb.get(), 3);
 		checkInt(sb.get(), 4);
-		((Buffer) sb).position(0);
+		((Buffer)sb).position(0);
 		BufferUtils.copy(new short[] {5, 6, 7, 8}, 1, sb, 3);
 		checkInt(sb.get(), 6);
 		checkInt(sb.get(), 7);
 		checkInt(sb.get(), 8);
 
-		((Buffer) ib).position(4);
+		((Buffer)ib).position(4);
 		BufferUtils.copy(new int[] {1, 2, 3, 4}, 0, ib, 4);
 		checkInt(ib.get(), 1);
 		checkInt(ib.get(), 2);
 		checkInt(ib.get(), 3);
 		checkInt(ib.get(), 4);
-		((Buffer) ib).position(0);
+		((Buffer)ib).position(0);
 		BufferUtils.copy(new int[] {5, 6, 7, 8}, 1, ib, 3);
 		checkInt(ib.get(), 6);
 		checkInt(ib.get(), 7);
 		checkInt(ib.get(), 8);
 
-		((Buffer) lb).position(4);
+		((Buffer)lb).position(4);
 		BufferUtils.copy(new long[] {1, 2, 3, 4}, 0, lb, 4);
 		checkInt(lb.get(), 1);
 		checkInt(lb.get(), 2);
 		checkInt(lb.get(), 3);
 		checkInt(lb.get(), 4);
-		((Buffer) lb).position(0);
+		((Buffer)lb).position(0);
 		BufferUtils.copy(new long[] {5, 6, 7, 8}, 1, lb, 3);
 		checkInt(lb.get(), 6);
 		checkInt(lb.get(), 7);
 		checkInt(lb.get(), 8);
 
-		((Buffer) fb).position(4);
+		((Buffer)fb).position(4);
 		BufferUtils.copy(new float[] {1, 2, 3, 4}, 0, fb, 4);
 		checkFloat(fb.get(), 1);
 		checkFloat(fb.get(), 2);
 		checkFloat(fb.get(), 3);
 		checkFloat(fb.get(), 4);
-		((Buffer) fb).position(0);
+		((Buffer)fb).position(0);
 		BufferUtils.copy(new float[] {5, 6, 7, 8}, 1, fb, 3);
 		checkFloat(fb.get(), 6);
 		checkFloat(fb.get(), 7);
 		checkFloat(fb.get(), 8);
 
 		if (Gdx.app.getType() != ApplicationType.WebGL) { // gwt throws: NYI: Numbers.doubleToRawLongBits
-			((Buffer) db).position(4);
+			((Buffer)db).position(4);
 			BufferUtils.copy(new double[] {1, 2, 3, 4}, 0, db, 4);
 			checkFloat(db.get(), 1);
 			checkFloat(db.get(), 2);
 			checkFloat(db.get(), 3);
 			checkFloat(db.get(), 4);
-			((Buffer) db).position(0);
+			((Buffer)db).position(0);
 			BufferUtils.copy(new double[] {5, 6, 7, 8}, 1, db, 3);
 			checkFloat(db.get(), 6);
 			checkFloat(db.get(), 7);
@@ -124,7 +124,7 @@ public class BufferUtilsTest extends GdxTest {
 		}
 
 		ByteBuffer bb2 = BufferUtils.newByteBuffer(4);
-		((Buffer) bb).position(4);
+		((Buffer)bb).position(4);
 		BufferUtils.copy(bb, bb2, 4);
 		checkInt(bb2.get(), 1);
 		checkInt(bb2.get(), 2);
@@ -152,7 +152,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) bb).clear();
+			((Buffer)bb).clear();
 			for (int i = 0; i < len; i++)
 				bb.put(bytes[i]);
 		}
@@ -161,7 +161,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) bb).clear();
+			((Buffer)bb).clear();
 			for (int i = 0; i < len; i++)
 				bb.put(i, bytes[i]);
 		}
@@ -170,7 +170,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) bb).clear();
+			((Buffer)bb).clear();
 			bb.put(bytes);
 		}
 		Gdx.app.log("BufferUtilsTest", "ByteBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -178,7 +178,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) bb).clear();
+			((Buffer)bb).clear();
 			BufferUtils.copy(bytes, 0, bb, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "ByteBuffer native bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -192,7 +192,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) sb).clear();
+			((Buffer)sb).clear();
 			for (int i = 0; i < len; i++)
 				sb.put(shorts[i]);
 		}
@@ -201,7 +201,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) sb).clear();
+			((Buffer)sb).clear();
 			for (int i = 0; i < len; i++)
 				sb.put(i, shorts[i]);
 		}
@@ -210,7 +210,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) sb).clear();
+			((Buffer)sb).clear();
 			sb.put(shorts);
 		}
 		Gdx.app.log("BufferUtilsTest", "ShortBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -218,7 +218,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) sb).clear();
+			((Buffer)sb).clear();
 			BufferUtils.copy(shorts, 0, sb, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "ShortBuffer native bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -232,7 +232,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) ib).clear();
+			((Buffer)ib).clear();
 			for (int i = 0; i < len; i++)
 				ib.put(ints[i]);
 		}
@@ -241,7 +241,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) ib).clear();
+			((Buffer)ib).clear();
 			for (int i = 0; i < len; i++)
 				ib.put(i, ints[i]);
 		}
@@ -250,7 +250,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) ib).clear();
+			((Buffer)ib).clear();
 			ib.put(ints);
 		}
 		Gdx.app.log("BufferUtilsTest", "IntBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -258,7 +258,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) ib).clear();
+			((Buffer)ib).clear();
 			BufferUtils.copy(ints, 0, ib, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "IntBuffer native bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -272,7 +272,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) lb).clear();
+			((Buffer)lb).clear();
 			for (int i = 0; i < len; i++)
 				lb.put(longs[i]);
 		}
@@ -281,7 +281,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) lb).clear();
+			((Buffer)lb).clear();
 			for (int i = 0; i < len; i++)
 				lb.put(i, longs[i]);
 		}
@@ -290,7 +290,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) lb).clear();
+			((Buffer)lb).clear();
 			lb.put(longs);
 		}
 		Gdx.app.log("BufferUtilsTest", "LongBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -298,7 +298,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) lb).clear();
+			((Buffer)lb).clear();
 			BufferUtils.copy(longs, 0, lb, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "LongBuffer native bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -312,7 +312,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) fb).clear();
+			((Buffer)fb).clear();
 			for (int i = 0; i < len; i++)
 				fb.put(floats[i]);
 		}
@@ -321,7 +321,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) fb).clear();
+			((Buffer)fb).clear();
 			for (int i = 0; i < len; i++)
 				fb.put(i, floats[i]);
 		}
@@ -330,7 +330,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) fb).clear();
+			((Buffer)fb).clear();
 			fb.put(floats);
 		}
 		Gdx.app.log("BufferUtilsTest", "FloatBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -338,7 +338,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) fb).clear();
+			((Buffer)fb).clear();
 			BufferUtils.copy(floats, 0, fb, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "FloatBuffer native bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -352,7 +352,7 @@ public class BufferUtilsTest extends GdxTest {
 		// relative put
 		long start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) db).clear();
+			((Buffer)db).clear();
 			for (int i = 0; i < len; i++)
 				db.put(doubles[i]);
 		}
@@ -361,7 +361,7 @@ public class BufferUtilsTest extends GdxTest {
 		// absolute put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) db).clear();
+			((Buffer)db).clear();
 			for (int i = 0; i < len; i++)
 				db.put(i, doubles[i]);
 		}
@@ -370,7 +370,7 @@ public class BufferUtilsTest extends GdxTest {
 		// bulk put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) db).clear();
+			((Buffer)db).clear();
 			db.put(doubles);
 		}
 		Gdx.app.log("BufferUtilsTest", "DoubleBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -378,7 +378,7 @@ public class BufferUtilsTest extends GdxTest {
 		// JNI put
 		start = TimeUtils.nanoTime();
 		for (int j = 0; j < NUM_MB; j++) {
-			((Buffer) db).clear();
+			((Buffer)db).clear();
 			BufferUtils.copy(doubles, 0, db, len);
 		}
 		Gdx.app.log("BufferUtilsTest", "DoubleBuffer bulk put: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
@@ -386,14 +386,14 @@ public class BufferUtilsTest extends GdxTest {
 
 	private void checkInt (long val1, long val2) {
 		if (val1 != val2) {
-			Gdx.app.error("BufferUtilsTest", "checkInt failed: "+val1+" != "+val2);
+			Gdx.app.error("BufferUtilsTest", "checkInt failed: " + val1 + " != " + val2);
 			throw new GdxRuntimeException("Error, val1 != val2");
 		}
 	}
 
 	private void checkFloat (double val1, double val2) {
 		if (val1 != val2) {
-			Gdx.app.error("BufferUtilsTest", "checkFloat failed: "+val1+" != "+val2);
+			Gdx.app.error("BufferUtilsTest", "checkFloat failed: " + val1 + " != " + val2);
 			throw new GdxRuntimeException("Error, val1 != val2");
 		}
 	}

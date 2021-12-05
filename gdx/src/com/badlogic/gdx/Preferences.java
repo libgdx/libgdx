@@ -18,16 +18,17 @@ package com.badlogic.gdx;
 
 import java.util.Map;
 
-/** <p>
+/**
+ * <p>
  * A Preference instance is a hash map holding different values. It is stored alongside your application (SharedPreferences on
  * Android, LocalStorage on GWT, on the desktop a Java Preferences file in a ".prefs" directory will be created, and on iOS an
- * NSMutableDictionary will be written to the given file). CAUTION: On the desktop platform, all libGDX applications share the same
- * ".prefs" directory. To avoid collisions use specific names like "com.myname.game1.settings" instead of "settings".
+ * NSMutableDictionary will be written to the given file). CAUTION: On the desktop platform, all libGDX applications share the
+ * same ".prefs" directory. To avoid collisions use specific names like "com.myname.game1.settings" instead of "settings".
  * </p>
  * 
  * <p>
- * To persist changes made to a preferences instance {@link #flush()} has to be invoked. With the exception of Android, changes are
- * cached in memory prior to flushing. On iOS changes are not synchronized between different preferences instances.
+ * To persist changes made to a preferences instance {@link #flush()} has to be invoked. With the exception of Android, changes
+ * are cached in memory prior to flushing. On iOS changes are not synchronized between different preferences instances.
  * </p>
  * 
  * <p>

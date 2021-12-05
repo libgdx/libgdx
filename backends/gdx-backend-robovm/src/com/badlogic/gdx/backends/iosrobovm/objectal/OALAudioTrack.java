@@ -23,9 +23,7 @@ import org.robovm.objc.annotation.NativeClass;
 import org.robovm.objc.annotation.Property;
 import org.robovm.rt.bro.annotation.Library;
 
-/**
- * @author Niklas Therning
- */
+/** @author Niklas Therning */
 @Library(Library.INTERNAL)
 @NativeClass
 public class OALAudioTrack extends NSObject {
@@ -48,6 +46,9 @@ public class OALAudioTrack extends NSObject {
 
 	@Method
 	public native boolean play ();
+
+	@Method
+	public native boolean playFile (String filePath);
 
 	@Property
 	public native boolean isPaused ();

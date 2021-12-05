@@ -29,7 +29,8 @@ import com.google.gwt.typedarrays.shared.TypedArrays;
  * <li>The byte buffer's position and limit are NOT linked with the adapter. The adapter extends Buffer, thus has its own position
  * and limit.</li>
  * </ul>
- * </p> */
+ * </p>
+ */
 final class DirectReadOnlyShortBufferAdapter extends ShortBuffer implements HasArrayBufferView {
 
 	static ShortBuffer wrap (DirectByteBuffer byteBuffer) {

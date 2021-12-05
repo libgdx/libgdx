@@ -126,35 +126,34 @@ public class DepthShader extends DefaultShader {
 		if (renderable.bones != null && renderable.bones.length > numBones) return false;
 		final Attributes attributes = combineAttributes(renderable);
 		if (attributes.has(BlendingAttribute.Type)) {
-			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type)
-				return false;
-			if (attributes.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
+			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type) return false;
+			if (attributes
+				.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
 				return false;
 		}
 		final boolean skinned = ((renderable.meshPart.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
 		return skinned == (weights > 0);
 	}
-	
+
 	@Override
 	public void render (Renderable renderable, Attributes combinedAttributes) {
 		if (combinedAttributes.has(BlendingAttribute.Type)) {
 			final BlendingAttribute blending = (BlendingAttribute)combinedAttributes.get(BlendingAttribute.Type);
 			combinedAttributes.remove(BlendingAttribute.Type);
 			final boolean hasAlphaTest = combinedAttributes.has(FloatAttribute.AlphaTest);
-			if (!hasAlphaTest)
-				combinedAttributes.set(alphaTestAttribute);
+			if (!hasAlphaTest) combinedAttributes.set(alphaTestAttribute);
 			if (blending.opacity >= ((FloatAttribute)combinedAttributes.get(FloatAttribute.AlphaTest)).value)
 				super.render(renderable, combinedAttributes);
-			if (!hasAlphaTest)
-				combinedAttributes.remove(FloatAttribute.AlphaTest);
+			if (!hasAlphaTest) combinedAttributes.remove(FloatAttribute.AlphaTest);
 			combinedAttributes.set(blending);
 		} else
 			super.render(renderable, combinedAttributes);
 	}
-	
+
 	private final static Attributes tmpAttributes = new Attributes();
+
 	// TODO: Move responsibility for combining attributes to RenderableProvider
-	private static final Attributes combineAttributes(final Renderable renderable) {
+	private static final Attributes combineAttributes (final Renderable renderable) {
 		tmpAttributes.clear();
 		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
 		if (renderable.material != null) tmpAttributes.set(renderable.material);

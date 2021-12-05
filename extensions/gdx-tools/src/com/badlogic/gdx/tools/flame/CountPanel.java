@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -34,9 +35,9 @@ class CountPanel extends EditorPanel {
 		initializeComponents(min, max);
 		setValue(null);
 	}
-	
+
 	private void initializeComponents (int min, int max) {
-		//Min
+		// Min
 		minSlider = new Slider(0, 0, 999999, 1);
 		minSlider.setValue(min);
 		minSlider.addChangeListener(new ChangeListener() {
@@ -47,7 +48,7 @@ class CountPanel extends EditorPanel {
 			}
 		});
 
-		//Max
+		// Max
 		maxSlider = new Slider(0, 0, 999999, 1);
 		maxSlider.setValue(max);
 		maxSlider.addChangeListener(new ChangeListener() {
@@ -57,14 +58,14 @@ class CountPanel extends EditorPanel {
 				editor.restart();
 			}
 		});
-		
-		int i =0;
-		contentPanel.add(new JLabel("Min"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-			new Insets(6, 0, 0, 0), 0, 0));
+
+		int i = 0;
+		contentPanel.add(new JLabel("Min"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
 		contentPanel.add(minSlider, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
-		contentPanel.add(new JLabel("Max"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(new JLabel("Max"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
 		contentPanel.add(maxSlider, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
 	}

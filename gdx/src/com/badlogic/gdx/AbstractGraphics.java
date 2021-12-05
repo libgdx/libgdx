@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx;
 
 public abstract class AbstractGraphics implements Graphics {
@@ -15,6 +16,6 @@ public abstract class AbstractGraphics implements Graphics {
 
 	@Override
 	public float getBackBufferScale () {
-		return getBackBufferWidth() / (float) getWidth();
+		return getBackBufferWidth() / (float)getWidth();
 	}
 }

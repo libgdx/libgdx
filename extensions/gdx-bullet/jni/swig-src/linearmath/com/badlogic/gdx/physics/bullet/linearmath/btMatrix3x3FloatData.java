@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btMatrix3x3FloatData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btMatrix3x3FloatData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btMatrix3x3FloatData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btMatrix3x3FloatData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btMatrix3x3FloatData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btMatrix3x3FloatData, normally you should not need this constructor it's intended for low-level usage. */
+	public btMatrix3x3FloatData (long cPtr, boolean cMemoryOwn) {
 		this("btMatrix3x3FloatData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btMatrix3x3FloatData obj) {
+
+	public static long getCPtr (btMatrix3x3FloatData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,17 +52,17 @@ public class btMatrix3x3FloatData extends BulletBase {
 		super.delete();
 	}
 
-  public void setEl(btVector3FloatData value) {
-    LinearMathJNI.btMatrix3x3FloatData_el_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setEl (btVector3FloatData value) {
+		LinearMathJNI.btMatrix3x3FloatData_el_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getEl() {
-    long cPtr = LinearMathJNI.btMatrix3x3FloatData_el_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getEl () {
+		long cPtr = LinearMathJNI.btMatrix3x3FloatData_el_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public btMatrix3x3FloatData() {
-    this(LinearMathJNI.new_btMatrix3x3FloatData(), true);
-  }
+	public btMatrix3x3FloatData () {
+		this(LinearMathJNI.new_btMatrix3x3FloatData(), true);
+	}
 
 }

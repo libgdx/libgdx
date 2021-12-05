@@ -48,7 +48,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	protected volatile Color[] wallpaperColors = null;
@@ -63,8 +64,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		}
 		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
-		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
+		graphics = new AndroidGraphicsLiveWallpaper(this, config,
+			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
 		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
@@ -354,7 +355,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		return new DefaultAndroidInput(this, this.getService(), graphics.view, config);
 	}
 
-	protected AndroidFiles createFiles() {
+	protected AndroidFiles createFiles () {
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
 		return new DefaultAndroidFiles(this.getService().getAssets(), this.getService(), true);
@@ -378,23 +379,19 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Notify the wallpaper engine that the significant colors of the wallpaper have changed. This
-	 * method may be called before initializing the live wallpaper.
+	/** Notify the wallpaper engine that the significant colors of the wallpaper have changed. This method may be called before
+	 * initializing the live wallpaper.
 	 * @param primaryColor The most visually significant color.
 	 * @param secondaryColor The second most visually significant color.
-	 * @param tertiaryColor The third most visually significant color.
-	 */
+	 * @param tertiaryColor The third most visually significant color. */
 	public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color tertiaryColor) {
-		if (Build.VERSION.SDK_INT < 27)
-			return;
+		if (Build.VERSION.SDK_INT < 27) return;
 		final Color[] colors = new Color[3];
 		colors[0] = new Color(primaryColor);
 		colors[1] = new Color(secondaryColor);
 		colors[2] = new Color(tertiaryColor);
 		wallpaperColors = colors;
 		AndroidLiveWallpaperService.AndroidWallpaperEngine engine = service.linkedEngine;
-		if (engine != null)
-			engine.notifyColorsChanged();
+		if (engine != null) engine.notifyColorsChanged();
 	}
 }

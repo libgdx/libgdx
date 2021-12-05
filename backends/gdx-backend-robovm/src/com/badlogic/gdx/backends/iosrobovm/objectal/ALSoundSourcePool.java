@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import org.robovm.apple.foundation.NSArray;
@@ -14,8 +15,8 @@ public class ALSoundSourcePool extends NSObject {
 	static {
 		ObjCRuntime.bind(ALSoundSourcePool.class);
 	}
-	
+
 	@Property(selector = "sources")
 	public native NSArray<ALSource> getSources ();
-	
+
 }

@@ -26,7 +26,7 @@ import com.google.gwt.typedarrays.shared.Int32Array;
 import com.google.gwt.typedarrays.shared.Int8Array;
 
 public final class Numbers {
-	
+
 	public static int floatToIntBits (float f) {
 		wfa.set(0, f);
 		return wia.get(0);

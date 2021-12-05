@@ -85,8 +85,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 
 		start = TimeUtils.nanoTime();
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteBatch
-				.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
+			spriteBatch.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false,
+				false);
 		draw2 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		start = TimeUtils.nanoTime();

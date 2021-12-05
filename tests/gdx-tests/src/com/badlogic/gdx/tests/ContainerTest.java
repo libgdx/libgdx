@@ -23,8 +23,8 @@ public class ContainerTest extends GdxTest {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
-		TextureRegionDrawable logo = new TextureRegionDrawable(new TextureRegion(new Texture(
-			Gdx.files.internal("data/badlogic.jpg"))));
+		TextureRegionDrawable logo = new TextureRegionDrawable(
+			new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg"))));
 
 		Table root = new Table();
 		root.setFillParent(true);

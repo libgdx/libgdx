@@ -53,9 +53,9 @@ public class RopeJoint extends Joint {
 	public float getMaxLength () {
 		return joint.getMaxLength();
 	}
-	
+
 	public void setMaxLength (float maxLength) {
 		joint.setMaxLength(maxLength);
 	}
-	
+
 }

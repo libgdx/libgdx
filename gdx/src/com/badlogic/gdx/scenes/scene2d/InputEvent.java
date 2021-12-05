@@ -94,7 +94,7 @@ public class InputEvent extends Event {
 		this.keyCode = keyCode;
 	}
 
-	/** The character for the key that was type. Valid for: keyTyped. */
+	/** The character for the key that was typed. Valid for: keyTyped. */
 	public char getCharacter () {
 		return character;
 	}
@@ -107,6 +107,7 @@ public class InputEvent extends Event {
 	public float getScrollAmountX () {
 		return scrollAmountX;
 	}
+
 	/** The amount the mouse was scrolled vertically. Valid for: scrolled. */
 	public float getScrollAmountY () {
 		return scrollAmountY;

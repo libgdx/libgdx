@@ -57,7 +57,8 @@ public interface Audio {
 	 * @throws GdxRuntimeException in case the recorder could not be created */
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono);
 
-	/** <p>
+	/**
+	 * <p>
 	 * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data
 	 * is retrieved from the file specified via the {@link FileHandle}. Note that the complete audio data is loaded into RAM. You
 	 * should therefore not load big audio files with this methods. The current upper limit for decoded audio is 1 MB.

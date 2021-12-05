@@ -19,9 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.util.Log;
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for android
- */
+/** Default implementation of {@link ApplicationLogger} for android */
 public class AndroidApplicationLogger implements ApplicationLogger {
 
 	@Override

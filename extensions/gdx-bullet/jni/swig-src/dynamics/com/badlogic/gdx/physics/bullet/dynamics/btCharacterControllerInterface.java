@@ -8,47 +8,43 @@
 
 package com.badlogic.gdx.physics.bullet.dynamics;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btCharacterControllerInterface extends btActionInterface {
 	private long swigCPtr;
-	
-	protected btCharacterControllerInterface(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btCharacterControllerInterface (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, DynamicsJNI.btCharacterControllerInterface_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btCharacterControllerInterface, normally you should not need this constructor it's intended for low-level usage. */
-	public btCharacterControllerInterface(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btCharacterControllerInterface, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btCharacterControllerInterface (long cPtr, boolean cMemoryOwn) {
 		this("btCharacterControllerInterface", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(DynamicsJNI.btCharacterControllerInterface_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btCharacterControllerInterface obj) {
+
+	public static long getCPtr (btCharacterControllerInterface obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,48 +55,50 @@ public class btCharacterControllerInterface extends btActionInterface {
 		super.delete();
 	}
 
-  public void setWalkDirection(Vector3 walkDirection) {
-    DynamicsJNI.btCharacterControllerInterface_setWalkDirection(swigCPtr, this, walkDirection);
-  }
+	public void setWalkDirection (Vector3 walkDirection) {
+		DynamicsJNI.btCharacterControllerInterface_setWalkDirection(swigCPtr, this, walkDirection);
+	}
 
-  public void setVelocityForTimeInterval(Vector3 velocity, float timeInterval) {
-    DynamicsJNI.btCharacterControllerInterface_setVelocityForTimeInterval(swigCPtr, this, velocity, timeInterval);
-  }
+	public void setVelocityForTimeInterval (Vector3 velocity, float timeInterval) {
+		DynamicsJNI.btCharacterControllerInterface_setVelocityForTimeInterval(swigCPtr, this, velocity, timeInterval);
+	}
 
-  public void reset(btCollisionWorld collisionWorld) {
-    DynamicsJNI.btCharacterControllerInterface_reset(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld);
-  }
+	public void reset (btCollisionWorld collisionWorld) {
+		DynamicsJNI.btCharacterControllerInterface_reset(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld);
+	}
 
-  public void warp(Vector3 origin) {
-    DynamicsJNI.btCharacterControllerInterface_warp(swigCPtr, this, origin);
-  }
+	public void warp (Vector3 origin) {
+		DynamicsJNI.btCharacterControllerInterface_warp(swigCPtr, this, origin);
+	}
 
-  public void preStep(btCollisionWorld collisionWorld) {
-    DynamicsJNI.btCharacterControllerInterface_preStep(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld);
-  }
+	public void preStep (btCollisionWorld collisionWorld) {
+		DynamicsJNI.btCharacterControllerInterface_preStep(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld),
+			collisionWorld);
+	}
 
-  public void playerStep(btCollisionWorld collisionWorld, float dt) {
-    DynamicsJNI.btCharacterControllerInterface_playerStep(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld, dt);
-  }
+	public void playerStep (btCollisionWorld collisionWorld, float dt) {
+		DynamicsJNI.btCharacterControllerInterface_playerStep(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld),
+			collisionWorld, dt);
+	}
 
-  public boolean canJump() {
-    return DynamicsJNI.btCharacterControllerInterface_canJump(swigCPtr, this);
-  }
+	public boolean canJump () {
+		return DynamicsJNI.btCharacterControllerInterface_canJump(swigCPtr, this);
+	}
 
-  public void jump(Vector3 dir) {
-    DynamicsJNI.btCharacterControllerInterface_jump__SWIG_0(swigCPtr, this, dir);
-  }
+	public void jump (Vector3 dir) {
+		DynamicsJNI.btCharacterControllerInterface_jump__SWIG_0(swigCPtr, this, dir);
+	}
 
-  public void jump() {
-    DynamicsJNI.btCharacterControllerInterface_jump__SWIG_1(swigCPtr, this);
-  }
+	public void jump () {
+		DynamicsJNI.btCharacterControllerInterface_jump__SWIG_1(swigCPtr, this);
+	}
 
-  public boolean onGround() {
-    return DynamicsJNI.btCharacterControllerInterface_onGround(swigCPtr, this);
-  }
+	public boolean onGround () {
+		return DynamicsJNI.btCharacterControllerInterface_onGround(swigCPtr, this);
+	}
 
-  public void setUpInterpolate(boolean value) {
-    DynamicsJNI.btCharacterControllerInterface_setUpInterpolate(swigCPtr, this, value);
-  }
+	public void setUpInterpolate (boolean value) {
+		DynamicsJNI.btCharacterControllerInterface_setUpInterpolate(swigCPtr, this, value);
+	}
 
 }

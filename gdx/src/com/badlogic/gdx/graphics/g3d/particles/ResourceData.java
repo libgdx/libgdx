@@ -47,8 +47,8 @@ public class ResourceData<T> implements Json.Serializable {
 		public void load (AssetManager manager, ResourceData<T> resources);
 	}
 
-	/** Contains all the saved data. {@link #data} is a map which link an asset name to its instance. {@link #assets} is an array of
-	 * indices addressing a given {@link com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData} in the
+	/** Contains all the saved data. {@link #data} is a map which link an asset name to its instance. {@link #assets} is an array
+	 * of indices addressing a given {@link com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData} in the
 	 * {@link ResourceData} */
 	public static class SaveData implements Json.Serializable {
 		ObjectMap<String, Object> data;

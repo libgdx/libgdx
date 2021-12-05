@@ -23,11 +23,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.storage.client.Storage;
 
 public class GwtFiles implements Files {
-	
-	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or blocked by the browser with "block third-party cookies"
-	
+
+	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or
+																												// blocked by the browser with "block
+																												// third-party cookies"
+
 	protected final Preloader preloader;
-	
+
 	public GwtFiles (Preloader preloader) {
 		this.preloader = preloader;
 	}

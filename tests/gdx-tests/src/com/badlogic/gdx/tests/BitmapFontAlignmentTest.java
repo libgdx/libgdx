@@ -55,8 +55,8 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		logoSprite.setColor(1, 1, 1, 0.6f);
 		logoSprite.setBounds(50, 100, 400, 100);
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), false);
+		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal),
+			Gdx.files.getFileHandle("data/verdana39.png", FileType.Internal), false);
 		cache = font.newFontCache();
 		layout = new GlyphLayout();
 	}

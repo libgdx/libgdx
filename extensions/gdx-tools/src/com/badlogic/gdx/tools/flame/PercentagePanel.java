@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,11 +41,11 @@ class PercentagePanel extends ParticleValuePanel<ScaledNumericValue> {
 		initializeComponents(chartTitle);
 		setValue(value);
 	}
-	
+
 	@Override
 	public void setValue (ScaledNumericValue value) {
 		super.setValue(value);
-		if(value == null) return; 
+		if (value == null) return;
 		chart.setValues(this.value.getTimeline(), this.value.getScaling());
 	}
 

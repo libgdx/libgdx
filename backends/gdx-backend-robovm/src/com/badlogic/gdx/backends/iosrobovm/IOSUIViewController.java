@@ -1,16 +1,16 @@
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKViewController;
+import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
 import org.robovm.apple.uikit.UIPress;
 import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.BindSelector;
-import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 
 public class IOSUIViewController extends GLKViewController {
 	final IOSApplication app;
@@ -39,10 +39,13 @@ public class IOSUIViewController extends GLKViewController {
 	public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
 		long mask = 0;
 		if (app.config.orientationLandscape) {
-			mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
+			mask |= (1L << UIInterfaceOrientation.LandscapeLeft.value()) | (1L << UIInterfaceOrientation.LandscapeRight.value());
 		}
 		if (app.config.orientationPortrait) {
-			mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
+			mask |= 1L << UIInterfaceOrientation.Portrait.value();
+			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
+				mask |= 1L << UIInterfaceOrientation.PortraitUpsideDown.value();
+			}
 		}
 		return new UIInterfaceOrientationMask(mask);
 	}
@@ -52,20 +55,8 @@ public class IOSUIViewController extends GLKViewController {
 		return true;
 	}
 
-	public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
-		// we return "true" if we support the orientation
-		switch (orientation) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			return app.config.orientationLandscape;
-		default:
-			// assume portrait
-			return app.config.orientationPortrait;
-		}
-	}
-
 	@Override
-	public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures() {
+	public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures () {
 		return app.config.screenEdgesDeferringSystemGestures;
 	}
 
@@ -96,26 +87,19 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public boolean prefersHomeIndicatorAutoHidden() {
+	public boolean prefersHomeIndicatorAutoHidden () {
 		return app.config.hideHomeIndicator;
 	}
 
-	@Callback
-	@BindSelector("shouldAutorotateToInterfaceOrientation:")
-	private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
-		UIInterfaceOrientation orientation) {
-		return self.shouldAutorotateToInterfaceOrientation(orientation);
-	}
-
 	@Override
-	public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event) {
+	public void pressesBegan (NSSet<UIPress> presses, UIPressesEvent event) {
 		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)) {
 			super.pressesBegan(presses, event);
 		}
 	}
 
 	@Override
-	public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event) {
+	public void pressesEnded (NSSet<UIPress> presses, UIPressesEvent event) {
 		if (presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)) {
 			super.pressesEnded(presses, event);
 		}

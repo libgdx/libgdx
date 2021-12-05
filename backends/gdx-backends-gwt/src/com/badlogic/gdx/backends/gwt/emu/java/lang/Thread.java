@@ -22,14 +22,14 @@ public class Thread {
 	public static void sleep (long millis) throws InterruptedException {
 		// noop emu
 	}
-	
-	public static void setDefaultUncaughtExceptionHandler(final Thread.UncaughtExceptionHandler javaHandler) {
+
+	public static void setDefaultUncaughtExceptionHandler (final Thread.UncaughtExceptionHandler javaHandler) {
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException (Throwable e) {
 				final Thread th = new Thread() {
 					@Override
-					public String toString() {
+					public String toString () {
 						return "The only thread";
 					}
 				};
@@ -37,8 +37,8 @@ public class Thread {
 			}
 		});
 	}
-	
+
 	public static interface UncaughtExceptionHandler {
-		void uncaughtException(Thread t, Throwable e);
+		void uncaughtException (Thread t, Throwable e);
 	}
 }

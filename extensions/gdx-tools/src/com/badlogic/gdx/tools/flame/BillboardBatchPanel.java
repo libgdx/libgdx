@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tools.flame;
 
 import java.awt.GridBagConstraints;
@@ -12,8 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 
 /** @author Inferno */
@@ -30,7 +29,7 @@ public class BillboardBatchPanel extends EditorPanel<BillboardParticleBatch> {
 	}
 
 	private void initializeComponents (BillboardParticleBatch renderer) {
-		//Align
+		// Align
 		alignCombo = new JComboBox();
 		alignCombo.setModel(new DefaultComboBoxModel(AlignModeWrapper.values()));
 		alignCombo.setSelectedItem(AlignModeWrapper.find(renderer.getAlignMode()));
@@ -40,17 +39,17 @@ public class BillboardBatchPanel extends EditorPanel<BillboardParticleBatch> {
 				editor.getBillboardBatch().setAlignMode(align.mode);
 			}
 		});
-		
-		//Cpu/Gpu
+
+		// Cpu/Gpu
 		useGPUBox = new JCheckBox();
 		useGPUBox.setSelected(renderer.isUseGPU());
 		useGPUBox.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
 				editor.getBillboardBatch().setUseGpu(useGPUBox.isSelected());
 			}
-		}); 
-		
-		//Sort
+		});
+
+		// Sort
 		sortCombo = new JComboBox();
 		sortCombo.setModel(new DefaultComboBoxModel(SortMode.values()));
 		sortCombo.setSelectedItem(SortMode.find(renderer.getSorter()));
@@ -104,7 +103,7 @@ public class BillboardBatchPanel extends EditorPanel<BillboardParticleBatch> {
 		contentPanel.add(new JLabel("Blending Dest"),
 			new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, insets, 0, 0));
 		contentPanel.add(destBlendFunction,
-			new GridBagConstraints(1, i++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,insets, 0, 0));
+			new GridBagConstraints(1, i++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, insets, 0, 0));
 	}
 
 }

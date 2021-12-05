@@ -68,8 +68,8 @@ public class ShapeCache implements Disposable, RenderableProvider {
 
 	/** Create a ShapeCache with default values */
 	public ShapeCache () {
-		this(5000, 5000, new VertexAttributes(new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_color")), GL20.GL_LINES);
+		this(5000, 5000, new VertexAttributes(new VertexAttribute(Usage.Position, 3, "a_position"),
+			new VertexAttribute(Usage.ColorPacked, 4, "a_color")), GL20.GL_LINES);
 	}
 
 	/** Create a ShapeCache with parameters

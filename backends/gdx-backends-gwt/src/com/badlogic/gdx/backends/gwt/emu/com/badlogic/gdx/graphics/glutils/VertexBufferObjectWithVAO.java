@@ -1,6 +1,6 @@
+
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -14,10 +14,9 @@ import com.badlogic.gdx.utils.IntArray;
 
 /**
  * <p>
- * A {@link VertexData} implementation that uses vertex buffer objects and vertex array objects.
- * (This is required for OpenGL 3.0+ core profiles. In particular, the default VAO has been
- * deprecated, as has the use of client memory for passing vertex attributes.) Use of VAOs should
- * give a slight performance benefit since you don't have to bind the attributes on every draw
+ * A {@link VertexData} implementation that uses vertex buffer objects and vertex array objects. (This is required for OpenGL 3.0+
+ * core profiles. In particular, the default VAO has been deprecated, as has the use of client memory for passing vertex
+ * attributes.) Use of VAOs should give a slight performance benefit since you don't have to bind the attributes on every draw
  * anymore.
  * </p>
  *
@@ -30,8 +29,7 @@ import com.badlogic.gdx.utils.IntArray;
  * </p>
  *
  * Code adapted from {@link VertexBufferObject}.
- * @author mzechner, Dave Clayton <contact@redskyforge.com>, Nate Austin <nate.austin gmail>
- */
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>, Nate Austin <nate.austin gmail> */
 public class VertexBufferObjectWithVAO implements VertexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
@@ -45,25 +43,20 @@ public class VertexBufferObjectWithVAO implements VertexData {
 	int vaoHandle = -1;
 	IntArray cachedLocations = new IntArray();
 
-
-	/**
-	 * Constructs a new interleaved VertexBufferObjectWithVAO.
+	/** Constructs a new interleaved VertexBufferObjectWithVAO.
 	 *
-	 * @param isStatic    whether the vertex data is static.
+	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
-	 * @param attributes  the {@link com.badlogic.gdx.graphics.VertexAttribute}s.
-	 */
+	 * @param attributes the {@link com.badlogic.gdx.graphics.VertexAttribute}s. */
 	public VertexBufferObjectWithVAO (boolean isStatic, int numVertices, VertexAttribute... attributes) {
 		this(isStatic, numVertices, new VertexAttributes(attributes));
 	}
 
-	/**
-	 * Constructs a new interleaved VertexBufferObjectWithVAO.
+	/** Constructs a new interleaved VertexBufferObjectWithVAO.
 	 *
-	 * @param isStatic    whether the vertex data is static.
+	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
-	 * @param attributes  the {@link VertexAttributes}.
-	 */
+	 * @param attributes the {@link VertexAttributes}. */
 	public VertexBufferObjectWithVAO (boolean isStatic, int numVertices, VertexAttributes attributes) {
 		this.isStatic = isStatic;
 		this.attributes = attributes;
@@ -122,11 +115,9 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		bufferChanged();
 	}
 
-	/**
-	 * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
+	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void bind (ShaderProgram shader) {
 		bind(shader, null);
@@ -140,7 +131,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 
 		bindAttributes(shader, locations);
 
-		//if our data has changed upload it:
+		// if our data has changed upload it:
 		bindData(gl);
 
 		isBound = true;
@@ -184,7 +175,8 @@ public class VertexBufferObjectWithVAO implements VertexData {
 				}
 
 				shader.enableVertexAttribute(location);
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		}
 	}
@@ -212,11 +204,9 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		}
 	}
 
-	/**
-	 * Unbinds this VertexBufferObject.
+	/** Unbinds this VertexBufferObject.
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void unbind (final ShaderProgram shader) {
 		unbind(shader, null);
@@ -229,9 +219,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		isBound = false;
 	}
 
-	/**
-	 * Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-	 */
+	/** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	@Override
 	public void invalidate () {
 		bufferHandle = Gdx.gl20.glGenBuffer();
@@ -239,9 +227,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		isDirty = true;
 	}
 
-	/**
-	 * Disposes of all resources this VertexBufferObject uses.
-	 */
+	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
 		GL30 gl = Gdx.gl30;

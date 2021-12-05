@@ -68,15 +68,16 @@ public class AnimationTest extends GdxTest {
 		}
 		leftWalk = new Animation<TextureRegion>(0.25f, leftWalkFrames);
 		rightWalk = new Animation<TextureRegion>(0.25f, rightWalkFrames);
-		
+
 		TextureRegion[] rightRegions = rightWalk.getKeyFrames(); // testing backing array type
 		TextureRegion firstRightRegion = rightRegions[0];
-		Gdx.app.log("AnimationTest", "First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
+		Gdx.app.log("AnimationTest",
+			"First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {
-			cavemen[i] = new Caveman((float)Math.random() * Gdx.graphics.getWidth(),
-				(float)Math.random() * Gdx.graphics.getHeight(), Math.random() > 0.5 ? true : false);
+			cavemen[i] = new Caveman((float)Math.random() * Gdx.graphics.getWidth(), (float)Math.random() * Gdx.graphics.getHeight(),
+				Math.random() > 0.5 ? true : false);
 		}
 		batch = new SpriteBatch();
 		fpsLog = new FPSLogger();
@@ -88,8 +89,8 @@ public class AnimationTest extends GdxTest {
 		batch.begin();
 		for (int i = 0; i < cavemen.length; i++) {
 			Caveman caveman = cavemen[i];
-			TextureRegion frame = caveman.headsLeft ? leftWalk.getKeyFrame(caveman.stateTime, true) : rightWalk.getKeyFrame(
-				caveman.stateTime, true);
+			TextureRegion frame = caveman.headsLeft ? leftWalk.getKeyFrame(caveman.stateTime, true)
+				: rightWalk.getKeyFrame(caveman.stateTime, true);
 			batch.draw(frame, caveman.pos.x, caveman.pos.y);
 		}
 		batch.end();

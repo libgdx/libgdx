@@ -102,7 +102,7 @@ public class AssetDownloader {
 	}
 
 	public void loadBinary (final String url, final AssetLoaderListener<Blob> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();		
+		XMLHttpRequest request = XMLHttpRequest.create();
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
 			@Override
 			public void onReadyStateChange (XMLHttpRequest xhr) {
@@ -145,8 +145,9 @@ public class AssetDownloader {
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
 		loadImage(url, mimeType, null, listener);
 	}
-	
-	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<ImageElement> listener) {
+
+	public void loadImage (final String url, final String mimeType, final String crossOrigin,
+		final AssetLoaderListener<ImageElement> listener) {
 		if (useBrowserCache || useInlineBase64) {
 			loadBinary(url, new AssetLoaderListener<Blob>() {
 				@Override

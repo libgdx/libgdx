@@ -322,9 +322,9 @@ public class BitmapFontCache {
 			// Determine # of glyphs in each page.
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
 				Array<Glyph> glyphs = layout.runs.get(i).glyphs;
-				Glyph[] glyphItems = glyphs.items;
+				Object[] glyphItems = glyphs.items;
 				for (int ii = 0, nn = glyphs.size; ii < nn; ii++)
-					tempGlyphCount[glyphItems[ii].page]++;
+					tempGlyphCount[((Glyph)glyphItems[ii]).page]++;
 			}
 			// Require that many for each page.
 			for (int i = 0, n = tempGlyphCount.length; i < n; i++)

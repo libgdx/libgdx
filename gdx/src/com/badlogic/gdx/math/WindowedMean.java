@@ -107,7 +107,7 @@ public final class WindowedMean {
 			lowest = Math.min(lowest, values[i]);
 		return lowest;
 	}
-	
+
 	public float getHighest () {
 		float lowest = Float.MIN_NORMAL;
 		for (int i = 0; i < values.length; i++)

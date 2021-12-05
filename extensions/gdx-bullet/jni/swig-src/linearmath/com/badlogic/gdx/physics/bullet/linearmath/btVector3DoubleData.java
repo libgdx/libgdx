@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btVector3DoubleData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btVector3DoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btVector3DoubleData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btVector3DoubleData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btVector3DoubleData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btVector3DoubleData, normally you should not need this constructor it's intended for low-level usage. */
+	public btVector3DoubleData (long cPtr, boolean cMemoryOwn) {
 		this("btVector3DoubleData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btVector3DoubleData obj) {
+
+	public static long getCPtr (btVector3DoubleData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,16 +52,16 @@ public class btVector3DoubleData extends BulletBase {
 		super.delete();
 	}
 
-  public void setFloats(double[] value) {
-    LinearMathJNI.btVector3DoubleData_floats_set(swigCPtr, this, value);
-  }
+	public void setFloats (double[] value) {
+		LinearMathJNI.btVector3DoubleData_floats_set(swigCPtr, this, value);
+	}
 
-  public double[] getFloats() {
-    return LinearMathJNI.btVector3DoubleData_floats_get(swigCPtr, this);
-  }
+	public double[] getFloats () {
+		return LinearMathJNI.btVector3DoubleData_floats_get(swigCPtr, this);
+	}
 
-  public btVector3DoubleData() {
-    this(LinearMathJNI.new_btVector3DoubleData(), true);
-  }
+	public btVector3DoubleData () {
+		this(LinearMathJNI.new_btVector3DoubleData(), true);
+	}
 
 }

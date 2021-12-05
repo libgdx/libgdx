@@ -9,7 +9,6 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class btMultiBodyLinkFlags {
-  public final static int BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION = 1;
-  public final static int BT_MULTIBODYLINKFLAGS_DISABLE_ALL_PARENT_COLLISION = 2;
+	public final static int BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION = 1;
+	public final static int BT_MULTIBODYLINKFLAGS_DISABLE_ALL_PARENT_COLLISION = 2;
 }
-

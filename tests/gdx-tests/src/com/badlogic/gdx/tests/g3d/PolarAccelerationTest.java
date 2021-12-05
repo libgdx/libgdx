@@ -127,8 +127,9 @@ public class PolarAccelerationTest extends BaseG3dTest {
 		polarAcceleration.isGlobal = false;
 		dynamicsInfluencer.velocities.add(polarAcceleration);
 
-		ParticleController ret = new ParticleController("Billboard Controller", emitter, new BillboardRenderer(
-			billboardParticleBatch), new RegionInfluencer.Single(particleTexture), spawnSource, dynamicsInfluencer);
+		ParticleController ret = new ParticleController("Billboard Controller", emitter,
+			new BillboardRenderer(billboardParticleBatch), new RegionInfluencer.Single(particleTexture), spawnSource,
+			dynamicsInfluencer);
 
 		return ret;
 	}

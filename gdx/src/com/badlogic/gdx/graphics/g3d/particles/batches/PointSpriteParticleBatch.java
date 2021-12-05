@@ -48,10 +48,11 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	private static boolean pointSpritesEnabled = false;
 	protected static final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
-	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3,
-		ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-		new VertexAttribute(Usage.TextureCoordinates, 4, "a_region"), new VertexAttribute(sizeAndRotationUsage, 3,
-			"a_sizeAndRotation"));
+	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(
+		new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+		new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		new VertexAttribute(Usage.TextureCoordinates, 4, "a_region"),
+		new VertexAttribute(sizeAndRotationUsage, 3, "a_sizeAndRotation"));
 	protected static final int CPU_VERTEX_SIZE = (short)(CPU_ATTRIBUTES.vertexSize / 4),
 		CPU_POSITION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Position).offset / 4),
 		CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
@@ -78,7 +79,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	public PointSpriteParticleBatch (int capacity) {
 		this(capacity, new ParticleShader.Config(ParticleType.Point));
 	}
-	
+
 	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig) {
 		this(capacity, shaderConfig, null, null);
 	}

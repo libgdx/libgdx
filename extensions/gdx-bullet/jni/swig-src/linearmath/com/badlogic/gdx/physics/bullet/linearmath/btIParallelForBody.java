@@ -9,44 +9,39 @@
 package com.badlogic.gdx.physics.bullet.linearmath;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btIParallelForBody extends BulletBase {
 	private long swigCPtr;
-	
-	protected btIParallelForBody(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btIParallelForBody (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btIParallelForBody, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btIParallelForBody(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btIParallelForBody, normally you should not need this constructor it's intended for low-level usage. */
+	public btIParallelForBody (long cPtr, boolean cMemoryOwn) {
 		this("btIParallelForBody", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btIParallelForBody obj) {
+
+	public static long getCPtr (btIParallelForBody obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -57,8 +52,8 @@ public class btIParallelForBody extends BulletBase {
 		super.delete();
 	}
 
-  public void forLoop(int iBegin, int iEnd) {
-    LinearMathJNI.btIParallelForBody_forLoop(swigCPtr, this, iBegin, iEnd);
-  }
+	public void forLoop (int iBegin, int iEnd) {
+		LinearMathJNI.btIParallelForBody_forLoop(swigCPtr, this, iBegin, iEnd);
+	}
 
 }

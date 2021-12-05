@@ -28,7 +28,8 @@ package java.nio;
  * <li>The byte buffer's position and limit are NOT linked with the adapter. The adapter extends Buffer, thus has its own position
  * and limit.</li>
  * </ul>
- * </p> */
+ * </p>
+ */
 final class CharToByteBufferAdapter extends CharBuffer { // implements DirectBuffer {
 
 	static CharBuffer wrap (ByteBuffer byteBuffer) {

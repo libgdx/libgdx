@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -27,20 +28,19 @@ import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.NumericValue;
 
-
 /** @author Inferno */
 class NumericPanel extends ParticleValuePanel<NumericValue> {
 	JSpinner valueSpinner;
-	
-	public NumericPanel ( FlameMain editor, NumericValue value, String name, String description) {
+
+	public NumericPanel (FlameMain editor, NumericValue value, String name, String description) {
 		super(editor, name, description);
 		setValue(value);
 	}
-	
+
 	@Override
 	public void setValue (NumericValue value) {
 		super.setValue(value);
-		if(value == null)return;
+		if (value == null) return;
 		setValue(valueSpinner, value.getValue());
 	}
 
@@ -54,8 +54,8 @@ class NumericPanel extends ParticleValuePanel<NumericValue> {
 		}
 		{
 			valueSpinner = new JSpinner(new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(0.1f)));
-			contentPanel.add(valueSpinner, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.WEST,
-				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+			contentPanel.add(valueSpinner, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		valueSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {

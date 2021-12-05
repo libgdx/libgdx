@@ -8,46 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexShape extends btCollisionShape {
 	private long swigCPtr;
-	
-	protected btConvexShape(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvexShape (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConvexShape_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btConvexShape, normally you should not need this constructor it's intended for low-level usage. */
-	public btConvexShape(long cPtr, boolean cMemoryOwn) {
+	public btConvexShape (long cPtr, boolean cMemoryOwn) {
 		this("btConvexShape", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConvexShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvexShape obj) {
+
+	public static long getCPtr (btConvexShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,80 +54,84 @@ public class btConvexShape extends btCollisionShape {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConvexShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConvexShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConvexShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConvexShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConvexShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConvexShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConvexShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConvexShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConvexShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConvexShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConvexShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConvexShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConvexShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConvexShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConvexShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConvexShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public Vector3 localGetSupportingVertex(Vector3 vec) {
-	return CollisionJNI.btConvexShape_localGetSupportingVertex(swigCPtr, this, vec);
-}
+	public Vector3 localGetSupportingVertex (Vector3 vec) {
+		return CollisionJNI.btConvexShape_localGetSupportingVertex(swigCPtr, this, vec);
+	}
 
-  public Vector3 localGetSupportingVertexWithoutMargin(Vector3 vec) {
-	return CollisionJNI.btConvexShape_localGetSupportingVertexWithoutMargin(swigCPtr, this, vec);
-}
+	public Vector3 localGetSupportingVertexWithoutMargin (Vector3 vec) {
+		return CollisionJNI.btConvexShape_localGetSupportingVertexWithoutMargin(swigCPtr, this, vec);
+	}
 
-  public Vector3 localGetSupportVertexWithoutMarginNonVirtual(Vector3 vec) {
-	return CollisionJNI.btConvexShape_localGetSupportVertexWithoutMarginNonVirtual(swigCPtr, this, vec);
-}
+	public Vector3 localGetSupportVertexWithoutMarginNonVirtual (Vector3 vec) {
+		return CollisionJNI.btConvexShape_localGetSupportVertexWithoutMarginNonVirtual(swigCPtr, this, vec);
+	}
 
-  public Vector3 localGetSupportVertexNonVirtual(Vector3 vec) {
-	return CollisionJNI.btConvexShape_localGetSupportVertexNonVirtual(swigCPtr, this, vec);
-}
+	public Vector3 localGetSupportVertexNonVirtual (Vector3 vec) {
+		return CollisionJNI.btConvexShape_localGetSupportVertexNonVirtual(swigCPtr, this, vec);
+	}
 
-  public float getMarginNonVirtual() {
-    return CollisionJNI.btConvexShape_getMarginNonVirtual(swigCPtr, this);
-  }
+	public float getMarginNonVirtual () {
+		return CollisionJNI.btConvexShape_getMarginNonVirtual(swigCPtr, this);
+	}
 
-  public void getAabbNonVirtual(Matrix4 t, Vector3 aabbMin, Vector3 aabbMax) {
-    CollisionJNI.btConvexShape_getAabbNonVirtual(swigCPtr, this, t, aabbMin, aabbMax);
-  }
+	public void getAabbNonVirtual (Matrix4 t, Vector3 aabbMin, Vector3 aabbMax) {
+		CollisionJNI.btConvexShape_getAabbNonVirtual(swigCPtr, this, t, aabbMin, aabbMax);
+	}
 
-  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin, Vector3 witnesPtMax) {
-    CollisionJNI.btConvexShape_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj), SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
-  }
+	public void project (Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin,
+		Vector3 witnesPtMax) {
+		CollisionJNI.btConvexShape_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj),
+			SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
+	}
 
-  public void batchedUnitVectorGetSupportingVertexWithoutMargin(btVector3 vectors, btVector3 supportVerticesOut, int numVectors) {
-    CollisionJNI.btConvexShape_batchedUnitVectorGetSupportingVertexWithoutMargin(swigCPtr, this, btVector3.getCPtr(vectors), vectors, btVector3.getCPtr(supportVerticesOut), supportVerticesOut, numVectors);
-  }
+	public void batchedUnitVectorGetSupportingVertexWithoutMargin (btVector3 vectors, btVector3 supportVerticesOut,
+		int numVectors) {
+		CollisionJNI.btConvexShape_batchedUnitVectorGetSupportingVertexWithoutMargin(swigCPtr, this, btVector3.getCPtr(vectors),
+			vectors, btVector3.getCPtr(supportVerticesOut), supportVerticesOut, numVectors);
+	}
 
-  public void getAabbSlow(Matrix4 t, Vector3 aabbMin, Vector3 aabbMax) {
-    CollisionJNI.btConvexShape_getAabbSlow(swigCPtr, this, t, aabbMin, aabbMax);
-  }
+	public void getAabbSlow (Matrix4 t, Vector3 aabbMin, Vector3 aabbMax) {
+		CollisionJNI.btConvexShape_getAabbSlow(swigCPtr, this, t, aabbMin, aabbMax);
+	}
 
-  public int getNumPreferredPenetrationDirections() {
-    return CollisionJNI.btConvexShape_getNumPreferredPenetrationDirections(swigCPtr, this);
-  }
+	public int getNumPreferredPenetrationDirections () {
+		return CollisionJNI.btConvexShape_getNumPreferredPenetrationDirections(swigCPtr, this);
+	}
 
-  public void getPreferredPenetrationDirection(int index, Vector3 penetrationVector) {
-    CollisionJNI.btConvexShape_getPreferredPenetrationDirection(swigCPtr, this, index, penetrationVector);
-  }
+	public void getPreferredPenetrationDirection (int index, Vector3 penetrationVector) {
+		CollisionJNI.btConvexShape_getPreferredPenetrationDirection(swigCPtr, this, index, penetrationVector);
+	}
 
 }

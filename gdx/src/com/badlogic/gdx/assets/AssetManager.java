@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.assets;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;

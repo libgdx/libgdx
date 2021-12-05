@@ -28,10 +28,12 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 /** Shows how to use fonts for languages other than english. Note that only alphabets with a humble amount of glyphs can be used
  * (100 is about the maximum we'd recommend). All western languages fit into that category, some asian languages might work as
  * well, e.g. Korean. Any right-to-left languages like arabic won't work, neither do languages like Japanese or Chinese due to
- * their huge amount of glyphs which don't fit into a single texture.</p>
+ * their huge amount of glyphs which don't fit into a single texture.
+ * </p>
  * 
  * Note that you don't have to use the FreeType extension for this, you can generate fonts with Hiero as well. The FreeType
- * extension allows you to generate fonts at runtime for different screen densities. It is not portable to GWT!</p>
+ * extension allows you to generate fonts at runtime for different screen densities. It is not portable to GWT!
+ * </p>
  * 
  * For each script examplified below we only use a few characters from the respective alphabet. You'll have to pass in a string
  * containing all the printable characters of that language that you want to use!

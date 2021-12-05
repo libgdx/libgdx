@@ -45,8 +45,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
 	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T cubic_derivative (final T out, final float t, final T[] points,
-		final boolean continuous, final T tmp) {
+	public static <T extends Vector<T>> T cubic_derivative (final T out, final float t, final T[] points, final boolean continuous,
+		final T tmp) {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;

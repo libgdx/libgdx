@@ -38,7 +38,7 @@ public class DefaultAndroidFiles implements AndroidFiles {
 	protected final AssetManager assets;
 	private ZipResourceFile expansionFile = null;
 
-	public DefaultAndroidFiles(AssetManager assets, ContextWrapper contextWrapper, boolean useExternalFiles) {
+	public DefaultAndroidFiles (AssetManager assets, ContextWrapper contextWrapper, boolean useExternalFiles) {
 		this.assets = assets;
 
 		String localPath = contextWrapper.getFilesDir().getAbsolutePath();
@@ -50,7 +50,7 @@ public class DefaultAndroidFiles implements AndroidFiles {
 		}
 	}
 
-	protected String initExternalFilesPath(ContextWrapper contextWrapper) {
+	protected String initExternalFilesPath (ContextWrapper contextWrapper) {
 		File externalFilesDir = contextWrapper.getExternalFilesDir(null);
 		if (externalFilesDir != null) {
 			String externalFilesPath = externalFilesDir.getAbsolutePath();
@@ -129,27 +129,26 @@ public class DefaultAndroidFiles implements AndroidFiles {
 	}
 
 	@Override
-	public boolean setAPKExpansion(int mainVersion, int patchVersion) {
+	public boolean setAPKExpansion (int mainVersion, int patchVersion) {
 		try {
 			Context context;
 			if (Gdx.app instanceof Activity) {
-				context = ((Activity) Gdx.app).getBaseContext();
+				context = ((Activity)Gdx.app).getBaseContext();
 			} else if (Gdx.app instanceof Fragment) {
-				context = ((Fragment) Gdx.app).getActivity().getBaseContext();
+				context = ((Fragment)Gdx.app).getActivity().getBaseContext();
 			} else {
 				throw new GdxRuntimeException("APK expansion not supported for application type");
 			}
-			expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
-					context,
-					mainVersion, patchVersion);
+			expansionFile = APKExpansionSupport.getAPKExpansionZipFile(context, mainVersion, patchVersion);
 		} catch (IOException ex) {
-			throw new GdxRuntimeException("APK expansion main version " + mainVersion + " or patch version " + patchVersion + " couldn't be opened!");
+			throw new GdxRuntimeException(
+				"APK expansion main version " + mainVersion + " or patch version " + patchVersion + " couldn't be opened!");
 		}
 		return expansionFile != null;
 	}
 
 	@Override
-	public ZipResourceFile getExpansionFile() {
+	public ZipResourceFile getExpansionFile () {
 		return expansionFile;
 	}
 }

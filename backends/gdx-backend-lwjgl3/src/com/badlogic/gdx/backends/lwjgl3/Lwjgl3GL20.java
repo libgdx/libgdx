@@ -48,19 +48,19 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		((Buffer) floatBuffer).clear();
-		((Buffer) floatBuffer).limit(count);
-		floatBuffer.put(v,  offset, count);
-		((Buffer) floatBuffer).position(0);
+		((Buffer)floatBuffer).clear();
+		((Buffer)floatBuffer).limit(count);
+		floatBuffer.put(v, offset, count);
+		((Buffer)floatBuffer).position(0);
 		return floatBuffer;
 	}
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		((Buffer) intBuffer).clear();
-		((Buffer) intBuffer).limit(count);
+		((Buffer)intBuffer).clear();
+		((Buffer)intBuffer).limit(count);
 		intBuffer.put(v, offset, count);
-		((Buffer) intBuffer).position(0);
+		((Buffer)intBuffer).position(0);
 		return intBuffer;
 	}
 
@@ -807,21 +807,17 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 			else if (type == GL_FLOAT)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
 			else
-				throw new GdxRuntimeException(
-					"Can't use "
-						+ buffer.getClass().getName()
-						+ " with type "
-						+ type
-						+ " with this method. Use ByteBuffer and one of GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT or GL_FLOAT for type. Blame LWJGL");
+				throw new GdxRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
+					+ " with this method. Use ByteBuffer and one of GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT or GL_FLOAT for type. Blame LWJGL");
 		} else if (buffer instanceof FloatBuffer) {
 			if (type == GL_FLOAT)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (FloatBuffer)buffer);
 			else
-				throw new GdxRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
-					+ " with this method.");
+				throw new GdxRuntimeException(
+					"Can't use " + buffer.getClass().getName() + " with type " + type + " with this method.");
 		} else
-			throw new GdxRuntimeException("Can't use " + buffer.getClass().getName()
-				+ " with this method. Use ByteBuffer instead. Blame LWJGL");
+			throw new GdxRuntimeException(
+				"Can't use " + buffer.getClass().getName() + " with this method. Use ByteBuffer instead. Blame LWJGL");
 	}
 
 	public void glViewport (int x, int y, int width, int height) {
