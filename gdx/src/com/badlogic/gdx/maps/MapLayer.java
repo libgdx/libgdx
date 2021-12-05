@@ -104,6 +104,10 @@ public class MapLayer {
 		this.parallaxY = parallaxY;
 	}
 
+	public boolean hasParallaxScrolling() {
+		return parallaxX != 1f || parallaxY != 1f;
+	}
+
 	/** set the renderOffsetDirty state to true, when this layer or any parents' offset has changed **/
 	public void invalidateRenderOffset () {
 		renderOffsetDirty = true;
