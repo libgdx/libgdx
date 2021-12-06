@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 dependencies {
-	compile gdxnatives.desktop
+	api gdxnatives.desktop
 }
 
 

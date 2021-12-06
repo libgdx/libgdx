@@ -23,7 +23,7 @@ application {
 }
 
 jar {
-	archiveName = 'gdx-setup.jar'
+	archiveFileName = 'gdx-setup.jar'
 	manifest {
 		attributes 'Main-Class': project.mainClassName
 	}
