@@ -74,9 +74,9 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		final float layerOffsetX = layer.getRenderOffsetX(viewBounds.x, unitScale);
 		// offset in tiled is y down, so we flip it
-		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+		final float layerOffsetY = -layer.getRenderOffsetY(viewBounds.y, unitScale);
 
 		final int col1 = Math.max(0, (int)((viewBounds.x - layerOffsetX) / layerTileWidth));
 		final int col2 = Math.min(layerWidth,

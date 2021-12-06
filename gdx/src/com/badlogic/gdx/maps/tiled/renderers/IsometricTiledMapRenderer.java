@@ -89,9 +89,9 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		float tileWidth = layer.getTileWidth() * unitScale;
 		float tileHeight = layer.getTileHeight() * unitScale;
 
-		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		final float layerOffsetX = layer.getRenderOffsetX(viewBounds.x, unitScale);
 		// offset in tiled is y down, so we flip it
-		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+		final float layerOffsetY = -layer.getRenderOffsetY(viewBounds.y, unitScale);
 
 		float halfTileWidth = tileWidth * 0.5f;
 		float halfTileHeight = tileHeight * 0.5f;

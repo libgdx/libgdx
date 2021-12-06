@@ -162,30 +162,12 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				renderMapLayer(childLayer);
 			}
 		} else {
-			if (layer.hasParallaxScrolling()) {
-				// parallax factor defined in Tiled -> render layer with specific offset
-				final float parOffsetX = layer.getParallaxX() != 1f ? viewBounds.x * layer.getParallaxX() : 0f;
-				final float parOffsetY = layer.getParallaxY() != 1f ? viewBounds.y * layer.getParallaxY() : 0f;
-
-				batch.getTransformMatrix().getTranslation(TMP_VEC3);
-				batch.end();
-				batch.getTransformMatrix().translate(parOffsetX, parOffsetY, 0f);
-				batch.begin();
-			}
-
 			if (layer instanceof TiledMapTileLayer) {
 				renderTileLayer((TiledMapTileLayer)layer);
 			} else if (layer instanceof TiledMapImageLayer) {
 				renderImageLayer((TiledMapImageLayer)layer);
 			} else {
 				renderObjects(layer);
-			}
-
-			if (layer.hasParallaxScrolling()) {
-				// parallax translation specified -> reset to original values
-				batch.end();
-				batch.getTransformMatrix().setTranslation(TMP_VEC3);
-				batch.begin();
 			}
 		}
 	}
