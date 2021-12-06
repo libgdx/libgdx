@@ -25,10 +25,6 @@ apply from: "obb.gradle"
 
 dependencies {
 	implementation project(":tests:gdx-tests")
-	implementation project(":gdx")
-	implementation project(":extensions:gdx-box2d-parent:gdx-box2d")
-	implementation project(":extensions:gdx-bullet")
-	implementation project(":extensions:gdx-freetype")
 	implementation project(":backends:gdx-backend-android")
 	implementation libraries.android
 	implementation "androidx.multidex:multidex:${versions.multiDex}"

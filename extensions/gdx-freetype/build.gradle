@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 dependencies {
-	compile project(":gdx")
+	api project(":gdx")
 }
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"

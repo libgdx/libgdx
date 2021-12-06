@@ -62,7 +62,7 @@ allprojects {
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
-    apply plugin: "java"
+    apply plugin: "java-library"
     apply plugin: "com.diffplug.spotless"
 
     compileJava {
