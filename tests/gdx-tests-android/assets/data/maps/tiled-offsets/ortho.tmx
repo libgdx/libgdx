@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="1">
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
- <group id="4" name="Parallax" parallaxx="1.25">
-  <group id="8" name="Y" parallaxy="1.1">
-   <layer id="6" name="parallaxY" width="15" height="10" parallaxx="0.75" parallaxy="1.1">
+ <group id="4" name="Parallax">
+  <group id="8" name="Y">
+   <layer id="6" name="parallaxY" width="15" height="10" parallaxx="0.75" parallaxy="1.2">
     <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -18,7 +18,7 @@
 </data>
    </layer>
   </group>
-  <layer id="5" name="parallaxX" width="15" height="10">
+  <layer id="5" name="parallaxX" width="15" height="10" parallaxx="1.25">
    <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
