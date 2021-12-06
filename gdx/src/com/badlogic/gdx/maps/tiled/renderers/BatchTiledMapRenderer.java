@@ -53,12 +53,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposable {
 	static protected final int NUM_VERTICES = 20;
-	private static final Vector3 TMP_VEC3 = new Vector3();
 
 	protected TiledMap map;
 
