@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,33 +76,37 @@ public class MapLayer {
 		invalidateRenderOffset();
 	}
 
-	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor */
-	public float getRenderOffsetX(float viewX, float unitScale) {
-		if (renderOffsetDirty) calculateRenderOffsets();
-		return renderOffsetX * unitScale + viewX * (parallaxX - 1);
-	}
+	 /**
+	  * @return the layer's x render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor
+	  */
+	 public float getRenderOffsetX (float viewX, float unitScale) {
+		  if (renderOffsetDirty) calculateRenderOffsets();
+		  return renderOffsetX * unitScale + viewX * (parallaxX - 1);
+	 }
 
-	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor */
-	public float getRenderOffsetY(float viewY, float unitScale) {
-		if (renderOffsetDirty) calculateRenderOffsets();
-		return renderOffsetY * unitScale + viewY * (parallaxY - 1);
-	}
+	 /**
+	  * @return the layer's y render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor
+	  */
+	 public float getRenderOffsetY (float viewY, float unitScale) {
+		  if (renderOffsetDirty) calculateRenderOffsets();
+		  return renderOffsetY * unitScale + viewY * (parallaxY - 1);
+	 }
 
-	public float getParallaxX() {
-		return parallaxX;
-	}
+	 public float getParallaxX () {
+		  return parallaxX;
+	 }
 
-	public void setParallaxX(float parallaxX) {
-		this.parallaxX = parallaxX;
-	}
+	 public void setParallaxX (float parallaxX) {
+		  this.parallaxX = parallaxX;
+	 }
 
-	public float getParallaxY() {
-		return parallaxY;
-	}
+	 public float getParallaxY () {
+		  return parallaxY;
+	 }
 
-	public void setParallaxY(float parallaxY) {
-		this.parallaxY = parallaxY;
-	}
+	 public void setParallaxY (float parallaxY) {
+		  this.parallaxY = parallaxY;
+	 }
 
 	/** set the renderOffsetDirty state to true, when this layer or any parents' offset has changed **/
 	public void invalidateRenderOffset () {
