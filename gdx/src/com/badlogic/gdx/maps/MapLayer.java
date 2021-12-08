@@ -122,11 +122,6 @@ public class MapLayer {
 	public void setParent (MapLayer parent) {
 		if (parent == this) throw new GdxRuntimeException("Can't set self as the parent");
 		this.parent = parent;
-
-		// in Tiled the final parallax scrolling factor of a layer is multiplied
-		// by the value of each parent layer
-		parallaxX *= parent.getParallaxX();
-		parallaxY *= parent.getParallaxY();
 	}
 
 	/** @return collection of objects contained in the layer */
