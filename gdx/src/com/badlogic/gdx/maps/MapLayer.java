@@ -76,37 +76,35 @@ public class MapLayer {
 		invalidateRenderOffset();
 	}
 
-	 /**
-	  * @return the layer's x render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor
-	  */
-	 public float getRenderOffsetX (float viewX, float unitScale) {
-		  if (renderOffsetDirty) calculateRenderOffsets();
-		  return renderOffsetX * unitScale + viewX * (parallaxX - 1);
-	 }
+	/** @return layer's parallax scrolling factor for x-axis */
+	public float getParallaxX () {
+	  return parallaxX;
+	}
 
-	 /**
-	  * @return the layer's y render offset, this takes into consideration all parent layers' offsets and its parallax scrolling factor
-	  */
-	 public float getRenderOffsetY (float viewY, float unitScale) {
-		  if (renderOffsetDirty) calculateRenderOffsets();
-		  return renderOffsetY * unitScale + viewY * (parallaxY - 1);
-	 }
+	public void setParallaxX (float parallaxX) {
+	  this.parallaxX = parallaxX;
+	}
 
-	 public float getParallaxX () {
-		  return parallaxX;
-	 }
+	/** @return layer's parallax scrolling factor for y-axis */
+	public float getParallaxY () {
+	  return parallaxY;
+	}
 
-	 public void setParallaxX (float parallaxX) {
-		  this.parallaxX = parallaxX;
-	 }
+	public void setParallaxY (float parallaxY) {
+	  this.parallaxY = parallaxY;
+	}
 
-	 public float getParallaxY () {
-		  return parallaxY;
-	 }
+	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets */
+	public float getRenderOffsetX () {
+	  if (renderOffsetDirty) calculateRenderOffsets();
+	  return renderOffsetX;
+	}
 
-	 public void setParallaxY (float parallaxY) {
-		  this.parallaxY = parallaxY;
-	 }
+	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets */
+	public float getRenderOffsetY () {
+	  if (renderOffsetDirty) calculateRenderOffsets();
+	  return renderOffsetY;
+	}
 
 	/** set the renderOffsetDirty state to true, when this layer or any parents' offset has changed **/
 	public void invalidateRenderOffset () {
@@ -148,8 +146,8 @@ public class MapLayer {
 		if (parent != null) {
 			parent.calculateRenderOffsets();
 			// get parent's render offset without parallax scrolling offset and without scaling
-			renderOffsetX = parent.getRenderOffsetX(0f, 1f) + offsetX;
-			renderOffsetY = parent.getRenderOffsetY(0f, 1f) + offsetY;
+			renderOffsetX = parent.getRenderOffsetX() + offsetX;
+			renderOffsetY = parent.getRenderOffsetY() + offsetY;
 		} else {
 			renderOffsetX = offsetX;
 			renderOffsetY = offsetY;
