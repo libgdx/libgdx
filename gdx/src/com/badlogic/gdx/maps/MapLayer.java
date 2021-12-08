@@ -142,16 +142,15 @@ public class MapLayer {
 		return properties;
 	}
 
-	protected void calculateRenderOffsets() {
-		if (parent != null) {
+	protected void calculateRenderOffsets () {
+	  if (parent != null) {
 			parent.calculateRenderOffsets();
-			// get parent's render offset without parallax scrolling offset and without scaling
 			renderOffsetX = parent.getRenderOffsetX() + offsetX;
 			renderOffsetY = parent.getRenderOffsetY() + offsetY;
-		} else {
+	  } else {
 			renderOffsetX = offsetX;
 			renderOffsetY = offsetY;
-		}
-		renderOffsetDirty = false;
+	  }
+	  renderOffsetDirty = false;
 	}
 }
