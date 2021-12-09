@@ -37,6 +37,7 @@ public class CommandLineOptions {
 		GdxTestConfig config = clazz.getAnnotation(GdxTestConfig.class);
 		if (config != null) {
 			if (config.requireGL30() && !gl30) return false;
+			if (config.OnlyGL20() && gl30) return false;
 		}
 		return true;
 	}
