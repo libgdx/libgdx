@@ -73,7 +73,7 @@ public class VertexArrayTest extends GdxTest {
 	@Override
 	public void render () {
 		boolean log = false;
-		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+		if (Gdx.input.justTouched()) {
 			testCase = (testCase + 1) % testCases.length;
 			log = true;
 		}
