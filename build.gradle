@@ -28,9 +28,33 @@ buildscript {
     }
 }
 
+ext {
+    isReleaseBuild = {
+        return project.hasProperty("RELEASE")
+    }
+
+    getReleaseRepositoryUrl = {
+        return project.hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+                : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    }
+
+    getSnapshotRepositoryUrl = {
+        return project.hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+                : "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    getRepositoryUsername = {
+        return project.hasProperty('MAVEN_USERNAME') ? MAVEN_USERNAME : ""
+    }
+
+    getRepositoryPassword = {
+        return project.hasProperty('MAVEN_PASSWORD') ? MAVEN_PASSWORD : ""
+    }
+}
+
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.10.0-SNAPSHOT'
+    version = project.getProperty('version') + (isReleaseBuild() ? "" : "-SNAPSHOT")
 
     buildscript {
         repositories {
@@ -68,6 +92,15 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     compileJava {
         options.fork = true
         options.incremental = true
+    }
+    
+    java {
+        /*withJavadocJar()*/
+        withSourcesJar()
+    }
+    
+    javadoc {
+        options.addStringOption('Xdoclint:none', '-quiet')
     }
 
     spotless {
@@ -134,3 +167,4 @@ task fetchNatives(dependsOn: "ant-task-all"){
     }
 }
 
+apply from: rootProject.file('publish.gradle')
