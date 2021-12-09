@@ -621,10 +621,8 @@ public class Mesh implements Disposable {
 				int oldPosition = buffer.position();
 				int oldLimit = buffer.limit();
 				((Buffer)buffer).position(offset);
-				((Buffer)buffer).limit(offset + count);
 				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
 				((Buffer)buffer).position(oldPosition);
-				((Buffer)buffer).limit(oldLimit);
 			} else {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 			}
