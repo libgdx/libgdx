@@ -37,6 +37,7 @@
 - [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
 - [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
 - [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- [BREAKING CHANGE] Pool no longer reset freed objects when pool size is above its retention limit. Pool will discard objects instead. If you want to keep the old behavior, you should override Pool#discard method to reset discarded objects.
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30
