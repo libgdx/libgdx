@@ -83,6 +83,12 @@ allprojects {
     tasks.withType(Test) {
         systemProperty 'file.encoding', 'UTF-8'
     }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none,-missing', '-quiet')
+        }
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -97,10 +103,6 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     java {
         /*withJavadocJar()*/
         withSourcesJar()
-    }
-    
-    javadoc {
-        options.addStringOption('Xdoclint:none', '-quiet')
     }
 
     spotless {
