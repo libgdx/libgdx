@@ -159,12 +159,17 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName
+task fetchNativesZip() {
+	doLast {
+		def zip = file("build/natives.zip");
+		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> zip.withOutputStream{ it << i }}
+	}
+	outputs.file(file("build/natives.zip"))
 }
-task fetchNatives(dependsOn: "ant-task-all"){
-    doLast {
-    }
+
+task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
+    from zipTree("build/natives.zip")
+    into "."
 }
 
 apply from: rootProject.file('publish.gradle')
