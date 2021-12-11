@@ -83,7 +83,7 @@ public class GwtTest extends GdxTest {
 		sprite.setSize(64, 64);
 		sprite.setOrigin(32, 32);
 
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		cache = font.newFontCache();
 		cache.setColor(Color.RED);
 		cache.setText("This is a Test", 0, 0);

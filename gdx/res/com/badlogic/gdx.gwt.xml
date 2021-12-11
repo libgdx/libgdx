@@ -519,6 +519,6 @@
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl" />
-	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.fnt" />
-	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.png" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/lsans-15.fnt" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/lsans-15.png" />
 </module>

@@ -44,8 +44,8 @@
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl"/>
-			<include name="com/badlogic/gdx/utils/arial-15.png"/>
-			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
+			<include name="com/badlogic/gdx/utils/lsans-15.png"/>
+			<include name="com/badlogic/gdx/utils/lsans-15.fnt"/>
 		</fileset>
 		<ant antfile="../build-template.xml" dir="gdx">
 			<property name="javacTarget" value="${javacTarget}"/>
@@ -239,8 +239,8 @@
 			<fileset dir="gdx/src" defaultexcludes="yes">
 				<include name="com/badlogic/gdx/**" />
 				<exclude name="com/badlogic/gdx/**/*.glsl"/>
-				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
-				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
+				<exclude name="com/badlogic/gdx/utils/lsans-15.fnt" />
+				<exclude name="com/badlogic/gdx/utils/lsans-15.png" />
 				<exclude name="com/badlogic/gdx/utils/XmlReader.rl" />
 				<exclude name="com/badlogic/gdx/utils/JsonReader.rl" />
 			</fileset>
