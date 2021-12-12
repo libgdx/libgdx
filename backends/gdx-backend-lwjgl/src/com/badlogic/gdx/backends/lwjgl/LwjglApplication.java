@@ -323,6 +323,11 @@ public class LwjglApplication implements LwjglApplicationBase {
 		return 0;
 	}
 
+	@Override
+	public boolean isMobile () {
+		return false;
+	}
+
 	public void stop () {
 		running = false;
 		try {

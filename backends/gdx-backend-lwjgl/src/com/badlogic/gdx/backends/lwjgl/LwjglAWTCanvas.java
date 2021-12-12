@@ -222,6 +222,11 @@ public class LwjglAWTCanvas implements Application {
 		return 0;
 	}
 
+	@Override
+	public boolean isMobile () {
+		return false;
+	}
+
 	void setGlobals () {
 		Gdx.app = this;
 		if (audio != null) Gdx.audio = audio;

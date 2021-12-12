@@ -162,8 +162,11 @@ public interface Application {
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 
-	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
+	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop */
 	public int getVersion ();
+
+	/** @return {@code true} if the device is a mobile, primarily touchscreen-driven device */
+	public boolean isMobile ();
 
 	/** @return the Java heap memory use in bytes */
 	public long getJavaHeap ();

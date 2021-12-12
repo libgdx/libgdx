@@ -196,6 +196,11 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
+	public boolean isMobile () {
+		return false;
+	}
+
+	@Override
 	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}

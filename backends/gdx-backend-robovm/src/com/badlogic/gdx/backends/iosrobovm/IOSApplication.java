@@ -375,6 +375,11 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
+	public boolean isMobile () {
+		return true;
+	}
+
+	@Override
 	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}

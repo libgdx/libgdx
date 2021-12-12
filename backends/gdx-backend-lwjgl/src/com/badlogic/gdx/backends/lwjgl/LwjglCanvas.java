@@ -209,6 +209,11 @@ public class LwjglCanvas implements LwjglApplicationBase {
 		return 0;
 	}
 
+	@Override
+	public boolean isMobile () {
+		return false;
+	}
+
 	void create () {
 		try {
 			graphics.setupDisplay();

@@ -88,6 +88,18 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private Clipboard clipboard;
 	LoadingListener loadingListener;
 
+	private final static boolean mobileDevice;
+	static {
+		// RegEx pattern from detectmobilebrowsers.com (public domain)
+		String pattern = "(android|bb\\d+|meego).+mobile|avantgo|bada\\/|blackberry|blazer|compal|elaine|fennec"
+			+ "|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)"
+			+ "i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\\.(browser|link)"
+			+ "|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(Window.Navigator.getUserAgent().toLowerCase());
+		mobileDevice = m.matches();
+	}
+
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
@@ -440,6 +452,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
+	public boolean isMobile () {
+		return mobileDevice;
+	}
+
+	@Override
 	public long getJavaHeap () {
 		return 0;
 	}
@@ -485,16 +502,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return new DefaultGwtInput(canvas, config);
 	}
 
-	/** @return {@code true} if application runs on a mobile device */
+	/** @return {@code true} if application is running on a mobile device
+	 * @deprecated use {@link #isMobile ()} instead */
 	public static boolean isMobileDevice () {
-		// RegEx pattern from detectmobilebrowsers.com (public domain)
-		String pattern = "(android|bb\\d+|meego).+mobile|avantgo|bada\\/|blackberry|blazer|compal|elaine|fennec"
-			+ "|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)"
-			+ "i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\\.(browser|link)"
-			+ "|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk";
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(Window.Navigator.getUserAgent().toLowerCase());
-		return m.matches();
+		return mobileDevice;
 	}
 
 	/** Contains precomputed information on the user-agent. Useful for dealing with browser and OS behavioral differences. Kindly
