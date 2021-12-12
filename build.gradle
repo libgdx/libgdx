@@ -101,7 +101,7 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     }
     
     java {
-        /*withJavadocJar()*/
+        withJavadocJar()
         withSourcesJar()
     }
 
