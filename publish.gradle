@@ -32,7 +32,8 @@ configure([
                     }
                     pom {
                         name = POM_NAME
-                        description = POM_DESCRIPTION
+                        if(!POM_DESCRIPTION.isEmpty())
+                            description = POM_DESCRIPTION
                         url = POM_URL
                         licenses {
                             license {
@@ -71,7 +72,8 @@ configure([
 	
 	                    pom {
 	                        name = POM_NAME
-	                        description = POM_DESCRIPTION
+	                        if(!POM_DESCRIPTION.isEmpty())
+	                            description = POM_DESCRIPTION
 	                        url = POM_URL
 	                        licenses {
 	                            license {
