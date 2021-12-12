@@ -73,14 +73,21 @@ public class Lwjgl3Net implements Net {
 			} catch (Throwable t) {
 				return false;
 			}
-		} else {
+		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 			try {
 				Desktop.getDesktop().browse(new URI(uri));
 				return true;
 			} catch (Throwable t) {
 				return false;
 			}
+		} else if (SharedLibraryLoader.isLinux) {
+			try {
+				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
 		}
+		return false;
 	}
-
 }
