@@ -43,9 +43,8 @@ configure([
                         }
                         developers {
                             developer {
-                                id = "Tomski"
-                                name = "Tom Wojciechowski"
-                                email = "tomwojciechowski@asidik.com"
+                                id = "libGDX Developers"
+                                url = "https://github.com/libgdx/libgdx/graphs/contributors"
                             }
                         }
                         scm {
@@ -81,13 +80,12 @@ configure([
 	                                distribution = POM_LICENCE_DIST
 	                            }
 	                        }
-	                        developers {
-	                            developer {
-	                                id = "Tomski"
-	                                name = "Tom Wojciechowski"
-	                                email = "tomwojciechowski@asidik.com"
-	                            }
-	                        }
+                            developers {
+                                developer {
+                                    id = "libGDX Developers"
+                                    url = "https://github.com/libgdx/libgdx/graphs/contributors"
+                                }
+                            }
 	                        scm {
 	                            connection = POM_SCM_CONNECTION
 	                            developerConnection = POM_SCM_DEV_CONNECTION
