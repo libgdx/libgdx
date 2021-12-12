@@ -25,8 +25,8 @@ configurations.all {
 }
 
 javadoc {
-    exclude "com/badlogic/gdx/backends/gwt/emu/**"
-    options.addStringOption("sourcepath", "src/")
+	exclude "com/badlogic/gdx/backends/gwt/emu/**"
+	options.addStringOption("sourcepath", "src/")
 }
 
 sourceSets.main.java.exclude "**/System.java"
