@@ -71,7 +71,7 @@ configure([
 	                    	artifact jnigenJarNativesIOS { }
 	
 	                    pom {
-	                        name = POM_NAME
+	                        name = POM_NAME + " Native Libraries"
 	                        if(!POM_DESCRIPTION.isEmpty())
 	                            description = POM_DESCRIPTION
 	                        url = POM_URL
