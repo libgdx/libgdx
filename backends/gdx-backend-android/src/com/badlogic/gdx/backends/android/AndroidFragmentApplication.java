@@ -50,8 +50,11 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 
-	/* The device is mobile unless running under the Android Runtime for Chrome (e.g. on a Chromebook). Based on:
-	 * https://github.com/google/talkback/blob/f5d564f/utils/src/main/java/com/google/android/accessibility/utils/FeatureSupport.java#L49-L51 */
+	/*
+	 * The device is mobile unless running under the Android Runtime for Chrome (e.g. on a Chromebook). Based on:
+	 * https://github.com/google/talkback/blob/f5d564f/utils/src/main/java/com/google/android/accessibility/utils/FeatureSupport.
+	 * java#L49-L51
+	 */
 	private final boolean mobile = Build.DEVICE != null && !Build.DEVICE.matches(".+_cheets|cheets_.+");
 
 	protected Callbacks callbacks;

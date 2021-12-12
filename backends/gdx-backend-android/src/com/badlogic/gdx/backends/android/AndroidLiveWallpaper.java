@@ -54,8 +54,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected ApplicationLogger applicationLogger;
 	protected volatile Color[] wallpaperColors = null;
 
-	/* The device is mobile unless running under the Android Runtime for Chrome (e.g. on a Chromebook). Based on:
-	 * https://github.com/google/talkback/blob/f5d564f/utils/src/main/java/com/google/android/accessibility/utils/FeatureSupport.java#L49-L51 */
+	/*
+	 * The device is mobile unless running under the Android Runtime for Chrome (e.g. on a Chromebook). Based on:
+	 * https://github.com/google/talkback/blob/f5d564f/utils/src/main/java/com/google/android/accessibility/utils/FeatureSupport.
+	 * java#L49-L51
+	 */
 	private final boolean mobile = Build.DEVICE != null && !Build.DEVICE.matches(".+_cheets|cheets_.+");
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
