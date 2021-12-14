@@ -70,7 +70,7 @@ public class ParallaxTest extends GdxTest {
 		controller = new OrthoCamController(camera);
 		Gdx.input.setInputProcessor(controller);
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 	}
 
 	@Override

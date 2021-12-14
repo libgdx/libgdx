@@ -45,7 +45,7 @@ public class ShapeRendererTest extends GdxTest {
 		controller = new PerspectiveCamController(cam);
 		Gdx.input.setInputProcessor(controller);
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 	}
 
 	public void render () {

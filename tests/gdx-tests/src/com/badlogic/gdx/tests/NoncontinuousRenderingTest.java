@@ -64,7 +64,7 @@ public class NoncontinuousRenderingTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		skin.add("default", font = new BitmapFont(Gdx.files.internal("data/arial-32.fnt"), false));
+		skin.add("default", font = new BitmapFont(Gdx.files.internal("data/lsans-32.fnt"), false));
 
 		populateTable();
 

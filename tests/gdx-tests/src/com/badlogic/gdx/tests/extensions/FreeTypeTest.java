@@ -43,8 +43,8 @@ public class FreeTypeTest extends GdxTest {
 			cam.update();
 			batch.setProjectionMatrix(cam.combined);
 		}
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), flip);
-		FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), flip);
+		FileHandle fontFile = Gdx.files.internal("data/lsans.ttf");
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
 

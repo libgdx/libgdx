@@ -51,7 +51,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 
 	// Define font styles here...
 	static enum FontStyle {
-		Regular("data/arial.ttf"), Italic("data/arial-italic.ttf");
+		Regular("data/lsans.ttf"), Italic("data/lsans-italic.ttf");
 
 		public final String path;
 

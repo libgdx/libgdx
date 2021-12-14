@@ -186,8 +186,6 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		texture2 = new Texture(pixmap);
 		pixmap.dispose();
 
-// font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
-
 		for (int i = 0; i < sprites.length; i += 6) {
 			sprites[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
 			sprites[i + 1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));

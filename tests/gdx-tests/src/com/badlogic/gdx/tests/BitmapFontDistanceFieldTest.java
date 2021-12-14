@@ -68,7 +68,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		camera = new OrthographicCamera();
 		spriteBatch = new SpriteBatch();
 
-		descriptionFont = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), true);
+		descriptionFont = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), true);
 		descriptionFont.setColor(Color.RED);
 
 		regularTexture = new Texture(Gdx.files.internal("data/verdana39.png"), true);
