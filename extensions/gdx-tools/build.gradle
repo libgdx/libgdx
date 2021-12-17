@@ -85,7 +85,7 @@ task distTexturePacker (type: Jar) {
 }
 
 task buildRunnables (dependsOn: [
-	classes,
+	build,
 	dist2DParticles,
 	dist3DParticles,
 	distHiero,
