@@ -120,6 +120,7 @@ task addSource {
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
 	}
 }

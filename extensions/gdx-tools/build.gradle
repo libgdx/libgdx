@@ -35,7 +35,7 @@ ext {
 task dist2DParticles (type: Jar) {
 	from files(sourceSets.main.java.outputDir)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
 	archiveFileName = "runnable-2D-particles.jar"
@@ -48,7 +48,7 @@ task dist2DParticles (type: Jar) {
 task dist3DParticles (type: Jar) {
 	from files(sourceSets.main.java.outputDir)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
 	archiveFileName = "runnable-3D-particles.jar"
@@ -61,7 +61,7 @@ task dist3DParticles (type: Jar) {
 task distHiero (type: Jar) {
 	from files(sourceSets.main.java.outputDir)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
 	archiveFileName = "runnable-hiero.jar"
@@ -74,7 +74,7 @@ task distHiero (type: Jar) {
 task distTexturePacker (type: Jar) {
 	from files(sourceSets.main.java.outputDir)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
 	archiveFileName = "runnable-texturepacker.jar"
