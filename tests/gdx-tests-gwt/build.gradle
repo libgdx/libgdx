@@ -39,7 +39,7 @@ gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
 dependencies {
 	implementation project(":tests:gdx-tests")
-	implementation project(":backends:gdx-backends-gwt")
+	implementation project(":backends:gdx-backend-gwt")
 	implementation project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
 }
 
@@ -114,8 +114,8 @@ task addSource {
 	doLast {
 		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.resources.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.resources.srcDirs)
