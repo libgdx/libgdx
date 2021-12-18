@@ -41,6 +41,8 @@ versions.androidFragment = "1.2.3"
 versions.javaparser = "2.3.0"
 versions.spotless = "5.14.3"
 
+libraries.compileOnly = [:]
+
 libraries.lwjgl = [
         "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
         "org.lwjgl.lwjgl:lwjgl_util:${versions.lwjgl}",
@@ -112,7 +114,10 @@ libraries.android = [
 ]
 
 libraries.gwt = [
-        "com.google.gwt:gwt-user:${versions.gwt}",
+        "com.google.gwt:gwt-user:${versions.gwt}"
+]
+
+libraries.compileOnly.gwt = [
         "com.google.gwt:gwt-dev:${versions.gwt}"
 ]
 

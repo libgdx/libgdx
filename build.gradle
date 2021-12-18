@@ -28,9 +28,33 @@ buildscript {
     }
 }
 
+ext {
+    isReleaseBuild = {
+        return project.hasProperty("RELEASE")
+    }
+
+    getReleaseRepositoryUrl = {
+        return project.hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+                : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    }
+
+    getSnapshotRepositoryUrl = {
+        return project.hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+                : "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    getRepositoryUsername = {
+        return project.hasProperty('MAVEN_USERNAME') ? MAVEN_USERNAME : ""
+    }
+
+    getRepositoryPassword = {
+        return project.hasProperty('MAVEN_PASSWORD') ? MAVEN_PASSWORD : ""
+    }
+}
+
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.10.0-SNAPSHOT'
+    version = project.getProperty('version') + (isReleaseBuild() ? "" : "-SNAPSHOT")
 
     buildscript {
         repositories {
@@ -59,6 +83,12 @@ allprojects {
     tasks.withType(Test) {
         systemProperty 'file.encoding', 'UTF-8'
     }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none,-missing', '-quiet')
+        }
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -68,6 +98,11 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
     compileJava {
         options.fork = true
         options.incremental = true
+    }
+    
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
     spotless {
@@ -126,11 +161,20 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName
-}
-task fetchNatives(dependsOn: "ant-task-all"){
-    doLast {
-    }
+task fetchNativesZip() {
+	doLast {
+		def zip = file("build/natives.zip");
+		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> zip.withOutputStream{ it << i }}
+	}
+	outputs.file(file("build/natives.zip"))
 }
 
+task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
+    from zipTree("build/natives.zip")
+    into "."
+}
+
+apply from: rootProject.file('publish.gradle')
+
+if(rootProject.file('override.gradle').exists())
+	apply from: rootProject.file('override.gradle')
