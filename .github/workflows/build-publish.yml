@@ -1,10 +1,12 @@
-name: Build Snapshot
+name: Build and Publish
 
 on:
   push:
     branches: [ master ]
   workflow_dispatch:
     branches: [ master ]
+  release:
+    types: [ published ]
 
 jobs:
 
@@ -334,12 +336,12 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
-  release-snapshot:
+  publish:
     runs-on: ubuntu-18.04
     needs: pack-natives
     env:
-      MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      ORG_GRADLE_PROJECT_MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -350,16 +352,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-          server-id: sonatype-nexus-snapshots
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
 
       - name: Download natives artifact
         uses: actions/download-artifact@v2
@@ -370,10 +362,21 @@ jobs:
         run: |
           unzip -o natives.zip
 
-      - name: Publish snapshot
-        if: env.MAVEN_USERNAME != null
+      - name: Snapshot build deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
-          mvn --batch-mode deploy
+          ./gradlew build publish
+
+      - name: Import GPG key
+        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Release build deploy
+        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
 
   build-and-upload-runnables:
