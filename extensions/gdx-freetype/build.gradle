@@ -54,6 +54,7 @@ jnigen {
 			"freetype/src/cid/type1cid.c",
 			"freetype/src/pcf/pcf.c",
 			"freetype/src/pfr/pfr.c",
+			"freetype/src/sdf/sdf.c",
 			"freetype/src/sfnt/sfnt.c",
 			"freetype/src/truetype/truetype.c",
 			"freetype/src/type1/type1.c",
