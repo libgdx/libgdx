@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://www.gwtproject.org/doctype/2.5.1/gwt-module.dtd">
 <module rename-to='com.badlogic.gdx.backends.gwt'>
-	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.typedarrays.TypedArrays'/>
 	<!-- Inherit edited chrome theme ("gwt"-prefixed classes only) for a little bit of default styling in the text input dialogs -->
 	<inherits name='com.badlogic.gdx.backends.gwt.theme.chrome.Chrome'/>
-	<inherits name="com.google.gwt.http.HTTP"/>
-	
-	<inherits name="com.badlogic.gdx" />
-	<inherits name="com.google.gwt.webgl.WebGL" />
+	<inherits name='com.google.gwt.http.HTTP'/>
+
+	<inherits name="com.badlogic.gdx"/>
+	<inherits name="com.google.gwt.webgl.WebGL"/>
 	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
 	<public path="gwt/resources"/>

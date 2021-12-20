@@ -112,6 +112,7 @@ public class Pixmap implements Disposable {
 	final Gdx2DPixmap pixmap;
 	int color = 0;
 
+	public boolean ready = false;
 	private boolean disposed;
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
@@ -148,6 +149,7 @@ public class Pixmap implements Disposable {
 	public Pixmap (byte[] encodedData, int offset, int len) {
 		try {
 			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+			ready = true;
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
 		}
@@ -161,6 +163,7 @@ public class Pixmap implements Disposable {
 		try {
 			byte[] bytes = file.readBytes();
 			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
+			ready = true;
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
 		}

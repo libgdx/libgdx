@@ -26,6 +26,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
+import com.badlogic.gdx.backends.gwt.utils.MimeTypeIdentifier;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -38,6 +39,8 @@ import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -101,6 +104,28 @@ public class Pixmap implements Disposable {
 		return pixmap;
 	}
 
+	private native static ImageElement loadImage (Int8Array data, String mimeType, Context2d ctx, LoadImageAsyncListener listener) /*-{
+		var blob = new Blob( [ data ], { type: mimeType } );
+		var urlCreator = window.URL || window.webkitURL;
+		var url = urlCreator.createObjectURL( blob );
+		var image = new Image();
+		image.crossOrigin = "anonymous";
+		image.decoding = 'sync';
+		image.loading = 'eager';
+
+		image.addEventListener('load', function () {
+			// Once it loads the resource, it can be freed.
+			urlCreator.revokeObjectURL(event.target.src)
+			ctx.drawImage(event.target, 0, 0)
+
+			listener.@LoadImageAsyncListener::downloadComplete(*)(image);
+		});
+
+        image.src = url;
+		image.decode();
+		return image;
+	}-*/;
+
 	private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
 		var imgData = ctx.createImageData(width, height);
 		var data = imgData.data;
@@ -127,6 +152,41 @@ public class Pixmap implements Disposable {
 	CanvasPixelArray pixels;
 	private ImageElement imageElement;
 	private VideoElement videoElement;
+
+	public boolean ready = false;
+
+	/** Creates a new Pixmap instance from the given encoded image data.
+	 *
+	 * @param encodedData the encoded image data
+	 * @param offset the offset
+	 * @param len the length */
+	public Pixmap (byte[] encodedData, int offset, int len) {
+		ready = false;
+		Int8Array view = TypedArrays.createInt8Array(len);
+
+		if (offset == 0 && len == encodedData.length) {
+			view.set(encodedData);
+		} else {
+			byte[] data = new byte[len];
+			System.arraycopy(encodedData, offset, data, 0, len);
+			view.set(data);
+		}
+
+		String mimeType = MimeTypeIdentifier.getMimeType(encodedData);
+
+		loadImage(view, mimeType, getContext(), new LoadImageAsyncListener() {
+			@Override
+			public void downloadComplete(ImageElement imageElement) {
+				initImage(imageElement.getWidth(), imageElement.getHeight(), imageElement);
+				ready = true;
+			}
+
+			@Override
+			public void downloadFailed(Throwable t) {
+				throw new GdxRuntimeException("Could not load Pixmap from encodedData.", t);
+			}
+		});
+	}
 
 	public Pixmap (FileHandle file) {
 		this(((GwtFileHandle)file).preloader.images.get(file.path()));
@@ -175,6 +235,10 @@ public class Pixmap implements Disposable {
 
 	private Pixmap (int width, int height, ImageElement imageElement) {
 		this.imageElement = imageElement;
+		initImage(width, height, imageElement);
+	}
+
+	private void initImage(int width, int height, ImageElement imageElement) {
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
 		this.format = Format.RGBA8888;
@@ -630,6 +694,12 @@ public class Pixmap implements Disposable {
 
 	public interface DownloadPixmapResponseListener {
 		void downloadComplete (Pixmap pixmap);
+
+		void downloadFailed (Throwable t);
+	}
+
+	public interface LoadImageAsyncListener {
+		void downloadComplete (ImageElement imageElement);
 
 		void downloadFailed (Throwable t);
 	}

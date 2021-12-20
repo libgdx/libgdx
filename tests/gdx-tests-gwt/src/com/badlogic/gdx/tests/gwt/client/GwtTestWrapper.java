@@ -55,6 +55,8 @@ import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
+import com.badlogic.gdx.tests.PixmapBlendingTest;
+import com.badlogic.gdx.tests.PixmapEncodedTest;
 import com.badlogic.gdx.tests.PixmapPackerTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.PreferencesTest;
@@ -347,10 +349,15 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				public GdxTest instance () {
 					return new PixmapTest();
 				}
-			},
-			// new GwtInstancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't
-			// work
-			new GwtInstancer() {
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new PixmapBlendingTest();
+				}
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new PixmapEncodedTest();
+				}
+			}, new GwtInstancer() {
 				public GdxTest instance () {
 					return new PreferencesTest();
 				}
