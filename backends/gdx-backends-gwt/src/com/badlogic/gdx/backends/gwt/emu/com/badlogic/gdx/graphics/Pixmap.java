@@ -26,7 +26,6 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
-import com.badlogic.gdx.backends.gwt.utils.MimeTypeIdentifier;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -103,11 +102,14 @@ public class Pixmap implements Disposable {
 		pixmap.setPixels(pixels);
 		return pixmap;
 	}
-
-	private native static ImageElement loadImage (Int8Array data, String mimeType, Context2d ctx, LoadImageAsyncListener listener) /*-{
-		var blob = new Blob( [ data ], { type: mimeType } );
+	private native static String dataToUrl (Int8Array data) /*-{
+		var blob = new Blob( [ data ] );
 		var urlCreator = window.URL || window.webkitURL;
 		var url = urlCreator.createObjectURL( blob );
+		return url;
+	}-*/;
+
+	private native static ImageElement loadImage (String url, Context2d ctx, LoadImageAsyncListener listener) /*-{
 		var image = new Image();
 		image.crossOrigin = "anonymous";
 		image.decoding = 'sync';
@@ -115,10 +117,11 @@ public class Pixmap implements Disposable {
 
 		image.addEventListener('load', function () {
 			// Once it loads the resource, it can be freed.
+			var urlCreator = window.URL || window.webkitURL;
 			urlCreator.revokeObjectURL(event.target.src)
 			ctx.drawImage(event.target, 0, 0)
 
-			listener.@LoadImageAsyncListener::downloadComplete(*)(image);
+			listener.@LoadImageAsyncListener::loadComplete(*)(image);
 		});
 
         image.src = url;
@@ -153,7 +156,7 @@ public class Pixmap implements Disposable {
 	private ImageElement imageElement;
 	private VideoElement videoElement;
 
-	public boolean ready = false;
+	private boolean loaded = false;
 
 	/** Creates a new Pixmap instance from the given encoded image data.
 	 *
@@ -161,7 +164,7 @@ public class Pixmap implements Disposable {
 	 * @param offset the offset
 	 * @param len the length */
 	public Pixmap (byte[] encodedData, int offset, int len) {
-		ready = false;
+		loaded = false;
 		Int8Array view = TypedArrays.createInt8Array(len);
 
 		if (offset == 0 && len == encodedData.length) {
@@ -172,17 +175,17 @@ public class Pixmap implements Disposable {
 			view.set(data);
 		}
 
-		String mimeType = MimeTypeIdentifier.getMimeType(encodedData);
+		String url = dataToUrl(view);
 
-		loadImage(view, mimeType, getContext(), new LoadImageAsyncListener() {
+		loadImage(url, getContext(), new LoadImageAsyncListener() {
 			@Override
-			public void downloadComplete(ImageElement imageElement) {
+			public void loadComplete(ImageElement imageElement) {
 				initImage(imageElement.getWidth(), imageElement.getHeight(), imageElement);
-				ready = true;
+				loaded = true;
 			}
 
 			@Override
-			public void downloadFailed(Throwable t) {
+			public void loadFailed(Throwable t) {
 				throw new GdxRuntimeException("Could not load Pixmap from encodedData.", t);
 			}
 		});
@@ -692,6 +695,13 @@ public class Pixmap implements Disposable {
 		FILL, STROKE
 	}
 
+	/**
+	 * Returns if pixmap is loaded
+	 */
+	public boolean isLoaded() {
+		return loaded;
+	}
+
 	public interface DownloadPixmapResponseListener {
 		void downloadComplete (Pixmap pixmap);
 
@@ -699,8 +709,8 @@ public class Pixmap implements Disposable {
 	}
 
 	public interface LoadImageAsyncListener {
-		void downloadComplete (ImageElement imageElement);
+		void loadComplete (ImageElement imageElement);
 
-		void downloadFailed (Throwable t);
+		void loadFailed (Throwable t);
 	}
 }
