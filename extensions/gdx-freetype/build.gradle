@@ -76,7 +76,7 @@ jnigen {
 			"freetype/src/psnames/psnames.c"
 		]
 
-		cppExcludes = ["freetype/"]
+		cppExcludes = ["freetype/subprojects/"]
 
 		cFlags += " -DFT2_BUILD_LIBRARY"
 		cppFlags += " -DFT2_BUILD_LIBRARY"
