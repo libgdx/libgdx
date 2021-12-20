@@ -55,8 +55,6 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private int fps;
 	private int windowPosXBeforeFullscreen;
 	private int windowPosYBeforeFullscreen;
-	private int windowWidthBeforeFullscreen;
-	private int windowHeightBeforeFullscreen;
 	private DisplayMode displayModeBeforeFullscreen = null;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
@@ -385,8 +383,6 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private void storeCurrentWindowPositionAndDisplayMode () {
 		windowPosXBeforeFullscreen = window.getPositionX();
 		windowPosYBeforeFullscreen = window.getPositionY();
-		windowWidthBeforeFullscreen = logicalWidth;
-		windowHeightBeforeFullscreen = logicalHeight;
 		displayModeBeforeFullscreen = getDisplayMode();
 	}
 
@@ -409,15 +405,18 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			}
 		} else {
 			if (displayModeBeforeFullscreen == null) {
-				storeCurrentWindowPositionAndDisplayMode();
-			}
-			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // Center window
+				// Center window with given dimensions
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
-					Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2), width, height,
-					displayModeBeforeFullscreen.refreshRate);
+				int monitorX = tmpBuffer.get(0);
+				int monitorY = tmpBuffer2.get(0);
+				int monitorWidth = tmpBuffer3.get(0);
+				int monitorHeight = tmpBuffer4.get(0);
+
+				window.setSizeLimits(monitorX, monitorY, monitorWidth, monitorHeight);
+				int newX = Math.max(0, monitorX + (monitorWidth - width) / 2);
+				int newY = Math.max(0, monitorY + (monitorHeight - height) / 2);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, newX, newY, width, height, getDisplayMode().refreshRate);
 			} else {
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
 					height, displayModeBeforeFullscreen.refreshRate);
