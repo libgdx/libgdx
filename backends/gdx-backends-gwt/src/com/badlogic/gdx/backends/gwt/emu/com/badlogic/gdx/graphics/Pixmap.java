@@ -102,31 +102,12 @@ public class Pixmap implements Disposable {
 		pixmap.setPixels(pixels);
 		return pixmap;
 	}
+
 	private native static String dataToUrl (Int8Array data) /*-{
 		var blob = new Blob( [ data ] );
 		var urlCreator = window.URL || window.webkitURL;
 		var url = urlCreator.createObjectURL( blob );
 		return url;
-	}-*/;
-
-	private native static ImageElement loadImage (String url, Context2d ctx, LoadImageAsyncListener listener) /*-{
-		var image = new Image();
-		image.crossOrigin = "anonymous";
-		image.decoding = 'sync';
-		image.loading = 'eager';
-
-		image.addEventListener('load', function () {
-			// Once it loads the resource, it can be freed.
-			var urlCreator = window.URL || window.webkitURL;
-			urlCreator.revokeObjectURL(event.target.src)
-			ctx.drawImage(event.target, 0, 0)
-
-			listener.@LoadImageAsyncListener::loadComplete(*)(image);
-		});
-
-        image.src = url;
-		image.decode();
-		return image;
 	}-*/;
 
 	private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
@@ -176,17 +157,22 @@ public class Pixmap implements Disposable {
 		}
 
 		String url = dataToUrl(view);
-
-		loadImage(url, getContext(), new LoadImageAsyncListener() {
+		downloadFromUrl(url, new AssetDownloader.AssetLoaderListener<ImageElement>() {
 			@Override
-			public void loadComplete(ImageElement imageElement) {
-				initImage(imageElement.getWidth(), imageElement.getHeight(), imageElement);
-				loaded = true;
+			public void onProgress (double amount) {
+				// nothing to do
 			}
 
 			@Override
-			public void loadFailed(Throwable t) {
-				throw new GdxRuntimeException("Could not load Pixmap from encodedData.", t);
+			public void onFailure () {
+				throw new GdxRuntimeException("Could not load Pixmap from encodedData.");
+			}
+
+			@Override
+			public void onSuccess (ImageElement result) {
+				getContext().drawImage(result, 0, 0);
+				initImage(result.getWidth(), result.getHeight(), result);
+				loaded = true;
 			}
 		});
 	}
@@ -196,8 +182,12 @@ public class Pixmap implements Disposable {
 		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 	}
 
+	private static void downloadFromUrl (String url, final AssetDownloader.AssetLoaderListener<ImageElement> listener) {
+		new AssetDownloader().loadImage(url, null, "anonymous", listener);
+	}
+
 	public static void downloadFromUrl (String url, final DownloadPixmapResponseListener responseListener) {
-		new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
+		downloadFromUrl (url, new AssetDownloader.AssetLoaderListener<ImageElement>() {
 			@Override
 			public void onProgress (double amount) {
 				// nothing to do
@@ -241,7 +231,7 @@ public class Pixmap implements Disposable {
 		initImage(width, height, imageElement);
 	}
 
-	private void initImage(int width, int height, ImageElement imageElement) {
+	private void initImage (int width, int height, ImageElement imageElement) {
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
 		this.format = Format.RGBA8888;
@@ -695,9 +685,7 @@ public class Pixmap implements Disposable {
 		FILL, STROKE
 	}
 
-	/**
-	 * Returns if pixmap is loaded
-	 */
+	/** Returns if pixmap is loaded */
 	public boolean isLoaded() {
 		return loaded;
 	}
@@ -708,9 +696,4 @@ public class Pixmap implements Disposable {
 		void downloadFailed (Throwable t);
 	}
 
-	public interface LoadImageAsyncListener {
-		void loadComplete (ImageElement imageElement);
-
-		void loadFailed (Throwable t);
-	}
 }

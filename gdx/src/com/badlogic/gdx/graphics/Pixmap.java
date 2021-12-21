@@ -452,9 +452,7 @@ public class Pixmap implements Disposable {
 		return filter;
 	}
 
-	/**
-	 * Returns if pixmap is loaded
-	 */
+	/** Returns if pixmap is loaded */
 	public boolean isLoaded() {
 		return loaded;
 	}
