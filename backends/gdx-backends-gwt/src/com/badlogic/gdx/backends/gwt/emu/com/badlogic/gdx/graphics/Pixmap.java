@@ -157,7 +157,7 @@ public class Pixmap implements Disposable {
 		}
 
 		String url = dataToUrl(view);
-		downloadFromUrl(url, new AssetDownloader.AssetLoaderListener<ImageElement>() {
+		downloadFromUrl (url, new AssetDownloader.AssetLoaderListener<ImageElement>() {
 			@Override
 			public void onProgress (double amount) {
 				// nothing to do
@@ -686,7 +686,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Returns if pixmap is loaded */
-	public boolean isLoaded() {
+	public boolean isLoaded () {
 		return loaded;
 	}
 
