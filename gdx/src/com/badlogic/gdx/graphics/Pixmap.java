@@ -160,6 +160,7 @@ public class Pixmap implements Disposable {
 	 * @param offset the offset relative to the base address of encodedData
 	 * @param len the length */
 	public Pixmap (ByteBuffer encodedData, int offset, int len) {
+		if (!encodedData.isDirect()) throw new GdxRuntimeException("Couldn't load pixmap from non-direct ByteBuffer");
 		try {
 			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
 		} catch (IOException e) {
