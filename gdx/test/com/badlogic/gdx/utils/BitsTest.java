@@ -85,4 +85,16 @@ public class BitsTest {
 
 		assertFalse(b1.get(400));
 	}
+
+	 @Test
+	 public void testCpy () {
+		  Bits b1 = new Bits();
+		  b1.set(50);
+		  b1.set(100);
+		  b1.set(150);
+
+		  Bits b2 = b1.cpy();
+		  assertTrue(b1 != b2);
+		  assertTrue(b1.containsAll(b2));
+	 }
 }
