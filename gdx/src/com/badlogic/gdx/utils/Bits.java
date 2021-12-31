@@ -36,11 +36,11 @@ public class Bits {
 		checkCapacity(nbits >>> 6);
 	}
 
-	public Bits cpy(){
-		 Bits newBits = new Bits();
-		 newBits.bits = new long[bits.length];
-		 System.arraycopy(bits, 0, newBits.bits, 0, bits.length);
-		 return newBits;
+	public Bits cpy () {
+		Bits newBits = new Bits();
+		newBits.bits = new long[bits.length];
+		System.arraycopy(bits, 0, newBits.bits, 0, bits.length);
+		return newBits;
 	}
 
 	/** @param index the index of the bit
