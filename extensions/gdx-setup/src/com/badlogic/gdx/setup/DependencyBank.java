@@ -40,8 +40,8 @@ public class DependencyBank {
 	static String jitpackUrl = "https://jitpack.io";
 
 	// Project plugins
-	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
-	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.1.16";
+	static String grettyPluginImport = "org.gretty:gretty:3.0.6";
 	static String androidPluginImport = "com.android.tools.build:gradle:4.1.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
