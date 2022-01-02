@@ -64,7 +64,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 
 		stage = new Stage(new ScreenViewport());
 
