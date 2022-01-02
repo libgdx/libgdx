@@ -24,7 +24,7 @@ ext {
 versions.robovm = "2.3.14"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
-versions.gretty = "3.0.6"
+versions.gretty = "3.0.7"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
 versions.lwjgl3 = "3.3.0"
