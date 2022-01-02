@@ -78,32 +78,32 @@ public class MapLayer {
 
 	/** @return layer's parallax scrolling factor for x-axis */
 	public float getParallaxX () {
-	  return parallaxX;
+		return parallaxX;
 	}
 
 	public void setParallaxX (float parallaxX) {
-	  this.parallaxX = parallaxX;
+		this.parallaxX = parallaxX;
 	}
 
 	/** @return layer's parallax scrolling factor for y-axis */
 	public float getParallaxY () {
-	  return parallaxY;
+		return parallaxY;
 	}
 
 	public void setParallaxY (float parallaxY) {
-	  this.parallaxY = parallaxY;
+		this.parallaxY = parallaxY;
 	}
 
 	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetX () {
-	  if (renderOffsetDirty) calculateRenderOffsets();
-	  return renderOffsetX;
+		if (renderOffsetDirty) calculateRenderOffsets();
+		return renderOffsetX;
 	}
 
 	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetY () {
-	  if (renderOffsetDirty) calculateRenderOffsets();
-	  return renderOffsetY;
+		if (renderOffsetDirty) calculateRenderOffsets();
+		return renderOffsetY;
 	}
 
 	/** set the renderOffsetDirty state to true, when this layer or any parents' offset has changed **/
@@ -143,14 +143,14 @@ public class MapLayer {
 	}
 
 	protected void calculateRenderOffsets () {
-	  if (parent != null) {
+		if (parent != null) {
 			parent.calculateRenderOffsets();
 			renderOffsetX = parent.getRenderOffsetX() + offsetX;
 			renderOffsetY = parent.getRenderOffsetY() + offsetY;
-	  } else {
+		} else {
 			renderOffsetX = offsetX;
 			renderOffsetY = offsetY;
-	  }
-	  renderOffsetDirty = false;
+		}
+		renderOffsetDirty = false;
 	}
 }
