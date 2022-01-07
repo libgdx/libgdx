@@ -949,7 +949,7 @@ public class FreeType {
 //		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*�?�?�?�?�? ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿À�?ÂÃÄÅÆÇÈÉÊËÌ�?Î�?�?ÑÒÓÔÕÖ×ØÙÚÛÜ�?Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 //		
 //		Library library = FreeType.initFreeType();
-//		Face face = library.newFace(new FileHandle("arial.ttf"), 0);
+//		Face face = library.newFace(new FileHandle("lsans.ttf"), 0);
 //		face.setPixelSizes(0, 15);
 //		SizeMetrics faceMetrics = face.getSize().getMetrics();
 //		System.out.println(toInt(faceMetrics.getAscender()) + ", " + toInt(faceMetrics.getDescender()) + ", " + toInt(faceMetrics.getHeight()));

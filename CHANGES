@@ -1,7 +1,10 @@
 [1.10.1]
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
 - [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
+- [BREAKING CHANGE] The built-in font files arial-15.fnt and arial-15.png have been replaced with lsans-15.fnt and lsans-15.png; this may change some text layout that uses the built-in font, and code that expects arial-15 assets to be present must change to lsans-15.
+- [BREAKING CHANGE] Legacy LWJGL3 projects must update the sourceCompatibility to 1.8 or higher.
 - iOS: Update to MobiVM 2.3.14
+- Update to LWJGL 3.3.0
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
@@ -25,6 +28,19 @@
 - Bug Fix: AssetManager backslash conversion removed - fixes use of filenames containing backslashes
 - gdx-setup now places the assets directory in project root instead of android or core. See advanced settings (UI) or arguments (command line) if you don't want it in root.
 - API Fix: Resolved issues with LWJGL 3 and borderless fullscreen
+- API Addition: GeometryUtils,polygons isCCW, ensureClockwise, reverseVertices
+- API Addition: Added FreeTypeFontGenerator#hasCharGlyph method.
+- API Fix: Pool discard method now resets object by default. This fixes the known issue about Pool in libGDX 1.10.0.
+- API Addition: Split GWT reflection cache into two generated classes
+- API Fix: Fix Box2D memory leak with ropes on GWT
+- API Fix: Fix NPE in Type#getDeclaredAnnotation
+- API Addition: Add pause/resume methods to AudioDevice
+- API Fix: Protection against NullPointerException in World#destroyBody()
+- API Fix: Prevent repeated mipmap generation in FileTextureArrayData
+- API Fix: Fix issue with camera reference in CameraGroupStrategy’s default sorter
+- API Fix: Move vertex array index buffer limit to backends to fix issue with numIndices parameter
+- API Fix: TexturePacker: Fix wrong Y value when using padding
+- API Fix: Lwjgl3Net: Add fallback to xdg-open on Linux if Desktop.BROWSE is unavailable
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
@@ -34,6 +50,7 @@
 - [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
 - [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
 - [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- [KNOWN ISSUE] Pool no longer reset freed objects when pool size is above its retention limit. Pool will discard objects instead. If you want to keep the old behavior, you should override Pool#discard method to reset discarded objects.
 - Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
 - API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
 - Fix for #6377 Gdx.net.openURI not working with targetSdk 30

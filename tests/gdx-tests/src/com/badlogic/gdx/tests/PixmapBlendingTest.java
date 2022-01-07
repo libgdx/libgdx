@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,11 +27,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PixmapBlendingTest extends GdxTest {
 	private SpriteBatch spriteBatch;
-	private Texture text;
-	private Sprite logoSprite, test3, test4;
+	private Sprite logoSprite;
 	private Pixmap pixD, pixS1, pixS2;
-
-	InputProcessor inputProcessor;
 
 	@Override
 	public void create () {
@@ -45,8 +40,8 @@ public class PixmapBlendingTest extends GdxTest {
 		transform.mul(new Matrix4().setToScaling(1, -1, 1));
 		spriteBatch.setTransformMatrix(transform);
 
-		pixS1 = new Pixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
-		pixS2 = new Pixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
+		pixS1 = new Pixmap(Gdx.files.internal("data/test4.png"));
+		pixS2 = new Pixmap(Gdx.files.internal("data/test3.png"));
 		pixD = new Pixmap(512, 1024, Pixmap.Format.RGBA8888);
 
 		pixD.setBlending(Pixmap.Blending.SourceOver);

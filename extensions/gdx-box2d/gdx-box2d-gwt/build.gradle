@@ -16,6 +16,7 @@
 
 dependencies {
 	compile libraries.gwt
+	compileOnly libraries.compileOnly.gwt
 }
 
 configurations.all {

@@ -29,8 +29,8 @@ compileJava {
 }
 
 dependencies {
-	testCompile libraries.junit
-	compile "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
+	testImplementation libraries.junit
+	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
 }
 
 test {
