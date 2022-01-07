@@ -21,7 +21,7 @@ ext {
     gdxnatives = [:]
 }
 
-versions.robovm = "2.3.14"
+versions.robovm = "2.3.15"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
 versions.gretty = "3.0.7"
