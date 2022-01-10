@@ -38,7 +38,7 @@ public class Bits {
 
 	/** Creates a bit set from another bit set
 	 * @param bitsToCpy bitset to cpy */
-	public Bits(Bits bitsToCpy) {
+	public Bits (Bits bitsToCpy) {
 		this.bits = new long[bitsToCpy.bits.length];
 		System.arraycopy(bitsToCpy.bits, 0, this.bits, 0, bitsToCpy.bits.length);
 	}
