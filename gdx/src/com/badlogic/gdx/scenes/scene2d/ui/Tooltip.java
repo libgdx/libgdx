@@ -80,7 +80,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 	}
 
 	/** If true, this tooltip will be shown even when screen is touched simultaneously with entering tooltip's targetActor */
-	public void setTouchIndependent(boolean touchIndependent){
+	public void setTouchIndependent (boolean touchIndependent) {
 		this.touchIndependent = touchIndependent;
 	}
 
