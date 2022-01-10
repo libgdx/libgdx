@@ -32,7 +32,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 
 	private final TooltipManager manager;
 	final Container<T> container;
-	boolean instant, always;
+	boolean instant, always, touchIndependent;
 	Actor targetActor;
 
 	/** @param contents May be null. */
@@ -79,6 +79,11 @@ public class Tooltip<T extends Actor> extends InputListener {
 		this.always = always;
 	}
 
+	/** If true, this tooltip will be shown even when screen is touched simultaneously with entering tooltip's targetActor */
+	public void setTouchIndependent(boolean touchIndependent){
+		this.touchIndependent = touchIndependent;
+	}
+
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (instant) {
 			container.toFront();
@@ -115,7 +120,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 
 	public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 		if (pointer != -1) return;
-		if (Gdx.input.isTouched()) return;
+		if (touchIndependent && Gdx.input.isTouched()) return;
 		Actor actor = event.getListenerActor();
 		if (fromActor != null && fromActor.isDescendantOf(actor)) return;
 		setContainerPosition(actor, x, y);
