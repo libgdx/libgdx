@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.awt.Desktop;
 import java.net.URI;
 
 import com.badlogic.gdx.Net;
@@ -66,28 +65,20 @@ public class Lwjgl3Net implements Net {
 
 	@Override
 	public boolean openURI (String uri) {
-		if (SharedLibraryLoader.isMac) {
-			try {
-				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
-		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-			try {
-				Desktop.getDesktop().browse(new URI(uri));
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
+		String baseCommand;
+		if (SharedLibraryLoader.isWindows) {
+			baseCommand = "start";
 		} else if (SharedLibraryLoader.isLinux) {
-			try {
-				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
+			baseCommand = "xdg-open";
+		} else if (SharedLibraryLoader.isMac) {
+			baseCommand = "open";
+		} else
+			return false;
+		try {
+			new ProcessBuilder(baseCommand, new URI(uri).toString()).start();
+		} catch (Throwable ignored) {
 		}
 		return false;
 	}
+
 }
