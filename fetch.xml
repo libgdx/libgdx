@@ -31,7 +31,7 @@
             <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-windows-x86.jar"/>
             <!-- lwjgl-glfw -->
@@ -40,7 +40,7 @@
             <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-windows-x86.jar"/>
             <!-- lwjgl-jemalloc -->
@@ -49,7 +49,7 @@
             <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-windows-x86.jar"/>
             <!-- lwjgl-openal -->
@@ -58,7 +58,7 @@
             <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-windows-x86.jar"/>
             <!-- lwjgl-opengl -->
@@ -67,7 +67,7 @@
             <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-windows-x86.jar"/>
             <!-- lwjgl-stb -->
@@ -76,7 +76,7 @@
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-linux-arm32.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-linux-arm32.jar"/>
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-linux-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-linux-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-macos.jar"/>
-            <!--<get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-macos-arm64.jar"/>-->
+            <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-macos-arm64.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-macos-arm64.jar"/>
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-windows.jar"/>
             <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-windows-x86.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-windows-x86.jar"/>
         </parallel>
