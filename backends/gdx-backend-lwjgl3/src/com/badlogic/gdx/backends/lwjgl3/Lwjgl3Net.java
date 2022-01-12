@@ -76,6 +76,7 @@ public class Lwjgl3Net implements Net {
 			return false;
 		try {
 			new ProcessBuilder(baseCommand, new URI(uri).toString()).start();
+			return true;
 		} catch (Throwable ignored) {
 		}
 		return false;
