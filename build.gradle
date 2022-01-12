@@ -20,7 +20,7 @@ buildscript {
     apply from: "gradle/dependencies.gradle"
 
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
