@@ -99,7 +99,11 @@ public class Tooltip<T extends Actor> extends InputListener {
 		Stage stage = actor.getStage();
 		if (stage == null) return;
 
+		container.setSize(manager.maxWidth, Integer.MAX_VALUE);
+		container.validate();
+		container.width(container.getActor().getWidth());
 		container.pack();
+
 		float offsetX = manager.offsetX, offsetY = manager.offsetY, dist = manager.edgeDistance;
 		Vector2 point = actor.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
 		if (point.y < dist) point = actor.localToStageCoordinates(tmp.set(x + offsetX, y + offsetY));

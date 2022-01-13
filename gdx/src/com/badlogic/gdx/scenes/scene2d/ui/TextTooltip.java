@@ -49,13 +49,7 @@ public class TextTooltip extends Tooltip<Label> {
 
 		Label label = newLabel(text, style.label);
 		label.setWrap(true);
-
-		container.setActor(label);
-		container.width(new Value() {
-			public float get (@Null Actor context) {
-				return Math.min(manager.maxWidth, container.getActor().getGlyphLayout().width);
-			}
-		});
+		container.fill().setActor(label);
 
 		setStyle(style);
 	}
