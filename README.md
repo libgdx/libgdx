@@ -37,25 +37,3 @@ Use the **[Issue Tracker](https://github.com/libgdx/libgdx/issues)** here on Git
 libGDX has a strong developer community constantly improving the code base. We love to get any and all help we can. Our [Contributing Guidelines](https://libgdx.com/dev/contributing/) describe the process of helping libGDX to become even better. To contribute, you need to work with libGDX' sources directly, something normal users do not have to go through. The [Working with the Source](https://libgdx.com/dev/from-source/) article will give you some directions.
 
 You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](https://patreon.com/libgdx)!
-
-### Supported By
-libGDX is supported by helpful 3rd parties via code contributions, free licenses, test devices and so forth. Make our supporters happy and visit their sites!
-
-<table>
-<tr>
-<td style="text-align: center;"><a href="https://github.com/MobiVM/robovm"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/robovm.png" alt="RoboVM" /></a></td>
-<td style="text-align: center;"><a href="https://bit.ly/spinegdx"><img src="https://libgdx.com/assets/images/sponsors/spine.png"></a></td>
-</tr>
-
-<tr>
-<td style="text-align: center;"><a href="https://bit.ly/saikoagdx"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/saikoa.png" alt="Saikoa" /></a></td>
-<td style="text-align: center;"><a href="https://bit.ly/intelgdx"><img src="https://libgdx.com/assets/images/sponsors/intel.png" alt="intel Software Partner" /></a></td>
-</tr>
-
-<tr>
-<td style="text-align: center;"><img style="margin-right:20px" src="https://libgdx.com/assets/images/sponsors/excelsior.png" alt="Excelsior JET"></td>
-<td style="text-align: center;"><img src="https://libgdx.com/assets/images/sponsors/nextpeer.png"></td>
-</tr>
-</table>
-
-###### Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
