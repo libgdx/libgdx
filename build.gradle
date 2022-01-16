@@ -90,7 +90,19 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }
+    }   
+
+    tasks.register('uberJar', Jar) {
+        archiveClassifier = 'uber'
+        archiveVersion = ''
+
+        from sourceSets.main.output
+
+        dependsOn configurations.runtimeClasspath
+        from {
+            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.startsWith("gdx-" + version) }.collect { zipTree(it) }
+        }
+    } 
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
