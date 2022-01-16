@@ -102,7 +102,7 @@ allprojects {
 
         dependsOn configurations.runtimeClasspath
         from {
-            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.startsWith("gdx-" + version) }.collect { zipTree(it) }
+            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.endsWith("gdx-" + project.version + ".jar") && !it.name.contains("platform") }.collect { println it; zipTree(it) }
         }
     } 
 }
