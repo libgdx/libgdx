@@ -93,7 +93,7 @@ allprojects {
     }   
 
     tasks.register('uberJar', Jar) {
-        archiveClassifier = 'uber'
+        archiveClassifier = ''
         archiveVersion = ''
         duplicatesStrategy = 'warn'
 
