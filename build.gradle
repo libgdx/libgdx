@@ -95,6 +95,8 @@ allprojects {
     tasks.register('uberJar', Jar) {
         archiveClassifier = 'uber'
         archiveVersion = ''
+        duplicatesStrategy = 'warn'
+
 
         from sourceSets.main.output
 
