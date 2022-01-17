@@ -231,6 +231,19 @@ public final class GeometryUtils {
 
 	static public void ensureCCW (float[] polygon, int offset, int count) {
 		if (!isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void ensureClockwise (float[] polygon) {
+		ensureClockwise(polygon, 0, polygon.length);
+	}
+
+	static public void ensureClockwise (float[] polygon, int offset, int count) {
+		if (isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void reverseVertices (float[] polygon, int offset, int count) {
 		int lastX = offset + count - 2;
 		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
@@ -255,5 +268,9 @@ public final class GeometryUtils {
 			y1 = y2;
 		}
 		return area < 0;
+	}
+
+	static public boolean isCCW (float[] polygon, int offset, int count) {
+		return !isClockwise(polygon, offset, count);
 	}
 }

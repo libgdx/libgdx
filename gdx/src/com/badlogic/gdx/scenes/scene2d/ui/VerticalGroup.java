@@ -302,6 +302,11 @@ public class VerticalGroup extends WidgetGroup {
 		return prefHeight;
 	}
 
+	/** When wrapping is enabled, the number of columns may be > 1. */
+	public int getColumns () {
+		return wrap ? columnSizes.size >> 1 : 1;
+	}
+
 	/** If true (the default), positions and sizes are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
