@@ -90,21 +90,7 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }   
-
-    tasks.register('uberJar', Jar) {
-        archiveClassifier = ''
-        archiveVersion = ''
-        duplicatesStrategy = 'warn'
-
-
-        from sourceSets.main.output
-
-        dependsOn configurations.runtimeClasspath
-        from {
-            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.endsWith("gdx-" + project.version + ".jar") && !it.name.contains("platform") }.collect { println it; zipTree(it) }
-        }
-    } 
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -131,6 +117,19 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
         groovyGradle {
             target '*.gradle'
             greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+        }
+    }
+
+    tasks.register('uberJar', Jar) {
+        archiveClassifier = ''
+        archiveVersion = ''
+        duplicatesStrategy = 'warn'
+
+        from sourceSets.main.output
+
+        dependsOn configurations.runtimeClasspath
+        from {
+            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.endsWith("gdx-" + project.version + ".jar") && !it.name.contains("platform") }.collect { println it; zipTree(it) }
         }
     }
 }
