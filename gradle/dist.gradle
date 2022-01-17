@@ -7,7 +7,7 @@ allprojects {
         from sourceSets.main.output
 		
         dependsOn configurations.compileClasspath
-        dependsOn "printCompileClasspath"
+        //dependsOn "printCompileClasspath"
         from {
             configurations.compileClasspath.findAll { 
 				it.name.endsWith('jar') && 
