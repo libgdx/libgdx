@@ -1,5 +1,6 @@
 <config>	
 	<libs>
-		<lib>libs/libgdx-freetype.a</lib>		
+		<lib variant="device">libs/gdx-freetype.xcframework/ios-arm64_armv7/libgdx-freetype.a</lib>
+		<lib variant="simulator">libs/gdx-freetype.xcframework/ios-arm64_x86_64-simulator/libgdx-freetype.a</lib>
 	</libs>
 </config>

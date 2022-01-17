@@ -1,6 +1,7 @@
 <config>
     <libs>
-        <lib>libs/libgdx-bullet.a</lib>
+        <lib variant="device">libs/gdx-bullet.xcframework/ios-arm64_armv7/libgdx-bullet.a</lib>
+        <lib variant="simulator">libs/gdx-bullet.xcframework/ios-arm64_x86_64-simulator/libgdx-bullet.a</lib>
     </libs>
     <forceLinkClasses>
         <pattern>com.badlogic.gdx.physics.bullet.collision.CollisionJNI</pattern>

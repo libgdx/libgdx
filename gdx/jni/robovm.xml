@@ -1,6 +1,9 @@
 <config>	
 	<libs>
-		<lib>libs/libgdx.a</lib>
-		<lib>libs/libObjectAL.a</lib>
+		<lib variant="device">libs/gdx.xcframework/ios-arm64_armv7/libgdx.a</lib>
+		<lib variant="simulator">libs/gdx.xcframework/ios-arm64_x86_64-simulator/libgdx.a</lib>
+
+		<lib variant="device">libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a</lib>
+		<lib variant="simulator">libs/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a</lib>
 	</libs>
 </config>
