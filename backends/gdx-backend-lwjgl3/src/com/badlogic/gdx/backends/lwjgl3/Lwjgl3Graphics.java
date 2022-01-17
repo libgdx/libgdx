@@ -81,11 +81,12 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
-		if (window.getConfig().useGL30) {
+		if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
 			this.gl30 = new Lwjgl3GL30();
 			this.gl20 = this.gl30;
 		} else {
-			this.gl20 = new Lwjgl3GL20();
+			this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
+				: new Lwjgl3GLES20();
 			this.gl30 = null;
 		}
 		updateFramebufferInfo();
