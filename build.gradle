@@ -90,7 +90,7 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }
+    }   
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -180,3 +180,5 @@ apply from: rootProject.file('publish.gradle')
 
 if(rootProject.file('override.gradle').exists())
 	apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"
