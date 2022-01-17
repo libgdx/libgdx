@@ -14,8 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
+apply plugin: "java"
+
 dependencies {
-	compile project(":gdx")
+	api project(":gdx")
 }
 
 sourceSets.main.java.srcDirs = ["src"]
