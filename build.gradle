@@ -91,20 +91,6 @@ allprojects {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
     }   
-
-    tasks.register('uberJar', Jar) {
-        archiveClassifier = ''
-        archiveVersion = ''
-        duplicatesStrategy = 'warn'
-
-
-        from sourceSets.main.output
-
-        dependsOn configurations.runtimeClasspath
-        from {
-            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') && !it.name.endsWith("gdx-" + project.version + ".jar") && !it.name.contains("platform") }.collect { println it; zipTree(it) }
-        }
-    } 
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -194,3 +180,5 @@ apply from: rootProject.file('publish.gradle')
 
 if(rootProject.file('override.gradle').exists())
 	apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"
