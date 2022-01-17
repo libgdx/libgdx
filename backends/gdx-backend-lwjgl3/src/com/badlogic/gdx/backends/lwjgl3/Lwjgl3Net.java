@@ -65,19 +65,30 @@ public class Lwjgl3Net implements Net {
 
 	@Override
 	public boolean openURI (String uri) {
-		String baseCommand;
 		if (SharedLibraryLoader.isWindows) {
-			baseCommand = "start";
+			try {
+				new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", new URI(uri).toString()).start();
+				return true;
+			} catch (Throwable ignored) {
+			}
 		} else if (SharedLibraryLoader.isLinux) {
-			baseCommand = "xdg-open";
+			// Linux may as well resort to pure Java hackery, as there's no Linux native way of doing it
+			// right anyway.
+			String[] browsers = {"sensible-browser", "xdg-open", "google-chrome", "chromium", "firefox", "iceweasel", "mozilla",
+				"opera", "konqueror", "nautilus", "galeon", "netscape"};
+			for (final String browser : browsers) {
+				try {
+					new ProcessBuilder(browser, new URI(uri).toString()).start();
+					return true;
+				} catch (Throwable ignored) {
+				}
+			}
 		} else if (SharedLibraryLoader.isMac) {
-			baseCommand = "open";
-		} else
-			return false;
-		try {
-			new ProcessBuilder(baseCommand, new URI(uri).toString()).start();
-			return true;
-		} catch (Throwable ignored) {
+			try {
+				new ProcessBuilder("open", new URI(uri).toString()).start();
+				return true;
+			} catch (Throwable ignored) {
+			}
 		}
 		return false;
 	}
