@@ -73,7 +73,7 @@ public class HdpiUtils {
 		return (int)(backBufferX * Gdx.graphics.getWidth() / (float)Gdx.graphics.getBackBufferWidth());
 	}
 
-	/** Convers an y-coordinate given in backbuffer coordinates to logical screen coordinates */
+	/** Converts an y-coordinate given in backbuffer coordinates to logical screen coordinates. */
 	public static int toLogicalY (int backBufferY) {
 		return (int)(backBufferY * Gdx.graphics.getHeight() / (float)Gdx.graphics.getBackBufferHeight());
 	}
@@ -83,7 +83,7 @@ public class HdpiUtils {
 		return (int)(logicalX * Gdx.graphics.getBackBufferWidth() / (float)Gdx.graphics.getWidth());
 	}
 
-	/** Convers an y-coordinate given in backbuffer coordinates to logical screen coordinates */
+	/** Converts an y-coordinate given in logical screen coordinates to backbuffer coordinates. */
 	public static int toBackBufferY (int logicalY) {
 		return (int)(logicalY * Gdx.graphics.getBackBufferHeight() / (float)Gdx.graphics.getHeight());
 	}

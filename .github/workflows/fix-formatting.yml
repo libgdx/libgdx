@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   fix-formatting:
-    if: ${{ github.repository_owner != 'libgdx' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

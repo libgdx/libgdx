@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface GdxTestConfig {
 	boolean requireGL30() default false;
+
+	boolean OnlyGL20() default false;
 }

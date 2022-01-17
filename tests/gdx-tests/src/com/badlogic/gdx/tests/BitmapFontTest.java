@@ -51,9 +51,9 @@ public class BitmapFontTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 		// font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
-		font = new BitmapFont(Gdx.files.internal("data/arial-32-pad.fnt"), false);
-		smallFont = new BitmapFont(); // uses Arial 15, the default
-		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf")).generateFont(new FreeTypeFontParameter());
+		font = new BitmapFont(Gdx.files.internal("data/lsans-32-pad.fnt"), false);
+		smallFont = new BitmapFont(); // uses LSans 15, the default
+		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/lsans.ttf")).generateFont(new FreeTypeFontParameter());
 		font.getData().markupEnabled = true;
 		font.getData().breakChars = new char[] {'-'};
 

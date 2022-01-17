@@ -49,7 +49,7 @@ public class YDownTest extends GdxTest {
 	public void create () {
 		// a bitmap font to draw some text, note that we
 		// pass true to the constructor, which flips glyphs on y
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), true);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), true);
 
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
