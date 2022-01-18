@@ -153,6 +153,31 @@ public class Pixmap implements Disposable {
 		}
 	}
 
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP. Not
+	 * available on GWT backend.
+	 *
+	 * @param encodedData the encoded image data
+	 * @param offset the offset relative to the base address of encodedData
+	 * @param len the length */
+	public Pixmap (ByteBuffer encodedData, int offset, int len) {
+		if (!encodedData.isDirect()) throw new GdxRuntimeException("Couldn't load pixmap from non-direct ByteBuffer");
+		try {
+			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+		} catch (IOException e) {
+			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
+		}
+	}
+
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP. Not
+	 * available on GWT backend.
+	 *
+	 * Offset is based on the position of the buffer. Length is based on the remaining bytes of the buffer.
+	 *
+	 * @param encodedData the encoded image data */
+	public Pixmap (ByteBuffer encodedData) {
+		this(encodedData, encodedData.position(), encodedData.remaining());
+	}
+
 	/** Creates a new Pixmap instance from the given file. The file must be a Png, Jpeg or Bitmap. Paletted formats are not
 	 * supported.
 	 * 
