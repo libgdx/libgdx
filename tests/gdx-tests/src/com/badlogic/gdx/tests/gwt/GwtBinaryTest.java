@@ -29,7 +29,7 @@ public class GwtBinaryTest extends GdxTest {
 
 	@Override
 	public void create () {
-		FileHandle handle = Gdx.files.internal("data/arial.ttf");
+		FileHandle handle = Gdx.files.internal("data/lsans.ttf");
 		bytes = new byte[(int)handle.length()];
 		DataInputStream in = new DataInputStream(handle.read());
 		for (int i = 0; i < 100; i++) {

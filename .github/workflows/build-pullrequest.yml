@@ -3,11 +3,13 @@ name: Build pull request
 on:
   pull_request:
     branches: [ master ]
+permissions: 
+  contents: read
 
 jobs:
   build-java:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:

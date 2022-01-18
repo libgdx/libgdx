@@ -103,7 +103,7 @@ public abstract class BaseG3dTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if (loading && assets.update()) {
+		if (loading && assets.update(16)) {
 			loading = false;
 			onLoaded();
 		}

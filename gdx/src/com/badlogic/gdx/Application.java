@@ -38,7 +38,7 @@ import com.badlogic.gdx.utils.Clipboard;
  * </p>
  * 
  * <p>
- * While game programmers are used to having a main loop, libgdx employs a different concept to accommodate the event based nature
+ * While game programmers are used to having a main loop, libGDX employs a different concept to accommodate the event based nature
  * of Android applications a little more. You application logic must be implemented in a {@link ApplicationListener} which has
  * methods that get called by the Application when the application is created, resumed, paused, disposed or rendered. As a
  * developer you will simply implement the ApplicationListener interface and fill in the functionality accordingly. The

@@ -41,12 +41,21 @@ public class CheckBox extends TextButton {
 
 	public CheckBox (@Null String text, CheckBoxStyle style) {
 		super(text, style);
-		clearChildren();
+
 		Label label = getLabel();
-		imageCell = add(image = new Image(style.checkboxOff, Scaling.none));
-		add(label);
 		label.setAlignment(Align.left);
+
+		image = newImage();
+		image.setDrawable(style.checkboxOff);
+
+		clearChildren();
+		imageCell = add(image);
+		add(label);
 		setSize(getPrefWidth(), getPrefHeight());
+	}
+
+	protected Image newImage () {
+		return new Image((Drawable)null, Scaling.none);
 	}
 
 	public void setStyle (ButtonStyle style) {

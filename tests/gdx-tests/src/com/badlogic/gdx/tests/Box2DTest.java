@@ -104,7 +104,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		font.setColor(Color.RED);
 		textureRegion = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 

@@ -1,0 +1,58 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+dependencies {
+	api libraries.gwt
+	compileOnly libraries.compileOnly.gwt
+}
+
+configurations.all {
+	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
+	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
+}
+
+sourceSets.main.java.exclude "**/System.java"
+
+eclipse {
+	classpath {
+		containers += [
+			'com.google.gwt.eclipse.core.GWT_CONTAINER',
+			'com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER'
+		]
+
+		file {
+			withXml {
+				def node = it.asNode()
+
+				//Exclude emu folder from main classpath entry
+				node.children().each { c ->
+					if(c.attribute('path').equals('src')) {
+						c.attributes().put('excluding', 'com/badlogic/gdx/physics/box2d/gwt/emu/')
+					}
+				}
+
+				//Add second classpath entry for emu folder if not exists
+				def emuNodes = node.children().findAll { it.name() == 'classpathentry' && it.'@path'.equals('src/com/badlogic/gdx/physics/box2d/gwt/emu/')}
+				if (emuNodes.size() == 0) {
+					def emuNode = node.appendNode('classpathentry')
+					emuNode.attributes().put('kind', 'src')
+					emuNode.attributes().put('path', 'src/com/badlogic/gdx/physics/box2d/gwt/emu/')
+					emuNode.attributes().put('excluding', 'java/lang/System.java')
+				}
+			}
+		}
+	}
+}

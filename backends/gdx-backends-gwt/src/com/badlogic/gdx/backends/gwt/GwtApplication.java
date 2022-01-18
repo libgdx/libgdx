@@ -77,9 +77,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	protected TextArea log = null;
 	private int logLevel = LOG_ERROR;
 	private ApplicationLogger applicationLogger;
-	private Array<Runnable> runnables = new Array<Runnable>();
-	private Array<Runnable> runnablesHelper = new Array<Runnable>();
-	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final Array<Runnable> runnables = new Array<Runnable>();
+	protected final Array<Runnable> runnablesHelper = new Array<Runnable>();
+	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private int lastWidth;
 	private int lastHeight;
 	Preloader preloader;
@@ -233,6 +233,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			throw new RuntimeException(t);
 		}
 
+		setupMainLoop();
+	}
+
+	protected void setupMainLoop () {
 		AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
 			@Override
 			public void execute (double timestamp) {
@@ -435,14 +439,21 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return 0;
 	}
 
+	public native double usedJSHeapSize () /*-{
+		if ("memory" in $wnd.performance) {
+			return $wnd.performance.memory.usedJSHeapSize;
+		}
+		return 0;
+	}-*/;
+
 	@Override
 	public long getJavaHeap () {
-		return 0;
+		return (long)usedJSHeapSize();
 	}
 
 	@Override
 	public long getNativeHeap () {
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override

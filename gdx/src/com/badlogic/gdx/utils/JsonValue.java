@@ -898,8 +898,11 @@ public class JsonValue implements Iterable<JsonValue> {
 		addChild(value);
 	}
 
-	/** Adds the specified value after the last child. */
+	/** Adds the specified value after the last child.
+	 * @throws IllegalStateException if this is an object and the specified child's name is null. */
 	public void addChild (JsonValue value) {
+		if (type == ValueType.object && value.name == null)
+			throw new IllegalStateException("An object child requires a name: " + value);
 		value.parent = this;
 		size++;
 		JsonValue current = child;

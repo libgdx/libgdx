@@ -18,7 +18,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-	compile libraries.lwjgl3
+	api libraries.lwjgl3
+	api gdxnatives.desktop
 }
 
 

@@ -799,7 +799,7 @@ public class Actor {
 		Group parent = this.parent;
 		if (parent == null) return false;
 		Array<Actor> children = parent.children;
-		if (children.size == 1) return false;
+		if (children.size <= 1) return false;
 		index = Math.min(index, children.size - 1);
 		if (children.get(index) == this) return false;
 		if (!children.removeValue(this, true)) return false;
@@ -956,7 +956,7 @@ public class Actor {
 		drawDebugBounds(shapes);
 	}
 
-	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
+	/** Draws a rectangle for the bounds of this actor if {@link #getDebug()} is true. */
 	protected void drawDebugBounds (ShapeRenderer shapes) {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);

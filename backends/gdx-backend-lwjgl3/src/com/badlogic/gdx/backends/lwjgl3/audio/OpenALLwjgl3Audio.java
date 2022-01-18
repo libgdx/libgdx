@@ -347,6 +347,14 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			@Override
 			public void dispose () {
 			}
+
+			@Override
+			public void pause () {
+			}
+
+			@Override
+			public void resume () {
+			}
 		};
 		return new OpenALAudioDevice(this, sampleRate, isMono, deviceBufferSize, deviceBufferCount);
 	}

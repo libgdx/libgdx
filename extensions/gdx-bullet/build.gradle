@@ -14,18 +14,23 @@
  * limitations under the License.
  ******************************************************************************/
 
-sourceSets.main.java.srcDirs = [
-	"jni/swig-src/collision",
-	"jni/swig-src/dynamics",
-	"jni/swig-src/extras",
-	"jni/swig-src/linearmath",
-	"jni/swig-src/softbody",
-	"jni/swig-src/inversedynamics",
-	"src"
-]
+sourceSets.main.java {
+	srcDirs = [
+		"jni/swig-src/collision",
+		"jni/swig-src/dynamics",
+		"jni/swig-src/extras",
+		"jni/swig-src/linearmath",
+		"jni/swig-src/softbody",
+		"jni/swig-src/inversedynamics",
+		"src"
+	]
+	exclude "classes.i"
+	exclude "*.cpp"
+	exclude "*.h"
+}
 
 dependencies {
-	compile project(":gdx")
+	api project(":gdx")
 }
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"

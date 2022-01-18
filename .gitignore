@@ -62,6 +62,7 @@ libgdx-*.zip.MD5
 /extensions/gdx-bullet/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
+/extensions/gdx-lwjgl3-angle/res
 /extensions/gdx-setup/gdx-setup.jar
 /extensions/gdx-setup/test/
 
@@ -82,3 +83,9 @@ tests/gdx-tests-android/assets/bitmapWrittenFont.png
 #gradle wrapper
 /local.properties
 natives.zip
+
+#Eclipse metadata
+.metadata
+.classpath
+.project
+.settings

@@ -152,7 +152,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		boolean result = manager.update();
+		boolean result = manager.update(16);
 		if (result) {
 			if (!diagnosed) {
 				diagnosed = true;

@@ -15,7 +15,8 @@
  ******************************************************************************/
 
 dependencies {
-	compile libraries.gwt
+	api libraries.gwt
+	compileOnly libraries.compileOnly.gwt
 }
 
 configurations.all {
@@ -23,4 +24,40 @@ configurations.all {
 	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
+javadoc {
+	exclude "com/badlogic/gdx/backends/gwt/emu/**"
+	options.addStringOption("sourcepath", "src/")
+}
+
 sourceSets.main.java.exclude "**/System.java"
+
+eclipse {
+	classpath {
+		containers += [
+			'com.google.gwt.eclipse.core.GWT_CONTAINER',
+			'com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER'
+		]
+
+		file {
+			withXml {
+				def node = it.asNode()
+
+				//Exclude emu folder from main classpath entry
+				node.children().each { c ->
+					if(c.attribute('path').equals('src')) {
+						c.attributes().put('excluding', 'com/badlogic/gdx/backends/gwt/emu/')
+					}
+				}
+
+				//Add second classpath entry for emu folder if not exists
+				def emuNodes = node.children().findAll { it.name() == 'classpathentry' && it.'@path'.equals('src/com/badlogic/gdx/backends/gwt/emu/')}
+				if (emuNodes.size() == 0) {
+					def emuNode = node.appendNode('classpathentry')
+					emuNode.attributes().put('kind', 'src')
+					emuNode.attributes().put('path', 'src/com/badlogic/gdx/backends/gwt/emu/')
+					emuNode.attributes().put('excluding', 'java/lang/System.java')
+				}
+			}
+		}
+	}
+}
