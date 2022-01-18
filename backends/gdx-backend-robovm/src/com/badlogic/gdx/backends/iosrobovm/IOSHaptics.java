@@ -21,17 +21,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.corehaptic.CHHapticEngine;
+import org.robovm.apple.corehaptic.CHHapticEventParameterID;
 import org.robovm.apple.corehaptic.CHHapticEventType;
 import org.robovm.apple.corehaptic.CHHapticPattern;
 import org.robovm.apple.corehaptic.CHHapticPatternDict;
 import org.robovm.apple.foundation.NSArray;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSErrorException;
-import org.robovm.apple.foundation.NSNumber;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
-import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIImpactFeedbackGenerator;
 import org.robovm.apple.uikit.UIImpactFeedbackStyle;
 import org.robovm.objc.block.VoidBlock1;
@@ -114,9 +112,15 @@ public class IOSHaptics {
 			.setPattern(new NSArray<NSObject>(new CHHapticPatternDict()
 				.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticContinuous).setTime(0.0)
 					.setEventDuration(milliseconds / 1000f)
-					// TODO There should be a better/safer way to provide the event parameters using CHHapticEventParameterID
-					.setEventParameters(new NSArray<NSObject>(new NSDictionary<NSString, NSObject>(new NSString("ParameterID"),
-						new NSString("HapticIntensity"), new NSString("ParameterValue"), NSNumber.valueOf(intensity)))))
+					.setEventParameters(
+							new NSArray<NSObject>(
+									new CHHapticPatternDict()
+											.setParameterID(CHHapticEventParameterID.HapticIntensity)
+											.setParameterValue(intensity)
+											.getDictionary()
+							)
+					)
+				)
 				.getDictionary()));
 	}
 
