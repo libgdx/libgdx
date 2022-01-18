@@ -1,6 +1,8 @@
 name: Fix formatting
 
 on: [push]
+permissions: 
+  contents: write
 
 jobs:
   fix-formatting:
