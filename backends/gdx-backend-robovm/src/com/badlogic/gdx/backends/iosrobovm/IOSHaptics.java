@@ -72,7 +72,6 @@ public class IOSHaptics {
 	public void vibrate (int milliseconds, boolean fallback) {
 		if (hapticsSupport) {
 			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, 0.5f);
-			System.out.println(hapticDict);
 			try {
 				CHHapticPattern pattern = new CHHapticPattern(hapticDict);
 				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
@@ -108,20 +107,12 @@ public class IOSHaptics {
 	}
 
 	private CHHapticPatternDict getChHapticPatternDict (int milliseconds, float intensity) {
-		return new CHHapticPatternDict()
-			.setPattern(new NSArray<NSObject>(new CHHapticPatternDict()
-				.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticContinuous).setTime(0.0)
-					.setEventDuration(milliseconds / 1000f)
-					.setEventParameters(
-							new NSArray<NSObject>(
-									new CHHapticPatternDict()
-											.setParameterID(CHHapticEventParameterID.HapticIntensity)
-											.setParameterValue(intensity)
-											.getDictionary()
-							)
-					)
-				)
-				.getDictionary()));
+		return new CHHapticPatternDict().setPattern(new NSArray<NSObject>(new CHHapticPatternDict()
+			.setEvent(new CHHapticPatternDict().setEventType(CHHapticEventType.HapticContinuous).setTime(0.0)
+				.setEventDuration(milliseconds / 1000f)
+				.setEventParameters(new NSArray<NSObject>(new CHHapticPatternDict()
+					.setParameterID(CHHapticEventParameterID.HapticIntensity).setParameterValue(intensity).getDictionary())))
+			.getDictionary()));
 	}
 
 	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
