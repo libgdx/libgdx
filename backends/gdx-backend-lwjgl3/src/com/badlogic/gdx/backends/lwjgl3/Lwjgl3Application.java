@@ -75,17 +75,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private static Callback glDebugCallback;
 	private final Sync sync;
 
-	public static void initializeGlfw () {
-		initializeGlfw(System.err);
-	}
-
-	public static void initializeGlfw (PrintStream errorStream) {
-		if (errorStream != System.err && errorCallback != null) {
-			throw new GdxRuntimeException("errorCallback already set");
-		}
+	static void initializeGlfw () {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
-			errorCallback = GLFWErrorCallback.createPrint(errorStream);
+			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
 			GLFW.glfwSetErrorCallback(errorCallback);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
