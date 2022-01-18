@@ -75,6 +75,7 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.SystemCursorTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextAreaTest;
 import com.badlogic.gdx.tests.TextAreaTest2;
@@ -417,6 +418,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			}, new GwtInstancer() {
 				public GdxTest instance () {
 					return new StageTest();
+				}
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new SystemCursorTest();
 				}
 			},
 			// new GwtInstancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out

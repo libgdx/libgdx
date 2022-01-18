@@ -119,6 +119,14 @@ public class Lwjgl3Cursor implements Cursor {
 				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR);
 			} else if (systemCursor == SystemCursor.Ibeam) {
 				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
+			} else if (systemCursor == SystemCursor.NWSEResize) {
+				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
+			} else if (systemCursor == SystemCursor.NESWResize) {
+				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NESW_CURSOR);
+			} else if (systemCursor == SystemCursor.AllResize) {
+				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_ALL_CURSOR);
+			} else if (systemCursor == SystemCursor.NotAllowed) {
+				handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_NOT_ALLOWED_CURSOR);
 			} else {
 				throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
 			}
