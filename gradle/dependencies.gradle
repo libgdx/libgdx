@@ -21,7 +21,7 @@ ext {
     gdxnatives = [:]
 }
 
-versions.robovm = "2.3.14"
+versions.robovm = "2.3.15"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
 versions.gretty = "3.0.7"
@@ -44,8 +44,7 @@ versions.spotless = "5.14.3"
 libraries.compileOnly = [:]
 
 libraries.lwjgl = [
-        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
-        "org.lwjgl.lwjgl:lwjgl_util:${versions.lwjgl}",
+        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",        
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
@@ -99,6 +98,15 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm64",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos-arm64",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-egl:${versions.lwjgl3}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]

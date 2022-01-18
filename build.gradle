@@ -20,7 +20,7 @@ buildscript {
     apply from: "gradle/dependencies.gradle"
 
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
@@ -90,7 +90,7 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }
+    }   
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -164,14 +164,22 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 }
 
 task fetchNativesZip() {
-	doLast {
+    doLast {
 		def zip = file("build/natives.zip");
-		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> zip.withOutputStream{ it << i }}
+		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
+        new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
+
 	}
 	outputs.file(file("build/natives.zip"))
+    outputs.file(file("build/gdx-angle-natives.zip"))
 }
 
-task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
+task fetchNativesLwjglAngle(dependsOn: fetchNativesZip, type: Copy) {
+    from zipTree("build/gdx-angle-natives.zip")
+    into "./extensions/gdx-lwjgl3-angle/res"
+}
+
+task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
 }
@@ -180,3 +188,5 @@ apply from: rootProject.file('publish.gradle')
 
 if(rootProject.file('override.gradle').exists())
 	apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"

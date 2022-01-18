@@ -108,13 +108,6 @@ public class OpenALAudioDevice implements AudioDevice {
 				offset += written;
 				queuedBuffers++;
 			}
-			// Queue rest of buffers, empty.
-			((Buffer)tempBuffer).clear().flip();
-			for (int i = queuedBuffers; i < bufferCount; i++) {
-				int bufferID = buffers.get(i);
-				alBufferData(bufferID, format, tempBuffer, sampleRate);
-				alSourceQueueBuffers(sourceID, bufferID);
-			}
 			alSourcePlay(sourceID);
 			isPlaying = true;
 		}

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
@@ -49,13 +48,7 @@ public class TextTooltip extends Tooltip<Label> {
 
 		Label label = newLabel(text, style.label);
 		label.setWrap(true);
-
-		container.setActor(label);
-		container.width(new Value() {
-			public float get (@Null Actor context) {
-				return Math.min(manager.maxWidth, container.getActor().getGlyphLayout().width);
-			}
-		});
+		container.fill().setActor(label);
 
 		setStyle(style);
 	}
