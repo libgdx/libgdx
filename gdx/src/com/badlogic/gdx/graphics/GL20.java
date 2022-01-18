@@ -377,6 +377,7 @@ public interface GL20 {
 
 	public void glDrawArrays (int mode, int first, int count);
 
+	/** Not fully supported with GWT backend: indices content is ignored, only buffer position is used. */
 	public void glDrawElements (int mode, int count, int type, Buffer indices);
 
 	public void glEnable (int cap);

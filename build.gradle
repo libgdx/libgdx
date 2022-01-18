@@ -20,17 +20,41 @@ buildscript {
     apply from: "gradle/dependencies.gradle"
 
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.1"
+    }
+}
+
+ext {
+    isReleaseBuild = {
+        return project.hasProperty("RELEASE")
+    }
+
+    getReleaseRepositoryUrl = {
+        return project.hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+                : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    }
+
+    getSnapshotRepositoryUrl = {
+        return project.hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+                : "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    getRepositoryUsername = {
+        return project.hasProperty('MAVEN_USERNAME') ? MAVEN_USERNAME : ""
+    }
+
+    getRepositoryPassword = {
+        return project.hasProperty('MAVEN_PASSWORD') ? MAVEN_PASSWORD : ""
     }
 }
 
 allprojects {
     group = 'com.badlogicgames.gdx'
-    version = '1.10.0-SNAPSHOT'
+    version = project.getProperty('version') + (isReleaseBuild() ? "" : "-SNAPSHOT")
 
     buildscript {
         repositories {
@@ -55,19 +79,32 @@ allprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
-
+    tasks.withType(Javadoc) {
+        options.encoding = 'UTF-8'
+    }
     tasks.withType(Test) {
         systemProperty 'file.encoding', 'UTF-8'
     }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none,-missing', '-quiet')
+        }
+    }   
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
-    apply plugin: "java"
+    apply plugin: "java-library"
     apply plugin: "com.diffplug.spotless"
 
     compileJava {
         options.fork = true
         options.incremental = true
+    }
+    
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
     spotless {
@@ -126,11 +163,30 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName
-}
-task fetchNatives(dependsOn: "ant-task-all"){
+task fetchNativesZip() {
     doLast {
-    }
+		def zip = file("build/natives.zip");
+		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
+        new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
+
+	}
+	outputs.file(file("build/natives.zip"))
+    outputs.file(file("build/gdx-angle-natives.zip"))
 }
 
+task fetchNativesLwjglAngle(dependsOn: fetchNativesZip, type: Copy) {
+    from zipTree("build/gdx-angle-natives.zip")
+    into "./extensions/gdx-lwjgl3-angle/res"
+}
+
+task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
+    from zipTree("build/natives.zip")
+    into "."
+}
+
+apply from: rootProject.file('publish.gradle')
+
+if(rootProject.file('override.gradle').exists())
+	apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"

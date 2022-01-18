@@ -99,6 +99,14 @@ public class Timer {
 		}
 	}
 
+	/** Returns true if the timer has no tasks in the queue. Note that this can change at any time. Synchronize on the timer
+	 * instance to prevent tasks being added, removed, or updated. */
+	public boolean isEmpty () {
+		synchronized (this) {
+			return tasks.size == 0;
+		}
+	}
+
 	long update (long timeMillis, long waitMillis) {
 		synchronized (tasks) {
 			for (int i = 0, n = tasks.size; i < n; i++) {

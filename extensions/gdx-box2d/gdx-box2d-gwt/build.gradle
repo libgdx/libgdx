@@ -15,7 +15,8 @@
  ******************************************************************************/
 
 dependencies {
-	compile libraries.gwt
+	api libraries.gwt
+	compileOnly libraries.compileOnly.gwt
 }
 
 configurations.all {

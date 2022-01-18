@@ -37,7 +37,7 @@ public class FreeTypeDisposeTest extends GdxTest {
 				if (font != null) {
 					font.dispose();
 				}
-				FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
+				FileHandle fontFile = Gdx.files.internal("data/lsans.ttf");
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
 
 				FreeTypeFontParameter parameter = new FreeTypeFontParameter();

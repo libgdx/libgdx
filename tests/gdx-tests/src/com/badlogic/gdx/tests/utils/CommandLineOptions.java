@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Shared class for desktop launchers.
  * 
@@ -14,6 +15,7 @@ public class CommandLineOptions {
 
 	public String startupTestName = null;
 	public boolean gl30 = false;
+	public boolean angle = false;
 	public boolean logGLErrors = false;
 
 	public CommandLineOptions (String[] argv) {
@@ -24,11 +26,16 @@ public class CommandLineOptions {
 					gl30 = true;
 				else if (arg.equals("--glErrors"))
 					logGLErrors = true;
+				else if (arg.equals("--angle"))
+					angle = true;
 				else
 					System.err.println("skip unrecognized option " + arg);
 			} else {
 				startupTestName = arg;
 			}
+		}
+		if (gl30 && angle) {
+			throw new GdxRuntimeException("Both --gl30 and --angle set. Can not be combined.");
 		}
 	}
 
@@ -37,6 +44,7 @@ public class CommandLineOptions {
 		GdxTestConfig config = clazz.getAnnotation(GdxTestConfig.class);
 		if (config != null) {
 			if (config.requireGL30() && !gl30) return false;
+			if (config.OnlyGL20() && gl30) return false;
 		}
 		return true;
 	}

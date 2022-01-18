@@ -34,8 +34,8 @@ public class TextAreaTest3 extends GdxTest {
 	TextField textField;
 	TextArea textArea;
 	private TextField.TextFieldStyle styleDefault;
-	private TextField.TextFieldStyle styleArial15;
-	private TextField.TextFieldStyle styleArial32;
+	private TextField.TextFieldStyle styleLSans15;
+	private TextField.TextFieldStyle styleLSans32;
 	private TextField.TextFieldStyle styleFont;
 
 	@Override
@@ -48,14 +48,14 @@ public class TextAreaTest3 extends GdxTest {
 		styleDefault.font.getData().setLineHeight(styleDefault.font.getData().lineHeight * 2);
 		printMetrics("default", styleDefault.font);
 
-		styleArial15 = new TextField.TextFieldStyle(styleDefault);
-		styleArial15.font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), Gdx.files.internal("data/arial-15_00.png"),
+		styleLSans15 = new TextField.TextFieldStyle(styleDefault);
+		styleLSans15.font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), Gdx.files.internal("data/lsans-15_00.png"),
 			false);
-		printMetrics("arial15", styleArial15.font);
+		printMetrics("lsans15", styleLSans15.font);
 
-		styleArial32 = new TextField.TextFieldStyle(styleDefault);
-		styleArial32.font = new BitmapFont(Gdx.files.internal("data/arial-32.fnt"), Gdx.files.internal("data/arial-32.png"), false);
-		printMetrics("arial32", styleArial32.font);
+		styleLSans32 = new TextField.TextFieldStyle(styleDefault);
+		styleLSans32.font = new BitmapFont(Gdx.files.internal("data/lsans-32.fnt"), Gdx.files.internal("data/lsans-32.png"), false);
+		printMetrics("lsans32", styleLSans32.font);
 
 		styleFont = new TextField.TextFieldStyle(styleDefault);
 		styleFont.font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
@@ -82,7 +82,7 @@ public class TextAreaTest3 extends GdxTest {
 			sb.append(
 				"It can even handle very loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong lines.\n");
 		}
-		textArea = new TextArea(sb.toString(), styleArial32);
+		textArea = new TextArea(sb.toString(), styleLSans32);
 		// we need a container that will allow the TextArea to be as tall as it wants
 		// without the fix, text area height wont match text height depending on the fonts line height
 		ScrollPane pane = new ScrollPane(textArea, skin);
@@ -94,12 +94,12 @@ public class TextAreaTest3 extends GdxTest {
 		// after we init widgets
 		ButtonGroup<TextButton> group = new ButtonGroup<>();
 		styleSelector.add(newStyleButton("Default", styleDefault, group));
-		styleSelector.add(newStyleButton("Arial 15", styleArial15, group));
-		styleSelector.add(newStyleButton("Arial 32", styleArial32, group));
+		styleSelector.add(newStyleButton("LSans 15", styleLSans15, group));
+		styleSelector.add(newStyleButton("LSans 32", styleLSans32, group));
 		styleSelector.add(newStyleButton("Font", styleFont, group));
 		group.setMaxCheckCount(1);
 		group.setMinCheckCount(1);
-		group.setChecked("Arial 32");
+		group.setChecked("LSans 32");
 	}
 
 	private void printMetrics (String name, BitmapFont font) {
@@ -143,8 +143,8 @@ public class TextAreaTest3 extends GdxTest {
 	public void dispose () {
 		stage.dispose();
 		skin.dispose();
-		styleArial15.font.getRegion().getTexture().dispose();
-		styleArial32.font.getRegion().getTexture().dispose();
+		styleLSans15.font.getRegion().getTexture().dispose();
+		styleLSans32.font.getRegion().getTexture().dispose();
 		styleFont.font.getRegion().getTexture().dispose();
 	}
 }

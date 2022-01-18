@@ -56,7 +56,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 
 		ui = new Stage(new ExtendViewport(480, 320));
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		container = new Table();
 		ui.addActor(container);
 		container.debug();

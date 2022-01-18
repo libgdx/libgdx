@@ -44,7 +44,7 @@ public class FreeTypeMetricsTest extends GdxTest {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 60;
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/lsans.ttf"));
 		font = generator.generateFont(parameter);
 		generator.dispose();
 

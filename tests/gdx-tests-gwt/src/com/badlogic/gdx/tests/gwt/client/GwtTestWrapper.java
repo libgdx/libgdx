@@ -75,6 +75,7 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.SystemCursorTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextAreaTest;
 import com.badlogic.gdx.tests.TextAreaTest2;
@@ -90,6 +91,7 @@ import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
@@ -417,6 +419,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				public GdxTest instance () {
 					return new StageTest();
 				}
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new SystemCursorTest();
+				}
 			},
 			// new GwtInstancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
 			new GwtInstancer() {
@@ -490,6 +496,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			}, new GwtInstancer() {
 				public GdxTest instance () {
 					return new TextAreaTest3();
+				}
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new VertexArrayTest();
 				}
 			} // these may have issues with tab getting intercepted by the browser
 		};
