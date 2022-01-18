@@ -439,14 +439,21 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return 0;
 	}
 
+	public native double usedJSHeapSize () /*-{
+		if ("memory" in $wnd.performance) {
+			return $wnd.performance.memory.usedJSHeapSize;
+		}
+		return 0;
+	}-*/;
+
 	@Override
 	public long getJavaHeap () {
-		return 0;
+		return (long)usedJSHeapSize();
 	}
 
 	@Override
 	public long getNativeHeap () {
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override
