@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 dependencies {
-	compile project(":gdx")
+	implementation project(":gdx")
 }
 
 sourceSets.main.java.srcDirs = ["src"]
