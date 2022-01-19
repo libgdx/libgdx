@@ -63,6 +63,7 @@ libgdx-*.zip.MD5
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
 /extensions/gdx-lwjgl3-angle/res
+/extensions/gdx-lwjgl3-glfw-awt-macos/res/
 /extensions/gdx-setup/gdx-setup.jar
 /extensions/gdx-setup/test/
 

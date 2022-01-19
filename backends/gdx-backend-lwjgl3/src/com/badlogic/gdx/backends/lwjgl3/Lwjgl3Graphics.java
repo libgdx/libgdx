@@ -20,6 +20,8 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -49,6 +51,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
+	private boolean resetDeltaTime = false;
 	private long frameId;
 	private long frameCounterStart = 0;
 	private int frames;
@@ -67,15 +70,20 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			updateFramebufferInfo();
-			if (!window.isListenerInitialized()) {
-				return;
-			}
-			window.makeCurrent();
-			gl20.glViewport(0, 0, width, height);
-			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
-			GLFW.glfwSwapBuffers(windowHandle);
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					updateFramebufferInfo();
+					if (!window.isListenerInitialized()) {
+						return;
+					}
+					window.makeCurrent();
+					gl20.glViewport(0, 0, width, height);
+					window.getListener().resize(getWidth(), getHeight());
+					window.getListener().render();
+					GLFW.glfwSwapBuffers(windowHandle);
+				}
+			});
 		}
 	};
 
@@ -139,7 +147,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	void update () {
 		long time = System.nanoTime();
 		if (lastFrameTime == -1) lastFrameTime = time;
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			deltaTime = 0;
+		} else
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 
 		if (time - frameCounterStart >= 1000000000) {
@@ -220,6 +232,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public float getDeltaTime () {
 		return deltaTime;
+	}
+
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
 	}
 
 	@Override
