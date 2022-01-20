@@ -25,7 +25,14 @@ import java.io.Serializable;
 public class OrientedBoundingBox implements Serializable {
 	private static final long serialVersionUID = 3864065514676250557L;
 
-	private final static Vector3 tmpVector = new Vector3();
+	private final static Vector3[] AXIS_VECTORS = new Vector3[]{Vector3.X, Vector3.Y, Vector3.Z};
+
+	private final static Vector3[] tmpVectors = new Vector3[9];
+	{
+		for (int i = 0; i < tmpVectors.length; i++) {
+			tmpVectors[i] = new Vector3();
+		}
+	}
 
 	/** Bounds used as size. */
 	private final BoundingBox bounds = new BoundingBox();
@@ -58,7 +65,6 @@ public class OrientedBoundingBox implements Serializable {
 		this.bounds.set(bounds.min, bounds.max);
 		this.transform.set(transform);
 		init();
-		update();
 	}
 
 	private void init() {
@@ -68,6 +74,7 @@ public class OrientedBoundingBox implements Serializable {
 		for (int i = 0; i < vertices.length; i++) {
 			vertices[i] = new Vector3();
 		}
+		update();
 	}
 
 	public Vector3[] getAxes() {
@@ -112,35 +119,35 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	public Vector3 getCorner000 (final Vector3 out) {
-		return bounds.getCorner000(out).mul(transform);
+		return out.set(vertices[0b000]);
 	}
 
 	public Vector3 getCorner001 (final Vector3 out) {
-		return bounds.getCorner001(out).mul(transform);
+		return out.set(vertices[0b001]);
 	}
 
 	public Vector3 getCorner010 (final Vector3 out) {
-		return bounds.getCorner010(out).mul(transform);
+		return out.set(vertices[0b010]);
 	}
 
 	public Vector3 getCorner011 (final Vector3 out) {
-		return bounds.getCorner011(out).mul(transform);
+		return out.set(vertices[0b011]);
 	}
 
 	public Vector3 getCorner100 (final Vector3 out) {
-		return bounds.getCorner100(out).mul(transform);
+		return out.set(vertices[0b100]);
 	}
 
 	public Vector3 getCorner101 (final Vector3 out) {
-		return bounds.getCorner101(out).mul(transform);
+		return out.set(vertices[0b101]);
 	}
 
 	public Vector3 getCorner110 (final Vector3 out) {
-		return bounds.getCorner110(out).mul(transform);
+		return out.set(vertices[0b110]);
 	}
 
 	public Vector3 getCorner111 (final Vector3 out) {
-		return bounds.getCorner111(out).mul(transform);
+		return out.set(vertices[0b111]);
 	}
 
 	/** Returns whether the given vector is contained in this oriented bounding box.
@@ -151,7 +158,7 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	private boolean contains (Vector3 v, Matrix4 invTransform) {
-		Vector3 localV = tmpVector.set(v).mul(invTransform);
+		Vector3 localV = tmpVectors[0].set(v).mul(invTransform);
 		return bounds.contains(localV);
 	}
 
@@ -159,6 +166,7 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox b) {
+		Vector3 tmpVector = tmpVectors[0];
 		return contains(b.getCorner000(tmpVector), inverseTransform) && contains(b.getCorner001(tmpVector), inverseTransform) &&
 				contains(b.getCorner010(tmpVector), inverseTransform) && contains(b.getCorner011(tmpVector), inverseTransform) &&
 				contains(b.getCorner100(tmpVector), inverseTransform) && contains(b.getCorner101(tmpVector), inverseTransform) &&
@@ -169,14 +177,14 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param obb The oriented bounding box
 	 * @return Whether the given oriented bounding box is contained */
 	public boolean contains (OrientedBoundingBox obb) {
-		return contains(obb.getCorner000(tmpVector), inverseTransform) &&
-				contains(obb.getCorner001(tmpVector), inverseTransform) &&
-				contains(obb.getCorner010(tmpVector), inverseTransform) &&
-				contains(obb.getCorner011(tmpVector), inverseTransform) &&
-				contains(obb.getCorner100(tmpVector), inverseTransform) &&
-				contains(obb.getCorner101(tmpVector), inverseTransform) &&
-				contains(obb.getCorner110(tmpVector), inverseTransform) &&
-				contains(obb.getCorner111(tmpVector), inverseTransform);
+		return contains(obb.getCorner000(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner001(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner010(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner011(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner100(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner101(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner110(tmpVectors[0]), inverseTransform) &&
+				contains(obb.getCorner111(tmpVectors[0]), inverseTransform);
 	}
 
 	/** Returns whether the given bounding box is intersecting this oriented bounding box (at least one point in).
@@ -184,29 +192,39 @@ public class OrientedBoundingBox implements Serializable {
 	 * @return Whether the given bounding box is intersected */
 	public boolean intersects (BoundingBox b) {
 		Vector3[] aAxes = getAxes();
-		Vector3[] bAxes = new Vector3[]{Vector3.X, Vector3.Y, Vector3.Z};
+		Vector3[] bAxes = AXIS_VECTORS;
 
 		Vector3[] allAxes = new Vector3[] {
 				aAxes[0], aAxes[1], aAxes[2],
 				bAxes[0], bAxes[1], bAxes[2],
-				new Vector3(aAxes[0]).crs(bAxes[0]),
-				new Vector3(aAxes[0]).crs(bAxes[1]),
-				new Vector3(aAxes[0]).crs(bAxes[2]),
-				new Vector3(aAxes[1]).crs(bAxes[0]),
-				new Vector3(aAxes[1]).crs(bAxes[1]),
-				new Vector3(aAxes[1]).crs(bAxes[2]),
-				new Vector3(aAxes[2]).crs(bAxes[0]),
-				new Vector3(aAxes[2]).crs(bAxes[1]),
-				new Vector3(aAxes[2]).crs(bAxes[2])
+				tmpVectors[0].set(aAxes[0]).crs(bAxes[0]),
+				tmpVectors[1].set(aAxes[0]).crs(bAxes[1]),
+				tmpVectors[2].set(aAxes[0]).crs(bAxes[2]),
+				tmpVectors[3].set(aAxes[1]).crs(bAxes[0]),
+				tmpVectors[4].set(aAxes[1]).crs(bAxes[1]),
+				tmpVectors[5].set(aAxes[1]).crs(bAxes[2]),
+				tmpVectors[6].set(aAxes[2]).crs(bAxes[0]),
+				tmpVectors[7].set(aAxes[2]).crs(bAxes[1]),
+				tmpVectors[8].set(aAxes[2]).crs(bAxes[2])
 		};
 
 		Vector3[] aVertices = getVertices();
-		Vector3[] bVertices = new Vector3[] {
-				b.getCorner000(new Vector3()), b.getCorner001(new Vector3()), b.getCorner010(new Vector3()), b.getCorner011(new Vector3()),
-				b.getCorner100(new Vector3()), b.getCorner101(new Vector3()), b.getCorner110(new Vector3()), b.getCorner111(new Vector3())
-		};;
+		Vector3[] bVertices = getVertices(b);
 
 		return Intersector.SAT.hasOverlap(allAxes, aVertices, bVertices);
+	}
+
+	private static final Vector3[] bbCorners = new Vector3[8];
+	private Vector3[] getVertices(BoundingBox b) {
+		b.getCorner000(bbCorners[0b000]);
+		b.getCorner001(bbCorners[0b001]);
+		b.getCorner010(bbCorners[0b010]);
+		b.getCorner011(bbCorners[0b011]);
+		b.getCorner100(bbCorners[0b100]);
+		b.getCorner101(bbCorners[0b101]);
+		b.getCorner110(bbCorners[0b110]);
+		b.getCorner111(bbCorners[0b111]);
+		return bbCorners;
 	}
 
 	/** Returns whether the given oriented bounding box is intersecting this oriented bounding box (at least one point in).
@@ -219,15 +237,15 @@ public class OrientedBoundingBox implements Serializable {
 		Vector3[] allAxes = new Vector3[] {
 				aAxes[0], aAxes[1], aAxes[2],
 				bAxes[0], bAxes[1], bAxes[2],
-				new Vector3(aAxes[0]).crs(bAxes[0]),
-				new Vector3(aAxes[0]).crs(bAxes[1]),
-				new Vector3(aAxes[0]).crs(bAxes[2]),
-				new Vector3(aAxes[1]).crs(bAxes[0]),
-				new Vector3(aAxes[1]).crs(bAxes[1]),
-				new Vector3(aAxes[1]).crs(bAxes[2]),
-				new Vector3(aAxes[2]).crs(bAxes[0]),
-				new Vector3(aAxes[2]).crs(bAxes[1]),
-				new Vector3(aAxes[2]).crs(bAxes[2])
+				tmpVectors[0].set(aAxes[0]).crs(bAxes[0]),
+				tmpVectors[1].set(aAxes[0]).crs(bAxes[1]),
+				tmpVectors[2].set(aAxes[0]).crs(bAxes[2]),
+				tmpVectors[3].set(aAxes[1]).crs(bAxes[0]),
+				tmpVectors[4].set(aAxes[1]).crs(bAxes[1]),
+				tmpVectors[5].set(aAxes[1]).crs(bAxes[2]),
+				tmpVectors[6].set(aAxes[2]).crs(bAxes[0]),
+				tmpVectors[7].set(aAxes[2]).crs(bAxes[1]),
+				tmpVectors[8].set(aAxes[2]).crs(bAxes[2])
 		};
 
 		return Intersector.SAT.hasOverlap(allAxes, vertices, obb.vertices);
