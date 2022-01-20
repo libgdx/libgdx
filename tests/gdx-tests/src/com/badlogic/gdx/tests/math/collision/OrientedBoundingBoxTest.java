@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -47,11 +49,14 @@ import java.util.Random;
 
 public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListener {
 
-	private static final int BOXES = 90;
+	private static final int NUM_BOXES = 100;
 
 	private PerspectiveCamera camera;
 	private CameraInputController cameraController;
 	private ModelBatch modelBatch;
+
+	private SpriteBatch batch;
+	private BitmapFont font;
 
 	private static final Color COLOR_STANDARD = Color.BLUE;
 	private static final Color COLOR_MOUSE_OVER = Color.GREEN;
@@ -61,6 +66,8 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 	@Override
 	public void create() {
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		batch = new SpriteBatch();
 		modelBatch = new ModelBatch();
 
 		setupScene();
@@ -73,7 +80,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 	private void setupScene() {
 		boxes.clear();
-		for (int i = 0; i < BOXES; i++) {
+		for (int i = 0; i < NUM_BOXES; i++) {
 			boxes.add(new Box());
 		}
 	}
@@ -93,6 +100,12 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		// Draw FPS
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.begin();
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
+		batch.end();
 
 		cameraController.update();
 		checkCollision();
@@ -143,6 +156,8 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 	@Override
 	public void dispose() {
+		batch.dispose();
+		font.dispose();
 		modelBatch.dispose();
 		for (Box box : boxes) {
 			box.model.dispose();
