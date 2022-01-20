@@ -34,7 +34,8 @@ public class CollisionTest {
 	@Test
 	public void testOrientedBoundingBoxCollision () {
 		OrientedBoundingBox b1 = new OrientedBoundingBox(new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1)));
-		OrientedBoundingBox b2 = new OrientedBoundingBox(new BoundingBox(new Vector3(1 + MathUtils.FLOAT_ROUNDING_ERROR, 1, 1), new Vector3(2, 2, 2)));
+		OrientedBoundingBox b2 = new OrientedBoundingBox(
+			new BoundingBox(new Vector3(1 + MathUtils.FLOAT_ROUNDING_ERROR, 1, 1), new Vector3(2, 2, 2)));
 
 		assertFalse(b1.intersects(b2));
 

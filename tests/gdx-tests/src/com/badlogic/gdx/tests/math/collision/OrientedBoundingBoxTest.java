@@ -65,7 +65,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	private List<Box> boxes = new ArrayList<>();
 
 	@Override
-	public void create() {
+	public void create () {
 		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		batch = new SpriteBatch();
 		modelBatch = new ModelBatch();
@@ -78,14 +78,14 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
-	private void setupScene() {
+	private void setupScene () {
 		boxes.clear();
 		for (int i = 0; i < NUM_BOXES; i++) {
 			boxes.add(new Box());
 		}
 	}
 
-	private void setupCamera() {
+	private void setupCamera () {
 		camera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.01f;
 		camera.far = 100f;
@@ -97,7 +97,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -119,7 +119,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		modelBatch.end();
 	}
 
-	private void checkCollision() {
+	private void checkCollision () {
 		Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
 		// Reset all boxes
@@ -155,7 +155,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		batch.dispose();
 		font.dispose();
 		modelBatch.dispose();
@@ -165,7 +165,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp (int keycode) {
 		if (Input.Keys.SPACE == keycode) {
 			setupScene();
 		}
@@ -180,7 +180,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 		public boolean intersects = false;
 
-		Box() {
+		Box () {
 			BoundingBox bounds = new BoundingBox(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.5f, 0.5f, 0.5f));
 			OrientedBoundingBox orientedBoundingBox = new OrientedBoundingBox(bounds);
 			this.orientedBoundingBox = orientedBoundingBox;
@@ -190,23 +190,23 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 			buildMovement();
 		}
 
-		private void buildMovement() {
+		private void buildMovement () {
 			Random random = new Random();
 			float speed = random.nextFloat();
 			float radius = 1 / 30f;
 
-			movement = new Matrix4().setToTranslation(new Vector3(random.nextFloat() * radius,
-					random.nextFloat() * radius, random.nextFloat() * radius));
+			movement = new Matrix4()
+				.setToTranslation(new Vector3(random.nextFloat() * radius, random.nextFloat() * radius, random.nextFloat() * radius));
 
 			switch (random.nextInt() % 3) {
-				default:
-					movement.rotate(new Quaternion(Vector3.X, speed));
-					break;
-				case 1:
-					movement.rotate(new Quaternion(Vector3.Y, speed));
-					break;
-				case 2:
-					movement.rotate(new Quaternion(Vector3.Z, speed));
+			default:
+				movement.rotate(new Quaternion(Vector3.X, speed));
+				break;
+			case 1:
+				movement.rotate(new Quaternion(Vector3.Y, speed));
+				break;
+			case 2:
+				movement.rotate(new Quaternion(Vector3.Z, speed));
 			}
 
 			// Update a few times to spread the boxes
@@ -215,25 +215,25 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 			}
 		}
 
-		public void update() {
+		public void update () {
 			orientedBoundingBox.mul(movement);
 			instance.transform.mul(movement);
 		}
 
-		private Model buildModel(OrientedBoundingBox orientedBoundingBox) {
+		private Model buildModel (OrientedBoundingBox orientedBoundingBox) {
 			Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
 			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
 			mb.begin();
 			MeshPartBuilder meshPartBuilder = mb.part("hitbox", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
 			BoxShapeBuilder.build(meshPartBuilder, orientedBoundingBox.getCorner000(new Vector3()),
-					orientedBoundingBox.getCorner010(new Vector3()), orientedBoundingBox.getCorner100(new Vector3()),
-					orientedBoundingBox.getCorner110(new Vector3()), orientedBoundingBox.getCorner001(new Vector3()),
-					orientedBoundingBox.getCorner011(new Vector3()), orientedBoundingBox.getCorner101(new Vector3()),
-					orientedBoundingBox.getCorner111(new Vector3()));
+				orientedBoundingBox.getCorner010(new Vector3()), orientedBoundingBox.getCorner100(new Vector3()),
+				orientedBoundingBox.getCorner110(new Vector3()), orientedBoundingBox.getCorner001(new Vector3()),
+				orientedBoundingBox.getCorner011(new Vector3()), orientedBoundingBox.getCorner101(new Vector3()),
+				orientedBoundingBox.getCorner111(new Vector3()));
 			return mb.end();
 		}
 
-		public void updateColor(Color color) {
+		public void updateColor (Color color) {
 			instance.materials.get(0).set(ColorAttribute.createDiffuse(color));
 		}
 	}

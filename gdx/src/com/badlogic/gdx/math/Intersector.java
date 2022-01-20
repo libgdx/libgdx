@@ -704,7 +704,7 @@ public final class Intersector {
 	 *
 	 * @return Whether the ray and the oriented bounding box intersect. */
 	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox obb) {
-		return intersectRayOrientedBounds (ray, obb, null);
+		return intersectRayOrientedBounds(ray, obb, null);
 	}
 
 	/** Check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
@@ -712,7 +712,7 @@ public final class Intersector {
 	 *
 	 * @return Whether the ray and the oriented bounding box intersect. */
 	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 transform) {
-		return intersectRayOrientedBounds (ray, bounds, transform, null);
+		return intersectRayOrientedBounds(ray, bounds, transform, null);
 	}
 
 	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
@@ -1443,17 +1443,15 @@ public final class Intersector {
 
 	/** SAT (separating axis theorem) abstraction */
 	public static class SAT {
-		/**
-		 * Returns whether two geometries (as a set of points) have at least one point of intersection
-		 * using SAT (separating axis theorem)
+		/** Returns whether two geometries (as a set of points) have at least one point of intersection using SAT (separating axis
+		 * theorem)
 		 *
 		 * @param axes - All axes to be tested
 		 * @param aVertices - Vertices from geometry A
 		 * @param bVertices - Vertices from geometry B
 		 *
-		 * @return if geometries are intersecting
-		 */
-		public static boolean hasOverlap(Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
+		 * @return if geometries are intersecting */
+		public static boolean hasOverlap (Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
 			for (Vector3 axis : axes) {
 				float minA = Float.MAX_VALUE;
 				float maxA = -Float.MAX_VALUE;
@@ -1488,8 +1486,8 @@ public final class Intersector {
 		 * @param count2 count of verts2
 		 * @param mtv the minimum translation vector
 		 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for verts1. */
-		private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
-													  MinimumTranslationVector mtv, boolean shapesShifted) {
+		private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2,
+			int count2, MinimumTranslationVector mtv, boolean shapesShifted) {
 			int endA = offset1 + count1;
 			int endB = offset2 + count2;
 			// get axis of polygon A
