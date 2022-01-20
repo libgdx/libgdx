@@ -1257,8 +1257,8 @@ public final class Intersector {
 	 * @param count2 count of verts2
 	 * @param mtv the minimum translation vector
 	 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for verts1. */
-	private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2,
-												  int count2, MinimumTranslationVector mtv, boolean shapesShifted) {
+	private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
+		MinimumTranslationVector mtv, boolean shapesShifted) {
 		int endA = offset1 + count1;
 		int endB = offset2 + count2;
 		// get axis of polygon A
@@ -1529,8 +1529,8 @@ public final class Intersector {
 		public float depth = 0;
 	}
 
-	/** Returns whether two geometries (defined as an array of vertices) have at least one point of intersection
-	 * using SAT (separating axis theorem)
+	/** Returns whether two geometries (defined as an array of vertices) have at least one point of intersection using SAT
+	 * (separating axis theorem)
 	 *
 	 * @param axes - Axes to be tested
 	 * @param aVertices - Vertices from geometry A
