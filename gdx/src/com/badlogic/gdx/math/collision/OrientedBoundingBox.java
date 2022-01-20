@@ -204,7 +204,7 @@ public class OrientedBoundingBox implements Serializable {
 		Vector3[] aVertices = getVertices();
 		Vector3[] bVertices = getVertices(b);
 
-		return Intersector.SAT.hasOverlap(allAxes, aVertices, bVertices);
+		return Intersector.hasOverlap(allAxes, aVertices, bVertices);
 	}
 
 	private static final Vector3[] bbCorners = new Vector3[8];
@@ -235,7 +235,7 @@ public class OrientedBoundingBox implements Serializable {
 			tmpVectors[6].set(aAxes[2]).crs(bAxes[0]), tmpVectors[7].set(aAxes[2]).crs(bAxes[1]),
 			tmpVectors[8].set(aAxes[2]).crs(bAxes[2])};
 
-		return Intersector.SAT.hasOverlap(allAxes, vertices, obb.vertices);
+		return Intersector.hasOverlap(allAxes, vertices, obb.vertices);
 	}
 
 	public void mul (Matrix4 transform) {

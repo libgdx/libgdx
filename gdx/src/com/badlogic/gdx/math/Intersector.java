@@ -1235,9 +1235,9 @@ public final class Intersector {
 			mtv.depth = Float.MAX_VALUE;
 			mtv.normal.setZero();
 		}
-		overlaps = SAT.overlapsOnAxisOfShape(verts2, offset2, count2, verts1, offset1, count1, mtv, true);
+		overlaps = overlapsOnAxisOfShape(verts2, offset2, count2, verts1, offset1, count1, mtv, true);
 		if (overlaps) {
-			overlaps = SAT.overlapsOnAxisOfShape(verts1, offset1, count1, verts2, offset2, count2, mtv, false);
+			overlaps = overlapsOnAxisOfShape(verts1, offset1, count1, verts2, offset2, count2, mtv, false);
 		}
 
 		if (!overlaps) {
@@ -1246,6 +1246,94 @@ public final class Intersector {
 				mtv.normal.setZero();
 			}
 			return false;
+		}
+		return true;
+	}
+
+	/** Implementation of the separating axis theorem (SAT) algorithm
+	 * @param offset1 offset of verts1
+	 * @param count1 count of verts1
+	 * @param offset2 offset of verts2
+	 * @param count2 count of verts2
+	 * @param mtv the minimum translation vector
+	 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for verts1. */
+	private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2,
+												  int count2, MinimumTranslationVector mtv, boolean shapesShifted) {
+		int endA = offset1 + count1;
+		int endB = offset2 + count2;
+		// get axis of polygon A
+		for (int i = offset1; i < endA; i += 2) {
+			float x1 = verts1[i];
+			float y1 = verts1[i + 1];
+			float x2 = verts1[(i + 2) % count1];
+			float y2 = verts1[(i + 3) % count1];
+
+			// Get the Axis for the 2 vertices
+			float axisX = y1 - y2;
+			float axisY = -(x1 - x2);
+
+			float len = (float)Math.sqrt(axisX * axisX + axisY * axisY);
+			// We got a normalized Vector
+			axisX /= len;
+			axisY /= len;
+			float minA = Float.MAX_VALUE;
+			float maxA = -Float.MAX_VALUE;
+			// project shape a on axis
+			for (int v = offset1; v < endA; v += 2) {
+				float p = verts1[v] * axisX + verts1[v + 1] * axisY;
+				minA = Math.min(minA, p);
+				maxA = Math.max(maxA, p);
+			}
+
+			float minB = Float.MAX_VALUE;
+			float maxB = -Float.MAX_VALUE;
+
+			// project shape b on axis
+			for (int v = offset2; v < endB; v += 2) {
+				float p = verts2[v] * axisX + verts2[v + 1] * axisY;
+				minB = Math.min(minB, p);
+				maxB = Math.max(maxB, p);
+			}
+			// There is a gap
+			if (maxA < minB || maxB < minA) {
+				return false;
+			} else {
+				if (mtv != null) {
+					float o = Math.min(maxA, maxB) - Math.max(minA, minB);
+					boolean aContainsB = minA < minB && maxA > maxB;
+					boolean bContainsA = minB < minA && maxB > maxA;
+					// if it contains one or another
+					float mins = 0;
+					float maxs = 0;
+					if (aContainsB || bContainsA) {
+						mins = Math.abs(minA - minB);
+						maxs = Math.abs(maxA - maxB);
+						o += Math.min(mins, maxs);
+					}
+
+					if (mtv.depth > o) {
+						mtv.depth = o;
+						boolean condition;
+						if (shapesShifted) {
+							condition = minA < minB;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						} else {
+							condition = minA > minB;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						}
+
+						if (aContainsB || bContainsA) {
+							condition = mins > maxs;
+							axisX = condition ? axisX : -axisX;
+							axisY = condition ? axisY : -axisY;
+						}
+
+						mtv.normal.set(axisX, axisY);
+					}
+				}
+			}
 		}
 		return true;
 	}
@@ -1441,130 +1529,40 @@ public final class Intersector {
 		public float depth = 0;
 	}
 
-	/** SAT (separating axis theorem) abstraction */
-	public static class SAT {
-		/** Returns whether two geometries (as a set of points) have at least one point of intersection using SAT (separating axis
-		 * theorem)
-		 *
-		 * @param axes - All axes to be tested
-		 * @param aVertices - Vertices from geometry A
-		 * @param bVertices - Vertices from geometry B
-		 *
-		 * @return if geometries are intersecting */
-		public static boolean hasOverlap (Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
-			for (Vector3 axis : axes) {
-				float minA = Float.MAX_VALUE;
-				float maxA = -Float.MAX_VALUE;
-				// project shape a on axis
-				for (Vector3 aVertex : aVertices) {
-					float p = aVertex.dot(axis);
-					minA = Math.min(minA, p);
-					maxA = Math.max(maxA, p);
-				}
-
-				float minB = Float.MAX_VALUE;
-				float maxB = -Float.MAX_VALUE;
-				// project shape b on axis
-				for (Vector3 bVertex : bVertices) {
-					float p = bVertex.dot(axis);
-					minB = Math.min(minB, p);
-					maxB = Math.max(maxB, p);
-				}
-
-				if (maxA < minB || maxB < minA) {
-					return false;
-				}
+	/** Returns whether two geometries (defined as an array of vertices) have at least one point of intersection
+	 * using SAT (separating axis theorem)
+	 *
+	 * @param axes - Axes to be tested
+	 * @param aVertices - Vertices from geometry A
+	 * @param bVertices - Vertices from geometry B
+	 *
+	 * @return if geometries are intersecting */
+	public static boolean hasOverlap (Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
+		for (Vector3 axis : axes) {
+			float minA = Float.MAX_VALUE;
+			float maxA = -Float.MAX_VALUE;
+			// project shape a on axis
+			for (Vector3 aVertex : aVertices) {
+				float p = aVertex.dot(axis);
+				minA = Math.min(minA, p);
+				maxA = Math.max(maxA, p);
 			}
 
-			return true;
-		}
-
-		/** Implementation of the separating axis theorem (SAT) algorithm
-		 * @param offset1 offset of verts1
-		 * @param count1 count of verts1
-		 * @param offset2 offset of verts2
-		 * @param count2 count of verts2
-		 * @param mtv the minimum translation vector
-		 * @param shapesShifted states if shape a and b are shifted. Important for calculating the axis translation for verts1. */
-		private static boolean overlapsOnAxisOfShape (float[] verts1, int offset1, int count1, float[] verts2, int offset2,
-			int count2, MinimumTranslationVector mtv, boolean shapesShifted) {
-			int endA = offset1 + count1;
-			int endB = offset2 + count2;
-			// get axis of polygon A
-			for (int i = offset1; i < endA; i += 2) {
-				float x1 = verts1[i];
-				float y1 = verts1[i + 1];
-				float x2 = verts1[(i + 2) % count1];
-				float y2 = verts1[(i + 3) % count1];
-
-				// Get the Axis for the 2 vertices
-				float axisX = y1 - y2;
-				float axisY = -(x1 - x2);
-
-				float len = (float)Math.sqrt(axisX * axisX + axisY * axisY);
-				// We got a normalized Vector
-				axisX /= len;
-				axisY /= len;
-				float minA = Float.MAX_VALUE;
-				float maxA = -Float.MAX_VALUE;
-				// project shape a on axis
-				for (int v = offset1; v < endA; v += 2) {
-					float p = verts1[v] * axisX + verts1[v + 1] * axisY;
-					minA = Math.min(minA, p);
-					maxA = Math.max(maxA, p);
-				}
-
-				float minB = Float.MAX_VALUE;
-				float maxB = -Float.MAX_VALUE;
-
-				// project shape b on axis
-				for (int v = offset2; v < endB; v += 2) {
-					float p = verts2[v] * axisX + verts2[v + 1] * axisY;
-					minB = Math.min(minB, p);
-					maxB = Math.max(maxB, p);
-				}
-				// There is a gap
-				if (maxA < minB || maxB < minA) {
-					return false;
-				} else {
-					if (mtv != null) {
-						float o = Math.min(maxA, maxB) - Math.max(minA, minB);
-						boolean aContainsB = minA < minB && maxA > maxB;
-						boolean bContainsA = minB < minA && maxB > maxA;
-						// if it contains one or another
-						float mins = 0;
-						float maxs = 0;
-						if (aContainsB || bContainsA) {
-							mins = Math.abs(minA - minB);
-							maxs = Math.abs(maxA - maxB);
-							o += Math.min(mins, maxs);
-						}
-
-						if (mtv.depth > o) {
-							mtv.depth = o;
-							boolean condition;
-							if (shapesShifted) {
-								condition = minA < minB;
-								axisX = condition ? axisX : -axisX;
-								axisY = condition ? axisY : -axisY;
-							} else {
-								condition = minA > minB;
-								axisX = condition ? axisX : -axisX;
-								axisY = condition ? axisY : -axisY;
-							}
-
-							if (aContainsB || bContainsA) {
-								condition = mins > maxs;
-								axisX = condition ? axisX : -axisX;
-								axisY = condition ? axisY : -axisY;
-							}
-
-							mtv.normal.set(axisX, axisY);
-						}
-					}
-				}
+			float minB = Float.MAX_VALUE;
+			float maxB = -Float.MAX_VALUE;
+			// project shape b on axis
+			for (Vector3 bVertex : bVertices) {
+				float p = bVertex.dot(axis);
+				minB = Math.min(minB, p);
+				maxB = Math.max(maxB, p);
 			}
-			return true;
+
+			if (maxA < minB || maxB < minA) {
+				// Found an axis so the geometries are not intersecting
+				return false;
+			}
 		}
+
+		return true;
 	}
 }
