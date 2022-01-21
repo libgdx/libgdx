@@ -4,6 +4,7 @@
 - [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
 - [BREAKING CHANGE] The built-in font files arial-15.fnt and arial-15.png have been replaced with lsans-15.fnt and lsans-15.png; this may change some text layout that uses the built-in font, and code that expects arial-15 assets to be present must change to lsans-15.
 - [BREAKING CHANGE] Legacy LWJGL3 projects must update the sourceCompatibility to 1.8 or higher.
+- [BREAKING CHANGE] Lwjgl3ApplicationConfiguration#useOpenGL3 was replaced by #setOpenGLEmulation
 - LWJGL3 extension: Added gdx-lwjgl3-glfw-awt-macos extension. Fixes GLFW in such a way, that the LWJGL3/libGDX must no longer run on the main thread in macOS, which allows AWT to work in parallel, i.e. file dialogs, JFrames, ImageIO, etc. You no longer need to pass `-XstartOnFirstThread` when starting an LWJGL3 app on macOS. See `AwtTestLWJGL` in gdx-tests-lwjgl3. For more information, see https://github.com/libgdx/libgdx/pull/6772
 - API Addition: Added LWJGL3 ANGLE support for x86_64 Windows, Linux, and macOS. Emulates OpenGL ES 2.0 through DirectX (Windows), desktop OpenGL (Linux), and Metal (macOS). May become the preferred method of rendering on macOS if Apple removes OpenGL support entirely. May fix some OpenGL driver issues. More information here: https://github.com/libgdx/libgdx/pull/6672
 - iOS: Update to MobiVM 2.3.15
