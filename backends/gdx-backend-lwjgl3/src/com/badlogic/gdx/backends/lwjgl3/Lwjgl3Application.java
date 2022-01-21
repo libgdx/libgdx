@@ -83,7 +83,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		if (errorCallback == null) {
 			if (SharedLibraryLoader.isMac) loadGlfwAwtMacos();
 			Lwjgl3NativesLoader.load();
-			errorCallback = GLFWErrorCallback.createPrint(System.err);
+			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
 			GLFW.glfwSetErrorCallback(errorCallback);
 			if (SharedLibraryLoader.isMac) GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
