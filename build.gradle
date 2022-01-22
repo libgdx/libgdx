@@ -165,6 +165,7 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 
 task fetchNativesZip() {
     doLast {
+		file("build").mkdir();
 		def zip = file("build/natives.zip");
 		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
@@ -182,7 +183,6 @@ task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
 }
-
 
 apply from: rootProject.file('publish.gradle')
 
