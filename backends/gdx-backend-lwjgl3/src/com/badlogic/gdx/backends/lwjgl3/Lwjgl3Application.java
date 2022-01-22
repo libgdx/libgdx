@@ -131,6 +131,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
+	public Lwjgl3Application (ApplicationListener listener) {
+		this(listener, new Lwjgl3ApplicationConfiguration());
+	}
+
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
 		initializeGlfw();
