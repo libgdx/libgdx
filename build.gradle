@@ -165,13 +165,15 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 
 task fetchNativesZip() {
     doLast {
-		file("build").mkdir();
-		def zip = file("build/natives.zip");
-		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
+        file("build").mkdir();
+        def zip = file("build/natives.zip");
+        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
+        file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
+        file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
         new URL('https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib').withInputStream{ i -> file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib").withOutputStream{ it << i }}
-	}
-	outputs.upToDateWhen { false }
+    }
+    outputs.upToDateWhen { false }
 }
 
 task fetchNativesLwjglAngle(dependsOn: fetchNativesZip, type: Copy) {
@@ -187,6 +189,6 @@ task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
 apply from: rootProject.file('publish.gradle')
 
 if(rootProject.file('override.gradle').exists())
-	apply from: rootProject.file('override.gradle')
+    apply from: rootProject.file('override.gradle')
 
 apply from: "gradle/dist.gradle"
