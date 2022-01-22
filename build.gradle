@@ -170,9 +170,7 @@ task fetchNativesZip() {
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
         new URL('https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib').withInputStream{ i -> file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib").withOutputStream{ it << i }}
 	}
-	outputs.file(file("build/natives.zip"))
-    outputs.file(file("build/gdx-angle-natives.zip"))
-    outputs.file(file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib"))
+	outputs.upToDateWhen { false }
 }
 
 task fetchNativesLwjglAngle(dependsOn: fetchNativesZip, type: Copy) {
@@ -184,6 +182,7 @@ task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
 }
+
 
 apply from: rootProject.file('publish.gradle')
 
