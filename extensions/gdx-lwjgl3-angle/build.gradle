@@ -18,6 +18,7 @@ apply plugin: "java"
 
 dependencies {
 	api project(":gdx")
+	api libraries.lwjgl3GLES
 }
 
 sourceSets.main.java.srcDirs = ["src"]

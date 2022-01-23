@@ -22,6 +22,7 @@ import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -93,8 +94,12 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			this.gl30 = new Lwjgl3GL30();
 			this.gl20 = this.gl30;
 		} else {
-			this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
-				: new Lwjgl3GLES20();
+			try {
+				this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
+					: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
+			} catch (Throwable t) {
+				throw new GdxRuntimeException("Couldn't instantiate GLES20.", t);
+			}
 			this.gl30 = null;
 		}
 		updateFramebufferInfo();
