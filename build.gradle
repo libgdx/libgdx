@@ -163,27 +163,35 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-task fetchNativesZip() {
-    doLast {
-        file("build").mkdir();
-        def zip = file("build/natives.zip");
-        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}
+task fetchExternalNativesZIP() {
+   doLast {        
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
         new URL('https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib').withInputStream{ i -> file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib").withOutputStream{ it << i }}
     }
+    outputs.upToDateWhen { false } 
+}
+
+task fetchExternalNatives(dependsOn: fetchExternalNativesZIP, type: Copy) {
+    from zipTree("build/gdx-angle-natives.zip")
+    into "./extensions/gdx-lwjgl3-angle/res"
+    outputs.upToDateWhen { false } 
+}
+
+task fetchNativesZip(dependsOn: fetchExternalNatives) {
+    doLast {
+        file("build").mkdir();
+        def zip = file("build/natives.zip");
+        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}        
+    }
     outputs.upToDateWhen { false }
 }
 
-task fetchNativesLwjglAngle(dependsOn: fetchNativesZip, type: Copy) {
-    from zipTree("build/gdx-angle-natives.zip")
-    into "./extensions/gdx-lwjgl3-angle/res"
-}
-
-task fetchNatives(dependsOn: fetchNativesLwjglAngle, type: Copy) {
+task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
+    outputs.upToDateWhen { false } 
 }
 
 apply from: rootProject.file('publish.gradle')

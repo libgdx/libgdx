@@ -362,6 +362,10 @@ jobs:
         run: |
           unzip -o natives.zip
 
+      - name: Fetch external natives
+        run: |
+          ./gradlew fetchExternalNatives
+
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
