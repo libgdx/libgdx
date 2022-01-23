@@ -165,6 +165,7 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 
 task fetchExternalNativesZIP() {
    doLast {        
+        file("build").mkdir();
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
@@ -180,8 +181,7 @@ task fetchExternalNatives(dependsOn: fetchExternalNativesZIP, type: Copy) {
 }
 
 task fetchNativesZip(dependsOn: fetchExternalNatives) {
-    doLast {
-        file("build").mkdir();
+    doLast {        
         def zip = file("build/natives.zip");
         new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}        
     }
