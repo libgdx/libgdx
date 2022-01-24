@@ -36,6 +36,13 @@ public class Bits {
 		checkCapacity(nbits >>> 6);
 	}
 
+	/** Creates a bit set from another bit set
+	 * @param bitsToCpy bitset to cpy */
+	public Bits (Bits bitsToCpy) {
+		this.bits = new long[bitsToCpy.bits.length];
+		System.arraycopy(bitsToCpy.bits, 0, this.bits, 0, bitsToCpy.bits.length);
+	}
+
 	/** @param index the index of the bit
 	 * @return whether the bit is set
 	 * @throws ArrayIndexOutOfBoundsException if index < 0 */
