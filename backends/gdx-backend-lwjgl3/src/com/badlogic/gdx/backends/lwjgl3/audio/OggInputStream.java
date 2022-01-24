@@ -105,7 +105,7 @@ public class OggInputStream extends InputStream {
 	 *
 	 * @param input The input stream from which to read the OGG file
 	 * @param previousStream The stream instance to reuse buffers from, may be null */
-	OggInputStream (InputStream input, OggInputStream previousStream) {
+	public OggInputStream (InputStream input, OggInputStream previousStream) {
 		if (previousStream == null) {
 			convbuffer = new byte[convsize];
 			pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);

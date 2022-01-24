@@ -28,6 +28,10 @@ compileJava {
 	options.incremental = true
 }
 
+jar {
+	duplicatesStrategy = "warn"
+}
+
 dependencies {
 	testImplementation libraries.junit
 	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
