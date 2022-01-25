@@ -20,12 +20,12 @@ configure(subprojects - project(":tests:gdx-tests-android")) {
 	if(JavaVersion.current().isJava9Compatible()) {
 		compileJava {
 			options.release = versions.java
-		}	
+		}
 	} else {
 		sourceCompatibility = versions.java
 		targetCompatibility = versions.java
 	}
-	
+
 	sourceSets.main.java.srcDirs = ["src"]
 	sourceSets.main.resources.srcDirs = ["res"]
 

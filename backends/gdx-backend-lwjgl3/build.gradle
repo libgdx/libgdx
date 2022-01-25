@@ -17,7 +17,7 @@
 if(JavaVersion.current().isJava9Compatible()) {
 	compileJava {
 		options.release = versions.javaLwjgl3
-	}	
+	}
 } else {
 	sourceCompatibility = versions.javaLwjgl3
 	targetCompatibility = versions.javaLwjgl3
