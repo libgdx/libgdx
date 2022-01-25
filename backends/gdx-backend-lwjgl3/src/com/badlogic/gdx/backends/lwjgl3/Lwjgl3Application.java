@@ -267,7 +267,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			glDebugCallback = null;
 		}
 		GLFW.glfwTerminate();
-		System.exit(0);
 	}
 
 	@Override
