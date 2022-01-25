@@ -19,7 +19,7 @@ apply plugin: "java"
 if(JavaVersion.current().isJava9Compatible()) {
 	compileJava {
 		options.release = versions.java
-	}	
+	}
 } else {
 	sourceCompatibility = versions.java
 	targetCompatibility = versions.java
