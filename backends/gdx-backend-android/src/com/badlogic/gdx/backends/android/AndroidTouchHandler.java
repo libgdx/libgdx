@@ -59,6 +59,7 @@ public class AndroidTouchHandler {
 				break;
 
 			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_OUTSIDE:
 				realPointerIndex = input.lookUpPointerIndex(pointerId);
@@ -76,18 +77,18 @@ public class AndroidTouchHandler {
 				input.touched[realPointerIndex] = false;
 				input.button[realPointerIndex] = 0;
 				input.pressure[realPointerIndex] = 0;
-				break;
 
-			case MotionEvent.ACTION_CANCEL:
-				for (int i = 0; i < input.realId.length; i++) {
-					input.realId[i] = -1;
-					input.touchX[i] = 0;
-					input.touchY[i] = 0;
-					input.deltaX[i] = 0;
-					input.deltaY[i] = 0;
-					input.touched[i] = false;
-					input.button[i] = 0;
-					input.pressure[i] = 0;
+				if (action == MotionEvent.ACTION_CANCEL) {
+					for (int i = 0; i < input.realId.length; i++) {
+						input.realId[i] = -1;
+						input.touchX[i] = 0;
+						input.touchY[i] = 0;
+						input.deltaX[i] = 0;
+						input.deltaY[i] = 0;
+						input.touched[i] = false;
+						input.button[i] = 0;
+						input.pressure[i] = 0;
+					}
 				}
 				break;
 
