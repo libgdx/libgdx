@@ -49,7 +49,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	/** Creates a new map with a load factor of 0.8.
-	 * @param initialCapacity The backing array size is initialCapacity * loadFactor, increased to the next power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public OrderedMap (int initialCapacity) {
 		super(initialCapacity);
 		keys = new Array(initialCapacity);
@@ -57,7 +57,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity The backing array size is initialCapacity * loadFactor, increased to the next power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public OrderedMap (int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 		keys = new Array(initialCapacity);
