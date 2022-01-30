@@ -78,10 +78,3 @@ jnigen {
 		cppExcludes = []
 	}
 }
-
-// Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
-task copyIdeaResources(type: Copy) {
-    from "${projectDir}/res"
-    into "${buildDir}/classes/java/main/"
-}
-processResources.dependsOn copyIdeaResources
