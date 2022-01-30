@@ -83,7 +83,7 @@ public class PreloaderBundleGenerator extends Generator {
 		if (target.exists()) {
 			if (!target.deleteDirectory()) throw new RuntimeException("Couldn't clean target path '" + target + "'");
 		}
-		ArrayList<Asset> assets = new ArrayList<Asset>();
+		ArrayList<Asset> assets = new ArrayList<>();
 		copyDirectory(source, target, assetFilter, assets);
 
 		// Now collect classpath files and copy to assets
@@ -187,7 +187,7 @@ public class PreloaderBundleGenerator extends Generator {
 		String assetFilterClass = assetFilterClassProperty.getValues().get(0);
 		if (assetFilterClass == null) return new DefaultAssetFilter();
 		try {
-			return (AssetFilter)Class.forName(assetFilterClass).newInstance();
+			return (AssetFilter)Class.forName(assetFilterClass).getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't instantiate custom AssetFilter '" + assetFilterClass
 				+ "', make sure the class is public and has a public default constructor", e);
