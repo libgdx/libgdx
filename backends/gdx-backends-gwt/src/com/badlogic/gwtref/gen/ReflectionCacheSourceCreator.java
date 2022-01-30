@@ -628,12 +628,12 @@ public class ReflectionCacheSourceCreator {
 							b.append(" \"").append((String)invokeResult).append("\"");
 						} else if (returnType.equals(Class[].class)) {
 							// Class[]
-							for (Class c : (Class[])invokeResult) {
+							for (Class<?> c : (Class<?>[])invokeResult) {
 								b.append(" ").append(c.getCanonicalName()).append(".class,");
 							}
 						} else if (returnType.equals(Class.class)) {
 							// Class
-							b.append(" ").append(((Class)invokeResult).getCanonicalName()).append(".class");
+							b.append(" ").append(((Class<?>)invokeResult).getCanonicalName()).append(".class");
 						} else if (returnType.isArray() && returnType.getComponentType().isEnum()) {
 							// enum[]
 							String enumTypeName = returnType.getComponentType().getCanonicalName();
