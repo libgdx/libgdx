@@ -104,7 +104,7 @@ public class PreloaderBundleGenerator extends Generator {
 			}
 		}
 
-		HashMap<String, ArrayList<Asset>> bundles = new HashMap<String, ArrayList<Asset>>();
+		HashMap<String, ArrayList<Asset>> bundles = new HashMap<>();
 		for (Asset asset : assets) {
 			String bundleName = assetFilter.getBundleName(asset.file.path());
 			if (bundleName == null) {
@@ -112,7 +112,7 @@ public class PreloaderBundleGenerator extends Generator {
 			}
 			ArrayList<Asset> bundleAssets = bundles.get(bundleName);
 			if (bundleAssets == null) {
-				bundleAssets = new ArrayList<Asset>();
+				bundleAssets = new ArrayList<>();
 				bundles.put(bundleName, bundleAssets);
 			}
 			bundleAssets.add(asset);
@@ -175,7 +175,7 @@ public class PreloaderBundleGenerator extends Generator {
 	}
 
 	private AssetFilter getAssetFilter (GeneratorContext context) {
-		ConfigurationProperty assetFilterClassProperty = null;
+		ConfigurationProperty assetFilterClassProperty;
 		try {
 			assetFilterClassProperty = context.getPropertyOracle().getConfigurationProperty("gdx.assetfilterclass");
 		} catch (BadPropertyValueException e) {
@@ -195,7 +195,7 @@ public class PreloaderBundleGenerator extends Generator {
 	}
 
 	private String getAssetPath (GeneratorContext context) {
-		ConfigurationProperty assetPathProperty = null;
+		ConfigurationProperty assetPathProperty;
 		try {
 			assetPathProperty = context.getPropertyOracle().getConfigurationProperty("gdx.assetpath");
 		} catch (BadPropertyValueException e) {
@@ -211,7 +211,6 @@ public class PreloaderBundleGenerator extends Generator {
 			throw new RuntimeException(
 				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		} else {
-			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
 			for (String token : tokens) {
 				System.out.println(token);
@@ -225,7 +224,7 @@ public class PreloaderBundleGenerator extends Generator {
 	}
 
 	private String getAssetOutputPath (GeneratorContext context) {
-		ConfigurationProperty assetPathProperty = null;
+		ConfigurationProperty assetPathProperty;
 		try {
 			assetPathProperty = context.getPropertyOracle().getConfigurationProperty("gdx.assetoutputpath");
 		} catch (BadPropertyValueException e) {
@@ -238,7 +237,6 @@ public class PreloaderBundleGenerator extends Generator {
 		if (paths == null) {
 			return null;
 		} else {
-			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
 			String path = null;
 			for (String token : tokens) {
@@ -254,12 +252,10 @@ public class PreloaderBundleGenerator extends Generator {
 	}
 
 	private List<String> getClasspathFiles (GeneratorContext context) {
-		List<String> classpathFiles = new ArrayList<String>();
+		List<String> classpathFiles = new ArrayList<>();
 		try {
 			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.files.classpath");
-			for (String value : prop.getValues()) {
-				classpathFiles.add(value);
-			}
+			classpathFiles.addAll(prop.getValues());
 		} catch (BadPropertyValueException e) {
 			// Ignore
 		}

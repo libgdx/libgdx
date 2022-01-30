@@ -569,11 +569,11 @@ public class FileWrapper {
 		if (file.exists()) {
 			File[] files = file.listFiles();
 			if (files != null) {
-				for (int i = 0, n = files.length; i < n; i++) {
-					if (files[i].isDirectory())
-						deleteDirectory(files[i]);
+				for (File value : files) {
+					if (value.isDirectory())
+						deleteDirectory(value);
 					else
-						files[i].delete();
+						value.delete();
 				}
 			}
 		}
@@ -592,8 +592,7 @@ public class FileWrapper {
 	static private void copyDirectory (FileWrapper sourceDir, FileWrapper destDir) {
 		destDir.mkdirs();
 		FileWrapper[] files = sourceDir.list();
-		for (int i = 0, n = files.length; i < n; i++) {
-			FileWrapper srcFile = files[i];
+		for (FileWrapper srcFile : files) {
 			FileWrapper destFile = destDir.child(srcFile.name());
 			if (srcFile.isDirectory())
 				copyDirectory(srcFile, destFile);

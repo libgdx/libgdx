@@ -47,13 +47,13 @@ public class Preloader {
 
 	}
 
-	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
-	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
-	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
-	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
-	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
-	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
-	public ObjectMap<String, String> assetNames = new ObjectMap<String, String>();
+	public ObjectMap<String, Void> directories = new ObjectMap<>();
+	public ObjectMap<String, ImageElement> images = new ObjectMap<>();
+	public ObjectMap<String, Blob> audio = new ObjectMap<>();
+	public ObjectMap<String, String> texts = new ObjectMap<>();
+	public ObjectMap<String, Blob> binaries = new ObjectMap<>();
+	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<>();
+	public ObjectMap<String, String> assetNames = new ObjectMap<>();
 
 	public static class Asset {
 		public Asset (String file, String url, AssetType type, long size, String mimeType) {
@@ -137,7 +137,7 @@ public class Preloader {
 			@Override
 			public void onSuccess (String result) {
 				String[] lines = result.split("\n");
-				Array<Asset> assets = new Array<Asset>(lines.length);
+				Array<Asset> assets = new Array<>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
 					if (tokens.length != 6) {
@@ -371,7 +371,7 @@ public class Preloader {
 	}
 
 	private FileHandle[] getMatchedAssetFiles (FilePathFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
+		Array<FileHandle> files = new Array<>();
 		for (String file : assetNames.keys()) {
 			if (filter.accept(file)) {
 				files.add(new GwtFileHandle(this, file, FileType.Internal));
