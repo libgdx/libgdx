@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -200,8 +200,7 @@ public class FileWrapper {
 		if (length == 0) length = 512;
 		byte[] buffer = new byte[length];
 		int position = 0;
-		InputStream input = read();
-		try {
+		try (InputStream input = read()) {
 			while (true) {
 				int count = input.read(buffer, position, buffer.length - position);
 				if (count == -1) break;
@@ -215,11 +214,6 @@ public class FileWrapper {
 			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
 		}
 		if (position < buffer.length) {
 			// Shrink buffer.
@@ -278,9 +272,7 @@ public class FileWrapper {
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void write (InputStream input, boolean append) {
-		OutputStream output = null;
-		try {
-			output = write(append);
+		try (OutputStream output = write(append)) {
 			byte[] buffer = new byte[4096];
 			while (true) {
 				int length = input.read(buffer);
@@ -292,10 +284,6 @@ public class FileWrapper {
 		} finally {
 			try {
 				if (input != null) input.close();
-			} catch (Exception ignored) {
-			}
-			try {
-				if (output != null) output.close();
 			} catch (Exception ignored) {
 			}
 		}
@@ -362,16 +350,10 @@ public class FileWrapper {
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, boolean append) {
-		OutputStream output = write(append);
-		try {
+		try (OutputStream output = write(append)) {
 			output.write(bytes);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
-		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
 		}
 	}
 
@@ -380,16 +362,10 @@ public class FileWrapper {
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, int offset, int length, boolean append) {
-		OutputStream output = write(append);
-		try {
+		try (OutputStream output = write(append)) {
 			output.write(bytes, offset, length);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
-		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
 		}
 	}
 
@@ -417,8 +393,7 @@ public class FileWrapper {
 		if (relativePaths == null) return new FileWrapper[0];
 		FileWrapper[] handles = new FileWrapper[relativePaths.length];
 		int count = 0;
-		for (int i = 0, n = relativePaths.length; i < n; i++) {
-			String path = relativePaths[i];
+		for (String path : relativePaths) {
 			if (!path.endsWith(suffix)) continue;
 			handles[count] = child(path);
 			count++;

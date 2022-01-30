@@ -162,8 +162,7 @@ public class PreloaderBundleGenerator extends Generator {
 		assets.add(new Asset(destDir.path(), destDir, AssetType.Directory));
 		destDir.mkdirs();
 		FileWrapper[] files = sourceDir.list();
-		for (int i = 0, n = files.length; i < n; i++) {
-			FileWrapper srcFile = files[i];
+		for (FileWrapper srcFile : files) {
 			if (srcFile.isDirectory()) {
 				FileWrapper destFile = destDir.child(srcFile.name());
 				copyDirectory(srcFile, destFile, filter, assets);

@@ -155,11 +155,7 @@ public class GwtFileHandle extends FileHandle {
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
 		if (preloader.isText(file)) return preloader.texts.get(file);
-		try {
-			return new String(readBytes(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return null;
-		}
+		return new String(readBytes(), StandardCharsets.UTF_8);
 	}
 
 	/** Reads the entire file into a byte array.
@@ -169,8 +165,7 @@ public class GwtFileHandle extends FileHandle {
 		if (length == 0) length = 512;
 		byte[] buffer = new byte[length];
 		int position = 0;
-		InputStream input = read();
-		try {
+		try (InputStream input = read()) {
 			while (true) {
 				int count = input.read(buffer, position, buffer.length - position);
 				if (count == -1) break;
@@ -184,11 +179,6 @@ public class GwtFileHandle extends FileHandle {
 			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
 		}
 		if (position < buffer.length) {
 			// Shrink buffer.

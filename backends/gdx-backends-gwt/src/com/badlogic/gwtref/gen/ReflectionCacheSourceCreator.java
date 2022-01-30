@@ -644,7 +644,7 @@ public class ReflectionCacheSourceCreator {
 							}
 						} else if (returnType.isEnum()) {
 							// enum
-							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult.toString());
+							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult);
 						} else if (returnType.isArray() && returnType.getComponentType().isPrimitive()) {
 							// primitive []
 							Class<?> primitiveType = returnType.getComponentType();
