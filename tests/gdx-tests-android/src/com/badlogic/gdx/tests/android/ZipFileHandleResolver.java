@@ -24,7 +24,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class ZipFileHandleResolver implements FileHandleResolver {
 
 	@Override
-	public FileHandle resolve(String fileName) {
+	public FileHandle resolve (String fileName) {
 		return new AndroidZipFileHandle(fileName);
 	}
 
