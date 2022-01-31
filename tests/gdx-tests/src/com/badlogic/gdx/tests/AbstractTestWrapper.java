@@ -62,6 +62,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		container.debug();
 		Table table = new Table();
 		ScrollPane scroll = new ScrollPane(table);
+		scroll.setScrollbarsVisible(true);
 		container.add(scroll).expand().fill();
 		container.setFillParent(true);
 		table.pad(10).defaults().expandX().space(4);
