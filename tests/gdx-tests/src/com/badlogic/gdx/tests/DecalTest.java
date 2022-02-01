@@ -54,7 +54,7 @@ public class DecalTest extends GdxTest {
 		egg = new Texture(Gdx.files.internal("data/egg.png"));
 		egg.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		egg.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
-		wheel = new Texture(Gdx.files.internal("data/wheel.png"));
+		wheel = new Texture(Gdx.files.internal("data/sys.png"));
 		wheel.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		wheel.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
 
