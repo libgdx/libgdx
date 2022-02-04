@@ -29,13 +29,13 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** Lightweight XML parser. Supports a subset of XML features: elements, attributes, text, predefined entities, CDATA, mixed
  * content. Namespaces are parsed as part of the element or attribute name. Prologs and doctypes are ignored. Only 8-bit character
- * encodings are supported. Input is assumed to be well formed.<br>
+ * encodings are supported. Input is assumed to be well-formed.<br>
  * <br>
  * The default behavior is to parse the XML into a DOM. Extends this class and override methods to perform event driven parsing.
  * When this is done, the parse methods will return null.
  * @author Nathan Sweet */
 public class XmlReader {
-	private final Array<Element> elements = new Array(8);
+	private final Array<Element> elements = new Array<>(8);
 	private Element root, current;
 	private final StringBuilder textBuffer = new StringBuilder(64);
 	private String entitiesText;
@@ -462,7 +462,7 @@ public class XmlReader {
 		private ObjectMap<String, String> attributes;
 		private Array<Element> children;
 		private String text;
-		private Element parent;
+		private final Element parent;
 
 		public Element (String name, Element parent) {
 			this.name = name;
@@ -498,7 +498,7 @@ public class XmlReader {
 		}
 
 		public void setAttribute (String name, String value) {
-			if (attributes == null) attributes = new ObjectMap(8);
+			if (attributes == null) attributes = new ObjectMap<>(8);
 			attributes.put(name, value);
 		}
 
@@ -514,7 +514,7 @@ public class XmlReader {
 		}
 
 		public void addChild (Element element) {
-			if (children == null) children = new Array(8);
+			if (children == null) children = new Array<>(8);
 			children.add(element);
 		}
 
@@ -748,6 +748,28 @@ public class XmlReader {
 			String value = get(name, null);
 			if (value == null) return defaultValue;
 			return Boolean.parseBoolean(value);
+		}
+
+		@Override
+		public boolean equals (Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			Element element = (Element)o;
+
+			if (!name.equals(element.name)) return false;
+			if (attributes != null ? !attributes.equals(element.attributes) : element.attributes != null) return false;
+			if (children != null ? !children.equals(element.children) : element.children != null) return false;
+			return text != null ? text.equals(element.text) : element.text == null;
+		}
+
+		@Override
+		public int hashCode () {
+			int result = name.hashCode();
+			result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+			result = 31 * result + (children != null ? children.hashCode() : 0);
+			result = 31 * result + (text != null ? text.hashCode() : 0);
+			return result;
 		}
 	}
 }
