@@ -53,7 +53,7 @@
 - API ADDITION: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
-- Desktop: Support for 8-bit PCM and MP3 WAVs
+- Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
 
 [1.10.0]
