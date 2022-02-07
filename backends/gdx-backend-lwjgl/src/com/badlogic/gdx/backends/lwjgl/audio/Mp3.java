@@ -49,7 +49,7 @@ public class Mp3 {
 				decoder.setOutputBuffer(outputBuffer);
 				setup(channels, 16, header.getSampleRate());
 			} catch (BitstreamException e) {
-				throw new GdxRuntimeException("error while preloading mp3", e);
+				throw new GdxRuntimeException("Error while preloading MP3", e);
 			}
 		}
 
