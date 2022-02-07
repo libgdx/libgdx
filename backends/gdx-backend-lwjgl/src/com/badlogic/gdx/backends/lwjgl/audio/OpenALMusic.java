@@ -60,8 +60,9 @@ public abstract class OpenALMusic implements Music {
 		this.onCompletionListener = null;
 	}
 
-	protected void setup (int channels, int sampleRate) {
+	protected void setup (int channels, int bitDepth, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+		if (bitDepth == 8) this.format--; // Use 8-bit AL_FORMAT instead.
 		this.sampleRate = sampleRate;
 		maxSecondsPerBuffer = (float)bufferSize / (bytesPerSample * channels * sampleRate);
 	}

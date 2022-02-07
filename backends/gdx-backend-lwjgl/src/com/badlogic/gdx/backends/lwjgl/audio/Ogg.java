@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl.audio;
 import java.io.ByteArrayOutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** @author Nathan Sweet */
@@ -31,13 +32,13 @@ public class Ogg {
 			super(audio, file);
 			if (audio.noDevice) return;
 			input = new OggInputStream(file.read());
-			setup(input.getChannels(), input.getSampleRate());
+			setup(input.getChannels(), 16, input.getSampleRate());
 		}
 
 		public int read (byte[] buffer) {
 			if (input == null) {
 				input = new OggInputStream(file.read(), previousInput);
-				setup(input.getChannels(), input.getSampleRate());
+				setup(input.getChannels(), 16, input.getSampleRate());
 				previousInput = null; // release this reference
 			}
 			return input.read(buffer);
@@ -71,7 +72,7 @@ public class Ogg {
 					if (length == -1) break;
 					output.write(buffer, 0, length);
 				}
-				setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
+				setup(output.toByteArray(), input.getChannels(), 16, input.getSampleRate());
 			} finally {
 				StreamUtils.closeQuietly(input);
 			}

@@ -30,26 +30,28 @@ public class OpenALSound implements Sound {
 	private final OpenALLwjglAudio audio;
 	private float duration;
 	private int sampleRate, channels;
+	private String type;
 
 	public OpenALSound (OpenALLwjglAudio audio) {
 		this.audio = audio;
 	}
 
-	void setup (byte[] pcm, int channels, int sampleRate) {
+	void setup (byte[] pcm, int channels, int bitDepth, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
-		int bytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
-		int samples = bytes / (2 * channels);
+		int format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+		if (bitDepth == 8) format--; // Use 8-bit AL_FORMAT instead.
+		int samples = pcm.length / (bitDepth / 8 * channels);
 		duration = samples / (float)sampleRate;
 
-		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
+		ByteBuffer buffer = ByteBuffer.allocateDirect(pcm.length);
 		buffer.order(ByteOrder.nativeOrder());
-		buffer.put(pcm, 0, bytes);
+		buffer.put(pcm);
 		((Buffer)buffer).flip();
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
-			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buffer.asShortBuffer(), sampleRate);
+			alBufferData(bufferID, format, buffer.asShortBuffer(), sampleRate);
 		}
 	}
 
@@ -182,13 +184,23 @@ public class OpenALSound implements Sound {
 		return duration;
 	}
 
-	/** returns the original sample rate of the sound in Hz. */
+	/** Returns the original sample rate of the sound in Hz. */
 	public int getRate () {
 		return sampleRate;
 	}
 
-	/** returns the number of channels of the sound (1 for mono, 2 for stereo). */
+	/** Returns the number of channels of the sound (1 for mono, 2 for stereo). */
 	public int getChannels () {
 		return channels;
 	}
+
+	/** @param type The type of audio, such as mp3, ogg or wav. */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
+	}
+
 }

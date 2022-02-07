@@ -65,7 +65,6 @@ public class Wav {
 					setType("mp3");
 					return;
 				}
-
 				setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.bitDepth, input.sampleRate);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);

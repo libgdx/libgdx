@@ -157,11 +157,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(extension);
 		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 		try {
-			OpenALSound test = soundClass.getConstructor(new Class[] {OpenALLwjgl3Audio.class, FileHandle.class}).newInstance(this, file);
-			if (test.getType() != null && !test.getType().equals(extension)) {
-				return newSound(file, test.getType());
+			OpenALSound sound = soundClass.getConstructor(new Class[] {OpenALLwjgl3Audio.class, FileHandle.class}).newInstance(this, file);
+			if (sound.getType() != null && !sound.getType().equals(extension)) {
+				return newSound(file, sound.getType());
 			}
-			return test;
+			return sound;
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
 		}
