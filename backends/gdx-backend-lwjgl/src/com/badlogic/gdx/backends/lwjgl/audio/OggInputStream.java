@@ -137,8 +137,10 @@ public class OggInputStream extends InputStream {
 
 	public int getSampleRate () {
 		// Quick and dirty hack to make surround sound Oggs play at correct speed:
-		if (oggInfo.channels > 2) return oggInfo.rate * (oggInfo.channels / 2);
-		else return oggInfo.rate;
+		if (oggInfo.channels > 2)
+			return oggInfo.rate * (oggInfo.channels / 2);
+		else
+			return oggInfo.rate;
 	}
 
 	/** Initialise the streams and thread involved in the streaming of OGG data */

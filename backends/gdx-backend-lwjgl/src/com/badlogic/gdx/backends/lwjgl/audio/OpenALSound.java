@@ -195,11 +195,11 @@ public class OpenALSound implements Sound {
 	}
 
 	/** @param type The type of audio, such as mp3, ogg or wav. */
-	public void setType(String type) {
+	public void setType (String type) {
 		this.type = type;
 	}
 
-	public String getType() {
+	public String getType () {
 		return type;
 	}
 

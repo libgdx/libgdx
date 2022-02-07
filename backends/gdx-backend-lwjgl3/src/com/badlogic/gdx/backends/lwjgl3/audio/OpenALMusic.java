@@ -62,8 +62,7 @@ public abstract class OpenALMusic implements Music {
 	/** Prepare our music for playback!
 	 * @param channels The number of channels for the music. Most commonly 1 (for mono) or 2 (for stereo).
 	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32 or sometimes 64.
-	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason.
-	 */
+	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
 	protected void setup (int channels, int bitDepth, int sampleRate) {
 		this.format = OpenALUtils.determineFormat(channels, bitDepth);
 		this.sampleRate = sampleRate;

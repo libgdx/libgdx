@@ -150,27 +150,27 @@ public class MusicTest extends GdxTest {
 			music.dispose();
 		}
 		switch (song) {
-			default:
-			case MP3_CLOCK:
-				music = Gdx.audio.newMusic(Gdx.files.internal("data/60bpm.mp3"));
-				songDuration = 5 * 60 + 4;
-				break;
-			case MP3:
-				music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
-				songDuration = 183;
-				break;
-			case OGG:
-				music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.ogg"));
-				songDuration = 183;
-				break;
-			case WAV:
-				music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop.wav"));
-				songDuration = 4;
-				break;
-			case PCM8:
-				music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop-8bit.wav"));
-				songDuration = 4;
-				break;
+		default:
+		case MP3_CLOCK:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/60bpm.mp3"));
+			songDuration = 5 * 60 + 4;
+			break;
+		case MP3:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
+			songDuration = 183;
+			break;
+		case OGG:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.ogg"));
+			songDuration = 183;
+			break;
+		case WAV:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop.wav"));
+			songDuration = 4;
+			break;
+		case PCM8:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop-8bit.wav"));
+			songDuration = 4;
+			break;
 		}
 		music.setLooping(btLoop.isChecked());
 		music.play();

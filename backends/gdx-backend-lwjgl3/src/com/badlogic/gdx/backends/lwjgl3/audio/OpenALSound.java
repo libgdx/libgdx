@@ -40,8 +40,7 @@ public class OpenALSound implements Sound {
 	 * @param pcm Byte array of raw PCM data to be played.
 	 * @param channels The number of channels for the sound. Most commonly 1 (for mono) or 2 (for stereo).
 	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32 or sometimes 64.
-	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason.
-	 */
+	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
 	void setup (byte[] pcm, int channels, int bitDepth, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
@@ -200,11 +199,11 @@ public class OpenALSound implements Sound {
 	}
 
 	/** @param type The type of audio, such as mp3, ogg or wav. */
-	public void setType(String type) {
+	public void setType (String type) {
 		this.type = type;
 	}
 
-	public String getType() {
+	public String getType () {
 		return type;
 	}
 }

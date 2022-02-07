@@ -65,7 +65,8 @@ public class Wav {
 					setType("mp3");
 					return;
 				}
-				setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.bitDepth, input.sampleRate);
+				setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.bitDepth,
+					input.sampleRate);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
 			} finally {
@@ -96,10 +97,10 @@ public class Wav {
 				// http://soundfile.sapp.org/doc/WaveFormat/
 				type = read() & 0xff | (read() & 0xff) << 8;
 
-				if (type == 0x0055) return; // Handle MP3 in constructor instead
+				if (type == 0x0055)
+					return; // Handle MP3 in constructor instead
 				else if (type != 0x0001 && type != 0x0003) throw new GdxRuntimeException(
-					"WAV files must be PCM, unsupported format: " +
-						getCodecName(type) + " (" + type + ")");
+					"WAV files must be PCM, unsupported format: " + getCodecName(type) + " (" + type + ")");
 
 				channels = read() & 0xff | (read() & 0xff) << 8;
 				sampleRate = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
@@ -160,24 +161,34 @@ public class Wav {
 			return offset;
 		}
 
-		/** List is a combination of Audacity's export formats and Windows ACM.
-		 * For a more thorough list, see https://wiki.multimedia.cx/index.php/TwoCC
+		/** List is a combination of Audacity's export formats and Windows ACM. For a more thorough list, see
+		 * https://wiki.multimedia.cx/index.php/TwoCC
 		 * @param type 16-bit value from the fmt chunk.
-		 * @return A human-readable name for the codec.
-		 */
-		private String getCodecName(int type) {
+		 * @return A human-readable name for the codec. */
+		private String getCodecName (int type) {
 			switch (type) {
-				case 0x0002: return "Microsoft ADPCM";
-				case 0x0006: return "ITU-T G.711 A-law";
-				case 0x0007: return "ITU-T G.711 u-law";
-				case 0x0011: return "IMA ADPCM";
-				case 0x0022: return "DSP Group TrueSpeech";
-				case 0x0031: return "Microsoft GSM 6.10";
-				case 0x0040: return "Antex G.721 ADPCM";
-				case 0x0070: return "Lernout & Hauspie CELP 4.8kbps";
-				case 0x0072: return "Lernout & Hauspie CBS 12kbps";
-				case 0xfffe: return "Extensible";
-				default: return "Unknown";
+			case 0x0002:
+				return "Microsoft ADPCM";
+			case 0x0006:
+				return "ITU-T G.711 A-law";
+			case 0x0007:
+				return "ITU-T G.711 u-law";
+			case 0x0011:
+				return "IMA ADPCM";
+			case 0x0022:
+				return "DSP Group TrueSpeech";
+			case 0x0031:
+				return "Microsoft GSM 6.10";
+			case 0x0040:
+				return "Antex G.721 ADPCM";
+			case 0x0070:
+				return "Lernout & Hauspie CELP 4.8kbps";
+			case 0x0072:
+				return "Lernout & Hauspie CBS 12kbps";
+			case 0xfffe:
+				return "Extensible";
+			default:
+				return "Unknown";
 			}
 		}
 	}

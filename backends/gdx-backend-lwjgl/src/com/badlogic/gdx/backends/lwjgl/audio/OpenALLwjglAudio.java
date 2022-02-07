@@ -87,8 +87,7 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		soundIdToSource = new LongMap<>();
 		sourceToSoundId = new IntMap<>();
 
-		FloatBuffer orientation = BufferUtils.createFloatBuffer(6)
-			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
+		FloatBuffer orientation = BufferUtils.createFloatBuffer(6).put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
 		((Buffer)orientation).flip();
 		alListener(AL_ORIENTATION, orientation);
 		FloatBuffer velocity = BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
@@ -123,7 +122,8 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(extension);
 		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 		try {
-			OpenALSound sound = soundClass.getConstructor(new Class[] {OpenALLwjglAudio.class, FileHandle.class}).newInstance(this, file);
+			OpenALSound sound = soundClass.getConstructor(new Class[] {OpenALLwjglAudio.class, FileHandle.class}).newInstance(this,
+				file);
 			if (sound.getType() != null && !sound.getType().equals(extension)) {
 				return newSound(file, sound.getType());
 			}
