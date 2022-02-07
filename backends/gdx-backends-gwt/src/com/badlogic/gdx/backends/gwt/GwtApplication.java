@@ -163,7 +163,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		preloadAssets();
 	}
 
-	void preloadAssets () {
+	protected void preloadAssets () {
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = createPreloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
