@@ -52,9 +52,9 @@ public class OpenALUtils {
 				throw new GdxRuntimeException("Audio: Bit depth must be 8, 16, 32 or 64.");
 			}
 			break;
-		case 4:
+		case 4: // Works on stereo devices but not mono as above
 			format = AL_FORMAT_QUAD16;
-			break; // Works on stereo devices but not mono as above
+			break;
 		case 6:
 			format = AL_FORMAT_51CHN16;
 			break;
@@ -71,7 +71,7 @@ public class OpenALUtils {
 			if (bitDepth == 8)
 				format--; // Use 8-bit AL_FORMAT instead
 			else if (bitDepth == 32)
-				format++; // Use 32-bit instead
+				format++; // Use 32-bit AL_FORMAT instead
 			else if (bitDepth != 16)
 				throw new GdxRuntimeException("Audio: Bit depth must be 8, 16 or 32 when 4+ channels are present.");
 		}
