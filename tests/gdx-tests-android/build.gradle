@@ -54,3 +54,31 @@ android {
 		versionName "1.0"
 	}
 }
+
+// called every time gradle gets executed, takes the native dependencies of
+// the natives configuration, and extracts them to the proper libs/ folders
+// so they get packed with the APK.
+task copyAndroidNatives() {
+	doFirst {
+		file("libs/armeabi-v7a/").mkdirs();
+		file("libs/arm64-v8a/").mkdirs();
+		file("libs/x86_64/").mkdirs();
+		file("libs/x86/").mkdirs();
+
+		['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'].each { arch -> 
+			[project(":gdx"), project(":extensions:gdx-bullet"), project(":extensions:gdx-box2d-parent:gdx-box2d"), project(":extensions:gdx-freetype")].each { p ->
+				copy {
+					from new File(p.projectDir, "libs/${arch}")
+					into "libs/${arch}"
+					include "*.so"
+				}
+			}
+		}
+	}
+}
+
+tasks.whenTaskAdded { packageTask ->
+	if (packageTask.name.contains("package")) {
+		packageTask.dependsOn 'copyAndroidNatives'
+	}
+}
