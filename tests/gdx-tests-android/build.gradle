@@ -20,6 +20,34 @@ buildscript {
 	}
 }
 
+def localProperties = new File(rootProject.rootDir, "local.properties")
+def hasAndroidSDKDir = false
+if (localProperties.exists()) {
+    Properties properties = new Properties()
+    localProperties.withInputStream { instr ->
+        properties.load(instr)
+    }
+
+    def sdkDirProp = properties.getProperty('sdk.dir')
+
+    if (sdkDirProp != null) {
+        hasAndroidSDKDir = true;
+    } else {
+        sdkDirProp = properties.getProperty('android.dir')
+        if (sdkDirProp != null) {
+            hasAndroidSDKDir = true;
+        }
+    }
+}
+
+if(!hasAndroidSDKDir && System.getenv("ANDROID_HOME") == null && System.getenv("ANDROID_SDK_ROOT") == null) {
+    logger.warn("==============================================================================================");
+    logger.warn("sdk.dir/ANDROID_HOME/ANDROID_SDK_ROOT are unset, gdx-tests-android will not be properly setup.");
+    logger.warn("==============================================================================================");
+    apply plugin: "java-library"
+    return;
+}
+
 apply plugin: "com.android.application"
 apply from: "obb.gradle"
 
