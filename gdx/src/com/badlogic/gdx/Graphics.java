@@ -209,6 +209,9 @@ public interface Graphics {
 	 *
 	 * If the density could not be determined, this returns a default value of 1.
 	 *
+	 * Depending on the underlying platform implementation this might be a relatively expensive operation. Therefore it should not
+	 * be called continously on each frame.
+	 *
 	 * @return the Density Independent Pixel factor of the display. */
 	float getDensity ();
 

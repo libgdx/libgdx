@@ -362,6 +362,10 @@ jobs:
         run: |
           unzip -o natives.zip
 
+      - name: Fetch external natives
+        run: |
+          ./gradlew fetchExternalNatives
+
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
@@ -370,7 +374,7 @@ jobs:
       - name: Import GPG key
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v3
+        uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}

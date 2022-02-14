@@ -303,6 +303,11 @@ public class HorizontalGroup extends WidgetGroup {
 		return prefHeight;
 	}
 
+	/** When wrapping is enabled, the number of rows may be > 1. */
+	public int getRows () {
+		return wrap ? rowSizes.size >> 1 : 1;
+	}
+
 	/** If true (the default), positions and sizes are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;

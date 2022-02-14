@@ -253,6 +253,7 @@ public class GdxTests {
 		StagePerformanceTest.class,
 		StageTest.class,
 		SuperKoalio.class,
+		SystemCursorTest.class,
 		TableLayoutTest.class,
 		TableTest.class,
 		TangentialAccelerationTest.class,

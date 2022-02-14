@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-apply from: "gradle/dependencies.gradle"
-
 buildscript {
     apply from: "gradle/dependencies.gradle"
 
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
         classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.1"
     }
 }
+
+plugins {
+    id "de.undercouch.download" version "5.0.1"
+}
+
+apply from: "gradle/dependencies.gradle"
 
 ext {
     isReleaseBuild = {
@@ -90,7 +94,7 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }
+    }   
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -163,20 +167,51 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-task fetchNativesZip() {
-	doLast {
-		def zip = file("build/natives.zip");
-		new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> zip.withOutputStream{ it << i }}
-	}
-	outputs.file(file("build/natives.zip"))
+task setupExternalNativesDirs() {
+    doLast {
+        file("build").mkdir();
+        file("extensions/gdx-lwjgl3-angle/res").mkdirs();
+        file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
+    }
+    outputs.upToDateWhen { false } 
 }
 
-task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
+task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip'
+    dest 'build/gdx-angle-natives.zip'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib'
+    dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT ] , type: Copy) {
+    from zipTree("build/gdx-angle-natives.zip")
+    into "./extensions/gdx-lwjgl3-angle/res"
+    outputs.upToDateWhen { false } 
+}
+
+task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
+    src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"
+    dest "build/natives.zip"
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
+    outputs.upToDateWhen { false } 
 }
 
 apply from: rootProject.file('publish.gradle')
 
 if(rootProject.file('override.gradle').exists())
-	apply from: rootProject.file('override.gradle')
+    apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"

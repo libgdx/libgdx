@@ -236,7 +236,7 @@ public class List<T> extends Widget implements Cullable {
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				} else if (overIndex == i && style.over != null) //
 					drawable = style.over;
-				if (drawable != null) drawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
+				drawSelection(batch, drawable, x, y + itemY - itemHeight, width, itemHeight);
 				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY, textWidth);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
@@ -247,6 +247,10 @@ public class List<T> extends Widget implements Cullable {
 			}
 			itemY -= itemHeight;
 		}
+	}
+
+	protected void drawSelection (Batch batch, @Null Drawable drawable, float x, float y, float width, float height) {
+		if (drawable != null) drawable.draw(batch, x, y, width, height);
 	}
 
 	/** Called to draw the background. Default implementation draws the style background drawable. */
