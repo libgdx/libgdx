@@ -97,8 +97,7 @@ public class Wav {
 				// http://soundfile.sapp.org/doc/WaveFormat/
 				type = read() & 0xff | (read() & 0xff) << 8;
 
-				if (type == 0x0055)
-					return; // Handle MP3 in constructor instead
+				if (type == 0x0055) return; // Handle MP3 in constructor instead
 				if (type != 0x0001 && type != 0x0003) throw new GdxRuntimeException(
 					"WAV files must be PCM, unsupported format: " + getCodecName(type) + " (" + type + ")");
 
