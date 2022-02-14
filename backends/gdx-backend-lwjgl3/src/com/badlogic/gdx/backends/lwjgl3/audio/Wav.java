@@ -165,29 +165,18 @@ public class Wav {
 		 * @param type 16-bit value from the fmt chunk.
 		 * @return A human-readable name for the codec. */
 		private String getCodecName (int type) {
-			switch (type) {
-			case 0x0002:
-				return "Microsoft ADPCM";
-			case 0x0006:
-				return "ITU-T G.711 A-law";
-			case 0x0007:
-				return "ITU-T G.711 u-law";
-			case 0x0011:
-				return "IMA ADPCM";
-			case 0x0022:
-				return "DSP Group TrueSpeech";
-			case 0x0031:
-				return "Microsoft GSM 6.10";
-			case 0x0040:
-				return "Antex G.721 ADPCM";
-			case 0x0070:
-				return "Lernout & Hauspie CELP 4.8kbps";
-			case 0x0072:
-				return "Lernout & Hauspie CBS 12kbps";
-			case 0xfffe:
-				return "Extensible";
-			default:
-				return "Unknown";
+			switch (type) { // @off
+				case 0x0002: return "Microsoft ADPCM";
+				case 0x0006: return "ITU-T G.711 A-law";
+				case 0x0007: return "ITU-T G.711 u-law";
+				case 0x0011: return "IMA ADPCM";
+				case 0x0022: return "DSP Group TrueSpeech";
+				case 0x0031: return "Microsoft GSM 6.10";
+				case 0x0040: return "Antex G.721 ADPCM";
+				case 0x0070: return "Lernout & Hauspie CELP 4.8kbps";
+				case 0x0072: return "Lernout & Hauspie CBS 12kbps";
+				case 0xfffe: return "Extensible";
+				default: return "Unknown"; // @on
 			}
 		}
 	}

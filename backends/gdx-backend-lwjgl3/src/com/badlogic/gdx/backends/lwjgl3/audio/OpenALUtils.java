@@ -9,12 +9,11 @@ import static org.lwjgl.openal.EXTFloat32.*;
 import static org.lwjgl.openal.EXTMCFormats.*;
 
 public class OpenALUtils {
-	// @off
 
 	/** @param channels The number of channels for the sound. Most commonly 1 (for mono) or 2 (for stereo).
 	 * @param bitDepth The number of bits in each sound sample. Normally 16. Can also be 8.
 	 * @return An OpenAL enum for use with {@link OpenALSound} and {@link OpenALMusic} */
-	static int determineFormat (int channels, int bitDepth) {
+	static int determineFormat (int channels, int bitDepth) { // @off
 		int format;
 		switch (channels) {
 			case 1:
@@ -48,7 +47,7 @@ public class OpenALUtils {
 			else if (bitDepth != 16)
 				throw new GdxRuntimeException("Audio: Bit depth must be 8, 16 or 32 when 4+ channels are present.");
 		}
-		return format;
+		return format; // @on
 	}
 
 }
