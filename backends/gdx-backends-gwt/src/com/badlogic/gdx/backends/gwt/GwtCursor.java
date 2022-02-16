@@ -74,6 +74,14 @@ public class GwtCursor implements Cursor {
 			return "ns-resize";
 		} else if (systemCursor == SystemCursor.Ibeam) {
 			return "text";
+		} else if (systemCursor == SystemCursor.NWSEResize) {
+			return "nwse-resize";
+		} else if (systemCursor == SystemCursor.NESWResize) {
+			return "nesw-resize";
+		} else if (systemCursor == SystemCursor.AllResize) {
+			return "move";
+		} else if (systemCursor == SystemCursor.NotAllowed) {
+			return "not-allowed";
 		} else {
 			throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
 		}

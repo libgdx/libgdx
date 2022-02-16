@@ -21,6 +21,8 @@ ext {
     gdxnatives = [:]
 }
 
+versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
+versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
 versions.robovm = "2.3.15"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
@@ -44,8 +46,7 @@ versions.spotless = "5.14.3"
 libraries.compileOnly = [:]
 
 libraries.lwjgl = [
-        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
-        "org.lwjgl.lwjgl:lwjgl_util:${versions.lwjgl}",
+        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",        
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
@@ -103,6 +104,18 @@ libraries.lwjgl3 = [
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
+libraries.lwjgl3GLES = [
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm32",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm64",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos-arm64",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-egl:${versions.lwjgl3}",
+]
+
 libraries.robovm = [
         "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
         "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
@@ -130,13 +143,6 @@ testnatives.desktop = [
         files("extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar"),
         files("extensions/gdx-bullet/libs/gdx-bullet-natives.jar"),
         files("extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
-]
-
-testnatives.ios = [
-        files("gdx/libs/ios32/"),
-        files("extensions/gdx-box2d/gdx-box2d/libs/ios32/"),
-        files("extensions/gdx-bullet/libs/ios32/"),
-        files("extensions/gdx-freetype/libs/ios32/")
 ]
 
 gdxnatives.desktop = [

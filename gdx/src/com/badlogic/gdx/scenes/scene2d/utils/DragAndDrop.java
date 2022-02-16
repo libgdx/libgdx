@@ -331,7 +331,7 @@ public class DragAndDrop {
 
 	/** The payload of a drag and drop operation. Actors can be optionally provided to follow the cursor and change when over a
 	 * target. Such actors will be added the stage automatically during the drag operation as necessary and they will only be
-	 * removed from the stage if they were added automatically. A source actor can be used a payload drag actor. */
+	 * removed from the stage if they were added automatically. A source actor can be used as a payload drag actor. */
 	static public class Payload {
 		@Null Actor dragActor, validDragActor, invalidDragActor;
 		@Null Object object;

@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt.widgets;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /** An interface that defines the methods required to support automatic resizing of the Widget element. */
 public interface ResizableWidget {
