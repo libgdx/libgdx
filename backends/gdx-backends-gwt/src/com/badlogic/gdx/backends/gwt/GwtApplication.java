@@ -98,7 +98,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	protected String getRootId () {
 		return "embed-" + GWT.getModuleName();
 	}
-	
+
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
