@@ -21,10 +21,11 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven { url("https://oss.sonatype.org/content/repositories/snapshots") }
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.1"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.2-SNAPSHOT"
     }
 }
 
