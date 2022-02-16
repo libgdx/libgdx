@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
@@ -93,6 +94,7 @@ public class GwtApplicationConfiguration {
 		this.width = width;
 		this.height = height;
 		this.usePhysicalPixels = usePhysicalPixels;
+		this.canvasId = "embed-" + GWT.getModuleName();
 	}
 
 	public boolean isFixedSizeApplication () {
