@@ -95,6 +95,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return GWT.getHostPageBaseURL() + "assets/";
 	}
 
+	protected String getRootId () {
+		return "embed-" + GWT.getModuleName();
+	}
+	
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
@@ -112,7 +116,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
 		} else {
-			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
+			Element element = Document.get().getElementById(getRootId());
 			int width;
 			int height;
 
