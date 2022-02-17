@@ -151,7 +151,7 @@ public class btCollisionObject extends BulletBase implements com.badlogic.gdx.ut
 		if (collisionShape == shape) return;
 		if (collisionShape != null) collisionShape.release();
 		collisionShape = shape;
-		if(collisionShape != null) collisionShape.obtain();
+		if (collisionShape != null) collisionShape.obtain();
 	}
 
 	public btCollisionShape getCollisionShape () {
