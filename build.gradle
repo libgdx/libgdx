@@ -19,7 +19,6 @@ buildscript {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven { url("https://oss.sonatype.org/content/repositories/snapshots") }
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
