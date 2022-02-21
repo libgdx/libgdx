@@ -9,7 +9,7 @@
 - LWJGL3 extension: Added gdx-lwjgl3-glfw-awt-macos extension. Fixes GLFW in such a way, that the LWJGL3/libGDX must no longer run on the main thread in macOS, which allows AWT to work in parallel, i.e. file dialogs, JFrames, ImageIO, etc. You no longer need to pass `-XstartOnFirstThread` when starting an LWJGL3 app on macOS. See `AwtTestLWJGL` in gdx-tests-lwjgl3. For more information, see https://github.com/libgdx/libgdx/pull/6772
 - API Addition: Added LWJGL3 ANGLE support for x86_64 Windows, Linux, and macOS. Emulates OpenGL ES 2.0 through DirectX (Windows), desktop OpenGL (Linux), and Metal (macOS). May become the preferred method of rendering on macOS if Apple removes OpenGL support entirely. May fix some OpenGL driver issues. More information here: https://github.com/libgdx/libgdx/pull/6672
 - iOS: Update to MobiVM 2.3.15
-- Update to LWJGL 3.3.0
+- Update to LWJGL 3.3.1
 - API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
 - API Addition: PointSpriteParticleBatch blending is now configurable.
 - TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
