@@ -22,7 +22,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /**
@@ -157,7 +156,8 @@ public class VertexBufferObject implements VertexData {
 				final int location = shader.getAttributeLocation(attribute.alias);
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -165,7 +165,8 @@ public class VertexBufferObject implements VertexData {
 				final int location = locations[i];
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		}
 		isBound = true;
