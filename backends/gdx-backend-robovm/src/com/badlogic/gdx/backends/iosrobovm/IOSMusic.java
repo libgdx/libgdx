@@ -59,7 +59,7 @@ public class IOSMusic implements Music {
 			// OALAudioTrack needs to execute preloadURL() once to store the file path. From then on we avoid
 			// calling it again to avoid instantiating a new AVAudioPlayer every time.
 			if (!initialized) {
-				if (looping)
+				if (!looping)
 					initialized = track.playFile(filePath);
 				else
 					initialized = track.playFile(filePath, -1);
