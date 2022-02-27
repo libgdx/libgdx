@@ -74,7 +74,7 @@ public class ANGLELoader {
 				"Couldn't create ANGLE native library output directory " + outFile.getParentFile().getAbsolutePath());
 			OutputStream out = null;
 			InputStream in = null;
-			
+
 			if (outFile.exists()) {
 				return outFile;
 			}
