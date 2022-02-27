@@ -46,8 +46,8 @@ public class ANGLELoader {
 			}
 		}
 	}
-	
-	public static boolean compare(InputStream input1, InputStream input2) throws IOException {
+
+	public static boolean compare (InputStream input1, InputStream input2) throws IOException {
 		int b = 0;
 		while ((b = input1.read()) != -1) {
 			if (b != input2.read()) {
@@ -104,13 +104,13 @@ public class ANGLELoader {
 					}
 					hasCompared = true;
 				}
-				
+
 				// Reset input stream by creating a new stream.
 				if (hasCompared) {
 					closeQuietly(inSrc);
 					inSrc = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
 				}
-				
+
 				out = new FileOutputStream(outFile);
 				byte[] buffer = new byte[4096];
 				while (true) {
