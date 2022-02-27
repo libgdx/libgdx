@@ -46,6 +46,20 @@ public class ANGLELoader {
 			}
 		}
 	}
+	
+	public static boolean compare(InputStream input1, InputStream input2) throws IOException {
+		int b = 0;
+		while ((b = input1.read()) != -1) {
+			if (b != input2.read()) {
+				return false;
+			}
+		}
+		if (input2.read() == -1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	static String randomUUID () {
 		return new UUID(random.nextLong(), random.nextLong()).toString();
@@ -73,21 +87,42 @@ public class ANGLELoader {
 			if (!outFile.getParentFile().exists() && !outFile.getParentFile().mkdirs()) throw new GdxRuntimeException(
 				"Couldn't create ANGLE native library output directory " + outFile.getParentFile().getAbsolutePath());
 			OutputStream out = null;
-			InputStream in = null;
+			InputStream inSrc = null;
+			InputStream inFile = null;
 
 			try {
+				inSrc = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
+				boolean hasCompared = false;
+				if (!outFile.canWrite() && outFile.exists()) {
+					inFile = new BufferedInputStream(new FileInputStream(outFile));
+					try {
+						if (compare(inSrc, inFile)) {
+							return outFile;
+						}
+					} finally {
+						closeQuietly(inFile);
+					}
+					hasCompared = true;
+				}
+				
+				// Reset input stream by creating a new stream.
+				if (hasCompared) {
+					closeQuietly(inSrc);
+					inSrc = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
+				}
+				
 				out = new FileOutputStream(outFile);
-				in = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
 				byte[] buffer = new byte[4096];
 				while (true) {
-					int length = in.read(buffer);
+					int length = inSrc.read(buffer);
 					if (length == -1) break;
 					out.write(buffer, 0, length);
 				}
 				return outFile;
 			} finally {
 				closeQuietly(out);
-				closeQuietly(in);
+				closeQuietly(inSrc);
+				closeQuietly(inFile);
 			}
 		} catch (Throwable t) {
 			throw new GdxRuntimeException("Couldn't load ANGLE shared library " + sourcePath, t);
