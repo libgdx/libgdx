@@ -54,11 +54,7 @@ public class ANGLELoader {
 				return false;
 			}
 		}
-		if (input2.read() == -1) {
-			return true;
-		} else {
-			return false;
-		}
+		return input2.read() == -1;
 	}
 
 	static String randomUUID () {
