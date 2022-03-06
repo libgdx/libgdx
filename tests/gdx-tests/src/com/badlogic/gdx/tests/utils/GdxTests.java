@@ -186,6 +186,7 @@ public class GdxTests {
 		MatrixJNITest.class,
 		MeshBuilderTest.class,
 		MeshShaderTest.class,
+		MeshWithCustomAttributesTest.class,
 		MipMapTest.class,
 		ModelTest.class,
 		ModelCacheTest.class,
