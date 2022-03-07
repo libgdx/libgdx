@@ -42,14 +42,17 @@ public class OALIOSAudio implements IOSAudio {
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new GdxRuntimeException("AudioDevice not supported by iOS backend");
 	}
 
 	@Override
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new GdxRuntimeException("AudioRecorder not supported by iOS backend");
+	}
+
+	@Override
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission) {
+		throw new GdxRuntimeException("AudioRecorder not supported by iOS backend");
 	}
 
 	@Override
