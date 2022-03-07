@@ -28,6 +28,16 @@ public class MockAudioRecorder implements AudioRecorder {
 	}
 
 	@Override
+	public Permissions hasPermission() {
+		return Permissions.DENIED;
+	}
+
+	@Override
+	public Permissions requestPermission () {
+		return hasPermission();
+	}
+
+	@Override
 	public void dispose () {
 
 	}

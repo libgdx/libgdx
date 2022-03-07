@@ -45,9 +45,11 @@ import java.util.List;
 public class DefaultAndroidAudio implements AndroidAudio {
 	private final SoundPool soundPool;
 	private final AudioManager manager;
-	private final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
+	private final List<AndroidMusic> musics = new ArrayList<>();
+	private final Context context;
 
 	public DefaultAndroidAudio (Context context, AndroidApplicationConfiguration config) {
+		this.context = context;
 		if (!config.disableAudio) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				AudioAttributes audioAttrib = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
@@ -210,7 +212,16 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		if (soundPool == null) {
 			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
 		}
-		return new AndroidAudioRecorder(samplingRate, isMono);
+		return new AndroidAudioRecorder(samplingRate, isMono, context);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission) {
+		if (soundPool == null) {
+			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
+		}
+		return new AndroidAudioRecorder(samplingRate, isMono, context, requestPermission);
 	}
 
 	/** Kills the soundpool and all other resources */

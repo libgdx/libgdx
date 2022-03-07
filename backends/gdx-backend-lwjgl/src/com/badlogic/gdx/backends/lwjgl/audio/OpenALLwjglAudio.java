@@ -336,16 +336,30 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	}
 
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
+		return newAudioRecorder(samplingRate, isMono, true);
+	}
+
+	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono, boolean requestPermission) {
 		if (noDevice) return new AudioRecorder() {
 			@Override
 			public void read (short[] samples, int offset, int numSamples) {
 			}
 
 			@Override
+			public Permissions hasPermission() {
+				return Permissions.DENIED;
+			}
+
+			@Override
+			public Permissions requestPermission() {
+				return hasPermission();
+			}
+
+			@Override
 			public void dispose () {
 			}
 		};
-		return new JavaSoundAudioRecorder(samplingRate, isMono);
+		return new JavaSoundAudioRecorder(samplingRate, isMono, requestPermission);
 	}
 
 	/** Retains a list of the most recently played sounds and stops the sound played least recently if necessary for a new sound to
