@@ -42,7 +42,7 @@ public class AndroidAudioRecorder implements AudioRecorder, ActivityCompat.OnReq
 	private final Context context;
 	private final Activity activity;
 	private static final String permission = Manifest.permission.RECORD_AUDIO;
-	private static final String[] permissions = new String[]{ permission };
+	private static final String[] permissions = new String[] {permission};
 	private static final int REQUEST_CODE = 1;
 
 	public AndroidAudioRecorder (int samplingRate, boolean isMono, Context context) {
@@ -53,7 +53,7 @@ public class AndroidAudioRecorder implements AudioRecorder, ActivityCompat.OnReq
 
 	public AndroidAudioRecorder (int samplingRate, boolean isMono, Context context, boolean requestPermission) {
 		this.context = context;
-		this.activity = (Activity) context;
+		this.activity = (Activity)context;
 
 		this.samplingRate = samplingRate;
 		channelConfig = isMono ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO;
@@ -70,7 +70,7 @@ public class AndroidAudioRecorder implements AudioRecorder, ActivityCompat.OnReq
 				read += recorder.read(samples, offset + read, numSamples - read);
 			}
 		} else {
-			Arrays.fill(samples, (short) 0);
+			Arrays.fill(samples, (short)0);
 		}
 	}
 
@@ -103,11 +103,11 @@ public class AndroidAudioRecorder implements AudioRecorder, ActivityCompat.OnReq
 	}
 
 	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
 		Gdx.app.log("pine", "a");
 		if (requestCode == REQUEST_CODE && Arrays.equals(permissions, AndroidAudioRecorder.permissions)) {
 			recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, samplingRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT,
-																 minBufferSize);
+				minBufferSize);
 			recorder.startRecording();
 		}
 	}

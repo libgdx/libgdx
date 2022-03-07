@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -56,7 +55,9 @@ public class AudioRecorderTest extends GdxTest {
 		font = new BitmapFont();
 		font.getData().setScale(Gdx.graphics.getDensity() * 2);
 	}
-boolean touched = false;
+
+	boolean touched = false;
+
 	@Override
 	public void render () {
 		if (Gdx.input.isTouched() && !touched) {

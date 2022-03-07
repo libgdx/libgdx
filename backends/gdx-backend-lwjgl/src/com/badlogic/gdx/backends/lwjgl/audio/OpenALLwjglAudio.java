@@ -339,19 +339,19 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		return newAudioRecorder(samplingRate, isMono, true);
 	}
 
-	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono, boolean requestPermission) {
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission) {
 		if (noDevice) return new AudioRecorder() {
 			@Override
 			public void read (short[] samples, int offset, int numSamples) {
 			}
 
 			@Override
-			public Permissions hasPermission() {
+			public Permissions hasPermission () {
 				return Permissions.DENIED;
 			}
 
 			@Override
-			public Permissions requestPermission() {
+			public Permissions requestPermission () {
 				return hasPermission();
 			}
 

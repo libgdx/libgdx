@@ -36,7 +36,7 @@ public class JavaSoundAudioRecorder implements AudioRecorder {
 	public JavaSoundAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission) {
 		try {
 			AudioFormat format = new AudioFormat(Encoding.PCM_SIGNED, samplingRate, 16, isMono ? 1 : 2, isMono ? 2 : 4, samplingRate,
-																					 false);
+				false);
 			line = AudioSystem.getTargetDataLine(format);
 			line.open(format, buffer.length);
 			line.start();

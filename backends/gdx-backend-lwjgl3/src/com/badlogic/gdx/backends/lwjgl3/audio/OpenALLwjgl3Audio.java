@@ -370,12 +370,12 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			}
 
 			@Override
-			public Permissions hasPermission() {
+			public Permissions hasPermission () {
 				return Permissions.DENIED;
 			}
 
 			@Override
-			public Permissions requestPermission() {
+			public Permissions requestPermission () {
 				return hasPermission();
 			}
 
