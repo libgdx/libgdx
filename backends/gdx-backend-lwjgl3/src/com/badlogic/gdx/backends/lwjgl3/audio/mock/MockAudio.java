@@ -38,6 +38,11 @@ public class MockAudio implements Lwjgl3Audio {
 	}
 
 	@Override
+	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono, boolean requestPermission) {
+		return new MockAudioRecorder();
+	}
+
+	@Override
 	public Sound newSound (FileHandle fileHandle) {
 		return new MockSound();
 	}
