@@ -31,8 +31,8 @@ configure([
 						//Android
 						if(components.findByName("release") != null) {
 							from components.release
-			                artifact androidJavadocsJar
-			                artifact androidSourcesJar
+							artifact androidJavadocsJar
+							artifact androidSourcesJar
 						}
 
 						versionMapping {
