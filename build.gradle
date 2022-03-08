@@ -98,7 +98,7 @@ allprojects {
     
     if (JavaVersion.current().isJava9Compatible()) {
         tasks.withType(Javadoc) {
-            options.addStringOption("-release", "7");
+            options.addStringOption("-release", "8");
         }
     }
 }
