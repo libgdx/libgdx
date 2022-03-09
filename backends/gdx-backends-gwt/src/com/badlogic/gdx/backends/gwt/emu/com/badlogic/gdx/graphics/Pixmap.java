@@ -382,7 +382,7 @@ public class Pixmap implements Disposable {
 		rectangle(x, y, width, height, DrawType.STROKE);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
@@ -392,21 +392,21 @@ public class Pixmap implements Disposable {
 		image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner)
 	 * @param srcx The source x-coordinate (top left corner)
-	 * @param srcy The source y-coordinate (top left corner);
+	 * @param srcy The source y-coordinate (top left corner)
 	 * @param srcWidth The width of the area form the other Pixmap in pixels
-	 * @param srcHeight The height of the area form the other Pixmap in pixles */
+	 * @param srcHeight The height of the area form the other Pixmap in pixels */
 	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		CanvasElement image = pixmap.getCanvasElement();
 		image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+	/** Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
 	 * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
 	 * neighbour or bilinear).
 	 * 
@@ -474,7 +474,7 @@ public class Pixmap implements Disposable {
 		ensureCanvasExists();
 		if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
 		int i = x * 4 + y * width * 4;
-		int r = pixels.get(i + 0) & 0xff;
+		int r = pixels.get(i) & 0xff;
 		int g = pixels.get(i + 1) & 0xff;
 		int b = pixels.get(i + 2) & 0xff;
 		int a = pixels.get(i + 3) & 0xff;
