@@ -343,7 +343,8 @@ public class GwtGraphics extends AbstractGraphics {
 	@Override
 	public DisplayMode getDisplayMode () {
 		double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
-		return new DisplayMode((int)(getScreenWidthJSNI() * density), (int)(getScreenHeightJSNI() * density), 60, getColorDepthJSNI()) {};
+		return new DisplayMode((int)(getScreenWidthJSNI() * density), (int)(getScreenHeightJSNI() * density), 60,
+			getColorDepthJSNI()) {};
 	}
 
 	@Override
