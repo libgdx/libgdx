@@ -71,8 +71,8 @@ public class ETC1 {
 				while ((readBytes = in.read(buffer)) != -1) {
 					compressedData.put(buffer, 0, readBytes);
 				}
-				((Buffer)compressedData).position(0);
-				((Buffer)compressedData).limit(compressedData.capacity());
+				((Buffer) compressedData).position(0);
+				((Buffer) compressedData).limit(compressedData.capacity());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
 			} finally {
@@ -82,7 +82,7 @@ public class ETC1 {
 			width = getWidthPKM(compressedData, 0);
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
-			((Buffer)compressedData).position(dataOffset);
+			((Buffer) compressedData).position(dataOffset);
 			checkNPOT();
 		}
 
@@ -103,8 +103,8 @@ public class ETC1 {
 			DataOutputStream write = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
-			((Buffer)compressedData).position(0);
-			((Buffer)compressedData).limit(compressedData.capacity());
+			((Buffer) compressedData).position(0);
+			((Buffer) compressedData).limit(compressedData.capacity());
 			try {
 				write = new DataOutputStream(new GZIPOutputStream(file.write(false)));
 				write.writeInt(compressedData.capacity());
@@ -119,8 +119,8 @@ public class ETC1 {
 			} finally {
 				StreamUtils.closeQuietly(write);
 			}
-			((Buffer)compressedData).position(dataOffset);
-			((Buffer)compressedData).limit(compressedData.capacity());
+			((Buffer) compressedData).position(dataOffset);
+			((Buffer) compressedData).limit(compressedData.capacity());
 		}
 
 		/** Releases the native resources of the ETC1Data instance. */
@@ -247,7 +247,26 @@ public class ETC1 {
 	 * @param pixelSize the pixel size, either 2 (RBG565) or 3 (RGB888) */
 	private static native void decodeImage (ByteBuffer compressedData, int offset, ByteBuffer decodedData, int offsetDec,
 		int width, int height, int pixelSize); /*
-		etc1_decode_image((etc1_byte*)compressedData + offset, (etc1_byte*)decodedData + offsetDec, width, height, pixelSize, width * pixelSize);
+		// Nothing to decode, or no target
+		if (compressedData == 0 || decodedData == 0) {
+			// Invalid buffers, null pointer
+			return;
+		}
+
+		// Verify if requested bounds are valid
+		jlong compressedLength = env->GetDirectBufferCapacity(obj_compressedData);
+		jlong decodedLength = env->GetDirectBufferCapacity(obj_decodedData);
+		if (offset < 0 || compressedLength - offset > decodedLength - offsetDec) {
+			// Invalid buffers, would cause heap overflow. compressedLength - offset > decodedLength - offsetDec
+			return;
+		}
+
+		etc1_decode_image((etc1_byte*)compressedData + offset,
+			(etc1_byte*)decodedData + offsetDec,
+			width,
+			height,
+			pixelSize,
+			width * pixelSize);
 	*/
 
 	/** Encodes the image data given as RGB565 or RGB888. Does not modify the position or limit of the {@link ByteBuffer}.
