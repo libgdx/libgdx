@@ -127,7 +127,7 @@ class EffectPanel extends JPanel {
 	}
 
 	void emitterSelected () {
-		int row = emitterTable.getSelectedRow();
+		int row = emitterTable.getSelectedRow() - 1;
 		if (row == -1) {
 			row = editIndex;
 			emitterTable.getSelectionModel().setSelectionInterval(row, row);
