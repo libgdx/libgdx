@@ -25,8 +25,8 @@ import java.io.Serializable;
 public class OrientedBoundingBox implements Serializable {
 	private static final long serialVersionUID = 3864065514676250557L;
 
-	private final static Vector3[] AXIS_VECTORS = new Vector3[] {Vector3.X, Vector3.Y, Vector3.Z};
-
+	private static final Vector3[] tempAxes = new Vector3[15];
+	private static final Vector3[] tempVertices = new Vector3[8];
 	private final static Vector3[] tmpVectors = new Vector3[9];
 	{
 		for (int i = 0; i < tmpVectors.length; i++) {
@@ -75,10 +75,6 @@ public class OrientedBoundingBox implements Serializable {
 			vertices[i] = new Vector3();
 		}
 		update();
-	}
-
-	public Vector3[] getAxes () {
-		return axes;
 	}
 
 	public Vector3[] getVertices () {
@@ -191,34 +187,28 @@ public class OrientedBoundingBox implements Serializable {
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is intersected */
 	public boolean intersects (BoundingBox b) {
-		Vector3[] aAxes = getAxes();
-		Vector3[] bAxes = AXIS_VECTORS;
+		Vector3[] aAxes = axes;
 
-		Vector3[] allAxes = new Vector3[] {aAxes[0], aAxes[1], aAxes[2], bAxes[0], bAxes[1], bAxes[2],
-			tmpVectors[0].set(aAxes[0]).crs(bAxes[0]), tmpVectors[1].set(aAxes[0]).crs(bAxes[1]),
-			tmpVectors[2].set(aAxes[0]).crs(bAxes[2]), tmpVectors[3].set(aAxes[1]).crs(bAxes[0]),
-			tmpVectors[4].set(aAxes[1]).crs(bAxes[1]), tmpVectors[5].set(aAxes[1]).crs(bAxes[2]),
-			tmpVectors[6].set(aAxes[2]).crs(bAxes[0]), tmpVectors[7].set(aAxes[2]).crs(bAxes[1]),
-			tmpVectors[8].set(aAxes[2]).crs(bAxes[2])};
+		tempAxes[0] = aAxes[0];
+		tempAxes[1] = aAxes[1];
+		tempAxes[2] = aAxes[2];
+		tempAxes[3] = Vector3.X;
+		tempAxes[4] = Vector3.Y;
+		tempAxes[5] = Vector3.Z;
+		tempAxes[6] = tmpVectors[0].set(aAxes[0]).crs(Vector3.X);
+		tempAxes[7] = tmpVectors[1].set(aAxes[0]).crs(Vector3.Y);
+		tempAxes[8] = tmpVectors[0].set(aAxes[0]).crs(Vector3.Z);
+		tempAxes[9] = tmpVectors[3].set(aAxes[1]).crs(Vector3.X);
+		tempAxes[10] = tmpVectors[4].set(aAxes[1]).crs(Vector3.Y);
+		tempAxes[11] = tmpVectors[5].set(aAxes[1]).crs(Vector3.Z);
+		tempAxes[12] = tmpVectors[6].set(aAxes[2]).crs(Vector3.X);
+		tempAxes[13] = tmpVectors[7].set(aAxes[2]).crs(Vector3.Y);
+		tempAxes[14] = tmpVectors[8].set(aAxes[2]).crs(Vector3.Z);
 
 		Vector3[] aVertices = getVertices();
 		Vector3[] bVertices = getVertices(b);
 
-		return Intersector.hasOverlap(allAxes, aVertices, bVertices);
-	}
-
-	private static final Vector3[] bbCorners = new Vector3[8];
-
-	private Vector3[] getVertices (BoundingBox b) {
-		b.getCorner000(bbCorners[0b000]);
-		b.getCorner001(bbCorners[0b001]);
-		b.getCorner010(bbCorners[0b010]);
-		b.getCorner011(bbCorners[0b011]);
-		b.getCorner100(bbCorners[0b100]);
-		b.getCorner101(bbCorners[0b101]);
-		b.getCorner110(bbCorners[0b110]);
-		b.getCorner111(bbCorners[0b111]);
-		return bbCorners;
+		return Intersector.hasOverlap(tempAxes, aVertices, bVertices);
 	}
 
 	/** Returns whether the given oriented bounding box is intersecting this oriented bounding box (at least one point in).
@@ -228,14 +218,35 @@ public class OrientedBoundingBox implements Serializable {
 		Vector3[] aAxes = axes;
 		Vector3[] bAxes = obb.axes;
 
-		Vector3[] allAxes = new Vector3[] {aAxes[0], aAxes[1], aAxes[2], bAxes[0], bAxes[1], bAxes[2],
-			tmpVectors[0].set(aAxes[0]).crs(bAxes[0]), tmpVectors[1].set(aAxes[0]).crs(bAxes[1]),
-			tmpVectors[2].set(aAxes[0]).crs(bAxes[2]), tmpVectors[3].set(aAxes[1]).crs(bAxes[0]),
-			tmpVectors[4].set(aAxes[1]).crs(bAxes[1]), tmpVectors[5].set(aAxes[1]).crs(bAxes[2]),
-			tmpVectors[6].set(aAxes[2]).crs(bAxes[0]), tmpVectors[7].set(aAxes[2]).crs(bAxes[1]),
-			tmpVectors[8].set(aAxes[2]).crs(bAxes[2])};
+		tempAxes[0] = aAxes[0];
+		tempAxes[1] = aAxes[1];
+		tempAxes[2] = aAxes[2];
+		tempAxes[3] = bAxes[0];
+		tempAxes[4] = bAxes[1];
+		tempAxes[5] = bAxes[2];
+		tempAxes[6] = tmpVectors[0].set(aAxes[0]).crs(bAxes[0]);
+		tempAxes[7] = tmpVectors[1].set(aAxes[0]).crs(bAxes[1]);
+		tempAxes[8] = tmpVectors[2].set(aAxes[0]).crs(bAxes[2]);
+		tempAxes[9] = tmpVectors[3].set(aAxes[1]).crs(bAxes[0]);
+		tempAxes[10] = tmpVectors[4].set(aAxes[1]).crs(bAxes[1]);
+		tempAxes[11] = tmpVectors[5].set(aAxes[1]).crs(bAxes[2]);
+		tempAxes[12] = tmpVectors[6].set(aAxes[2]).crs(bAxes[0]);
+		tempAxes[13] = tmpVectors[7].set(aAxes[2]).crs(bAxes[1]);
+		tempAxes[14] = tmpVectors[8].set(aAxes[2]).crs(bAxes[2]);
 
-		return Intersector.hasOverlap(allAxes, vertices, obb.vertices);
+		return Intersector.hasOverlap(tempAxes, vertices, obb.vertices);
+	}
+
+	private Vector3[] getVertices (BoundingBox b) {
+		b.getCorner000(tempVertices[0b000]);
+		b.getCorner001(tempVertices[0b001]);
+		b.getCorner010(tempVertices[0b010]);
+		b.getCorner011(tempVertices[0b011]);
+		b.getCorner100(tempVertices[0b100]);
+		b.getCorner101(tempVertices[0b101]);
+		b.getCorner110(tempVertices[0b110]);
+		b.getCorner111(tempVertices[0b111]);
+		return tempVertices;
 	}
 
 	public void mul (Matrix4 transform) {
