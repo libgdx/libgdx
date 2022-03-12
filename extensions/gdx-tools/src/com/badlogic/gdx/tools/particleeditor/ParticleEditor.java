@@ -205,7 +205,7 @@ public class ParticleEditor extends JFrame {
 	}
 
 	public ParticleEmitter getEmitter () {
-		return effect.getEmitters().get(effectPanel.editIndex);
+		return effect.getEmitters().get(Math.max(0, effectPanel.editIndex));
 	}
 
 	public void setEnabled (ParticleEmitter emitter, boolean enabled) {

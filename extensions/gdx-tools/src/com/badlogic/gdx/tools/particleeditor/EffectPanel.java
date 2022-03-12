@@ -128,7 +128,7 @@ class EffectPanel extends JPanel {
 
 	void emitterSelected () {
 		int row = emitterTable.getSelectedRow() - 1;
-		if (row == -1) {
+		if (row <= -1 || row >=  emitterTableModel.getRowCount()) {
 			row = editIndex;
 			emitterTable.getSelectionModel().setSelectionInterval(row, row);
 		}
@@ -238,9 +238,9 @@ class EffectPanel extends JPanel {
 	}
 
 	void move (int direction) {
-		if (direction < 0 && editIndex == 0) return;
+		if (direction < 0 && editIndex <= 0) return;
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
-		if (direction > 0 && editIndex == emitters.size - 1) return;
+		if (direction > 0 && editIndex >= emitters.size - 1) return;
 		int insertIndex = editIndex + direction;
 		Object name = emitterTableModel.getValueAt(editIndex, 0);
 		emitterTableModel.removeRow(editIndex);
