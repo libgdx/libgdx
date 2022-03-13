@@ -88,6 +88,7 @@ public class GwtGraphics extends AbstractGraphics {
 		attributes.setAlpha(config.alpha);
 		attributes.setPremultipliedAlpha(config.premultipliedAlpha);
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
+		attributes.setXrCompatible(config.xrCompatible);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, getWidth(), getHeight());
