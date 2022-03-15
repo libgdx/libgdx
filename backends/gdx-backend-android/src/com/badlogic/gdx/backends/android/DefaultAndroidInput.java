@@ -929,7 +929,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				view.requestPointerCapture();
 				view.setOnCapturedPointerListener(new View.OnCapturedPointerListener() {
 					@Override
-					public boolean onCapturedPointer(View view, MotionEvent motionEvent) {
+					public boolean onCapturedPointer (View view, MotionEvent motionEvent) {
 						deltaX[0] = (int)motionEvent.getX();
 						deltaY[0] = (int)motionEvent.getY();
 						return false;
