@@ -104,7 +104,7 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	public void setTransform (Matrix4 transform) {
-		transform.set(transform);
+		this.transform.set(transform);
 		update();
 	}
 
