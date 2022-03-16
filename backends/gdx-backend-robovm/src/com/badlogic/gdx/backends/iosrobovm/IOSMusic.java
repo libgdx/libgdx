@@ -28,6 +28,7 @@ public class IOSMusic implements Music {
 	private final OALAudioTrack track;
 	private final String filePath;
 	private boolean initialized;
+	private boolean looping;
 	OnCompletionListener onCompletionListener;
 
 	public IOSMusic (OALAudioTrack track, String filePath) {
@@ -58,7 +59,10 @@ public class IOSMusic implements Music {
 			// OALAudioTrack needs to execute preloadURL() once to store the file path. From then on we avoid
 			// calling it again to avoid instantiating a new AVAudioPlayer every time.
 			if (!initialized) {
-				initialized = track.playFile(filePath);
+				if (!looping)
+					initialized = track.playFile(filePath);
+				else
+					initialized = track.playFile(filePath, -1);
 				if (!initialized) {
 					Gdx.app.error("IOSMusic", "Unable to initialize music " + filePath);
 				}
@@ -88,6 +92,7 @@ public class IOSMusic implements Music {
 	@Override
 	public void setLooping (boolean isLooping) {
 		track.setNumberOfLoops(isLooping ? -1 : 0);
+		looping = isLooping;
 	}
 
 	@Override
