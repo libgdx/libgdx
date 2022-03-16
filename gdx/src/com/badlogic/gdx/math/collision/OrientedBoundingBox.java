@@ -87,7 +87,7 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	public void setBounds (BoundingBox bounds) {
-		bounds.set(bounds);
+		this.bounds.set(bounds);
 		bounds.getCorner000(vertices[0b000]).mul(transform);
 		bounds.getCorner001(vertices[0b001]).mul(transform);
 		bounds.getCorner010(vertices[0b010]).mul(transform);
@@ -109,7 +109,7 @@ public class OrientedBoundingBox implements Serializable {
 	}
 
 	public OrientedBoundingBox set (BoundingBox bounds, Matrix4 transform) {
-		bounds.set(bounds);
+		setBounds(bounds);
 		setTransform(transform);
 		return this;
 	}
