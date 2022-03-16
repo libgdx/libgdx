@@ -404,19 +404,20 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
-						if (!isCursorCatched() || !(e.keyCode >= 19 && e.keyCode <= 22)) {
+						// Catching the cursor causes it to send D-pad events. Ignore them.
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
 							processor.keyDown(e.keyCode);
 							keyJustPressed = true;
 							justPressedKeys[e.keyCode] = true;
 						}
 						break;
 					case KeyEvent.KEY_UP:
-						if (!isCursorCatched() || !(e.keyCode >= 19 && e.keyCode <= 22)) {
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
 							processor.keyUp(e.keyCode);
 						}
 						break;
 					case KeyEvent.KEY_TYPED:
-						if (!isCursorCatched() || e.keyChar != 0) {
+						if (!isCursorCatched() || e.keyChar != Keys.UNKNOWN) {
 							processor.keyTyped(e.keyChar);
 						}
 					}
