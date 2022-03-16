@@ -67,7 +67,7 @@ public class GwtCursor implements Cursor {
 		} else if (systemCursor == SystemCursor.Crosshair) {
 			return "crosshair";
 		} else if (systemCursor == SystemCursor.Hand) {
-			return "pointer"; // Don't change to 'hand', non-standard holdover from IE5
+			return "pointer"; // Don't change to 'hand'; 'hand' is non-standard holdover from IE5
 		} else if (systemCursor == SystemCursor.HorizontalResize) {
 			return "ew-resize";
 		} else if (systemCursor == SystemCursor.VerticalResize) {
