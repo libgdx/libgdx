@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.android;
 
 import android.os.Build;
@@ -9,10 +10,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class AndroidCursor implements Cursor {
 
-  static void setSystemCursor(View view, SystemCursor systemCursor) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      int type;
-      switch (systemCursor) { //@off
+	static void setSystemCursor (View view, SystemCursor systemCursor) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			int type;
+			switch (systemCursor) { //@off
         case Arrow: type = PointerIcon.TYPE_DEFAULT; break;
         case Ibeam: type = PointerIcon.TYPE_TEXT; break;
         case Crosshair: type = PointerIcon.TYPE_CROSSHAIR; break;
@@ -25,14 +26,14 @@ public class AndroidCursor implements Cursor {
         case NotAllowed: type = PointerIcon.TYPE_NO_DROP; break; // Closest match
         case None: type = PointerIcon.TYPE_NULL; break;
         default: throw new GdxRuntimeException("Unknown system cursor " + systemCursor); //@on
-      }
-      view.setPointerIcon(PointerIcon.getSystemIcon(view.getContext(), type));
-    }
-  }
+			}
+			view.setPointerIcon(PointerIcon.getSystemIcon(view.getContext(), type));
+		}
+	}
 
-  @Override
-  public void dispose() {
+	@Override
+	public void dispose () {
 
-  }
+	}
 
 }
