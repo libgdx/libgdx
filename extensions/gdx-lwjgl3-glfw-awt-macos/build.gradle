@@ -14,11 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "java"
-
 dependencies {
-	api project(":gdx")
-	api libraries.lwjgl3GLES
+	implementation project(":gdx")
 }
 
 sourceSets.main.java.srcDirs = ["src"]

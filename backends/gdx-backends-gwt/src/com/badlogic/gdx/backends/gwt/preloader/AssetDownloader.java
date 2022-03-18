@@ -51,11 +51,11 @@ public class AssetDownloader {
 
 	public interface AssetLoaderListener<T> {
 
-		public void onProgress (double amount);
+		void onProgress (double amount);
 
-		public void onFailure ();
+		void onFailure ();
 
-		public void onSuccess (T result);
+		void onSuccess (T result);
 
 	}
 
@@ -201,8 +201,8 @@ public class AssetDownloader {
 		}
 	}
 
-	private static interface ImgEventListener {
-		public void onEvent (NativeEvent event);
+	private interface ImgEventListener {
+		void onEvent (NativeEvent event);
 	}
 
 	static native void hookImgListener (ImageElement img, ImgEventListener h) /*-{
@@ -224,8 +224,7 @@ public class AssetDownloader {
 		return new Image();
 	}-*/;
 
-	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener listener) /*-{
-		var _this = this;
+	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener<?> listener) /*-{
 		this.onprogress = $entry(function(evt) {
 			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded);
 		});

@@ -95,7 +95,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public Gdx2DPixmap (ByteBuffer encodedData, int offset, int len, int requestedFormat) throws IOException {
-		pixelPtr = load(nativeData, encodedData, offset, len);
+		pixelPtr = loadByteBuffer(nativeData, encodedData, offset, len);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
@@ -314,7 +314,7 @@ public class Gdx2DPixmap implements Disposable {
 		return pixel_buffer;
 	 */
 
-	private static native ByteBuffer load (long[] nativeData, ByteBuffer buffer, int offset, int len); /*MANUAL
+	private static native ByteBuffer loadByteBuffer (long[] nativeData, ByteBuffer buffer, int offset, int len); /*MANUAL
 		if(buffer==0)
 			return 0;
 

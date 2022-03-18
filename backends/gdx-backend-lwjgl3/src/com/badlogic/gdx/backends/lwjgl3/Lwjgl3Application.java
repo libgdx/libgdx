@@ -37,8 +37,6 @@ import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
-import org.lwjgl.opengles.GLES;
-import org.lwjgl.opengles.GLES20;
 import org.lwjgl.system.Callback;
 
 import com.badlogic.gdx.Application;
@@ -57,6 +55,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -80,8 +79,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	static void initializeGlfw () {
 		if (errorCallback == null) {
+			if (SharedLibraryLoader.isMac) loadGlfwAwtMacos();
 			Lwjgl3NativesLoader.load();
-			errorCallback = GLFWErrorCallback.createPrint(System.err);
+			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
 			GLFW.glfwSetErrorCallback(errorCallback);
 			if (SharedLibraryLoader.isMac) GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
@@ -113,6 +113,24 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		} catch (Throwable t) {
 			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
 		}
+	}
+
+	static void loadGlfwAwtMacos () {
+		try {
+			Class loader = Class.forName("com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader");
+			Method load = loader.getMethod("load");
+			File sharedLib = (File)load.invoke(loader);
+			Configuration.GLFW_LIBRARY_NAME.set(sharedLib.getAbsolutePath());
+			Configuration.GLFW_CHECK_THREAD0.set(false);
+		} catch (ClassNotFoundException t) {
+			return;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Couldn't load GLFW AWT for macOS.", t);
+		}
+	}
+
+	public Lwjgl3Application (ApplicationListener listener) {
+		this(listener, new Lwjgl3ApplicationConfiguration());
 	}
 
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
@@ -541,7 +559,12 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
-			GLES.createCapabilities();
+			try {
+				Class gles = Class.forName("org.lwjgl.opengles.GLES");
+				gles.getMethod("createCapabilities").invoke(gles);
+			} catch (Throwable e) {
+				throw new GdxRuntimeException("Couldn't initialize GLES", e);
+			}
 		} else {
 			GL.createCapabilities();
 		}
@@ -571,10 +594,16 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			String rendererString = GL11.glGetString(GL11.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 		} else {
-			String versionString = GLES20.glGetString(GL11.GL_VERSION);
-			String vendorString = GLES20.glGetString(GL11.GL_VENDOR);
-			String rendererString = GLES20.glGetString(GL11.GL_RENDERER);
-			glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+			try {
+				Class gles = Class.forName("org.lwjgl.opengles.GLES20");
+				Method getString = gles.getMethod("glGetString", int.class);
+				String versionString = (String)getString.invoke(gles, GL11.GL_VERSION);
+				String vendorString = (String)getString.invoke(gles, GL11.GL_VENDOR);
+				String rendererString = (String)getString.invoke(gles, GL11.GL_RENDERER);
+				glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+			} catch (Throwable e) {
+				throw new GdxRuntimeException("Couldn't get GLES version string.", e);
+			}
 		}
 	}
 

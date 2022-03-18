@@ -76,55 +76,55 @@ public class FileHandle {
 	}
 
 	/** Returns a stream for reading this file as bytes.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a buffered stream for reading this file as bytes.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedInputStream read (int bufferSize) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a reader for reading this file as characters.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader () {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a reader for reading this file as characters.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a buffered reader for reading this file as characters.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a buffered reader for reading this file as characters.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize, String charset) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Reads the entire file into a string using the platform's default charset.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString () {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Reads the entire file into a string using the specified charset.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Reads the entire file into a byte array.
-	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public byte[] readBytes () {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -154,8 +154,8 @@ public class FileHandle {
 
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public OutputStream write (boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -172,16 +172,16 @@ public class FileHandle {
 	/** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
 	 * will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void write (InputStream input, boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public Writer writer (boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -189,16 +189,16 @@ public class FileHandle {
 	/** Returns a writer for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public Writer writer (boolean append, String charset) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeString (String string, boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -206,24 +206,24 @@ public class FileHandle {
 	/** Writes the specified string to the file as UTF-8. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeString (String string, boolean append, String charset) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, int offset, int length, boolean append) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -231,7 +231,7 @@ public class FileHandle {
 	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
 	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
 	 * classpath will return a zero length array.
-	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (FileFilter filter) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -239,7 +239,7 @@ public class FileHandle {
 	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
 	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
 	 * classpath will return a zero length array.
-	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (FilenameFilter filter) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -247,7 +247,7 @@ public class FileHandle {
 	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
 	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
 	 * array.
-	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list () {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -255,7 +255,7 @@ public class FileHandle {
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
 	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
 	 * will return a zero length array.
-	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (String suffix) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -268,8 +268,8 @@ public class FileHandle {
 	}
 
 	/** Returns a handle to the child with the specified name.
-	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
-	 *        doesn't exist. */
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
+	 *            doesn't exist. */
 	public FileHandle child (String name) {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -279,13 +279,13 @@ public class FileHandle {
 	}
 
 	/** Returns a handle to the sibling with the specified name.
-	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
-	 *        doesn't exist, or this file is the root. */
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
+	 *            doesn't exist, or this file is the root. */
 	public FileHandle sibling (String name) {
 		throw new GdxRuntimeException("Stub");
 	}
 
-	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	/** @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public void mkdirs () {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -297,13 +297,13 @@ public class FileHandle {
 	}
 
 	/** Deletes this file or empty directory and returns success. Will not delete a directory that has children.
-	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public boolean delete () {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Deletes this file or directory and all children, recursively.
-	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public boolean deleteDirectory () {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -326,15 +326,15 @@ public class FileHandle {
 	 * this handle is a directory, then 1) if the destination is a file, GdxRuntimeException is thrown, or 2) if the destination is
 	 * a directory, this directory is copied into it recursively, overwriting existing files, or 3) if the destination doesn't
 	 * exist, {@link #mkdirs()} is called on the destination and this directory is copied into it recursively.
-	 * @throw GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file,
-	 *        or copying failed. */
+	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
+	 *            file, or copying failed. */
 	public void copyTo (FileHandle dest) {
 		throw new GdxRuntimeException("Stub");
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
-	 * @throw GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file. */
+	 * @throws GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file. */
 	public void moveTo (FileHandle dest) {
 		throw new GdxRuntimeException("Stub");
 	}
