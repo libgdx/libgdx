@@ -86,8 +86,7 @@ public class OrientedBoundingBox implements Serializable {
 		return bounds;
 	}
 
-	/**
-	 * Sets the base bounds of the oriented bounding box as the bounds given, the transform is applied to the vertices.
+	/** Sets the base bounds of the oriented bounding box as the bounds given, the transform is applied to the vertices.
 	 *
 	 * @param bounds The bounding box to copy */
 	public void setBounds (BoundingBox bounds) {
