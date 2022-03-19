@@ -28,7 +28,7 @@ public class OrientedBoundingBox implements Serializable {
 	private static final Vector3[] tempAxes = new Vector3[15];
 	private static final Vector3[] tempVertices = new Vector3[8];
 	private final static Vector3[] tmpVectors = new Vector3[9];
-	{
+	static {
 		for (int i = 0; i < tmpVectors.length; i++) {
 			tmpVectors[i] = new Vector3();
 		}
@@ -86,6 +86,10 @@ public class OrientedBoundingBox implements Serializable {
 		return bounds;
 	}
 
+	/**
+	 * Sets the base bounds of the oriented bounding box as the bounds given, the transform is applied to the vertices.
+	 *
+	 * @param bounds The bounding box to copy */
 	public void setBounds (BoundingBox bounds) {
 		this.bounds.set(bounds);
 		bounds.getCorner000(vertices[0b000]).mul(transform);
@@ -197,7 +201,7 @@ public class OrientedBoundingBox implements Serializable {
 		tempAxes[5] = Vector3.Z;
 		tempAxes[6] = tmpVectors[0].set(aAxes[0]).crs(Vector3.X);
 		tempAxes[7] = tmpVectors[1].set(aAxes[0]).crs(Vector3.Y);
-		tempAxes[8] = tmpVectors[0].set(aAxes[0]).crs(Vector3.Z);
+		tempAxes[8] = tmpVectors[2].set(aAxes[0]).crs(Vector3.Z);
 		tempAxes[9] = tmpVectors[3].set(aAxes[1]).crs(Vector3.X);
 		tempAxes[10] = tmpVectors[4].set(aAxes[1]).crs(Vector3.Y);
 		tempAxes[11] = tmpVectors[5].set(aAxes[1]).crs(Vector3.Z);
