@@ -81,4 +81,24 @@ jnigen {
 	add(IOS) {
 		cppFlags += " -stdlib=libc++";
 	}
+
+	robovm {
+		forceLinkClasses "com.badlogic.gdx.physics.bullet.collision.CollisionJNI", "com.badlogic.gdx.physics.bullet.dynamics.DynamicsJNI",
+				"com.badlogic.gdx.physics.bullet.extras.ExtrasJNI", "com.badlogic.gdx.physics.bullet.linearmath.LinearMathJNI",
+				"com.badlogic.gdx.physics.bullet.softbody.SoftbodyJNI",  "com.badlogic.gdx.physics.bullet.collision.btBroadphaseAabbCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btBroadphaseRayCallback", "com.badlogic.gdx.physics.bullet.collision.btConvexTriangleCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback", "com.badlogic.gdx.physics.bullet.collision.btInternalTriangleIndexCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btNodeOverlapCallback", "com.badlogic.gdx.physics.bullet.collision.btOverlapCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btOverlapFilterCallback", "com.badlogic.gdx.physics.bullet.collision.btOverlappingPairCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btTriangleCallback", "com.badlogic.gdx.physics.bullet.collision.btTriangleConvexcastCallback",
+				"com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback", "com.badlogic.gdx.physics.bullet.collision.ContactCache",
+				"com.badlogic.gdx.physics.bullet.collision.ContactListener", "com.badlogic.gdx.physics.bullet.collision.CustomCollisionDispatcher",
+				"com.badlogic.gdx.physics.bullet.collision.LocalRayResult", "com.badlogic.gdx.physics.bullet.collision.LocalShapeInfo",
+				"com.badlogic.gdx.physics.bullet.collision.RayResultCallback", "com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback",
+				"com.badlogic.gdx.physics.bullet.collision.AllHitsRayResultCallback", "com.badlogic.gdx.physics.bullet.collision.ConvexResultCallback",
+				"com.badlogic.gdx.physics.bullet.collision.LocalConvexResult", "com.badlogic.gdx.physics.bullet.collision.ContactResultCallback",
+				"com.badlogic.gdx.physics.bullet.dynamics.InternalTickCallback",  "com.badlogic.gdx.physics.bullet.extras.btBulletWorldImporter",
+				"com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw", "com.badlogic.gdx.physics.bullet.linearmath.btMotionState",
+				"com.badlogic.gdx.physics.bullet.DebugDrawer"
+	}
 }

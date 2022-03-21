@@ -77,4 +77,8 @@ jnigen {
 		headerDirs = ["iosgl"]
 		cppExcludes = []
 	}
+	robovm {
+		extraLib("libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a", "device")
+		extraLib("libs/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a", "simulator")
+	}
 }
