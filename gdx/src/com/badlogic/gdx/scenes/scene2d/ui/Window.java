@@ -68,7 +68,7 @@ public class Window extends Table {
 		setTouchable(Touchable.enabled);
 		setClip(true);
 
-		titleLabel = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
+		titleLabel = newLabel(title, new LabelStyle(style.titleFont, style.titleFontColor));
 		titleLabel.setEllipsis(true);
 
 		titleTable = new Table() {
@@ -192,6 +192,10 @@ public class Window extends Table {
 				return isModal;
 			}
 		});
+	}
+
+	protected Label newLabel (String text, LabelStyle style) {
+		return new Label(text, style);
 	}
 
 	public void setStyle (WindowStyle style) {

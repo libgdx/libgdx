@@ -62,11 +62,9 @@ public class OALIOSAudio implements IOSAudio {
 		String path = fileHandle.file().getPath().replace('\\', '/');
 		OALAudioTrack track = OALAudioTrack.create();
 		if (track != null) {
-			if (track.preloadFile(path)) {
-				return new IOSMusic(track);
-			}
+			return new IOSMusic(track, path);
 		}
-		throw new GdxRuntimeException("Error opening music file at " + path);
+		throw new GdxRuntimeException("Error creating music audio track");
 	}
 
 }

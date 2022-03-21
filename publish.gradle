@@ -1,0 +1,130 @@
+configure([
+	project(":gdx"), 
+	project(":backends:gdx-backend-android"),
+	project(":backends:gdx-backend-headless"),
+	project(":backends:gdx-backend-lwjgl"),
+	project(":backends:gdx-backend-lwjgl3"),
+	project(":backends:gdx-backend-robovm"),
+	project(":backends:gdx-backend-gwt"),
+	project(":extensions:gdx-box2d-parent"),
+	project(":extensions:gdx-box2d-parent:gdx-box2d"),
+	project(":extensions:gdx-box2d-parent:gdx-box2d-gwt"),
+	project(":extensions:gdx-bullet"),
+	project(":extensions:gdx-freetype"),
+	project(":extensions:gdx-lwjgl3-angle"),
+	project(":extensions:gdx-lwjgl3-glfw-awt-macos"),
+	project(":extensions:gdx-tools")
+	])
+{
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    afterEvaluate { project ->
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                    versionMapping {
+                        usage('java-api') {
+                            fromResolutionOf('runtimeClasspath')
+                        }
+                        usage('java-runtime') {
+                            fromResolutionResult()
+                        }
+                    }
+                    pom {
+                        name = POM_NAME
+                        if(!POM_DESCRIPTION.isEmpty())
+                            description = POM_DESCRIPTION
+                        url = POM_URL
+                        licenses {
+                            license {
+                                name = POM_LICENCE_NAME
+                                url = POM_LICENCE_URL
+                                distribution = POM_LICENCE_DIST
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = "libGDX Developers"
+                                url = "https://github.com/libgdx/libgdx/graphs/contributors"
+                            }
+                        }
+                        scm {
+                            connection = POM_SCM_CONNECTION
+                            developerConnection = POM_SCM_DEV_CONNECTION
+                            url = POM_SCM_URL
+                        }
+                    }
+                }
+                //Libgdx natives all follow the "$name-platform" artifact structure.
+                if(project.tasks.findByName('jnigen')) {
+	                mavenPlatform(MavenPublication) {
+	                    artifactId = artifactId + "-platform"
+	                    if(project.tasks.findByName('jnigenJarNativesDesktop'))
+	                    	artifact jnigenJarNativesDesktop { }
+	                    
+			            ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'].each { id ->
+			            	if(project.tasks.findByName("jnigenJarNativesAndroid${id}"))
+	                    		artifact "jnigenJarNativesAndroid${id}" { }
+			            }
+			            
+			            if(project.tasks.findByName('jnigenJarNativesIOS'))
+	                    	artifact jnigenJarNativesIOS { }
+	
+	                    pom {
+	                        name = POM_NAME + " Native Libraries"
+	                        if(!POM_DESCRIPTION.isEmpty())
+	                            description = POM_DESCRIPTION
+	                        url = POM_URL
+	                        licenses {
+	                            license {
+	                                name = POM_LICENCE_NAME
+	                                url = POM_LICENCE_URL
+	                                distribution = POM_LICENCE_DIST
+	                            }
+	                        }
+                            developers {
+                                developer {
+                                    id = "libGDX Developers"
+                                    url = "https://github.com/libgdx/libgdx/graphs/contributors"
+                                }
+                            }
+	                        scm {
+	                            connection = POM_SCM_CONNECTION
+	                            developerConnection = POM_SCM_DEV_CONNECTION
+	                            url = POM_SCM_URL
+	                        }
+	                    }
+	                }
+                }
+            }
+
+            repositories {
+                maven {
+                    url = version.endsWith('SNAPSHOT') ? getSnapshotRepositoryUrl() : getReleaseRepositoryUrl()
+                    
+                    if (getRepositoryUsername() || getRepositoryPassword())
+                    {
+                        credentials {
+                            username = getRepositoryUsername()
+                            password = getRepositoryPassword()
+                        }
+                    }
+                }
+            }
+        }
+
+        signing {
+            useGpgCmd()
+            sign publishing.publications.mavenJava
+        }
+
+        //Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.
+        gradle.taskGraph.whenReady {
+            tasks.withType(Sign) {
+                onlyIf { isReleaseBuild() }
+            }
+        }
+    }
+}

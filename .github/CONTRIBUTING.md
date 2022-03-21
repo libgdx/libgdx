@@ -16,7 +16,8 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  [the forum](http://badlogicgames.com/forum/) or IRC). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
+  the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)).
+  See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
@@ -71,13 +72,13 @@ Contributing to libGDX is easy:
   * Hack away, and send a pull request on GitHub!
 
 ### API Changes & Additions
-If you modify a public API, or add a new one, make sure to add these changes to the [CHANGES](https://github.com/libgdx/libgdx/blob/master/CHANGES) file in the root of the repository. In addition to the CHANGES file, such modifications are also published on the [blog](http://www.badlogicgames.com) and on [Twitter](http://www.twitter.com/badlogicgames) to reach all of the community.
+If you modify a public API, or add a new one, make sure to add these changes to the [CHANGES](https://github.com/libgdx/libgdx/blob/master/CHANGES) file in the root of the repository. In addition to the CHANGES file, such modifications are also published on the [website](https://libgdx.com/news/) and on [Twitter](https://twitter.com/libgdx) to reach all of the community.
 
-If you want to poll the brains of other devs, either send a pull request and start a conversation on Github, or start a new thread in [this sub-forum](http://www.badlogicgames.com/forum/viewforum.php?f=23). You will need special forum permissions, write an e-mail to contact at badlogicgames dot com and tell me your forum id. You should also subscribe to that forum via e-mail, there's a button at the bottom of the page. You can also drop by on IRC (irc.freenode.org, #libgdx), where most core devs are lurking.
+If you want to poll the brains of other devs, either send a pull request and start a conversation on Github, or discuss in the official [libGDX Discord](https://libgdx.com/community/discord/).
 
 ### Contributor License Agreement
 
-libGDX is licensed under the [Apache 2.0 license](http://en.wikipedia.org/wiki/Apache_License). Before we can accept code contributions, we need you to sign our [contributor license agreement](https://github.com/libgdx/libgdx/blob/master/CLA.txt). Just print it out, fill in the blanks and send a copy to [`contact@badlogicgames.com`](mailto:contact@badlogicgames.com?subject=[libGDX]%20CLA), with the subject `[libGDX] CLA`.
+libGDX is licensed under the [Apache 2.0 license](https://en.wikipedia.org/wiki/Apache_License). Before we can accept code contributions, we need you to sign our [contributor license agreement](https://github.com/libgdx/libgdx/blob/master/CLA.txt). Just print it out, fill in the blanks and send a copy to [`contact@badlogicgames.com`](mailto:contact@badlogicgames.com?subject=[libGDX]%20CLA), with the subject `[libGDX] CLA`.
 
 Signing the CLA will allow us to use and distribute your code. This is a non-exclusive license, so you retain all rights to your code. It's a fail-safe for us should someone contribute essential code and later decide to take it back.
 
@@ -87,18 +88,18 @@ If you work on libGDX code, we require you to use the [Eclipse formatter](https:
 
 Failure to use the formatter will result in Nate being very upset and the CI to fail.
 
-If you are using IntelliJ IDEA, you can still make use of the eclipse code formatter. See [this article](http://blog.jetbrains.com/idea/2014/01/intellij-idea-13-importing-code-formatter-settings-from-eclipse/?utm_source=hootsuite&utm_campaign=hootsuite) for more information.
+If you are using IntelliJ IDEA, you can still make use of the eclipse code formatter. See [this article](https://blog.jetbrains.com/idea/2014/01/intellij-idea-13-importing-code-formatter-settings-from-eclipse/) for more information.
 
 To make our life easier, we integrated the formatter with [spotless](https://github.com/diffplug/spotless) in our build system, so you don't have to take the hassle of importing it into your IDE. Just run `./gradlew spotlessApply` and your edited files are correct formatted.
 
 ### Code Style
 
-libGDX does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html), and so should you.
+libGDX does not have an official coding standard. We mostly follow the usual [Java style](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html), and so should you.
 
 A few things we'd rather not like to see:
 
-  * underscores in any kind of identifier
-  * [Hungarian notation](http://en.wikipedia.org/wiki/Hungarian_notation)
+  * Underscores in any kind of identifier
+  * [Hungarian notation](https://en.wikipedia.org/wiki/Hungarian_notation)
   * Prefixes for fields or arguments
   * Curlies on new lines
   * Conditional block bodies without curlies when the block spans more than one line
@@ -107,7 +108,7 @@ If you modify an existing file, follow the style of the code in there.
 
 If you create a new file, make sure to add the Apache file header, as seen [here](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Application.java).
 
-If you create a new class, please add at least class documentation that explains the usage and scope of he class. You can omit Javadoc for methods that are self-explanatory.
+If you create a new class, please add at least class documentation that explains the usage and scope of the class. You can omit Javadoc for methods that are self-explanatory.
 
 If your class is explicitly thread-safe, mention it in the Javadoc. The default assumption is that classes are not thread-safe, to reduce the amount of costly locks in the code base.
 

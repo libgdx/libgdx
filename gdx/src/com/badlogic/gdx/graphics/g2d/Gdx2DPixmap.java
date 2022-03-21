@@ -94,6 +94,20 @@ public class Gdx2DPixmap implements Disposable {
 		}
 	}
 
+	public Gdx2DPixmap (ByteBuffer encodedData, int offset, int len, int requestedFormat) throws IOException {
+		pixelPtr = loadByteBuffer(nativeData, encodedData, offset, len);
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
+
+		basePtr = nativeData[0];
+		width = (int)nativeData[1];
+		height = (int)nativeData[2];
+		format = (int)nativeData[3];
+
+		if (requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
+	}
+
 	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
@@ -285,6 +299,27 @@ public class Gdx2DPixmap implements Disposable {
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
 		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
+
+		if(pixmap==0)
+			return 0;
+
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+		p_native_data[0] = (jlong)pixmap;
+		p_native_data[1] = pixmap->width;
+		p_native_data[2] = pixmap->height;
+		p_native_data[3] = pixmap->format;
+		env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+		return pixel_buffer;
+	 */
+
+	private static native ByteBuffer loadByteBuffer (long[] nativeData, ByteBuffer buffer, int offset, int len); /*MANUAL
+		if(buffer==0)
+			return 0;
+
+		const unsigned char* p_buffer = (const unsigned char*)env->GetDirectBufferAddress(buffer);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 
 		if(pixmap==0)
 			return 0;

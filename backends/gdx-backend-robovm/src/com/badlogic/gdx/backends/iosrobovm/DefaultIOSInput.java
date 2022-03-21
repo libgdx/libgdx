@@ -392,7 +392,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
-	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
@@ -606,13 +606,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public Orientation getNativeOrientation () {
-		switch (app.uiApp.getStatusBarOrientation()) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			return Orientation.Landscape;
-		default:
-			return Orientation.Portrait;
-		}
+		return Orientation.Portrait;
 	}
 
 	@Override

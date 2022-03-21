@@ -68,7 +68,7 @@ public class ModelLoaderTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
-		if (assets.update()) {
+		if (assets.update(16)) {
 			doneLoading();
 		}
 

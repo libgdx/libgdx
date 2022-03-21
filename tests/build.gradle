@@ -17,12 +17,17 @@
 configure(subprojects - project(":tests:gdx-tests-android")) {
 	apply plugin: "java"
 
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
+	if(JavaVersion.current().isJava9Compatible()) {
+		compileJava {
+			options.release = versions.java
+		}
+	} else {
+		sourceCompatibility = versions.java
+		targetCompatibility = versions.java
+	}
+
 	sourceSets.main.java.srcDirs = ["src"]
 	sourceSets.main.resources.srcDirs = ["res"]
-
-	compileJava.options.encoding = 'UTF-8'
 
 	configurations { natives }
 }

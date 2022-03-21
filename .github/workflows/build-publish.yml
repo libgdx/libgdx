@@ -1,0 +1,410 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+    branches: [ master ]
+  release:
+    types: [ published ]
+
+jobs:
+
+  natives-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build macOS natives
+        run: |
+          # See https://github.com/actions/virtual-environments/issues/2557
+          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
+          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
+          sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
+          sudo xcode-select -switch /Applications/Xcode.app
+          /usr/bin/xcodebuild -version
+          ./gradlew jniGen jnigenBuildIOS
+          ./backends/gdx-backend-robovm/build-objectal.sh
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-ios -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-ios.zip
+          path: natives-ios.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build macOS natives
+        run: |
+          # See https://github.com/actions/virtual-environments/issues/2557
+          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
+          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
+          sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
+          sudo xcode-select -switch /Applications/Xcode.app
+          /usr/bin/xcodebuild -version
+          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-macos -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-macos.zip
+          path: natives-macos.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-linux:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install cross-compilation toolchains
+        run: |
+          sudo apt install -y --force-yes gcc g++
+          sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
+          sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Linux natives
+        run: |
+          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-linux -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-linux.zip
+          path: natives-linux.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-windows:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install cross-compilation toolchains
+        run: |
+          sudo apt install -y --force-yes mingw-w64 lib32z1
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Windows natives
+        run: |
+          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-windows -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-windows.zip
+          path: natives-windows.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  natives-android:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Android natives
+        run: |
+          export NDK_HOME=$ANDROID_NDK_HOME
+          ./gradlew jniGen jnigenBuildAndroid
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-android -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives-android.zip
+          path: natives-android.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  pack-natives:
+    runs-on: ubuntu-18.04
+    needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Download natives-ios artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-ios.zip
+
+      - name: Download natives-macos artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-macos.zip
+
+      - name: Download natives-linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-linux.zip
+
+      - name: Download natives-windows artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-windows.zip
+
+      - name: Download natives-android artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives-android.zip
+
+      - name: Unpack natives
+        run: |
+          unzip -o natives-ios.zip
+          unzip -o natives-macos.zip
+          unzip -o natives-linux.zip
+          unzip -o natives-windows.zip
+          unzip -o natives-android.zip
+
+      - name: Pack desktop natives
+        run: |
+          ./gradlew jniGen
+          ant -f gdx/jni/build.xml pack-natives
+          ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
+          ant -f extensions/gdx-freetype/jni/build.xml pack-natives
+          ant -f extensions/gdx-bullet/jni/build.xml pack-natives
+
+      - name: Pack natives
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
+          zip natives -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: natives.zip
+          path: natives.zip
+
+      - name: Upload artifacts to S3
+        if: env.AWS_ACCESS_KEY_ID != null
+        run: |
+          aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-nightlies/natives.zip
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  publish:
+    runs-on: ubuntu-18.04
+    needs: pack-natives
+    env:
+      ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      ORG_GRADLE_PROJECT_MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Download natives artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: natives.zip
+
+      - name: Unpack natives
+        run: |
+          unzip -o natives.zip
+
+      - name: Fetch external natives
+        run: |
+          ./gradlew fetchExternalNatives
+
+      - name: Snapshot build deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
+        run: |
+          ./gradlew build publish
+
+      - name: Import GPG key
+        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Release build deploy
+        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+
+
+  build-and-upload-runnables:
+    runs-on: ubuntu-18.04
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Runnables
+        run: ./gradlew clean fetchNatives buildRunnables build
+
+      - name: Upload artifacts to S3
+        if: env.AWS_ACCESS_KEY_ID != null
+        run: |
+          aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
+          aws s3 cp ./extensions/gdx-setup/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
+
+

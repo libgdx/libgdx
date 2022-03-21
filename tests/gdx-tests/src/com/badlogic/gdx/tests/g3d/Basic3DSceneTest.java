@@ -100,7 +100,7 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 
 	@Override
 	public void render () {
-		if (loading && assets.update()) doneLoading();
+		if (loading && assets.update(16)) doneLoading();
 		camController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());

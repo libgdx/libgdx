@@ -30,7 +30,7 @@ public class ReflectionCache {
 			type.source = instance1;
 		}
 		if (type == null) {
-			throw new RuntimeException("Couldn't find Type for class '" + name + "'");
+			throw new ClassNotFoundException("Couldn't find Type for class '" + name + "'");
 		}
 		if (type.source == null) {
 			type.source = instance2;

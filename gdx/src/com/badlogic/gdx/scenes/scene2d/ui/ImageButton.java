@@ -42,8 +42,7 @@ public class ImageButton extends Button {
 
 	public ImageButton (ImageButtonStyle style) {
 		super(style);
-		image = new Image();
-		image.setScaling(Scaling.fit);
+		image = newImage();
 		add(image);
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
@@ -59,6 +58,10 @@ public class ImageButton extends Button {
 
 	public ImageButton (@Null Drawable imageUp, @Null Drawable imageDown, @Null Drawable imageChecked) {
 		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
+	}
+
+	protected Image newImage () {
+		return new Image((Drawable)null, Scaling.fit);
 	}
 
 	public void setStyle (ButtonStyle style) {

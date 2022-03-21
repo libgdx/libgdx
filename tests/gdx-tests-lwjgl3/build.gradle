@@ -19,13 +19,21 @@ ext {
 }
 sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+if(JavaVersion.current().isJava9Compatible()) {
+	compileJava {
+		options.release = versions.javaLwjgl3
+	}
+} else {
+	sourceCompatibility = versions.javaLwjgl3
+	targetCompatibility = versions.javaLwjgl3
+}
 
 dependencies {
-	compile project(":tests:gdx-tests")
-	compile project(":backends:gdx-backend-lwjgl3")
-	compile testnatives.desktop
+	implementation project(":tests:gdx-tests")
+	implementation project(":backends:gdx-backend-lwjgl3")
+	implementation project(":extensions:gdx-lwjgl3-angle")
+	implementation project(":extensions:gdx-lwjgl3-glfw-awt-macos")
+	implementation testnatives.desktop
 }
 
 task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {

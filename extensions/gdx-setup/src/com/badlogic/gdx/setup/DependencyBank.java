@@ -24,7 +24,7 @@ public class DependencyBank {
 	static String libgdxVersion = "1.10.0";
 	// Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.10.1-SNAPSHOT";
-	static String roboVMVersion = "2.3.14";
+	static String roboVMVersion = "2.3.15";
 	static String moeVersion = "2.0.0-SNAPSHOT";
 	static String buildToolsVersion = "29.0.3";
 	static String androidAPILevel = "30";
@@ -41,8 +41,8 @@ public class DependencyBank {
 	static String jitpackUrl = "https://jitpack.io";
 
 	// Project plugins
-	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.0.13";
-	static String grettyPluginImport = "org.gretty:gretty:3.0.2";
+	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.1.16";
+	static String grettyPluginImport = "org.gretty:gretty:3.0.7";
 	static String androidPluginImport = "com.android.tools.build:gradle:4.1.3";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;

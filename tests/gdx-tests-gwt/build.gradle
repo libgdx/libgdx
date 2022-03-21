@@ -26,7 +26,6 @@ configurations.all {
 	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
-apply plugin: 'war'
 apply plugin: 'gwt'
 apply plugin: 'org.gretty'
 
@@ -39,9 +38,9 @@ gretty.contextPath = "/"
 gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
 dependencies {
-	compile project(":tests:gdx-tests")
-	compile project(":backends:gdx-backends-gwt")
-	compile project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
+	implementation project(":tests:gdx-tests")
+	implementation project(":backends:gdx-backend-gwt")
+	implementation project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
 }
 
 gwt {
@@ -114,12 +113,26 @@ task dist(dependsOn: [clean, compileGwt]) {
 task addSource {
 	doLast {
 		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.resources.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.resources.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.resources.srcDirs)
 		sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
 	}
 }
 
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
+
+eclipse {
+	classpath {
+		containers += [
+			'com.google.gwt.eclipse.core.GWT_CONTAINER',
+			'com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER'
+		]
+	}
+}

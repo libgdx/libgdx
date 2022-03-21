@@ -52,10 +52,9 @@ public class ImageTextButton extends Button {
 
 		defaults().space(3);
 
-		image = new Image();
-		image.setScaling(Scaling.fit);
+		image = newImage();
 
-		label = new Label(text, new LabelStyle(style.font, style.fontColor));
+		label = newLabel(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
 
 		add(image);
@@ -64,6 +63,14 @@ public class ImageTextButton extends Button {
 		setStyle(style);
 
 		setSize(getPrefWidth(), getPrefHeight());
+	}
+
+	protected Image newImage () {
+		return new Image((Drawable)null, Scaling.fit);
+	}
+
+	protected Label newLabel (String text, LabelStyle style) {
+		return new Label(text, style);
 	}
 
 	public void setStyle (ButtonStyle style) {

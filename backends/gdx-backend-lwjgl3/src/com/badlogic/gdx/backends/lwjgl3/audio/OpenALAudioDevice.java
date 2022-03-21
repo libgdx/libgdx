@@ -96,7 +96,6 @@ public class OpenALAudioDevice implements AudioDevice {
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			alSourcef(sourceID, AL_GAIN, volume);
 			// Fill initial buffers.
-			int queuedBuffers = 0;
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				int written = Math.min(bufferSize, length);
@@ -106,14 +105,6 @@ public class OpenALAudioDevice implements AudioDevice {
 				alSourceQueueBuffers(sourceID, bufferID);
 				length -= written;
 				offset += written;
-				queuedBuffers++;
-			}
-			// Queue rest of buffers, empty.
-			((Buffer)tempBuffer).clear().flip();
-			for (int i = queuedBuffers; i < bufferCount; i++) {
-				int bufferID = buffers.get(i);
-				alBufferData(bufferID, format, tempBuffer, sampleRate);
-				alSourceQueueBuffers(sourceID, bufferID);
 			}
 			alSourcePlay(sourceID);
 			isPlaying = true;
@@ -212,5 +203,15 @@ public class OpenALAudioDevice implements AudioDevice {
 
 	public int getLatency () {
 		return (int)(secondsPerBuffer * bufferCount * 1000);
+	}
+
+	@Override
+	public void pause () {
+		// A buffer underflow will cause the source to stop.
+	}
+
+	@Override
+	public void resume () {
+		// Automatically resumes when samples are written
 	}
 }

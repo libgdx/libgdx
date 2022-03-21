@@ -20,6 +20,9 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -49,6 +52,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
+	private boolean resetDeltaTime = false;
 	private long frameId;
 	private long frameCounterStart = 0;
 	private int frames;
@@ -67,25 +71,35 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			updateFramebufferInfo();
-			if (!window.isListenerInitialized()) {
-				return;
-			}
-			window.makeCurrent();
-			gl20.glViewport(0, 0, width, height);
-			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
-			GLFW.glfwSwapBuffers(windowHandle);
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					updateFramebufferInfo();
+					if (!window.isListenerInitialized()) {
+						return;
+					}
+					window.makeCurrent();
+					gl20.glViewport(0, 0, width, height);
+					window.getListener().resize(getWidth(), getHeight());
+					window.getListener().render();
+					GLFW.glfwSwapBuffers(windowHandle);
+				}
+			});
 		}
 	};
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
-		if (window.getConfig().useGL30) {
+		if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
 			this.gl30 = new Lwjgl3GL30();
 			this.gl20 = this.gl30;
 		} else {
-			this.gl20 = new Lwjgl3GL20();
+			try {
+				this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
+					: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
+			} catch (Throwable t) {
+				throw new GdxRuntimeException("Couldn't instantiate GLES20.", t);
+			}
 			this.gl30 = null;
 		}
 		updateFramebufferInfo();
@@ -138,7 +152,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	void update () {
 		long time = System.nanoTime();
 		if (lastFrameTime == -1) lastFrameTime = time;
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			deltaTime = 0;
+		} else
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 
 		if (time - frameCounterStart >= 1000000000) {
@@ -219,6 +237,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public float getDeltaTime () {
 		return deltaTime;
+	}
+
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
 	}
 
 	@Override
@@ -394,23 +416,30 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	public boolean setWindowedMode (int width, int height) {
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
+			int newX = 0, newY = 0;
+			boolean centerWindow = false;
 			if (width != logicalWidth || height != logicalHeight) {
-				// Center window
+				centerWindow = true;
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				window.setPosition(tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2,
-					tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
+				newX = Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2);
+				newY = Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
 			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
+			if (centerWindow) {
+				window.setPosition(newX, newY); // on macOS the centering has to happen _after_ the new window size was set
+			}
 		} else {
 			if (displayModeBeforeFullscreen == null) {
 				storeCurrentWindowPositionAndDisplayMode();
 			}
-			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) {
+			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // Center window
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2,
-					tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2, width, height, displayModeBeforeFullscreen.refreshRate);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+					Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
+					Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2), width, height,
+					displayModeBeforeFullscreen.refreshRate);
 			} else {
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
 					height, displayModeBeforeFullscreen.refreshRate);

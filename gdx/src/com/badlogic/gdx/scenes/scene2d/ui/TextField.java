@@ -342,7 +342,7 @@ public class TextField extends Widget implements Disableable {
 
 		float yOffset = font.isFlipped() ? -textHeight : 0;
 		if (displayText.length() == 0) {
-			if (!focused && messageText != null) {
+			if ((!focused || disabled) && messageText != null) {
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				if (style.messageFontColor != null) {
 					messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,

@@ -1,8 +1,0 @@
-<config>
-    <libs>
-        <lib>libs/libgdx-box2d.a</lib>
-    </libs>
-    <forceLinkClasses>
-        <pattern>com.badlogic.gdx.physics.box2d.*</pattern>
-    </forceLinkClasses>
-</config>

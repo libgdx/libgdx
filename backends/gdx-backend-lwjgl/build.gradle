@@ -15,7 +15,8 @@
  ******************************************************************************/
 
 dependencies {
-	compile libraries.lwjgl
+	api libraries.lwjgl
+	api gdxnatives.desktop
 }
 
 

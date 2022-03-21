@@ -320,6 +320,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		this.selectedPrefWidth = selectedPrefWidth;
 	}
 
+	public boolean getSelectedPrefWidth () {
+		return selectedPrefWidth;
+	}
+
 	/** Returns the pref width of the select box if the widest item was selected, for use when
 	 * {@link #setSelectedPrefWidth(boolean)} is true. */
 	public float getMaxSelectedPrefWidth () {
