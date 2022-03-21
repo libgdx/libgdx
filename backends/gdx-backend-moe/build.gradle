@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
+buildscript {
+	dependencies {
+		classpath group: "org.multi-os-engine", name: "moe-gradle", version: "1.9.0"
+	}
+}
+apply plugin: "moe-sdk"
 dependencies {
 	compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-	compileOnly "org.graalvm.nativeimage:svm:21.0.0.2"
+	compileOnly group: "org.multi-os-engine", name: "moe-sdk", version: "1.9.0"
+
 }
