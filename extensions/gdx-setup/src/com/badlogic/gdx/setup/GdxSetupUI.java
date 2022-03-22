@@ -239,7 +239,7 @@ public class GdxSetupUI extends JFrame {
 			infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			panel.add(infoLabel);
 			JEditorPane pane = new JEditorPane("text/html",
-				"<a href=\"https://github.com/libgdx/libgdx/wiki/Dependency-management-with-Gradle\">Dependency Management</a>");
+				"<a href=\"https://libgdx.com/wiki/articles/dependency-management-with-gradle\">Dependency Management</a>");
 			pane.addHyperlinkListener(new HyperlinkListener() {
 				@Override
 				public void hyperlinkUpdate (HyperlinkEvent e) {

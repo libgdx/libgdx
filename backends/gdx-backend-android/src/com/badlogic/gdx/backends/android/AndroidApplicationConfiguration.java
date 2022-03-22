@@ -74,10 +74,6 @@ public class AndroidApplicationConfiguration {
 	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
 
-	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
-	 * less 14. default: false **/
-	public boolean hideStatusBar = false;
-
 	/** whether to disable Android audio support. default: false */
 	public boolean disableAudio = false;
 

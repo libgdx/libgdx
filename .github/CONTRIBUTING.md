@@ -17,7 +17,7 @@ requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
   the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)).
-  See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
+  See also [Getting Help](https://libgdx.com/wiki/articles/getting-help).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
@@ -38,7 +38,7 @@ Guidelines for bug reports:
    latest `master` or development branch in the repository.
 
 3. **Isolate the problem** &mdash; create a [reduced test
-   case](https://github.com/libgdx/libgdx/wiki/Getting-Help#executable-example-code).
+   case](https://libgdx.com/wiki/articles/getting-help#executable-example-code).
 
 A good bug report shouldn't leave others needing to chase you up for more
 information. Please try to be as detailed as possible in your report. What is
@@ -51,7 +51,7 @@ Create a [pull request](#pull-requests) with your proposed correction and
 a description of the problem you are fixing. Please do **not** create a separate
 issue for the bug report, the pull request is enough.
 
-See [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help) for more information and an example.
+See [Getting Help](https://libgdx.com/wiki/articles/getting-help) for more information and an example.
 
 
 <a name="features"></a>

@@ -75,6 +75,10 @@ public class ANGLELoader {
 			OutputStream out = null;
 			InputStream in = null;
 
+			if (outFile.exists()) {
+				return outFile;
+			}
+
 			try {
 				out = new FileOutputStream(outFile);
 				in = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
