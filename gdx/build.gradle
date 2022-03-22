@@ -35,7 +35,7 @@ compileJava {
 }
 
 jar {
-	duplicatesStrategy = "warn"
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
