@@ -32,8 +32,8 @@ import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
 import apple.NSObject;
-import apple.avfoundation.AVAudioPlayer;
-import apple.avfoundation.protocol.AVAudioPlayerDelegate;
+import apple.avfaudio.AVAudioPlayer;
+import apple.avfaudio.protocol.AVAudioPlayerDelegate;
 import apple.foundation.NSError;
 import apple.foundation.NSURL;
 

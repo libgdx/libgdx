@@ -30,7 +30,7 @@ import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
 import apple.NSObject;
-import apple.avfoundation.protocol.AVAudioSessionDelegate;
+import apple.avfaudio.protocol.AVAudioSessionDelegate;
 
 @Generated
 @Runtime(ObjCRuntime.class)
