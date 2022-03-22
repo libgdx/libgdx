@@ -51,7 +51,12 @@ libraries.lwjgl = [
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
-
+testnatives.ios = [
+        files("gdx/libs/ios32/"),
+        files("extensions/gdx-box2d/gdx-box2d/libs/ios32/"),
+        files("extensions/gdx-bullet/libs/ios32/"),
+        //files("extensions/gdx-freetype/libs/ios32/")
+]
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",

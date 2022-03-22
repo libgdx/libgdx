@@ -22,7 +22,7 @@ buildscript {
     }
     dependencies {
         // Multi-OS Engine plugin
-        classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "${versions.moe}"
+        classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "1.9.0"
     }
 }
 
@@ -49,22 +49,14 @@ task copyNatives  {
         file("xcode/native/ios/").mkdirs();
         def LD_FLAGS = "LIBGDX_NATIVES = "
         configurations.natives.files.each { jar ->
-            def outputDir = null
-            if (jar.name.matches(".*natives-ios.*")) outputDir = file("xcode/native/ios")
-            if (outputDir != null) {
-                FileCollection fileCollection = zipTree(jar)
-                for (File libFile : fileCollection) {
-                    if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
-                        copy {
-                            from libFile.getAbsolutePath()
-                            into outputDir
-                        }
-                        LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
-                    }
+            for (File libFile : jar.listFiles()) {
+                if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
+                    LD_FLAGS += " -force_load " + libFile.getAbsolutePath()
                 }
             }
+
         }
-        def outFlags = file("xcode/LibGDXMissileCommand/custom.xcconfig");
+        def outFlags = file("xcode/IOSTests/custom.xcconfig");
         outFlags.write LD_FLAGS
 
         def proguard = file("proguard.append.cfg")
@@ -84,9 +76,6 @@ dependencies {
 
 // Setup Multi-OS Engine
 moe {
-    nativeImage {
-        options = ["--features=com.badlogic.gdx.backends.svm.ConfigCollectionFeatureBase,com.badlogic.gdx.backends.svm.ConfigCollectionFeatureBullet"]
-    }
     xcode {
         project 'xcode/IOSTests.xcodeproj'
         mainTarget 'IOSTests'

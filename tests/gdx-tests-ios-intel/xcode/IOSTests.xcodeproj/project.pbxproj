@@ -15,11 +15,6 @@
 		58A5435E1E37902500B2DD97 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A5435D1E37902500B2DD97 /* OpenAL.framework */; };
 		58A543601E37902C00B2DD97 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A5435F1E37902C00B2DD97 /* AudioToolbox.framework */; };
 		58A543621E3792E400B2DD97 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A543611E3792E400B2DD97 /* UIKit.framework */; };
-		58A543681E379C2B00B2DD97 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A543631E379C2B00B2DD97 /* Default-568h@2x.png */; };
-		58A543691E379C2B00B2DD97 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A543641E379C2B00B2DD97 /* Default.png */; };
-		58A5436A1E379C2B00B2DD97 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A543651E379C2B00B2DD97 /* Default@2x.png */; };
-		58A5436B1E379C2B00B2DD97 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A543661E379C2B00B2DD97 /* Default@2x~ipad.png */; };
-		58A5436C1E379C2B00B2DD97 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A543671E379C2B00B2DD97 /* Default~ipad.png */; };
 		ABE02E564B2F9CA757AF3B3A /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BA288C52C91054FBDE015BD /* moe-main-interfaces.m */; };
 /* End PBXBuildFile section */
 
@@ -34,11 +29,6 @@
 		58A5435D1E37902500B2DD97 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		58A5435F1E37902C00B2DD97 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		58A543611E3792E400B2DD97 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		58A543631E379C2B00B2DD97 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../../gdx-tests-android/assets/Default-568h@2x.png"; sourceTree = "<group>"; };
-		58A543641E379C2B00B2DD97 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = "../../../gdx-tests-android/assets/Default.png"; sourceTree = "<group>"; };
-		58A543651E379C2B00B2DD97 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../../gdx-tests-android/assets/Default@2x.png"; sourceTree = "<group>"; };
-		58A543661E379C2B00B2DD97 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~ipad.png"; path = "../../../gdx-tests-android/assets/Default@2x~ipad.png"; sourceTree = "<group>"; };
-		58A543671E379C2B00B2DD97 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~ipad.png"; path = "../../../gdx-tests-android/assets/Default~ipad.png"; sourceTree = "<group>"; };
 		58C6F5241DA66CB600309CB6 /* IOSTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IOSTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6BA288C52C91054FBDE015BD /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
@@ -124,11 +114,6 @@
 			children = (
 				58C6F5381DA66CB600309CB6 /* Info.plist */,
 				58A543571E37771000B2DD97 /* custom.xcconfig */,
-				58A543631E379C2B00B2DD97 /* Default-568h@2x.png */,
-				58A543641E379C2B00B2DD97 /* Default.png */,
-				58A543651E379C2B00B2DD97 /* Default@2x.png */,
-				58A543661E379C2B00B2DD97 /* Default@2x~ipad.png */,
-				58A543671E379C2B00B2DD97 /* Default~ipad.png */,
 				58C6F5271DA66CB600309CB6 /* Supporting Files */,
 			);
 			path = IOSTests;
@@ -203,6 +188,7 @@
 					};
 					58C6F5231DA66CB600309CB6 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = KS54L6J34G;
 					};
 				};
 			};
@@ -211,6 +197,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -237,11 +224,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58A5436A1E379C2B00B2DD97 /* Default@2x.png in Resources */,
-				58A5436C1E379C2B00B2DD97 /* Default~ipad.png in Resources */,
-				58A5436B1E379C2B00B2DD97 /* Default@2x~ipad.png in Resources */,
-				58A543681E379C2B00B2DD97 /* Default-568h@2x.png in Resources */,
-				58A543691E379C2B00B2DD97 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +242,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"test\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nif [ -z \"$JAVA_HOME\" ]; then\n    if [ -z \"$MOE_JAVA_VERSION_OVERRIDE\" ]; then\n        export JAVA_HOME=$(/usr/libexec/java_home)\n    else\n        export JAVA_HOME=$(/usr/libexec/java_home -v \"$MOE_JAVA_VERSION_OVERRIDE\")\n    fi\nfi\necho $JAVA_HOME\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n#cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/test_provider/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n## Copy android CA certificates on demand\n#if [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n#    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#fi\n#\n## Copy and sign MOE framework\n#rsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n#    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\n#if [ \"${ARCHS}\" == \"arm64\" ] || [ \"${ARCHS}\" == \"x86_64\" ]; then\n#    if [ \"${PLATFORM_NAME}\" == \"iphonesimulator\" ]; then\n#        lipo -thin x86_64 -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\n#    else\n#        lipo -thin arm64 -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\n#    fi\n#fi\n#if [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n#    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n#        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\n#fi\n";
+			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"test\"\nexport MOE_BUILD_MODE=\"$(echo $CONFIGURATION | tr '[:upper:]' '[:lower:]')\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nif [ -z \"$JAVA_HOME\" ]; then\n    if [ -z \"$MOE_JAVA_VERSION_OVERRIDE\" ]; then\n        export JAVA_HOME=$(/usr/libexec/java_home)\n    else\n        export JAVA_HOME=$(/usr/libexec/java_home -v \"$MOE_JAVA_VERSION_OVERRIDE\")\n    fi\nfi\necho $JAVA_HOME\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/resources/${MOE_BUILD_MODE}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/startup-provider/${MOE_BUILD_MODE}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/test-provider/${MOE_BUILD_MODE}/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n# Copy android CA certificates on demand\nif [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\nfi\n\n# Copy and sign MOE framework\nrsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\nif [ \"${ARCHS}\" == \"arm64\" ] || [ \"${ARCHS}\" == \"x86_64\" ]; then\n    lipo -thin \"${ARCHS}\" -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\nfi\nif [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\nfi\n";
 		};
 		AAF80D6F478FCDFA29F30F0C /* Compile Sources (MOE) */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -274,7 +256,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"main\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nif [ -z \"$JAVA_HOME\" ]; then\n    if [ -z \"$MOE_JAVA_VERSION_OVERRIDE\" ]; then\n        export JAVA_HOME=$(/usr/libexec/java_home)\n    else\n        export JAVA_HOME=$(/usr/libexec/java_home -v \"$MOE_JAVA_VERSION_OVERRIDE\")\n    fi\nfi\necho $JAVA_HOME\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n#cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/test_provider/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n## Copy android CA certificates on demand\n#if [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n#    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n#fi\n#\n## Copy and sign MOE framework\n#rsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n#    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\n#if [ \"${ARCHS}\" == \"arm64\" ] || [ \"${ARCHS}\" == \"x86_64\" ]; then\n#    if [ \"${PLATFORM_NAME}\" == \"iphonesimulator\" ]; then\n#        lipo -thin x86_64 -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\n#    else\n#        lipo -thin arm64 -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\n#    fi\n#fi\n#if [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n#    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n#        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\n#fi\n";
+			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"main\"\nexport MOE_BUILD_MODE=\"$(echo $CONFIGURATION | tr '[:upper:]' '[:lower:]')\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nif [ -z \"$JAVA_HOME\" ]; then\n    if [ -z \"$MOE_JAVA_VERSION_OVERRIDE\" ]; then\n        export JAVA_HOME=$(/usr/libexec/java_home)\n    else\n        export JAVA_HOME=$(/usr/libexec/java_home -v \"$MOE_JAVA_VERSION_OVERRIDE\")\n    fi\nfi\necho $JAVA_HOME\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/resources/${MOE_BUILD_MODE}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/startup-provider/${MOE_BUILD_MODE}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/test-provider/${MOE_BUILD_MODE}/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n# Copy android CA certificates on demand\nif [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\nfi\n\n# Copy and sign MOE framework\nrsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\nif [ \"${ARCHS}\" == \"arm64\" ] || [ \"${ARCHS}\" == \"x86_64\" ]; then\n    lipo -thin \"${ARCHS}\" -output \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework/MOE\" \"${MOE_FRAMEWORK_PATH}/MOE.framework/MOE\"\nfi\nif [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -306,6 +288,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"${MOE_FRAMEWORK_PATH}",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -313,17 +296,19 @@
 				);
 				INFOPLIST_FILE = "IOSTests-Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_HEADER_SEARCH_PATHS = "${MOE_LIB_PATH}/include";
 				MOE_JAVA_VERSION_OVERRIDE = "";
-				MOE_LIB_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_OTHER_LDFLAGS = "${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/main_${arch}.o ${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/llvm_${arch}.o ${MOE_CUSTOM_OTHER_LDFLAGS} -Wl,-force_load,${MOE_LIB_PATH}/libmoe.a -lstdc++ -lpthread -lsqlite3 -Wl,-framework,Foundation -Wl,-framework,UniformTypeIdentifiers -Wl,-framework,CoreServices";
-				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
+				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lc++ -framework MOE";
+				MOE_PAGEZERO = "";
+				"MOE_PAGEZERO[arch=x86_64]" = "-pagezero_size 4096";
 				MOE_PROJECT_BUILD_DIR = "${MOE_PROJECT_DIR}/build";
 				MOE_PROJECT_DIR = "${SRCROOT}/../";
 				MOE_SDK_PATH = "${MOE_PROJECT_BUILD_DIR}/moe/sdk";
+				MOE_SECT_ART = "-sectcreate __ARTDATA __artdata \"${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.art\"";
 				MOE_SECT_OAT = "-sectcreate __OATDATA __oatdata \"${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat\"";
-				"MOE_SEGPROT[sdk=iphonesimulator*]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
+				MOE_SEGPROT = "-segprot __OATDATA rx rx -segprot __ARTDATA rw rw";
+				"MOE_SEGPROT[arch=x86_64]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -342,6 +327,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"${MOE_FRAMEWORK_PATH}",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -349,17 +335,19 @@
 				);
 				INFOPLIST_FILE = "IOSTests-Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_HEADER_SEARCH_PATHS = "${MOE_LIB_PATH}/include";
 				MOE_JAVA_VERSION_OVERRIDE = "";
-				MOE_LIB_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_OTHER_LDFLAGS = "${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/main_${arch}.o ${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/llvm_${arch}.o ${MOE_CUSTOM_OTHER_LDFLAGS} -Wl,-force_load,${MOE_LIB_PATH}/libmoe.a -lstdc++ -lpthread -lsqlite3 -Wl,-framework,Foundation -Wl,-framework,UniformTypeIdentifiers -Wl,-framework,CoreServices";
-				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
+				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lc++ -framework MOE";
+				MOE_PAGEZERO = "";
+				"MOE_PAGEZERO[arch=x86_64]" = "-pagezero_size 4096";
 				MOE_PROJECT_BUILD_DIR = "${MOE_PROJECT_DIR}/build";
 				MOE_PROJECT_DIR = "${SRCROOT}/../";
 				MOE_SDK_PATH = "${MOE_PROJECT_BUILD_DIR}/moe/sdk";
+				MOE_SECT_ART = "-sectcreate __ARTDATA __artdata \"${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.art\"";
 				MOE_SECT_OAT = "-sectcreate __OATDATA __oatdata \"${MOE_PROJECT_BUILD_DIR}/moe/test/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat\"";
-				"MOE_SEGPROT[sdk=iphonesimulator*]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
+				MOE_SEGPROT = "-segprot __OATDATA rx rx -segprot __ARTDATA rw rw";
+				"MOE_SEGPROT[arch=x86_64]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -375,6 +363,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphoneos*]" = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -396,6 +385,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -410,14 +400,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MOE_VERSION = 2.0.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MOE_VERSION = 1.8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				"ARCHS[sdk=iphoneos*]" = arm64;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 			};
 			name = Debug;
 		};
@@ -425,6 +413,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphoneos*]" = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -446,6 +435,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -454,14 +444,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MOE_VERSION = 2.0.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MOE_VERSION = 1.8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				"ARCHS[sdk=iphoneos*]" = arm64;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 			};
 			name = Release;
 		};
@@ -470,9 +458,11 @@
 			baseConfigurationReference = 58A543571E37771000B2DD97 /* custom.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = KS54L6J34G;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"${MOE_FRAMEWORK_PATH}",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -481,17 +471,19 @@
 				INFOPLIST_FILE = IOSTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_HEADER_SEARCH_PATHS = "${MOE_LIB_PATH}/include";
 				MOE_JAVA_VERSION_OVERRIDE = "";
-				MOE_LIB_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_OTHER_LDFLAGS = "${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/main_${arch}.o ${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/llvm_${arch}.o ${MOE_CUSTOM_OTHER_LDFLAGS} -Wl,-force_load,${MOE_LIB_PATH}/libmoe.a -lstdc++ -lpthread -lsqlite3 -Wl,-framework,Foundation -Wl,-framework,UniformTypeIdentifiers -Wl,-framework,CoreServices";
-				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
+				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lc++ -framework MOE";
+				MOE_PAGEZERO = "";
+				"MOE_PAGEZERO[arch=x86_64]" = "-pagezero_size 4096";
 				MOE_PROJECT_BUILD_DIR = "${MOE_PROJECT_DIR}/build";
 				MOE_PROJECT_DIR = "${SRCROOT}/../";
 				MOE_SDK_PATH = "${MOE_PROJECT_BUILD_DIR}/moe/sdk";
+				MOE_SECT_ART = "-sectcreate __ARTDATA __artdata \"${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.art\"";
 				MOE_SECT_OAT = "-sectcreate __OATDATA __oatdata \"${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat\"";
-				"MOE_SEGPROT[sdk=iphonesimulator*]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
+				MOE_SEGPROT = "-segprot __OATDATA rx rx -segprot __ARTDATA rw rw";
+				"MOE_SEGPROT[arch=x86_64]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -509,9 +501,11 @@
 			baseConfigurationReference = 58A543571E37771000B2DD97 /* custom.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = KS54L6J34G;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"${MOE_FRAMEWORK_PATH}",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -520,17 +514,19 @@
 				INFOPLIST_FILE = IOSTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_HEADER_SEARCH_PATHS = "${MOE_LIB_PATH}/include";
 				MOE_JAVA_VERSION_OVERRIDE = "";
-				MOE_LIB_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
-				MOE_OTHER_LDFLAGS = "${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/main_${arch}.o ${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/llvm_${arch}.o ${MOE_CUSTOM_OTHER_LDFLAGS} -Wl,-force_load,${MOE_LIB_PATH}/libmoe.a -lstdc++ -lpthread -lsqlite3 -Wl,-framework,Foundation -Wl,-framework,UniformTypeIdentifiers -Wl,-framework,CoreServices";
-				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
+				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lc++ -framework MOE";
+				MOE_PAGEZERO = "";
+				"MOE_PAGEZERO[arch=x86_64]" = "-pagezero_size 4096";
 				MOE_PROJECT_BUILD_DIR = "${MOE_PROJECT_DIR}/build";
 				MOE_PROJECT_DIR = "${SRCROOT}/../";
 				MOE_SDK_PATH = "${MOE_PROJECT_BUILD_DIR}/moe/sdk";
+				MOE_SECT_ART = "-sectcreate __ARTDATA __artdata \"${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.art\"";
 				MOE_SECT_OAT = "-sectcreate __OATDATA __oatdata \"${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat\"";
-				"MOE_SEGPROT[sdk=iphonesimulator*]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
+				MOE_SEGPROT = "-segprot __OATDATA rx rx -segprot __ARTDATA rw rw";
+				"MOE_SEGPROT[arch=x86_64]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
