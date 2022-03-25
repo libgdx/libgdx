@@ -1,4 +1,5 @@
 [1.10.1]
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] Removed Maven and Ant build systems. libGDX is now solely built with Gradle. See https://libgdx.com/dev/from-source/ for updated build instructions.
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
 - [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
