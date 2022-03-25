@@ -29,7 +29,12 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class IOSAudio implements Audio {
 
+	private int minAudioDeviceBufferSize;
+	private int audioDeviceBufferCount;
+
 	public IOSAudio (IOSApplicationConfiguration config) {
+		minAudioDeviceBufferSize = config.audioDeviceBufferSize;
+		audioDeviceBufferCount = config.audioDeviceBufferCount;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {
 			audio.setAllowIpod(config.allowIpod);
@@ -40,8 +45,7 @@ public class IOSAudio implements Audio {
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IOSAudioDevice(samplingRate, isMono, minAudioDeviceBufferSize, audioDeviceBufferCount);
 	}
 
 	@Override

@@ -116,6 +116,16 @@ public class IOSApplicationConfiguration {
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
 
+	/**
+	 * The minimal buffer size of the audio device. Below 2048 can lead to buggy behavior.
+	 */
+	int audioDeviceBufferSize = 2048;
+
+	/**
+	 * How many buffers to use for audio device
+	 */
+	int audioDeviceBufferCount = 5;
+
 	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();
 
 	/** adds device information for newer iOS devices, or overrides information for given ones
