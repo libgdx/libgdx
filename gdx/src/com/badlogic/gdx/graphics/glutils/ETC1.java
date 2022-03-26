@@ -247,7 +247,26 @@ public class ETC1 {
 	 * @param pixelSize the pixel size, either 2 (RBG565) or 3 (RGB888) */
 	private static native void decodeImage (ByteBuffer compressedData, int offset, ByteBuffer decodedData, int offsetDec,
 		int width, int height, int pixelSize); /*
-		etc1_decode_image((etc1_byte*)compressedData + offset, (etc1_byte*)decodedData + offsetDec, width, height, pixelSize, width * pixelSize);
+		// Nothing to decode, or no target
+		if (compressedData == 0 || decodedData == 0) {
+			// Invalid buffers, null pointer
+			return;
+		}
+
+		// Verify if requested bounds are valid
+		jlong compressedLength = env->GetDirectBufferCapacity(obj_compressedData);
+		jlong decodedLength = env->GetDirectBufferCapacity(obj_decodedData);
+		if (offset < 0 || compressedLength - offset > decodedLength - offsetDec) {
+			// Invalid buffers, would cause heap overflow. compressedLength - offset > decodedLength - offsetDec
+			return;
+		}
+
+		etc1_decode_image((etc1_byte*)compressedData + offset,
+			(etc1_byte*)decodedData + offsetDec,
+			width,
+			height,
+			pixelSize,
+			width * pixelSize);
 	*/
 
 	/** Encodes the image data given as RGB565 or RGB888. Does not modify the position or limit of the {@link ByteBuffer}.
