@@ -358,18 +358,7 @@ static inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
 }
 
 void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {
-	if (pixmap == 0)
-		return;
-	
 	col = to_format(pixmap->format, col);
-
-	// Check for malformed Pixmap
-	size_t requestedSize = pixmap->width * pixmap->height * sizeof(col);
-	size_t pixelsSize = sizeof(pixmap->pixels);
-
-	if (requestedSize > pixelsSize) {
-		return;
-	}
 
 	switch(pixmap->format) {
 		case GDX2D_FORMAT_ALPHA:
