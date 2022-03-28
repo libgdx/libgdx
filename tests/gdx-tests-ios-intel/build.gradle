@@ -15,15 +15,15 @@
  ******************************************************************************/
 
 buildscript {
-    repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        mavenLocal()
-    }
-    dependencies {
-        // Multi-OS Engine plugin
-        classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "1.9.0"
-    }
+	repositories {
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		mavenLocal()
+	}
+	dependencies {
+		// Multi-OS Engine plugin
+		classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "1.9.0"
+	}
 }
 
 // Apply plugins
@@ -45,50 +45,50 @@ configurations { natives }
 // Extracts native libs (*.a) from the native-ios.jar and places them
 // under build/libs/ios/.
 task copyNatives  {
-    doLast {
-        file("xcode/native/ios/").mkdirs();
-        def LD_FLAGS = "LIBGDX_NATIVES = "
-        configurations.natives.files.each { jar ->
-            for (File libFile : jar.listFiles()) {
-                if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
-                    LD_FLAGS += " -force_load " + libFile.getAbsolutePath()
-                }
-            }
+	doLast {
+		file("xcode/native/ios/").mkdirs();
+		def LD_FLAGS = "LIBGDX_NATIVES = "
+		configurations.natives.files.each { jar ->
+			for (File libFile : jar.listFiles()) {
+				if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
+					LD_FLAGS += " -force_load " + libFile.getAbsolutePath()
+				}
+			}
 
-        }
-        def outFlags = file("xcode/IOSTests/custom.xcconfig");
-        outFlags.write LD_FLAGS
+		}
+		def outFlags = file("xcode/IOSTests/custom.xcconfig");
+		outFlags.write LD_FLAGS
 
-        def proguard = file("proguard.append.cfg")
-        if (!proguard.exists()) {
-            proguard = new File("proguard.append.cfg")
-            proguard << "\n-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
-    }
+		def proguard = file("proguard.append.cfg")
+		if (!proguard.exists()) {
+			proguard = new File("proguard.append.cfg")
+			proguard << "\n-keep class com.badlogic.** { *; }\n"
+			proguard << "-keep enum com.badlogic.** { *; }\n"
+		}
+	}
 }
 
 dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-moe")
-    natives testnatives.ios
+	compile project(":tests:gdx-tests")
+	compile project(":backends:gdx-backend-moe")
+	natives testnatives.ios
 }
 
 // Setup Multi-OS Engine
 moe {
-    xcode {
-        project 'xcode/IOSTests.xcodeproj'
-        mainTarget 'IOSTests'
-        testTarget 'IOSTests-Test'
-    }
+	xcode {
+		project 'xcode/IOSTests.xcodeproj'
+		mainTarget 'IOSTests'
+		testTarget 'IOSTests-Test'
+	}
 }
 
 // Setup Eclipse
 eclipse {
-    // Set Multi-OS Engine nature
-    project {
-        natures 'org.multi-os-engine.project'
-    }
+	// Set Multi-OS Engine nature
+	project {
+		natures 'org.multi-os-engine.project'
+	}
 }
 
 moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
@@ -97,5 +97,5 @@ moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
 
 if (System.getenv('PLATFORM_NAME') != null) {
-    moeXcodeInternal.dependsOn copyNatives
+	moeXcodeInternal.dependsOn copyNatives
 }

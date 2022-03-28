@@ -24,20 +24,20 @@ import org.moe.natj.objc.ObjCRuntime;
 
 public class IOSTests extends IOSApplication.Delegate {
 
-	protected IOSTests(Pointer peer) {
+	protected IOSTests (Pointer peer) {
 		super(peer);
 	}
 
 	@Override
-	protected IOSApplication createApplication() {
-		IOSApplicationConfiguration config = new  IOSApplicationConfiguration();
-		//config.useAccelerometer = false;
-		//config.useGL30 = false;
+	protected IOSApplication createApplication () {
+		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+		// config.useAccelerometer = false;
+		// config.useGL30 = false;
 		return new IOSApplication(new IOSTestWapper(), config);
 	}
 
-	public static void main(String[] argv) {
-		//Necessary?
+	public static void main (String[] argv) {
+		// Necessary?
 		long peer = ObjCRuntime.createAutoreleasePool();
 		UIKit.UIApplicationMain(0, null, null, IOSTests.class.getName());
 		ObjCRuntime.releaseAutoreleasePool(peer);

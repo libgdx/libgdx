@@ -22,5 +22,4 @@ apply plugin: "moe-sdk"
 dependencies {
 	compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 	compileOnly group: "org.multi-os-engine", name: "moe-sdk", version: "1.9.0"
-
 }

@@ -1,26 +1,14 @@
+
 package com.badlogic.gdx.backends.iosmoe;
 
-import apple.coreaudiotypes.enums.Enums;
-import apple.openal.c.OpenAL;
-import com.android.org.conscrypt.OpenSSLMessageDigestJDK;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.backends.iosmoe.objectal.ALBuffer;
-import com.badlogic.gdx.backends.iosmoe.objectal.ALDevice;
 import com.badlogic.gdx.backends.iosmoe.objectal.ALSource;
-import com.badlogic.gdx.backends.iosmoe.objectal.OALSimpleAudio;
-import org.moe.natj.general.ptr.IntPtr;
 import org.moe.natj.general.ptr.ShortPtr;
-import org.moe.natj.general.ptr.VoidPtr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
-import org.moe.natj.objc.ObjCRuntime;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
 
 import static apple.openal.c.OpenAL.*;
 
@@ -36,7 +24,7 @@ public class IOSAudioDevice implements AudioDevice {
 	private int minSize;
 	private int latency;
 
-	public IOSAudioDevice(int samplingRate, boolean isMono, int minSize, int bufferCount) {
+	public IOSAudioDevice (int samplingRate, boolean isMono, int minSize, int bufferCount) {
 		this.samplingRate = samplingRate;
 		this.isMono = isMono;
 		this.format = isMono ? 0x1101 : 0x1103;
@@ -117,13 +105,10 @@ public class IOSAudioDevice implements AudioDevice {
 	@Override
 	public void dispose () {
 		alSource.stop();
-		/*for (ALBuffer buffer : alBuffersFree) {
-			ObjCRuntime.disposeObject(buffer);
-		}
-		for (ALBuffer buffer : alBuffers) {
-			ObjCRuntime.disposeObject(buffer);
-		}
-		ObjCRuntime.disposeObject(alSource);*/
+		/*
+		 * for (ALBuffer buffer : alBuffersFree) { ObjCRuntime.disposeObject(buffer); } for (ALBuffer buffer : alBuffers) {
+		 * ObjCRuntime.disposeObject(buffer); } ObjCRuntime.disposeObject(alSource);
+		 */
 		// Maybe let GC handle the disposing?
 		alBuffers = null;
 		alBuffersFree = null;
