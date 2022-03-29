@@ -119,9 +119,7 @@ public class IOSApplicationConfiguration {
 	/** The minimal buffer size of the audio device. Below 2048 can lead to buggy behavior. */
 	public int audioDeviceBufferSize = 2048;
 
-	/**
-	 * How many buffers to use for audio device
-	 */
+	/** How many buffers to use for audio device */
 	public int audioDeviceBufferCount = 16;
 
 	ObjectMap<String, IOSDevice> knownDevices = IOSDevice.populateWithKnownDevices();

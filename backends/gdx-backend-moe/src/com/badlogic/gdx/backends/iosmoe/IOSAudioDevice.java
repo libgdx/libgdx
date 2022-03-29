@@ -35,8 +35,10 @@ public class IOSAudioDevice implements AudioDevice {
 		latency = minSize / (isMono ? 1 : 2) / bufferCount;
 		alSource = ALSource.alloc().init();
 		for (int i = 0; i < bufferCount; i++) {
-			// We use ALBuffer here to keep as close to ObjectAL as possible. But this is just hackery to generate a bufferid in the end
-			ALBuffer buffer = ALBuffer.alloc().initWithNameDataSizeFormatFrequency("test", PtrFactory.newWeakShortArray(1, (short)100), 2, format, samplingRate);
+			// We use ALBuffer here to keep as close to ObjectAL as possible. But this is just hackery to generate a bufferid in the
+			// end
+			ALBuffer buffer = ALBuffer.alloc().initWithNameDataSizeFormatFrequency("test",
+				PtrFactory.newWeakShortArray(1, (short)100), 2, format, samplingRate);
 			alBuffersFree.add(buffer);
 		}
 	}
