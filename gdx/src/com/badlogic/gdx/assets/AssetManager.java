@@ -17,6 +17,7 @@
 package com.badlogic.gdx.assets;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.CubemapLoader;
@@ -432,6 +433,8 @@ public class AssetManager implements Disposable {
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
 	public boolean update (int millis) {
+		if (Gdx.app.getType() == Application.ApplicationType.WebGL)
+			return update();
 		long endTime = TimeUtils.millis() + millis;
 		while (true) {
 			boolean done = update();
