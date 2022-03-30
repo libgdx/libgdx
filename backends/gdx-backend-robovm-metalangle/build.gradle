@@ -14,6 +14,35 @@
  * limitations under the License.
  ******************************************************************************/
 
+sourceSets {
+	generator {
+		java {
+			srcDir 'generator'
+		}
+		resources {
+			srcDir 'generator'
+		}
+	}
+}
+configurations {
+	generatorCompile.extendsFrom testCompile
+	generatorRuntime.extendsFrom testRuntime
+}
+
+configurations { generator }
+
 dependencies {
 	api libraries.robovm
+	generatorImplementation 'com.github.javaparser:javaparser-core:3.24.2'
 }
+
+task generate(type: JavaExec) {
+	dependsOn configurations.generator
+	main = 'JavaCodeGenerator'
+	classpath = sourceSets.generator.runtimeClasspath
+
+	inputs.dir '../gdx-backend-robovm/src/'
+	outputs.dir 'src/'
+}
+
+classes.dependsOn generate
