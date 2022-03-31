@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+import org.gradle.internal.os.OperatingSystem
 
 sourceSets {
 	generator {
@@ -46,3 +47,90 @@ task generate(type: JavaExec) {
 }
 
 classes.dependsOn generate
+
+task fetchMetalANGLE(type: Download) {
+	doFirst {
+		file("build/tmp").mkdirs();
+	}
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.7/MetalANGLE.framework.ios.zip'
+	dest 'build/tmp/MetalANGLE.framework.ios.zip'
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchMetalANGLESimulator(type: Download) {
+	doFirst {
+		file("build/tmp").mkdirs();
+	}
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.7/MetalANGLE.framework.ios.simulator.zip'
+	dest 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
+	onlyIfModified true
+	useETag "all"
+}
+
+task verifyMetalANGLE(dependsOn: fetchMetalANGLE, type: Verify) {
+	src 'build/tmp/MetalANGLE.framework.ios.zip'
+	algorithm 'SHA-256'
+	checksum '66fcf9eed2ede9e5725bf64e5b3169e0f39d1a515fe425447354c41968fc7999'
+}
+
+task verifyMetalANGLESimulator(dependsOn: fetchMetalANGLESimulator, type: Verify) {
+	src 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
+	algorithm 'SHA-256'
+	checksum 'e9aa526d2f19c57e1efbae4ec04d76701da4cf596bf8c6fb6ef6c507dbc2fdc4'
+}
+
+task extractMetalANGLE(dependsOn: verifyMetalANGLE, type: Copy) {
+	doFirst {
+		file("build/tmp/real").mkdirs();
+	}
+	from zipTree('build/tmp/MetalANGLE.framework.ios.zip')
+	into 'build/tmp/real'
+}
+
+task extractMetalANGLESimulator(dependsOn: verifyMetalANGLESimulator, type: Copy) {
+	doFirst {
+		file("build/tmp/sim").mkdirs();
+	}
+	from zipTree('build/tmp/MetalANGLE.framework.ios.simulator.zip')
+	into 'build/tmp/sim'
+}
+
+task buildMetalANGLE(dependsOn: [
+	extractMetalANGLE,
+	extractMetalANGLESimulator
+], type: Exec) {
+	doFirst {
+		file("build/tmp/framework").mkdirs();
+	}
+	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'build/tmp/framework/MetalANGLE.xcframework'
+	standardOutput = new ByteArrayOutputStream()
+	ext.output = {
+		return standardOutput.toString()
+	}
+
+	inputs.dir 'build/tmp/real/MetalANGLE.framework'
+	inputs.dir 'build/tmp/sim/MetalANGLE.framework'
+	outputs.dir 'build/tmp/framework/MetalANGLE.xcframework'
+}
+
+task jnigenBuildIOS(dependsOn: buildMetalANGLE) {
+}
+
+task jnigenBuild() {
+}
+
+//Dummy task to make compatible with publish
+task jnigen() {
+}
+
+task jnigenJarNativesIOS(type: Jar, dependsOn: buildMetalANGLE) {
+	classifier 'natives-ios'
+	from('build/tmp/framework') {
+		into '/META-INF/robovm/ios/libs/'
+	}
+}
+
+if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
+	jnigenBuild.dependsOn jnigenBuildIOS
+}
