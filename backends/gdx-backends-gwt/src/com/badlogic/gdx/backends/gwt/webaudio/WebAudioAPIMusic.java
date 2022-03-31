@@ -30,8 +30,6 @@ public class WebAudioAPIMusic implements Music {
 	// The audio graph used to control pan and volume for this piece of music
 	private final AudioControlGraph audioControlGraph;
 
-	private boolean isPlaying;
-
 	private OnCompletionListener onCompletionListener;
 
 	public WebAudioAPIMusic (JavaScriptObject audioContext, Audio audio, AudioControlGraphPool audioControlGraphPool) {
@@ -60,13 +58,11 @@ public class WebAudioAPIMusic implements Music {
 	@Override
 	public void play () {
 		audio.play();
-		isPlaying = true;
 	}
 
 	@Override
 	public void pause () {
 		audio.pause();
-		isPlaying = false;
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class WebAudioAPIMusic implements Music {
 
 	@Override
 	public boolean isPlaying () {
-		return isPlaying;
+		return !audio.isPaused();
 	}
 
 	@Override
