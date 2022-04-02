@@ -243,7 +243,7 @@ class EffectPanel extends JPanel {
 		if (direction > 0 && editIndex >= emitters.size - 1) return;
 		int insertIndex = editIndex + direction;
 		Object name = emitterTableModel.getValueAt(editIndex, 0);
-		Boolean active = (Boolean) emitterTableModel.getValueAt(editIndex, 1);
+		Boolean active = (Boolean)emitterTableModel.getValueAt(editIndex, 1);
 		emitterTableModel.removeRow(editIndex);
 		ParticleEmitter emitter = emitters.removeIndex(editIndex);
 		emitterTableModel.insertRow(insertIndex, new Object[] {name, active});
