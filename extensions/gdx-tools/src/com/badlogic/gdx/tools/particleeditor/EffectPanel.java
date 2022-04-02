@@ -129,8 +129,8 @@ class EffectPanel extends JPanel {
 	void emitterSelected () {
 		int row = emitterTable.getSelectedRow();
 		if (row <= -1 || row >= emitterTableModel.getRowCount()) {
-			//During move up/down row can be -1 because called from modifyValue callback in table
-			//No selection update should be made while swapping rows
+			// During move up/down row can be -1 because called from modifyValue callback in table
+			// No selection update should be made while swapping rows
 			return;
 		}
 		if (row == editIndex) return;
