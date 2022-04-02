@@ -72,12 +72,18 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 	public static class ObjLoaderParameters extends ModelLoader.ModelParameters {
 		public boolean flipV;
+		public boolean vertexColors;
 
 		public ObjLoaderParameters () {
 		}
 
 		public ObjLoaderParameters (boolean flipV) {
 			this.flipV = flipV;
+		}
+
+		public ObjLoaderParameters (boolean flipV, boolean vertexColors) {
+			this.flipV = flipV;
+			this.vertexColors = vertexColors;
 		}
 	}
 
@@ -99,12 +105,16 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		return loadModel(fileHandle, new ObjLoaderParameters(flipV));
 	}
 
-	@Override
-	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
-		return loadModelData(file, parameters != null && parameters.flipV);
+	public Model loadModel (final FileHandle fileHandle, boolean flipV, boolean vertexColors) {
+		return loadModel(fileHandle, new ObjLoaderParameters(flipV, vertexColors));
 	}
 
-	protected ModelData loadModelData (FileHandle file, boolean flipV) {
+	@Override
+	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
+		return loadModelData(file, parameters != null && parameters.flipV, parameters != null && parameters.vertexColors);
+	}
+
+	protected ModelData loadModelData (FileHandle file, boolean flipV, boolean vertexColors) {
 		if (logWarning)
 			Gdx.app.error("ObjLoader", "Wavefront (OBJ) is not fully supported, consult the documentation for more information");
 		String line;
@@ -134,6 +144,12 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 						verts.add(Float.parseFloat(tokens[1]));
 						verts.add(Float.parseFloat(tokens[2]));
 						verts.add(Float.parseFloat(tokens[3]));
+						if (vertexColors) {
+							// Use norms as colors to avoid more memory allocation
+							norms.add(Float.parseFloat(tokens[4]));
+							norms.add(Float.parseFloat(tokens[5]));
+							norms.add(Float.parseFloat(tokens[6]));
+						}
 					} else if (tokens[0].charAt(1) == 'n') {
 						norms.add(Float.parseFloat(tokens[1]));
 						norms.add(Float.parseFloat(tokens[2]));
@@ -148,6 +164,9 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					for (int i = 1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
 						faces.add(getIndex(parts[0], verts.size));
+						if (vertexColors) {
+							faces.add(getIndex(parts[0], norms.size));
+						}
 						if (parts.length > 2) {
 							if (i == 1) activeGroup.hasNorms = true;
 							faces.add(getIndex(parts[2], norms.size));
@@ -156,12 +175,20 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 							if (i == 1) activeGroup.hasUVs = true;
 							faces.add(getIndex(parts[1], uvs.size));
 						}
+						// Parse second vertex
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size));
+						if (vertexColors) {
+							faces.add(getIndex(parts[0], norms.size));
+						}
 						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size));
 						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size));
+						// Parse third vertex
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size));
+						if (vertexColors) {
+							faces.add(getIndex(parts[0], norms.size));
+						}
 						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size));
 						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size));
 						activeGroup.numFaces++;
@@ -213,14 +240,14 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			final boolean hasNorms = group.hasNorms;
 			final boolean hasUVs = group.hasUVs;
 
-			final float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
+			final float[] finalVerts = new float[(numFaces * 3) * (3 + ((hasNorms || vertexColors) ? 3 : 0) + (hasUVs ? 2 : 0))];
 
 			for (int i = 0, vi = 0; i < numElements;) {
 				int vertIndex = faces.get(i++) * 3;
 				finalVerts[vi++] = verts.get(vertIndex++);
 				finalVerts[vi++] = verts.get(vertIndex++);
 				finalVerts[vi++] = verts.get(vertIndex);
-				if (hasNorms) {
+				if (hasNorms || vertexColors) {
 					int normIndex = faces.get(i++) * 3;
 					finalVerts[vi++] = norms.get(normIndex++);
 					finalVerts[vi++] = norms.get(normIndex++);
@@ -246,6 +273,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			if (vertexColors) attributes.add(new VertexAttribute(Usage.ColorUnpacked, 3, ShaderProgram.COLOR_ATTRIBUTE));
 
 			String stringId = Integer.toString(++id);
 			String nodeId = "default".equals(group.name) ? "node" + stringId : group.name;
