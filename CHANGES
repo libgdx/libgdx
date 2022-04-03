@@ -50,6 +50,7 @@
 - API Addition: Add NWSEResize, NESWResize, AllResize, and NotAllowed SystemCursors
 - API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
 - API Addition: Box2D Shape now implements Disposable
+- API Addition: Added ChainShape#clear method
 - API Addition: Addes Tooltip#setTouchIndependent; see #6758
 - API ADDITION: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
