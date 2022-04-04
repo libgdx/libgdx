@@ -83,7 +83,7 @@ public class JavaCodeGenerator {
 
 		JavaParser JavaParser = new JavaParser();
 
-		ModifierVisitor<Object> visitor = new ModifierVisitor<>() {
+		ModifierVisitor<Object> visitor = new ModifierVisitor() {
 			@Override
 			public Name visit (Name n, final Object arg) {
 				n = (Name)super.visit(n, arg);

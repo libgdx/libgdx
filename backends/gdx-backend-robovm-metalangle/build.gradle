@@ -56,7 +56,7 @@ task generate(type: JavaExec) {
 	outputs.dir 'src/'
 }
 
-classes.dependsOn generate
+compileJava.dependsOn generate
 
 task fetchMetalANGLE(type: Download) {
 	doFirst {
