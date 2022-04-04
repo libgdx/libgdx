@@ -24,6 +24,14 @@ sourceSets {
 			srcDir 'generator'
 		}
 	}
+	main {
+		java {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'res'
+		}
+	}
 }
 configurations {
 	generatorCompile.extendsFrom testCompile
@@ -103,9 +111,9 @@ task buildMetalANGLE(dependsOn: [
 	extractMetalANGLESimulator
 ], type: Exec) {
 	doFirst {
-		file("build/tmp/framework").mkdirs();
+		file("res/META-INF/robovm/ios/libs").mkdirs();
 	}
-	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'build/tmp/framework/MetalANGLE.xcframework'
+	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
 	standardOutput = new ByteArrayOutputStream()
 	ext.output = {
 		return standardOutput.toString()
@@ -113,7 +121,7 @@ task buildMetalANGLE(dependsOn: [
 
 	inputs.dir 'build/tmp/real/MetalANGLE.framework'
 	inputs.dir 'build/tmp/sim/MetalANGLE.framework'
-	outputs.dir 'build/tmp/framework/MetalANGLE.xcframework'
+	outputs.dir 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
 }
 
 task jnigenBuildIOS(dependsOn: buildMetalANGLE) {
