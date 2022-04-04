@@ -47,16 +47,13 @@ dependencies {
 
 task generate(type: JavaExec) {
 	dependsOn configurations.generator
-	// To ensure that no wrong formatting is committed
-	finalizedBy spotlessApply
+
 	main = 'JavaCodeGenerator'
 	classpath = sourceSets.generator.runtimeClasspath
 
 	inputs.dir '../gdx-backend-robovm/src/'
 	outputs.dir 'src/'
 }
-
-compileJava.dependsOn generate
 
 task fetchMetalANGLE(type: Download) {
 	doFirst {

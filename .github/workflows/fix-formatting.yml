@@ -24,7 +24,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Apply formatter
-        run: ./gradlew spotlessApply
+        run: ./gradlew :backends:gdx-backend-robovm-metalangle:generate spotlessApply
       - name: Commit formatting changes
         run: |
           git config --local user.email "action@github.com"
