@@ -39,6 +39,8 @@ dependencies {
 
 task generate(type: JavaExec) {
 	dependsOn configurations.generator
+	// To ensure that no wrong formatting is committed
+	finalizedBy spotlessApply
 	main = 'JavaCodeGenerator'
 	classpath = sourceSets.generator.runtimeClasspath
 
