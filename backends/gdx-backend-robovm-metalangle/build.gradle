@@ -123,24 +123,3 @@ task buildMetalANGLE(dependsOn: [
 	inputs.dir 'build/tmp/sim/MetalANGLE.framework'
 	outputs.dir 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
 }
-
-task jnigenBuildIOS(dependsOn: buildMetalANGLE) {
-}
-
-task jnigenBuild() {
-}
-
-//Dummy task to make compatible with publish
-task jnigen() {
-}
-
-task jnigenJarNativesIOS(type: Jar, dependsOn: buildMetalANGLE) {
-	classifier 'natives-ios'
-	from('build/tmp/framework') {
-		into '/META-INF/robovm/ios/libs/'
-	}
-}
-
-if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
-	jnigenBuild.dependsOn jnigenBuildIOS
-}

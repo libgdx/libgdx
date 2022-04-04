@@ -190,7 +190,7 @@ task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
     useETag "all"
 }
 
-task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT ] , type: Copy) {
+task fetchExternalNatives(dependsOn: [fetchAngleNativesZIP, fetchGlfwAWT, ":backends:gdx-backend-robovm-metalangle:buildMetalANGLE"] , type: Copy) {
     from zipTree("build/gdx-angle-natives.zip")
     into "./extensions/gdx-lwjgl3-angle/res"
     outputs.upToDateWhen { false }
