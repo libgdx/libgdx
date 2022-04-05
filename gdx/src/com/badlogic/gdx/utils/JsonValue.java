@@ -25,12 +25,15 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 /** Container for a JSON object, array, string, double, long, boolean, or null.
  * <p>
- * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, either with the enhanced
- * for loop syntactic sugar or like the example below. This is much more efficient than accessing children by index when there are
- * many children.<br>
+ * JsonValue children are a linked list. Iteration of arrays or objects is easily done using an iterator or the {@link #next()}
+ * field, both shown below. This is much more efficient than accessing children by index when there are many children.<br>
  * 
  * <pre>
  * JsonValue map = ...;
+ * // Allocates an iterator:
+ * for (JsonValue entry : map)
+ * 	System.out.println(entry.name + " = " + entry.asString());
+ * // No allocation:
  * for (JsonValue entry = map.child; entry != null; entry = entry.next)
  * 	System.out.println(entry.name + " = " + entry.asString());
  * </pre>
@@ -1028,6 +1031,7 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new SerializationException("Unknown object type: " + object);
 	}
 
+	/** Iterates the children of this array or object. */
 	public JsonIterator iterator () {
 		return new JsonIterator();
 	}
