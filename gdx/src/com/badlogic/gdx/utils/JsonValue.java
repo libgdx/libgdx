@@ -109,15 +109,22 @@ public class JsonValue implements Iterable<JsonValue> {
 		return get(name) != null;
 	}
 
+	/** Returns an iterator for the child with the specified name, or an empty iterator if no child is found. */
+	public JsonIterator iterator (String name) {
+		JsonValue current = get(name);
+		if (current == null) {
+			JsonIterator iter = new JsonIterator();
+			iter.entry = null;
+			return iter;
+		}
+		return current.iterator();
+	}
+
 	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
 	 * {@link JsonValue} for how to iterate efficiently.
 	 * @throws IllegalArgumentException if the child was not found. */
 	public JsonValue require (int index) {
-		JsonValue current = child;
-		while (current != null && index > 0) {
-			index--;
-			current = current.next;
-		}
+		JsonValue current = get(index);
 		if (current == null) throw new IllegalArgumentException("Child not found with index: " + index);
 		return current;
 	}
@@ -125,9 +132,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Returns the child with the specified name.
 	 * @throws IllegalArgumentException if the child was not found. */
 	public JsonValue require (String name) {
-		JsonValue current = child;
-		while (current != null && (current.name == null || !current.name.equalsIgnoreCase(name)))
-			current = current.next;
+		JsonValue current = get(name);
 		if (current == null) throw new IllegalArgumentException("Child not found with name: " + name);
 		return current;
 	}
