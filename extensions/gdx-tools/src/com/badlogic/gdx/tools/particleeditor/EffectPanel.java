@@ -128,9 +128,10 @@ class EffectPanel extends JPanel {
 
 	void emitterSelected () {
 		int row = emitterTable.getSelectedRow();
-		if (row == -1) {
-			row = editIndex;
-			emitterTable.getSelectionModel().setSelectionInterval(row, row);
+		if (row <= -1 || row >= emitterTableModel.getRowCount()) {
+			// During move up/down row can be -1 because called from modifyValue callback in table
+			// No selection update should be made while swapping rows
+			return;
 		}
 		if (row == editIndex) return;
 		editIndex = row;
@@ -165,7 +166,7 @@ class EffectPanel extends JPanel {
 			JOptionPane.showMessageDialog(editor, "Error opening effect.");
 			return;
 		}
-		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
+		for (ParticleEmitter emitter : new Array.ArrayIterator<>(editor.effect.getEmitters())) {
 			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
 			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
@@ -238,14 +239,15 @@ class EffectPanel extends JPanel {
 	}
 
 	void move (int direction) {
-		if (direction < 0 && editIndex == 0) return;
+		if (direction < 0 && editIndex <= 0) return;
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
-		if (direction > 0 && editIndex == emitters.size - 1) return;
+		if (direction > 0 && editIndex >= emitters.size - 1) return;
 		int insertIndex = editIndex + direction;
 		Object name = emitterTableModel.getValueAt(editIndex, 0);
+		Boolean active = (Boolean)emitterTableModel.getValueAt(editIndex, 1);
 		emitterTableModel.removeRow(editIndex);
 		ParticleEmitter emitter = emitters.removeIndex(editIndex);
-		emitterTableModel.insertRow(insertIndex, new Object[] {name});
+		emitterTableModel.insertRow(insertIndex, new Object[] {name, active});
 		emitters.insert(insertIndex, emitter);
 		editIndex = insertIndex;
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
@@ -360,7 +362,7 @@ class EffectPanel extends JPanel {
 				emitterTable.getTableHeader().setReorderingAllowed(false);
 				emitterTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				scroll.setViewportView(emitterTable);
-				emitterTableModel = new DefaultTableModel(new String[0][0], new String[] {"Emitter", ""});
+				emitterTableModel = new DefaultTableModel(new String[0][0], new String[] {"Emitter", "Active"});
 				emitterTable.setModel(emitterTableModel);
 				emitterTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 					public void valueChanged (ListSelectionEvent event) {

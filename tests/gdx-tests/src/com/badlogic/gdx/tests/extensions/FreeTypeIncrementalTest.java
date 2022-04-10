@@ -99,6 +99,10 @@ public class FreeTypeIncrementalTest extends GdxTest {
 		shapes.setProjectionMatrix(batch.getProjectionMatrix());
 	}
 
+	public void dispose () {
+		FreeTypeFontGenerator.setMaxTextureSize(1024);
+	}
+
 	static public class SimplifiedChinese {
 		public static int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
