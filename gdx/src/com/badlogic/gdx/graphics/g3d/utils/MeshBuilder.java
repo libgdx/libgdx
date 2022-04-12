@@ -260,7 +260,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	/** End building the mesh and returns the mesh */
 	public Mesh end () {
-		return end(new Mesh(true, vertices.size / stride, indices.size, attributes));
+		return end(new Mesh(true, Math.min(vertices.size / stride, MAX_VERTICES), indices.size, attributes));
 	}
 
 	/** Clears the data being built up until now, including the vertices, indices and all parts. Must be called in between the call
