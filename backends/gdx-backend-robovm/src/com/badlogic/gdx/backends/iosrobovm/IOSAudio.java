@@ -19,4 +19,13 @@ package com.badlogic.gdx.backends.iosrobovm;
 import com.badlogic.gdx.Audio;
 
 public interface IOSAudio extends Audio {
+	/** Handles the app being activated / going to foreground.
+	 *
+	 * For example, this could (re-)activate and configure the audio session. */
+	public void activate ();
+
+	/** Handles the app being deactivated / going to background.
+	 *
+	 * For example, this could deactivate the audio session. */
+	public void deactivate ();
 }

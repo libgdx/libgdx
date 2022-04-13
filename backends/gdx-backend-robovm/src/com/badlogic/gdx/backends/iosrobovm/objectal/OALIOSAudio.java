@@ -30,7 +30,36 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class OALIOSAudio implements IOSAudio {
 
+	private final IOSApplicationConfiguration config;
+
+	@Override
+	public void activate () {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
+		if (config.allowIpod) {
+			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+			if (audio != null) {
+				audio.setUseHardwareIfAvailable(false);
+			}
+		}
+	}
+
+	@Override
+	public void deactivate () {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
+	}
+
 	public OALIOSAudio (IOSApplicationConfiguration config) {
+		this.config = config;
 		if (!config.useAudio) return;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {
