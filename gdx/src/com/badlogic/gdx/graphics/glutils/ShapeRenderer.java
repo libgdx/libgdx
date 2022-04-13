@@ -1172,7 +1172,7 @@ public class ShapeRenderer implements Disposable {
 	}
 
 	/** @param other May be null. */
-	protected void check (ShapeType preferred, ShapeType other, int newVertices) {
+	protected final void check (ShapeType preferred, ShapeType other, int newVertices) {
 		if (shapeType == null) throw new IllegalStateException("begin must be called first.");
 
 		if (shapeType != preferred && shapeType != other) {
