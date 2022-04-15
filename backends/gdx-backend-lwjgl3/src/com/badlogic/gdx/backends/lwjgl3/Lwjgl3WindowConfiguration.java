@@ -39,7 +39,7 @@ public class Lwjgl3WindowConfiguration {
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
-	String title = "";
+	String title;
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
 	boolean vSyncEnabled = true;
@@ -150,7 +150,7 @@ public class Lwjgl3WindowConfiguration {
 		this.fullscreenMode = (Lwjgl3DisplayMode)mode;
 	}
 
-	/** Sets the window title. Defaults to empty string. */
+	/** Sets the window title. If null, the application listener's class name is used. */
 	public void setTitle (String title) {
 		this.title = title;
 	}
