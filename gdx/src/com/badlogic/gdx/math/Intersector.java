@@ -351,6 +351,7 @@ public final class Intersector {
 	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
 	 * @param frustum The frustum
 	 * @param bounds The bounding box
+	 * https://iquilezles.org/www/articles/frustumcorrect/frustumcorrect.htm
 	 * @return Whether the frustum intersects the bounding box */
 	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
 		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp))
@@ -363,12 +364,15 @@ public final class Intersector {
 			return true;
 		}
 
-		boolean frustumIsInsideBounds = false;
-		for (Vector3 point : frustum.planePoints) {
-			frustumIsInsideBounds |= bounds.contains(point);
-		}
+		int out;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].x > bounds.max.x)?1:0); if( out==8 ) return false;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].x < bounds.min.x)?1:0); if( out==8 ) return false;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].y > bounds.max.y)?1:0); if( out==8 ) return false;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].y < bounds.min.y)?1:0); if( out==8 ) return false;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].z > bounds.max.z)?1:0); if( out==8 ) return false;
+		out=0; for( int i=0; i<8; i++ ) out += ((frustum.planePoints[i].z < bounds.min.z)?1:0); if( out==8 ) return false;
 
-		return frustumIsInsideBounds;
+		return true;
 	}
 
 	/** Returns whether the given {@link Frustum} intersects a {@link OrientedBoundingBox}.
