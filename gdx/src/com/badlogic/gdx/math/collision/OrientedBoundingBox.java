@@ -32,6 +32,9 @@ public class OrientedBoundingBox implements Serializable {
 		for (int i = 0; i < tmpVectors.length; i++) {
 			tmpVectors[i] = new Vector3();
 		}
+		for (int i = 0; i < tempVertices.length; i++) {
+			tempVertices[i] = new Vector3();
+		}
 	}
 
 	/** Bounds used as size. */
