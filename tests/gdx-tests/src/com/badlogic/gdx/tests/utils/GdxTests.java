@@ -82,6 +82,7 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
+import com.badlogic.gdx.tests.math.collision.CollisionPlaygroundTest;
 import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -129,6 +130,7 @@ public class GdxTests {
 		CollectionsTest.class,
 		CollisionPlaygroundTest.class,
 		ColorTest.class,
+		CollisionPlaygroundTest.class,
 		ContainerTest.class,
 		CoordinatesTest.class,
 		CpuSpriteBatchTest.class,
