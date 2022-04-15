@@ -79,6 +79,11 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	private void setupScene () {
+		// Dispose models if any
+		for (Box box : boxes) {
+			box.model.dispose();
+		}
+		// Clear the list
 		boxes.clear();
 		for (int i = 0; i < NUM_BOXES; i++) {
 			boxes.add(new Box());
@@ -234,7 +239,9 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		}
 
 		public void updateColor (Color color) {
-			instance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+			Material material = instance.materials.get(0);
+			ColorAttribute attribute = (ColorAttribute) material.get(ColorAttribute.Diffuse);
+			attribute.color.set(color);
 		}
 	}
 
