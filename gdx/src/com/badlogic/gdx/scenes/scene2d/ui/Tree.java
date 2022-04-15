@@ -351,17 +351,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * <code>iconX</code>, and clicking would expand the node.
 	 * @param iconX The X coordinate of the over node's icon. */
 	protected Drawable getExpandIcon (N node, float iconX) {
-		boolean over = false;
 		if (node == overNode //
 			&& Gdx.app.getType() == ApplicationType.Desktop //
 			&& (!selection.getMultiple() || (!UIUtils.ctrl() && !UIUtils.shift())) //
 		) {
-			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
-			if (mouseX >= 0 && mouseX < iconX) over = true;
-		}
-		if (over) {
-			Drawable icon = node.expanded ? style.minusOver : style.plusOver;
-			if (icon != null) return icon;
+			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x + getX();
+			if (mouseX >= 0 && mouseX < iconX) {
+				Drawable icon = node.expanded ? style.minusOver : style.plusOver;
+				if (icon != null) return icon;
+			}
 		}
 		return node.expanded ? style.minus : style.plus;
 	}

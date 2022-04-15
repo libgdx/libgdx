@@ -95,7 +95,7 @@ allprojects {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
     }
-    
+
     if (JavaVersion.current().isJava9Compatible()) {
         tasks.withType(Javadoc) {
             options.addStringOption("-release", "8");
