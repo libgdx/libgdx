@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -350,7 +350,7 @@ public final class Intersector {
 
 	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
 	 * @param frustum The frustum
-	 * @param bounds The bounding box https://iquilezles.org/www/articles/frustumcorrect/frustumcorrect.htm
+	 * @param bounds The bounding box
 	 * @return Whether the frustum intersects the bounding box */
 	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
 		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp))
@@ -363,33 +363,11 @@ public final class Intersector {
 			return true;
 		}
 
-		int out;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].x > bounds.max.x) ? 1 : 0);
-		if (out == 8) return false;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].x < bounds.min.x) ? 1 : 0);
-		if (out == 8) return false;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].y > bounds.max.y) ? 1 : 0);
-		if (out == 8) return false;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].y < bounds.min.y) ? 1 : 0);
-		if (out == 8) return false;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].z > bounds.max.z) ? 1 : 0);
-		if (out == 8) return false;
-		out = 0;
-		for (int i = 0; i < 8; i++)
-			out += ((frustum.planePoints[i].z < bounds.min.z) ? 1 : 0);
-		if (out == 8) return false;
-
-		return true;
+		boolean frustumIsInsideBounds = false;
+		for (Vector3 point : frustum.planePoints) {
+			frustumIsInsideBounds |= bounds.contains(point);
+		}
+		return frustumIsInsideBounds;
 	}
 
 	/** Returns whether the given {@link Frustum} intersects a {@link OrientedBoundingBox}.
@@ -569,12 +547,12 @@ public final class Intersector {
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection. This intersection is
 	 * defined as the point on the ray closest to the origin which is within the specified bounds.
-	 * 
+	 *
 	 * <p>
 	 * The returned intersection (if any) is guaranteed to be within the bounds of the bounding box, but it can occasionally
 	 * diverge slightly from ray, due to small floating-point errors.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If the origin of the ray is inside the box, this method returns true and the intersection point is set to the origin of the
 	 * ray, accordingly to the definition above.
@@ -1361,7 +1339,7 @@ public final class Intersector {
 
 	/** Splits the triangle by the plane. The result is stored in the SplitTriangle instance. Depending on where the triangle is
 	 * relative to the plane, the result can be:
-	 * 
+	 *
 	 * <ul>
 	 * <li>Triangle is fully in front/behind: {@link SplitTriangle#front} or {@link SplitTriangle#back} will contain the original
 	 * triangle, {@link SplitTriangle#total} will be one.</li>
@@ -1370,7 +1348,7 @@ public final class Intersector {
 	 * <li>Triangle has one vertex in front, two behind: {@link SplitTriangle#front} contains 1 triangle,
 	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
 	 * </ul>
-	 * 
+	 *
 	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, z3. One can add additional attributes per vertex which
 	 * will be interpolated if split, such as texture coordinates or normals. Note that these additional attributes won't be
 	 * normalized, as might be necessary in case of normals.
