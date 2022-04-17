@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.FrustumShapeBuilder;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.OrientedBoundingBox;
@@ -194,20 +195,7 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 
 		MeshPartBuilder meshPartBuilder = mb.part("frustum", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
 
-		meshPartBuilder.line(camera.frustum.planePoints[0], camera.frustum.planePoints[1]);
-		meshPartBuilder.line(camera.frustum.planePoints[1], camera.frustum.planePoints[2]);
-		meshPartBuilder.line(camera.frustum.planePoints[2], camera.frustum.planePoints[3]);
-		meshPartBuilder.line(camera.frustum.planePoints[3], camera.frustum.planePoints[0]);
-
-		meshPartBuilder.line(camera.frustum.planePoints[4], camera.frustum.planePoints[5]);
-		meshPartBuilder.line(camera.frustum.planePoints[5], camera.frustum.planePoints[6]);
-		meshPartBuilder.line(camera.frustum.planePoints[6], camera.frustum.planePoints[7]);
-		meshPartBuilder.line(camera.frustum.planePoints[7], camera.frustum.planePoints[4]);
-
-		meshPartBuilder.line(camera.frustum.planePoints[7], camera.frustum.planePoints[3]);
-		meshPartBuilder.line(camera.frustum.planePoints[6], camera.frustum.planePoints[2]);
-		meshPartBuilder.line(camera.frustum.planePoints[5], camera.frustum.planePoints[1]);
-		meshPartBuilder.line(camera.frustum.planePoints[4], camera.frustum.planePoints[0]);
+		FrustumShapeBuilder.build(meshPartBuilder, camera);
 
 		return new ModelInstance(mb.end());
 	}

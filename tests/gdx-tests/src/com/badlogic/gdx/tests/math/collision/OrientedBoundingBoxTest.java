@@ -34,14 +34,12 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +60,8 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	private static final Color COLOR_MOUSE_OVER = Color.GREEN;
 	private static final Color COLOR_INTERSECTION = Color.GOLD;
 
-	private List<Box> boxes = new ArrayList<>();
+	private long seed;
+	private Array<Box> boxes = new Array<>();
 
 	@Override
 	public void create () {
@@ -79,6 +78,9 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 	}
 
 	private void setupScene () {
+		seed = MathUtils.random.nextLong();
+		MathUtils.random.setSeed(seed);
+
 		// Dispose models if any
 		for (Box box : boxes) {
 			box.model.dispose();
@@ -110,6 +112,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
+		font.draw(batch, "seed: " + seed, 0, 50);
 		batch.end();
 
 		cameraController.update();
@@ -133,10 +136,10 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 			box.updateColor(COLOR_STANDARD);
 		}
 
-		for (int i = 0; i < boxes.size(); i++) {
+		for (int i = 0; i < boxes.size; i++) {
 			Box box = boxes.get(i);
 
-			for (int j = i + 1; j < boxes.size(); j++) {
+			for (int j = i + 1; j < boxes.size; j++) {
 				Box anotherBox = boxes.get(j);
 
 				if (box.orientedBoundingBox.intersects(anotherBox.orientedBoundingBox)) {
