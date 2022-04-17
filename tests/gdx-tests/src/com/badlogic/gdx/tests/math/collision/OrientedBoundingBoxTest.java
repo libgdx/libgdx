@@ -41,8 +41,6 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListener {
@@ -243,7 +241,7 @@ public class OrientedBoundingBoxTest extends GdxTest implements ApplicationListe
 
 		public void updateColor (Color color) {
 			Material material = instance.materials.get(0);
-			ColorAttribute attribute = (ColorAttribute) material.get(ColorAttribute.Diffuse);
+			ColorAttribute attribute = (ColorAttribute)material.get(ColorAttribute.Diffuse);
 			attribute.color.set(color);
 		}
 	}

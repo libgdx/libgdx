@@ -175,21 +175,21 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 		return super.keyUp(keycode);
 	}
 
-	private void createRandomShape() {
+	private void createRandomShape () {
 		int shape = MathUtils.random.nextInt(2);
 
 		switch (shape) {
-			case 1:
-				shapes.add(new OBB());
-				break;
-			default:
-				shapes.add(new AABB());
+		case 1:
+			shapes.add(new OBB());
+			break;
+		default:
+			shapes.add(new AABB());
 		}
 
 	}
 
-	private ModelInstance createFrustum(PerspectiveCamera camera) {
-		Material material = new Material(ColorAttribute.createDiffuse(1,0,0,0));
+	private ModelInstance createFrustum (PerspectiveCamera camera) {
+		Material material = new Material(ColorAttribute.createDiffuse(1, 0, 0, 0));
 		com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
 		mb.begin();
 
@@ -203,20 +203,21 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 	abstract class Shape {
 		ModelInstance instance;
 
-		abstract boolean isColliding(Frustum frustum);
-		abstract boolean isColliding(Ray ray);
+		abstract boolean isColliding (Frustum frustum);
 
-		void updateColor(Color color) {
+		abstract boolean isColliding (Ray ray);
+
+		void updateColor (Color color) {
 			Material material = instance.materials.get(0);
-			ColorAttribute attribute = (ColorAttribute) material.get(ColorAttribute.Diffuse);
+			ColorAttribute attribute = (ColorAttribute)material.get(ColorAttribute.Diffuse);
 			attribute.color.set(color);
 		}
 
-		void dispose() {
+		void dispose () {
 			instance.model.dispose();
 		}
 
-		Vector3 randomPosition() {
+		Vector3 randomPosition () {
 			return new Vector3(MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE));
 		}
 	}
@@ -225,16 +226,16 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 		private final BoundingBox aabb;
 
 		@Override
-		public boolean isColliding(Frustum frustum) {
+		public boolean isColliding (Frustum frustum) {
 			return Intersector.intersectFrustumBounds(frustum, aabb);
 		}
 
 		@Override
-		public boolean isColliding(Ray ray) {
+		public boolean isColliding (Ray ray) {
 			return Intersector.intersectRayBoundsFast(ray, aabb);
 		}
 
-		AABB() {
+		AABB () {
 			Vector3 position = randomPosition();
 
 			float width = MathUtils.random(0.01f, 1f);
@@ -262,16 +263,16 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 		private final OrientedBoundingBox obb;
 
 		@Override
-		public boolean isColliding(Frustum frustum) {
+		public boolean isColliding (Frustum frustum) {
 			return Intersector.intersectFrustumBounds(frustum, obb);
 		}
 
 		@Override
-		public boolean isColliding(Ray ray) {
+		public boolean isColliding (Ray ray) {
 			return Intersector.intersectRayOrientedBoundsFast(ray, obb);
 		}
 
-		OBB() {
+		OBB () {
 			Vector3 position = randomPosition();
 
 			float width = MathUtils.random(0.01f, 1f);
@@ -282,7 +283,8 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 			Vector3 max = new Vector3(position.x + width / 2, position.y + height / 2, position.z + depth / 2);
 
 			BoundingBox bounds = new BoundingBox(min, max);
-			Matrix4 transform = new Matrix4().rotate(Vector3.Y, MathUtils.random.nextFloat() * 180).rotate(Vector3.X, MathUtils.random.nextFloat() * 180);
+			Matrix4 transform = new Matrix4().rotate(Vector3.Y, MathUtils.random.nextFloat() * 180).rotate(Vector3.X,
+				MathUtils.random.nextFloat() * 180);
 
 			obb = new OrientedBoundingBox(bounds, transform);
 
@@ -290,11 +292,9 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
 			mb.begin();
 			MeshPartBuilder meshPartBuilder = mb.part("obb", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
-			BoxShapeBuilder.build(meshPartBuilder, obb.getCorner000(new Vector3()),
-					obb.getCorner010(new Vector3()), obb.getCorner100(new Vector3()),
-					obb.getCorner110(new Vector3()), obb.getCorner001(new Vector3()),
-					obb.getCorner011(new Vector3()), obb.getCorner101(new Vector3()),
-					obb.getCorner111(new Vector3()));
+			BoxShapeBuilder.build(meshPartBuilder, obb.getCorner000(new Vector3()), obb.getCorner010(new Vector3()),
+				obb.getCorner100(new Vector3()), obb.getCorner110(new Vector3()), obb.getCorner001(new Vector3()),
+				obb.getCorner011(new Vector3()), obb.getCorner101(new Vector3()), obb.getCorner111(new Vector3()));
 
 			instance = new ModelInstance(mb.end());
 		}
