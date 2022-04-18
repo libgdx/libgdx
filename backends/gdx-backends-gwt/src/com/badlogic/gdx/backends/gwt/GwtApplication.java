@@ -93,6 +93,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public String getPreloaderBaseURL () {
 		String moduleUrl = GWT.getModuleBaseURL();
+		// The assets directory is stored alongside the module, find the base path without the module name
 		// Total Length - len("html") - len("/")
 		int correctLength = moduleUrl.length() - GWT.getModuleName().length() - 1;
 		return moduleUrl.substring(0, correctLength) + "assets/";
