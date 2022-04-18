@@ -167,7 +167,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** Set transparent window hint Results may vary on different OS and GPUs.
+	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
 	 * @param transparentFramebuffer */
 	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
 		this.transparentFramebuffer = transparentFramebuffer;
