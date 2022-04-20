@@ -19,7 +19,9 @@ package com.badlogic.gdx.backends.gwt.preloader;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URLConnection;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -182,7 +184,7 @@ public class PreloaderBundleGenerator extends Generator {
 
 				// Add the hash to the file name, then move the file to the new path
 				FileWrapper newDest = dest.parent().child(fileNameWithHash(dest, digest));
-				Files.move(dest.file.toPath(), newDest.file.toPath(), REPLACE_EXISTING);
+				Files.move(toPath(dest.file()), toPath(newDest.file()), REPLACE_EXISTING);
 				assets.add(new Asset(filePathOrig, newDest, filter.getType(dest.path())));
 			} catch (NoSuchAlgorithmException e) {
 				// Fallback to a build timestamp if we can't calculate an MD5 hash
@@ -315,4 +317,7 @@ public class PreloaderBundleGenerator extends Generator {
 		return nameWithTimestamp;
 	}
 
+	private static Path toPath (File file) {
+		return FileSystems.getDefault().getPath(file.getPath());
+	}
 }
