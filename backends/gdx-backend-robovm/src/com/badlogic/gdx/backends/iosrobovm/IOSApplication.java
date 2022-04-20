@@ -237,17 +237,18 @@ public class IOSApplication implements Application {
 
 	final void didBecomeActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		audio.activate();
+		audio.didBecomeActive();
 		graphics.makeCurrent();
 		graphics.resume();
 	}
 
 	final void willEnterForeground (UIApplication uiApp) {
-		audio.deactivate();
+		audio.willEnterForeground();
 	}
 
 	final void willResignActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
+		audio.willResignActive();
 		graphics.makeCurrent();
 		graphics.pause();
 		Gdx.gl.glFinish();
@@ -255,6 +256,7 @@ public class IOSApplication implements Application {
 
 	final void willTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
+		audio.willTerminate();
 		graphics.makeCurrent();
 		Array<LifecycleListener> listeners = lifecycleListeners;
 		synchronized (listeners) {

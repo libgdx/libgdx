@@ -57,7 +57,7 @@
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
 - API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
-- API Addition: Added activate and deactivate methods to IOSAudio to manage custom audio sessions.
+- API Addition: Added application lifecycle methods to IOSAudio for custom audio implementations.
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
