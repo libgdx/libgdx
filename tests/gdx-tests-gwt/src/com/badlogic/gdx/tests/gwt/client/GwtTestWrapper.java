@@ -196,10 +196,6 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {
-				return new CollisionPlaygroundTest();
-			}
-		}, new GwtInstancer() {
-			public GdxTest instance () {
 				return new CustomShaderSpriteBatchTest();
 			}
 		}, new GwtInstancer() {
