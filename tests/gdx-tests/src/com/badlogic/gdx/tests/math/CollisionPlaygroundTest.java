@@ -49,252 +49,251 @@ import java.util.List;
 
 public class CollisionPlaygroundTest extends GdxTest implements ApplicationListener {
 
-    private static final int NUM_SHAPES = 30;
-    private static final int RANGE = 4;
+	private static final int NUM_SHAPES = 30;
+	private static final int RANGE = 4;
 
-    private int PRIMITIVE_TYPE = GL20.GL_LINES;
+	private int PRIMITIVE_TYPE = GL20.GL_LINES;
 
-    private static final Color COLOR_STANDARD = Color.BLUE;
-    private static final Color COLOR_MOUSE_OVER = Color.GREEN;
-    private static final Color COLOR_INTERSECTION = Color.GOLD;
+	private static final Color COLOR_STANDARD = Color.BLUE;
+	private static final Color COLOR_MOUSE_OVER = Color.GREEN;
+	private static final Color COLOR_INTERSECTION = Color.GOLD;
 
-    private PerspectiveCamera camera;
-    private CameraInputController cameraController;
-    private PerspectiveCamera collisionCamera;
+	private PerspectiveCamera camera;
+	private CameraInputController cameraController;
+	private PerspectiveCamera collisionCamera;
 
-    private ModelBatch modelBatch;
+	private ModelBatch modelBatch;
 
-    private SpriteBatch batch;
-    private BitmapFont font;
+	private SpriteBatch batch;
+	private BitmapFont font;
 
-    private ModelInstance frustum;
-    private List<Shape> shapes = new ArrayList<>();
+	private ModelInstance frustum;
+	private List<Shape> shapes = new ArrayList<>();
 
-    private long seed;
+	private long seed;
 
-    @Override
-    public void create () {
-        font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
-        batch = new SpriteBatch();
-        modelBatch = new ModelBatch();
+	@Override
+	public void create () {
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		batch = new SpriteBatch();
+		modelBatch = new ModelBatch();
 
-        setupCamera();
-        setupScene();
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(cameraController);
-        inputMultiplexer.addProcessor(this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-    }
+		setupCamera();
+		setupScene();
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(cameraController);
+		inputMultiplexer.addProcessor(this);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+	}
 
-    private void setupScene () {
-        seed = MathUtils.random.nextLong();
-        MathUtils.random.setSeed(seed);
+	private void setupScene () {
+		seed = MathUtils.random.nextLong();
+		MathUtils.random.setSeed(seed);
 
-        if (frustum != null) {
-            frustum.model.dispose();
-        }
+		if (frustum != null) {
+			frustum.model.dispose();
+		}
 
-        for (Shape shape : shapes) {
-            shape.dispose();
-        }
-        shapes.clear();
+		for (Shape shape : shapes) {
+			shape.dispose();
+		}
+		shapes.clear();
 
-        for (int i = 0; i < NUM_SHAPES; i++) {
-            createRandomShape();
-        }
+		for (int i = 0; i < NUM_SHAPES; i++) {
+			createRandomShape();
+		}
 
-        frustum = createFrustum(collisionCamera);
-    }
+		frustum = createFrustum(collisionCamera);
+	}
 
-    private void setupCamera () {
-        camera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.near = 0.01f;
-        camera.far = 100f;
-        camera.position.set(0, 5, 0);
-        camera.lookAt(Vector3.Zero);
-        camera.update();
-        cameraController = new CameraInputController(camera);
+	private void setupCamera () {
+		camera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.near = 0.01f;
+		camera.far = 100f;
+		camera.position.set(0, 5, 0);
+		camera.lookAt(Vector3.Zero);
+		camera.update();
+		cameraController = new CameraInputController(camera);
 
-        collisionCamera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionCamera.near = 0.01f;
-        collisionCamera.far = 3f;
-        collisionCamera.position.set(1, 0, 0);
-        collisionCamera.lookAt(0, 0, -1);
-        collisionCamera.update(true);
-    }
+		collisionCamera = new PerspectiveCamera(60f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		collisionCamera.near = 0.01f;
+		collisionCamera.far = 3f;
+		collisionCamera.position.set(1, 0, 0);
+		collisionCamera.lookAt(0, 0, -1);
+		collisionCamera.update(true);
+	}
 
-    @Override
-    public void render () {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+	@Override
+	public void render () {
+		Gdx.gl.glClearColor(0, 0, 0, 0);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        // Draw FPS
-        batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.begin();
-        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
-        font.draw(batch, "seed: " + seed, 0, 50);
-        batch.end();
+		// Draw FPS
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.begin();
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
+		font.draw(batch, "seed: " + seed, 0, 50);
+		batch.end();
 
-        checkCollision();
+		checkCollision();
 
-        // Draw Box
-        modelBatch.begin(camera);
-        modelBatch.render(frustum);
-        for (Shape shape : shapes) {
-            modelBatch.render(shape.instance);
-        }
-        modelBatch.end();
-    }
+		// Draw Box
+		modelBatch.begin(camera);
+		modelBatch.render(frustum);
+		for (Shape shape : shapes) {
+			modelBatch.render(shape.instance);
+		}
+		modelBatch.end();
+	}
 
-    private void checkCollision () {
-        Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+	private void checkCollision () {
+		Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-        for (Shape shape : shapes) {
-            if (shape.isColliding(ray)) {
-                shape.updateColor(COLOR_MOUSE_OVER);
-            } else if (shape.isColliding(collisionCamera.frustum)) {
-                shape.updateColor(COLOR_INTERSECTION);
-            } else {
-                shape.updateColor(COLOR_STANDARD);
-            }
-        }
-    }
+		for (Shape shape : shapes) {
+			if (shape.isColliding(ray)) {
+				shape.updateColor(COLOR_MOUSE_OVER);
+			} else if (shape.isColliding(collisionCamera.frustum)) {
+				shape.updateColor(COLOR_INTERSECTION);
+			} else {
+				shape.updateColor(COLOR_STANDARD);
+			}
+		}
+	}
 
-    @Override
-    public void dispose () {
-        batch.dispose();
-        font.dispose();
-        modelBatch.dispose();
-        frustum.model.dispose();
-        for (Shape shape : shapes) {
-            shape.dispose();
-        }
-    }
+	@Override
+	public void dispose () {
+		batch.dispose();
+		font.dispose();
+		modelBatch.dispose();
+		frustum.model.dispose();
+		for (Shape shape : shapes) {
+			shape.dispose();
+		}
+	}
 
-    @Override
-    public boolean keyUp (int keycode) {
-        if (Input.Keys.SPACE == keycode) {
-            setupScene();
-        }
-        return super.keyUp(keycode);
-    }
+	@Override
+	public boolean keyUp (int keycode) {
+		if (Input.Keys.SPACE == keycode) {
+			setupScene();
+		}
+		return super.keyUp(keycode);
+	}
 
-    private void createRandomShape () {
-        int shape = MathUtils.random.nextInt(2);
+	private void createRandomShape () {
+		int shape = MathUtils.random.nextInt(2);
 
-        switch (shape) {
-            case 1:
-                shapes.add(new Sphere());
-                break;
-            default:
-                shapes.add(new AABB());
-        }
+		switch (shape) {
+		case 1:
+			shapes.add(new Sphere());
+			break;
+		default:
+			shapes.add(new AABB());
+		}
 
-    }
+	}
 
-    private ModelInstance createFrustum (PerspectiveCamera camera) {
-        Material material = new Material(ColorAttribute.createDiffuse(1, 0, 0, 0));
-        com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-        mb.begin();
+	private ModelInstance createFrustum (PerspectiveCamera camera) {
+		Material material = new Material(ColorAttribute.createDiffuse(1, 0, 0, 0));
+		com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+		mb.begin();
 
-        MeshPartBuilder meshPartBuilder = mb.part("frustum", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
+		MeshPartBuilder meshPartBuilder = mb.part("frustum", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
 
-        FrustumShapeBuilder.build(meshPartBuilder, camera);
+		FrustumShapeBuilder.build(meshPartBuilder, camera);
 
-        return new ModelInstance(mb.end());
-    }
+		return new ModelInstance(mb.end());
+	}
 
-    abstract class Shape {
-        ModelInstance instance;
+	abstract class Shape {
+		ModelInstance instance;
 
-        abstract boolean isColliding (Frustum frustum);
+		abstract boolean isColliding (Frustum frustum);
 
-        abstract boolean isColliding (Ray ray);
+		abstract boolean isColliding (Ray ray);
 
-        void updateColor (Color color) {
-            Material material = instance.materials.get(0);
-            ColorAttribute attribute = (ColorAttribute)material.get(ColorAttribute.Diffuse);
-            attribute.color.set(color);
-        }
+		void updateColor (Color color) {
+			Material material = instance.materials.get(0);
+			ColorAttribute attribute = (ColorAttribute)material.get(ColorAttribute.Diffuse);
+			attribute.color.set(color);
+		}
 
-        void dispose () {
-            instance.model.dispose();
-        }
+		void dispose () {
+			instance.model.dispose();
+		}
 
-        Vector3 randomPosition () {
-            return new Vector3(MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE));
-        }
-    }
+		Vector3 randomPosition () {
+			return new Vector3(MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE), MathUtils.random(-RANGE, RANGE));
+		}
+	}
 
-    class AABB extends Shape {
-        private final BoundingBox aabb;
+	class AABB extends Shape {
+		private final BoundingBox aabb;
 
-        @Override
-        public boolean isColliding (Frustum frustum) {
-            return Intersector.intersectFrustumBounds(frustum, aabb);
-        }
+		@Override
+		public boolean isColliding (Frustum frustum) {
+			return Intersector.intersectFrustumBounds(frustum, aabb);
+		}
 
-        @Override
-        public boolean isColliding (Ray ray) {
-            return Intersector.intersectRayBoundsFast(ray, aabb);
-        }
+		@Override
+		public boolean isColliding (Ray ray) {
+			return Intersector.intersectRayBoundsFast(ray, aabb);
+		}
 
-        AABB () {
-            Vector3 position = randomPosition();
+		AABB () {
+			Vector3 position = randomPosition();
 
-            float width = MathUtils.random(0.01f, 1f);
-            float height = MathUtils.random(0.01f, 1f);
-            float depth = MathUtils.random(0.01f, 1f);
+			float width = MathUtils.random(0.01f, 1f);
+			float height = MathUtils.random(0.01f, 1f);
+			float depth = MathUtils.random(0.01f, 1f);
 
-            Vector3 min = new Vector3(position.x - width / 2, position.y - height / 2, position.z - depth / 2);
-            Vector3 max = new Vector3(position.x + width / 2, position.y + height / 2, position.z + depth / 2);
-            aabb = new BoundingBox(min, max);
+			Vector3 min = new Vector3(position.x - width / 2, position.y - height / 2, position.z - depth / 2);
+			Vector3 max = new Vector3(position.x + width / 2, position.y + height / 2, position.z + depth / 2);
+			aabb = new BoundingBox(min, max);
 
-            Matrix4 transform = new Matrix4().setToTranslation(position);
+			Matrix4 transform = new Matrix4().setToTranslation(position);
 
-            Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
-            com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-            mb.begin();
-            MeshPartBuilder meshPartBuilder = mb.part("aabb", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
-            meshPartBuilder.setVertexTransform(transform);
-            BoxShapeBuilder.build(meshPartBuilder, width, height, depth);
+			Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
+			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+			mb.begin();
+			MeshPartBuilder meshPartBuilder = mb.part("aabb", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
+			meshPartBuilder.setVertexTransform(transform);
+			BoxShapeBuilder.build(meshPartBuilder, width, height, depth);
 
-            instance = new ModelInstance(mb.end());
-        }
-    }
+			instance = new ModelInstance(mb.end());
+		}
+	}
 
-    class Sphere extends Shape {
-        private final com.badlogic.gdx.math.collision.Sphere sphere;
+	class Sphere extends Shape {
+		private final com.badlogic.gdx.math.collision.Sphere sphere;
 
-        @Override
-        public boolean isColliding (Frustum frustum) {
-            return frustum.sphereInFrustum(sphere.center, sphere.radius);
-        }
+		@Override
+		public boolean isColliding (Frustum frustum) {
+			return frustum.sphereInFrustum(sphere.center, sphere.radius);
+		}
 
-        @Override
-        public boolean isColliding (Ray ray) {
-            return Intersector.intersectRaySphere(ray, sphere.center, sphere.radius, null);
-        }
+		@Override
+		public boolean isColliding (Ray ray) {
+			return Intersector.intersectRaySphere(ray, sphere.center, sphere.radius, null);
+		}
 
-        Sphere () {
-            Vector3 position = randomPosition();
+		Sphere () {
+			Vector3 position = randomPosition();
 
-            float diameter = MathUtils.random(0.01f, 1f);
+			float diameter = MathUtils.random(0.01f, 1f);
 
-            sphere = new com.badlogic.gdx.math.collision.Sphere(position, diameter/2);
+			sphere = new com.badlogic.gdx.math.collision.Sphere(position, diameter / 2);
 
-            Matrix4 transform = new Matrix4().setToTranslation(position);
+			Matrix4 transform = new Matrix4().setToTranslation(position);
 
-            Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
-            com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-            mb.begin();
-            MeshPartBuilder meshPartBuilder = mb.part("sphere", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
-            meshPartBuilder.setVertexTransform(transform);
-            SphereShapeBuilder.build(meshPartBuilder, diameter, diameter, diameter, 16, 16);
+			Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
+			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+			mb.begin();
+			MeshPartBuilder meshPartBuilder = mb.part("sphere", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
+			meshPartBuilder.setVertexTransform(transform);
+			SphereShapeBuilder.build(meshPartBuilder, diameter, diameter, diameter, 16, 16);
 
-            instance = new ModelInstance(mb.end());
-        }
-    }
+			instance = new ModelInstance(mb.end());
+		}
+	}
 
 }
-
