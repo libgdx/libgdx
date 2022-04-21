@@ -32,43 +32,6 @@ public class OALIOSAudio implements IOSAudio {
 
 	private final IOSApplicationConfiguration config;
 
-	private void forceEndInterruption () {
-		OALAudioSession audioSession = OALAudioSession.sharedInstance();
-		if (audioSession != null) {
-			audioSession.forceEndInterruption();
-		}
-	}
-
-	@Override
-	public void didBecomeActive () {
-		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
-		forceEndInterruption();
-		if (config.allowIpod) {
-			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
-			if (audio != null) {
-				audio.setUseHardwareIfAvailable(false);
-			}
-		}
-	}
-
-	@Override
-	public void willEnterForeground () {
-		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		forceEndInterruption();
-	}
-
-	@Override
-	public void willResignActive () {
-
-	}
-
-	@Override
-	public void willTerminate () {
-
-	}
-
 	public OALIOSAudio (IOSApplicationConfiguration config) {
 		this.config = config;
 		if (!config.useAudio) return;
@@ -107,4 +70,40 @@ public class OALIOSAudio implements IOSAudio {
 		throw new GdxRuntimeException("Error creating music audio track");
 	}
 
+	@Override
+	public void didBecomeActive () {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
+		forceEndInterruption();
+		if (config.allowIpod) {
+			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+			if (audio != null) {
+				audio.setUseHardwareIfAvailable(false);
+			}
+		}
+	}
+
+	@Override
+	public void willEnterForeground () {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		forceEndInterruption();
+	}
+
+	@Override
+	public void willResignActive () {
+
+	}
+
+	@Override
+	public void willTerminate () {
+
+	}
+
+	private void forceEndInterruption () {
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
+	}
 }
