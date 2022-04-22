@@ -244,10 +244,10 @@ public class TextureRegion {
 		}
 	}
 
-	/** Helper method to create tiles out of this TextureRegion starting from the top left corner going to the right and ending
-	 * at the bottom right corner. Only complete tiles will be returned so if the region's width or height are not a multiple of
-	 * the tile width and height not all of the region will be used. This will not work on texture regions returned from a
-	 * TextureAtlas that either have whitespace removed or where flipped before the region is split.
+	/** Helper method to create tiles out of this TextureRegion starting from the top left corner going to the right and ending at
+	 * the bottom right corner. Only complete tiles will be returned so if the region's width or height are not a multiple of the
+	 * tile width and height not all of the region will be used. This will not work on texture regions returned from a TextureAtlas
+	 * that either have whitespace removed or where flipped before the region is split.
 	 * 
 	 * @param tileWidth a tile's width in pixels
 	 * @param tileHeight a tile's height in pixels
