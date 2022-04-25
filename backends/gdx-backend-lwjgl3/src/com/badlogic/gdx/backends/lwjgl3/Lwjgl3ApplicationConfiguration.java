@@ -110,7 +110,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.initialVisible = visibility;
 	}
 
-	/** Whether to disable audio or not. If set to false, the returned audio class instances like {@link Audio} or {@link Music}
+	/** Whether to disable audio or not. If set to true, the returned audio class instances like {@link Audio} or {@link Music}
 	 * will be mock implementations. */
 	public void disableAudio (boolean disableAudio) {
 		this.disableAudio = disableAudio;
@@ -123,11 +123,11 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	/** Sets the audio device configuration.
 	 * 
-	 * @param simultaniousSources the maximum number of sources that can be played simultaniously (default 16)
+	 * @param simultaneousSources the maximum number of sources that can be played simultaniously (default 16)
 	 * @param bufferSize the audio device buffer size in samples (default 512)
 	 * @param bufferCount the audio device buffer count (default 9) */
-	public void setAudioConfig (int simultaniousSources, int bufferSize, int bufferCount) {
-		this.audioDeviceSimultaneousSources = simultaniousSources;
+	public void setAudioConfig (int simultaneousSources, int bufferSize, int bufferCount) {
+		this.audioDeviceSimultaneousSources = simultaneousSources;
 		this.audioDeviceBufferSize = bufferSize;
 		this.audioDeviceBufferCount = bufferCount;
 	}

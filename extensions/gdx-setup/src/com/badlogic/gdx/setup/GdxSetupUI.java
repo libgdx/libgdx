@@ -233,7 +233,7 @@ public class GdxSetupUI extends JFrame {
 			infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			panel.add(infoLabel);
 			JEditorPane pane = new JEditorPane("text/html",
-				"<a href=\"https://github.com/libgdx/libgdx/wiki/Dependency-management-with-Gradle\">Dependency Management</a>");
+				"<a href=\"https://libgdx.com/wiki/articles/dependency-management-with-gradle\">Dependency Management</a>");
 			pane.addHyperlinkListener(new HyperlinkListener() {
 				@Override
 				public void hyperlinkUpdate (HyperlinkEvent e) {
@@ -454,7 +454,7 @@ public class GdxSetupUI extends JFrame {
 	class Form extends JPanel {
 		ExternalExtensionsDialog externalExtensionsDialog = new ExternalExtensionsDialog(dependencies);
 		JLabel nameLabel = new JLabel("Project name:");
-		JTextField nameText = new JTextField("my-gdx-game");
+		JTextField nameText = new JTextField("My GDX Game");
 		JLabel packageLabel = new JLabel("Package name:");
 		JTextField packageText = new JTextField("com.mygdx.game");
 		JLabel gameClassLabel = new JLabel("Game class:");
