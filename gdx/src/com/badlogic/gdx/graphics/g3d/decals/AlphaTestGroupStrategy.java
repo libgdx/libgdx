@@ -28,9 +28,9 @@ import com.badlogic.gdx.utils.Pool;
 /**
  * <p>Single Group strategy (all Decals same) using Z-buffer to render using screen door transparency to avoid having
  * to presort the decals. Materials are still sorted.</p>
- * <p>Avoids artifacts when the Decals are sufficiently proximate
- * and orientated such that sorting fails, and also from transparent decals overlapping
- * in plane (z-collisions) or by orientation.
+ * <p>No artifacts including when
+ * 1) the Decals cross intersect each other such that depth sorts are impossible
+ * 2) transparent/translucent overlap in-plane (z-collision)
  * </p>
  */
 public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
@@ -247,5 +247,3 @@ public class AlphaTestGroupStrategy implements GroupStrategy, Disposable {
 				shader.dispose();
 	 }
 }
-
-

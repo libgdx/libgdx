@@ -35,9 +35,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.LinkedList;
 
 public class DecalAlphaTest extends GdxTest {
-	 public static final int INITIAL_RENDERED = 100;
+	 public static final int INITIAL_RENDERED = 12;
 	 Texture egg;
-	 Texture wheel;
+	 Texture badlogic;
 	 LinkedList<Decal> toRender = new LinkedList<Decal>();
 	 DecalBatch batch;
 	 float timePassed = 0;
@@ -52,8 +52,8 @@ public class DecalAlphaTest extends GdxTest {
 		  Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		  Gdx.app.log("DecalAlphaTest", "create");
 
-		  egg   = new Texture(Gdx.files.internal("data/egg.png"));
-		  wheel = new Texture(Gdx.files.internal("data/wheel.png"));
+		  egg      = new Texture(Gdx.files.internal("data/egg.png"));
+		  badlogic = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		  for (int i = 0; i < INITIAL_RENDERED; i++) {
 				toRender.add(makeDecal());
@@ -71,7 +71,7 @@ public class DecalAlphaTest extends GdxTest {
 
 	 @Override public void dispose () {
 		  egg.dispose();
-		  wheel.dispose();
+		  badlogic.dispose();
 		  batch.dispose();
 	 }
 
@@ -84,8 +84,13 @@ public class DecalAlphaTest extends GdxTest {
 				toRender.add(makeDecal());
 		  }
 
+		  int switchCounter =0;
 		  for (Decal decal : toRender) {
-				decal.rotateY(0.4f);
+				if (++switchCounter % 2 ==1) {
+					 decal.rotateY(0.4f);
+				} else {
+					 decal.rotateY(-0.4f);
+				}
 				batch.add(decal);
 		  }
 		  batch.flush();
@@ -108,7 +113,7 @@ public class DecalAlphaTest extends GdxTest {
 				sprite = Decal.newDecal(10, 10, new TextureRegion(egg), true);
 				break;
 		  case 1:
-				sprite = Decal.newDecal(10, 10, new TextureRegion(wheel), false);
+				sprite = Decal.newDecal(10, 10, new TextureRegion(badlogic), false);
 				break;
 		  }
 		  final float bounds = 12f;
