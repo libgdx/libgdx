@@ -28,6 +28,7 @@
 -dontwarn com.badlogic.gdx.graphics.g2d.freetype.FreetypeBuild
 
 -keep class com.badlogic.gdx.scenes.scene2d.InputEvent
+-keep class com.badlogic.gdx.scenes.scene2d.Stage$TouchFocus
 
 # Required if using Gdx-Controllers extension
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
