@@ -48,13 +48,14 @@
 - API Fix: Move vertex array index buffer limit to backends to fix issue with numIndices parameter
 - API Fix: TexturePacker: Fix wrong Y value when using padding
 - API Fix: Lwjgl3Net: Add fallback to xdg-open on Linux if Desktop.BROWSE is unavailable
-- API Addition: Add NWSEResize, NESWResize, AllResize, and NotAllowed SystemCursors
+- API Addition: Add NWSEResize, NESWResize, AllResize, NotAllowed and None SystemCursors
 - API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
 - API Addition: Box2D Shape now implements Disposable
 - API Addition: Addes Tooltip#setTouchIndependent; see #6758
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
+- API Fix: setSystemCursor() now works on Android
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
 - API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
