@@ -59,7 +59,7 @@ public interface Graphics {
 	class DisplayMode {
 		/** the width in physical pixels **/
 		public final int width;
-		/** the height in physical pixles **/
+		/** the height in physical pixels **/
 		public final int height;
 		/** the refresh rate in Hertz **/
 		public final int refreshRate;
