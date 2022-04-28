@@ -55,6 +55,7 @@
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
+- API Addition: GwtApplicationConfiguration#xrCompatible 
 - API Fix: setSystemCursor() now works on Android
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
