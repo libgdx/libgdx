@@ -22,7 +22,7 @@ buildscript {
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.1"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.3.1"
     }
 }
 
@@ -94,7 +94,13 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }   
+    }
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption("-release", "8");
+        }
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -173,7 +179,7 @@ task setupExternalNativesDirs() {
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
     }
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
@@ -193,7 +199,7 @@ task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
 task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT ] , type: Copy) {
     from zipTree("build/gdx-angle-natives.zip")
     into "./extensions/gdx-lwjgl3-angle/res"
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
@@ -206,7 +212,7 @@ task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
 task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 apply from: rootProject.file('publish.gradle')

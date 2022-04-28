@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SystemCursorTest extends GdxTest {
@@ -58,6 +60,7 @@ public class SystemCursorTest extends GdxTest {
 	@Override
 	public void render () {
 		super.render();
+		ScreenUtils.clear(Color.BLACK);
 		stage.act();
 		stage.draw();
 	}

@@ -23,13 +23,13 @@ ext {
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.15"
+versions.robovm = "2.3.16"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
 versions.gretty = "3.0.7"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
-versions.lwjgl3 = "3.3.0"
+versions.lwjgl3 = "3.3.1"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"

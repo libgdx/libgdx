@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt.preloader;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -143,7 +144,14 @@ public class AssetDownloader {
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
-		loadImage(url, mimeType, null, listener);
+		String crossOrigin = null;
+
+		// Enable CORS if we're running from a different URL to the host page
+		if (!url.startsWith(GWT.getHostPageBaseURL())) {
+			crossOrigin = "anonymous";
+		}
+
+		loadImage(url, mimeType, crossOrigin, listener);
 	}
 
 	public void loadImage (final String url, final String mimeType, final String crossOrigin,
