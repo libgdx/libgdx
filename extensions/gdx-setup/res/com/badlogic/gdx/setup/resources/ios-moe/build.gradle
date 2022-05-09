@@ -1,26 +1,25 @@
 // Exclude all files from Gradle's test runner
 test { exclude '**' }
 
-task copyNatives {
+// Copy all xcframeworks to xcode/native/ios
+// They need to be picked up from there for linking in XCode
+task copyNatives  {
     doLast {
         file("xcode/native/ios/").mkdirs();
-        def LD_FLAGS = "LIBGDX_NATIVES = "
-        configurations.natives.files.each { jar->
-            def outputDir = null
-            if (jar.name.endsWith("natives-ios.jar")) outputDir = file("xcode/native/ios")
-            if (outputDir != null) {
-                FileCollection fileCollection = zipTree(jar)
-                for (File libFile : fileCollection) {
-                    if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
-                        copy {
-                            from libFile.getAbsolutePath()
-                            into outputDir
-                        }
-                        LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
-                    }
+        def subDir = "META-INF/robovm/ios/libs/"
+        configurations.natives.files.each { jar ->
+            copy {
+                from zipTree(jar)
+                include "$subDir/*.xcframework/**"
+                into("xcode/native/ios/")
+                eachFile { file ->
+                    file.path = file.path.replaceFirst("^$subDir", '')
                 }
+                includeEmptyDirs(false)
             }
         }
+
+        def LD_FLAGS = "LIBGDX_NATIVES = -Wl,-all_load"
         def outFlags = file("xcode/ios-moe/custom.xcconfig");
         outFlags.write LD_FLAGS
 
@@ -37,15 +36,10 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 // Setup Multi-OS Engine
 moe {
-    nativeImage.options = ["--features=com.badlogic.gdx.backends.svm.ConfigCollectionFeature"]
     xcode {
         project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
         testTarget 'ios-moe-Test'
-    }
-
-    remoteBuild {
-        resources = [ file("../%ASSET_PATH%") ]
     }
 }
 

@@ -1,1 +1,0 @@
-LIBGDX_NATIVES =  -force_load ${SRCROOT}/native/ios/libObjectAL.a -force_load ${SRCROOT}/native/ios/libgdx.a -force_load ${SRCROOT}/native/ios/libgdx-box2d.a
