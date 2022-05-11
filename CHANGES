@@ -52,7 +52,7 @@
 - API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
 - API Addition: Box2D Shape now implements Disposable
 - API Addition: Added ChainShape#clear method
-- API Addition: Addes Tooltip#setTouchIndependent; see #6758
+- API Addition: Added Tooltip#setTouchIndependent; see #6758
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
@@ -62,6 +62,9 @@
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
 - API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
 - API Addition: Added application lifecycle methods to IOSAudio for custom audio implementations.
+- API Addition: Added getBoundingRectangle() to Polyline
+- API Addition: ShapeRenderer#check() has now protected visibility
+- API Addition: Add ability to host GWT module on a different domain than the site, see #6851
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
