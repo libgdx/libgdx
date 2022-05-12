@@ -5,6 +5,7 @@ configure([
 	project(":backends:gdx-backend-lwjgl"),
 	project(":backends:gdx-backend-lwjgl3"),
 	project(":backends:gdx-backend-robovm"),
+	project(":backends:gdx-backend-robovm-metalangle"),
 	project(":backends:gdx-backend-gwt"),
 	project(":extensions:gdx-box2d-parent"),
 	project(":extensions:gdx-box2d-parent:gdx-box2d"),
