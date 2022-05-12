@@ -1,3 +1,6 @@
+[1.11.1]
+- iOS: Add new MobiVM MetalANGLE backend
+
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] Removed Maven and Ant build systems. libGDX is now solely built with Gradle. See https://libgdx.com/dev/from-source/ for updated build instructions.
@@ -7,7 +10,6 @@
 - [BREAKING CHANGE] Legacy LWJGL3 projects must update the sourceCompatibility to 1.8 or higher.
 - [BREAKING CHANGE] Android Removed hideStatusBar configuration, see #6683 
 - [BREAKING CHANGE] Lwjgl3ApplicationConfiguration#useOpenGL3 was replaced by #setOpenGLEmulation
-- iOS: Add new MetalANGLE backend
 - Gradle build now takes -PjavaVersion=7|8|9... to specify the Java version against which to compile libGDX. Default is Java 7 for everything, except the LWJGL3 backend, which is compiled for Java 8.
 - LWJGL3 extension: Added gdx-lwjgl3-glfw-awt-macos extension. Fixes GLFW in such a way, that the LWJGL3/libGDX must no longer run on the main thread in macOS, which allows AWT to work in parallel, i.e. file dialogs, JFrames, ImageIO, etc. You no longer need to pass `-XstartOnFirstThread` when starting an LWJGL3 app on macOS. See `AwtTestLWJGL` in gdx-tests-lwjgl3. For more information, see https://github.com/libgdx/libgdx/pull/6772
 - API Addition: Added LWJGL3 ANGLE support for x86_64 Windows, Linux, and macOS. Emulates OpenGL ES 2.0 through DirectX (Windows), desktop OpenGL (Linux), and Metal (macOS). May become the preferred method of rendering on macOS if Apple removes OpenGL support entirely. May fix some OpenGL driver issues. More information here: https://github.com/libgdx/libgdx/pull/6672
