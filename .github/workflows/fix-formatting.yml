@@ -29,7 +29,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
+          git add backends/gdx-backend-robovm-metalangle/src
           git commit -m "Generate MobiVM MetalANGLE backend" -a
         continue-on-error: true
       - name: Apply formater
@@ -38,7 +38,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
           git commit -m "Apply formatter" -a
         continue-on-error: true
       - name: Push formatting changes
