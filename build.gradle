@@ -95,6 +95,12 @@ allprojects {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
     }
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption("-release", "8");
+        }
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -172,6 +178,7 @@ task setupExternalNativesDirs() {
         file("build").mkdir();
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
+        file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
     }
     outputs.upToDateWhen { false }
 }
@@ -190,7 +197,14 @@ task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
     useETag "all"
 }
 
-task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT ] , type: Copy) {
+task fetchGlfwAWTARM64(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfwarm64.dylib'
+    dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64/libglfwarm64.dylib'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT, fetchGlfwAWTARM64 ] , type: Copy) {
     from zipTree("build/gdx-angle-natives.zip")
     into "./extensions/gdx-lwjgl3-angle/res"
     outputs.upToDateWhen { false }

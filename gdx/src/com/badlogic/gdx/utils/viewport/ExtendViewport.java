@@ -21,15 +21,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
-/** A viewport that keeps the world aspect ratio by extending the world in one direction. The world is first scaled to fit within
- * the viewport, then the shorter dimension is lengthened to fill the viewport. A maximum size can be specified to limit how much
- * the world is extended and black bars (letterboxing) are used for any remaining space.
+/** A viewport that keeps the world aspect ratio by both scaling and extending the world. By default, the world is first scaled to
+ * fit within the viewport using {@link Scaling#fit}, then the shorter dimension is lengthened to fill the viewport. Other
+ * scaling, such as {@link Scaling#contain}, may lengthen the world in both directions. A maximum size can be specified to limit
+ * how much the world is extended and black bars (letterboxing) are used for any remaining space.
  * @author Nathan Sweet */
 public class ExtendViewport extends Viewport {
 	private float minWorldWidth, minWorldHeight;
 	private float maxWorldWidth, maxWorldHeight;
+	private Scaling scaling = Scaling.fit;
 
 	/** Creates a new viewport using a new {@link OrthographicCamera} with no maximum world size. */
+
 	public ExtendViewport (float minWorldWidth, float minWorldHeight) {
 		this(minWorldWidth, minWorldHeight, 0, 0, new OrthographicCamera());
 	}
@@ -60,9 +63,9 @@ public class ExtendViewport extends Viewport {
 		// Fit min size to the screen.
 		float worldWidth = minWorldWidth;
 		float worldHeight = minWorldHeight;
-		Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
+		Vector2 scaled = scaling.apply(worldWidth, worldHeight, screenWidth, screenHeight);
 
-		// Extend in the short direction.
+		// Extend, possibly in both directions depending on the scaling.
 		int viewportWidth = Math.round(scaled.x);
 		int viewportHeight = Math.round(scaled.y);
 		if (viewportWidth < screenWidth) {
@@ -72,7 +75,8 @@ public class ExtendViewport extends Viewport {
 			if (maxWorldWidth > 0) lengthen = Math.min(lengthen, maxWorldWidth - minWorldWidth);
 			worldWidth += lengthen;
 			viewportWidth += Math.round(lengthen * toViewportSpace);
-		} else if (viewportHeight < screenHeight) {
+		}
+		if (viewportHeight < screenHeight) {
 			float toViewportSpace = viewportWidth / worldWidth;
 			float toWorldSpace = worldWidth / viewportWidth;
 			float lengthen = (screenHeight - viewportHeight) * toWorldSpace;
@@ -119,5 +123,9 @@ public class ExtendViewport extends Viewport {
 
 	public void setMaxWorldHeight (float maxWorldHeight) {
 		this.maxWorldHeight = maxWorldHeight;
+	}
+
+	public void setScaling (Scaling scaling) {
+		this.scaling = scaling;
 	}
 }

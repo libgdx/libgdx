@@ -1171,8 +1171,13 @@ public class ShapeRenderer implements Disposable {
 		polyline(vertices, 0, vertices.length);
 	}
 
-	/** @param other May be null. */
-	private void check (ShapeType preferred, ShapeType other, int newVertices) {
+	/** Checks whether the correct ShapeType was set. If not and autoShapeType is enabled, it flushes the batch and changes the
+	 * shape type. The batch is also flushed, when the matrix has been changed or not enough vertices remain.
+	 *
+	 * @param preferred usually ShapeType.Line
+	 * @param other usually ShapeType.Filled. May be null.
+	 * @param newVertices vertices count of geometric figure you want to draw */
+	protected final void check (ShapeType preferred, ShapeType other, int newVertices) {
 		if (shapeType == null) throw new IllegalStateException("begin must be called first.");
 
 		if (shapeType != preferred && shapeType != other) {

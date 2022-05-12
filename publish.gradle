@@ -119,6 +119,9 @@ configure([
         signing {
             useGpgCmd()
             sign publishing.publications.mavenJava
+
+            if(project.tasks.findByName('jnigen'))
+                sign publishing.publications.mavenPlatform
         }
 
         //Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.
