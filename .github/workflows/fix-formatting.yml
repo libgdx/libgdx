@@ -23,8 +23,17 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Apply formatter
-        run: ./gradlew :backends:gdx-backend-robovm-metalangle:generate spotlessApply
+      - name: Generate MobiVM MetalANGLE backend
+        run: ./gradlew :backends:gdx-backend-robovm-metalangle:generate :backends:gdx-backend-robovm-metalangle:spotlessApply
+      - name: Commit generation changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Generate MobiVM MetalANGLE backend" -a
+        continue-on-error: true
+      - name: Apply formater
+        run: ./gradlew spotlessApply
       - name: Commit formatting changes
         run: |
           git config --local user.email "action@github.com"
