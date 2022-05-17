@@ -605,6 +605,11 @@ public class ParticleEditor extends JFrame {
 			return false;
 		}
 
+		@Override
+		public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+			return false;
+		}
+
 		public boolean touchDragged (int x, int y, int pointer) {
 			if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
 				Vector3 touchPoint = new Vector3(x, y, 0);

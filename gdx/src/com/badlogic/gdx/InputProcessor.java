@@ -57,8 +57,8 @@ public interface InputProcessor {
 	 * @return whether the input was processed */
 	public boolean touchUp (int screenX, int screenY, int pointer, int button);
 
-	/** Called when the touch gesture is cancelled. Reason may be from OS interruption to touch becoming a large surface such as the user cheek).
-	 *  Relevant on Android and iOS only. The button parameter will be {@link Buttons#LEFT} on iOS.
+	/** Called when the touch gesture is cancelled. Reason may be from OS interruption to touch becoming a large surface such as
+	 * the user cheek). Relevant on Android and iOS only. The button parameter will be {@link Buttons#LEFT} on iOS.
 	 * @param pointer the pointer for the event.
 	 * @param button the button
 	 * @return whether the input was processed */
