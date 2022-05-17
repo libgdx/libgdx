@@ -40,6 +40,11 @@ public class InputAdapter implements InputProcessor {
 		return false;
 	}
 
+	@Override
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		return false;
 	}
