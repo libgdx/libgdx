@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.FloatCounter;

@@ -67,6 +67,7 @@ public class ParticleEmitterTest extends GdxTest {
 				effect.getEmitters().add(emitter);
 				return false;
 			}
+
 			public boolean keyDown (int keycode) {
 				ParticleEmitter emitter = emitters.get(emitterIndex);
 				if (keycode == Input.Keys.DPAD_UP)

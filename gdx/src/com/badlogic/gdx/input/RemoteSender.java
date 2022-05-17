@@ -174,7 +174,7 @@ public class RemoteSender implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
 		return touchUp(screenX, screenY, pointer, button);
 	}
 
