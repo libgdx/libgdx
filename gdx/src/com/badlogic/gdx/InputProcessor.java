@@ -62,7 +62,7 @@ public interface InputProcessor {
 	 * @param pointer the pointer for the event.
 	 * @param button the button
 	 * @return whether the input was processed */
-	boolean touchCancelled (int screenX, int screenY, int pointer, int button);
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button);
 
 	/** Called when a finger or the mouse was dragged.
 	 * @param pointer the pointer for the event.
