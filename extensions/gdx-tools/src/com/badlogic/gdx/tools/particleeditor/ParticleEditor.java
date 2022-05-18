@@ -604,8 +604,7 @@ public class ParticleEditor extends JFrame {
 			ParticleEditor.this.requestFocusInWindow();
 			return false;
 		}
-
-		@Override
+		
 		public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
 			return false;
 		}
