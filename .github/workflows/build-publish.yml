@@ -318,6 +318,10 @@ jobs:
       - name: Pack desktop natives
         run: |
           ./gradlew jniGen
+          ant -f gdx/jni/build.xml pack-natives
+          ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
+          ant -f extensions/gdx-freetype/jni/build.xml pack-natives
+          ant -f extensions/gdx-bullet/jni/build.xml pack-natives
 
       - name: Pack natives
         run: |
