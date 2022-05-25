@@ -430,8 +430,8 @@ public class AssetManager implements Disposable {
 
 	/** Updates the AssetManager continuously for the specified number of milliseconds, yielding the CPU to the loading thread
 	 * between updates. This may block for less time if all loading tasks are complete. This may block for more time if the portion
-	 * of a single task that happens in the GL thread takes a long time.
-	 * On GWT, updates for a single task instead (see {@link #update()}).
+	 * of a single task that happens in the GL thread takes a long time. On GWT, updates for a single task instead (see
+	 * {@link #update()}).
 	 * @return true if all loading is finished. */
 	public boolean update (int millis) {
 		if (Gdx.app.getType() == Application.ApplicationType.WebGL) return update();
