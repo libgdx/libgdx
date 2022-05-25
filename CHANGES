@@ -2,6 +2,7 @@
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
 - iOS: Add new MobiVM MetalANGLE backend
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
+- Javadoc: Add "-use" flag to javadoc generation
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
