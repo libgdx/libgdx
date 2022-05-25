@@ -72,14 +72,14 @@ public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 	}
 
 	/** Creates a new map with a load factor of 0.8.
-	 * @param initialCapacity The backing array size is initialCapacity * loadFactor, increased to the next power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectLongMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity The backing array size is initialCapacity * loadFactor, increased to the next power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectLongMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);

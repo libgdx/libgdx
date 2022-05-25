@@ -104,6 +104,12 @@ public class Lwjgl3Cursor implements Cursor {
 	}
 
 	static void setSystemCursor (long windowHandle, SystemCursor systemCursor) {
+		if (systemCursor == SystemCursor.None) {
+			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
+			return;
+		} else {
+			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+		}
 		Long glfwCursor = systemCursors.get(systemCursor);
 		if (glfwCursor == null) {
 			long handle = 0;

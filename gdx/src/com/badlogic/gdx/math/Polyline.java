@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ public class Polyline implements Shape2D {
 	private boolean calculateScaledLength = true;
 	private boolean calculateLength = true;
 	private boolean dirty = true;
+	private Rectangle bounds;
 
 	public Polyline () {
 		this.localVertices = new float[0];
@@ -202,6 +203,36 @@ public class Polyline implements Shape2D {
 		this.x += x;
 		this.y += y;
 		dirty = true;
+	}
+
+	/** Returns an axis-aligned bounding box of this polyline.
+	 *
+	 * Note the returned Rectangle is cached in this polyline, and will be reused if this Polyline is changed.
+	 *
+	 * @return this polyline's bounding box {@link Rectangle} */
+	public Rectangle getBoundingRectangle () {
+		float[] vertices = getTransformedVertices();
+
+		float minX = vertices[0];
+		float minY = vertices[1];
+		float maxX = vertices[0];
+		float maxY = vertices[1];
+
+		final int numFloats = vertices.length;
+		for (int i = 2; i < numFloats; i += 2) {
+			minX = minX > vertices[i] ? vertices[i] : minX;
+			minY = minY > vertices[i + 1] ? vertices[i + 1] : minY;
+			maxX = maxX < vertices[i] ? vertices[i] : maxX;
+			maxY = maxY < vertices[i + 1] ? vertices[i + 1] : maxY;
+		}
+
+		if (bounds == null) bounds = new Rectangle();
+		bounds.x = minX;
+		bounds.y = minY;
+		bounds.width = maxX - minX;
+		bounds.height = maxY - minY;
+
+		return bounds;
 	}
 
 	@Override

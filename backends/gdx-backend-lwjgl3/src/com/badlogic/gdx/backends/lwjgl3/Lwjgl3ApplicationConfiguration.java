@@ -38,6 +38,8 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
+	public static PrintStream errorStream = System.err;
+
 	boolean disableAudio = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
@@ -108,7 +110,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.initialVisible = visibility;
 	}
 
-	/** Whether to disable audio or not. If set to false, the returned audio class instances like {@link Audio} or {@link Music}
+	/** Whether to disable audio or not. If set to true, the returned audio class instances like {@link Audio} or {@link Music}
 	 * will be mock implementations. */
 	public void disableAudio (boolean disableAudio) {
 		this.disableAudio = disableAudio;
@@ -121,11 +123,11 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	/** Sets the audio device configuration.
 	 * 
-	 * @param simultaniousSources the maximum number of sources that can be played simultaniously (default 16)
+	 * @param simultaneousSources the maximum number of sources that can be played simultaniously (default 16)
 	 * @param bufferSize the audio device buffer size in samples (default 512)
 	 * @param bufferCount the audio device buffer count (default 9) */
-	public void setAudioConfig (int simultaniousSources, int bufferSize, int bufferCount) {
-		this.audioDeviceSimultaneousSources = simultaniousSources;
+	public void setAudioConfig (int simultaneousSources, int bufferSize, int bufferCount) {
+		this.audioDeviceSimultaneousSources = simultaneousSources;
 		this.audioDeviceBufferSize = bufferSize;
 		this.audioDeviceBufferCount = bufferCount;
 	}
@@ -165,10 +167,8 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** Set transparent window hint
-	 * @deprecated Results may vary on different OS and GPUs. See https://github.com/glfw/glfw/issues/1237
+	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
 	 * @param transparentFramebuffer */
-	@Deprecated
 	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
 		this.transparentFramebuffer = transparentFramebuffer;
 	}

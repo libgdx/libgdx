@@ -75,6 +75,10 @@ public class ANGLELoader {
 			OutputStream out = null;
 			InputStream in = null;
 
+			if (outFile.exists()) {
+				return outFile;
+			}
+
 			try {
 				out = new FileOutputStream(outFile);
 				in = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
@@ -165,8 +169,8 @@ public class ANGLELoader {
 	}
 
 	public static void load () {
-		if (isARM || (!isWindows && !isLinux && !isMac))
-			throw new GdxRuntimeException("ANGLE is only supported on x86 Windows, Linux, and macOS.");
+		if ((isARM && !isMac) || (!isWindows && !isLinux && !isMac))
+			throw new GdxRuntimeException("ANGLE is only supported on x86/x86_64 Windows, x64 Linux, and x64/arm64 macOS.");
 		String osDir = null;
 		String ext = null;
 		if (isWindows) {
@@ -178,7 +182,7 @@ public class ANGLELoader {
 			ext = ".so";
 		}
 		if (isMac) {
-			osDir = "macosx64";
+			osDir = isARM ? "macosxarm64" : "macosx64";
 			ext = ".dylib";
 		}
 

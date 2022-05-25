@@ -52,10 +52,10 @@ public class ReflectionCacheSourceCreator {
 	SourceWriter sw;
 	final StringBuilder source = new StringBuilder();
 	final List<JType> types;
-	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
-	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
-	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<String, String>();
-	final Map<String, Integer> typeNames2typeIds = new HashMap<String, Integer>();
+	final List<SetterGetterStub> setterGetterStubs = new ArrayList<>();
+	final List<MethodStub> methodStubs = new ArrayList<>();
+	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<>();
+	final Map<String, Integer> typeNames2typeIds = new HashMap<>();
 	int nextTypeId;
 	int nextSetterGetterId;
 	int nextInvokableId;
@@ -74,7 +74,7 @@ public class ReflectionCacheSourceCreator {
 	class MethodStub {
 		String enclosingType;
 		String returnType;
-		List<String> parameterTypes = new ArrayList<String>();
+		List<String> parameterTypes = new ArrayList<>();
 		String jnsi;
 		int methodId;
 		boolean isStatic;
@@ -151,7 +151,7 @@ public class ReflectionCacheSourceCreator {
 		Collections.sort(setterGetterStubs, new Comparator<SetterGetterStub>() {
 			@Override
 			public int compare (SetterGetterStub o1, SetterGetterStub o2) {
-				return new Integer(o1.setter).compareTo(o2.setter);
+				return Integer.compare(o1.setter, o2.setter);
 			}
 		});
 
@@ -166,7 +166,7 @@ public class ReflectionCacheSourceCreator {
 		Collections.sort(methodStubs, new Comparator<MethodStub>() {
 			@Override
 			public int compare (MethodStub o1, MethodStub o2) {
-				return new Integer(o1.methodId).compareTo(o2.methodId);
+				return Integer.compare(o1.methodId, o2.methodId);
 			}
 		});
 
@@ -613,9 +613,7 @@ public class ReflectionCacheSourceCreator {
 					Object invokeResult = null;
 					try {
 						invokeResult = method.invoke(annotation);
-					} catch (IllegalAccessException e) {
-						logger.log(Type.ERROR, "Error invoking annotation method.");
-					} catch (InvocationTargetException e) {
+					} catch (IllegalAccessException | InvocationTargetException e) {
 						logger.log(Type.ERROR, "Error invoking annotation method.");
 					}
 					// write result as return value
@@ -630,12 +628,12 @@ public class ReflectionCacheSourceCreator {
 							b.append(" \"").append((String)invokeResult).append("\"");
 						} else if (returnType.equals(Class[].class)) {
 							// Class[]
-							for (Class c : (Class[])invokeResult) {
+							for (Class<?> c : (Class<?>[])invokeResult) {
 								b.append(" ").append(c.getCanonicalName()).append(".class,");
 							}
 						} else if (returnType.equals(Class.class)) {
 							// Class
-							b.append(" ").append(((Class)invokeResult).getCanonicalName()).append(".class");
+							b.append(" ").append(((Class<?>)invokeResult).getCanonicalName()).append(".class");
 						} else if (returnType.isArray() && returnType.getComponentType().isEnum()) {
 							// enum[]
 							String enumTypeName = returnType.getComponentType().getCanonicalName();
@@ -646,7 +644,7 @@ public class ReflectionCacheSourceCreator {
 							}
 						} else if (returnType.isEnum()) {
 							// enum
-							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult.toString());
+							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult);
 						} else if (returnType.isArray() && returnType.getComponentType().isPrimitive()) {
 							// primitive []
 							Class<?> primitiveType = returnType.getComponentType();
@@ -661,7 +659,7 @@ public class ReflectionCacheSourceCreator {
 							}
 						} else if (returnType.isPrimitive()) {
 							// primitive
-							b.append(" ").append(invokeResult.toString());
+							b.append(" ").append(invokeResult);
 							if (returnType.equals(float.class)) {
 								b.append("f");
 							}
@@ -904,7 +902,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlock {
-		private List<KeyedCodeBlock> blocks = new ArrayList<KeyedCodeBlock>();
+		private final List<KeyedCodeBlock> blocks = new ArrayList<>();
 		private final String switchStatement;
 
 		SwitchedCodeBlock (String switchStatement) {
@@ -935,7 +933,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlockByString {
-		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap<String, List<KeyedCodeBlock>>();
+		private final Map<String, List<KeyedCodeBlock>> blocks = new HashMap<>();
 		private final String switchStatement;
 		private final String expectedValue;
 
@@ -950,7 +948,7 @@ public class ReflectionCacheSourceCreator {
 			b.codeBlock = codeBlock;
 			List<KeyedCodeBlock> blockList = blocks.get(key);
 			if (blockList == null) {
-				blockList = new ArrayList<KeyedCodeBlock>();
+				blockList = new ArrayList<>();
 				blocks.put(key, blockList);
 			}
 			blockList.add(b);

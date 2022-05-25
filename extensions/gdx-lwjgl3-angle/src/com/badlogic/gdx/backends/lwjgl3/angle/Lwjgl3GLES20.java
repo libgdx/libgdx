@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl3;
+package com.badlogic.gdx.backends.lwjgl3.angle;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.GdxRuntimeException;

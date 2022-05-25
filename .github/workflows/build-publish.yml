@@ -45,8 +45,8 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
-          zip natives-ios -@ < native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework"  | grep "libs" > native-files-list
+          zip -r natives-ios -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -317,8 +317,8 @@ jobs:
 
       - name: Pack natives
         run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
-          zip natives -@ < native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar" -o -name "*.xcframework" | grep "libs" > native-files-list
+          zip -r natives -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -361,6 +361,10 @@ jobs:
       - name: Unpack natives
         run: |
           unzip -o natives.zip
+
+      - name: Fetch external natives
+        run: |
+          ./gradlew fetchExternalNatives
 
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'

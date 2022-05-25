@@ -5,12 +5,15 @@ configure([
 	project(":backends:gdx-backend-lwjgl"),
 	project(":backends:gdx-backend-lwjgl3"),
 	project(":backends:gdx-backend-robovm"),
+	project(":backends:gdx-backend-robovm-metalangle"),
 	project(":backends:gdx-backend-gwt"),
 	project(":extensions:gdx-box2d-parent"),
 	project(":extensions:gdx-box2d-parent:gdx-box2d"),
 	project(":extensions:gdx-box2d-parent:gdx-box2d-gwt"),
 	project(":extensions:gdx-bullet"),
 	project(":extensions:gdx-freetype"),
+	project(":extensions:gdx-lwjgl3-angle"),
+	project(":extensions:gdx-lwjgl3-glfw-awt-macos"),
 	project(":extensions:gdx-tools")
 	])
 {
@@ -116,6 +119,9 @@ configure([
         signing {
             useGpgCmd()
             sign publishing.publications.mavenJava
+
+            if(project.tasks.findByName('jnigen'))
+                sign publishing.publications.mavenPlatform
         }
 
         //Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.

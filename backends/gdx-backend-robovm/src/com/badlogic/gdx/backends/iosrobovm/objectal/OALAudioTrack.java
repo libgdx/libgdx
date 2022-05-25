@@ -50,6 +50,9 @@ public class OALAudioTrack extends NSObject {
 	@Method
 	public native boolean playFile (String filePath);
 
+	@Method(selector = "playFile:loops:")
+	public native boolean playFile (String filePath, int numberOfLoops);
+
 	@Property
 	public native boolean isPaused ();
 
