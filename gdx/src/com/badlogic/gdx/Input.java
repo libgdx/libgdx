@@ -804,7 +804,8 @@ public interface Input {
 	 * them.
 	 *
 	 * @param milliseconds the duration of the haptics effect
-	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled) */
+	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
+	 *           non-haptic vibrations ignore length parameter. */
 	public void vibrate (int milliseconds, boolean fallback);
 
 	/** Generates a simple haptic effect of a given duration and amplitude. Note that on Android backend you'll need the permission
@@ -813,7 +814,8 @@ public interface Input {
 	 *
 	 * @param milliseconds the duration of the haptics effect
 	 * @param amplitude the amplitude/strength of the haptics effect. Valid values in the range [0, 255].
-	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled) */
+	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
+	 *           non-haptic vibrations ignore length and amplitude parameters. */
 	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
 	/** Generates a simple haptic effect of a type. VibrationTypes are lenght/amplitude haptic effect presets that depend on each
