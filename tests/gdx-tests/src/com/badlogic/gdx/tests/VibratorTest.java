@@ -73,7 +73,7 @@ public class VibratorTest extends GdxTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0,
 					Input.VibrationType.values().length - 1)];
-				Gdx.input.vibrate(vibrationType, fallbackCheckbox.isChecked());
+				Gdx.input.vibrate(vibrationType);
 				Gdx.app.log("VibratorTest", "VibrationType: " + vibrationType.name());
 			}
 		});

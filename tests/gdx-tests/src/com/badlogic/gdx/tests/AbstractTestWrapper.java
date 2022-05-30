@@ -315,8 +315,8 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void vibrate (VibrationType vibrationType, boolean fallback) {
-			input.vibrate(vibrationType, fallback);
+		public void vibrate (VibrationType vibrationType) {
+			input.vibrate(vibrationType);
 		}
 
 		@Override

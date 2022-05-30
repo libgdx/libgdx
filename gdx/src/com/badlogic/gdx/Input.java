@@ -818,15 +818,14 @@ public interface Input {
 	 *           non-haptic vibrations ignore length and amplitude parameters. */
 	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
-	/** Generates a simple haptic effect of a type. VibrationTypes are lenght/amplitude haptic effect presets that depend on each
+	/** Generates a simple haptic effect of a type. VibrationTypes are length/amplitude haptic effect presets that depend on each
 	 * device and are defined by manufacturers. Should give most consistent results across devices and OSs. Note that on Android
 	 * backend you'll need the permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your
 	 * manifest file in order for this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices with
 	 * haptics capabilities to use them.
 	 *
-	 * @param vibrationType the type of vibration
-	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled) */
-	public void vibrate (VibrationType vibrationType, boolean fallback);
+	 * @param vibrationType the type of vibration */
+	public void vibrate (VibrationType vibrationType);
 
 	public enum VibrationType {
 		LIGHT, MEDIUM, HEAVY;

@@ -105,8 +105,7 @@ public class IOSHaptics {
 			.getDictionary()));
 	}
 
-	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
-		final int DEFAULT_LENGTH = 50;
+	public void vibrate (Input.VibrationType vibrationType) {
 		if (hapticsSupport) {
 			UIImpactFeedbackStyle uiImpactFeedbackStyle;
 			switch (vibrationType) {
@@ -124,8 +123,6 @@ public class IOSHaptics {
 			}
 			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = new UIImpactFeedbackGenerator(uiImpactFeedbackStyle);
 			uiImpactFeedbackGenerator.impactOccurred();
-		} else {
-			vibrate(DEFAULT_LENGTH, fallback);
 		}
 	}
 

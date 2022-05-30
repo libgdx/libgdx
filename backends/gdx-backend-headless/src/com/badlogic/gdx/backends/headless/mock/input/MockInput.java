@@ -178,7 +178,7 @@ public class MockInput implements Input {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

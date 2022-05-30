@@ -670,7 +670,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

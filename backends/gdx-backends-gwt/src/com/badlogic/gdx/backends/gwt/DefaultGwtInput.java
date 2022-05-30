@@ -305,7 +305,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

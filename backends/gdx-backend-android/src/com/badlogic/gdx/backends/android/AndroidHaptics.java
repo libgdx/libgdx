@@ -56,8 +56,7 @@ public class AndroidHaptics {
 		}
 	}
 
-	public void vibrate (Input.VibrationType vibrationType, boolean fallback) {
-		final long DEFAULT_LENGTH = 50;
+	public void vibrate (Input.VibrationType vibrationType) {
 		if (amplitudeSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				int vibrationEffect;
@@ -90,10 +89,8 @@ public class AndroidHaptics {
 				default:
 					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
 				}
-				vibrator.vibrate(VibrationEffect.createOneShot(DEFAULT_LENGTH, amplitude));
+				vibrator.vibrate(VibrationEffect.createOneShot(25, amplitude));
 			}
-		} else if (fallback) {
-			vibrate((int)DEFAULT_LENGTH);
 		}
 	}
 

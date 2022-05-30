@@ -478,7 +478,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

@@ -856,7 +856,7 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType, boolean fallback) {
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override
