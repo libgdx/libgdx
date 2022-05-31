@@ -30,16 +30,20 @@ import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSErrorException;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
+import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIImpactFeedbackGenerator;
 import org.robovm.apple.uikit.UIImpactFeedbackStyle;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.block.VoidBlock1;
 
 public class IOSHaptics {
 
 	private CHHapticEngine hapticEngine;
 	private boolean hapticsSupport;
+	private final boolean vibratorSupport;
 
 	public IOSHaptics (boolean useHaptics) {
+		vibratorSupport = useHaptics && UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Phone;
 		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
 			hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
 			if (hapticsSupport) {
@@ -138,6 +142,10 @@ public class IOSHaptics {
 
 	public boolean isHapticsSupported () {
 		return hapticsSupport;
+	}
+
+	public boolean isVibratorSupported() {
+		return vibratorSupport;
 	}
 
 }
