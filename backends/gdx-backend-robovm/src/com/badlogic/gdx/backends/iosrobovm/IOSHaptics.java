@@ -144,7 +144,7 @@ public class IOSHaptics {
 		return hapticsSupport;
 	}
 
-	public boolean isVibratorSupported() {
+	public boolean isVibratorSupported () {
 		return vibratorSupport;
 	}
 
