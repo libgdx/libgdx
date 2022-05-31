@@ -601,6 +601,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return haptics.isHapticsSupported();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.isHapticsSupported();
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;
