@@ -828,6 +828,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Vibrator) return haptics.hasVibratorAvailable();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.hasAmplitudeSupport();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;

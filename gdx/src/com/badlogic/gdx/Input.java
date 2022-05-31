@@ -642,7 +642,7 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, HapticFeedback, Gyroscope, RotationVector, Pressure
 	}
 
 	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
@@ -805,7 +805,7 @@ public interface Input {
 	 *
 	 * @param milliseconds the duration of the haptics effect
 	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
-	 *           non-haptic vibrations ignore length parameter. */
+	 *           non-haptic vibrations may ignore length parameter in some backends. */
 	public void vibrate (int milliseconds, boolean fallback);
 
 	/** Generates a simple haptic effect of a given duration and amplitude. Note that on Android backend you'll need the permission
@@ -815,7 +815,7 @@ public interface Input {
 	 * @param milliseconds the duration of the haptics effect
 	 * @param amplitude the amplitude/strength of the haptics effect. Valid values in the range [0, 255].
 	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
-	 *           non-haptic vibrations ignore length and amplitude parameters. */
+	 *           non-haptic vibrations may ignore length and/or amplitude parameters in some backends. */
 	public void vibrate (int milliseconds, int amplitude, boolean fallback);
 
 	/** Generates a simple haptic effect of a type. VibrationTypes are length/amplitude haptic effect presets that depend on each
