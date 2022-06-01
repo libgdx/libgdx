@@ -520,6 +520,11 @@ public class Actor {
 		}
 	}
 
+	/** @see #setPosition(float x, float y) */
+	public void setPosition (Vector2 pos) {
+		this.setPosition(pos.x, pos.y);
+	}
+
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
 	 * coordinates. */
 	public void setPosition (float x, float y, int alignment) {
@@ -540,6 +545,11 @@ public class Actor {
 		}
 	}
 
+	/** @see #setPosition(float x, float y, int alignment) */
+	public void setPosition (Vector2 pos, int alignment) {
+		this.setPosition(pos.x, pos.y, alignment);
+	}
+
 	/** Add x and y to current position */
 	public void moveBy (float x, float y) {
 		if (x != 0 || y != 0) {
@@ -547,6 +557,11 @@ public class Actor {
 			this.y += y;
 			positionChanged();
 		}
+	}
+
+	/** @see #moveBy(float x, float y) */
+	public void moveBy (Vector2 move) {
+		this.moveBy(move.x, move.y);
 	}
 
 	public float getWidth () {

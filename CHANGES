@@ -1,6 +1,7 @@
 [1.11.1]
 - iOS: Add new MobiVM MetalANGLE backend
 - Javadoc: Add "-use" flag to javadoc generation
+- API Addition: Scene2D, Actor.java Duplicate some method to use Vector2 instead of (float x, float y) : setPosition(Vector2), setPosition(Vector2, int alignment), moveBy(Vector2 move)
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
