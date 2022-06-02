@@ -51,6 +51,9 @@ public class IOSApplicationConfiguration {
 	/** whether to use the compass, default true * */
 	public boolean useCompass = true;
 
+	/** whether to use the haptics engine, default false. * */
+	public boolean useHaptics = false;
+
 	/** whether or not to allow background music from iPod * */
 	public boolean allowIpod = true;
 

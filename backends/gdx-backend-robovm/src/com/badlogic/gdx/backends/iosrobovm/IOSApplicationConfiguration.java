@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,6 +59,9 @@ public class IOSApplicationConfiguration {
 
 	/** whether to use the compass, default true **/
 	public boolean useCompass = true;
+
+	/** whether to use the haptics engine, default false. **/
+	public boolean useHaptics = false;
 
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = true;

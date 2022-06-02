@@ -1,5 +1,6 @@
 [1.11.1]
 - iOS: Add new MobiVM MetalANGLE backend
+- API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Javadoc: Add "-use" flag to javadoc generation
 
 [1.11.0]
