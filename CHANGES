@@ -1,4 +1,5 @@
 [1.11.1]
+- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 
 - iOS: Add new MobiVM MetalANGLE backend
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Javadoc: Add "-use" flag to javadoc generation
